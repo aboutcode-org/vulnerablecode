@@ -11,8 +11,14 @@ from django.apps import apps
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 from django.test import TestCase
+from django.utils import timezone
+from packageurl import PackageURL
+from univers.version_range import VersionRange
 
 from vulnerabilities import severity_systems
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Reference
 
 
 class TestMigrations(TestCase):
@@ -610,3 +616,228 @@ class TestRemoveDupedPurlsWithSameQualifiers(TestMigrations):
     def test_removal_of_duped_purls(self):
         Package = apps.get_model("vulnerabilities", "Package")
         assert Package.objects.count() == 1
+
+
+class TestUpdateNpmPypaAdvisoryCreatedByField(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0063_alter_packagechangelog_software_version_and_more"
+    migrate_to = "0064_update_npm_pypa_advisory_created_by"
+
+    advisory_data1 = AdvisoryData(
+        aliases=["CVE-2020-13371337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="npm", name="dummy"),
+                affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+        date_published=timezone.now(),
+        url="https://test.com",
+    )
+    advisory_data2 = AdvisoryData(
+        aliases=["CVE-2020-1337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="pypi", name="dummy"),
+                affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-1337")],
+        date_published=timezone.now(),
+        url="https://test2.com",
+    )
+
+    def setUpBeforeMigration(self, apps):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv1 = Advisory.objects.create(
+            aliases=self.advisory_data1.aliases,
+            summary=self.advisory_data1.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data1.references],
+            url=self.advisory_data1.url,
+            created_by="vulnerabilities.importers.npm.NpmImporter",
+            date_collected=timezone.now(),
+        )
+
+        adv2 = Advisory.objects.create(
+            aliases=self.advisory_data2.aliases,
+            summary=self.advisory_data2.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data2.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data2.references],
+            url=self.advisory_data2.url,
+            created_by="vulnerabilities.importers.pypa.PyPaImporter",
+            date_collected=timezone.now(),
+        )
+
+    def test_removal_of_duped_purls(self):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv = Advisory.objects.all()
+
+        assert adv.filter(created_by="vulnerabilities.importers.pypa.PyPaImporter").count() == 0
+        assert adv.filter(created_by="pypa_importer").count() == 1
+
+        assert adv.filter(created_by="vulnerabilities.importers.npm.NpmImporter").count() == 0
+        assert adv.filter(created_by="npm_importer").count() == 1
+
+
+class TestUpdateNginxAdvisoryCreatedByField(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0064_update_npm_pypa_advisory_created_by"
+    migrate_to = "0065_update_nginx_advisory_created_by"
+
+    advisory_data1 = AdvisoryData(
+        aliases=["CVE-2020-13371337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="nginx", name="nginx"),
+                affected_version_range=VersionRange.from_string("vers:nginx/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+        date_published=timezone.now(),
+        url="https://test.com",
+    )
+
+    def setUpBeforeMigration(self, apps):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv1 = Advisory.objects.create(
+            aliases=self.advisory_data1.aliases,
+            summary=self.advisory_data1.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data1.references],
+            url=self.advisory_data1.url,
+            created_by="vulnerabilities.importers.nginx.NginxImporter",
+            date_collected=timezone.now(),
+        )
+
+    def test_removal_of_duped_purls(self):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv = Advisory.objects.all()
+
+        assert adv.filter(created_by="vulnerabilities.importers.nginx.NginxImporter").count() == 0
+        assert adv.filter(created_by="nginx_importer").count() == 1
+
+
+class TestUpdateGitLabAdvisoryCreatedByField(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0065_update_nginx_advisory_created_by"
+    migrate_to = "0066_update_gitlab_advisory_created_by"
+
+    advisory_data1 = AdvisoryData(
+        aliases=["CVE-2020-13371337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="pypi", name="foobar"),
+                affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+        date_published=timezone.now(),
+        url="https://test.com",
+    )
+
+    def setUpBeforeMigration(self, apps):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv1 = Advisory.objects.create(
+            aliases=self.advisory_data1.aliases,
+            summary=self.advisory_data1.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data1.references],
+            url=self.advisory_data1.url,
+            created_by="vulnerabilities.importers.gitlab.GitLabAPIImporter",
+            date_collected=timezone.now(),
+        )
+
+    def test_removal_of_duped_purls(self):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv = Advisory.objects.all()
+
+        assert (
+            adv.filter(created_by="vulnerabilities.importers.gitlab.GitLabAPIImporter").count() == 0
+        )
+        assert adv.filter(created_by="gitlab_importer").count() == 1
+
+
+class TestUpdateGitHubAdvisoryCreatedByField(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0066_update_gitlab_advisory_created_by"
+    migrate_to = "0067_update_github_advisory_created_by"
+
+    advisory_data1 = AdvisoryData(
+        aliases=["CVE-2020-13371337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="pypi", name="foobar"),
+                affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+        date_published=timezone.now(),
+        url="https://test.com",
+    )
+
+    def setUpBeforeMigration(self, apps):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv1 = Advisory.objects.create(
+            aliases=self.advisory_data1.aliases,
+            summary=self.advisory_data1.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data1.references],
+            url=self.advisory_data1.url,
+            created_by="vulnerabilities.importers.github.GitHubAPIImporter",
+            date_collected=timezone.now(),
+        )
+
+    def test_removal_of_duped_purls(self):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv = Advisory.objects.all()
+
+        assert (
+            adv.filter(created_by="vulnerabilities.importers.github.GitHubAPIImporter").count() == 0
+        )
+        assert adv.filter(created_by="github_importer").count() == 1
+
+
+class TestUpdateNVDAdvisoryCreatedByField(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0067_update_github_advisory_created_by"
+    migrate_to = "0068_update_nvd_advisory_created_by"
+
+    advisory_data1 = AdvisoryData(
+        aliases=["CVE-2020-13371337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="pypi", name="foobar"),
+                affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+        date_published=timezone.now(),
+        url="https://test.com",
+    )
+
+    def setUpBeforeMigration(self, apps):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv1 = Advisory.objects.create(
+            aliases=self.advisory_data1.aliases,
+            summary=self.advisory_data1.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data1.references],
+            url=self.advisory_data1.url,
+            created_by="vulnerabilities.importers.nvd.NVDImporter",
+            date_collected=timezone.now(),
+        )
+
+    def test_removal_of_duped_purls(self):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv = Advisory.objects.all()
+
+        assert adv.filter(created_by="vulnerabilities.importers.nvd.NVDImporter").count() == 0
+        assert adv.filter(created_by="nvd_importer").count() == 1

@@ -1,6 +1,36 @@
 Release notes
 =============
 
+Version (next)
+-------------------
+
+
+Version v34.0.2
+-------------------
+
+- Add management command to commit exported vulnerability data (#1600)
+- Fix API 500 error (#1603)
+
+
+Version v34.0.1
+-------------------
+
+- Add Pipeline to flag ghost packages (#1533)
+- Add logging configuration (#1533)
+- Drop support for python 3.8 (#1533)
+- Drop using docker-compose and use the built-in "docker compose" instead
+- Upgrade core dependencies including Django and Rest Framework
+- Fix typo in KEV improver (#1594)
+
+
+Version v34.0.0
+-------------------
+
+- Improve API performance.
+- Add severity range score in API.
+- Refactor GitlabDataSource to work with browser extension
+
+
 Version v34.0.0rc5
 -------------------
 

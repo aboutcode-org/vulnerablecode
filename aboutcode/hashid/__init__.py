@@ -72,7 +72,7 @@ def get_vcid_yml_file_path(vcid: str):
     return Path(VULNERABILITY_REPO_NAME) / vulnerability_yml_path(vcid)
 
 
-# This cuxstom 32 characters alphabet is designed to avoid visually easily confusable characters:
+# This custom 32 characters alphabet is designed to avoid visually easily confusable characters:
 # i and l
 # 0 and o
 _base32_alphabet = b"abcdefghjkmnpqrstuvwxyz123456789"
@@ -164,7 +164,7 @@ def get_package_vulnerabilities_yml_file_path(purl: Union[PackageURL, str]):
 
 # We use a 4-tier system for storing package metadata.
 # The tiers are as follows:
-# 1. Super Large Ecosystem (~5M packages): 2^10 = 1,028 git repositories
+# 1. Super Large Ecosystem (~5M packages): 2^10 = 1,024 git repositories
 # 2. Large Ecosystem (~500K packages): 2^7 = 128 git repositories
 # 3. Medium Ecosystem (~50K packages): 2^5 = 32 git repositories
 # 4. Small Ecosystem (~2K packages): 2^0 = 1 git repository
@@ -188,6 +188,7 @@ BIT_COUNT_BY_ECOSYSTEM = {
     "composer": 5,
     "deb": 5,
     "docker": 5,
+    "gem": 5,
     "generic": 5,
     "huggingface": 5,
     "mlflow": 5,
@@ -200,7 +201,6 @@ BIT_COUNT_BY_ECOSYSTEM = {
     "conda": 0,
     "cpan": 0,
     "cran": 0,
-    "gem": 0,
     "hackage": 0,
     "hex": 0,
     "luarocks": 0,

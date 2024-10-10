@@ -81,40 +81,55 @@ def to_advisory(advisory_data):
 
     Example:
         >>> advisory_data = {
-        ...     "name": "CVE-2023-1234",
-        ...     "publishedAt": "2023-08-20T12:34:56Z",
-        ...     "description": "A vulnerability in the system.",
-        ...     "affectedProducts": ["product1"],
+        ...     "name": "RLSA-2021:4364",
+        ...     "publishedAt": "2021-11-09T09:11:20Z",
+        ...     "description": "The binutils packages provide a collection of binary utilities for the manipulation",
+        ...     "affectedProducts": ["Rocky Linux 8"],
         ...     "rpms": {
-        ...         "product1": {
+        ...         "Rocky Linux 8": {
         ...             "nvras": [
-        ...                 "package-1.0-1.el8.x86_64.rpm",
-        ...                 "package-2.0-1.el8.noarch.rpm"
+        ...                 "gfs2-utils-0:3.2.0-11.el8.aarch64.rpm",
+        ...                 "gfs2-utils-0:3.2.0-11.el8.src.rpm",
+        ...                 "gfs2-utils-0:3.2.0-11.el8.x86_64.rpm",
+        ...                 "gfs2-utils-debuginfo-0:3.2.0-11.el8.aarch64.rpm",
+        ...                 "gfs2-utils-debuginfo-0:3.2.0-11.el8.x86_64.rpm",
+        ...                 "gfs2-utils-debugsource-0:3.2.0-11.el8.aarch64.rpm",
+        ...                 "gfs2-utils-debugsource-0:3.2.0-11.el8.x86_64.rpm"
         ...             ]
         ...         }
         ...     },
         ...     "fixes": [
-        ...         {"sourceLink": "http://example.com/fix", "ticket": "12345"}
+        ...         {
+        ...             "ticket": "1942434",
+        ...             "sourceBy": "Red Hat",
+        ...             "sourceLink": "https://bugzilla.redhat.com/show_bug.cgi?id=1942434",
+        ...             "description": ""
+        ...         }
         ...     ],
         ...     "cves": [
         ...         {
-        ...             "name": "CVE-2023-1234",
-        ...             "cvss3BaseScore": "7.5",
-        ...             "cvss3ScoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
-        ...             "sourceLink": "http://example.com/cve"
+        ...             "name": "CVE-2021-3487",
+        ...             "sourceBy": "MITRE",
+        ...             "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-3487",
+        ...             "cvss3ScoringVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+        ...             "cvss3BaseScore": "6.5",
+        ...             "cwe": "CWE-20->CWE-400"
         ...         }
         ...     ]
         ... }
         >>> advisory = to_advisory(advisory_data)
         >>> advisory.aliases
-        'CVE-2023-1234'
+        'RLSA-2021:4364'
         >>> advisory.date_published.year
-        2023
+        2021
         >>> len(advisory.affected_packages)
-        2
+        7
         >>> len(advisory.references)
         2
+        >>> advisory.weaknesses
+        [400, 20]
     """
+
     aliases = advisory_data.get("name") or ""
     date_published = dateparser.parse(advisory_data.get("publishedAt", ""))
 
@@ -162,20 +177,15 @@ def to_advisory(advisory_data):
             continue
 
         if "CVE" in name.upper():
-            severity_vector_pattern = r"CVSS:3\.1/([A-Z:/]+)"
             severities = VulnerabilitySeverity(
                 system=severity_systems.CVSSV31,
                 value=ref.get("cvss3BaseScore", ""),
-                scoring_elements=re.findall(
-                    severity_vector_pattern, ref.get("cvss3ScoringVector", "")
-                ),
+                scoring_elements=ref.get("cvss3ScoringVector", "")
+                if ref.get("cvss3ScoringVector", "") != "UNKNOWN"
+                else "",
             )
             references.append(
-                Reference(
-                    severities=[severities],
-                    url=ref.get("sourceLink", ""),
-                    reference_id=name,
-                )
+                Reference(severities=[severities], url=ref.get("sourceLink", ""), reference_id=name)
             )
 
     return AdvisoryData(
@@ -223,11 +233,11 @@ def get_cwes_from_rockylinux_advisory(advisory_data) -> [int]:
         ...         "sourceLink": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-43548",
         ...         "cvss3ScoringVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
         ...         "cvss3BaseScore": "7.5",
-        ...         "cwe": "CWE-350"
+        ...         "cwe": "CWE-20 -> CWE-400"
         ...     }
         ... ]}
         >>> get_cwes_from_rockylinux_advisory(advisory_data)
-        [1321, 400, 350]
+        [400, 1321, 20]
         >>> get_cwes_from_rockylinux_advisory({"cves": [{"name": "CVE-1234-1234","cwe": "None"}]})
         []
     """
@@ -247,4 +257,5 @@ def get_cwes_from_rockylinux_advisory(advisory_data) -> [int]:
                 weaknesses.append(cwe_id)
             except ValueError:
                 logger.error("Invalid CWE id")
-    return weaknesses
+    unique_set = set(weaknesses)
+    return list(unique_set)

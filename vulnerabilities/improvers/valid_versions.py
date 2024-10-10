@@ -482,7 +482,8 @@ class GithubOSVImprover(ValidVersionImprover):
 class RockyLinuxImprover(ValidVersionImprover):
     importer = RockyLinuxImporter
     ignorable_versions = []
-    
+
+
 class CurlImprover(ValidVersionImprover):
     importer = CurlImporter
     ignorable_versions = []

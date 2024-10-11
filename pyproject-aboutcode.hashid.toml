@@ -66,6 +66,7 @@ excludes = [
     "**/*.bak",
     "**/.ipynb_checkpoints",
     "aboutcode/hashid/python.LICENSE",
+    "aboutcode/hashid/tests/**/*",
 ]
 
 metadata_files = ["apache-2.0.LICENSE", "NOTICE",  "aboutcode/hashid/python.LICENSE"]

@@ -433,6 +433,7 @@ class GitHubBasicImprover(ValidVersionImprover):
             "3.0.0b3-",
             "3.0b6dev-r41684",
             "-class.-jw.util.version.Version-",
+            "vulnerabilities",
         ]
     )
 

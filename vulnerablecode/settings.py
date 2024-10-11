@@ -78,6 +78,7 @@ INSTALLED_APPS = (
     "rest_framework.authtoken",
     "widget_tweaks",
     "crispy_forms",
+    "crispy_bootstrap4",
     # for API doc
     "drf_spectacular",
     # required for Django collectstatic discovery
@@ -196,6 +197,7 @@ STATICFILES_DIRS = [
     str(PROJECT_DIR / "static"),
 ]
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 

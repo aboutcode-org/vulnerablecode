@@ -59,7 +59,7 @@ VulnerableCode Package Search
                             <td style="word-break: break-all;">
                                 <a
                                     href="{{ package.get_absolute_url }}?search={{ search }}"
-                                    target="_self">{{ package.purl }}</a>
+                                    target="_self">{{ package.package_url }}</a>
                             </td>
                             <td>{{ package.vulnerability_count }}</td>
                             <td>{{ package.patched_vulnerability_count }}</td>

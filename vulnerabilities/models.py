@@ -87,7 +87,7 @@ class VulnerabilityQuerySet(BaseQuerySet):
         """
         Return a queryset of Vulnerability that affect a package.
         """
-        return self.filter(packagerelatedvulnerability__fix=False)
+        return self.filter(affecting_packages__isnull=False)
 
     def with_cpes(self):
         """
@@ -186,12 +186,6 @@ class Vulnerability(models.Model):
     references = models.ManyToManyField(
         to="VulnerabilityReference", through="VulnerabilityRelatedReference"
     )
-
-    # packages = models.ManyToManyField(
-    #     to="Package",
-    #     through="PackageRelatedVulnerability",
-    #     related_name="all_vulnerabilities",
-    # )
 
     affecting_packages = models.ManyToManyField(
         to="Package",
@@ -452,7 +446,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         }
 
         if fix:
-            filter_dict["packagerelatedvulnerability__fix"] = True
+            filter_dict["fixing_vulnerabilities__isnull"] = False
 
         return Package.objects.filter(**filter_dict).distinct()
 
@@ -474,7 +468,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages affected by a vulnerability.
         """
-        return self.filter(packagerelatedvulnerability__fix=False)
+        return self.filter(affected_by_vulnerabilities__isnull=False)
 
     vulnerable = affected
 
@@ -482,7 +476,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages fixing a vulnerability .
         """
-        return self.filter(packagerelatedvulnerability__fix=True)
+        return self.filter(fixing_vulnerabilities__isnull=False)
 
     def with_vulnerability_counts(self):
         return self.annotate(
@@ -585,6 +579,12 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         return self.with_is_vulnerable().filter(is_vulnerable=vulnerable)
 
+    def vulnerable(self):
+        """
+        Return only packages that are vulnerable.
+        """
+        return self.filter(affected_by_vulnerabilities__isnull=False)
+
 
 def get_purl_query_lookups(purl):
     """
@@ -605,12 +605,6 @@ class Package(PackageURLMixin):
     # https://github.com/package-url/packageurl-python/pull/35
     # https://github.com/package-url/packageurl-python/pull/67
     # gets merged
-
-    # vulnerabilities = models.ManyToManyField(
-    #     to="Vulnerability",
-    #     through="PackageRelatedVulnerability",
-    #     related_name="all_packages",
-    # )
 
     affected_by_vulnerabilities = models.ManyToManyField(
         to="Vulnerability",
@@ -752,6 +746,10 @@ class Package(PackageURLMixin):
         return next_non_vulnerable.version if next_non_vulnerable else None
 
     @property
+    def vulnerabilities(self):
+        return self.affected_by_vulnerabilities.all() | self.fixing_vulnerabilities.all()
+
+    @property
     def latest_non_vulnerable_version(self):
         """
         Return the version string of the latest non-vulnerable package version.
@@ -877,107 +875,6 @@ class Package(PackageURLMixin):
                 queryset=fixed_by_packages,
                 to_attr="fixed_packages",
             )
-        )
-
-
-class PackageRelatedVulnerability(models.Model):
-    """
-    Track the relationship between a Package and Vulnerability.
-    """
-
-    # TODO: Fix related_name
-    package = models.ForeignKey(
-        Package,
-        on_delete=models.CASCADE,
-    )
-
-    vulnerability = models.ForeignKey(
-        Vulnerability,
-        on_delete=models.CASCADE,
-    )
-
-    created_by = models.CharField(
-        max_length=100,
-        blank=True,
-        help_text="Fully qualified name of the improver prefixed with the"
-        "module name responsible for creating this relation. Eg:"
-        "vulnerabilities.importers.nginx.NginxBasicImprover",
-    )
-
-    from vulnerabilities.improver import MAX_CONFIDENCE
-
-    confidence = models.PositiveIntegerField(
-        default=MAX_CONFIDENCE,
-        validators=[MinValueValidator(0), MaxValueValidator(MAX_CONFIDENCE)],
-        help_text="Confidence score for this relation",
-    )
-
-    fix = models.BooleanField(
-        default=False,
-        db_index=True,
-        help_text="Does this relation fix the specified vulnerability ?",
-    )
-
-    class Meta:
-        unique_together = ["package", "vulnerability"]
-        verbose_name_plural = "PackageRelatedVulnerabilities"
-        indexes = [models.Index(fields=["fix"])]
-        ordering = ["package", "vulnerability"]
-
-    def __str__(self):
-        return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
-
-    def update_or_create(self, advisory):
-        """
-        Update if supplied record has more confidence than existing record
-        Create if doesn't exist
-        """
-        try:
-            existing = PackageRelatedVulnerability.objects.get(
-                vulnerability=self.vulnerability, package=self.package
-            )
-            if self.confidence > existing.confidence:
-                existing.created_by = self.created_by
-                existing.confidence = self.confidence
-                existing.fix = self.fix
-                existing.save()
-                # TODO: later we want these to be part of a log field in the DB
-                logger.info(
-                    f"Confidence improved for {self.package} R {self.vulnerability}, "
-                    f"new confidence: {self.confidence}"
-                )
-            self.add_package_vulnerability_changelog(advisory=advisory)
-
-        except self.DoesNotExist:
-            PackageRelatedVulnerability.objects.create(
-                vulnerability=self.vulnerability,
-                created_by=self.created_by,
-                package=self.package,
-                confidence=self.confidence,
-                fix=self.fix,
-            )
-
-            logger.info(
-                f"New relationship {self.package} R {self.vulnerability}, "
-                f"fix: {self.fix}, confidence: {self.confidence}"
-            )
-
-            self.add_package_vulnerability_changelog(advisory=advisory)
-
-    @transaction.atomic
-    def add_package_vulnerability_changelog(self, advisory):
-        from vulnerabilities.utils import get_importer_name
-
-        importer_name = get_importer_name(advisory)
-        if self.fix:
-            change_logger = PackageChangeLog.log_fixing
-        else:
-            change_logger = PackageChangeLog.log_affected_by
-        change_logger(
-            package=self.package,
-            importer=importer_name,
-            source_url=advisory.url or None,
-            related_vulnerability=str(self.vulnerability),
         )
 
 

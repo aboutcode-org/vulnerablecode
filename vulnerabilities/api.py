@@ -619,10 +619,6 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
             super()
             .get_queryset()
             .prefetch_related(
-                # Prefetch(
-                #     "packages",
-                #     queryset=self.get_packages_qs(),
-                # ),
                 "weaknesses",
                 Prefetch(
                     "fixed_by_packages",

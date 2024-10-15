@@ -21,7 +21,9 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.improver import Inference
 from vulnerabilities.improvers.default import DefaultImporter
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
+from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityChangeLog

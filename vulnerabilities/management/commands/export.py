@@ -116,7 +116,7 @@ class Command(BaseCommand):
                     }
                     package_vulnerabilities.append(package_data)
 
-                    for vuln in pkg_version.vulnerabilities.all():
+                    for vuln in pkg_version.vulnerabilities:
                         vcid = vuln.vulnerability_id
                         # do not write twice the same file
                         if vcid in seen_vcid:
@@ -158,10 +158,14 @@ def packages_by_type_ns_name():
     qs = (
         Package.objects.order_by("type", "namespace", "name", "version")
         .prefetch_related(
-            "vulnerabilities",
-            "vulnerabilities__references",
-            "vulnerabilities__weaknesses",
-            "vulnerabilities__references__vulnerabilityseverity_set",
+            "affected_by_vulnerabilities",
+            "affected_by_vulnerabilities__references",
+            "affected_by_vulnerabilities__weaknesses",
+            "affected_by_vulnerabilities__references__vulnerabilityseverity_set",
+            "fixing_vulnerabilities",
+            "fixing_vulnerabilities__references",
+            "fixing_vulnerabilities__weaknesses",
+            "fixing_vulnerabilities__references__vulnerabilityseverity_set",
         )
         .paginated()
     )

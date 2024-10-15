@@ -12,11 +12,14 @@ from pathlib import Path
 from typing import Iterable
 from typing import List
 
+from cwe2.database import Database
+
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
@@ -77,10 +80,13 @@ def parse_advisory_data(raw_data, file, base_path) -> AdvisoryData:
     disc_credits = md_dict.get("## Discovery Credits")  # not used
     disc_timeline = md_dict.get("## Disclosure Timeline")  # not used
     references = md_dict.get("## References") or []
+    cwe_data = md_dict.get("## Common Weakness Enumeration") or []
+
     return AdvisoryData(
         aliases=get_aliases(database_id, cve_ref),
         summary=build_description(" ".join(summary), " ".join(description)),
         references=get_references(references),
+        weaknesses=get_weaknesses(cwe_data),
         url=advisory_url,
     )
 
@@ -140,3 +146,33 @@ def md_list_to_dict(md_list):
         else:
             md_dict[md_key].append(md_line)
     return md_dict
+
+
+def get_weaknesses(cwe_data):
+    """
+    Return the list of CWE IDs as integers from a list of weakness summaries, e.g., [379].
+
+        >>> get_weaknesses([
+        ... "CWE-379: Creation of Temporary File in Directory with Insecure Permissions",
+        ... "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
+        ... ])
+        [379, 362]
+    """
+    cwe_list = []
+    for line in cwe_data:
+        cwe_ids = re.findall(r"CWE-\d+", line)
+        cwe_list.extend(cwe_ids)
+
+    weaknesses = []
+    db = Database()
+
+    for cwe_string in cwe_list:
+
+        if cwe_string:
+            cwe_id = get_cwe_id(cwe_string)
+            try:
+                db.get(cwe_id)
+                weaknesses.append(cwe_id)
+            except Exception:
+                logger.error("Invalid CWE id")
+    return weaknesses

@@ -1137,7 +1137,9 @@ class Advisory(models.Model):
         return AdvisoryData(
             aliases=self.aliases,
             summary=self.summary,
-            affected_packages=[AffectedPackage.from_dict(pkg) for pkg in self.affected_packages],
+            affected_packages=[
+                AffectedPackage.from_dict(pkg) for pkg in self.affected_packages if pkg
+            ],
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
             weaknesses=self.weaknesses,

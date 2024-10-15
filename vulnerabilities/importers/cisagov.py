@@ -41,7 +41,7 @@ class VulnrichImporter(Importer):
         self.session.mount('https://', HTTPAdapter(max_retries=retries))
         
         # Add your GitHub personal access token here
-        self.github_token = "Your_PAT_here"
+        self.github_token = "Your_PAT_Here"
 
     def get_with_rate_limit(self, url, params=None):
         headers = {'Authorization': f'token {self.github_token}'} if self.github_token else {}

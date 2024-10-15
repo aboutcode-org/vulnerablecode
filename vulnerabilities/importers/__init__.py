@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from vulnerabilities.importers import almalinux
 from vulnerabilities.importers import alpine_linux
 from vulnerabilities.importers import apache_httpd
 from vulnerabilities.importers import apache_kafka
@@ -69,6 +70,7 @@ IMPORTERS_REGISTRY = [
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
+    almalinux.AlmaImporter,
     curl.CurlImporter,
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,

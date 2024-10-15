@@ -223,17 +223,29 @@ class AffectedPackage:
         """
         package = PackageURL(**affected_pkg["package"])
         affected_version_range = None
-        if (
-            affected_pkg["affected_version_range"]
-            and affected_pkg["affected_version_range"] != "None"
-        ):
-            affected_version_range = VersionRange.from_string(
-                affected_pkg["affected_version_range"]
-            )
+        affected_range = affected_pkg["affected_version_range"]
+
+        # TODO: "None" is a likely bug
+        if affected_range and affected_range != "None":
+            try:
+                affected_version_range = VersionRange.from_string(affected_range)
+            except:
+                tb = traceback.format_exc()
+                logger.error(
+                    f"Cannot create AffectedPackage with invalid or unknown range: {affected_pkg!r} with error: {tb!r}"
+                )
+                return
+
         fixed_version = affected_pkg["fixed_version"]
         if fixed_version and affected_version_range:
             # TODO: revisit after https://github.com/nexB/univers/issues/10
             fixed_version = affected_version_range.version_class(fixed_version)
+
+        if not fixed_version and not affected_version_range:
+            logger.error(
+                f"Cannot create AffectedPackage without fixed version or affected range: {affected_pkg!r}"
+            )
+            return
 
         return cls(
             package=package,
@@ -295,7 +307,9 @@ class AdvisoryData:
             "aliases": advisory_data["aliases"],
             "summary": advisory_data["summary"],
             "affected_packages": [
-                AffectedPackage.from_dict(pkg) for pkg in advisory_data["affected_packages"]
+                AffectedPackage.from_dict(pkg)
+                for pkg in advisory_data["affected_packages"]
+                if pkg is not None
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
             "date_published": datetime.datetime.fromisoformat(date_published)

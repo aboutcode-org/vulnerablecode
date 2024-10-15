@@ -35,6 +35,8 @@ from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
+from vulnerabilities.importers import cisagov
+
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
@@ -72,6 +74,7 @@ IMPORTERS_REGISTRY = [
     curl.CurlImporter,
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,
+    cisagov.VulnrichImporter,
     pypa_importer.PyPaImporterPipeline,
     npm_importer.NpmImporterPipeline,
     nginx_importer.NginxImporterPipeline,

@@ -1,9 +1,12 @@
 import logging
+import time
 from pathlib import Path
 from typing import Iterable
 from django.utils import timezone
 from django.db import transaction
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import json
 import dateparser
 import hashlib
@@ -31,14 +34,34 @@ class VulnrichImporter(Importer):
     repo_url = f"https://github.com/{REPO_OWNER}/{REPO_NAME}"
     importer_name = "Vulnrichment"
 
+    def __init__(self):
+        super().__init__()
+        self.session = requests.Session()
+        retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+        self.session.mount('https://', HTTPAdapter(max_retries=retries))
+        
+        # Add your GitHub personal access token here
+        self.github_token = "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"
+
+    def get_with_rate_limit(self, url, params=None):
+        headers = {'Authorization': f'token {self.github_token}'} if self.github_token else {}
+        while True:
+            response = self.session.get(url, params=params, headers=headers)
+            if response.status_code == 200:
+                return response
+            elif response.status_code == 403 or response.status_code == 429:
+                reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
+                sleep_time = max(reset_time - time.time(), 0) + 1
+                logger.warning(f"Rate limit exceeded. Sleeping for {sleep_time} seconds.")
+                time.sleep(sleep_time)
+            else:
+                response.raise_for_status()
+
     def advisory_data(self) -> Iterable[AdvisoryData]:
         tree_url = f"{GITHUB_API_BASE}/repos/{REPO_OWNER}/{REPO_NAME}/git/trees/{BRANCH}?recursive=1"
-        response = requests.get(tree_url)
-        if response.status_code != 200:
-            logger.error(f"Failed to fetch repository tree: {response.status_code}")
-            return
-
+        response = self.get_with_rate_limit(tree_url)
         tree = response.json()
+
         for item in tree['tree']:
             if item['type'] == 'blob' and item['path'].endswith('.json'):
                 file_url = item['url']
@@ -47,11 +70,12 @@ class VulnrichImporter(Importer):
                     yield self.parse_advisory(file_content, item['path'])
 
     def fetch_file_content(self, file_url: str) -> dict:
-        response = requests.get(file_url)
-        if response.status_code != 200:
-            logger.error(f"Failed to fetch file content: {response.status_code}")
+        try:
+            response = self.get_with_rate_limit(file_url)
+            return response.json()
+        except Exception as e:
+            logger.error(f"Failed to fetch file content: {str(e)}")
             return None
-        return response.json()
 
     def parse_advisory(self, raw_data: dict, file_path: str) -> AdvisoryData:
         cve_metadata = raw_data.get("cveMetadata", {})
@@ -109,6 +133,13 @@ class VulnrichImporter(Importer):
             url=advisory_url,
         )
 
+    def process_advisory(self, advisory_data: AdvisoryData):
+        vulnerability, advisory = process_advisory(advisory_data)
+        if vulnerability and advisory:
+            logger.info(f"Processed advisory for vulnerability: {vulnerability.vulnerability_id}")
+        else:
+            logger.info(f"Skipped existing and unchanged advisory: {advisory_data.aliases}")
+
 def get_advisory_hash(advisory: AdvisoryData) -> str:
     content = f"{advisory.summary}{advisory.aliases}{advisory.references}{advisory.weaknesses}"
     return hashlib.md5(content.encode()).hexdigest()
@@ -134,10 +165,15 @@ def process_advisory(advisory: AdvisoryData):
             break
     
     if not vulnerability:
-        vulnerability = Vulnerability.objects.create(
-            vulnerability_id=advisory.aliases[0] if advisory.aliases else None,
-            summary=advisory.summary
+        vulnerability_id = advisory.aliases[0] if advisory.aliases else f"VULNRICH-{advisory_hash[:8]}"
+        vulnerability, created = Vulnerability.objects.get_or_create(
+            vulnerability_id=vulnerability_id,
+            defaults={'summary': advisory.summary}
         )
+        if not created:
+            # If the vulnerability already exists, update its summary
+            vulnerability.summary = advisory.summary
+            vulnerability.save()
 
     # Update aliases
     for alias in advisory.aliases:
@@ -191,12 +227,3 @@ def process_advisory(advisory: AdvisoryData):
     )
 
     return vulnerability, advisory_obj
-
-# Usage
-importer = VulnrichImporter()
-for advisory_data in importer.advisory_data():
-    vulnerability, advisory = process_advisory(advisory_data)
-    if vulnerability and advisory:
-        print(f"Processed advisory for vulnerability: {vulnerability.vulnerability_id}")
-    else:
-        print(f"Skipped existing and unchanged advisory: {advisory_data.aliases}")

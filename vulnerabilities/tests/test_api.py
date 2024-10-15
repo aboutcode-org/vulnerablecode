@@ -570,7 +570,7 @@ class APITestCasePackage(TestCase):
         response = self.csrf_client.get(f"/api/packages/{self.pkg_2_13_1.id}", format="json").data
 
         expected = {
-            "url": "http://testserver/api/packages/3",
+            "url": "http://testserver/api/packages/{0}".format(self.pkg_2_13_1.id),
             "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
             "type": "maven",
             "namespace": "com.fasterxml.jackson.core",
@@ -583,7 +583,7 @@ class APITestCasePackage(TestCase):
             "latest_non_vulnerable_version": "2.14.0-rc1",
             "affected_by_vulnerabilities": [
                 {
-                    "url": "http://testserver/api/vulnerabilities/3",
+                    "url": "http://testserver/api/vulnerabilities/{0}".format(self.vul3.id),
                     "vulnerability_id": "VCID-vul3-vul3-vul3",
                     "summary": "This is VCID-vul3-vul3-vul3",
                     "references": [],
@@ -594,13 +594,15 @@ class APITestCasePackage(TestCase):
             ],
             "fixing_vulnerabilities": [
                 {
-                    "url": "http://testserver/api/vulnerabilities/1",
+                    "url": "http://testserver/api/vulnerabilities/{0}".format(self.vul1.id),
                     "vulnerability_id": "VCID-vul1-vul1-vul1",
                     "summary": "This is VCID-vul1-vul1-vul1",
                     "references": [],
                     "fixed_packages": [
                         {
-                            "url": "http://testserver/api/packages/2",
+                            "url": "http://testserver/api/packages/{0}".format(
+                                self.pkg_2_12_6_1.id
+                            ),
                             "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6.1",
                             "is_vulnerable": True,
                             "affected_by_vulnerabilities": [
@@ -609,7 +611,7 @@ class APITestCasePackage(TestCase):
                             "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6.1",
                         },
                         {
-                            "url": "http://testserver/api/packages/4",
+                            "url": "http://testserver/api/packages/{0}".format(self.pkg_2_13_2.id),
                             "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
                             "is_vulnerable": True,
                             "affected_by_vulnerabilities": [

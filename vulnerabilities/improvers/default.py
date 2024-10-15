@@ -105,6 +105,8 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
     ... )
     >>> assert expected == got
     """
+    if not affected_package:
+        return [], []
 
     try:
         vr = affected_package.affected_version_range

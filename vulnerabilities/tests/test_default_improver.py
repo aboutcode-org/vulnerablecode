@@ -17,6 +17,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.improver import Inference
 from vulnerabilities.improvers.default import DefaultImprover
+from vulnerabilities.improvers.default import get_exact_purls
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -136,3 +137,29 @@ def test_default_improver_with_nvd():
         for data in list(default_improver.get_inferences(AdvisoryData.from_dict(advisory_data)))
     ]
     util_tests.check_results_against_json(result, expected_file)
+
+
+def test_AffectedPackage_from_dict_should_not_crash_with_invalid_version_range():
+    package = PackageURL(
+        type="rpm",
+        namespace="rpms",
+        name="python",
+        qualifiers={},
+        subpath=None,
+    )
+
+    test_ranges = [
+        # foo is a non-existing range
+        "vers:foo/1.2.3",
+        # apache was not supported and returned from vulnerabilities.importers.apache_httpd.ApacheHTTPDImporter
+        "vers:apache/",
+        None,
+    ]
+    for tr in test_ranges:
+        pkg = {
+            "package": package.to_dict(),
+            "affected_version_range": tr,
+            "fixed_version": None,
+        }
+
+        assert AffectedPackage.from_dict(pkg) is None

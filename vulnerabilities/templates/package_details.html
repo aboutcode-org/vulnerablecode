@@ -112,6 +112,16 @@ VulnerableCode Package Details - {{ package.purl }}
                                         {% endif %}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="two-col-left">
+                                        Risk
+                                    </td>
+                                    <td class="two-col-right">
+                                        {% if risk %}
+                                        <a target="_self">{{ risk  }}</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

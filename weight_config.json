@@ -1,0 +1,5 @@
+{
+  "https://nvd\\.nist\\.gov/.*": 9,
+  "https:\\/\\/security-tracker\\.debian\\.org\\/.*": 9,
+  "^(?:http|ftp)s?://": 1
+}

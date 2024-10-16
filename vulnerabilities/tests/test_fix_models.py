@@ -11,8 +11,9 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from packageurl import PackageURL
 
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
+from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 
 User = get_user_model()
@@ -37,20 +38,18 @@ class TestPackageModel(TestCase):
             )
             vuln_package = Package.objects.create(**query_kwargs)
             # Attaching same package to 2 vulnerabilities
-            PackageRelatedVulnerability.objects.create(
+            AffectedByPackageRelatedVulnerability.objects.create(
                 package=vuln_package,
                 vulnerability=vuln1,
-                fix=False,
             )
-            PackageRelatedVulnerability.objects.create(
+            FixingPackageRelatedVulnerability.objects.create(
                 package=vuln_package,
                 vulnerability=vuln2,
-                fix=False,
             )
 
     def test_get_vulnerable_packages(self):
         vuln_packages = Package.objects.vulnerable()
-        assert vuln_packages.count() == 20
+        assert vuln_packages.count() == 10
         assert vuln_packages.distinct().count() == 10
         vuln_purls = [pkg.purl for pkg in vuln_packages.distinct().only(*PackageURL._fields)]
         assert vuln_purls == [

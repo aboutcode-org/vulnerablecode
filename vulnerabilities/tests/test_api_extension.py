@@ -16,7 +16,6 @@ from vulnerabilities.api_extension import V2VulnerabilityReferenceSerializer
 from vulnerabilities.api_extension import V2VulnerabilitySeveritySerializer
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
@@ -68,10 +67,9 @@ def vulnerability(db, vulnerability_reference, vulnerability_severity):
 
 @fixture
 def package_related_vulnerability(db, package, vulnerability):
-    PackageRelatedVulnerability.objects.create(
+    AffectedByPackageRelatedVulnerability.objects.create(
         package=package,
         vulnerability=vulnerability,
-        fix=False,
     )
     return package
 

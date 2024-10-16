@@ -29,6 +29,7 @@ from vulnerabilities.importers import project_kb_msr2019
 from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
+from vulnerabilities.importers import rockylinux
 from vulnerabilities.importers import ruby
 from vulnerabilities.importers import suse_scores
 from vulnerabilities.importers import ubuntu
@@ -69,6 +70,7 @@ IMPORTERS_REGISTRY = [
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
+    rockylinux.RockyLinuxImporter,
     curl.CurlImporter,
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,

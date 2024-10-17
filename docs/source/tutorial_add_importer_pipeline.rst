@@ -23,8 +23,8 @@ Pipeline
 We use `aboutcode.pipeline <https://github.com/aboutcode-org/scancode.io/tree/main/aboutcode/pipeline>`_
 for importing and improving data. At a very high level, a working pipeline contains classmethod
 ``steps`` that defines what steps to run and in what order. These steps are essentially just
-functions. Pipeline provides an easy and effective way to log events inside these steps (it 
-automatically handles rendering and dissemination for these logs.) 
+functions. Pipeline provides an easy and effective way to log events inside these steps (it
+automatically handles rendering and dissemination for these logs.)
 
 It also includes built-in progress indicator, which is essential since some of the jobs we run
 in the pipeline are long-running tasks that require proper progress indicators. Pipeline provides
@@ -32,11 +32,12 @@ way to seamlessly records the progress (it automatically takes care of rendering
 of these progress).
 
 Additionally, the pipeline offers a consistent structure, making it easy to run these pipeline steps
-with message queue like RQ and store all events related to a particular pipeline for 
+with message queue like RQ and store all events related to a particular pipeline for
 debugging/improvements.
 
 This tutorial contains all the things one should know to quickly implement an importer pipeline.
-Many internal details about importer pipeline can be found inside the `vulnerabilities/pipelines/__init__.py 
+Many internal details about importer pipeline can be found inside the
+`vulnerabilities/pipelines/__init__.py
 <https://github.com/aboutcode-org/vulnerablecode/blob/main/vulnerabilities/pipelines/__init__.py>`_ file.
 
 
@@ -95,13 +96,13 @@ Create file for the new importer pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All pipelines, including the importer pipeline, are located in the
-`vulnerabilities/pipelines/ 
+`vulnerabilities/pipelines/
 <https://github.com/aboutcode-org/vulnerablecode/tree/main/vulnerabilities/pipelines>`_ directory.
 
 The importer pipeline is implemented by subclassing **VulnerableCodeBaseImporterPipeline**
 and implementing the unimplemented methods. Since most tasks, such as inserting **AdvisoryData**
 into the database and creating package-vulnerability relationships, are the same regardless of
-the source of the advisory, these tasks are already taken care of in the base importer pipeline, 
+the source of the advisory, these tasks are already taken care of in the base importer pipeline,
 i.e., **VulnerableCodeBaseImporterPipeline**. You can simply focus on collecting the raw data and
 parsing it to create proper **AdvisoryData** objects.
 
@@ -134,7 +135,7 @@ and that's it.
     In some cases, it could be difficult to get the exact total number of advisories that would
     be collected without actually processing the advisories. In such case returning the best
     estimate will also work.
-    
+
     **advisories_count** is used to enable a proper progress indicator and is not used beyond that.
     If it is impossible (a super rare case) to compute the total advisory count beforehand,
     just return ``0``.
@@ -174,7 +175,7 @@ At this point, an example importer will look like this:
 
         def advisories_count(self) -> int:
             raise NotImplementedError
-        
+
         def collect_advisories(self) -> Iterable[AdvisoryData]:
             raise NotImplementedError
 
@@ -291,7 +292,7 @@ version management from `univers <https://github.com/aboutcode-org/univers>`_.
 .. important::
     Steps should include ``collect_and_store_advisories`` and ``import_new_advisories``
     in the order shown above. They are defined in **VulnerableCodeBaseImporterPipeline**.
-    
+
     It is the **collect_and_store_advisories** that is responsible for making calls to
     **collect_advisories** and **advisories_count**, and hence **collect_advisories** and
     **advisories_count** should never be directly added in steps.
@@ -307,7 +308,7 @@ Register the Importer Pipeline
 ------------------------------
 
 Finally, register your pipeline in the importer registry at
-`vulnerabilities/importers/__init__.py 
+`vulnerabilities/importers/__init__.py
 <https://github.com/aboutcode-org/vulnerablecode/blob/main/vulnerabilities/importers/__init__.py>`_
 
 .. code-block:: python

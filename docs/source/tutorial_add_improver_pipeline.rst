@@ -20,8 +20,8 @@ Pipeline
 We use `aboutcode.pipeline <https://github.com/aboutcode-org/scancode.io/tree/main/aboutcode/pipeline>`_
 for importing and improving data. At a very high level, a working pipeline contains classmethod
 ``steps`` that defines what steps to run and in what order. These steps are essentially just
-functions. Pipeline provides an easy and effective way to log events inside these steps (it 
-automatically handles rendering and dissemination for these logs.) 
+functions. Pipeline provides an easy and effective way to log events inside these steps (it
+automatically handles rendering and dissemination for these logs.)
 
 It also includes built-in progress indicator, which is essential since some of the jobs we run
 in the pipeline are long-running tasks that require proper progress indicators. Pipeline provides
@@ -29,7 +29,7 @@ way to seamlessly records the progress (it automatically takes care of rendering
 of these progress).
 
 Additionally, the pipeline offers a consistent structure, making it easy to run these pipeline steps
-with message queue like RQ and store all events related to a particular pipeline for 
+with message queue like RQ and store all events related to a particular pipeline for
 debugging/improvements.
 
 This tutorial contains all the things one should know to quickly implement an improver pipeline.
@@ -42,10 +42,10 @@ The new improver design lets you do all sorts of cool improvements and enhanceme
 Some of those are:
 
 * Let's suppose you have a certain number of packages and vulnerabilities in your database,
-  and you want to make sure that the packages being shown in VulnerableCode do indeed exist upstream.
-  Oftentimes, we come across advisory data that contains made-up package versions. We can write
-  (well, we already have) a pipeline that iterates through all the packages in VulnerableCode and
-  labels them as ghost packages if they don't exist upstream.  
+  and you want to make sure that the packages being shown in VulnerableCode do indeed exist
+  upstream. Oftentimes, we come across advisory data that contains made-up package versions.
+  We can write (well, we already have) a pipeline that iterates through all the packages in
+  VulnerableCode and labels them as ghost packages if they don't exist upstream.
 
 
 - A basic security advisory only contains CVE/aliases, summary, fixed/affected version, and
@@ -64,17 +64,20 @@ be absolutely sure of what you're doing and should have robust tests for these p
 Writing an Improver Pipeline
 -----------------------------
 
-**Scenario:** Suppose we come around a source that curates and stores the list of packages that don't
-exist upstream and makes it available through the REST API endpoint https://example.org/api/non-existent-packages,
-which gives a JSON response with a list of non-existent packages.
-Let's write a pipeline that will use this source to flag these non-existent package as ghost package.
+**Scenario:** Suppose we come around a source that curates and stores the list of packages that
+don't exist upstream and makes it available through the REST API endpoint
+https://example.org/api/non-existent-packages, which gives a JSON response with a list of
+non-existent packages.
+
+Let's write a pipeline that will use this source to flag these non-existent package as
+ghost package.
 
 
 Create file for the new improver pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All pipelines, including the improver pipeline, are located in the
-`vulnerabilities/pipelines/ 
+`vulnerabilities/pipelines/
 <https://github.com/aboutcode-org/vulnerablecode/tree/main/vulnerabilities/pipelines>`_ directory.
 
 The improver pipeline is implemented by subclassing `VulnerableCodePipeline`.
@@ -124,7 +127,7 @@ At this point improver will look like this:
 
         def fetch_response(self):
             raise NotImplementedError
-        
+
         def flag_ghost_packages(self):
             raise NotImplementedError
 
@@ -194,7 +197,7 @@ Register the Improver Pipeline
 ------------------------------
 
 Finally, register your improver in the improver registry at
-`vulnerabilities/improvers/__init__.py 
+`vulnerabilities/improvers/__init__.py
 <https://github.com/aboutcode-org/vulnerablecode/blob/main/vulnerabilities/improvers/__init__.py>`_
 
 
@@ -253,8 +256,8 @@ See :ref:`command_line_interface` for command line usage instructions.
 
 .. tip::
 
-   If you need to improve package vulnerability relations created using a certain pipeline, 
-   simply use the **pipeline_id** to filter out only those items. For example, if you want 
+   If you need to improve package vulnerability relations created using a certain pipeline,
+   simply use the **pipeline_id** to filter out only those items. For example, if you want
    to improve only those **AffectedByPackageRelatedVulnerability** entries that were created
    by npm_importer pipeline, you can do so with the following query:
 

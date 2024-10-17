@@ -54,8 +54,10 @@ For more established contributors, you can contribute to the codebase in several
 - Create a `new issue <https://github.com/aboutcode-org/vulnerablecode/issues>`_ to request a
   feature, submit a feedback, or ask a question.
 
-* Want to add support for a new importer pipeline? See the detailed tutorial here: :ref:`tutorial_add_importer_pipeline`.
-* Interested adding a new improver pipeline? Check out the tutorial here: :ref:`tutorial_add_improver_pipeline`.
+* Want to add support for a new importer pipeline? See the detailed tutorial here:
+  :ref:`tutorial_add_importer_pipeline`.
+* Interested adding a new improver pipeline? Check out the tutorial here:
+  :ref:`tutorial_add_improver_pipeline`.
 
 .. note::
     Make sure to check existing `issues <https://github.com/aboutcode-org/vulnerablecode/issues>`_,

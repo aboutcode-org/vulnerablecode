@@ -125,7 +125,7 @@ bump:
 
 docs:
 	rm -rf docs/_build/
-	@${ACTIVATE} sphinx-build docs/ docs/_build/
+	@${ACTIVATE} sphinx-build docs/source docs/_build/
 
 docker-images:
 	@echo "-> Build Docker services"

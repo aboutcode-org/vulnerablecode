@@ -18,7 +18,17 @@ VulnerableCode Vulnerability Search
                 <div>
                     {{ page_obj.paginator.count|intcomma }} results
                 </div>
-              {% if is_paginated %}
+                <div class="is-flex is-justify-content-center mb-2">
+                    <div class="select is-small">
+                        <select id="itemsPerPage" onchange="changeItemsPerPage(this.value)">
+                            <option value="20" {% if page_obj.paginator.per_page == 20 %}selected{% endif %}>20 per page</option>
+                            <option value="50" {% if page_obj.paginator.per_page == 50 %}selected{% endif %}>50 per page</option>
+                            <option value="100" {% if page_obj.paginator.per_page == 100 %}selected{% endif %}>100 per page</option>
+                            <option value="200" {% if page_obj.paginator.per_page == 200 %}selected{% endif %}>200 per page</option>
+                        </select>
+                    </div>
+                </div>
+                {% if is_paginated %}
                 {% include 'includes/pagination.html' with page_obj=page_obj %}
               {% endif %}
             </div>
@@ -77,5 +87,13 @@ VulnerableCode Vulnerability Search
       {% endif %}
     </section>
 {% endif %}
-
+<script>
+    function changeItemsPerPage(pageSize) {
+        var urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('page_size', pageSize);
+        window.location.search = urlParams.toString();
+    }
+    
+</script>
+    
 {% endblock %}

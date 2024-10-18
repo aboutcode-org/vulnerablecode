@@ -312,9 +312,9 @@ class AdvisoryData:
                 if pkg is not None
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
-            "date_published": datetime.datetime.fromisoformat(date_published)
-            if date_published
-            else None,
+            "date_published": (
+                datetime.datetime.fromisoformat(date_published) if date_published else None
+            ),
             "weaknesses": advisory_data["weaknesses"],
             "url": advisory_data.get("url") or None,
         }

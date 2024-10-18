@@ -15,6 +15,9 @@ from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import Paginator
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -68,19 +71,19 @@ class PackageSearch(ListView):
     ordering = ["type", "namespace", "name", "version"]
     paginate_by = PAGE_SIZE
 
+    def get_paginate_by(self, queryset):
+        page_size = self.request.GET.get("page_size", "")
+        return int(page_size) if page_size.isdigit() else self.paginate_by
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
         context["package_search_form"] = PackageSearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["page_size"] = self.get_paginate_by(self.get_queryset())
         return context
 
     def get_queryset(self, query=None):
-        """
-        Return a Package queryset for the ``query``.
-        Make a best effort approach to find matching packages either based
-        on exact purl, partial purl or just name and namespace.
-        """
         query = query or self.request.GET.get("search") or ""
         return (
             self.model.objects.search(query)
@@ -96,16 +99,33 @@ class VulnerabilitySearch(ListView):
     ordering = ["vulnerability_id"]
     paginate_by = PAGE_SIZE
 
+    def get_paginate_by(self, queryset):
+        page_size = self.request.GET.get("page_size", "")
+        return int(page_size) if page_size.isdigit() else self.paginate_by
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
         context["vulnerability_search_form"] = VulnerabilitySearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["page_size"] = self.get_paginate_by(self.get_queryset())
         return context
 
-    def get_queryset(self, query=None):
-        query = query or self.request.GET.get("search") or ""
+    def get_queryset(self):
+        query = self.request.GET.get("search") or ""
         return self.model.objects.search(query=query).with_package_counts()
+
+    def paginate_queryset(self, queryset, page_size):
+        paginator = Paginator(queryset, page_size)
+        page = self.request.GET.get("page", "1")
+        try:
+            page_number = int(page)
+            page_obj = paginator.page(page_number)
+        except (ValueError, PageNotAnInteger):
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+        return (paginator, page_obj, page_obj.object_list, page_obj.has_other_pages())
 
 
 class PackageDetails(DetailView):

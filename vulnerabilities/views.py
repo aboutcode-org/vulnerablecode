@@ -15,6 +15,9 @@ from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import Paginator
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -35,8 +38,6 @@ from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
-
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 PAGE_SIZE = 20
 

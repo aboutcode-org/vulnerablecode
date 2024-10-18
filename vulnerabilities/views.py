@@ -36,6 +36,8 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 PAGE_SIZE = 20
 
 
@@ -66,13 +68,17 @@ class PackageSearch(ListView):
     model = models.Package
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
-    paginate_by = PAGE_SIZE
+    paginate_by = 20  # Default value
+
+    def get_paginate_by(self, queryset):
+        return int(self.request.GET.get('page_size', self.paginate_by))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
         context["package_search_form"] = PackageSearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["page_size"] = self.get_paginate_by(self.get_queryset())
         return context
 
     def get_queryset(self, query=None):
@@ -89,23 +95,50 @@ class PackageSearch(ListView):
             .order_by("package_url")
         )
 
+    def paginate_queryset(self, queryset, page_size):
+        paginator = Paginator(queryset, page_size)
+        page = self.request.GET.get('page')
+        try:
+            page_obj = paginator.page(page)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+        return (paginator, page_obj, page_obj.object_list, page_obj.has_other_pages())
+
+
 
 class VulnerabilitySearch(ListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
     ordering = ["vulnerability_id"]
-    paginate_by = PAGE_SIZE
+    paginate_by = 20  # Default value
+
+    def get_paginate_by(self, queryset):
+        return int(self.request.GET.get('page_size', self.paginate_by))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
         context["vulnerability_search_form"] = VulnerabilitySearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["page_size"] = self.get_paginate_by(self.get_queryset())
         return context
 
-    def get_queryset(self, query=None):
-        query = query or self.request.GET.get("search") or ""
+    def get_queryset(self):
+        query = self.request.GET.get("search") or ""
         return self.model.objects.search(query=query).with_package_counts()
+
+    def paginate_queryset(self, queryset, page_size):
+        paginator = Paginator(queryset, page_size)
+        page = self.request.GET.get('page')
+        try:
+            page_obj = paginator.page(page)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+        return (paginator, page_obj, page_obj.object_list, page_obj.has_other_pages())
 
 
 class PackageDetails(DetailView):

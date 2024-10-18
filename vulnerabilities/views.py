@@ -69,9 +69,10 @@ class PackageSearch(ListView):
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
     paginate_by = PAGE_SIZE
-    
+
     def get_paginate_by(self, queryset):
-        return int(self.request.GET.get('page_size', self.paginate_by))
+        page_size = self.request.GET.get('page_size', '')
+        return int(page_size) if page_size.isdigit() else self.paginate_by
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -82,11 +83,6 @@ class PackageSearch(ListView):
         return context
 
     def get_queryset(self, query=None):
-        """
-        Return a Package queryset for the ``query``.
-        Make a best effort approach to find matching packages either based
-        on exact purl, partial purl or just name and namespace.
-        """
         query = query or self.request.GET.get("search") or ""
         return (
             self.model.objects.search(query)
@@ -94,18 +90,6 @@ class PackageSearch(ListView):
             .prefetch_related()
             .order_by("package_url")
         )
-
-    def paginate_queryset(self, queryset, page_size):
-        paginator = Paginator(queryset, page_size)
-        page = self.request.GET.get('page')
-        try:
-            page_obj = paginator.page(page)
-        except PageNotAnInteger:
-            page_obj = paginator.page(1)
-        except EmptyPage:
-            page_obj = paginator.page(paginator.num_pages)
-        return (paginator, page_obj, page_obj.object_list, page_obj.has_other_pages())
-
 
 
 class VulnerabilitySearch(ListView):
@@ -115,7 +99,8 @@ class VulnerabilitySearch(ListView):
     paginate_by = PAGE_SIZE
 
     def get_paginate_by(self, queryset):
-        return int(self.request.GET.get('page_size', self.paginate_by))
+        page_size = self.request.GET.get('page_size', '')
+        return int(page_size) if page_size.isdigit() else self.paginate_by
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -131,10 +116,11 @@ class VulnerabilitySearch(ListView):
 
     def paginate_queryset(self, queryset, page_size):
         paginator = Paginator(queryset, page_size)
-        page = self.request.GET.get('page')
+        page = self.request.GET.get('page', '1')
         try:
-            page_obj = paginator.page(page)
-        except PageNotAnInteger:
+            page_number = int(page)
+            page_obj = paginator.page(page_number)
+        except (ValueError, PageNotAnInteger):
             page_obj = paginator.page(1)
         except EmptyPage:
             page_obj = paginator.page(paginator.num_pages)

@@ -13,6 +13,7 @@
     {% endif %}
 
     <ul class="pagination-list">
+        {# Always show page 1 #}
         {% if page_obj.number > 1 %}
             <li><a href="?page=1&search={{ search|urlencode }}&page_size={{ page_size }}" class="pagination-link" aria-label="Goto page 1">1</a></li>
             {% if page_obj.number > 4 %}
@@ -20,6 +21,7 @@
             {% endif %}
         {% endif %}
 
+        {# Loop to display pages within -3 and +3 range around the current page #}
         {% for i in page_obj.paginator.page_range %}
             {% if i > 1 and i < page_obj.paginator.num_pages %}
                 {% if i >= page_obj.number|add:"-3" and i <= page_obj.number|add:"3" %}
@@ -32,6 +34,7 @@
             {% endif %}
         {% endfor %}
 
+        {# Always display the last page #}
         {% if page_obj.number < page_obj.paginator.num_pages %}
             {% if page_obj.number < page_obj.paginator.num_pages|add:"-3" %}
                 <li><span class="pagination-ellipsis">&hellip;</span></li>

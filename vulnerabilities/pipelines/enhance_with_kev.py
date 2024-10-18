@@ -81,9 +81,9 @@ def add_vulnerability_exploit(kev_vul, logger):
             "required_action": kev_vul["requiredAction"],
             "due_date": kev_vul["dueDate"],
             "notes": kev_vul["notes"],
-            "known_ransomware_campaign_use": True
-            if kev_vul["knownRansomwareCampaignUse"] == "Known"
-            else False,
+            "known_ransomware_campaign_use": (
+                True if kev_vul["knownRansomwareCampaignUse"] == "Known" else False
+            ),
         },
     )
     return 1

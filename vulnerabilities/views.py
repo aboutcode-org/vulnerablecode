@@ -71,7 +71,7 @@ class PackageSearch(ListView):
     paginate_by = PAGE_SIZE
 
     def get_paginate_by(self, queryset):
-        page_size = self.request.GET.get('page_size', '')
+        page_size = self.request.GET.get("page_size", "")
         return int(page_size) if page_size.isdigit() else self.paginate_by
 
     def get_context_data(self, **kwargs):
@@ -99,7 +99,7 @@ class VulnerabilitySearch(ListView):
     paginate_by = PAGE_SIZE
 
     def get_paginate_by(self, queryset):
-        page_size = self.request.GET.get('page_size', '')
+        page_size = self.request.GET.get("page_size", "")
         return int(page_size) if page_size.isdigit() else self.paginate_by
 
     def get_context_data(self, **kwargs):
@@ -116,7 +116,7 @@ class VulnerabilitySearch(ListView):
 
     def paginate_queryset(self, queryset, page_size):
         paginator = Paginator(queryset, page_size)
-        page = self.request.GET.get('page', '1')
+        page = self.request.GET.get("page", "1")
         try:
             page_number = int(page)
             page_obj = paginator.page(page_number)

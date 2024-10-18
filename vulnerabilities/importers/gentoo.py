@@ -76,9 +76,11 @@ class GentooImporter(Importer):
                 summary=summary,
                 references=vuln_references,
                 affected_packages=affected_packages,
-                url=f"https://security.gentoo.org/glsa/{id}"
-                if id
-                else "https://security.gentoo.org/glsa",
+                url=(
+                    f"https://security.gentoo.org/glsa/{id}"
+                    if id
+                    else "https://security.gentoo.org/glsa"
+                ),
             )
 
     @staticmethod

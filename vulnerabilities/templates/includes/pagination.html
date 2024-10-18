@@ -1,39 +1,43 @@
-<nav class="pagination is-centered is-small" aria-label="pagination">
-  {% if page_obj.has_previous %}
-  <a href="?page={{ page_obj.previous_page_number }}&search={{ search|urlencode }}" class="pagination-previous">Previous</a>
-  {% else %}
-    <a class="pagination-previous" disabled>Previous</a>
-  {% endif %}
-
-  {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}&search={{ search|urlencode }}" class="pagination-next">Next</a>
-  {% else %}
-    <a class="pagination-next" disabled>Next</a>
-  {% endif %}
-
-  <ul class="pagination-list">
-    {% if page_obj.number != 1%}
-      <li>
-        <a href="?page=1&search={{ search|urlencode }}" class="pagination-link" aria-label="Goto page 1">1</a>
-      </li>
-      {% if page_obj.number > 2 %}
-        <li>
-          <span class="pagination-ellipsis">&hellip;</span>
-        </li>
-      {% endif %}
+{% if is_paginated %}
+<nav class="pagination is-centered" role="navigation" aria-label="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&search={{ search|urlencode }}&page_size={{ page_size }}" class="pagination-previous">Previous</a>
+    {% else %}
+        <a class="pagination-previous" disabled>Previous</a>
     {% endif %}
-    <li>
-      <a class="pagination-link is-current" aria-label="Page {{ page_obj.number }}" aria-current="page">{{ page_obj.number }}</a>
-    </li>
-    {% if page_obj.number != page_obj.paginator.num_pages %}
-      {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
-        <li>
-          <span class="pagination-ellipsis">&hellip;</span>
-        </li>
-      {% endif %}
-      <li>
-        <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search|urlencode }}" class="pagination-link" aria-label="Goto page {{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
-      </li>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&search={{ search|urlencode }}&page_size={{ page_size }}" class="pagination-next">Next</a>
+    {% else %}
+        <a class="pagination-next" disabled>Next</a>
     {% endif %}
-  </ul>
+
+    <ul class="pagination-list">
+        {% if page_obj.number > 1 %}
+            <li><a href="?page=1&search={{ search|urlencode }}&page_size={{ page_size }}" class="pagination-link" aria-label="Goto page 1">1</a></li>
+            {% if page_obj.number > 4 %}
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+            {% endif %}
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+            {% if i > 1 and i < page_obj.paginator.num_pages %}
+                {% if i >= page_obj.number|add:"-3" and i <= page_obj.number|add:"3" %}
+                    {% if page_obj.number == i %}
+                        <li><a class="pagination-link is-current" aria-label="Page {{ i }}" aria-current="page">{{ i }}</a></li>
+                    {% else %}
+                        <li><a href="?page={{ i }}&search={{ search|urlencode }}&page_size={{ page_size }}" class="pagination-link" aria-label="Goto page {{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.number < page_obj.paginator.num_pages %}
+            {% if page_obj.number < page_obj.paginator.num_pages|add:"-3" %}
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+            {% endif %}
+            <li><a href="?page={{ page_obj.paginator.num_pages }}&search={{ search|urlencode }}&page_size={{ page_size }}" class="pagination-link" aria-label="Goto page {{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+        {% endif %}
+    </ul>
 </nav>
+{% endif %}

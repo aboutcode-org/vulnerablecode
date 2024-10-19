@@ -591,16 +591,83 @@ def get_purl_query_lookups(purl):
     return purl_to_dict(plain_purl, with_empty=False)
 
 
+from django.db import models
+from django.urls import reverse
+from django.db.models import Prefetch
+from packageurl import PackageURL
+from vulnerabilities import utils
+from vulnerabilities.utils import normalize_purl
+from vulnerabilities.utils import purl_to_dict
+from packageurl.contrib.django.models import PackageURLMixin
+from packageurl.contrib.django.models import PackageURLQuerySet
+from vulnerabilities.utils import classproperty
+from packaging.version import parse, InvalidVersion
+import re
+
+class CustomVersion:
+    def __init__(self, version_string):
+        self.original = str(version_string) if version_string is not None else ''
+        self.parsed = self.parse_custom(self.original)
+
+    def parse_custom(self, version_string):
+        if not version_string:
+            return (float('inf'),)  # Represents a missing or invalid version, always sorts to the end
+        
+        # Handle date-like versions
+        date_match = re.match(r'(\d{4})-(\d{2})-(\d{2})', version_string)
+        if date_match:
+            return (int(date_match.group(1)), int(date_match.group(2)), int(date_match.group(3)), '', '')
+        
+        # Handle versions with underscores (e.g., 1.8.0_361)
+        underscore_match = re.match(r'(\d+)\.(\d+)\.(\d+)_(\d+)', version_string)
+        if underscore_match:
+            return (int(underscore_match.group(1)), int(underscore_match.group(2)), 
+                    int(underscore_match.group(3)), int(underscore_match.group(4)), '')
+        
+        # Handle versions with build numbers or additional qualifiers
+        build_match = re.match(r'(\d+)\.(\d+)\.(\d+)([.-].+)', version_string)
+        if build_match:
+            return (int(build_match.group(1)), int(build_match.group(2)), 
+                    int(build_match.group(3)), build_match.group(4), '')
+        
+        # Handle commit hashes
+        if re.match(r'^[a-f0-9]{40}$', version_string):
+            return (0, 0, 0, '', version_string)
+        
+        # Default to packaging.version.parse for standard versions
+        try:
+            parsed = parse(version_string)
+            return (parsed.major, parsed.minor, parsed.micro, parsed.pre, parsed.post)
+        except InvalidVersion:
+            return (float('inf'),)  # Represents an invalid version
+
+    def __lt__(self, other):
+        if not isinstance(other, CustomVersion):
+            return NotImplemented
+        if self.parsed is None and other.parsed is None:
+            return self.original < other.original
+        if self.parsed is None:
+            return True
+        if other.parsed is None:
+            return False
+        return self.parsed < other.parsed
+
+    def __eq__(self, other):
+        if not isinstance(other, CustomVersion):
+            return NotImplemented
+        if self.parsed is None and other.parsed is None:
+            return self.original == other.original
+        if self.parsed is None or other.parsed is None:
+            return False
+        return self.parsed == other.parsed
+
+def is_pre_release(version):
+    return bool(version.parsed and len(version.parsed) > 3 and version.parsed[3])
+
 class Package(PackageURLMixin):
     """
     A software package with related vulnerabilities.
     """
-
-    # Remove the `qualifers` and `set_package_url` overrides after
-    # https://github.com/package-url/packageurl-python/pull/35
-    # https://github.com/package-url/packageurl-python/pull/67
-    # gets merged
-
     vulnerabilities = models.ManyToManyField(
         to="Vulnerability", through="PackageRelatedVulnerability"
     )
@@ -619,6 +686,10 @@ class Package(PackageURLMixin):
         db_index=True,
     )
 
+    version_order = models.FloatField(null=True, blank=True, editable=False, help_text='Numeric representation of version for sorting purposes')
+    is_prerelease = models.BooleanField(default=False, help_text="Indicates if this version is a pre-release.")
+    is_vulnerable = models.BooleanField(default=False, help_text="Indicates if this version is vulnerable to known issues.")
+
     is_ghost = models.BooleanField(
         default=False,
         help_text="True if the package does not exist in the upstream package manager or its repository.",
@@ -627,9 +698,8 @@ class Package(PackageURLMixin):
     objects = PackageQuerySet.as_manager()
 
     def save(self, *args, **kwargs):
-        """
-        Save, normalizing PURL fields.
-        """
+        skip_version_ordering = kwargs.pop('skip_version_ordering', False)
+        
         purl = PackageURL(
             type=self.type,
             namespace=self.namespace,
@@ -639,8 +709,6 @@ class Package(PackageURLMixin):
             subpath=self.subpath,
         )
 
-        # We re-parse the purl to ensure name and namespace
-        # are set correctly
         normalized = normalize_purl(purl=purl)
 
         for name, value in purl_to_dict(normalized).items():
@@ -649,17 +717,57 @@ class Package(PackageURLMixin):
         self.package_url = str(normalized)
         plain_purl = utils.plain_purl(normalized)
         self.plain_package_url = str(plain_purl)
+
+        if self.version and not skip_version_ordering:
+            self.set_version_order()
+            
+        self.is_prerelease = any(tag in self.version.lower() for tag in ['alpha', 'beta', 'rc', 'dev'])
+        
+        if self.is_vulnerable is None:
+            self.is_vulnerable = False
+        
         super().save(*args, **kwargs)
 
-    @property
-    def purl(self):
-        return self.package_url
+    def set_version_order(self):
+        custom_version = CustomVersion(self.version)
+    
+        similar_packages = Package.objects.filter(
+        type=self.type,
+        namespace=self.namespace,
+        name=self.name
+    ).exclude(pk=self.pk).order_by('version_order')
+    
+        if not similar_packages.exists():
+            self.version_order = 500000000.0
+        else:
+            insert_position = 0
+        for pkg in similar_packages:
+            if CustomVersion(pkg.version) > custom_version:
+                break
+            insert_position += 1
+        
+        if insert_position == 0:
+            next_order = similar_packages.first().version_order
+            self.version_order = next_order / 2
+        elif insert_position == similar_packages.count():
+            prev_order = similar_packages.last().version_order
+            self.version_order = prev_order + 1000000
+        else:
+            prev_order = similar_packages[insert_position - 1].version_order
+            next_order = similar_packages[insert_position].version_order
+            self.version_order = (prev_order + next_order) / 2
+
+        self.version_order = max(0, min(self.version_order, 1000000000))
 
     class Meta:
         unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
         ordering = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
 
     def __str__(self):
+        return self.package_url
+
+    @property
+    def purl(self):
         return self.package_url
 
     @property
@@ -673,7 +781,6 @@ class Package(PackageURLMixin):
     vulnerable_to = affected_by
 
     @property
-    # TODO: consider renaming to "fixes" or "fixing" ? (TBD) and updating the docstring
     def fixing(self):
         """
         Return a queryset of vulnerabilities fixed by this package.
@@ -698,14 +805,13 @@ class Package(PackageURLMixin):
         """
         Return this Package details URL.
         """
-        return reverse("package_details", args=[self.purl])
+        return reverse('package_details', args=[self.purl])
 
     def get_details_url(self, request):
         """
         Return this Package details URL.
         """
         from rest_framework.reverse import reverse
-
         return reverse("package_details", kwargs={"purl": self.purl}, request=request)
 
     def sort_by_version(self, packages):
@@ -714,16 +820,11 @@ class Package(PackageURLMixin):
         """
         if not packages:
             return []
-        return sorted(packages, key=lambda x: self.version_class(x.version))
+        return sorted(packages, key=lambda x: CustomVersion(x.version))
 
-    @cached_property
-    def version_class(self):
-        range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
-        return range_class.version_class if range_class else Version
-
-    @cached_property
+    @property
     def current_version(self):
-        return self.version_class(self.version)
+        return CustomVersion(self.version)
 
     @property
     def next_non_vulnerable_version(self):
@@ -754,7 +855,7 @@ class Package(PackageURLMixin):
         later_non_vulnerable_versions = [
             non_vuln_ver
             for non_vuln_ver in sorted_versions
-            if self.version_class(non_vuln_ver.version) > self.current_version
+            if CustomVersion(non_vuln_ver.version) > self.current_version
         ]
 
         if later_non_vulnerable_versions:
@@ -806,7 +907,7 @@ class Package(PackageURLMixin):
             for fixed_pkg in vuln.fixed_packages:
                 if fixed_pkg not in fixed_by_packages:
                     continue
-                fixed_version = self.version_class(fixed_pkg.version)
+                fixed_version = CustomVersion(fixed_pkg.version)
                 if fixed_version > self.current_version:
                     later_fixed_packages.append(fixed_pkg)
 
@@ -869,7 +970,6 @@ class Package(PackageURLMixin):
                 to_attr="fixed_packages",
             )
         )
-
 
 class PackageRelatedVulnerability(models.Model):
     """

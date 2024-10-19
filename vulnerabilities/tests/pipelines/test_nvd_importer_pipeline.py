@@ -8,14 +8,12 @@
 #
 
 import json
-import os
+from pathlib import Path
 
-from vulnerabilities.importers import nvd
+from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/nvd/nvd_test.json")
-REJECTED_CVE = os.path.join(BASE_DIR, "test_data/nvd/rejected_nvd.json")
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "nvd"
 
 
 def load_test_data(file):
@@ -37,10 +35,11 @@ def sorted_advisory_data(advisory_data):
 
 
 def test_to_advisories_skips_hardware(regen=REGEN):
-    expected_file = os.path.join(BASE_DIR, "test_data/nvd/nvd-expected.json")
+    expected_file = TEST_DATA / "nvd-expected.json"
 
-    test_data = load_test_data(file=TEST_DATA)
-    result = [data.to_dict() for data in nvd.to_advisories(test_data)]
+    test_file = TEST_DATA / "nvd_test.json"
+    test_data = load_test_data(file=test_file)
+    result = [data.to_dict() for data in nvd_importer.to_advisories(test_data)]
     result = sorted_advisory_data(result)
 
     if regen:
@@ -56,10 +55,11 @@ def test_to_advisories_skips_hardware(regen=REGEN):
 
 
 def test_to_advisories_marks_rejected_cve(regen=REGEN):
-    expected_file = os.path.join(BASE_DIR, "test_data/nvd/nvd-rejected-expected.json")
+    expected_file = TEST_DATA / "nvd-rejected-expected.json"
 
-    test_data = load_test_data(file=REJECTED_CVE)
-    result = [data.to_dict() for data in nvd.to_advisories(test_data)]
+    test_file = TEST_DATA / "rejected_nvd.json"
+    test_data = load_test_data(file=test_file)
+    result = [data.to_dict() for data in nvd_importer.to_advisories(test_data)]
     result = sorted_advisory_data(result)
 
     if regen:
@@ -168,14 +168,16 @@ def test_CveItem_cpes():
         "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
     ]
 
-    found_cpes = nvd.CveItem(cve_item=get_test_cve_item()).cpes
+    found_cpes = nvd_importer.CveItem(cve_item=get_test_cve_item()).cpes
     assert found_cpes == expected_cpes
 
 
 def test_is_related_to_hardware():
-    assert nvd.is_related_to_hardware("cpe:2.3:h:csilvers:gperftools:0.2:*:*:*:*:*:*:*")
-    assert not nvd.is_related_to_hardware("cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*")
-    assert not nvd.is_related_to_hardware("cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*")
+    assert nvd_importer.is_related_to_hardware("cpe:2.3:h:csilvers:gperftools:0.2:*:*:*:*:*:*:*")
+    assert not nvd_importer.is_related_to_hardware(
+        "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*"
+    )
+    assert not nvd_importer.is_related_to_hardware("cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*")
 
 
 def test_CveItem_summary_with_single_summary():
@@ -186,7 +188,7 @@ def test_CveItem_summary_with_single_summary():
         "be allocated than expected."
     )
 
-    assert nvd.CveItem(cve_item=get_test_cve_item()).summary == expected_summary
+    assert nvd_importer.CveItem(cve_item=get_test_cve_item()).summary == expected_summary
 
 
 def test_CveItem_reference_urls():
@@ -195,4 +197,4 @@ def test_CveItem_reference_urls():
         "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
     ]
 
-    assert nvd.CveItem(cve_item=get_test_cve_item()).reference_urls == expected_urls
+    assert nvd_importer.CveItem(cve_item=get_test_cve_item()).reference_urls == expected_urls

@@ -12,7 +12,6 @@ import logging
 from datetime import datetime
 from typing import Iterable
 from typing import List
-from typing import Mapping
 from typing import Optional
 
 from django.db.models import Q
@@ -28,15 +27,12 @@ from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
+from vulnerabilities.importers.curl import CurlImporter
 from vulnerabilities.importers.debian import DebianImporter
 from vulnerabilities.importers.debian_oval import DebianOvalImporter
 from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
-from vulnerabilities.importers.github import GitHubAPIImporter
 from vulnerabilities.importers.github_osv import GithubOSVImporter
-from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
-from vulnerabilities.importers.nginx import NginxImporter
-from vulnerabilities.importers.npm import NpmImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
 from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
@@ -44,6 +40,11 @@ from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
+from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
+from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
+from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import clean_nginx_git_tag
 from vulnerabilities.utils import get_affected_packages_by_patched_package
@@ -62,6 +63,8 @@ class ValidVersionImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
+        if issubclass(self.importer, VulnerableCodeBaseImporterPipeline):
+            return Advisory.objects.filter(Q(created_by=self.importer.pipeline_id)).paginated()
         return Advisory.objects.filter(Q(created_by=self.importer.qualified_name)).paginated()
 
     def get_package_versions(
@@ -219,7 +222,7 @@ class NginxBasicImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=NginxImporter.qualified_name).paginated()
+        return Advisory.objects.filter(created_by=NginxImporterPipeline.pipeline_id).paginated()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         all_versions = list(self.fetch_nginx_version_from_git_tags())
@@ -363,12 +366,12 @@ class DebianBasicImprover(ValidVersionImprover):
 
 
 class GitLabBasicImprover(ValidVersionImprover):
-    importer = GitLabAPIImporter
+    importer = GitLabImporterPipeline
     ignorable_versions = []
 
 
 class GitHubBasicImprover(ValidVersionImprover):
-    importer = GitHubAPIImporter
+    importer = GitHubAPIImporterPipeline
     ignorable_versions = frozenset(
         [
             "0.1-bulbasaur",
@@ -435,7 +438,7 @@ class GitHubBasicImprover(ValidVersionImprover):
 
 
 class NpmImprover(ValidVersionImprover):
-    importer = NpmImporter
+    importer = NpmImporterPipeline
     ignorable_versions = []
 
 
@@ -471,4 +474,9 @@ class RubyImprover(ValidVersionImprover):
 
 class GithubOSVImprover(ValidVersionImprover):
     importer = GithubOSVImporter
+    ignorable_versions = []
+
+
+class CurlImprover(ValidVersionImprover):
+    importer = CurlImporter
     ignorable_versions = []

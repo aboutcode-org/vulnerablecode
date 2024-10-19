@@ -66,18 +66,18 @@ Getting started
 Run with Docker
 ^^^^^^^^^^^^^^^^
 
-First install docker and docker-compose, then run::
+First install docker, then run::
 
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make envfile
-    docker-compose build
-    docker-compose up -d
-    docker-compose run vulnerablecode ./manage.py import --list
+    docker compose build
+    docker compose up -d
+    docker compose run vulnerablecode ./manage.py import --list
 
 Then run an importer for nginx advisories (which is small)::
 
-    docker-compose exec vulnerablecode ./manage.py import vulnerabilities.importers.nginx.NginxImporter
-    docker-compose exec vulnerablecode ./manage.py improve --all
+    docker compose exec vulnerablecode ./manage.py import vulnerabilities.importers.nginx.NginxImporter
+    docker compose exec vulnerablecode ./manage.py improve --all
 
 At this point, the VulnerableCode app and API should be up and running with
 some data at http://localhost

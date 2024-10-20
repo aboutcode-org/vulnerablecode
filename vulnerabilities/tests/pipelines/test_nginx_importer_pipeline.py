@@ -195,7 +195,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
         )
         assert interesting_advisories == advisories
 
-    @mock.patch("fetchcode.package_versions.github_response")
+    @mock.patch("fetchcode.utils.github_response")
     def test_NginxBasicImprover_fetch_nginx_version_from_git_tags(self, mock_fetcher):
         reponse_files = [
             "github-nginx-nginx-0.json",

@@ -238,8 +238,6 @@ class V2PackageFilterSet(filters.FilterSet):
             "qualifiers",
             "subpath",
             "purl",
-            # this hurts
-            "packagerelatedvulnerability__fix",
         ]
 
     def filter_purl(self, queryset, name, value):

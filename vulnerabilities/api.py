@@ -359,6 +359,7 @@ class PackageSerializer(BaseResourceSerializer):
             "latest_non_vulnerable_version",
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
+            "risk",
         ]
 
 

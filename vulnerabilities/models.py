@@ -636,6 +636,14 @@ class Package(PackageURLMixin):
         help_text="True if the package does not exist in the upstream package manager or its repository.",
     )
 
+    risk = models.DecimalField(
+        null=True,
+        max_digits=4,
+        decimal_places=2,
+        help_text="Enter a risk score between 0.00 and 10.00, where higher values "
+        "indicate greater vulnerability risk for the package.",
+    )
+
     objects = PackageQuerySet.as_manager()
 
     def save(self, *args, **kwargs):

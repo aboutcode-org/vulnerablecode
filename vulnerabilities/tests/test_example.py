@@ -85,8 +85,8 @@ class TestExampleImporter(testcase.FileBasedTesting):
         ImproveRunner(improver_class=ExampleAliasImprover).run()
 
         assert models.Package.objects.count() == 3
-        assert models.PackageRelatedVulnerability.objects.filter(fix=True).count() == 1
-        assert models.PackageRelatedVulnerability.objects.filter(fix=False).count() == 2
+        assert models.FixingPackageRelatedVulnerability.objects.count() == 1
+        assert models.AffectedByPackageRelatedVulnerability.objects.count() == 2
         assert models.VulnerabilitySeverity.objects.count() == 1
         assert models.VulnerabilityReference.objects.count() == 1
 

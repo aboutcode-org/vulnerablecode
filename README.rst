@@ -38,7 +38,6 @@ we are trying to change this and evolve the status quo in a few other areas!
 
 Package URL themselves were designed first in ScanCode and VulnerableCode
 and are now a de-facto standard for vulnerability management and package references.
-
 See https://github.com/package-url/purl-spec
 
 The VulnerableCode project is a FOSS community resource to help improve the
@@ -47,26 +46,29 @@ security of the open source software ecosystem and its users at large.
 VulnerableCode consists of a database and the tools to collect, refine and keep
 the database current. 
 
-.. warning::
-    VulnerableCode is under active development and is not yet fully
-    usable.
+
+.. pull-quote::
+   **Warning**
+
+   VulnerableCode is under active development and is not yet fully
+   usable.
+
 
 Read more about VulnerableCode https://vulnerablecode.readthedocs.org/
-
-VulnerableCode is financially supported by NLnet, nexB, Google (through the
-GSoC) and the active contributions of several volunteers.
 
 VulnerableCode tech stack is Python, Django, PostgreSQL, nginx and Docker and
 several libraries.
 
 
 Getting started
----------------
+===============
 
 Run with Docker
-^^^^^^^^^^^^^^^^
+---------------
 
-First install docker, then run::
+First install docker, then run
+
+.. code:: bash
 
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
     make envfile
@@ -74,7 +76,9 @@ First install docker, then run::
     docker compose up -d
     docker compose run vulnerablecode ./manage.py import --list
 
-Then run an importer for nginx advisories (which is small)::
+Then run an importer for nginx advisories (which is small)
+
+.. code:: bash
 
     docker compose exec vulnerablecode ./manage.py import vulnerabilities.importers.nginx.NginxImporter
     docker compose exec vulnerablecode ./manage.py improve --all
@@ -84,22 +88,29 @@ some data at http://localhost
 
 
 Populate VulnerableCode database
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 VulnerableCode data collection works in two steps: importing data from multiple
 sources and then refining and improving how package and software vulnerabilities
 are related.
 
-To run all importers and improvers use this::
+To run all importers and improvers use this
+
+.. code:: bash
 
    ./manage.py import --all
+
+.. code:: bash
+
    ./manage.py improve --all
 
 
 Local development installation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 
-On a Debian system, use this::
+On a Debian system, use this
+
+.. code:: bash
 
     sudo apt-get install  python3-venv python3-dev postgresql libpq-dev build-essential
     git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
@@ -112,22 +123,9 @@ On a Debian system, use this::
 
 At this point, the VulnerableCode app and API is up at http://127.0.0.1:8001/
 
-Interface
-^^^^^^^^^^
-
-
-VulnerableCode comes with a minimal web UI:
-
-.. image:: vulnerablecode-ui.png
-
-And a JSON API and its minimal web documentation:
-
-.. image:: vulnerablecode-json-api.png
-.. image:: vulnerablecode-api-doc.png
-
 
 License
-^^^^^^^^^^
+========
 
 Copyright (c) nexB Inc. and others. All rights reserved.
 
@@ -149,7 +147,7 @@ See https://aboutcode.org for more information about nexB OSS projects.
 
 
 Acknowledgements, Funding, Support and Sponsoring
---------------------------------------------------------
+=================================================
 
 This project is funded, supported and sponsored by:
 
@@ -281,5 +279,3 @@ Communications Networks, Content and Technology under grant agreement No 1010695
     :target: https://nlnet.nl/discovery/
     :height: 40
     :alt: NGI Discovery logo
-
-

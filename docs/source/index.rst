@@ -31,6 +31,14 @@ In this documentation you will find information on:
 
 .. toctree::
     :maxdepth: 2
+    :caption: Tutorial
+
+    tutorial_add_importer_pipeline
+    tutorial_add_improver_pipeline
+
+
+.. toctree::
+    :maxdepth: 2
     :caption: Reference Documentation
 
     reference_importer_overview

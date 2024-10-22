@@ -123,7 +123,6 @@ class PackageDetails(DetailView):
         context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = package.fixed_package_details
-        context["risk"] = calculate_pkg_risk(package)
         context["history"] = list(package.history)
         return context
 

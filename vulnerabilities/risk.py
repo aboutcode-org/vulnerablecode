@@ -1,15 +1,16 @@
 import os
-import re
 
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Exploit
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.utils import load_json
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+WEIGHT_CONFIG_PATH = os.path.join(BASE_DIR, "../weight_config.json")
+DEFAULT_WEIGHT = 1
 
 
 def get_weighted_severity(severities):
@@ -18,8 +19,8 @@ def get_weighted_severity(severities):
     by its associated Weight/10.
     Example of Weighted Severity: max(7*(10/10), 8*(3/10), 6*(8/10)) = 7
     """
-    weight_config_path = os.path.join(BASE_DIR, "..", "weight_config.json")
-    weight_config = load_json(weight_config_path)
+
+    weight_config = load_json(WEIGHT_CONFIG_PATH)
 
     score_map = {
         "low": 3,
@@ -33,11 +34,12 @@ def get_weighted_severity(severities):
 
     score_list = []
     for severity in severities:
-        weights = [
-            value
-            for regex_key, value in weight_config.items()
-            if re.match(regex_key, severity.reference.url)
-        ]
+        weights = []
+        for key, value in weight_config.items():
+            if severity.reference.url.startswith(key):
+                weights.append(value)
+                continue
+            weights.append(DEFAULT_WEIGHT)
 
         if not weights:
             return 0
@@ -113,14 +115,13 @@ def calculate_pkg_risk(package: Package):
     """
 
     result = []
-    for pkg_related_vul in PackageRelatedVulnerability.objects.filter(
-        package=package, fix=False
+    for pkg_related_vul in AffectedByPackageRelatedVulnerability.objects.filter(
+        package=package
     ).prefetch_related("vulnerability"):
-        if pkg_related_vul:
-            risk = calculate_vulnerability_risk(pkg_related_vul.vulnerability)
-            if not risk:
-                continue
-            result.append(risk)
+        risk = calculate_vulnerability_risk(pkg_related_vul.vulnerability)
+        if not risk:
+            continue
+        result.append(risk)
 
     if not result:
         return

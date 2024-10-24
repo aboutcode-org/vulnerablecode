@@ -6,7 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-import logging
+
 from pathlib import Path
 from typing import Iterable
 

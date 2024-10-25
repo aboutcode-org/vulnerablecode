@@ -349,3 +349,9 @@ LOGGING = {
         },
     },
 }
+
+if DEBUG:
+    LOGGING["django"] = {
+        "handlers": ["console"],
+        "level": "ERROR",
+    }

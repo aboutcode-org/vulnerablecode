@@ -13,62 +13,70 @@ from typing import Dict
 from typing import Iterable
 from typing import List
 
-import dateparser
 import requests
 from cwe2.database import Database
+from dateutil import parser as dateparser
 from packageurl import PackageURL
 from univers.version_range import RpmVersionRange
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.rpm_utils import rpm_to_purl
 from vulnerabilities.utils import get_cwe_id
-from vulnerabilities.utils import get_item
 from vulnerabilities.utils import requests_with_5xx_retry
 
 logger = logging.getLogger(__name__)
-
-# FIXME: we should use a centralized retry
 requests_session = requests_with_5xx_retry(max_retries=5, backoff_factor=1)
 
 
-def fetch_cves() -> Iterable[List[Dict]]:
-    page_no = 0
-    cve_data_list = []
-    while True:
-        current_url = f"https://errata.rockylinux.org/api/v2/advisories?filters.product=&filters.fetchRelated=true&page={page_no}&limit=100"
-        try:
-            response = requests_session.get(current_url)
-            if response.status_code != requests.codes.ok:
-                logger.error(f"Failed to fetch RedHat CVE results from {current_url}")
-                break
-            cve_data = response.json().get("advisories") or []
-            cve_data_list.extend(cve_data)
-        except Exception as e:
-            logger.error(f"Failed to fetch rockylinux CVE results from {current_url} {e}")
-            break
-        if not cve_data:
-            break
-        page_no += 1
-    return cve_data_list
+class RockylinuxImporterPipeline(VulnerableCodeBaseImporterPipeline):
+    pipeline_id = "rockylinux_importer"
 
-
-class RockyLinuxImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://access.redhat.com/security/data"
-    importer_name = "Rocky Importer"
+    importer_name = "Rockylinux Importer"
 
-    def advisory_data(self) -> Iterable[AdvisoryData]:
+    @classmethod
+    def steps(cls):
+        return (cls.fetch, cls.collect_and_store_advisories, cls.import_new_advisories)
 
-        for rockylinux_cve in fetch_cves():
-            yield to_advisory(rockylinux_cve)
+    def fetch(self) -> Iterable[List[Dict]]:
+        page_no = 0
+        self.advisory_data = []
+
+        while True:
+            current_url = f"https://errata.rockylinux.org/api/v2/advisories?filters.product=&filters.fetchRelated=true&page={page_no}&limit=100"
+            try:
+                response = requests_session.get(current_url)
+                if response.status_code != requests.codes.ok:
+                    logger.error(f"Failed to fetch RedHat CVE results from {current_url}")
+                    break
+                cve_data = response.json().get("advisories") or []
+                self.advisory_data.extend(cve_data)
+            except Exception as e:
+                logger.error(f"Failed to fetch rockylinux CVE results from {current_url} {e}")
+                break
+            if not cve_data:
+                break
+            page_no += 1
+
+    def advisories_count(self):
+        return len(self.advisory_data)
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        for rl_advisory in self.advisory_data:
+            yield to_advisory(rl_advisory)
 
 
-def to_advisory(advisory_data):
+class VersionParsingError(Exception):
+    pass
+
+
+def to_advisory(advisory_data) -> AdvisoryData:
 
     """
     Convert Rockylinux advisory data into an AdvisoryData object.
@@ -169,24 +177,36 @@ def to_advisory(advisory_data):
         for fix in advisory_data["fixes"]
     ]
 
-    for ref in advisory_data.get("cves") or []:
+    for ref in advisory_data.get("cves", []):
 
         name = ref.get("name", "")
         if not isinstance(name, str):
             logger.error(f"Invalid advisory type {name}")
             continue
 
-        if "CVE" in name.upper():
-            severities = VulnerabilitySeverity(
-                system=severity_systems.CVSSV31,
-                value=ref.get("cvss3BaseScore", ""),
-                scoring_elements=ref.get("cvss3ScoringVector", "")
-                if ref.get("cvss3ScoringVector", "") != "UNKNOWN"
-                else "",
-            )
-            references.append(
-                Reference(severities=[severities], url=ref.get("sourceLink", ""), reference_id=name)
-            )
+        if ref.get("sourceLink", ""):
+            name_upper = name.upper()
+            cvss_vector = ref.get("cvss3ScoringVector", "")
+
+            if "CVE" in name_upper and cvss_vector != "UNKNOWN":
+                base_score = ref.get("cvss3BaseScore", "")
+
+                if base_score and cvss_vector:
+                    severities = [
+                        VulnerabilitySeverity(
+                            system=severity_systems.CVSSV31,
+                            value=base_score,
+                            scoring_elements=cvss_vector,
+                        )
+                    ]
+                else:
+                    severities = []
+
+                references.append(
+                    Reference(
+                        severities=severities, url=ref.get("sourceLink", ""), reference_id=name
+                    )
+                )
 
     return AdvisoryData(
         aliases=aliases,
@@ -197,10 +217,6 @@ def to_advisory(advisory_data):
         weaknesses=get_cwes_from_rockylinux_advisory(advisory_data),
         url=f"https://errata.rockylinux.org/{aliases}",
     )
-
-
-class VersionParsingError(Exception):
-    pass
 
 
 def get_cwes_from_rockylinux_advisory(advisory_data) -> [int]:

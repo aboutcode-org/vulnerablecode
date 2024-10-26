@@ -34,7 +34,6 @@ from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
-from vulnerabilities.importers.rockylinux import RockyLinuxImporter
 from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.improver import MAX_CONFIDENCE
@@ -46,6 +45,7 @@ from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
 from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
+from vulnerabilities.pipelines.rockylinux_importer import RockylinuxImporterPipeline
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import clean_nginx_git_tag
 from vulnerabilities.utils import get_affected_packages_by_patched_package
@@ -480,7 +480,7 @@ class GithubOSVImprover(ValidVersionImprover):
 
 
 class RockyLinuxImprover(ValidVersionImprover):
-    importer = RockyLinuxImporter
+    importer = RockylinuxImporterPipeline
     ignorable_versions = []
 
 

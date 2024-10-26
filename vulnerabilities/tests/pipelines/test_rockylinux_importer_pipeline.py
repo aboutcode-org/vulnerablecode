@@ -7,28 +7,27 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import json
 import os
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
 
 from packageurl import PackageURL
 
-from vulnerabilities.importers import rockylinux
-from vulnerabilities.importers.rockylinux import get_cwes_from_rockylinux_advisory
-from vulnerabilities.importers.rockylinux import to_advisory
+from vulnerabilities.pipelines.rockylinux_importer import get_cwes_from_rockylinux_advisory
+from vulnerabilities.pipelines.rockylinux_importer import to_advisory
 from vulnerabilities.rpm_utils import rpm_to_purl
 from vulnerabilities.utils import load_json
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data", "rockylinux")
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "rockylinux"
 
 
-class TestRockyLinuxImporter(TestCase):
+class TestRockylinuxImporterPipeline(TestCase):
     def test_to_advisory1(self):
         test1 = os.path.join(TEST_DATA, "rockylinux_test1.json")
         mock_response = load_json(test1)
         expected_result = load_json(os.path.join(TEST_DATA, "rockylinux_expected1.json"))
+        # print(f"1st is {to_advisory(mock_response).to_dict()}")
         assert to_advisory(mock_response).to_dict() == expected_result
 
     def test_to_advisory2(self):
@@ -36,11 +35,12 @@ class TestRockyLinuxImporter(TestCase):
         mock_response2 = load_json(test2)
         expected_result2 = load_json(os.path.join(TEST_DATA, "rockylinux_expected2.json"))
         assert to_advisory(mock_response2).to_dict() == expected_result2
+        # print(f"2nd is {to_advisory(mock_response2).to_dict()}")
 
     def test_rpm_to_purl(self):
-        assert rockylinux.rpm_to_purl("foobar", "rocky-linux") is None
-        assert rockylinux.rpm_to_purl("foo-bar-devel-0:sys76", "rocky-linux") is None
-        assert rockylinux.rpm_to_purl("cockpit-0:264.1-1.el8.aarch64", "rocky-linux") == PackageURL(
+        assert rpm_to_purl("foobar", "rocky-linux") is None
+        assert rpm_to_purl("foo-bar-devel-0:sys76", "rocky-linux") is None
+        assert rpm_to_purl("cockpit-0:264.1-1.el8.aarch64", "rocky-linux") == PackageURL(
             type="rpm",
             namespace="rocky-linux",
             name="cockpit",

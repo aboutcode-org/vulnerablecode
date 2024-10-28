@@ -35,17 +35,14 @@ from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
-<<<<<<< HEAD
-from vulnerabilities.importers import openjdk
-=======
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
->>>>>>> upstream/main
 from vulnerabilities.pipelines import pypa_importer
+from vulnerabilities.pipelines import openjdk_importer
 
 IMPORTERS_REGISTRY = [
     pysec.PyPIImporter,
@@ -77,15 +74,12 @@ IMPORTERS_REGISTRY = [
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,
     pypa_importer.PyPaImporterPipeline,
-<<<<<<< HEAD
-    openjdk.OpenJDKImporter,
-=======
     npm_importer.NpmImporterPipeline,
     nginx_importer.NginxImporterPipeline,
     gitlab_importer.GitLabImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     nvd_importer.NVDImporterPipeline,
->>>>>>> upstream/main
+    openjdk_importer.OpenJDKImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

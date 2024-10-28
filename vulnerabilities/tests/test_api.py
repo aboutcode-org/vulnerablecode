@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -704,6 +704,46 @@ class CPEApi(TestCase):
     def test_api_response(self):
         response = self.csrf_client.get("/api/cpes/?cpe=cpe:/a:nginx:9", format="json").data
         self.assertEqual(response["count"], 1)
+
+
+class TestCPEApiWithPackageVulnerabilityRelation(TestCase):
+    def setUp(self):
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.csrf_client = APIClient(enforce_csrf_checks=True)
+        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
+        self.vulnerability = Vulnerability.objects.create(summary="test")
+        self.affected_package, _ = Package.objects.get_or_create_from_purl(
+            purl="pkg:nginx/nginx@v3.4"
+        )
+        self.fixed_package, _ = Package.objects.get_or_create_from_purl(purl="pkg:nginx/nginx@v4.0")
+        AffectedByPackageRelatedVulnerability.objects.create(
+            vulnerability=self.vulnerability,
+            created_by="test",
+            package=self.affected_package,
+            confidence=100,
+        )
+        FixingPackageRelatedVulnerability.objects.create(
+            vulnerability=self.vulnerability,
+            created_by="test",
+            package=self.fixed_package,
+            confidence=100,
+        )
+        for i in range(0, 10):
+            ref, _ = VulnerabilityReference.objects.get_or_create(
+                reference_id=f"cpe:/a:nginx:{i}",
+                url=f"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:/a:nginx:{i}",
+            )
+            VulnerabilityRelatedReference.objects.create(
+                reference=ref, vulnerability=self.vulnerability
+            )
+
+    def test_cpe_api(self):
+        response = self.csrf_client.get("/api/cpes/", format="json")
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        response_data = response.json()
+        self.assertEqual(1, response_data["count"])
 
 
 class AliasApi(TestCase):

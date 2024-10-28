@@ -28,7 +28,7 @@ to distribute these files in multiple directories and avoid too many files in th
 which makes every filesystem performance suffer.
 
 In addition, when storing these files in Git repositories, we need to avoid creating any repository
-with too many files that would make using this repository impactical or exceed the limits of some
+with too many files that would make using this repository impractical or exceed the limits of some
 repository hosting services.
 
 Therefore we are storing vulnerability data using a directory tree using the first few characters
@@ -46,21 +46,21 @@ def build_vcid(prefix="VCID"):
     """
     Return a new Vulnerable Code ID (aka. VCID) which is a strongly unique vulnerability
     identifier string using the provided ``prefix``. A VCID is composed of a four letter prefix, and
-    three segments composed of four letters and dihits each separated by a dash.
+    three segments composed of four letters and digits each separated by a dash.
     For example::
     >>> import re
     >>> vcid = build_vcid()
     >>> assert re.match('VCID(-[a-hjkm-z1-9]{4}){3}', vcid), vcid
 
     We were mistakenly not using enough bits. The symptom was that the last
-    segment of the VCID was always strting with "aaa" This ensure we are now OK:
+    segment of the VCID was always string with "aaa" This ensure we are now OK:
     >>> vcids = [build_vcid() for _ in range(50)]
     >>> assert not any(vid.split("-")[-1].startswith("aaa") for vid in vcids)
     """
     uid = uuid4().bytes
-    # we keep  three segments of 4 base32-encodee bytes, 3*4=12
+    # we keep  three segments of 4 base32-encoded bytes, 3*4=12
     # which corresponds to 60 bits
-    # becausee each base32 byte can store 5 bits (2**5 = 32)
+    # because each base32 byte can store 5 bits (2**5 = 32)
     uid = base32_custom(uid)[:12].decode("utf-8").lower()
     return f"{prefix}-{uid[:4]}-{uid[4:8]}-{uid[8:12]}"
 
@@ -72,7 +72,7 @@ def get_vcid_yml_file_path(vcid: str):
     return Path(VULNERABILITY_REPO_NAME) / vulnerability_yml_path(vcid)
 
 
-# This cuxstom 32 characters alphabet is designed to avoid visually easily confusable characters:
+# This custom 32 characters alphabet is designed to avoid visually easily confusable characters:
 # i and l
 # 0 and o
 _base32_alphabet = b"abcdefghjkmnpqrstuvwxyz123456789"
@@ -117,7 +117,7 @@ def vulnerability_yml_path(vcid):
     Return the path to a vulnerability YAML file crafted from the ``vcid`` VCID vulnerability id.
 
     The approach is to distribute the files in many directories to avoid having too many files in
-    any directory and be able to find the path to a vulneravility file given its VCID distributed on
+    any directory and be able to find the path to a vulnerability file given its VCID distributed on
     the first two characters of the UUID section of a VCID.
 
     The UUID is using a base32 encoding, hence keeping two characters means 32 x 32 = 1024
@@ -140,9 +140,12 @@ def get_package_base_dir(purl: Union[PackageURL, str]):
     """
     Return the base path to a Package directory (ignoring version) for a purl
     """
+    if isinstance(purl, str):
+        purl = PackageURL.from_string(purl)
+
     path_elements = package_path_elements(purl)
     phash, core_path, _pversion, _extra_path = path_elements
-    return Path(f"{PACKAGE_REPOS_NAME_PREFIX}-{phash}") / core_path
+    return Path(f"{PACKAGE_REPOS_NAME_PREFIX}-{purl.type}-{phash}") / core_path
 
 
 def get_package_purls_yml_file_path(purl: Union[PackageURL, str]):
@@ -157,6 +160,52 @@ def get_package_vulnerabilities_yml_file_path(purl: Union[PackageURL, str]):
     Return the path to a Package vulnerabilities.yml YAML for a purl.
     """
     return get_package_base_dir(purl) / VULNERABILITIES_FILENAME
+
+
+# We use a 4-tier system for storing package metadata.
+# The tiers are as follows:
+# 1. Super Large Ecosystem (~5M packages): 2^10 = 1,024 git repositories
+# 2. Large Ecosystem (~500K packages): 2^7 = 128 git repositories
+# 3. Medium Ecosystem (~50K packages): 2^5 = 32 git repositories
+# 4. Small Ecosystem (~2K packages): 2^0 = 1 git repository
+# See https://github.com/aboutcode-org/federatedcode/issues/3#issuecomment-2388371726
+BIT_COUNT_BY_ECOSYSTEM = {
+    # Super Large Ecosystem
+    "github": 10,
+    "npm": 10,
+    # Large Ecosystem
+    "golang": 7,
+    "maven": 7,
+    "nuget": 7,
+    "perl": 7,
+    "php": 7,
+    "pypi": 7,
+    "ruby": 7,
+    # Medium Ecosystem
+    "alpm": 5,
+    "bitbucket": 5,
+    "cocoapods": 5,
+    "composer": 5,
+    "deb": 5,
+    "docker": 5,
+    "gem": 5,
+    "generic": 5,
+    "huggingface": 5,
+    "mlflow": 5,
+    "pub": 5,
+    "rpm": 5,
+    # Small Ecosystem
+    "bitnami": 0,
+    "cargo": 0,
+    "conan": 0,
+    "conda": 0,
+    "cpan": 0,
+    "cran": 0,
+    "hackage": 0,
+    "hex": 0,
+    "luarocks": 0,
+    "swift": 0,
+}
 
 
 def package_path_elements(purl: Union[PackageURL, str]):
@@ -196,7 +245,7 @@ def package_path_elements(purl: Union[PackageURL, str]):
           sbom.spdx.2.2.json : a SPDX SBOM
           .... other files
 
-          <extra_path> : one sub directory for each quote-encoded <qualifiers#supath> if any
+          <extra_path> : one sub directory for each quote-encoded <qualifiers#subpath> if any
             metadata.yml : ABOUT YAML file with package origin and license metadata for this version
             scancode-scan.yml : a scancode scan for this package version
             foo-scan.yml : a scan for this package version created with tool foo
@@ -208,15 +257,15 @@ def package_path_elements(purl: Union[PackageURL, str]):
     We keep the same prefix for different versions::
 
     >>> package_path_elements("pkg:pypi/license_expression@30.3.1")
-    ('1050', 'pypi/license-expression', '30.3.1', '')
+    ('50', 'pypi/license-expression', '30.3.1', '')
     >>> package_path_elements("pkg:pypi/license_expression@10.3.1")
-    ('1050', 'pypi/license-expression', '10.3.1', '')
+    ('50', 'pypi/license-expression', '10.3.1', '')
 
     We encode with quotes, avoid double encoding of already quoted parts to make subpaths easier
     for filesystems::
 
     >>> package_path_elements("pkg:pypi/license_expression@30.3.1?foo=bar&baz=bar#sub/path")
-    ('1050', 'pypi/license-expression', '30.3.1', 'baz%3Dbar%26foo%3Dbar%23sub%2Fpath')
+    ('50', 'pypi/license-expression', '30.3.1', 'baz%3Dbar%26foo%3Dbar%23sub%2Fpath')
 
     >>> purl = PackageURL(
     ...     type="pypi",
@@ -225,12 +274,13 @@ def package_path_elements(purl: Union[PackageURL, str]):
     ...     qualifiers=dict(foo="bar"),
     ...     subpath="a/b/c")
     >>> package_path_elements(purl)
-    ('1050', 'pypi/license-expression', 'b%23ar%2F%3F30.3.2%21', 'foo%3Dbar%23a%2Fb%2Fc')
+    ('50', 'pypi/license-expression', 'b%23ar%2F%3F30.3.2%21', 'foo%3Dbar%23a%2Fb%2Fc')
     """
     if isinstance(purl, str):
         purl = PackageURL.from_string(purl)
 
-    purl_hash = get_purl_hash(purl)
+    bit_count = BIT_COUNT_BY_ECOSYSTEM.get(purl.type, 0)
+    purl_hash = get_purl_hash(purl=purl, _bit_count=bit_count)
 
     if ns := purl.namespace:
         ns_name = f"{ns}/{purl.name}"
@@ -287,17 +337,17 @@ def get_core_purl(purl: Union[PackageURL, str]):
     return PackageURL(**purld)
 
 
-def get_purl_hash(purl: Union[PackageURL, str], _bit_count: int = 13) -> str:
+def get_purl_hash(purl: Union[PackageURL, str], _bit_count: int = 0) -> str:
     """
     Return a short lower cased hash string from a ``purl`` string or object. The PURL is normalized
     and we drop its version, qualifiers and subpath.
 
-    This function takes a normalized PURL string and a ``_bit_count`` argument defaulting to 13 bits
-    which represents 2**13 = 8192 possible hash values. It returns a fixed length short hash string
+    This function takes a normalized PURL string and a ``_bit_count`` argument defaulting to 0 bits
+    which represents 2**0 = 1 possible hash value. It returns a fixed length short hash string
     that is left-padded with zeros.
 
     The hash length is derived from the bit_count and the number of bits-per-byte stored in an hex
-    encoding of this bits count. For 13 bits, this means up to 4 characters.
+    encoding of this bits count. For 10 bits, this means up to 3 characters.
 
     The function is carefully designed to be portable across tech stacks and easy to implement in
     many programming languages:
@@ -319,23 +369,23 @@ def get_purl_hash(purl: Union[PackageURL, str], _bit_count: int = 13) -> str:
     For example::
 
     The hash does not change with version or qualifiers::
-    >>> get_purl_hash("pkg:pypi/univers@30.12.0")
-    '1289'
-    >>> get_purl_hash("pkg:pypi/univers@10.12.0")
-    '1289'
-    >>> get_purl_hash("pkg:pypi/univers@30.12.0?foo=bar#sub/path")
-    '1289'
+    >>> get_purl_hash("pkg:pypi/univers@30.12.0", 7)
+    '09'
+    >>> get_purl_hash("pkg:pypi/univers@10.12.0", 7)
+    '09'
+    >>> get_purl_hash("pkg:pypi/univers@30.12.0?foo=bar#sub/path", 7)
+    '09'
 
     The hash is left padded with zero if it::
-    >>> get_purl_hash("pkg:pypi/expressionss")
-    '0057'
+    >>> get_purl_hash("pkg:pypi/expressionss", 7)
+    '57'
 
     We normalize the PURL. Here pypi normalization always uses dash for underscore ::
 
-    >>> get_purl_hash("pkg:pypi/license_expression")
-    '1050'
-    >>> get_purl_hash("pkg:pypi/license-expression")
-    '1050'
+    >>> get_purl_hash("pkg:pypi/license_expression", 7)
+    '50'
+    >>> get_purl_hash("pkg:pypi/license-expression", 7)
+    '50'
 
     Originally from:
     https://github.com/nexB/purldb/pull/235/files#diff-a1fd023bd42d73f56019d540f38be711255403547add15108540d70f9948dd40R154

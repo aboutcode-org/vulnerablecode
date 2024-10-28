@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -85,8 +85,8 @@ class TestExampleImporter(testcase.FileBasedTesting):
         ImproveRunner(improver_class=ExampleAliasImprover).run()
 
         assert models.Package.objects.count() == 3
-        assert models.PackageRelatedVulnerability.objects.filter(fix=True).count() == 1
-        assert models.PackageRelatedVulnerability.objects.filter(fix=False).count() == 2
+        assert models.FixingPackageRelatedVulnerability.objects.count() == 1
+        assert models.AffectedByPackageRelatedVulnerability.objects.count() == 2
         assert models.VulnerabilitySeverity.objects.count() == 1
         assert models.VulnerabilityReference.objects.count() == 1
 

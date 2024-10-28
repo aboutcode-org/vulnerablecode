@@ -38,7 +38,7 @@ IMPROVERS_REGISTRY = [
     enhance_with_kev.VulnerabilityKevPipeline,
     enhance_with_metasploit.MetasploitImproverPipeline,
     enhance_with_exploitdb.ExploitDBImproverPipeline,
-    risk_package.RiskPackagePipeline,
+    risk_package.ComputePackageRiskPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

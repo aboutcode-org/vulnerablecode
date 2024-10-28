@@ -640,7 +640,7 @@ class Package(PackageURLMixin):
         null=True,
         max_digits=4,
         decimal_places=2,
-        help_text="Enter a risk score between 0.00 and 10.00, where higher values "
+        help_text="Risk score between 0.00 and 10.00, where higher values "
         "indicate greater vulnerability risk for the package.",
     )
 

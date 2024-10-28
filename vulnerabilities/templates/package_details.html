@@ -114,7 +114,11 @@ VulnerableCode Package Details - {{ package.purl }}
                                 </tr>
                                 <tr>
                                     <td class="two-col-left">
-                                        Risk
+                                      <span
+                                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                            data-tooltip="Risk is expressed as a number ranging from 0 to 10. It is calculated based on weighted severity and exploitability values. The risk score is the maximum value of either the weighted severity multiplied by its exploitability or 10.">
+                                            Risk
+                                        </span>
                                     </td>
                                     <td class="two-col-right">
                                         {% if package.risk %}

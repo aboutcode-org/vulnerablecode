@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Exploit
@@ -8,9 +8,8 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.utils import load_json
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-WEIGHT_CONFIG_PATH = os.path.join(BASE_DIR, "../weight_config.json")
 DEFAULT_WEIGHT = 1
+WEIGHT_CONFIG_PATH = Path(__file__).parent.parent / "weight_config.json"
 WEIGHT_CONFIG = load_json(WEIGHT_CONFIG_PATH)
 
 
@@ -117,10 +116,8 @@ def calculate_pkg_risk(package: Package):
     for pkg_related_vul in AffectedByPackageRelatedVulnerability.objects.filter(
         package=package
     ).prefetch_related("vulnerability"):
-        risk = calculate_vulnerability_risk(pkg_related_vul.vulnerability)
-        if not risk:
-            continue
-        result.append(risk)
+        if risk := calculate_vulnerability_risk(pkg_related_vul.vulnerability):
+            result.append(risk)
 
     if not result:
         return

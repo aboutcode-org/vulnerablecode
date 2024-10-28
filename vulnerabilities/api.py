@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -643,17 +643,13 @@ class CPEFilterSet(filters.FilterSet):
         return self.queryset.filter(vulnerabilityreference__reference_id__startswith=cpe).distinct()
 
 
-class CPEViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)
-    """
+class CPEViewSet(VulnerabilityViewSet):
+    """Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)"""
 
     queryset = Vulnerability.objects.filter(
         vulnerabilityreference__reference_id__startswith="cpe"
     ).distinct()
-    serializer_class = VulnerabilitySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+
     filterset_class = CPEFilterSet
 
     @action(detail=False, methods=["post"])

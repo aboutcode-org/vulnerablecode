@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -406,7 +406,7 @@ class VulnerabilityReference(models.Model):
     @property
     def is_cpe(self):
         """
-        Return Trueis this is a CPE reference.
+        Return True if this is a CPE reference.
         """
         return self.reference_id.startswith("cpe")
 
@@ -557,7 +557,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
 
     def with_is_vulnerable(self):
         """
-        Annotate Package with ``with_is_vulnerable`` boolean attribute.
+        Annotate Package with ``is_vulnerable`` boolean attribute.
         """
         return self.annotate(
             is_vulnerable=Exists(

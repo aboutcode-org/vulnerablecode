@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -26,7 +26,6 @@ from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
 from vulnerabilities.importers import project_kb_msr2019
-from vulnerabilities.importers import pysec
 from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
 from vulnerabilities.importers import ruby
@@ -42,10 +41,13 @@ from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
+<<<<<<< HEAD
 from vulnerabilities.pipelines import openjdk_importer
+=======
+from vulnerabilities.pipelines import pysec_importer
+>>>>>>> upstream/main
 
 IMPORTERS_REGISTRY = [
-    pysec.PyPIImporter,
     alpine_linux.AlpineImporter,
     openssl.OpensslImporter,
     redhat.RedhatImporter,
@@ -79,7 +81,11 @@ IMPORTERS_REGISTRY = [
     gitlab_importer.GitLabImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     nvd_importer.NVDImporterPipeline,
+<<<<<<< HEAD
     openjdk_importer.OpenJDKImporterPipeline,
+=======
+    pysec_importer.PyPIImporterPipeline,
+>>>>>>> upstream/main
 ]
 
 IMPORTERS_REGISTRY = {

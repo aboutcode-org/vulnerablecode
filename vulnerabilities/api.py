@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -287,7 +287,7 @@ class PackageSerializer(BaseResourceSerializer):
                 type=package.type,
                 qualifiers=package.qualifiers,
                 subpath=package.subpath,
-                packagerelatedvulnerability__fix=True,
+                fixingpackagerelatedvulnerability__isnull=False,
             )
             .with_is_vulnerable()
             .distinct()
@@ -300,10 +300,13 @@ class PackageSerializer(BaseResourceSerializer):
         otherwise return vulnerabilities fixed by the `package`.
         """
         fixed_packages = self.get_fixed_packages(package=package)
-        qs = package.vulnerabilities.filter(packagerelatedvulnerability__fix=fix)
+        if fix:
+            qs = package.affected_by_vulnerabilities.all()
+        else:
+            qs = package.fixing_vulnerabilities.all()
         qs = qs.prefetch_related(
             Prefetch(
-                "packages",
+                "fixed_by_packages",
                 queryset=fixed_packages,
                 to_attr="filtered_fixed_packages",
             )
@@ -372,7 +375,6 @@ class PackageFilterSet(filters.FilterSet):
             "qualifiers",
             "subpath",
             "purl",
-            "packagerelatedvulnerability__fix",
         ]
 
     def filter_purl(self, queryset, name, value):
@@ -590,7 +592,11 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
         Filter the packages that fixes a vulnerability
         on fields like name, namespace and type.
         """
-        return self.get_packages_qs().filter(packagerelatedvulnerability__fix=True)
+        return (
+            self.get_packages_qs()
+            .filter(fixingpackagerelatedvulnerability__isnull=False)
+            .with_is_vulnerable()
+        )
 
     def get_packages_qs(self):
         """
@@ -613,13 +619,9 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
             super()
             .get_queryset()
             .prefetch_related(
-                Prefetch(
-                    "packages",
-                    queryset=self.get_packages_qs(),
-                ),
                 "weaknesses",
                 Prefetch(
-                    "packages",
+                    "fixed_by_packages",
                     queryset=self.get_fixed_packages_qs(),
                     to_attr="filtered_fixed_packages",
                 ),
@@ -640,17 +642,13 @@ class CPEFilterSet(filters.FilterSet):
         return self.queryset.filter(vulnerabilityreference__reference_id__startswith=cpe).distinct()
 
 
-class CPEViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)
-    """
+class CPEViewSet(VulnerabilityViewSet):
+    """Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)"""
 
     queryset = Vulnerability.objects.filter(
         vulnerabilityreference__reference_id__startswith="cpe"
     ).distinct()
-    serializer_class = VulnerabilitySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+
     filterset_class = CPEFilterSet
 
     @action(detail=False, methods=["post"])

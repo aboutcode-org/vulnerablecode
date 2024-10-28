@@ -15,9 +15,9 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
     @classmethod
     def steps(cls):
-        return (cls.add_risk_package,)
+        return (cls.add_package_risk_score,)
 
-    def add_risk_package(self):
+    def add_package_risk_score(self):
         affected_pkgs = Package.objects.filter(affected_by_vulnerabilities__isnull=False).distinct()
 
         self.log(f"Calculating risk for {affected_pkgs.count():,d} affected package records")

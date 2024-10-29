@@ -40,25 +40,14 @@ PAGE_SIZE = 20
 
 
 def purl_sort_key(purl: models.Package):
-    """
-    Return a sort key for the built-in sorted() function when sorting a list
-    of Package objects.  If the Package ``type`` is supported by univers, apply
-    the univers version class to the Package ``version``, and otherwise use the
-    ``version`` attribute as is.
-    """
-    purl_version_class = get_purl_version_class(purl)
-    purl_sort_version = purl.version
-    if purl_version_class:
-        purl_sort_version = purl_version_class(purl.version)
-    return (purl.type, purl.namespace, purl.name, purl_sort_version, purl.qualifiers, purl.subpath)
+    RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
+    purl_version_class = RANGE_CLASS_BY_SCHEMES[purl.type].version_class
+    return (purl.type, purl.namespace, purl.name, purl_version_class(purl.version), purl.qualifiers, purl.subpath)
 
 
 def get_purl_version_class(purl: models.Package):
     RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
-    purl_version_class = None
-    check_version_class = RANGE_CLASS_BY_SCHEMES.get(purl.type, None)
-    if check_version_class:
-        purl_version_class = check_version_class.version_class
+    purl_version_class = RANGE_CLASS_BY_SCHEMES[purl.type].version_class
     return purl_version_class
 
 
@@ -181,9 +170,6 @@ class VulnerabilityDetails(DetailView):
                 ):
                     logging.error(f"CVSSMalformedError for {s.scoring_elements}")
 
-            if s.value:
-                severity_values.add(s.value)
-
         sorted_affected_packages = sorted(self.object.affected_packages.all(), key=purl_sort_key)
         sorted_fixed_by_packages = sorted(self.object.fixed_by_packages.all(), key=purl_sort_key)
 
@@ -201,10 +187,7 @@ class VulnerabilityDetails(DetailView):
                     and (fixed_by_package.name == sorted_affected_package.name)
                     and (fixed_by_package.qualifiers == sorted_affected_package.qualifiers)
                     and (fixed_by_package.subpath == sorted_affected_package.subpath)
-                    and (
-                        fixed_by_version_class(fixed_by_package.version)
-                        > sorted_affected_version_class(sorted_affected_package.version)
-                    )
+                    and (fixed_by_version_class(fixed_by_package.version) > sorted_affected_version_class(sorted_affected_package.version))
                 ):
                     matched_fixed_by_packages.append(fixed_by_package.purl)
             affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages

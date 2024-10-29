@@ -121,8 +121,8 @@ VulnerableCode Package Details - {{ package.purl }}
                                         </span>
                                     </td>
                                     <td class="two-col-right">
-                                        {% if package.risk %}
-                                        <a target="_self">{{ package.risk }}</a>
+                                        {% if package.risk_score %}
+                                        <a target="_self">{{ package.risk_score }}</a>
                                         {% endif %}
                                     </td>
                                 </tr>

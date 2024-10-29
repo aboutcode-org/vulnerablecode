@@ -636,7 +636,7 @@ class Package(PackageURLMixin):
         help_text="True if the package does not exist in the upstream package manager or its repository.",
     )
 
-    risk = models.DecimalField(
+    risk_score = models.DecimalField(
         null=True,
         max_digits=4,
         decimal_places=2,

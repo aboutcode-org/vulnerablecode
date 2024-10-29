@@ -6,7 +6,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
-from vulnerabilities.risk import calculate_vulnerability_risk
+from vulnerabilities.risk import compute_vulnerability_risk
 from vulnerabilities.risk import get_exploitability_level
 from vulnerabilities.risk import get_weighted_severity
 from vulnerabilities.severity_systems import CVSSV3
@@ -160,5 +160,5 @@ def test_get_weighted_severity(vulnerability):
 
 
 @pytest.mark.django_db
-def test_calculate_vulnerability_risk(vulnerability):
-    assert calculate_vulnerability_risk(vulnerability) == 3.1050000000000004
+def test_compute_vulnerability_risk(vulnerability):
+    assert compute_vulnerability_risk(vulnerability) == 3.1050000000000004

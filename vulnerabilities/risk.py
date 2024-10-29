@@ -89,7 +89,7 @@ def get_exploitability_level(exploits, references, severities):
     return exploit_level
 
 
-def calculate_vulnerability_risk(vulnerability: Vulnerability):
+def compute_vulnerability_risk(vulnerability: Vulnerability):
     """
     Risk may be expressed as a number ranging from 0 to 10.
     Risk is calculated from weighted severity and exploitability values.
@@ -106,7 +106,7 @@ def calculate_vulnerability_risk(vulnerability: Vulnerability):
         return min(weighted_severity * exploitability, 10)
 
 
-def calculate_pkg_risk(package: Package):
+def compute_package_risk(package: Package):
     """
     Calculate the risk for a package by iterating over all vulnerabilities that affects this package
     and determining the associated risk.
@@ -116,7 +116,7 @@ def calculate_pkg_risk(package: Package):
     for pkg_related_vul in AffectedByPackageRelatedVulnerability.objects.filter(
         package=package
     ).prefetch_related("vulnerability"):
-        if risk := calculate_vulnerability_risk(pkg_related_vul.vulnerability):
+        if risk := compute_vulnerability_risk(pkg_related_vul.vulnerability):
             result.append(risk)
 
     if not result:

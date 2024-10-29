@@ -40,12 +40,9 @@ from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
-from vulnerabilities.pipelines import pypa_importer
-<<<<<<< HEAD
 from vulnerabilities.pipelines import openjdk_importer
-=======
+from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
->>>>>>> upstream/main
 
 IMPORTERS_REGISTRY = [
     alpine_linux.AlpineImporter,
@@ -81,11 +78,8 @@ IMPORTERS_REGISTRY = [
     gitlab_importer.GitLabImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     nvd_importer.NVDImporterPipeline,
-<<<<<<< HEAD
-    openjdk_importer.OpenJDKImporterPipeline,
-=======
     pysec_importer.PyPIImporterPipeline,
->>>>>>> upstream/main
+    openjdk_importer.OpenJDKImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

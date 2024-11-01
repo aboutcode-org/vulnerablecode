@@ -41,8 +41,8 @@ from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
-from vulnerabilities.pipelines import rockylinux_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines import rockylinux_importer
 
 IMPORTERS_REGISTRY = [
     alpine_linux.AlpineImporter,

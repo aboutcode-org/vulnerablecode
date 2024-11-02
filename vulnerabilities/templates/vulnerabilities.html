@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load humanize %}
 {% load widget_tweaks %}
 
@@ -18,9 +19,14 @@ VulnerableCode Vulnerability Search
                 <div>
                     {{ page_obj.paginator.count|intcomma }} results
                 </div>
-              {% if is_paginated %}
-                {% include 'includes/pagination.html' with page_obj=page_obj %}
-              {% endif %}
+                <div class="is-flex is-justify-content-center mb-2">
+                    <div class="select is-small">
+                        {{ pagination_form.page_size }}
+                    </div>
+                </div>
+                {% if is_paginated %}
+                    {% include 'includes/pagination.html' with page_obj=page_obj %}
+                {% endif %}
             </div>
         </section>
     </div>
@@ -40,9 +46,9 @@ VulnerableCode Vulnerability Search
                     {% for vulnerability in page_obj %}
                         <tr class="is-clipped-list">
                             <td style="word-break: break-all;">
-                                <a
-                                    href="{{ vulnerability.get_absolute_url }}?search={{ search }}"
-                                    target="_self">{{ vulnerability.vulnerability_id }}
+                                <a 
+                                href="{{ vulnerability.get_absolute_url }}?search={{ search }}"
+                                   target="_self">{{ vulnerability.vulnerability_id }}
                                 </a>
                             </td>
                             <td>
@@ -63,7 +69,7 @@ VulnerableCode Vulnerability Search
                     {% empty %}
                         <tr class="is-clipped-list">
                             <td colspan="3" style="word-break: break-all;">
-                            No vulnerability found.
+                                No vulnerability found.
                             </td>
                         </tr>
                     {% endfor %}
@@ -71,11 +77,10 @@ VulnerableCode Vulnerability Search
             </table>
         </div>
 
-
-      {% if is_paginated %}
-        {% include 'includes/pagination.html' with page_obj=page_obj %}
-      {% endif %}
+        {% if is_paginated %}
+            {% include 'includes/pagination.html' with page_obj=page_obj %}
+        {% endif %}
     </section>
 {% endif %}
-
+<script src="{% static 'js/pagination.js' %}"></script>
 {% endblock %}

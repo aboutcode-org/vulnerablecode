@@ -642,17 +642,13 @@ class CPEFilterSet(filters.FilterSet):
         return self.queryset.filter(vulnerabilityreference__reference_id__startswith=cpe).distinct()
 
 
-class CPEViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)
-    """
+class CPEViewSet(VulnerabilityViewSet):
+    """Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)"""
 
     queryset = Vulnerability.objects.filter(
         vulnerabilityreference__reference_id__startswith="cpe"
     ).distinct()
-    serializer_class = VulnerabilitySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+
     filterset_class = CPEFilterSet
 
     @action(detail=False, methods=["post"])

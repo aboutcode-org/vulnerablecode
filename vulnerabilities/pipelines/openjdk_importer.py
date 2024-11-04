@@ -10,6 +10,7 @@ import urllib.parse as urlparse
 from typing import Iterable
 import logging
 from traceback import format_exc as traceback_format_exc
+import datetime
 
 import requests
 from bs4 import BeautifulSoup
@@ -24,12 +25,14 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.utils import get_advisory_url
 
 
 class OpenJDKImporterPipeline(VulnerableCodeBaseImporterPipeline):
     """Collect advisories from OpenJDK."""
 
+    pipeline_id = "openjdk_importer"
     root_url = "https://openjdk.org/groups/vulnerability/advisories/"
     license_url = "https://openjdk.org/legal/"
     spdx_license_expression = "CC-BY-4.0"
@@ -41,6 +44,11 @@ class OpenJDKImporterPipeline(VulnerableCodeBaseImporterPipeline):
             cls.collect_and_store_advisories,
             cls.import_new_advisories,
         )
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        data_by_urls, publish_dates = self.advisory_data()
+        for url, data in data_by_urls.items():
+            yield from to_advisories(data, date_published=publish_dates[url])
 
     def advisories_count(self) -> int:
         advisory_count = 0
@@ -65,6 +73,7 @@ class OpenJDKImporterPipeline(VulnerableCodeBaseImporterPipeline):
 
         extracted_urls = []
         data_by_urls = {}
+        publish_dates = {}
 
         # scraping the advisory urls
         data = requests.get(self.root_url).text
@@ -74,13 +83,21 @@ class OpenJDKImporterPipeline(VulnerableCodeBaseImporterPipeline):
 
         for link in li_contents:
             link = link.split()[0]  # for getting only the year links
+
+            #getting publish dates in datetime format
+            date_string = link
+            date_format = "%Y/%m/%d" 
+            date_object = datetime.datetime.strptime(date_string, date_format)
+
             link = "-".join(link.split("/"))
             link = self.root_url + link
             extracted_urls.append(link)
             data_by_urls[link] = requests.get(link).text
+            publish_dates[link] = date_object
 
-        for url, data in data_by_urls.items():
-            yield from to_advisories(data, date_published=link)
+        return data_by_urls, publish_dates
+        # for url, data in data_by_urls.items():
+        #     yield from to_advisories(data, date_published=link)
 
 
 def to_advisories(data, date_published) -> Iterable[AdvisoryData]:
@@ -94,21 +111,21 @@ def to_advisories(data, date_published) -> Iterable[AdvisoryData]:
     # For OpenJDK vulnerability data
     try:
         OpenJDK_table = table_tags[0]
-        extract_table_advisories(advisories, OpenJDK_table)
+        extract_table_advisories(advisories, OpenJDK_table, date_published)
     except IndexError:
         pass
 
     # For OpenJFX vulnerability data
     try:
         OpenJFX_table = table_tags[1]
-        extract_table_advisories(advisories, OpenJFX_table)
+        extract_table_advisories(advisories, OpenJFX_table, date_published)
     except IndexError:
         pass
 
     return advisories
 
 
-def extract_table_advisories(advisories, OpenJDK_table):
+def extract_table_advisories(advisories, OpenJDK_table, date_published):
     OpenJDK_tr_tags = OpenJDK_table.select("tr")
     # print(OpenJDK_tr_tags)
     th_tags = OpenJDK_tr_tags[1].find_all("th")
@@ -127,6 +144,9 @@ def extract_table_advisories(advisories, OpenJDK_table):
         try:
             cve_id, component, severity_score, *affected_ver = td_tags
             # print(severity_score.text)
+            if cve_id.text.startswith('CVE') is False:
+                continue
+
             cve_url = cve_id.find("a").attrs["href"]
             cve_id = cve_id.text
             component = "".join(component.text.split("\n"))
@@ -139,7 +159,7 @@ def extract_table_advisories(advisories, OpenJDK_table):
                     affected_version_list.append(version)
                     severities.append(
                         VulnerabilitySeverity(
-                            system=scoring_system,
+                            system=CVSSV3,
                             value=cvss_score,
                             scoring_elements=cvss_vector,
                         )
@@ -169,6 +189,7 @@ def extract_table_advisories(advisories, OpenJDK_table):
                     summary=component,
                     references=references,
                     affected_packages=affected_packages,
+                    # date_published=date_published,
                     url=cve_url,
                 )
             )

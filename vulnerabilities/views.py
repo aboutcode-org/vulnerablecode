@@ -165,7 +165,7 @@ class VulnerabilityDetails(DetailView):
 
         severity_vectors = []
         severity_values = set()
-        for s in self.object.severities:
+        for s in self.object.severities.all():
             if s.scoring_system == EPSS.identifier:
                 continue
 
@@ -214,7 +214,7 @@ class VulnerabilityDetails(DetailView):
             {
                 "vulnerability": self.object,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
-                "severities": list(self.object.severities),
+                "severities": list(self.object.severities.all()),
                 "severity_score_range": get_severity_range(severity_values),
                 "severity_vectors": severity_vectors,
                 "references": self.object.references.all(),

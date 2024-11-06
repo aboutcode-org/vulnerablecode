@@ -156,6 +156,42 @@ class VulnerabilityQuerySet(BaseQuerySet):
         )
 
 
+class VulnerabilitySeverity(models.Model):
+    url = models.URLField(
+        max_length=1024,
+        null=True,
+        help_text="URL to the vulnerability severity",
+    )
+
+    scoring_system_choices = tuple(
+        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
+    )
+
+    scoring_system = models.CharField(
+        max_length=50,
+        choices=scoring_system_choices,
+        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
+            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
+        ),
+    )
+
+    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+
+    scoring_elements = models.CharField(
+        max_length=150,
+        null=True,
+        help_text="Supporting scoring elements used to compute the score values. "
+        "For example a CVSS vector string as used to compute a CVSS score.",
+    )
+
+    published_at = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
+    )
+
+    class Meta:
+        ordering = ["url", "scoring_system", "value"]
+
+
 class VulnerabilityStatusType(models.IntegerChoices):
     """List of vulnerability statuses."""
 
@@ -202,6 +238,11 @@ class Vulnerability(models.Model):
         choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
     )
 
+    severities = models.ManyToManyField(
+        VulnerabilitySeverity,
+        related_name="vulnerabilities",
+    )
+
     objects = VulnerabilityQuerySet.as_manager()
 
     class Meta:
@@ -214,13 +255,6 @@ class Vulnerability(models.Model):
     @property
     def vcid(self):
         return self.vulnerability_id
-
-    @property
-    def severities(self):
-        """
-        Return a queryset of VulnerabilitySeverity for this vulnerability.
-        """
-        return VulnerabilitySeverity.objects.filter(reference__in=self.references.all())
 
     @property
     def affected_packages(self):
@@ -986,41 +1020,14 @@ class FixingPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
 
 
 class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
+
+    severities = models.ManyToManyField(
+        VulnerabilitySeverity,
+        related_name="affected_package_vulnerability_relations",
+    )
+
     class Meta(PackageRelatedVulnerabilityBase.Meta):
         verbose_name_plural = "Affected By Package Related Vulnerabilities"
-
-
-class VulnerabilitySeverity(models.Model):
-    reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
-
-    scoring_system_choices = tuple(
-        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
-    )
-
-    scoring_system = models.CharField(
-        max_length=50,
-        choices=scoring_system_choices,
-        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
-            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
-        ),
-    )
-
-    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
-
-    scoring_elements = models.CharField(
-        max_length=150,
-        null=True,
-        help_text="Supporting scoring elements used to compute the score values. "
-        "For example a CVSS vector string as used to compute a CVSS score.",
-    )
-
-    published_at = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
-    )
-
-    class Meta:
-        unique_together = ["reference", "scoring_system", "value"]
-        ordering = ["reference", "scoring_system", "value"]
 
 
 class AliasQuerySet(BaseQuerySet):

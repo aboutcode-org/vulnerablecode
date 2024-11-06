@@ -54,12 +54,17 @@ class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
-    scores = VulnerabilitySeveritySerializer(many=True, source="vulnerabilityseverity_set")
+    scores = serializers.SerializerMethodField()
     reference_url = serializers.CharField(source="url")
 
     class Meta:
         model = VulnerabilityReference
         fields = ["reference_url", "reference_id", "reference_type", "scores", "url"]
+
+    def get_scores(self, instance):
+        matching_scores = VulnerabilitySeverity.objects.filter(url=instance.url)
+
+        return VulnerabilitySeveritySerializer(matching_scores, many=True).data
 
 
 class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -217,7 +222,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
     def get_severity_range_score(self, instance):
         severity_vectors = []
         severity_values = set()
-        for s in instance.severities:
+        for s in instance.severities.all():
             if s.scoring_system == EPSS.identifier:
                 continue
 

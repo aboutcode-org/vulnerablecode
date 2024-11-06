@@ -222,8 +222,8 @@ class APITestCaseVulnerability(TransactionTestCase):
             url="https://.com",
         )
 
-        VulnerabilitySeverity.objects.create(
-            reference=self.reference1,
+        severity = VulnerabilitySeverity.objects.create(
+            url="https://.com",
             scoring_system=EPSS.identifier,
             scoring_elements=".0016",
             value="0.526",
@@ -239,6 +239,7 @@ class APITestCaseVulnerability(TransactionTestCase):
             cwe_id=10000
         )  # cwe not present in weaknesses_db
         self.invalid_weaknesses.vulnerabilities.add(self.vulnerability)
+        self.vulnerability.severities.add(severity)
 
     def test_api_status(self):
         response = self.csrf_client.get("/api/vulnerabilities/")

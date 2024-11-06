@@ -104,25 +104,24 @@ def import_advisory(
                 reference_id=ref.reference_id,
                 url=ref.url,
             )
-            if not reference:
-                continue
-
-        VulnerabilityRelatedReference.objects.update_or_create(
-            reference=reference,
-            vulnerability=vulnerability,
-        )
+        if reference:
+            VulnerabilityRelatedReference.objects.update_or_create(
+                reference=reference,
+                vulnerability=vulnerability,
+            )
         for severity in ref.severities:
             try:
                 published_at = str(severity.published_at) if severity.published_at else None
-                _, created = VulnerabilitySeverity.objects.update_or_create(
+                vulnerability_severity, created = VulnerabilitySeverity.objects.update_or_create(
                     scoring_system=severity.system.identifier,
-                    reference=reference,
+                    url=ref.url,
+                    value=severity.value,
+                    scoring_elements=severity.scoring_elements,
                     defaults={
-                        "value": str(severity.value),
-                        "scoring_elements": str(severity.scoring_elements),
                         "published_at": published_at,
                     },
                 )
+                vulnerability.severities.add(vulnerability_severity)
             except:
                 if logger:
                     logger(
@@ -132,7 +131,7 @@ def import_advisory(
             if not created:
                 if logger:
                     logger(
-                        f"Severity updated for reference {ref!r} to value: {severity.value!r} "
+                        f"Severity updated for reference {ref.url!r} to value: {severity.value!r} "
                         f"and scoring_elements: {severity.scoring_elements!r}",
                         level=logging.DEBUG,
                     )

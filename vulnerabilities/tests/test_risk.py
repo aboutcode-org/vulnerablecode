@@ -156,7 +156,7 @@ def test_get_weighted_severity(vulnerability):
 
     VulnerabilityRelatedReference.objects.create(reference=reference2, vulnerability=vulnerability)
     new_severities = vulnerability.severities.all()
-    assert get_weighted_severity(new_severities) == 9
+    assert get_weighted_severity(new_severities) == 7
 
 
 @pytest.mark.django_db

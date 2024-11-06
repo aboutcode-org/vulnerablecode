@@ -1,4 +1,5 @@
 from pathlib import Path
+from urllib.parse import urlparse
 
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Exploit
@@ -8,7 +9,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.utils import load_json
 
-DEFAULT_WEIGHT = 1
+DEFAULT_WEIGHT = 5
 WEIGHT_CONFIG_PATH = Path(__file__).parent.parent / "weight_config.json"
 WEIGHT_CONFIG = load_json(WEIGHT_CONFIG_PATH)
 
@@ -32,17 +33,10 @@ def get_weighted_severity(severities):
 
     score_list = []
     for severity in severities:
-        weights = []
-        for key, value in WEIGHT_CONFIG.items():
-            if severity.reference.url.startswith(key):
-                weights.append(value)
-                continue
-            weights.append(DEFAULT_WEIGHT)
-
-        if not weights:
-            return 0
-
-        max_weight = float(max(weights)) / 10
+        parsed_url = urlparse(severity.reference.url)
+        severity_source = parsed_url.netloc.replace("www.", "", 1)
+        weight = WEIGHT_CONFIG.get(severity_source, DEFAULT_WEIGHT)
+        max_weight = float(weight) / 10
         vul_score = severity.value
         try:
             vul_score = float(vul_score)

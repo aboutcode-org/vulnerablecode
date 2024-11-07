@@ -18,10 +18,10 @@ from rest_framework.routers import DefaultRouter
 
 from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
-from vulnerabilities.v2_api import PackageV2ViewSet
 from vulnerabilities.api import PackageViewSet
-from vulnerabilities.v2_api import VulnerabilityV2ViewSet
 from vulnerabilities.api import VulnerabilityViewSet
+from vulnerabilities.v2_api import PackageV2ViewSet
+from vulnerabilities.v2_api import VulnerabilityV2ViewSet
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails

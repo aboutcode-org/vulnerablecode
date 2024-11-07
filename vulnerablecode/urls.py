@@ -18,10 +18,10 @@ from rest_framework.routers import DefaultRouter
 
 from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
-from vulnerabilities.api import PackageViewSet
-from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api import PackageV2ViewSet
+from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityV2ViewSet
+from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails
@@ -104,7 +104,7 @@ urlpatterns = [
         TemplateView.as_view(template_name="tos.html"),
         name="api_tos",
     ),
-    path('api/v2/', include(api_v2_router.urls)),
+    path("api/v2/", include(api_v2_router.urls)),
     path(
         "admin/",
         admin.site.urls,

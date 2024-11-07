@@ -16,7 +16,9 @@ from vulnerabilities.risk import compute_package_risk
 
 class ComputePackageRiskPipeline(VulnerableCodePipeline):
     """
-    Risk Assessment Pipeline for Package Vulnerabilities: Iterate through the packages and evaluate their associated risk.
+    Compute risk score for packages.
+
+    See https://github.com/aboutcode-org/vulnerablecode/issues/1543
     """
 
     pipeline_id = "compute_package_risk"
@@ -41,6 +43,10 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
         for package in progress.iter(affected_packages.paginated()):
             risk_score = compute_package_risk(package)
+
+            if not risk_score:
+                continue
+
             package.risk_score = risk_score
             updatables.append(package)
 

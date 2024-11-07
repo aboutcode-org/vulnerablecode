@@ -177,6 +177,10 @@ class PackageV2ViewSetTest(APITestCase):
         # Associate packages with vulnerabilities
         self.package1.affected_by_vulnerabilities.add(self.vuln1)
         self.package2.fixing_vulnerabilities.add(self.vuln2)
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
 
     def test_list_packages(self):
         """

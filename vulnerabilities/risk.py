@@ -1,4 +1,13 @@
-from pathlib import Path
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
+
 from urllib.parse import urlparse
 
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
@@ -7,11 +16,9 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.severity_systems import EPSS
-from vulnerabilities.utils import load_json
+from vulnerabilities.weight_config import WEIGHT_CONFIG
 
 DEFAULT_WEIGHT = 5
-WEIGHT_CONFIG_PATH = Path(__file__).parent.parent / "weight_config.json"
-WEIGHT_CONFIG = load_json(WEIGHT_CONFIG_PATH)
 
 
 def get_weighted_severity(severities):

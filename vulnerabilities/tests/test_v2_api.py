@@ -5,14 +5,14 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 
-from vulnerabilities.api import PackageV2Serializer
-from vulnerabilities.api import VulnerabilityListSerializer
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import Weakness
+from vulnerabilities.v2_api import PackageV2Serializer
+from vulnerabilities.v2_api import VulnerabilityListSerializer
 
 
 class VulnerabilityV2ViewSetTest(APITestCase):

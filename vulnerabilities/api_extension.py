@@ -126,7 +126,6 @@ class V2VulnerabilitySerializer(ModelSerializer):
 
     aliases = SerializerMethodField("get_aliases")
     weaknesses = V2WeaknessSerializer(many=True, source="weaknesses_set")
-    scores = V2VulnerabilitySeveritySerializer(many=True, source="vulnerabilityseverity_set")
     references = V2VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     exploits = V2ExploitSerializer(many=True, source="weaknesses")
     severities = V2VulnerabilitySeveritySerializer(many=True)
@@ -145,7 +144,6 @@ class V2VulnerabilitySerializer(ModelSerializer):
             "vulnerability_id",
             "aliases",
             "status",
-            "scores",
             "weaknesses",
             "summary",
             "exploits",

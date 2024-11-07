@@ -62,9 +62,11 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
         fields = ["reference_url", "reference_id", "reference_type", "scores", "url"]
 
     def get_scores(self, instance):
-        matching_scores = VulnerabilitySeverity.objects.filter(url=instance.url)
+        severities_related_to_reference = []
+        if vulnerability := self.context.get("vulnerability"):
+            severities_related_to_reference = vulnerability.severities.filter(url=instance.url)
 
-        return VulnerabilitySeveritySerializer(matching_scores, many=True).data
+        return VulnerabilitySeveritySerializer(severities_related_to_reference, many=True).data
 
 
 class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -204,8 +206,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
         many=True, source="filtered_fixed_packages", read_only=True
     )
     affected_packages = MinimalPackageSerializer(many=True, read_only=True)
-
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    references = serializers.SerializerMethodField()
     aliases = AliasSerializer(many=True, source="alias")
     exploits = ExploitSerializer(many=True, read_only=True)
     weaknesses = WeaknessSerializer(many=True)
@@ -218,6 +219,17 @@ class VulnerabilitySerializer(BaseResourceSerializer):
         data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
 
         return data
+
+    def get_references(self, vulnerability):
+        references = vulnerability.vulnerabilityreference_set.all()
+
+        serialized_references = VulnerabilityReferenceSerializer(
+            references,
+            context={"vulnerability": vulnerability},
+            many=True,
+        ).data
+
+        return serialized_references
 
     def get_severity_range_score(self, instance):
         severity_vectors = []

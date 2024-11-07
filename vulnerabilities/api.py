@@ -692,6 +692,7 @@ class AliasViewSet(VulnerabilityViewSet):
 
     filterset_class = AliasFilterSet
 
+
 class WeaknessV2Serializer(serializers.ModelSerializer):
     cwe_id = serializers.CharField()
     name = serializers.CharField()
@@ -700,16 +701,6 @@ class WeaknessV2Serializer(serializers.ModelSerializer):
     class Meta:
         model = Weakness
         fields = ["cwe_id", "name", "description"]
-
-class VulnerabilityFilter(filters.FilterSet):
-    vulnerability_id = filters.CharFilter(field_name='vulnerability_id', lookup_expr='exact')
-    vulnerability_id__in = filters.BaseInFilter(field_name='vulnerability_id', lookup_expr='in')
-    alias = filters.CharFilter(field_name='aliases__alias', lookup_expr='exact')
-    alias__in = filters.BaseInFilter(field_name='aliases__alias', lookup_expr='in')
-
-    class Meta:
-        model = Vulnerability
-        fields = ['vulnerability_id', 'vulnerability_id__in', 'alias', 'alias__in']
 
 
 class VulnerabilityReferenceV2Serializer(serializers.ModelSerializer):
@@ -721,10 +712,11 @@ class VulnerabilityReferenceV2Serializer(serializers.ModelSerializer):
         model = VulnerabilityReference
         fields = ["url", "reference_type", "reference_id"]
 
+
 class VulnerabilityV2Serializer(BaseResourceSerializer):
     aliases = serializers.SerializerMethodField()
     weaknesses = WeaknessV2Serializer(many=True)
-    references = VulnerabilityReferenceV2Serializer(many=True, source='vulnerabilityreference_set')
+    references = VulnerabilityReferenceV2Serializer(many=True, source="vulnerabilityreference_set")
     severities = VulnerabilitySeveritySerializer(many=True)
 
     class Meta:
@@ -745,52 +737,74 @@ class VulnerabilityV2Serializer(BaseResourceSerializer):
         return obj.severities
 
 
+class VulnerabilityListSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Vulnerability
+        fields = ["vulnerability_id", "url"]
+
+    def get_url(self, obj):
+        request = self.context.get("request")
+        return reverse(
+            "vulnerability-v2-detail",
+            kwargs={"vulnerability_id": obj.vulnerability_id},
+            request=request,
+        )
+
+
 class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Vulnerability.objects.all()
     serializer_class = VulnerabilityV2Serializer
+    lookup_field = "vulnerability_id"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        vulnerability_ids = self.request.query_params.getlist("vulnerability_id")
+        aliases = self.request.query_params.getlist("alias")
+
+        if vulnerability_ids:
+            queryset = queryset.filter(vulnerability_id__in=vulnerability_ids)
+
+        if aliases:
+            queryset = queryset.filter(aliases__alias__in=aliases).distinct()
+
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return VulnerabilityListSerializer
+        return super().get_serializer_class()
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        # Apply pagination
+        vulnerability_ids = request.query_params.getlist("vulnerability_id")
+
+        # If exactly one vulnerability_id is provided, return the serialized data
+        if len(vulnerability_ids) == 1:
+            try:
+                vulnerability = queryset.get(vulnerability_id=vulnerability_ids[0])
+                serializer = self.get_serializer(vulnerability)
+                return Response(serializer.data)
+            except Vulnerability.DoesNotExist:
+                return Response({"detail": "Not found."}, status=404)
+
+        # Otherwise, return a dictionary of vulnerabilities keyed by vulnerability_id
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             data = serializer.data
-            vulnerabilities = {item['vulnerability_id']: item for item in data}
-            # Use 'self.get_paginated_response' to include pagination data
-            return self.get_paginated_response({'vulnerabilities': vulnerabilities})
+            vulnerabilities = {item["vulnerability_id"]: item for item in data}
+            return self.get_paginated_response({"vulnerabilities": vulnerabilities})
 
-        # If pagination is not applied
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
-        vulnerabilities = {item['vulnerability_id']: item for item in data}
-        return Response({'vulnerabilities': vulnerabilities})
-
-
-class PackageFilter(filters.FilterSet):
-    purl = filters.CharFilter(field_name='package_url', lookup_expr='exact')
-    purl__in = filters.BaseInFilter(field_name='package_url', lookup_expr='in')
-    affected_by_vulnerability = filters.CharFilter(
-        field_name='affected_by_vulnerabilities__vulnerability_id',
-        lookup_expr='exact'
-    )
-    fixing_vulnerability = filters.CharFilter(
-        field_name='fixing_vulnerabilities__vulnerability_id',
-        lookup_expr='exact'
-    )
-
-    class Meta:
-        model = Package
-        fields = [
-            'purl',
-            'purl__in',
-            'affected_by_vulnerability',
-            'fixing_vulnerability',
-        ]
+        vulnerabilities = {item["vulnerability_id"]: item for item in data}
+        return Response({"vulnerabilities": vulnerabilities})
 
 
 class PackageV2Serializer(serializers.ModelSerializer):
-    purl = serializers.CharField(source='package_url')
+    purl = serializers.CharField(source="package_url")
     affected_by_vulnerabilities = serializers.SerializerMethodField()
     fixing_vulnerabilities = serializers.SerializerMethodField()
     next_non_vulnerable_version = serializers.CharField(read_only=True)
@@ -799,11 +813,11 @@ class PackageV2Serializer(serializers.ModelSerializer):
     class Meta:
         model = Package
         fields = [
-            'purl',
-            'affected_by_vulnerabilities',
-            'fixing_vulnerabilities',
-            'next_non_vulnerable_version',
-            'latest_non_vulnerable_version',
+            "purl",
+            "affected_by_vulnerabilities",
+            "fixing_vulnerabilities",
+            "next_non_vulnerable_version",
+            "latest_non_vulnerable_version",
         ]
 
     def get_affected_by_vulnerabilities(self, obj):
@@ -816,19 +830,36 @@ class PackageV2Serializer(serializers.ModelSerializer):
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageV2Serializer
-    filterset_class = PackageFilter
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        package_purls = self.request.query_params.getlist("purl")
+        affected_by_vulnerability = self.request.query_params.get("affected_by_vulnerability")
+        fixing_vulnerability = self.request.query_params.get("fixing_vulnerability")
+
+        if package_purls:
+            queryset = queryset.filter(package_url__in=package_purls)
+        if affected_by_vulnerability:
+            queryset = queryset.filter(
+                affected_by_vulnerabilities__vulnerability_id=affected_by_vulnerability
+            )
+        if fixing_vulnerability:
+            queryset = queryset.filter(
+                fixing_vulnerabilities__vulnerability_id=fixing_vulnerability
+            )
+        return queryset.with_is_vulnerable()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset().with_is_vulnerable()
+        queryset = self.get_queryset()
         # Apply pagination
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             data = serializer.data
             # Use 'self.get_paginated_response' to include pagination data
-            return self.get_paginated_response({'purls': data})
+            return self.get_paginated_response({"purls": data})
 
         # If pagination is not applied
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
-        return Response({'purls': data})
+        return Response({"purls": data})

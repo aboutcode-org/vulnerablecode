@@ -3,13 +3,13 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
+from vulnerabilities.api import VulnerabilitySeveritySerializer
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
-from vulnerabilities.models import Weakness
 from vulnerabilities.models import VulnerabilitySeverity
+from vulnerabilities.models import Weakness
 
-from vulnerabilities.api import VulnerabilitySeveritySerializer
 
 class WeaknessV2Serializer(serializers.ModelSerializer):
     cwe_id = serializers.CharField()

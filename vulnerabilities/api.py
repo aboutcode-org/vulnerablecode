@@ -701,6 +701,16 @@ class WeaknessV2Serializer(serializers.ModelSerializer):
         model = Weakness
         fields = ["cwe_id", "name", "description"]
 
+class VulnerabilityFilter(filters.FilterSet):
+    vulnerability_id = filters.CharFilter(field_name='vulnerability_id', lookup_expr='exact')
+    vulnerability_id__in = filters.BaseInFilter(field_name='vulnerability_id', lookup_expr='in')
+    alias = filters.CharFilter(field_name='aliases__alias', lookup_expr='exact')
+    alias__in = filters.BaseInFilter(field_name='aliases__alias', lookup_expr='in')
+
+    class Meta:
+        model = Vulnerability
+        fields = ['vulnerability_id', 'vulnerability_id__in', 'alias', 'alias__in']
+
 
 class VulnerabilityReferenceV2Serializer(serializers.ModelSerializer):
     url = serializers.CharField()
@@ -711,11 +721,11 @@ class VulnerabilityReferenceV2Serializer(serializers.ModelSerializer):
         model = VulnerabilityReference
         fields = ["url", "reference_type", "reference_id"]
 
-class VulnerabilityV2Serializer(serializers.ModelSerializer):
+class VulnerabilityV2Serializer(BaseResourceSerializer):
     aliases = serializers.SerializerMethodField()
-    severities = serializers.SerializerMethodField()
     weaknesses = WeaknessV2Serializer(many=True)
     references = VulnerabilityReferenceV2Serializer(many=True, source='vulnerabilityreference_set')
+    severities = VulnerabilitySeveritySerializer(many=True)
 
     class Meta:
         model = Vulnerability
@@ -732,8 +742,7 @@ class VulnerabilityV2Serializer(serializers.ModelSerializer):
         return [alias.alias for alias in obj.aliases.all()]
 
     def get_severities(self, obj):
-        #TODO: Need data model changes
-        return []
+        return obj.severities
 
 
 class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
@@ -756,6 +765,28 @@ class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
         data = serializer.data
         vulnerabilities = {item['vulnerability_id']: item for item in data}
         return Response({'vulnerabilities': vulnerabilities})
+
+
+class PackageFilter(filters.FilterSet):
+    purl = filters.CharFilter(field_name='package_url', lookup_expr='exact')
+    purl__in = filters.BaseInFilter(field_name='package_url', lookup_expr='in')
+    affected_by_vulnerability = filters.CharFilter(
+        field_name='affected_by_vulnerabilities__vulnerability_id',
+        lookup_expr='exact'
+    )
+    fixing_vulnerability = filters.CharFilter(
+        field_name='fixing_vulnerabilities__vulnerability_id',
+        lookup_expr='exact'
+    )
+
+    class Meta:
+        model = Package
+        fields = [
+            'purl',
+            'purl__in',
+            'affected_by_vulnerability',
+            'fixing_vulnerability',
+        ]
 
 
 class PackageV2Serializer(serializers.ModelSerializer):
@@ -785,6 +816,7 @@ class PackageV2Serializer(serializers.ModelSerializer):
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageV2Serializer
+    filterset_class = PackageFilter
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset().with_is_vulnerable()

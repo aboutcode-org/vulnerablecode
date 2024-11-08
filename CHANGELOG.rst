@@ -4,6 +4,18 @@ Release notes
 Version (next)
 -------------------
 
+Version v34.1.0
+-------------------
+
+- Add support for Calculating Package Vulnerability Risk #1593
+- Migrate pysec importer to aboutcode pipeline #1628
+- Fix 500 error in /api/cpes endpoint #1629
+- Add documentation for new pipeline design #1621
+- Segregate PackageRelatedVulnerability model to new models #1612
+- Add GitHub action to publish aboutcode.hashid PyPI #1615
+- Fix vers range crash #1598
+- Use 4-tier system for storing package metadata #1609
+
 
 Version v34.0.2
 -------------------

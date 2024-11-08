@@ -16,21 +16,28 @@ def split_packagerelatedvulnerability(apps, schema_editor):
         progress_step=1,
         logger=print,
         )
+    fixing_packages = []
+    affected_packages = []
     for prv in progress.iter(obsolete_package_relation_query.iterator(chunk_size=10000)):
         if prv.fix:
-            FixingPackageRelatedVulnerability.objects.create(
+            fp = FixingPackageRelatedVulnerability(
                 package=prv.package,
                 vulnerability=prv.vulnerability,
                 created_by=prv.created_by,
                 confidence=prv.confidence,
             )
+            fixing_packages.append(fp)
         else:
-            AffectedByPackageRelatedVulnerability.objects.create(
+            ap = AffectedByPackageRelatedVulnerability(
                 package=prv.package,
                 vulnerability=prv.vulnerability,
                 created_by=prv.created_by,
                 confidence=prv.confidence,
             )
+            affected_packages.append(ap)
+    
+    FixingPackageRelatedVulnerability.objects.bulk_create(fixing_packages, batch_size=10000)
+    AffectedByPackageRelatedVulnerability.objects.bulk_create(affected_packages, batch_size=10000)
 
 def reverse_migration(apps, schema_editor):
     FixingPackageRelatedVulnerability = apps.get_model('vulnerabilities', 'FixingPackageRelatedVulnerability')

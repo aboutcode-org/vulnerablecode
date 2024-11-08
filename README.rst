@@ -80,7 +80,7 @@ Then run an importer for nginx advisories (which is small)
 
 .. code:: bash
 
-    docker compose exec vulnerablecode ./manage.py import vulnerabilities.importers.nginx.NginxImporter
+    docker compose exec vulnerablecode ./manage.py import nginx_importer
     docker compose exec vulnerablecode ./manage.py improve --all
 
 At this point, the VulnerableCode app and API should be up and running with
@@ -117,7 +117,7 @@ On a Debian system, use this
     make dev envfile postgres
     make test
     source venv/bin/activate
-    ./manage.py import vulnerabilities.importers.nginx.NginxImporter
+    ./manage.py import nginx_importer
     ./manage.py improve --all
     make run
 

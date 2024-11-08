@@ -104,8 +104,8 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     Base importer pipeline for importing advisories.
 
     Uses:
-        Subclass this Pipeline and implement ``advisories_count`` and ``collect_advisories`` method.
-        Also override the ``steps`` and ``advisory_confidence`` as needed.
+        Subclass this Pipeline and implement ``advisories_count`` and ``collect_advisories``
+        method. Also override the ``steps`` and ``advisory_confidence`` as needed.
     """
 
     pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.

@@ -625,6 +625,7 @@ class APITestCasePackage(TestCase):
                 }
             ],
             "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+            "risk_score": None,
         }
 
         assert response == expected

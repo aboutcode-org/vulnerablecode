@@ -9,9 +9,12 @@
 
 from aboutcode.pipeline import LoopProgress
 
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Package
+from vulnerabilities.models import Vulnerability
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.risk import compute_package_risk
+from vulnerabilities.risk import compute_vulnerability_risk
 
 
 class ComputePackageRiskPipeline(VulnerableCodePipeline):
@@ -26,7 +29,44 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
     @classmethod
     def steps(cls):
-        return (cls.add_package_risk_score,)
+        return (cls.add_vulnerability_risk_score, cls.add_package_risk_score)
+
+    def add_vulnerability_risk_score(self):
+        affected_vulnerabilities = Vulnerability.objects.filter(
+            affectedbypackagerelatedvulnerability__isnull=False
+        )
+
+        self.log(
+            f"Calculating risk for {affected_vulnerabilities.count():,d} vulnerability with a affected packages records"
+        )
+
+        progress = LoopProgress(total_iterations=affected_vulnerabilities.count(), logger=self.log)
+
+        updatables = []
+        updated_vulnerability_count = 0
+        batch_size = 5000
+
+        for vulnerability in progress.iter(affected_vulnerabilities.paginated()):
+
+            vulnerability = compute_vulnerability_risk(vulnerability)
+
+            if not vulnerability:
+                continue
+
+            updatables.append(vulnerability)
+
+            if len(updatables) >= batch_size:
+                updated_vulnerability_count += bulk_update_vulnerability_risk_score(
+                    vulnerabilities=updatables,
+                    logger=self.log,
+                )
+        updated_vulnerability_count += bulk_update_vulnerability_risk_score(
+            vulnerabilities=updatables,
+            logger=self.log,
+        )
+        self.log(
+            f"Successfully added risk score for {updated_vulnerability_count:,d} vulnerability"
+        )
 
     def add_package_risk_score(self):
         affected_packages = Package.objects.filter(
@@ -72,3 +112,17 @@ def bulk_update_package_risk_score(packages, logger):
             logger(f"Error updating packages: {e}")
         packages.clear()
     return package_count
+
+
+def bulk_update_vulnerability_risk_score(vulnerabilities, logger):
+    vulnerabilities_count = 0
+    if vulnerabilities:
+        try:
+            Vulnerability.objects.bulk_update(
+                objs=vulnerabilities, fields=["weighted_severity", "exploitability"]
+            )
+            vulnerabilities_count += len(vulnerabilities)
+        except Exception as e:
+            logger(f"Error updating vulnerability: {e}")
+        vulnerabilities.clear()
+    return vulnerabilities_count

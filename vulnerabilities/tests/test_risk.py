@@ -170,4 +170,5 @@ def test_get_weighted_severity(vulnerability):
 
 @pytest.mark.django_db
 def test_compute_vulnerability_risk(vulnerability):
-    assert compute_vulnerability_risk(vulnerability) == 3.1050000000000004
+    vulnerability = compute_vulnerability_risk(vulnerability)
+    assert vulnerability.risk_score == str(3.11)

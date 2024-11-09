@@ -6,6 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+from decimal import Decimal
 
 import pytest
 
@@ -30,4 +31,4 @@ def test_simple_risk_pipeline(vulnerability):
     improver.execute()
 
     pkg = Package.objects.get(type="pypi", name="foo", version="2.3.0")
-    assert str(pkg.risk_score) == str(3.11)
+    assert f"{pkg.risk_score:.2f}" == "3.10"

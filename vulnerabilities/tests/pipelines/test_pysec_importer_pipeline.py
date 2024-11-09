@@ -6,6 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+
 import json
 from pathlib import Path
 from unittest import TestCase

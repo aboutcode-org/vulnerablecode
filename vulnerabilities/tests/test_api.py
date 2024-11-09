@@ -300,6 +300,9 @@ class APITestCaseVulnerability(TransactionTestCase):
                 },
             ],
             "exploits": [],
+            "risk_score": None,
+            "exploitability": None,
+            "weighted_severity": None,
         }
 
     def test_api_with_single_vulnerability_with_filters(self):
@@ -346,6 +349,9 @@ class APITestCaseVulnerability(TransactionTestCase):
                 },
             ],
             "exploits": [],
+            "risk_score": None,
+            "exploitability": None,
+            "weighted_severity": None,
         }
 
 

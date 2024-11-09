@@ -92,19 +92,31 @@ def get_exploitability_level(exploits, references, severities):
 
 def compute_vulnerability_risk(vulnerability: Vulnerability):
     """
-    Risk may be expressed as a number ranging from 0 to 10.
-    Risk is calculated from weighted severity and exploitability values.
-    It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
+    Computes the risk score for a given vulnerability.
 
-    Risk = min(weighted severity * exploitability, 10)
+    Risk is expressed as a number ranging from 0 to 10 and is calculated based on:
+    - Weighted severity: a value derived from the associated severities of the vulnerability.
+    - Exploitability: a measure of how easily the vulnerability can be exploited.
+
+    The risk score is computed as:
+        Risk = min(weighted_severity * exploitability, 10)
+
+    Args:
+        vulnerability (Vulnerability): The vulnerability object to compute the risk for.
+
+    Returns:
+        Vulnerability: The updated vulnerability object with computed risk-related attributes.
+
+    Notes:
+        - If there are no associated references, severities, or exploits, the computation is skipped.
     """
     references = vulnerability.references
     severities = vulnerability.severities.select_related("reference")
     exploits = Exploit.objects.filter(vulnerability=vulnerability)
     if references.exists() or severities.exists() or exploits.exists():
-        weighted_severity = get_weighted_severity(severities)
-        exploitability = get_exploitability_level(exploits, references, severities)
-        return min(weighted_severity * exploitability, 10)
+        vulnerability.weighted_severity = get_weighted_severity(severities)
+        vulnerability.exploitability = get_exploitability_level(exploits, references, severities)
+        return vulnerability
 
 
 def compute_package_risk(package: Package):
@@ -117,8 +129,8 @@ def compute_package_risk(package: Package):
     for pkg_related_vul in AffectedByPackageRelatedVulnerability.objects.filter(
         package=package
     ).prefetch_related("vulnerability"):
-        if risk := compute_vulnerability_risk(pkg_related_vul.vulnerability):
-            result.append(risk)
+        if risk := pkg_related_vul.vulnerability.risk_score:
+            result.append(float(risk))
 
     if not result:
         return

@@ -202,6 +202,35 @@ class Vulnerability(models.Model):
         choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
     )
 
+    exploitability = models.DecimalField(
+        null=True,
+        max_digits=4,
+        decimal_places=2,
+        help_text="""Exploitability refers to the potential or probability of a software package vulnerability being 
+        exploited by malicious actors to compromise systems, applications, or networks. 
+        It is determined automatically by the discovery of exploits.""",
+    )
+
+    weighted_severity = models.DecimalField(
+        null=True,
+        max_digits=4,
+        decimal_places=2,
+        help_text="Weighted Severity is the maximum value obtained when each Severity is multiplied by its associated Weight/10.",
+    )
+
+    @property
+    def risk_score(self):
+        """
+        Risk expressed as a number ranging from 0 to 10.
+        Risk is calculated from weighted severity and exploitability values.
+        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
+
+        Risk = min(weighted severity * exploitability, 10)
+        """
+        if self.exploitability is not None and self.weighted_severity is not None:
+            return f"{min(float(self.exploitability) * float(self.weighted_severity), 10.0):.2f}"
+        return None
+
     objects = VulnerabilityQuerySet.as_manager()
 
     class Meta:

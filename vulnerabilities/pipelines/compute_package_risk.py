@@ -44,9 +44,9 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
         updatables = []
         updated_package_count = 0
-        batch_size = 5000
+        batch_size = 10000
 
-        for package in progress.iter(affected_packages.paginated()):
+        for package in progress.iter(affected_packages.paginated(per_page=batch_size)):
             risk_score = compute_package_risk(package)
 
             if not risk_score:

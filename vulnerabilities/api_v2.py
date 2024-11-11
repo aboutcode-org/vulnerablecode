@@ -36,7 +36,6 @@ class VulnerabilityReferenceV2Serializer(serializers.ModelSerializer):
     reference_type = serializers.CharField()
     reference_id = serializers.CharField()
 
-
     class Meta:
         model = VulnerabilityReference
         fields = ["url", "reference_type", "reference_id"]

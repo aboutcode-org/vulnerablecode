@@ -13,7 +13,6 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from vulnerabilities.api import VulnerabilitySeveritySerializer
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -41,11 +40,24 @@ class VulnerabilityReferenceV2Serializer(serializers.ModelSerializer):
         fields = ["url", "reference_type", "reference_id"]
 
 
+class VulnerabilitySeverityV2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = VulnerabilitySeverity
+        fields = ["url", "value", "scoring_system", "scoring_elements", "published_at"]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        published_at = data.get("published_at", None)
+        if not published_at:
+            data.pop("published_at")
+        return data
+
+
 class VulnerabilityV2Serializer(serializers.ModelSerializer):
     aliases = serializers.SerializerMethodField()
     weaknesses = WeaknessV2Serializer(many=True)
     references = VulnerabilityReferenceV2Serializer(many=True, source="vulnerabilityreference_set")
-    severities = VulnerabilitySeveritySerializer(many=True)
+    severities = VulnerabilitySeverityV2Serializer(many=True)
 
     class Meta:
         model = Vulnerability
@@ -60,9 +72,6 @@ class VulnerabilityV2Serializer(serializers.ModelSerializer):
 
     def get_aliases(self, obj):
         return [alias.alias for alias in obj.aliases.all()]
-
-    def get_severities(self, obj):
-        return obj.severities
 
 
 class VulnerabilityListSerializer(serializers.ModelSerializer):

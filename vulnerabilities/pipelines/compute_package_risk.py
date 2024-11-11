@@ -29,8 +29,13 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         return (cls.add_package_risk_score,)
 
     def add_package_risk_score(self):
-        affected_packages = Package.objects.filter(
-            affected_by_vulnerabilities__isnull=False
+        affected_packages = (
+            Package.objects.filter(affected_by_vulnerabilities__isnull=False).prefetch_related(
+                "affectedbypackagerelatedvulnerability_set__vulnerability",
+                "affectedbypackagerelatedvulnerability_set__vulnerability__references",
+                "affectedbypackagerelatedvulnerability_set__vulnerability__severities",
+                "affectedbypackagerelatedvulnerability_set__vulnerability__exploits",
+            )
         ).distinct()
 
         self.log(f"Calculating risk for {affected_packages.count():,d} affected package records")

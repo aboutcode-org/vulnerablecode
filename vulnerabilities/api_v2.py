@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+
 from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -34,6 +35,7 @@ class VulnerabilityReferenceV2Serializer(serializers.ModelSerializer):
     url = serializers.CharField()
     reference_type = serializers.CharField()
     reference_id = serializers.CharField()
+
 
     class Meta:
         model = VulnerabilityReference

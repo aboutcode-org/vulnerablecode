@@ -2,7 +2,14 @@ Release notes
 =============
 
 Version (next)
+-----------------------
+
+
+Version v34.2.0
 -------------------
+
+- Add V2 API endpoints #1631
+
 
 Version v34.1.0
 -------------------

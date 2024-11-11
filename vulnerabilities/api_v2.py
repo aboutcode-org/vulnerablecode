@@ -185,9 +185,9 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             serializer = self.get_serializer(page, many=True)
             data = serializer.data
             # Use 'self.get_paginated_response' to include pagination data
-            return self.get_paginated_response({"purls": data})
+            return self.get_paginated_response({"packages": data})
 
         # If pagination is not applied
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
-        return Response({"purls": data})
+        return Response({"packages": data})

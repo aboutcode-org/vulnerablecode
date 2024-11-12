@@ -8,6 +8,7 @@
 #
 
 
+from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.utils import extend_schema_view
@@ -19,6 +20,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
+from vulnerabilities.api import PackageFilterSet
+from vulnerabilities.api import VulnerabilitySeveritySerializer
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -210,9 +213,19 @@ class LookupRequestSerializer(serializers.Serializer):
     )
 
 
+class PackageV2FilterSet(filters.FilterSet):
+    affected_by_vulnerability = filters.CharFilter(
+        field_name="affected_by_vulnerabilities__vulnerability_id"
+    )
+    fixing_vulnerability = filters.CharFilter(field_name="fixing_vulnerabilities__vulnerability_id")
+    purl = filters.CharFilter(field_name="package_url")
+
+
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageV2Serializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = PackageV2FilterSet
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -234,18 +247,45 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+
         # Apply pagination
         page = self.paginate_queryset(queryset)
         if page is not None:
+            # Collect only vulnerabilities for packages in the current page
+            vulnerabilities = set()
+            for package in page:
+                vulnerabilities.update(package.affected_by_vulnerabilities.all())
+                vulnerabilities.update(package.fixing_vulnerabilities.all())
+
+            # Serialize the vulnerabilities with vulnerability_id as keys
+            vulnerability_data = {
+                vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data
+                for vuln in vulnerabilities
+            }
+
+            # Serialize the current page of packages
             serializer = self.get_serializer(page, many=True)
             data = serializer.data
-            # Use 'self.get_paginated_response' to include pagination data
-            return self.get_paginated_response({"packages": data})
 
-        # If pagination is not applied
+            # Use 'self.get_paginated_response' to include pagination data
+            return self.get_paginated_response(
+                {"vulnerabilities": vulnerability_data, "packages": data}
+            )
+
+        # If pagination is not applied, collect vulnerabilities for all packages
+        vulnerabilities = set()
+        for package in queryset:
+            vulnerabilities.update(package.affected_by_vulnerabilities.all())
+            vulnerabilities.update(package.fixing_vulnerabilities.all())
+
+        vulnerability_data = {
+            vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data for vuln in vulnerabilities
+        }
+
+        # Serialize all packages when pagination is not applied
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
-        return Response({"packages": data})
+        return Response({"vulnerabilities": vulnerability_data, "packages": data})
 
     @extend_schema(
         request=PackageurlListSerializer,
@@ -274,12 +314,32 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         validated_data = serializer.validated_data
         purls = validated_data.get("purls")
 
+        # Fetch packages matching the provided purls
+        packages = Package.objects.for_purls(purls).with_is_vulnerable()
+
+        # Collect vulnerabilities associated with these packages
+        vulnerabilities = set()
+        for package in packages:
+            vulnerabilities.update(package.affected_by_vulnerabilities.all())
+            vulnerabilities.update(package.fixing_vulnerabilities.all())
+
+        # Serialize vulnerabilities with vulnerability_id as keys
+        vulnerability_data = {
+            vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data for vuln in vulnerabilities
+        }
+
+        # Serialize packages
+        package_data = PackageV2Serializer(
+            packages,
+            many=True,
+            context={"request": request},
+        ).data
+
         return Response(
-            PackageV2Serializer(
-                Package.objects.for_purls(purls).with_is_vulnerable(),
-                many=True,
-                context={"request": request},
-            ).data
+            {
+                "vulnerabilities": vulnerability_data,
+                "packages": package_data,
+            }
         )
 
     @extend_schema(
@@ -331,22 +391,58 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
                 .with_is_vulnerable()
             )
 
+            packages = query
+
+            # Collect vulnerabilities associated with these packages
+            vulnerabilities = set()
+            for package in packages:
+                vulnerabilities.update(package.affected_by_vulnerabilities.all())
+                vulnerabilities.update(package.fixing_vulnerabilities.all())
+
+            vulnerability_data = {
+                vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data
+                for vuln in vulnerabilities
+            }
+
             if not purl_only:
+                package_data = PackageV2Serializer(
+                    packages, many=True, context={"request": request}
+                ).data
                 return Response(
-                    PackageV2Serializer(query, many=True, context={"request": request}).data
+                    {
+                        "vulnerabilities": vulnerability_data,
+                        "packages": package_data,
+                    }
                 )
 
-            # using order by and distinct because there will be
+            # Using order by and distinct because there will be
             # many fully qualified purl for a single plain purl
             vulnerable_purls = query.vulnerable().only("plain_package_url")
             vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
             return Response(data=vulnerable_purls)
 
         query = Package.objects.filter(package_url__in=purls).distinct().with_is_vulnerable()
+        packages = query
+
+        # Collect vulnerabilities associated with these packages
+        vulnerabilities = set()
+        for package in packages:
+            vulnerabilities.update(package.affected_by_vulnerabilities.all())
+            vulnerabilities.update(package.fixing_vulnerabilities.all())
+
+        vulnerability_data = {
+            vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data for vuln in vulnerabilities
+        }
 
         if not purl_only:
+            package_data = PackageV2Serializer(
+                packages, many=True, context={"request": request}
+            ).data
             return Response(
-                PackageV2Serializer(query, many=True, context={"request": request}).data
+                {
+                    "vulnerabilities": vulnerability_data,
+                    "packages": package_data,
+                }
             )
 
         vulnerable_purls = query.vulnerable().only("package_url")

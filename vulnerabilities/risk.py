@@ -10,6 +10,8 @@
 
 from urllib.parse import urlparse
 
+from django.db.models import Prefetch
+
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Exploit
 from vulnerabilities.models import Package
@@ -27,6 +29,8 @@ def get_weighted_severity(severities):
     by its associated Weight/10.
     Example of Weighted Severity: max(7*(10/10), 8*(3/10), 6*(8/10)) = 7
     """
+    if not severities:
+        return 0
 
     score_map = {
         "low": 3,
@@ -90,33 +94,21 @@ def get_exploitability_level(exploits, references, severities):
     return exploit_level
 
 
-def compute_vulnerability_risk(vulnerability: Vulnerability):
+def compute_vulnerability_risk_factors(references, severities, exploits):
     """
-    Computes the risk score for a given vulnerability.
-
-    Risk is expressed as a number ranging from 0 to 10 and is calculated based on:
-    - Weighted severity: a value derived from the associated severities of the vulnerability.
-    - Exploitability: a measure of how easily the vulnerability can be exploited.
-
-    The risk score is computed as:
-        Risk = min(weighted_severity * exploitability, 10)
+    Compute weighted severity and exploitability for a vulnerability.
 
     Args:
-        vulnerability (Vulnerability): The vulnerability object to compute the risk for.
+        references (list): References linked to the vulnerability.
+        severities (list): Severity levels of the vulnerability.
+        exploits (list): Exploit details for the vulnerability.
 
     Returns:
-        Vulnerability: The updated vulnerability object with computed risk-related attributes.
-
-    Notes:
-        - If there are no associated references, severities, or exploits, the computation is skipped.
+        tuple: (weighted_severity, exploitability).
     """
-    references = vulnerability.references
-    severities = vulnerability.severities.select_related("reference")
-    exploits = Exploit.objects.filter(vulnerability=vulnerability)
-    if references.exists() or severities.exists() or exploits.exists():
-        vulnerability.weighted_severity = get_weighted_severity(severities)
-        vulnerability.exploitability = get_exploitability_level(exploits, references, severities)
-        return vulnerability
+    weighted_severity = get_weighted_severity(severities)
+    exploitability = get_exploitability_level(exploits, references, severities)
+    return weighted_severity, exploitability
 
 
 def compute_package_risk(package: Package):
@@ -126,9 +118,15 @@ def compute_package_risk(package: Package):
     """
 
     result = []
-    for pkg_related_vul in AffectedByPackageRelatedVulnerability.objects.filter(
+    affected_pkg_related_vul = AffectedByPackageRelatedVulnerability.objects.filter(
         package=package
-    ).prefetch_related("vulnerability"):
+    ).prefetch_related(
+        Prefetch(
+            "vulnerability",
+            queryset=Vulnerability.objects.only("weighted_severity", "exploitability"),
+        )
+    )
+    for pkg_related_vul in affected_pkg_related_vul:
         if risk := pkg_related_vul.vulnerability.risk_score:
             result.append(float(risk))
 

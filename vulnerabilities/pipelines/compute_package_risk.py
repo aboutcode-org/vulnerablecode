@@ -9,12 +9,11 @@
 
 from aboutcode.pipeline import LoopProgress
 
-from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.risk import compute_package_risk
-from vulnerabilities.risk import compute_vulnerability_risk
+from vulnerabilities.risk import compute_vulnerability_risk_factors
 
 
 class ComputePackageRiskPipeline(VulnerableCodePipeline):
@@ -29,11 +28,16 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
     @classmethod
     def steps(cls):
-        return (cls.add_vulnerability_risk_score, cls.add_package_risk_score)
+        return (
+            cls.compute_and_store_vulnerability_risk_score,
+            cls.compute_and_store_package_risk_score,
+        )
 
-    def add_vulnerability_risk_score(self):
-        affected_vulnerabilities = Vulnerability.objects.filter(
-            affectedbypackagerelatedvulnerability__isnull=False
+    def compute_and_store_vulnerability_risk_score(self):
+        affected_vulnerabilities = (
+            Vulnerability.objects.filter(affectedbypackagerelatedvulnerability__isnull=False)
+            .prefetch_related("references")
+            .only("references", "exploits")
         )
 
         self.log(
@@ -47,11 +51,13 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         batch_size = 5000
 
         for vulnerability in progress.iter(affected_vulnerabilities.paginated()):
+            references = vulnerability.references
+            severities = vulnerability.severities.select_related("reference")
 
-            vulnerability = compute_vulnerability_risk(vulnerability)
-
-            if not vulnerability:
-                continue
+            (
+                vulnerability.weighted_severity,
+                vulnerability.exploitability,
+            ) = compute_vulnerability_risk_factors(references, severities, vulnerability.exploits)
 
             updatables.append(vulnerability)
 
@@ -68,7 +74,7 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
             f"Successfully added risk score for {updated_vulnerability_count:,d} vulnerability"
         )
 
-    def add_package_risk_score(self):
+    def compute_and_store_package_risk_score(self):
         affected_packages = Package.objects.filter(
             affected_by_vulnerabilities__isnull=False
         ).distinct()

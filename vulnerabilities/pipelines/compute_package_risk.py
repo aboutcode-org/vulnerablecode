@@ -40,7 +40,11 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
         self.log(f"Calculating risk for {affected_packages.count():,d} affected package records")
 
-        progress = LoopProgress(total_iterations=affected_packages.count(), logger=self.log)
+        progress = LoopProgress(
+            total_iterations=affected_packages.count(),
+            logger=self.log,
+            progress_step=5,
+        )
 
         updatables = []
         updated_package_count = 0

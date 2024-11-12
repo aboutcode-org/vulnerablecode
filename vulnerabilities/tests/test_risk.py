@@ -86,7 +86,7 @@ def high_epss_score():
     )
     vul.severities.add(severity)
 
-    return vul.severities
+    return vul.severities.all()
 
 
 @pytest.fixture
@@ -102,7 +102,7 @@ def low_epss_score():
     )
     vul.severities.add(severity)
 
-    return vul.severities
+    return vul.severities.all()
 
 
 @pytest.mark.django_db

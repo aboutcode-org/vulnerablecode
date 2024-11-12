@@ -68,20 +68,17 @@ def get_exploitability_level(exploits, references, severities):
 
     elif severities:
         # high EPSS.
-        epss = severities.filter(
-            scoring_system=EPSS.identifier,
-        )
-        epss = any(float(epss.value) > 0.8 for epss in epss)
-        if epss:
-            exploit_level = 2
+        for severity in severities:
+            if severity.scoring_system == EPSS.identifier and float(severity.value) > 0.8:
+                exploit_level = 2
+                break
 
     elif references:
         # PoC/Exploit script published
-        ref_exploits = references.filter(
-            reference_type=VulnerabilityReference.EXPLOIT,
-        )
-        if ref_exploits:
-            exploit_level = 1
+        for reference in references:
+            if reference.reference_type == VulnerabilityReference.EXPLOIT:
+                exploit_level = 1
+                break
 
     return exploit_level
 

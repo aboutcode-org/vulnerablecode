@@ -31,4 +31,4 @@ def test_simple_risk_pipeline(vulnerability):
     improver.execute()
 
     pkg = Package.objects.get(type="pypi", name="foo", version="2.3.0")
-    assert f"{pkg.risk_score:.2f}" == "3.10"
+    assert pkg.risk_score == Decimal("10")

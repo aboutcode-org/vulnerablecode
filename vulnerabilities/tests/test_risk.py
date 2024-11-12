@@ -15,7 +15,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
-from vulnerabilities.risk import compute_vulnerability_risk
+from vulnerabilities.risk import compute_vulnerability_risk_factors
 from vulnerabilities.risk import get_exploitability_level
 from vulnerabilities.risk import get_weighted_severity
 from vulnerabilities.severity_systems import CVSSV3
@@ -169,6 +169,44 @@ def test_get_weighted_severity(vulnerability):
 
 
 @pytest.mark.django_db
-def test_compute_vulnerability_risk(vulnerability):
-    vulnerability = compute_vulnerability_risk(vulnerability)
-    assert vulnerability.risk_score == str(3.11)
+def test_compute_vulnerability_risk_factors(vulnerability):
+    assert compute_vulnerability_risk_factors(
+        vulnerability.references, vulnerability.severities, vulnerability.exploits
+    ) == (6.210000000000001, 2)
+    assert compute_vulnerability_risk_factors(
+        vulnerability.references, vulnerability.severities, None
+    ) == (
+        6.210000000000001,
+        0.5,
+    )
+    assert compute_vulnerability_risk_factors(
+        vulnerability.references, None, vulnerability.exploits
+    ) == (
+        0,
+        2,
+    )
+    assert compute_vulnerability_risk_factors(None, None, None) == (0, 0.5)
+
+
+@pytest.mark.django_db
+def test_get_vulnerability_risk_score(vulnerability):
+    vulnerability.weighted_severity = 6.0
+    vulnerability.exploitability = 2
+
+    assert vulnerability.risk_score == "10"  # max risk_score can be reached
+
+    vulnerability.weighted_severity = 6
+    vulnerability.exploitability = 0.5
+    assert vulnerability.risk_score == "3"
+
+    vulnerability.weighted_severity = 5.6
+    vulnerability.exploitability = 0.5
+    assert vulnerability.risk_score == "2.8"
+
+    vulnerability.weighted_severity = None
+    vulnerability.exploitability = 0.5
+    assert vulnerability.risk_score is None
+
+    vulnerability.weighted_severity = None
+    vulnerability.exploitability = None
+    assert vulnerability.risk_score is None

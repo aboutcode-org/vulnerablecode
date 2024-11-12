@@ -18,7 +18,8 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
-
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter
+from rest_framework.decorators import action
 
 class WeaknessV2Serializer(serializers.ModelSerializer):
     cwe_id = serializers.CharField()
@@ -89,7 +90,26 @@ class VulnerabilityListSerializer(serializers.ModelSerializer):
             request=request,
         )
 
-
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="vulnerability_id",
+                description="Filter by one or more vulnerability IDs",
+                required=False,
+                type={"type": "array", "items": {"type": "string"}},
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="alias",
+                description="Filter by alias (CVE or other unique identifier)",
+                required=False,
+                type={"type": "array", "items": {"type": "string"}},
+                location=OpenApiParameter.QUERY,
+            ),
+        ]
+    )
+)
 class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Vulnerability.objects.all()
     serializer_class = VulnerabilityV2Serializer
@@ -164,6 +184,19 @@ class PackageV2Serializer(serializers.ModelSerializer):
         return [vuln.vulnerability_id for vuln in obj.fixing_vulnerabilities.all()]
 
 
+class PackageurlListSerializer(serializers.Serializer):
+    purls = serializers.ListField(
+        child=serializers.CharField(),
+        allow_empty=False,
+        help_text="List of PackageURL strings in canonical form.",
+    )
+
+
+class PackageBulkSearchRequestSerializer(PackageurlListSerializer):
+    purl_only = serializers.BooleanField(required=False, default=False)
+    plain_purl = serializers.BooleanField(required=False, default=False)
+
+
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all()
     serializer_class = PackageV2Serializer
@@ -200,3 +233,108 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
         return Response({"packages": data})
+    
+    @extend_schema(
+        request=PackageurlListSerializer,
+        responses={200: PackageV2Serializer(many=True)},
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=PackageurlListSerializer,
+        filter_backends=[],
+        pagination_class=None,
+    )
+    def bulk_lookup(self, request):
+        """
+        Return the response for exact PackageURLs requested for.
+        """
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": serializer.errors,
+                    "message": "A non-empty 'purls' list of PURLs is required.",
+                },
+            )
+        validated_data = serializer.validated_data
+        purls = validated_data.get("purls")
+
+        return Response(
+            PackageV2Serializer(
+                Package.objects.for_purls(purls).with_is_vulnerable(),
+                many=True,
+                context={"request": request},
+            ).data
+        )
+
+
+    @extend_schema(
+        request=PackageBulkSearchRequestSerializer,
+        responses={200: PackageV2Serializer(many=True)},
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=PackageBulkSearchRequestSerializer,
+        filter_backends=[],
+        pagination_class=None,
+    )
+    def bulk_search(self, request):
+        """
+        Lookup for vulnerable packages using many Package URLs at once.
+        """
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": serializer.errors,
+                    "message": "A non-empty 'purls' list of PURLs is required.",
+                },
+            )
+        validated_data = serializer.validated_data
+        purls = validated_data.get("purls")
+        purl_only = validated_data.get("purl_only", False)
+        plain_purl = validated_data.get("plain_purl", False)
+
+        if plain_purl:
+            purl_objects = [PackageURL.from_string(purl) for purl in purls]
+            plain_purl_objects = [
+                PackageURL(
+                    type=purl.type,
+                    namespace=purl.namespace,
+                    name=purl.name,
+                    version=purl.version,
+                )
+                for purl in purl_objects
+            ]
+            plain_purls = [str(purl) for purl in plain_purl_objects]
+
+            query = (
+                Package.objects.filter(plain_package_url__in=plain_purls)
+                .order_by("plain_package_url")
+                .distinct("plain_package_url")
+                .with_is_vulnerable()
+            )
+
+            if not purl_only:
+                return Response(
+                    PackageV2Serializer(query, many=True, context={"request": request}).data
+                )
+
+            # using order by and distinct because there will be
+            # many fully qualified purl for a single plain purl
+            vulnerable_purls = query.vulnerable().only("plain_package_url")
+            vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
+            return Response(data=vulnerable_purls)
+
+        query = Package.objects.filter(package_url__in=purls).distinct().with_is_vulnerable()
+
+        if not purl_only:
+            return Response(PackageV2Serializer(query, many=True, context={"request": request}).data)
+
+        vulnerable_purls = query.vulnerable().only("package_url")
+        vulnerable_purls = [str(package.package_url) for package in vulnerable_purls]
+        return Response(data=vulnerable_purls)

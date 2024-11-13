@@ -180,33 +180,36 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     reference_id=ref.reference_id,
                     url=ref.url,
                 )
-                if not reference:
-                    continue
 
-            VulnerabilityRelatedReference.objects.update_or_create(
-                reference=reference,
-                vulnerability=vulnerability,
-            )
+            if reference:
+                VulnerabilityRelatedReference.objects.update_or_create(
+                    reference=reference,
+                    vulnerability=vulnerability,
+                )
             updated = False
             for severity in ref.severities:
                 try:
                     published_at = str(severity.published_at) if severity.published_at else None
-                    _vs, updated = VulnerabilitySeverity.objects.update_or_create(
+                    (
+                        vulnerability_severity,
+                        updated,
+                    ) = VulnerabilitySeverity.objects.update_or_create(
                         scoring_system=severity.system.identifier,
-                        reference=reference,
+                        url=ref.url,
+                        value=severity.value,
+                        scoring_elements=severity.scoring_elements,
                         defaults={
-                            "value": str(severity.value),
-                            "scoring_elements": str(severity.scoring_elements),
                             "published_at": published_at,
                         },
                     )
+                    vulnerability.severities.add(vulnerability_severity)
                 except:
                     logger.error(
                         f"Failed to create VulnerabilitySeverity for: {severity} with error:\n{traceback_format_exc()}"
                     )
                 if updated:
                     logger.info(
-                        f"Severity updated for reference {ref!r} to value: {severity.value!r} "
+                        f"Severity updated for reference {ref.url!r} to value: {severity.value!r} "
                         f"and scoring_elements: {severity.scoring_elements!r}"
                     )
 

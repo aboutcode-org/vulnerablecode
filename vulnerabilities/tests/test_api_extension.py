@@ -45,7 +45,7 @@ def vulnerability_severity(vulnerability_reference):
         scoring_system="cvssv3_vector",
         value="7.0",
         scoring_elements="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-        reference_id=vulnerability_reference.id,
+        url=f"https://..",
     )
 
 
@@ -86,7 +86,7 @@ def test_V2VulnerabilitySeveritySerializer(vulnerability_severity):
     results = V2VulnerabilitySeveritySerializer(instance=vulnerability_severity).data
     expected = {
         "published_at": None,
-        "reference": {"reference_id": "fake", "reference_type": "", "reference_url": "https://.."},
+        "url": "https://..",
         "score": "7.0",
         "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
         "scoring_system": "cvssv3_vector",

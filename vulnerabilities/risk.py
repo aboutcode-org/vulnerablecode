@@ -10,10 +10,6 @@
 
 from urllib.parse import urlparse
 
-from vulnerabilities.models import AffectedByPackageRelatedVulnerability
-from vulnerabilities.models import Exploit
-from vulnerabilities.models import Package
-from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.weight_config import WEIGHT_CONFIG
@@ -40,7 +36,7 @@ def get_weighted_severity(severities):
 
     score_list = []
     for severity in severities:
-        parsed_url = urlparse(severity.reference.url)
+        parsed_url = urlparse(severity.url)
         severity_source = parsed_url.netloc.replace("www.", "", 1)
         weight = WEIGHT_CONFIG.get(severity_source, DEFAULT_WEIGHT)
         max_weight = float(weight) / 10
@@ -72,25 +68,22 @@ def get_exploitability_level(exploits, references, severities):
 
     elif severities:
         # high EPSS.
-        epss = severities.filter(
-            scoring_system=EPSS.identifier,
-        )
-        epss = any(float(epss.value) > 0.8 for epss in epss)
-        if epss:
-            exploit_level = 2
+        for severity in severities:
+            if severity.scoring_system == EPSS.identifier and float(severity.value) > 0.8:
+                exploit_level = 2
+                break
 
     elif references:
         # PoC/Exploit script published
-        ref_exploits = references.filter(
-            reference_type=VulnerabilityReference.EXPLOIT,
-        )
-        if ref_exploits:
-            exploit_level = 1
+        for reference in references:
+            if reference.reference_type == VulnerabilityReference.EXPLOIT:
+                exploit_level = 1
+                break
 
     return exploit_level
 
 
-def compute_vulnerability_risk(vulnerability: Vulnerability):
+def compute_vulnerability_risk(vulnerability):
     """
     Risk may be expressed as a number ranging from 0 to 10.
     Risk is calculated from weighted severity and exploitability values.
@@ -98,26 +91,24 @@ def compute_vulnerability_risk(vulnerability: Vulnerability):
 
     Risk = min(weighted severity * exploitability, 10)
     """
-    references = vulnerability.references
-    severities = vulnerability.severities.select_related("reference")
-    exploits = Exploit.objects.filter(vulnerability=vulnerability)
-    if references.exists() or severities.exists() or exploits.exists():
+    severities = vulnerability.severities.all()
+    exploits = vulnerability.exploits.all()
+    reference = vulnerability.references.all()
+    if reference.exists() or severities.exists() or exploits.exists():
         weighted_severity = get_weighted_severity(severities)
-        exploitability = get_exploitability_level(exploits, references, severities)
+        exploitability = get_exploitability_level(exploits, reference, severities)
         return min(weighted_severity * exploitability, 10)
 
 
-def compute_package_risk(package: Package):
+def compute_package_risk(package):
     """
     Calculate the risk for a package by iterating over all vulnerabilities that affects this package
     and determining the associated risk.
     """
 
     result = []
-    for pkg_related_vul in AffectedByPackageRelatedVulnerability.objects.filter(
-        package=package
-    ).prefetch_related("vulnerability"):
-        if risk := compute_vulnerability_risk(pkg_related_vul.vulnerability):
+    for package_vulnerability in package.affectedbypackagerelatedvulnerability_set.all():
+        if risk := compute_vulnerability_risk(package_vulnerability.vulnerability):
             result.append(risk)
 
     if not result:

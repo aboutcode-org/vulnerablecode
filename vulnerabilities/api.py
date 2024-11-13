@@ -62,11 +62,16 @@ class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
         fields = ["reference_url", "reference_id", "reference_type", "scores", "url"]
 
     def get_scores(self, instance):
-        severities_related_to_reference = []
-        if vulnerability := self.context.get("vulnerability"):
-            severities_related_to_reference = vulnerability.severities.filter(url=instance.url)
+        severities_related_to_reference = [
+            severity
+            for severity in self.context.get("severities", [])
+            if severity.url == instance.url
+        ]
 
-        return VulnerabilitySeveritySerializer(severities_related_to_reference, many=True).data
+        return VulnerabilitySeveritySerializer(
+            severities_related_to_reference,
+            many=True,
+        ).data
 
 
 class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -222,10 +227,11 @@ class VulnerabilitySerializer(BaseResourceSerializer):
 
     def get_references(self, vulnerability):
         references = vulnerability.vulnerabilityreference_set.all()
+        severities = vulnerability.severities.all()
 
         serialized_references = VulnerabilityReferenceSerializer(
             references,
-            context={"vulnerability": vulnerability},
+            context={"severities": severities},
             many=True,
         ).data
 

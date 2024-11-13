@@ -84,11 +84,10 @@ class V2VulnerabilityReferenceSerializer(ModelSerializer):
 
 class V2VulnerabilitySeveritySerializer(ModelSerializer):
     score = CharField(source="value")
-    reference = V2VulnerabilityReferenceSerializer()
 
     class Meta:
         model = VulnerabilitySeverity
-        fields = ("score", "scoring_system", "scoring_elements", "published_at", "reference")
+        fields = ("url", "score", "scoring_system", "scoring_elements", "published_at")
 
 
 class V2WeaknessSerializer(ModelSerializer):
@@ -127,9 +126,9 @@ class V2VulnerabilitySerializer(ModelSerializer):
 
     aliases = SerializerMethodField("get_aliases")
     weaknesses = V2WeaknessSerializer(many=True, source="weaknesses_set")
-    scores = V2VulnerabilitySeveritySerializer(many=True, source="vulnerabilityseverity_set")
     references = V2VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
     exploits = V2ExploitSerializer(many=True, source="weaknesses")
+    severities = V2VulnerabilitySeveritySerializer(many=True)
 
     def get_aliases(self, vulnerability):
         return vulnerability.aliases.only("alias").values_list("alias", flat=True)
@@ -145,11 +144,11 @@ class V2VulnerabilitySerializer(ModelSerializer):
             "vulnerability_id",
             "aliases",
             "status",
-            "scores",
             "weaknesses",
             "summary",
             "exploits",
             "references",
+            "severities",
         )
 
 
@@ -358,7 +357,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
             .get_queryset()
             .prefetch_related(
                 "weaknesses",
-                # "severities",
+                "severities",
                 # "exploits",
             )
         )

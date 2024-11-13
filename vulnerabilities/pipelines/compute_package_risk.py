@@ -29,19 +29,28 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         return (cls.add_package_risk_score,)
 
     def add_package_risk_score(self):
-        affected_packages = Package.objects.filter(
-            affected_by_vulnerabilities__isnull=False
+        affected_packages = (
+            Package.objects.filter(affected_by_vulnerabilities__isnull=False).prefetch_related(
+                "affectedbypackagerelatedvulnerability_set__vulnerability",
+                "affectedbypackagerelatedvulnerability_set__vulnerability__references",
+                "affectedbypackagerelatedvulnerability_set__vulnerability__severities",
+                "affectedbypackagerelatedvulnerability_set__vulnerability__exploits",
+            )
         ).distinct()
 
         self.log(f"Calculating risk for {affected_packages.count():,d} affected package records")
 
-        progress = LoopProgress(total_iterations=affected_packages.count(), logger=self.log)
+        progress = LoopProgress(
+            total_iterations=affected_packages.count(),
+            logger=self.log,
+            progress_step=5,
+        )
 
         updatables = []
         updated_package_count = 0
-        batch_size = 5000
+        batch_size = 10000
 
-        for package in progress.iter(affected_packages.paginated()):
+        for package in progress.iter(affected_packages.paginated(per_page=batch_size)):
             risk_score = compute_package_risk(package)
 
             if not risk_score:

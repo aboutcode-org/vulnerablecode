@@ -171,6 +171,7 @@ class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PackageV2Serializer(serializers.ModelSerializer):
     purl = serializers.CharField(source="package_url")
+    risk_score = serializers.FloatField(read_only=True)
     affected_by_vulnerabilities = serializers.SerializerMethodField()
     fixing_vulnerabilities = serializers.SerializerMethodField()
     next_non_vulnerable_version = serializers.CharField(read_only=True)
@@ -184,6 +185,7 @@ class PackageV2Serializer(serializers.ModelSerializer):
             "fixing_vulnerabilities",
             "next_non_vulnerable_version",
             "latest_non_vulnerable_version",
+            "risk_score",
         ]
 
     def get_affected_by_vulnerabilities(self, obj):

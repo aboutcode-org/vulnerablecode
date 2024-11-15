@@ -155,13 +155,25 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
         many=True, source="filtered_fixed_packages", read_only=True
     )
 
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    references = serializers.SerializerMethodField()
 
     aliases = serializers.SerializerMethodField()
 
     def get_aliases(self, obj):
         # Assuming `obj.aliases` is a queryset of `Alias` objects
         return [alias.alias for alias in obj.aliases.all()]
+
+    def get_references(self, vulnerability):
+        references = vulnerability.vulnerabilityreference_set.all()
+        severities = vulnerability.severities.all()
+
+        serialized_references = VulnerabilityReferenceSerializer(
+            references,
+            context={"severities": severities},
+            many=True,
+        ).data
+
+        return serialized_references
 
     class Meta:
         model = Vulnerability

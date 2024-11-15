@@ -1,8 +1,23 @@
 Release notes
 =============
 
-Version (next)
------------------------
+Version v34.3.2
+----------------
+
+- HOTFIX: Add reference score to package endpoint #1655
+
+
+Version v34.3.1
+----------------
+
+- HOTFIX: Fix API bug #1654
+
+
+Version v34.3.0
+-----------------
+
+- Add bulk search in v2 #1649 
+- Refactor severity score model and fix incorrect suse scores #1636
 
 
 Version v34.2.0

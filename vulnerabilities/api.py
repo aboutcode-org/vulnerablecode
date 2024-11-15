@@ -323,7 +323,7 @@ class PackageSerializer(BaseResourceSerializer):
         otherwise return vulnerabilities fixed by the `package`.
         """
         fixed_packages = self.get_fixed_packages(package=package)
-        if fix:
+        if not fix:
             qs = package.affected_by_vulnerabilities.all()
         else:
             qs = package.fixing_vulnerabilities.all()

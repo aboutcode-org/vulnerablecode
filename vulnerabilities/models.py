@@ -827,15 +827,6 @@ class Package(PackageURLMixin):
         return None, None
 
     @property
-    def non_vulnerable_versions(self):
-        """
-        Cache the result of get_non_vulnerable_versions_v2 to avoid redundant computations.
-        """
-        if not hasattr(self, "_non_vulnerable_versions_cache"):
-            self._non_vulnerable_versions_cache = self.get_non_vulnerable_versions_v2()
-        return self._non_vulnerable_versions_cache
-
-    @property
     def next_non_vulnerable_package(self):
         """
         Return the purl of the next non-vulnerable package version.

@@ -312,49 +312,6 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         data = serializer.data
         return Response({"vulnerabilities": vulnerability_data, "packages": data})
 
-    @action(detail=False, methods=["get"])
-    def all(self, request):
-        """
-        Return a list of Package URLs of vulnerable packages.
-        """
-        vulnerable_purls = (
-            Package.objects.vulnerable()
-            .only("package_url")
-            .order_by("package_url")
-            .distinct()
-            .values_list("package_url", flat=True)
-        )
-        return Response(vulnerable_purls)
-
-    @extend_schema(
-        request=LookupRequestSerializer,
-        responses={200: PackageV2Serializer(many=True)},
-    )
-    @action(
-        detail=False,
-        methods=["post"],
-        serializer_class=LookupRequestSerializer,
-        filter_backends=[],
-        pagination_class=None,
-    )
-    def lookup(self, request):
-        """
-        Return the response for exact PackageURL requested for.
-        """
-        serializer = self.serializer_class(data=request.data)
-        if not serializer.is_valid():
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={
-                    "error": serializer.errors,
-                    "message": "A 'purl' is required.",
-                },
-            )
-        validated_data = serializer.validated_data
-        purl = validated_data.get("purl")
-
-        qs = self.get_queryset().for_purls([purl]).with_is_vulnerable()
-        return Response(PackageV2Serializer(qs, many=True, context={"request": request}).data)
 
     @extend_schema(
         request=PackageurlListSerializer,
@@ -517,3 +474,47 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         vulnerable_purls = query.vulnerable().only("package_url")
         vulnerable_purls = [str(package.package_url) for package in vulnerable_purls]
         return Response(data=vulnerable_purls)
+
+    @action(detail=False, methods=["get"])
+    def all(self, request):
+        """
+        Return a list of Package URLs of vulnerable packages.
+        """
+        vulnerable_purls = (
+            Package.objects.vulnerable()
+            .only("package_url")
+            .order_by("package_url")
+            .distinct()
+            .values_list("package_url", flat=True)
+        )
+        return Response(vulnerable_purls)
+
+    @extend_schema(
+        request=LookupRequestSerializer,
+        responses={200: PackageV2Serializer(many=True)},
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=LookupRequestSerializer,
+        filter_backends=[],
+        pagination_class=None,
+    )
+    def lookup(self, request):
+        """
+        Return the response for exact PackageURL requested for.
+        """
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": serializer.errors,
+                    "message": "A 'purl' is required.",
+                },
+            )
+        validated_data = serializer.validated_data
+        purl = validated_data.get("purl")
+
+        qs = self.get_queryset().for_purls([purl]).with_is_vulnerable()
+        return Response(PackageV2Serializer(qs, many=True, context={"request": request}).data)

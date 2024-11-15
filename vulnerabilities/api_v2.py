@@ -250,9 +250,6 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
                 fixing_vulnerabilities__vulnerability_id=fixing_vulnerability
             )
 
-        queryset = queryset.with_is_vulnerable()
-
-        # Prefetch related vulnerabilities and their related data
         queryset = queryset.prefetch_related(
             Prefetch(
                 "affected_by_vulnerabilities",
@@ -358,3 +355,165 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
         qs = self.get_queryset().for_purls([purl]).with_is_vulnerable()
         return Response(PackageV2Serializer(qs, many=True, context={"request": request}).data)
+
+    @extend_schema(
+        request=PackageurlListSerializer,
+        responses={200: PackageV2Serializer(many=True)},
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=PackageurlListSerializer,
+        filter_backends=[],
+        pagination_class=None,
+    )
+    def bulk_lookup(self, request):
+        """
+        Return the response for exact PackageURLs requested for.
+        """
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": serializer.errors,
+                    "message": "A non-empty 'purls' list of PURLs is required.",
+                },
+            )
+        validated_data = serializer.validated_data
+        purls = validated_data.get("purls")
+
+        # Fetch packages matching the provided purls
+        packages = Package.objects.for_purls(purls).with_is_vulnerable()
+
+        # Collect vulnerabilities associated with these packages
+        vulnerabilities = set()
+        for package in packages:
+            vulnerabilities.update(package.affected_by_vulnerabilities.all())
+            vulnerabilities.update(package.fixing_vulnerabilities.all())
+
+        # Serialize vulnerabilities with vulnerability_id as keys
+        vulnerability_data = {
+            vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data for vuln in vulnerabilities
+        }
+
+        # Serialize packages
+        package_data = PackageV2Serializer(
+            packages,
+            many=True,
+            context={"request": request},
+        ).data
+
+        return Response(
+            {
+                "vulnerabilities": vulnerability_data,
+                "packages": package_data,
+            }
+        )
+
+    @extend_schema(
+        request=PackageBulkSearchRequestSerializer,
+        responses={200: PackageV2Serializer(many=True)},
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        serializer_class=PackageBulkSearchRequestSerializer,
+        filter_backends=[],
+        pagination_class=None,
+    )
+    def bulk_search(self, request):
+        """
+        Lookup for vulnerable packages using many Package URLs at once.
+        """
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": serializer.errors,
+                    "message": "A non-empty 'purls' list of PURLs is required.",
+                },
+            )
+        validated_data = serializer.validated_data
+        purls = validated_data.get("purls")
+        purl_only = validated_data.get("purl_only", False)
+        plain_purl = validated_data.get("plain_purl", False)
+
+        if plain_purl:
+            purl_objects = [PackageURL.from_string(purl) for purl in purls]
+            plain_purl_objects = [
+                PackageURL(
+                    type=purl.type,
+                    namespace=purl.namespace,
+                    name=purl.name,
+                    version=purl.version,
+                )
+                for purl in purl_objects
+            ]
+            plain_purls = [str(purl) for purl in plain_purl_objects]
+
+            query = (
+                Package.objects.filter(plain_package_url__in=plain_purls)
+                .order_by("plain_package_url")
+                .distinct("plain_package_url")
+                .with_is_vulnerable()
+            )
+
+            packages = query
+
+            # Collect vulnerabilities associated with these packages
+            vulnerabilities = set()
+            for package in packages:
+                vulnerabilities.update(package.affected_by_vulnerabilities.all())
+                vulnerabilities.update(package.fixing_vulnerabilities.all())
+
+            vulnerability_data = {
+                vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data
+                for vuln in vulnerabilities
+            }
+
+            if not purl_only:
+                package_data = PackageV2Serializer(
+                    packages, many=True, context={"request": request}
+                ).data
+                return Response(
+                    {
+                        "vulnerabilities": vulnerability_data,
+                        "packages": package_data,
+                    }
+                )
+
+            # Using order by and distinct because there will be
+            # many fully qualified purl for a single plain purl
+            vulnerable_purls = query.vulnerable().only("plain_package_url")
+            vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
+            return Response(data=vulnerable_purls)
+
+        query = Package.objects.filter(package_url__in=purls).distinct().with_is_vulnerable()
+        packages = query
+
+        # Collect vulnerabilities associated with these packages
+        vulnerabilities = set()
+        for package in packages:
+            vulnerabilities.update(package.affected_by_vulnerabilities.all())
+            vulnerabilities.update(package.fixing_vulnerabilities.all())
+
+        vulnerability_data = {
+            vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data for vuln in vulnerabilities
+        }
+
+        if not purl_only:
+            package_data = PackageV2Serializer(
+                packages, many=True, context={"request": request}
+            ).data
+            return Response(
+                {
+                    "vulnerabilities": vulnerability_data,
+                    "packages": package_data,
+                }
+            )
+
+        vulnerable_purls = query.vulnerable().only("package_url")
+        vulnerable_purls = [str(package.package_url) for package in vulnerable_purls]
+        return Response(data=vulnerable_purls)

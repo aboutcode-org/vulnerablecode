@@ -1,8 +1,10 @@
 Release notes
 =============
 
-Version (next)
------------------------
+Version v34.3.1
+----------------
+
+- HOTFIX: Fix API bug #1654
 
 
 Version v34.3.0

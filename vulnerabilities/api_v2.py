@@ -8,6 +8,7 @@
 #
 
 
+from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
@@ -137,10 +138,10 @@ class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
         # Prefetch related fields to reduce queries in serializers
         queryset = queryset.prefetch_related(
-            'aliases',
-            'weaknesses',
-            'vulnerabilityreference_set',
-            'severities',
+            "aliases",
+            "weaknesses",
+            "vulnerabilityreference_set",
+            "severities",
         )
         return queryset
 
@@ -254,21 +255,21 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         # Prefetch related vulnerabilities and their related data
         queryset = queryset.prefetch_related(
             Prefetch(
-                'affected_by_vulnerabilities',
+                "affected_by_vulnerabilities",
                 queryset=Vulnerability.objects.all().prefetch_related(
-                    'aliases',
-                    'weaknesses',
-                    'vulnerabilityreference_set',
-                    'severities',
+                    "aliases",
+                    "weaknesses",
+                    "vulnerabilityreference_set",
+                    "severities",
                 ),
             ),
             Prefetch(
-                'fixing_vulnerabilities',
+                "fixing_vulnerabilities",
                 queryset=Vulnerability.objects.all().prefetch_related(
-                    'aliases',
-                    'weaknesses',
-                    'vulnerabilityreference_set',
-                    'severities',
+                    "aliases",
+                    "weaknesses",
+                    "vulnerabilityreference_set",
+                    "severities",
                 ),
             ),
         )
@@ -307,8 +308,7 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             vulnerabilities.update(package.fixing_vulnerabilities.all())
 
         vulnerability_data = {
-            vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data
-            for vuln in vulnerabilities
+            vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data for vuln in vulnerabilities
         }
 
         serializer = self.get_serializer(queryset, many=True)

@@ -20,6 +20,7 @@ from cwe2.database import Database
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import MaxValueValidator
@@ -471,18 +472,19 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         Return a queryset of all the package versions of this `package` that fix any vulnerability.
         If `fix` is False, return all package versions whether or not they fix a vulnerability.
         """
-        filter_dict = {
-            "name": purl.name,
-            "namespace": purl.namespace,
+        # TODO: Move this to Package object method
+        filters = {
             "type": purl.type,
+            "namespace": purl.namespace,
+            "name": purl.name,
             "qualifiers": purl.qualifiers,
             "subpath": purl.subpath,
         }
 
         if fix:
-            filter_dict["fixing_vulnerabilities__isnull"] = False
+            filters["fixing_vulnerabilities__isnull"] = False
 
-        return Package.objects.filter(**filter_dict).distinct()
+        return Package.objects.filter(**filters).distinct()
 
     def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
         """
@@ -648,7 +650,8 @@ class Package(PackageURLMixin):
     fixing_vulnerabilities = models.ManyToManyField(
         to="Vulnerability",
         through="FixingPackageRelatedVulnerability",
-        related_name="fixed_by_packages",  # Unique related_name
+        # Unique related_name
+        related_name="fixed_by_packages",
     )
 
     package_url = models.CharField(
@@ -780,16 +783,16 @@ class Package(PackageURLMixin):
         return self.version_class(self.version)
 
     @property
+    def vulnerabilities(self):
+        return self.affected_by_vulnerabilities.all() | self.fixing_vulnerabilities.all()
+
+    @property
     def next_non_vulnerable_version(self):
         """
         Return the version string of the next non-vulnerable package version.
         """
         next_non_vulnerable, _ = self.get_non_vulnerable_versions()
         return next_non_vulnerable.version if next_non_vulnerable else None
-
-    @property
-    def vulnerabilities(self):
-        return self.affected_by_vulnerabilities.all() | self.fixing_vulnerabilities.all()
 
     @property
     def latest_non_vulnerable_version(self):
@@ -821,6 +824,67 @@ class Package(PackageURLMixin):
             latest_non_vulnerable = sorted_versions[-1]
             return next_non_vulnerable, latest_non_vulnerable
 
+        return None, None
+
+    @property
+    def non_vulnerable_versions(self):
+        """
+        Cache the result of get_non_vulnerable_versions_v2 to avoid redundant computations.
+        """
+        if not hasattr(self, "_non_vulnerable_versions_cache"):
+            self._non_vulnerable_versions_cache = self.get_non_vulnerable_versions_v2()
+        return self._non_vulnerable_versions_cache
+
+    @property
+    def next_non_vulnerable_package(self):
+        """
+        Return the purl of the next non-vulnerable package version.
+        """
+        next_non_vulnerable, _ = self.get_non_vulnerable_versions_v2()
+        return next_non_vulnerable.purl if next_non_vulnerable else None
+
+    @property
+    def latest_non_vulnerable_package(self):
+        """
+        Return the purl of the latest non-vulnerable package version.
+        """
+        _, latest_non_vulnerable = self.get_non_vulnerable_versions_v2()
+        return latest_non_vulnerable.purl if latest_non_vulnerable else None
+
+    def get_non_vulnerable_versions_v2(self):
+        """
+        Return a tuple of three Package instance:
+        - first fixing version
+        - next non-vulnerable version
+        - latest non-vulnerable version
+        Return a tuple of (None, None) if there is no non-vulnerable version.
+        """
+        cache_key = f"non_vulnerable_versions_{self.id}"
+        result = cache.get(cache_key)
+        if result is not None:
+            return result
+
+        non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
+            self, fix=False
+        ).only_non_vulnerable()
+        sorted_versions = self.sort_by_version(non_vulnerable_versions)
+
+        later_non_vulnerable_versions = [
+            non_vuln_ver
+            for non_vuln_ver in sorted_versions
+            if self.version_class(non_vuln_ver.version) > self.current_version
+        ]
+
+        if later_non_vulnerable_versions:
+            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
+            next_non_vulnerable = sorted_versions[0]
+            latest_non_vulnerable = sorted_versions[-1]
+            cache.set(
+                cache_key, (next_non_vulnerable, latest_non_vulnerable), timeout=3600
+            )
+            return next_non_vulnerable, latest_non_vulnerable
+
+        cache.set(cache_key, (None, None), timeout=3600)
         return None, None
 
     @property
@@ -928,15 +992,14 @@ class PackageRelatedVulnerabilityBase(models.Model):
     package = models.ForeignKey(
         Package,
         on_delete=models.CASCADE,
-        # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 
     vulnerability = models.ForeignKey(
         Vulnerability,
         on_delete=models.CASCADE,
-        # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 
+    # TODO: Fix the help text
     created_by = models.CharField(
         max_length=100,
         blank=True,

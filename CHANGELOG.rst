@@ -1,6 +1,12 @@
 Release notes
 =============
 
+Version v34.3.2
+----------------
+
+- HOTFIX: Add reference score to package endpoint #1655
+
+
 Version v34.3.1
 ----------------
 

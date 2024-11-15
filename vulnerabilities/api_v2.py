@@ -253,7 +253,7 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = queryset.prefetch_related(
             Prefetch(
                 "affected_by_vulnerabilities",
-                queryset=Vulnerability.objects.all().prefetch_related(
+                queryset=Vulnerability.objects.prefetch_related(
                     "aliases",
                     "weaknesses",
                     "vulnerabilityreference_set",
@@ -262,7 +262,7 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             ),
             Prefetch(
                 "fixing_vulnerabilities",
-                queryset=Vulnerability.objects.all().prefetch_related(
+                queryset=Vulnerability.objects.prefetch_related(
                     "aliases",
                     "weaknesses",
                     "vulnerabilityreference_set",

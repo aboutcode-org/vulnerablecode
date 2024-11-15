@@ -178,8 +178,8 @@ class PackageV2Serializer(serializers.ModelSerializer):
     risk_score = serializers.FloatField(read_only=True)
     affected_by_vulnerabilities = serializers.SerializerMethodField()
     fixing_vulnerabilities = serializers.SerializerMethodField()
-    next_non_vulnerable_version = serializers.CharField(read_only=True)
-    latest_non_vulnerable_version = serializers.CharField(read_only=True)
+    next_non_vulnerable_package = serializers.CharField(read_only=True)
+    latest_non_vulnerable_package = serializers.CharField(read_only=True)
 
     class Meta:
         model = Package
@@ -187,8 +187,8 @@ class PackageV2Serializer(serializers.ModelSerializer):
             "purl",
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
-            "next_non_vulnerable_version",
-            "latest_non_vulnerable_version",
+            "next_non_vulnerable_package",
+            "latest_non_vulnerable_package",
             "risk_score",
         ]
 

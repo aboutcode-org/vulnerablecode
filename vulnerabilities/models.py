@@ -156,6 +156,42 @@ class VulnerabilityQuerySet(BaseQuerySet):
         )
 
 
+class VulnerabilitySeverity(models.Model):
+    url = models.URLField(
+        max_length=1024,
+        null=True,
+        help_text="URL to the vulnerability severity",
+    )
+
+    scoring_system_choices = tuple(
+        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
+    )
+
+    scoring_system = models.CharField(
+        max_length=50,
+        choices=scoring_system_choices,
+        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
+            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
+        ),
+    )
+
+    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+
+    scoring_elements = models.CharField(
+        max_length=150,
+        null=True,
+        help_text="Supporting scoring elements used to compute the score values. "
+        "For example a CVSS vector string as used to compute a CVSS score.",
+    )
+
+    published_at = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
+    )
+
+    class Meta:
+        ordering = ["url", "scoring_system", "value"]
+
+
 class VulnerabilityStatusType(models.IntegerChoices):
     """List of vulnerability statuses."""
 
@@ -202,34 +238,10 @@ class Vulnerability(models.Model):
         choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
     )
 
-    exploitability = models.DecimalField(
-        null=True,
-        max_digits=4,
-        decimal_places=2,
-        help_text=""""Exploitability indicates the likelihood that a vulnerability in a software package could be used 
-        by malicious actors to compromise systems, applications, or networks. 
-        This metric is determined automatically based on the discovery of known exploits.""",
+    severities = models.ManyToManyField(
+        VulnerabilitySeverity,
+        related_name="vulnerabilities",
     )
-
-    weighted_severity = models.DecimalField(
-        null=True,
-        max_digits=4,
-        decimal_places=2,
-        help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10.",
-    )
-
-    @property
-    def risk_score(self):
-        """
-        Risk expressed as a number ranging from 0 to 10.
-        Risk is calculated from weighted severity and exploitability values.
-        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
-
-        Risk = min(weighted severity * exploitability, 10)
-        """
-        if self.exploitability is not None and self.weighted_severity is not None:
-            risk_score = min(float(self.exploitability) * float(self.weighted_severity), 10.0)
-            return f"{risk_score:.2f}".rstrip("0").rstrip(".")
 
     objects = VulnerabilityQuerySet.as_manager()
 
@@ -243,13 +255,6 @@ class Vulnerability(models.Model):
     @property
     def vcid(self):
         return self.vulnerability_id
-
-    @property
-    def severities(self):
-        """
-        Return a queryset of VulnerabilitySeverity for this vulnerability.
-        """
-        return VulnerabilitySeverity.objects.filter(reference__in=self.references.all())
 
     @property
     def affected_packages(self):
@@ -1015,41 +1020,14 @@ class FixingPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
 
 
 class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
+
+    severities = models.ManyToManyField(
+        VulnerabilitySeverity,
+        related_name="affected_package_vulnerability_relations",
+    )
+
     class Meta(PackageRelatedVulnerabilityBase.Meta):
         verbose_name_plural = "Affected By Package Related Vulnerabilities"
-
-
-class VulnerabilitySeverity(models.Model):
-    reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
-
-    scoring_system_choices = tuple(
-        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
-    )
-
-    scoring_system = models.CharField(
-        max_length=50,
-        choices=scoring_system_choices,
-        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
-            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
-        ),
-    )
-
-    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
-
-    scoring_elements = models.CharField(
-        max_length=150,
-        null=True,
-        help_text="Supporting scoring elements used to compute the score values. "
-        "For example a CVSS vector string as used to compute a CVSS score.",
-    )
-
-    published_at = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
-    )
-
-    class Meta:
-        unique_together = ["reference", "scoring_system", "value"]
-        ordering = ["reference", "scoring_system", "value"]
 
 
 class AliasQuerySet(BaseQuerySet):

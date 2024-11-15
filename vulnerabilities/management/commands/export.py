@@ -22,20 +22,12 @@ logger = logging.getLogger(__name__)
 
 
 def serialize_severity(sev):
-    # inlines refs
-    ref = sev.reference
-    sevref = {
-        "url": ref.url,
-        "reference_type": ref.reference_type,
-        "reference_id": ref.reference_id,
-    }
-
     return {
         "score": sev.value,
         "scoring_system": sev.scoring_system,
         "scoring_elements": sev.scoring_elements,
         "published_at": sev.published_at,
-        "reference": sevref,
+        "url": sev.url,
     }
 
 
@@ -44,7 +36,7 @@ def serialize_vulnerability(vuln):
     Return a plain data mapping seralized from ``vuln`` Vulnerability instance.
     """
     aliases = list(vuln.aliases.values_list("alias", flat=True))
-    severities = [serialize_severity(sev) for sev in vuln.severities]
+    severities = [serialize_severity(sev) for sev in vuln.severities.all()]
     weaknesses = [wkns.cwe for wkns in vuln.weaknesses.all()]
 
     references = list(
@@ -161,11 +153,11 @@ def packages_by_type_ns_name():
             "affected_by_vulnerabilities",
             "affected_by_vulnerabilities__references",
             "affected_by_vulnerabilities__weaknesses",
-            "affected_by_vulnerabilities__references__vulnerabilityseverity_set",
+            "affected_by_vulnerabilities__severities",
             "fixing_vulnerabilities",
             "fixing_vulnerabilities__references",
             "fixing_vulnerabilities__weaknesses",
-            "fixing_vulnerabilities__references__vulnerabilityseverity_set",
+            "fixing_vulnerabilities__severities",
         )
         .paginated()
     )

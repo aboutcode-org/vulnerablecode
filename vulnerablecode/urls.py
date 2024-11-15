@@ -46,8 +46,8 @@ api_router.register("cpes", CPEViewSet, basename="cpe")
 api_router.register("aliases", AliasViewSet, basename="alias")
 
 api_v2_router = OptionalSlashRouter()
-api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
+api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 
 urlpatterns = [
     path(

@@ -6,24 +6,22 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
-
+from typing import List
 from urllib.parse import urlparse
 
 from django.db.models import Prefetch
 
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
-from vulnerabilities.models import Exploit
-from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.weight_config import WEIGHT_CONFIG
 
 DEFAULT_WEIGHT = 5
 
 
-def get_weighted_severity(severities):
+def get_weighted_severity(severities: List[VulnerabilitySeverity]):
     """
     Weighted Severity is the maximum value obtained when each Severity is multiplied
     by its associated Weight/10.
@@ -57,7 +55,9 @@ def get_weighted_severity(severities):
             vul_score_value = score_map.get(vul_score, 0) * max_weight
 
         score_list.append(vul_score_value)
-    return max(score_list) if score_list else 0
+
+    max_score = max(score_list) if score_list else 0
+    return round(max_score, 1)
 
 
 def get_exploitability_level(exploits, references, severities):
@@ -99,12 +99,8 @@ def compute_vulnerability_risk_factors(references, severities, exploits):
 
     Risk = min(weighted severity * exploitability, 10)
     """
-    severities = severities.all()
-    exploits = exploits.all()
-    reference = references.all()
-
     weighted_severity = get_weighted_severity(severities)
-    exploitability = get_exploitability_level(exploits, reference, severities)
+    exploitability = get_exploitability_level(exploits, references, severities)
     return weighted_severity, exploitability
 
 
@@ -130,4 +126,4 @@ def compute_package_risk(package):
     if not result:
         return
 
-    return f"{max(result):.2f}"
+    return round(max(result), 1)

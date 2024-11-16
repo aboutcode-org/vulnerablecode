@@ -131,7 +131,7 @@ def test_exploitability_level(
 @pytest.mark.django_db
 def test_get_weighted_severity(vulnerability):
     severities = vulnerability.severities.all()
-    assert get_weighted_severity(severities) == 6.210000000000001
+    assert get_weighted_severity(severities) == 6.2
 
     severity2 = VulnerabilitySeverity.objects.create(
         url="https://security-tracker.debian.org/tracker/CVE-2019-13057",
@@ -146,21 +146,17 @@ def test_get_weighted_severity(vulnerability):
 
 @pytest.mark.django_db
 def test_compute_vulnerability_risk_factors(vulnerability):
-    assert compute_vulnerability_risk_factors(
-        vulnerability.references, vulnerability.severities, vulnerability.exploits
-    ) == (6.210000000000001, 2)
-    assert compute_vulnerability_risk_factors(
-        vulnerability.references, vulnerability.severities, None
-    ) == (
-        6.210000000000001,
-        0.5,
-    )
-    assert compute_vulnerability_risk_factors(
-        vulnerability.references, None, vulnerability.exploits
-    ) == (
-        0,
+    severities = vulnerability.severities.all()
+    references = vulnerability.references.all()
+
+    assert compute_vulnerability_risk_factors(references, severities, vulnerability.exploits) == (
+        6.2,
         2,
     )
+
+    assert compute_vulnerability_risk_factors(references, severities, None) == (6.2, 0.5)
+    assert compute_vulnerability_risk_factors(references, None, vulnerability.exploits) == (0, 2)
+
     assert compute_vulnerability_risk_factors(None, None, None) == (0, 0.5)
 
 
@@ -169,15 +165,15 @@ def test_get_vulnerability_risk_score(vulnerability):
     vulnerability.weighted_severity = 6.0
     vulnerability.exploitability = 2
 
-    assert vulnerability.risk_score == "10"  # max risk_score can be reached
+    assert vulnerability.risk_score == 10.0  # max risk_score can be reached
 
     vulnerability.weighted_severity = 6
     vulnerability.exploitability = 0.5
-    assert vulnerability.risk_score == "3"
+    assert vulnerability.risk_score == 3.0
 
     vulnerability.weighted_severity = 5.6
     vulnerability.exploitability = 0.5
-    assert vulnerability.risk_score == "2.8"
+    assert vulnerability.risk_score == 2.8
 
     vulnerability.weighted_severity = None
     vulnerability.exploitability = 0.5

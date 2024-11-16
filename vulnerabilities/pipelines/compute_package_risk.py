@@ -34,10 +34,11 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         )
 
     def compute_and_store_vulnerability_risk_score(self):
-        affected_vulnerabilities = (
-            Vulnerability.objects.filter(affectedbypackagerelatedvulnerability__isnull=False)
-            .prefetch_related("references")
-            .only("references", "exploits")
+        affected_vulnerabilities = Vulnerability.objects.filter(
+            affectedbypackagerelatedvulnerability__isnull=False
+        ).prefetch_related(
+            "references",
+            "exploits",
         )
 
         self.log(
@@ -51,8 +52,8 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         batch_size = 5000
 
         for vulnerability in progress.iter(affected_vulnerabilities.paginated()):
-            references = vulnerability.references
-            severities = vulnerability.severities.select_related("reference")
+            severities = vulnerability.severities.all()
+            references = vulnerability.references.all()
 
             (
                 vulnerability.weighted_severity,
@@ -76,17 +77,8 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
     def compute_and_store_package_risk_score(self):
         affected_packages = (
-            Package.objects.filter(affected_by_vulnerabilities__isnull=False).prefetch_related(
-                "affectedbypackagerelatedvulnerability_set__vulnerability",
-                "affectedbypackagerelatedvulnerability_set__vulnerability__references",
-                "affectedbypackagerelatedvulnerability_set__vulnerability__severities",
-                "affectedbypackagerelatedvulnerability_set__vulnerability__exploits",
-            )
-        ).distinct()
-
-        affected_packages = Package.objects.filter(
-            affected_by_vulnerabilities__isnull=False
-        ).distinct()
+            Package.objects.filter(affected_by_vulnerabilities__isnull=False).only("id").distinct()
+        )
 
         self.log(f"Calculating risk for {affected_packages.count():,d} affected package records")
 

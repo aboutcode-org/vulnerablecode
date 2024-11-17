@@ -247,16 +247,15 @@ class Vulnerability(models.Model):
         null=True,
         max_digits=2,
         decimal_places=1,
-        help_text=""""Exploitability indicates the likelihood that a vulnerability in a software package could be used 
-        by malicious actors to compromise systems, applications, or networks. 
-        This metric is determined automatically based on the discovery of known exploits.""",
+        help_text="Exploitability indicates the likelihood that a vulnerability in a software package could be used by malicious actors to compromise systems, "
+        "applications, or networks. This metric is determined automatically based on the discovery of known exploits.",
     )
 
     weighted_severity = models.DecimalField(
         null=True,
         max_digits=3,
         decimal_places=1,
-        help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10",
+        help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10.",
     )
 
     @property

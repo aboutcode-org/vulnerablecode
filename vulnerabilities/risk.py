@@ -6,7 +6,6 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-from typing import List
 from urllib.parse import urlparse
 
 from django.db.models import Prefetch
@@ -14,14 +13,13 @@ from django.db.models import Prefetch
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
-from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.weight_config import WEIGHT_CONFIG
 
 DEFAULT_WEIGHT = 5
 
 
-def get_weighted_severity(severities: List[VulnerabilitySeverity]):
+def get_weighted_severity(severities):
     """
     Weighted Severity is the maximum value obtained when each Severity is multiplied
     by its associated Weight/10.

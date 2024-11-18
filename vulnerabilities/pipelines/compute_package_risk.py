@@ -8,6 +8,7 @@
 #
 
 from aboutcode.pipeline import LoopProgress
+from django.db.models import Prefetch
 
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
@@ -38,6 +39,7 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
             affectedbypackagerelatedvulnerability__isnull=False
         ).prefetch_related(
             "references",
+            "severities",
             "exploits",
         )
 
@@ -77,8 +79,15 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
     def compute_and_store_package_risk_score(self):
         affected_packages = (
-            Package.objects.filter(affected_by_vulnerabilities__isnull=False).only("id").distinct()
-        )
+            Package.objects.filter(affected_by_vulnerabilities__isnull=False)
+            .only("id")
+            .prefetch_related(
+                Prefetch(
+                    "affectedbypackagerelatedvulnerability_set__vulnerability",
+                    queryset=Vulnerability.objects.only("weighted_severity", "exploitability"),
+                ),
+            )
+        ).distinct()
 
         self.log(f"Calculating risk for {affected_packages.count():,d} affected package records")
 

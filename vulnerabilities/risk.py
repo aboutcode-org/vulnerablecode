@@ -8,10 +8,6 @@
 #
 from urllib.parse import urlparse
 
-from django.db.models import Prefetch
-
-from vulnerabilities.models import AffectedByPackageRelatedVulnerability
-from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.weight_config import WEIGHT_CONFIG
@@ -107,18 +103,10 @@ def compute_package_risk(package):
     Calculate the risk for a package by iterating over all vulnerabilities that affects this package
     and determining the associated risk.
     """
-
     result = []
-    affected_pkg_related_vul = AffectedByPackageRelatedVulnerability.objects.filter(
-        package=package
-    ).prefetch_related(
-        Prefetch(
-            "vulnerability",
-            queryset=Vulnerability.objects.only("weighted_severity", "exploitability"),
-        )
-    )
-    for pkg_related_vul in affected_pkg_related_vul:
-        if risk := pkg_related_vul.vulnerability.risk_score:
+    vulnerabilities = package.vulnerabilities.all()
+    for vulnerability in vulnerabilities:
+        if risk := vulnerability.risk_score:
             result.append(float(risk))
 
     if not result:

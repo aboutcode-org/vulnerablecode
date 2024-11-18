@@ -104,9 +104,8 @@ def compute_package_risk(package):
     and determining the associated risk.
     """
     result = []
-    vulnerabilities = package.vulnerabilities.all()
-    for vulnerability in vulnerabilities:
-        if risk := vulnerability.risk_score:
+    for vulnerability in package.affectedbypackagerelatedvulnerability_set.all():
+        if risk := vulnerability.vulnerability.risk_score:
             result.append(float(risk))
 
     if not result:

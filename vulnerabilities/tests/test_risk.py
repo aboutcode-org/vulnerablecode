@@ -145,17 +145,18 @@ def test_get_weighted_severity(vulnerability):
 
 
 @pytest.mark.django_db
-def test_compute_vulnerability_risk_factors(vulnerability):
+def test_compute_vulnerability_risk_factors(vulnerability, exploit):
     severities = vulnerability.severities.all()
     references = vulnerability.references.all()
 
-    assert compute_vulnerability_risk_factors(references, severities, vulnerability.exploits) == (
+    assert compute_vulnerability_risk_factors(references, severities, exploit) == (
         6.2,
         2,
     )
 
     assert compute_vulnerability_risk_factors(references, severities, None) == (6.2, 0.5)
-    assert compute_vulnerability_risk_factors(references, None, vulnerability.exploits) == (0, 2)
+
+    assert compute_vulnerability_risk_factors(references, None, exploit) == (0, 2)
 
     assert compute_vulnerability_risk_factors(None, None, None) == (0, 0.5)
 

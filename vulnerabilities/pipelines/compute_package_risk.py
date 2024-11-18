@@ -6,7 +6,6 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
 from aboutcode.pipeline import LoopProgress
 from django.db.models import Prefetch
 
@@ -35,12 +34,14 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         )
 
     def compute_and_store_vulnerability_risk_score(self):
-        affected_vulnerabilities = Vulnerability.objects.filter(
-            affectedbypackagerelatedvulnerability__isnull=False
-        ).prefetch_related(
-            "references",
-            "severities",
-            "exploits",
+        affected_vulnerabilities = (
+            Vulnerability.objects.filter(affecting_packages__isnull=False)
+            .prefetch_related(
+                "references",
+                "severities",
+                "exploits",
+            )
+            .distinct()
         )
 
         self.log(
@@ -53,35 +54,43 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         updated_vulnerability_count = 0
         batch_size = 5000
 
-        for vulnerability in progress.iter(affected_vulnerabilities.paginated()):
+        for vulnerability in progress.iter(affected_vulnerabilities.paginated(per_page=batch_size)):
             severities = vulnerability.severities.all()
             references = vulnerability.references.all()
+            exploits = vulnerability.exploits.all()
 
-            (
-                vulnerability.weighted_severity,
-                vulnerability.exploitability,
-            ) = compute_vulnerability_risk_factors(references, severities, vulnerability.exploits)
+            weighted_severity, exploitability = compute_vulnerability_risk_factors(
+                references=references,
+                severities=severities,
+                exploits=exploits,
+            )
+            vulnerability.weighted_severity = weighted_severity
+            vulnerability.exploitability = exploitability
 
             updatables.append(vulnerability)
 
             if len(updatables) >= batch_size:
-                updated_vulnerability_count += bulk_update_vulnerability_risk_score(
-                    vulnerabilities=updatables,
+                updated_vulnerability_count += bulk_update(
+                    model=Vulnerability,
+                    items=updatables,
+                    fields=["weighted_severity", "exploitability"],
                     logger=self.log,
                 )
-        updated_vulnerability_count += bulk_update_vulnerability_risk_score(
-            vulnerabilities=updatables,
+
+        updated_vulnerability_count += bulk_update(
+            model=Vulnerability,
+            items=updatables,
+            fields=["weighted_severity", "exploitability"],
             logger=self.log,
         )
+
         self.log(
             f"Successfully added risk score for {updated_vulnerability_count:,d} vulnerability"
         )
 
     def compute_and_store_package_risk_score(self):
         affected_packages = (
-            Package.objects.filter(affected_by_vulnerabilities__isnull=False)
-            .only("id")
-            .prefetch_related(
+            Package.objects.filter(affected_by_vulnerabilities__isnull=False).prefetch_related(
                 Prefetch(
                     "affectedbypackagerelatedvulnerability_set__vulnerability",
                     queryset=Vulnerability.objects.only("weighted_severity", "exploitability"),
@@ -111,38 +120,28 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
             updatables.append(package)
 
             if len(updatables) >= batch_size:
-                updated_package_count += bulk_update_package_risk_score(
-                    packages=updatables,
+                updated_package_count += bulk_update(
+                    model=Package,
+                    items=updatables,
+                    fields=["risk_score"],
                     logger=self.log,
                 )
-        updated_package_count += bulk_update_package_risk_score(
-            packages=updatables,
+        updated_package_count += bulk_update(
+            model=Package,
+            items=updatables,
+            fields=["risk_score"],
             logger=self.log,
         )
         self.log(f"Successfully added risk score for {updated_package_count:,d} package")
 
 
-def bulk_update_package_risk_score(packages, logger):
-    package_count = 0
-    if packages:
+def bulk_update(model, items, fields, logger):
+    item_count = 0
+    if items:
         try:
-            Package.objects.bulk_update(objs=packages, fields=["risk_score"])
-            package_count += len(packages)
+            model.objects.bulk_update(objs=items, fields=fields)
+            item_count += len(items)
         except Exception as e:
-            logger(f"Error updating packages: {e}")
-        packages.clear()
-    return package_count
-
-
-def bulk_update_vulnerability_risk_score(vulnerabilities, logger):
-    vulnerabilities_count = 0
-    if vulnerabilities:
-        try:
-            Vulnerability.objects.bulk_update(
-                objs=vulnerabilities, fields=["weighted_severity", "exploitability"]
-            )
-            vulnerabilities_count += len(vulnerabilities)
-        except Exception as e:
-            logger(f"Error updating vulnerability: {e}")
-        vulnerabilities.clear()
-    return vulnerabilities_count
+            logger(f"Error updating {model.__name__}: {e}")
+        items.clear()
+    return item_count

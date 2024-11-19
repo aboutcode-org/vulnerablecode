@@ -1,6 +1,13 @@
 Release notes
 =============
 
+Version v35.0.0rc1
+---------------------
+
+- Add support for storing exploitability and weighted severity #1646
+- Avoid migrations on version bumps #1660
+
+
 Version v34.3.2
 ----------------
 

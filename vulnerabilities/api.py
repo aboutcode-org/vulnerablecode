@@ -286,6 +286,9 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             "weaknesses",
             "exploits",
             "severity_range_score",
+            "exploitability",
+            "weighted_severity",
+            "risk_score",
         ]
 
 

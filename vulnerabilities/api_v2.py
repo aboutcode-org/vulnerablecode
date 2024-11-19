@@ -67,6 +67,9 @@ class VulnerabilityV2Serializer(serializers.ModelSerializer):
     weaknesses = WeaknessV2Serializer(many=True)
     references = VulnerabilityReferenceV2Serializer(many=True, source="vulnerabilityreference_set")
     severities = VulnerabilitySeverityV2Serializer(many=True)
+    exploitability = serializers.FloatField(read_only=True)
+    weighted_severity = serializers.FloatField(read_only=True)
+    risk_score = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Vulnerability
@@ -77,6 +80,9 @@ class VulnerabilityV2Serializer(serializers.ModelSerializer):
             "severities",
             "weaknesses",
             "references",
+            "exploitability",
+            "weighted_severity",
+            "risk_score",
         ]
 
     def get_aliases(self, obj):

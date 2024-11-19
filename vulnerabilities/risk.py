@@ -6,8 +6,6 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
-
 from urllib.parse import urlparse
 
 from vulnerabilities.models import VulnerabilityReference
@@ -23,6 +21,8 @@ def get_weighted_severity(severities):
     by its associated Weight/10.
     Example of Weighted Severity: max(7*(10/10), 8*(3/10), 6*(8/10)) = 7
     """
+    if not severities:
+        return 0
 
     score_map = {
         "low": 3,
@@ -49,7 +49,9 @@ def get_weighted_severity(severities):
             vul_score_value = score_map.get(vul_score, 0) * max_weight
 
         score_list.append(vul_score_value)
-    return max(score_list) if score_list else 0
+
+    max_score = max(score_list) if score_list else 0
+    return round(max_score, 1)
 
 
 def get_exploitability_level(exploits, references, severities):
@@ -83,7 +85,7 @@ def get_exploitability_level(exploits, references, severities):
     return exploit_level
 
 
-def compute_vulnerability_risk(vulnerability):
+def compute_vulnerability_risk_factors(references, severities, exploits):
     """
     Risk may be expressed as a number ranging from 0 to 10.
     Risk is calculated from weighted severity and exploitability values.
@@ -91,13 +93,9 @@ def compute_vulnerability_risk(vulnerability):
 
     Risk = min(weighted severity * exploitability, 10)
     """
-    severities = vulnerability.severities.all()
-    exploits = vulnerability.exploits.all()
-    reference = vulnerability.references.all()
-    if reference.exists() or severities.exists() or exploits.exists():
-        weighted_severity = get_weighted_severity(severities)
-        exploitability = get_exploitability_level(exploits, reference, severities)
-        return min(weighted_severity * exploitability, 10)
+    weighted_severity = get_weighted_severity(severities)
+    exploitability = get_exploitability_level(exploits, references, severities)
+    return weighted_severity, exploitability
 
 
 def compute_package_risk(package):
@@ -105,13 +103,12 @@ def compute_package_risk(package):
     Calculate the risk for a package by iterating over all vulnerabilities that affects this package
     and determining the associated risk.
     """
-
     result = []
-    for package_vulnerability in package.affectedbypackagerelatedvulnerability_set.all():
-        if risk := compute_vulnerability_risk(package_vulnerability.vulnerability):
-            result.append(risk)
+    for relation in package.affectedbypackagerelatedvulnerability_set.all():
+        if risk := relation.vulnerability.risk_score:
+            result.append(float(risk))
 
     if not result:
         return
 
-    return f"{max(result):.2f}"
+    return round(max(result), 1)

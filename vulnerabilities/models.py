@@ -243,6 +243,33 @@ class Vulnerability(models.Model):
         related_name="vulnerabilities",
     )
 
+    exploitability = models.DecimalField(
+        null=True,
+        max_digits=2,
+        decimal_places=1,
+        help_text="Exploitability indicates the likelihood that a vulnerability in a software package could be used by malicious actors to compromise systems, "
+        "applications, or networks. This metric is determined automatically based on the discovery of known exploits.",
+    )
+
+    weighted_severity = models.DecimalField(
+        null=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10.",
+    )
+
+    @property
+    def risk_score(self):
+        """
+        Risk expressed as a number ranging from 0 to 10.
+        Risk is calculated from weighted severity and exploitability values.
+        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
+        Risk = min(weighted severity * exploitability, 10)
+        """
+        if self.exploitability and self.weighted_severity:
+            risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
+            return round(risk_score, 1)
+
     objects = VulnerabilityQuerySet.as_manager()
 
     class Meta:
@@ -672,8 +699,8 @@ class Package(PackageURLMixin):
 
     risk_score = models.DecimalField(
         null=True,
-        max_digits=4,
-        decimal_places=2,
+        max_digits=3,
+        decimal_places=1,
         help_text="Risk score between 0.00 and 10.00, where higher values "
         "indicate greater vulnerability risk for the package.",
     )

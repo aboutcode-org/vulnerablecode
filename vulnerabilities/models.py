@@ -1281,7 +1281,8 @@ class ChangeLog(models.Model):
     software_version = models.CharField(
         max_length=100,
         help_text="Version of the software at the time of change",
-        default=VULNERABLECODE_VERSION,
+        blank=False,
+        null=False,
     )
 
     @property

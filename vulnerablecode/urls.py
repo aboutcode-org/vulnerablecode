@@ -50,6 +50,7 @@ api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 
 urlpatterns = [
+    path("api/v2/", include(api_v2_router.urls)),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
@@ -104,7 +105,6 @@ urlpatterns = [
         TemplateView.as_view(template_name="tos.html"),
         name="api_tos",
     ),
-    path("api/v2/", include(api_v2_router.urls)),
     path(
         "admin/",
         admin.site.urls,

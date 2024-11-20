@@ -177,7 +177,17 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
 
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages", "aliases"]
+        fields = [
+            "url",
+            "vulnerability_id",
+            "summary",
+            "references",
+            "fixed_packages",
+            "aliases",
+            "risk_score",
+            "exploitability",
+            "weighted_severity",
+        ]
 
 
 class WeaknessSerializer(serializers.HyperlinkedModelSerializer):

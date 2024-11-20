@@ -10,6 +10,7 @@
 from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipelines import add_fixed_by_packages
 from vulnerabilities.pipelines import compute_package_risk
 from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
@@ -39,6 +40,7 @@ IMPROVERS_REGISTRY = [
     enhance_with_metasploit.MetasploitImproverPipeline,
     enhance_with_exploitdb.ExploitDBImproverPipeline,
     compute_package_risk.ComputePackageRiskPipeline,
+    add_fixed_by_packages.ComputeFixedByPackagesPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

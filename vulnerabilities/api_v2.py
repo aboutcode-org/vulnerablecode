@@ -195,9 +195,24 @@ class PackageV2Serializer(serializers.ModelSerializer):
         ]
 
     def get_affected_by_vulnerabilities(self, obj):
-        return [vuln.vulnerability_id for vuln in obj.affected_by_vulnerabilities.all()]
+        """
+        Return a dictionary with vulnerabilities as keys and their details, including fixed_by_packages.
+        """
+        vulnerabilities = obj.affected_by_vulnerabilities.prefetch_related("fixed_by_packages")
+        result = {}
+        for vuln in vulnerabilities:
+            result[vuln.vulnerability_id] = {
+                "vulnerability_id": vuln.vulnerability_id,
+                "fixed_by_packages": [
+                    package.package_url for package in vuln.fixed_by_packages.all()
+                ],
+            }
+        return result
 
     def get_fixing_vulnerabilities(self, obj):
+        """
+        Return a list of IDs of vulnerabilities that the package fixes.
+        """
         return [vuln.vulnerability_id for vuln in obj.fixing_vulnerabilities.all()]
 
 

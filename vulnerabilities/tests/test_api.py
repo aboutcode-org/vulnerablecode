@@ -636,6 +636,9 @@ class APITestCasePackage(TestCase):
                         }
                     ],
                     "aliases": ["CVE-2020-36518", "GHSA-57j2-w4cx-62h2"],
+                    "risk_score": None,
+                    "exploitability": None,
+                    "weighted_severity": None,
                     "resource_url": "http://testserver/vulnerabilities/VCID-vul1-vul1-vul1",
                 }
             ],
@@ -678,6 +681,9 @@ class APITestCasePackage(TestCase):
                         },
                     ],
                     "aliases": ["CVE-2021-46877", "GHSA-3x8x-79m2-3w2w"],
+                    "risk_score": None,
+                    "exploitability": None,
+                    "weighted_severity": None,
                     "resource_url": "http://testserver/vulnerabilities/VCID-vul3-vul3-vul3",
                 }
             ],

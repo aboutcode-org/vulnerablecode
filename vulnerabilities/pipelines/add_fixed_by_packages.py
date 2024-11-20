@@ -9,7 +9,9 @@
 from aboutcode.pipeline import LoopProgress
 from django.db import transaction
 
-from vulnerabilities.models import AffectedByPackageRelatedVulnerability, FixingPackageRelatedVulnerability, Package
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
+from vulnerabilities.models import FixingPackageRelatedVulnerability
+from vulnerabilities.models import Package
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
 

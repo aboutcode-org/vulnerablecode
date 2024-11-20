@@ -10,7 +10,7 @@
 import os
 import sys
 
-__version__ = "35.0.0rc1"
+__version__ = "35.0.0"
 
 
 def command_line():

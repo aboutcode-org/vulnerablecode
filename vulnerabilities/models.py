@@ -1053,6 +1053,14 @@ class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
         related_name="affected_package_vulnerability_relations",
     )
 
+    fixed_by_packages = models.ManyToManyField(
+        "Package",
+        blank=True,
+        related_name="fixing_relationships",
+        help_text="""Packages that fix this vulnerability for
+         the affected package.""",
+    )
+
     class Meta(PackageRelatedVulnerabilityBase.Meta):
         verbose_name_plural = "Affected By Package Related Vulnerabilities"
 

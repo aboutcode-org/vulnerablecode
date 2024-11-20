@@ -15,6 +15,7 @@ from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
 from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
+from vulnerabilities.pipelines import add_fixed_by_packages
 
 IMPROVERS_REGISTRY = [
     valid_versions.GitHubBasicImprover,
@@ -39,6 +40,7 @@ IMPROVERS_REGISTRY = [
     enhance_with_metasploit.MetasploitImproverPipeline,
     enhance_with_exploitdb.ExploitDBImproverPipeline,
     compute_package_risk.ComputePackageRiskPipeline,
+    add_fixed_by_packages.ComputeFixedByPackagesPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

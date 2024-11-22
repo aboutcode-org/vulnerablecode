@@ -369,7 +369,7 @@ class PackageSerializer(BaseResourceSerializer):
         """
         # Ghost package should not fix any vulnerability.
         if package.is_ghost:
-            return
+            return []
 
         return self.get_vulnerabilities_for_a_package(package=package, fix=True)
 

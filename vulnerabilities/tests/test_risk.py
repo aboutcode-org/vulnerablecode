@@ -15,7 +15,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
-from vulnerabilities.risk import compute_vulnerability_risk
+from vulnerabilities.risk import compute_vulnerability_risk_factors
 from vulnerabilities.risk import get_exploitability_level
 from vulnerabilities.risk import get_weighted_severity
 from vulnerabilities.severity_systems import CVSSV3
@@ -29,25 +29,20 @@ def vulnerability():
     vul = Vulnerability(vulnerability_id="VCID-Existing")
     vul.save()
 
-    reference1 = VulnerabilityReference.objects.create(
-        reference_id="",
+    severity1 = VulnerabilitySeverity.objects.create(
         url="https://nvd.nist.gov/vuln/detail/CVE-xxxx-xxx1",
-    )
-
-    VulnerabilitySeverity.objects.create(
-        reference=reference1,
         scoring_system=CVSSV3.identifier,
         scoring_elements="CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L",
         value="6.5",
     )
 
-    VulnerabilitySeverity.objects.create(
-        reference=reference1,
+    severity2 = VulnerabilitySeverity.objects.create(
+        url="https://nvd.nist.gov/vuln/detail/CVE-xxxx-xxx1",
         scoring_system=GENERIC.identifier,
         value="MODERATE",  # 6.9
     )
-
-    VulnerabilityRelatedReference.objects.create(reference=reference1, vulnerability=vul)
+    vul.severities.add(severity1)
+    vul.severities.add(severity2)
 
     weaknesses = Weakness.objects.create(cwe_id=119)
     vul.weaknesses.add(weaknesses)
@@ -84,19 +79,14 @@ def high_epss_score():
     vul = Vulnerability(vulnerability_id="VCID-HIGH-EPSS")
     vul.save()
 
-    reference1 = VulnerabilityReference.objects.create(
-        reference_id="",
+    severity = VulnerabilitySeverity.objects.create(
         url="https://nvd.nist.gov/vuln/detail/CVE-xxxx-xxx3",
-    )
-
-    VulnerabilitySeverity.objects.create(
-        reference=reference1,
         scoring_system=EPSS.identifier,
         value=".9",
     )
+    vul.severities.add(severity)
 
-    VulnerabilityRelatedReference.objects.create(reference=reference1, vulnerability=vul)
-    return vul.severities
+    return vul.severities.all()
 
 
 @pytest.fixture
@@ -105,28 +95,19 @@ def low_epss_score():
     vul = Vulnerability(vulnerability_id="VCID-LOW-EPSS")
     vul.save()
 
-    reference1 = VulnerabilityReference.objects.create(
-        reference_id="",
+    severity = VulnerabilitySeverity.objects.create(
         url="https://nvd.nist.gov/vuln/detail/CVE-xxxx-xxx4",
-    )
-
-    VulnerabilitySeverity.objects.create(
-        reference=reference1,
         scoring_system=EPSS.identifier,
         value=".3",
     )
+    vul.severities.add(severity)
 
-    VulnerabilityRelatedReference.objects.create(reference=reference1, vulnerability=vul)
-    return vul.severities
+    return vul.severities.all()
 
 
 @pytest.mark.django_db
 def test_exploitability_level(
-    exploit,
-    vulnerability_with_exploit_ref,
-    high_epss_score,
-    low_epss_score,
-    vulnerability,
+    exploit, vulnerability_with_exploit_ref, high_epss_score, low_epss_score
 ):
 
     assert get_exploitability_level(exploit, None, None) == 2
@@ -137,9 +118,9 @@ def test_exploitability_level(
 
     assert (
         get_exploitability_level(
-            None,
-            vulnerability_with_exploit_ref.references,
-            vulnerability_with_exploit_ref.severities,
+            exploits=None,
+            references=vulnerability_with_exploit_ref.references.all(),
+            severities=vulnerability_with_exploit_ref.severities.all(),
         )
         == 1
     )
@@ -150,24 +131,55 @@ def test_exploitability_level(
 @pytest.mark.django_db
 def test_get_weighted_severity(vulnerability):
     severities = vulnerability.severities.all()
-    assert get_weighted_severity(severities) == 6.210000000000001
+    assert get_weighted_severity(severities) == 6.2
 
-    reference2 = VulnerabilityReference.objects.create(
-        reference_id="",
+    severity2 = VulnerabilitySeverity.objects.create(
         url="https://security-tracker.debian.org/tracker/CVE-2019-13057",
-    )
-
-    VulnerabilitySeverity.objects.create(
-        reference=reference2,
         scoring_system=GENERIC.identifier,
         value="CRITICAL",
     )
+    vulnerability.severities.add(severity2)
 
-    VulnerabilityRelatedReference.objects.create(reference=reference2, vulnerability=vulnerability)
     new_severities = vulnerability.severities.all()
     assert get_weighted_severity(new_severities) == 7
 
 
 @pytest.mark.django_db
-def test_compute_vulnerability_risk(vulnerability):
-    assert compute_vulnerability_risk(vulnerability) == 3.1050000000000004
+def test_compute_vulnerability_risk_factors(vulnerability, exploit):
+    severities = vulnerability.severities.all()
+    references = vulnerability.references.all()
+
+    assert compute_vulnerability_risk_factors(references, severities, exploit) == (
+        6.2,
+        2,
+    )
+
+    assert compute_vulnerability_risk_factors(references, severities, None) == (6.2, 0.5)
+
+    assert compute_vulnerability_risk_factors(references, None, exploit) == (0, 2)
+
+    assert compute_vulnerability_risk_factors(None, None, None) == (0, 0.5)
+
+
+@pytest.mark.django_db
+def test_get_vulnerability_risk_score(vulnerability):
+    vulnerability.weighted_severity = 6.0
+    vulnerability.exploitability = 2
+
+    assert vulnerability.risk_score == 10.0  # max risk_score can be reached
+
+    vulnerability.weighted_severity = 6
+    vulnerability.exploitability = 0.5
+    assert vulnerability.risk_score == 3.0
+
+    vulnerability.weighted_severity = 5.6
+    vulnerability.exploitability = 0.5
+    assert vulnerability.risk_score == 2.8
+
+    vulnerability.weighted_severity = None
+    vulnerability.exploitability = 0.5
+    assert vulnerability.risk_score is None
+
+    vulnerability.weighted_severity = None
+    vulnerability.exploitability = None
+    assert vulnerability.risk_score is None

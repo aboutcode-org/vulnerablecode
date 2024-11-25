@@ -54,12 +54,24 @@ class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
-    scores = VulnerabilitySeveritySerializer(many=True, source="vulnerabilityseverity_set")
+    scores = serializers.SerializerMethodField()
     reference_url = serializers.CharField(source="url")
 
     class Meta:
         model = VulnerabilityReference
         fields = ["reference_url", "reference_id", "reference_type", "scores", "url"]
+
+    def get_scores(self, instance):
+        severities_related_to_reference = [
+            severity
+            for severity in self.context.get("severities", [])
+            if severity.url == instance.url
+        ]
+
+        return VulnerabilitySeveritySerializer(
+            severities_related_to_reference,
+            many=True,
+        ).data
 
 
 class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -143,7 +155,7 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
         many=True, source="filtered_fixed_packages", read_only=True
     )
 
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    references = serializers.SerializerMethodField()
 
     aliases = serializers.SerializerMethodField()
 
@@ -151,9 +163,31 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
         # Assuming `obj.aliases` is a queryset of `Alias` objects
         return [alias.alias for alias in obj.aliases.all()]
 
+    def get_references(self, vulnerability):
+        references = vulnerability.vulnerabilityreference_set.all()
+        severities = vulnerability.severities.all()
+
+        serialized_references = VulnerabilityReferenceSerializer(
+            references,
+            context={"severities": severities},
+            many=True,
+        ).data
+
+        return serialized_references
+
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages", "aliases"]
+        fields = [
+            "url",
+            "vulnerability_id",
+            "summary",
+            "references",
+            "fixed_packages",
+            "aliases",
+            "risk_score",
+            "exploitability",
+            "weighted_severity",
+        ]
 
 
 class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
@@ -199,8 +233,7 @@ class VulnerabilitySerializer(BaseResourceSerializer):
         many=True, source="filtered_fixed_packages", read_only=True
     )
     affected_packages = MinimalPackageSerializer(many=True, read_only=True)
-
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    references = serializers.SerializerMethodField()
     aliases = AliasSerializer(many=True, source="alias")
     exploits = ExploitSerializer(many=True, read_only=True)
     weaknesses = WeaknessSerializer(many=True)
@@ -214,10 +247,22 @@ class VulnerabilitySerializer(BaseResourceSerializer):
 
         return data
 
+    def get_references(self, vulnerability):
+        references = vulnerability.vulnerabilityreference_set.all()
+        severities = vulnerability.severities.all()
+
+        serialized_references = VulnerabilityReferenceSerializer(
+            references,
+            context={"severities": severities},
+            many=True,
+        ).data
+
+        return serialized_references
+
     def get_severity_range_score(self, instance):
         severity_vectors = []
         severity_values = set()
-        for s in instance.severities:
+        for s in instance.severities.all():
             if s.scoring_system == EPSS.identifier:
                 continue
 
@@ -251,6 +296,9 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             "weaknesses",
             "exploits",
             "severity_range_score",
+            "exploitability",
+            "weighted_severity",
+            "risk_score",
         ]
 
 
@@ -300,7 +348,7 @@ class PackageSerializer(BaseResourceSerializer):
         otherwise return vulnerabilities fixed by the `package`.
         """
         fixed_packages = self.get_fixed_packages(package=package)
-        if fix:
+        if not fix:
             qs = package.affected_by_vulnerabilities.all()
         else:
             qs = package.fixing_vulnerabilities.all()

@@ -9,7 +9,6 @@ import attr
 import requests
 from dateutil import parser as dateparser
 from packageurl import PackageURL
-from univers.version_range import VersionRange
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
@@ -85,19 +84,10 @@ class VMWAREPHOTONImporterPipeline(VulnerableCodeBaseImporterPipeline):
                 # Create a PackageURL object
                 pkg = PackageURL(name=pkg_name, type="generic")
 
-                # Parse affected_version_range into a valid VersionRange
-                if "all versions before" in aff_ver.lower():
-                    fixed_version = rev_ver.strip()
-                    affected_version_range = f"vers:generic/<{fixed_version}"
-                else:
-                    affected_version_range = None
-
                 affected_packages = [
                     AffectedPackage(
                         package=pkg,
-                        affected_version_range=VersionRange.from_string(affected_version_range)
-                        if affected_version_range
-                        else None,
+                        affected_version_range=aff_ver,
                         fixed_version=rev_ver,
                     )
                 ]

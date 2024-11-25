@@ -10,6 +10,7 @@ import requests
 from dateutil import parser as dateparser
 from packageurl import PackageURL
 from univers.version_range import VersionRange
+from univers.versions import GenericVersion  # Import GenericVersion
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
@@ -31,40 +32,56 @@ class VMWAREPHOTONImporterPipeline(VulnerableCodeBaseImporterPipeline):
 
     importer_name = "PHOTON Importer"
 
+    urls = [
+        "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon1.0.json",
+        "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon2.0.json",
+        "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon3.0.json",
+        "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon4.0.json",
+        "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon5.0.json",
+    ]
+
     def advisories_count(self):
-        url = "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon1.0.json"
-
         advisory_count = 0
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            data = response.json()
-        except requests.HTTPError as http_err:
-            self.log(
-                f"HTTP error occurred: {http_err} \n {traceback_format_exc()}",
-                level=logging.ERROR,
-            )
-            return advisory_count
-
-        advisory_count = len(data)
+        for url in self.urls:
+            try:
+                response = requests.get(url)
+                response.raise_for_status()
+                data = response.json()
+                advisory_count += len(data)
+            except requests.HTTPError as http_err:
+                self.log(
+                    f"HTTP error occurred while fetching {url}: {http_err} \n {traceback_format_exc()}",
+                    level=logging.ERROR,
+                )
+            except requests.RequestException as req_err:
+                self.log(
+                    f"Request exception occurred while fetching {url}: {req_err} \n {traceback_format_exc()}",
+                    level=logging.ERROR,
+                )
+            except Exception as e:
+                self.log(f"Unexpected error: {e} \n {traceback_format_exc()}", level=logging.ERROR)
         return advisory_count
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        # Fetch advisory data from the URL
-        url = "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon1.0.json"
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            advisories_data = response.json()  # Fetch the data from the API
-        except requests.HTTPError as http_err:
-            self.log(
-                f"HTTP error occurred: {http_err} \n {traceback_format_exc()}",
-                level=logging.ERROR,
-            )
-            return []
-
-        # Pass the fetched data to the to_advisory method
-        advisories = self.to_advisory(advisories_data)
+        advisories = []
+        for url in self.urls:
+            try:
+                response = requests.get(url)
+                response.raise_for_status()
+                advisories_data = response.json()  # Fetch the data from the API
+                advisories.extend(self.to_advisory(advisories_data))  # Collect advisories for each URL
+            except requests.HTTPError as http_err:
+                self.log(
+                    f"HTTP error occurred while fetching {url}: {http_err} \n {traceback_format_exc()}",
+                    level=logging.ERROR,
+                )
+            except requests.RequestException as req_err:
+                self.log(
+                    f"Request exception occurred while fetching {url}: {req_err} \n {traceback_format_exc()}",
+                    level=logging.ERROR,
+                )
+            except Exception as e:
+                self.log(f"Unexpected error: {e} \n {traceback_format_exc()}", level=logging.ERROR)
         return advisories
 
     def to_advisory(self, data) -> Iterable[AdvisoryData]:
@@ -76,31 +93,41 @@ class VMWAREPHOTONImporterPipeline(VulnerableCodeBaseImporterPipeline):
             rev_ver = cve.get("res_ver")
             url = cve.get("url", "https://github.com/vmware/photon/wiki/Security-Advisories")  # Default URL
 
-            # Validate required fields
+            # Validate required fields and skip invalid entries
             if not cve_id or not pkg_name or not aff_ver or not rev_ver:
-                logging.warning(f"Skipping advisory due to missing data: {cve}")
+                logging.warning(f"Skipping advisory due to missing fields: {cve}")
                 continue
 
             try:
                 # Create a PackageURL object
                 pkg = PackageURL(name=pkg_name, type="generic")
 
-                # Parse affected_version_range into a valid VersionRange
-                if "all versions before" in aff_ver.lower():
-                    fixed_version = rev_ver.strip()
-                    affected_version_range = f"vers:generic/<{fixed_version}"
-                else:
-                    affected_version_range = None
+                # Use GenericVersion to handle non-semver versions
+                try:
+                    fixed_version = GenericVersion(rev_ver)
+                except ValueError as e:
+                    logging.warning(f"Skipping advisory {cve_id} due to invalid version: {rev_ver} - {e}")
+                    continue
 
-                affected_packages = [
-                    AffectedPackage(
-                        package=pkg,
-                        affected_version_range=VersionRange.from_string(affected_version_range)
-                        if affected_version_range
-                        else None,
-                        fixed_version=rev_ver,
-                    )
-                ]
+                affected_version_range = None
+                if "all versions before" in aff_ver.lower():
+                    affected_version_range = f"vers:generic/<{rev_ver}"
+
+                # Handle version range errors
+                try:
+                    affected_packages = [
+                        AffectedPackage(
+                            package=pkg,
+                            affected_version_range=VersionRange.from_string(affected_version_range)
+                            if affected_version_range
+                            else None,
+                            fixed_version=fixed_version,
+                        )
+                    ]
+                except ValueError as ve:
+                    logging.warning(f"Skipping advisory {cve_id} due to invalid version range: {aff_ver} - {ve}")
+                    continue
+
                 advisories.append(
                     AdvisoryData(
                         aliases=[cve_id],
@@ -111,4 +138,5 @@ class VMWAREPHOTONImporterPipeline(VulnerableCodeBaseImporterPipeline):
             except Exception as e:
                 logging.error(f"Error processing advisory {cve_id}: {e}")
                 continue
+
         return advisories

@@ -24,6 +24,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import UnMergeablePackageError
+from vulnerabilities.importers.almalinux import AlmaImporter
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
@@ -477,6 +478,9 @@ class GithubOSVImprover(ValidVersionImprover):
     importer = GithubOSVImporter
     ignorable_versions = []
 
+
+class AlmaImprover(ValidVersionImprover):
+    importer = AlmaImporter
 
 class CurlImprover(ValidVersionImprover):
     importer = CurlImporter

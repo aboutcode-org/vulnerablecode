@@ -25,6 +25,17 @@ from vulnerabilities.utils import get_item
 class VMWAREPHOTONImporterPipeline(VulnerableCodeBaseImporterPipeline):
     """Collect advisories from VMWARE_PHOTON."""
 
+    '''
+    EXAMPLE:
+    {
+    "cve_id": "CVE-2020-11979",
+    "pkg": "apache-ant",
+    "cve_score": 7.5,
+    "aff_ver": "all versions before 1.10.8-2.ph1 are vulnerable",
+    "res_ver": "1.10.8-2.ph1"
+    }
+    '''
+
     pipeline_id = "vmwarephoton_importer"
     repo_url = "https://github.com/vmware/photon/wiki/Security-Advisories"
     spdx_license_expression = "CC BY-SA 4.0"

@@ -198,6 +198,9 @@ class PackageV2Serializer(serializers.ModelSerializer):
         return [vuln.vulnerability_id for vuln in obj.affected_by_vulnerabilities.all()]
 
     def get_fixing_vulnerabilities(self, obj):
+        # Ghost package should not fix any vulnerability.
+        if obj.is_ghost:
+            return []
         return [vuln.vulnerability_id for vuln in obj.fixing_vulnerabilities.all()]
 
 

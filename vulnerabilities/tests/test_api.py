@@ -9,7 +9,6 @@
 
 import json
 import os
-from collections import OrderedDict
 from urllib.parse import quote
 
 from django.test import TestCase
@@ -31,7 +30,6 @@ from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.severity_systems import EPSS
-from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
@@ -354,6 +352,55 @@ class APITestCaseVulnerability(TransactionTestCase):
             "exploitability": None,
             "weighted_severity": None,
         }
+
+    def test_api_with_single_vulnerability_no_ghost_fix(self):
+        self.pkg2.is_ghost = True
+        self.pkg1.is_ghost = True
+        self.pkg2.save()
+        self.pkg1.save()
+
+        response = self.csrf_client.get(
+            f"/api/vulnerabilities/{self.vulnerability.id}", format="json"
+        ).data
+
+        expected = {
+            "url": f"http://testserver/api/vulnerabilities/{self.vulnerability.id}",
+            "vulnerability_id": self.vulnerability.vulnerability_id,
+            "summary": "test",
+            "severity_range_score": None,
+            "aliases": [],
+            "resource_url": f"http://testserver/vulnerabilities/{self.vulnerability.vulnerability_id}",
+            "fixed_packages": [],
+            "affected_packages": [],
+            "references": [
+                {
+                    "reference_url": "https://.com",
+                    "reference_id": "",
+                    "reference_type": "",
+                    "scores": [
+                        {
+                            "value": "0.526",
+                            "scoring_system": "epss",
+                            "scoring_elements": ".0016",
+                        }
+                    ],
+                    "url": "https://.com",
+                }
+            ],
+            "weaknesses": [
+                {
+                    "cwe_id": 119,
+                    "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
+                    "description": "The product performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer.",
+                },
+            ],
+            "exploits": [],
+            "risk_score": None,
+            "exploitability": None,
+            "weighted_severity": None,
+        }
+
+        assert expected == response
 
 
 def set_as_affected_by(package, vulnerability):
@@ -742,6 +789,176 @@ class APITestCasePackage(TestCase):
             response["results"][0]["purl"]
             == "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1"
         )
+
+    def test_api_with_ghost_package_no_fixing_vulnerabilities(self):
+        self.pkg_2_13_1.is_ghost = True
+        self.pkg_2_13_1.save()
+
+        response = self.csrf_client.get(f"/api/packages/{self.pkg_2_13_1.id}", format="json").data
+
+        expected = {
+            "url": "http://testserver/api/packages/{0}".format(self.pkg_2_13_1.id),
+            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+            "type": "maven",
+            "namespace": "com.fasterxml.jackson.core",
+            "name": "jackson-databind",
+            "version": "2.13.1",
+            "qualifiers": {},
+            "subpath": "",
+            "is_vulnerable": True,
+            "next_non_vulnerable_version": "2.14.0-rc1",
+            "latest_non_vulnerable_version": "2.14.0-rc1",
+            "affected_by_vulnerabilities": [
+                {
+                    "url": "http://testserver/api/vulnerabilities/{0}".format(self.vul1.id),
+                    "vulnerability_id": "VCID-vul1-vul1-vul1",
+                    "summary": "This is VCID-vul1-vul1-vul1",
+                    "references": [
+                        {
+                            "reference_url": "https://example.com",
+                            "reference_id": "CVE-xxx-xxx",
+                            "reference_type": "advisory",
+                            "scores": [
+                                {
+                                    "value": "0.526",
+                                    "scoring_system": "epss",
+                                    "scoring_elements": ".0016",
+                                }
+                            ],
+                            "url": "https://example.com",
+                        }
+                    ],
+                    "fixed_packages": [
+                        {
+                            "url": "http://testserver/api/packages/{0}".format(self.pkg_2_13_2.id),
+                            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                            "is_vulnerable": True,
+                            "affected_by_vulnerabilities": [
+                                {"vulnerability": "VCID-vul2-vul2-vul2"}
+                            ],
+                            "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                        }
+                    ],
+                    "aliases": ["CVE-2020-36518", "GHSA-57j2-w4cx-62h2"],
+                    "risk_score": None,
+                    "exploitability": None,
+                    "weighted_severity": None,
+                    "resource_url": "http://testserver/vulnerabilities/VCID-vul1-vul1-vul1",
+                }
+            ],
+            "fixing_vulnerabilities": [],
+            "risk_score": None,
+            "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+        }
+
+        assert response == expected
+
+    def test_api_with_ghost_package_no_next_latest_non_vulnerabilities(self):
+        self.pkg_2_14_0_rc1.is_ghost = True
+        self.pkg_2_14_0_rc1.save()
+
+        response = self.csrf_client.get(f"/api/packages/{self.pkg_2_13_1.id}", format="json").data
+
+        expected = {
+            "url": "http://testserver/api/packages/{0}".format(self.pkg_2_13_1.id),
+            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+            "type": "maven",
+            "namespace": "com.fasterxml.jackson.core",
+            "name": "jackson-databind",
+            "version": "2.13.1",
+            "qualifiers": {},
+            "subpath": "",
+            "is_vulnerable": True,
+            "next_non_vulnerable_version": None,
+            "latest_non_vulnerable_version": None,
+            "affected_by_vulnerabilities": [
+                {
+                    "url": "http://testserver/api/vulnerabilities/{0}".format(self.vul1.id),
+                    "vulnerability_id": "VCID-vul1-vul1-vul1",
+                    "summary": "This is VCID-vul1-vul1-vul1",
+                    "references": [
+                        {
+                            "reference_url": "https://example.com",
+                            "reference_id": "CVE-xxx-xxx",
+                            "reference_type": "advisory",
+                            "scores": [
+                                {
+                                    "value": "0.526",
+                                    "scoring_system": "epss",
+                                    "scoring_elements": ".0016",
+                                }
+                            ],
+                            "url": "https://example.com",
+                        }
+                    ],
+                    "fixed_packages": [
+                        {
+                            "url": "http://testserver/api/packages/{0}".format(self.pkg_2_13_2.id),
+                            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                            "is_vulnerable": True,
+                            "affected_by_vulnerabilities": [
+                                {"vulnerability": "VCID-vul2-vul2-vul2"}
+                            ],
+                            "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2",
+                        }
+                    ],
+                    "aliases": ["CVE-2020-36518", "GHSA-57j2-w4cx-62h2"],
+                    "risk_score": None,
+                    "exploitability": None,
+                    "weighted_severity": None,
+                    "resource_url": "http://testserver/vulnerabilities/VCID-vul1-vul1-vul1",
+                }
+            ],
+            "fixing_vulnerabilities": [
+                {
+                    "url": "http://testserver/api/vulnerabilities/{0}".format(self.vul3.id),
+                    "vulnerability_id": "VCID-vul3-vul3-vul3",
+                    "summary": "This is VCID-vul3-vul3-vul3",
+                    "references": [
+                        {
+                            "reference_url": "https://example.com",
+                            "reference_id": "CVE-xxx-xxx",
+                            "reference_type": "advisory",
+                            "scores": [
+                                {
+                                    "value": "0.526",
+                                    "scoring_system": "epss",
+                                    "scoring_elements": ".0016",
+                                }
+                            ],
+                            "url": "https://example.com",
+                        }
+                    ],
+                    "fixed_packages": [
+                        {
+                            "url": "http://testserver/api/packages/{0}".format(self.pkg_2_12_6.id),
+                            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6",
+                            "is_vulnerable": False,
+                            "affected_by_vulnerabilities": [],
+                            "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.6",
+                        },
+                        {
+                            "url": "http://testserver/api/packages/{0}".format(self.pkg_2_13_1.id),
+                            "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+                            "is_vulnerable": True,
+                            "affected_by_vulnerabilities": [
+                                {"vulnerability": "VCID-vul1-vul1-vul1"}
+                            ],
+                            "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+                        },
+                    ],
+                    "aliases": ["CVE-2021-46877", "GHSA-3x8x-79m2-3w2w"],
+                    "risk_score": None,
+                    "exploitability": None,
+                    "weighted_severity": None,
+                    "resource_url": "http://testserver/vulnerabilities/VCID-vul3-vul3-vul3",
+                }
+            ],
+            "risk_score": None,
+            "resource_url": "http://testserver/packages/pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.1",
+        }
+
+        assert response == expected
 
 
 class CPEApi(TestCase):

@@ -119,7 +119,10 @@ class PackageDetails(DetailView):
         package = self.object
         context["package"] = package
         context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
-        context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
+        # Ghost package should not fix any vulnerability.
+        context["fixing_vulnerabilities"] = (
+            None if package.is_ghost else package.fixing.order_by("vulnerability_id")
+        )
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = package.fixed_package_details
 
@@ -153,7 +156,17 @@ class VulnerabilityDetails(DetailView):
     slug_field = "vulnerability_id"
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("references", "aliases", "weaknesses")
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                "references",
+                "aliases",
+                "weaknesses",
+                "severities",
+                "exploits",
+            )
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -193,6 +206,11 @@ class VulnerabilityDetails(DetailView):
             affected_fixed_by_matches["affected_package"] = sorted_affected_package
             matched_fixed_by_packages = []
             for fixed_by_package in sorted_fixed_by_packages:
+
+                # Ghost Package can't fix vulnerability.
+                if fixed_by_package.is_ghost:
+                    continue
+
                 sorted_affected_version_class = get_purl_version_class(sorted_affected_package)
                 fixed_by_version_class = get_purl_version_class(fixed_by_package)
                 if (

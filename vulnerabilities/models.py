@@ -632,7 +632,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         return self._vulnerable(True)
 
     def only_non_vulnerable(self):
-        return self._vulnerable(False)
+        return self._vulnerable(False).filter(is_ghost=False)
 
     def _vulnerable(self, vulnerable=True):
         """

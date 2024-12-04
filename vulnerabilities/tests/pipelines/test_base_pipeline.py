@@ -19,6 +19,8 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.tests.pipelines import TestLogger
 
 advisory_data1 = AdvisoryData(
     aliases=["CVE-2020-13371337"],
@@ -45,6 +47,33 @@ def get_advisory1(created_by="test_pipeline"):
         created_by=created_by,
         date_collected=timezone.now(),
     )
+
+
+class TestVulnerableCodePipeline(TestCase):
+    def test_on_failure(self):
+        class TestPipeline(VulnerableCodePipeline):
+            def __init__(self, test_logger):
+                super().__init__()
+                self.log = test_logger.write
+
+            @classmethod
+            def steps(cls):
+                return (cls.step1,)
+
+            def step1(self):
+                raise Exception("Something went wrong!")
+
+            def on_failure(self):
+                self.log("Doing cleanup.")
+
+        logger = TestLogger()
+        pipeline = TestPipeline(test_logger=logger)
+
+        pipeline.execute()
+        log_result = logger.getvalue()
+
+        self.assertIn("Pipeline failed", log_result)
+        self.assertIn("Running [on_failure] tasks", log_result)
 
 
 class TestVulnerableCodeBaseImporterPipeline(TestCase):

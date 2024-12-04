@@ -187,6 +187,11 @@ methods.
             self.log(f"Successfully flagged {ghost_package_count:,d} ghost Packages")
 
 
+.. attention::
+
+   Implement ``on_failure`` to handle cleanup in case of pipeline failure.
+   Cleanup of downloaded archives or cloned repos is necessary to avoid potential resource leakage.
+
 .. note::
 
    | Use ``make valid`` to format your new code using black and isort automatically.

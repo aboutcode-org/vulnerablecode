@@ -298,10 +298,14 @@ version management from `univers <https://github.com/aboutcode-org/univers>`_.
     **advisories_count** should never be directly added in steps.
 
 
+.. attention::
+
+   Implement ``on_failure`` to handle cleanup in case of pipeline failure.
+   Cleanup of downloaded archives or cloned repos is necessary to avoid potential resource leakage.
 
 .. note::
 
-   | Use ``make valid`` to format your code using black and isort automatically.
+   | Use ``make valid`` to format your new code using black and isort automatically.
    | Use ``make check`` to check for formatting errors.
 
 Register the Importer Pipeline

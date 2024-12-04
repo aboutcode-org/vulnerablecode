@@ -50,7 +50,7 @@ def vulnerability_severity(vulnerability_reference):
         scoring_system="cvssv3_vector",
         value="7.0",
         scoring_elements="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-        reference_id=vulnerability_reference.id,
+        url=f"https://..",
     )
 
 
@@ -66,6 +66,7 @@ def vulnerability(db, vulnerability_reference, vulnerability_severity):
 
     weakness = Weakness.objects.create(cwe_id=15)
     vulnerability.weaknesses.add(weakness)
+    vulnerability.severities.add(vulnerability_severity)
 
     return vulnerability
 

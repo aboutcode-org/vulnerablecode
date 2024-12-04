@@ -54,6 +54,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
             url="https://example.com/ref2", reference_type="exploit", reference_id="REF-2"
         )
         self.reference2.vulnerabilities.add(self.vuln2)
+
         self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.client = APIClient(enforce_csrf_checks=True)
@@ -62,13 +63,16 @@ class VulnerabilityV2ViewSetTest(APITestCase):
     def test_list_vulnerabilities(self):
         """
         Test listing vulnerabilities without filters.
-        Should return a list of vulnerabilities with IDs and URLs.
+        Should return a paginated response with vulnerabilities dictionary.
         """
         url = reverse("vulnerability-v2-list")
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("results", response.data)
         self.assertIn("vulnerabilities", response.data["results"])
         self.assertEqual(len(response.data["results"]["vulnerabilities"]), 2)
+        self.assertIn("VCID-1234", response.data["results"]["vulnerabilities"])
+        self.assertIn("VCID-5678", response.data["results"]["vulnerabilities"])
         self.assertTrue("url" in response.data["results"]["vulnerabilities"]["VCID-1234"])
 
     def test_retrieve_vulnerability_detail(self):
@@ -100,6 +104,8 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         url = reverse("vulnerability-v2-list")
         response = self.client.get(url, {"alias": "CVE-2021-5678"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("results", response.data)
+        self.assertIn("vulnerabilities", response.data["results"])
         self.assertEqual(
             response.data["results"]["vulnerabilities"]["VCID-5678"]["vulnerability_id"],
             "VCID-5678",
@@ -159,9 +165,13 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
+        self.assertIn("vulnerabilities", response.data["results"])
         self.assertIn("next", response.data)
         self.assertIn("previous", response.data)
-        self.assertEqual(len(response.data["results"]), 1)  # Assuming default page size is 10
+        # The 'vulnerabilities' dictionary should contain vulnerabilities up to the page limit
+        self.assertEqual(
+            len(response.data["results"]["vulnerabilities"]), 10
+        )  # Assuming default page size is 10
 
 
 class PackageV2ViewSetTest(APITestCase):
@@ -185,6 +195,7 @@ class PackageV2ViewSetTest(APITestCase):
         # Associate packages with vulnerabilities
         self.package1.affected_by_vulnerabilities.add(self.vuln1)
         self.package2.fixing_vulnerabilities.add(self.vuln2)
+
         self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.client = APIClient(enforce_csrf_checks=True)
@@ -193,13 +204,24 @@ class PackageV2ViewSetTest(APITestCase):
     def test_list_packages(self):
         """
         Test listing packages without filters.
-        Should return a list of packages with their details.
+        Should return a list of packages with their details and associated vulnerabilities.
         """
         url = reverse("package-v2-list")
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("results", response.data)
         self.assertIn("packages", response.data["results"])
+        self.assertIn("vulnerabilities", response.data["results"])
         self.assertEqual(len(response.data["results"]["packages"]), 2)
+        # Verify that vulnerabilities are included
+        self.assertIsInstance(response.data["results"]["vulnerabilities"], dict)
+        package_vulns = set()
+        for package in response.data["results"]["packages"]:
+            package_vulns.update(package["affected_by_vulnerabilities"])
+            package_vulns.update(package["fixing_vulnerabilities"])
+        self.assertTrue(
+            all(vuln_id in response.data["results"]["vulnerabilities"] for vuln_id in package_vulns)
+        )
 
     def test_filter_packages_by_purl(self):
         """
@@ -264,9 +286,13 @@ class PackageV2ViewSetTest(APITestCase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
+        self.assertIn("packages", response.data["results"])
+        self.assertIn("vulnerabilities", response.data["results"])
         self.assertIn("next", response.data)
         self.assertIn("previous", response.data)
-        self.assertEqual(len(response.data["results"]), 1)  # Assuming default page size is 10
+        self.assertEqual(
+            len(response.data["results"]["packages"]), 10
+        )  # Assuming default page size is 10
 
     def test_invalid_vulnerability_filter(self):
         """
@@ -305,3 +331,234 @@ class PackageV2ViewSetTest(APITestCase):
         serializer = PackageV2Serializer()
         vulnerabilities = serializer.get_fixing_vulnerabilities(package)
         self.assertEqual(vulnerabilities, ["VCID-5678"])
+
+    def test_bulk_lookup_with_valid_purls(self):
+        """
+        Test bulk lookup with valid PURLs.
+        Should return packages and their associated vulnerabilities.
+        """
+        url = reverse("package-v2-bulk-lookup")
+        data = {"purls": ["pkg:pypi/django@3.2", "pkg:npm/lodash@4.17.20"]}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("packages", response.data)
+        self.assertIn("vulnerabilities", response.data)
+        self.assertEqual(len(response.data["packages"]), 2)
+        # Verify that the returned data matches the packages
+        purls = [package["purl"] for package in response.data["packages"]]
+        self.assertIn("pkg:pypi/django@3.2", purls)
+        self.assertIn("pkg:npm/lodash@4.17.20", purls)
+        # Verify that vulnerabilities are included
+        package_vulns = set()
+        for package in response.data["packages"]:
+            package_vulns.update(package["affected_by_vulnerabilities"])
+            package_vulns.update(package["fixing_vulnerabilities"])
+        self.assertTrue(
+            all(vuln_id in response.data["vulnerabilities"] for vuln_id in package_vulns)
+        )
+
+    def test_bulk_lookup_with_invalid_purls(self):
+        """
+        Test bulk lookup with invalid PURLs.
+        """
+        url = reverse("package-v2-bulk-lookup")
+        data = {"purls": ["pkg:pypi/nonexistent@1.0.0", "pkg:npm/unknown@0.0.1"]}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Since the packages don't exist, the response should be empty
+        self.assertEqual(len(response.data["packages"]), 0)
+        self.assertEqual(len(response.data["vulnerabilities"]), 0)
+
+    def test_bulk_lookup_with_empty_purls(self):
+        """
+        Test bulk lookup with empty purls list.
+        Should return 400 Bad Request.
+        """
+        url = reverse("package-v2-bulk-lookup")
+        data = {"purls": []}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("error", response.data)
+        self.assertIn("message", response.data)
+        self.assertEqual(response.data["message"], "A non-empty 'purls' list of PURLs is required.")
+
+    def test_bulk_search_with_valid_purls(self):
+        """
+        Test bulk search with valid PURLs.
+        Should return packages and their associated vulnerabilities.
+        """
+        url = reverse("package-v2-bulk-search")
+        data = {"purls": ["pkg:pypi/django@3.2", "pkg:npm/lodash@4.17.20"]}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("packages", response.data)
+        self.assertIn("vulnerabilities", response.data)
+        self.assertEqual(len(response.data["packages"]), 2)
+        purls = [package["purl"] for package in response.data["packages"]]
+        self.assertIn("pkg:pypi/django@3.2", purls)
+        self.assertIn("pkg:npm/lodash@4.17.20", purls)
+        # Verify that vulnerabilities are included
+        package_vulns = set()
+        for package in response.data["packages"]:
+            package_vulns.update(package["affected_by_vulnerabilities"])
+            package_vulns.update(package["fixing_vulnerabilities"])
+        self.assertTrue(
+            all(vuln_id in response.data["vulnerabilities"] for vuln_id in package_vulns)
+        )
+
+    def test_bulk_search_with_purl_only_true(self):
+        """
+        Test bulk search with purl_only set to True.
+        Should return only the PURLs of vulnerable packages.
+        """
+        url = reverse("package-v2-bulk-search")
+        data = {
+            "purls": ["pkg:pypi/django@3.2", "pkg:npm/lodash@4.17.20"],
+            "purl_only": True,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Since purl_only=True, response should be a list of PURLs
+        self.assertIsInstance(response.data, list)
+        # Only vulnerable packages should be included
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data, ["pkg:pypi/django@3.2"])
+
+    def test_bulk_search_with_plain_purl_true(self):
+        """
+        Test bulk search with plain_purl set to True.
+        Should return packages grouped by plain PURLs.
+        """
+        # Create another package with the same name and version but different qualifiers
+        Package.objects.create(
+            name="django",
+            version="3.2",
+            type="pypi",
+            qualifiers={"extension": "tar.gz"},
+        )
+
+        url = reverse("package-v2-bulk-search")
+        data = {
+            "purls": ["pkg:pypi/django@3.2", "pkg:pypi/django@3.2?extension=tar.gz"],
+            "plain_purl": True,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("packages", response.data)
+        self.assertIn("vulnerabilities", response.data)
+        # Since plain_purl=True, packages with the same type, namespace, name, version are grouped
+        self.assertEqual(len(response.data["packages"]), 1)
+        purl = response.data["packages"][0]["purl"]
+        self.assertTrue(purl.startswith("pkg:pypi/django@3.2"))
+
+    def test_bulk_search_with_purl_only_and_plain_purl_true(self):
+        """
+        Test bulk search with purl_only and plain_purl both set to True.
+        Should return only the plain PURLs of vulnerable packages.
+        """
+        url = reverse("package-v2-bulk-search")
+        data = {
+            "purls": ["pkg:pypi/django@3.2", "pkg:pypi/django@3.1"],
+            "purl_only": True,
+            "plain_purl": True,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Response should be a list of plain PURLs
+        self.assertIsInstance(response.data, list)
+        # Only one plain PURL should be returned for vulnerable packages
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data, ["pkg:pypi/django@3.2"])
+
+    def test_bulk_search_with_invalid_purls(self):
+        """
+        Test bulk search with invalid PURLs.
+        Should return an empty response.
+        """
+        url = reverse("package-v2-bulk-search")
+        data = {"purls": ["pkg:pypi/nonexistent@1.0.0", "pkg:npm/unknown@0.0.1"]}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Since the packages don't exist, the response should be empty
+        self.assertEqual(len(response.data["packages"]), 0)
+        self.assertEqual(len(response.data["vulnerabilities"]), 0)
+
+    def test_bulk_search_with_empty_purls(self):
+        """
+        Test bulk search with empty purls list.
+        Should return 400 Bad Request.
+        """
+        url = reverse("package-v2-bulk-search")
+        data = {"purls": []}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("error", response.data)
+        self.assertIn("message", response.data)
+        self.assertEqual(response.data["message"], "A non-empty 'purls' list of PURLs is required.")
+
+    def test_all_vulnerable_packages(self):
+        """
+        Test the 'all' endpoint that returns all vulnerable package URLs.
+        """
+        url = reverse("package-v2-all")
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Since package1 is vulnerable, it should be returned
+        expected_purls = ["pkg:pypi/django@3.2"]
+        self.assertEqual(sorted(response.data), sorted(expected_purls))
+
+    def test_lookup_with_valid_purl(self):
+        """
+        Test the 'lookup' endpoint with a valid PURL.
+        Should return the package and its associated vulnerabilities.
+        """
+        url = reverse("package-v2-lookup")
+        data = {"purl": "pkg:pypi/django@3.2"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(1, len(response.data))
+        self.assertIn("purl", response.data[0])
+        self.assertIn("affected_by_vulnerabilities", response.data[0])
+        self.assertIn("fixing_vulnerabilities", response.data[0])
+        self.assertIn("next_non_vulnerable_version", response.data[0])
+        self.assertIn("latest_non_vulnerable_version", response.data[0])
+        self.assertEqual(response.data[0]["purl"], "pkg:pypi/django@3.2")
+        self.assertEqual(response.data[0]["affected_by_vulnerabilities"], ["VCID-1234"])
+        self.assertEqual(response.data[0]["fixing_vulnerabilities"], [])
+
+    def test_lookup_with_invalid_purl(self):
+        """
+        Test the 'lookup' endpoint with a PURL that does not exist.
+        Should return empty packages and vulnerabilities.
+        """
+        url = reverse("package-v2-lookup")
+        data = {"purl": "pkg:pypi/nonexistent@1.0.0"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # No packages or vulnerabilities should be returned
+        self.assertEqual(len(response.data), 0)
+
+    def test_lookup_with_missing_purl(self):
+        """
+        Test the 'lookup' endpoint without providing a 'purl'.
+        Should return 400 Bad Request.
+        """
+        url = reverse("package-v2-lookup")
+        data = {}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("error", response.data)
+        self.assertIn("message", response.data)
+        self.assertEqual(response.data["message"], "A 'purl' is required.")
+
+    def test_lookup_with_invalid_purl_format(self):
+        """
+        Test the 'lookup' endpoint with an invalid PURL format.
+        Should return empty packages and vulnerabilities.
+        """
+        url = reverse("package-v2-lookup")
+        data = {"purl": "invalid_purl_format"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # No packages or vulnerabilities should be returned
+        self.assertEqual(len(response.data), 0)

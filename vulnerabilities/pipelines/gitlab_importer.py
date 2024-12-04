@@ -106,6 +106,9 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipeline):
             self.log(f"Removing cloned repository")
             self.vcs_response.delete()
 
+    def on_failure(self):
+        self.clean_downloads()
+
 
 def parse_advisory_path(base_path: Path, file_path: Path) -> Tuple[str, str, str]:
     """

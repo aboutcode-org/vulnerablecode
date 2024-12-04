@@ -35,9 +35,7 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
         )
 
     def fetch_exploits(self):
-        kev_url = (
-            "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
-        )
+        kev_url = "https://raw.githubusercontent.com/aboutcode-org/aboutcode-mirror-kev/refs/heads/main/known_exploited_vulnerabilities.json"
         self.log(f"Fetching {kev_url}")
 
         try:

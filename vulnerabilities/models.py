@@ -705,6 +705,12 @@ class Package(PackageURLMixin):
         "indicate greater vulnerability risk for the package.",
     )
 
+    version_rank = models.IntegerField(
+        help_text="Rank of the version to support ordering by version. Rank "
+        "zero means the rank has not been defined yet",
+        default=0,
+    )
+
     objects = PackageQuerySet.as_manager()
 
     def save(self, *args, **kwargs):
@@ -738,7 +744,7 @@ class Package(PackageURLMixin):
 
     class Meta:
         unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
-        ordering = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
 
     def __str__(self):
         return self.package_url

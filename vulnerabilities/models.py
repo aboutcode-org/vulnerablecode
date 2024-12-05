@@ -705,7 +705,7 @@ class Package(PackageURLMixin):
         "indicate greater vulnerability risk for the package.",
     )
 
-    version_rank = models.IntegerField(
+    version_rank = models.FloatField(
         help_text="Rank of the version to support ordering by version. Rank "
         "zero means the rank has not been defined yet",
         default=0,
@@ -748,6 +748,65 @@ class Package(PackageURLMixin):
 
     def __str__(self):
         return self.package_url
+
+    @property
+    def calculate_version_rank(self):
+        """
+        Calculate and return the `version_rank` for a package that does not have one.
+        If this package already has a `version_rank`, return it.
+
+        The calculated rank will be interpolated between two packages that have
+        `version_rank` values and are closest to this package in terms of version order.
+        """
+
+        if self.version_rank > 0:
+            return self.version_rank
+
+        # Determine the version_class for this package's type
+        version_class = RANGE_CLASS_BY_SCHEMES.get(self.type).version_class
+        if not version_class:
+            raise ValueError(f"No version_class defined for package type {self.type}")
+
+        group_packages = Package.objects.filter(
+            type=self.type,
+            namespace=self.namespace,
+            name=self.name,
+        )
+
+        # if all packages have version rank 0
+
+        if all(p.version_rank == 0 for p in group_packages):
+            sorted_packages = sorted(group_packages, key=lambda p: version_class(p.version))
+            for rank, package in enumerate(sorted_packages):
+                package.version_rank = rank
+            Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
+            return self.version_rank
+
+        group_packages = group_packages.exclude(version_rank=0)
+        sorted_packages = sorted(group_packages, key=lambda p: version_class(p.version))
+        current_version = version_class(self.version)
+
+        lower_package, higher_package = None, None
+        for package in sorted_packages:
+            package_version = version_class(package.version)
+            if package_version < current_version:
+                lower_package = package
+            elif package_version > current_version:
+                higher_package = package
+                break
+
+        if lower_package and higher_package:
+            # Interpolate rank between neighbors
+            return (lower_package.version_rank + higher_package.version_rank) / 2
+        elif lower_package:
+            # If only lower neighbor exists, assign a rank slightly higher than the lower neighbor
+            return lower_package.version_rank + 1
+        elif higher_package:
+            # If only higher neighbor exists, assign a rank slightly lower than the higher neighbor
+            return higher_package.version_rank - 1
+        else:
+            # No neighbors with version_rank; return default rank (e.g., 0)
+            return 0
 
     @property
     def affected_by(self):
@@ -795,14 +854,6 @@ class Package(PackageURLMixin):
 
         return reverse("package_details", kwargs={"purl": self.purl}, request=request)
 
-    def sort_by_version(self, packages):
-        """
-        Return a sequence of `packages` sorted by version.
-        """
-        if not packages:
-            return []
-        return sorted(packages, key=lambda x: self.version_class(x.version))
-
     @cached_property
     def version_class(self):
         range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
@@ -837,19 +888,21 @@ class Package(PackageURLMixin):
         Return a tuple of the next and latest non-vulnerable versions as Package instance.
         Return a tuple of (None, None) if there is no non-vulnerable version.
         """
+        if self.version_rank == 0:
+            self.calculate_version_rank
         non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
             self, fix=False
         ).only_non_vulnerable()
-        sorted_versions = self.sort_by_version(non_vulnerable_versions)
+        sorted_versions = non_vulnerable_versions
 
-        later_non_vulnerable_versions = [
-            non_vuln_ver
-            for non_vuln_ver in sorted_versions
-            if self.version_class(non_vuln_ver.version) > self.current_version
-        ]
+        later_non_vulnerable_versions = non_vulnerable_versions.filter(
+            version_rank__gt=self.version_rank
+        )
+
+        later_non_vulnerable_versions = list(later_non_vulnerable_versions)
 
         if later_non_vulnerable_versions:
-            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
+            sorted_versions = later_non_vulnerable_versions
             next_non_vulnerable = sorted_versions[0]
             latest_non_vulnerable = sorted_versions[-1]
             return next_non_vulnerable, latest_non_vulnerable
@@ -878,6 +931,8 @@ class Package(PackageURLMixin):
         Return a list of vulnerabilities that affect this package together with information regarding
         the versions that fix the vulnerabilities.
         """
+        if self.version_rank == 0:
+            self.calculate_version_rank
         package_details_vulns = []
 
         fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
@@ -901,12 +956,13 @@ class Package(PackageURLMixin):
                 if fixed_version > self.current_version:
                     later_fixed_packages.append(fixed_pkg)
 
-            next_fixed_package = None
             next_fixed_package_vulns = []
 
             sort_fixed_by_packages_by_version = []
             if later_fixed_packages:
-                sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
+                sort_fixed_by_packages_by_version = sorted(
+                    later_fixed_packages, key=lambda p: p.version_rank
+                )
 
             fixed_by_pkgs = []
 
@@ -936,6 +992,7 @@ class Package(PackageURLMixin):
         """
         Return a queryset of Vulnerabilities that are fixed by this package.
         """
+        print("A")
         return self.fixed_by_vulnerabilities.all()
 
     @property

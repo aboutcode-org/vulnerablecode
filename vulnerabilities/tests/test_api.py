@@ -489,6 +489,7 @@ class APIPerformanceTest(TestCase):
         self.pkg_2_14_0_rc1 = from_purl(
             "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1"
         )
+        self.pkg_2_12_6.calculate_version_rank
 
         set_as_fixing(package=self.pkg_2_12_6, vulnerability=self.vul3)
 
@@ -526,14 +527,14 @@ class APIPerformanceTest(TestCase):
             self.csrf_client.get(f"/api/packages/?purl={self.pkg_2_14_0_rc1.purl}", format="json")
 
     def test_api_packages_single_with_purl_no_version_in_query_num_queries(self):
-        with self.assertNumQueries(64):
+        with self.assertNumQueries(68):
             self.csrf_client.get(
                 f"/api/packages/?purl=pkg:maven/com.fasterxml.jackson.core/jackson-databind",
                 format="json",
             )
 
     def test_api_packages_bulk_search(self):
-        with self.assertNumQueries(45):
+        with self.assertNumQueries(49):
             packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
@@ -546,7 +547,7 @@ class APIPerformanceTest(TestCase):
             ).json()
 
     def test_api_packages_with_lookup(self):
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(18):
             data = {"purl": self.pkg_2_12_6.purl}
 
             resp = self.csrf_client.post(
@@ -556,7 +557,7 @@ class APIPerformanceTest(TestCase):
             ).json()
 
     def test_api_packages_bulk_lookup(self):
-        with self.assertNumQueries(45):
+        with self.assertNumQueries(49):
             packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 

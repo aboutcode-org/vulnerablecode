@@ -73,7 +73,7 @@ class ComputeVersionRankPipeline(VulnerableCodePipeline):
 
         # Assign version ranks
         updates = []
-        for rank, package in enumerate(sorted_packages):
+        for rank, package in enumerate(sorted_packages, start=1):
             package.version_rank = rank
             updates.append(package)
 

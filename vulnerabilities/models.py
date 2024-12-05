@@ -777,7 +777,7 @@ class Package(PackageURLMixin):
 
         if all(p.version_rank == 0 for p in group_packages):
             sorted_packages = sorted(group_packages, key=lambda p: version_class(p.version))
-            for rank, package in enumerate(sorted_packages):
+            for rank, package in enumerate(sorted_packages, start=1):
                 package.version_rank = rank
             Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
             return self.version_rank

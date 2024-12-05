@@ -527,14 +527,14 @@ class APIPerformanceTest(TestCase):
             self.csrf_client.get(f"/api/packages/?purl={self.pkg_2_14_0_rc1.purl}", format="json")
 
     def test_api_packages_single_with_purl_no_version_in_query_num_queries(self):
-        with self.assertNumQueries(68):
+        with self.assertNumQueries(64):
             self.csrf_client.get(
                 f"/api/packages/?purl=pkg:maven/com.fasterxml.jackson.core/jackson-databind",
                 format="json",
             )
 
     def test_api_packages_bulk_search(self):
-        with self.assertNumQueries(49):
+        with self.assertNumQueries(45):
             packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
@@ -547,7 +547,7 @@ class APIPerformanceTest(TestCase):
             ).json()
 
     def test_api_packages_with_lookup(self):
-        with self.assertNumQueries(18):
+        with self.assertNumQueries(14):
             data = {"purl": self.pkg_2_12_6.purl}
 
             resp = self.csrf_client.post(
@@ -557,7 +557,7 @@ class APIPerformanceTest(TestCase):
             ).json()
 
     def test_api_packages_bulk_lookup(self):
-        with self.assertNumQueries(49):
+        with self.assertNumQueries(45):
             packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
@@ -609,6 +609,7 @@ class APITestCasePackage(TestCase):
         self.pkg_2_14_0_rc1 = from_purl(
             "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1"
         )
+        self.pkg_2_12_6.calculate_version_rank
 
         self.ref = VulnerabilityReference.objects.create(
             reference_type="advisory", reference_id="CVE-xxx-xxx", url="https://example.com"

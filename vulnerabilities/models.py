@@ -893,7 +893,6 @@ class Package(PackageURLMixin):
         non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
             self, fix=False
         ).only_non_vulnerable()
-        sorted_versions = non_vulnerable_versions
 
         later_non_vulnerable_versions = non_vulnerable_versions.filter(
             version_rank__gt=self.version_rank

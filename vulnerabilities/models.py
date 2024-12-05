@@ -762,51 +762,69 @@ class Package(PackageURLMixin):
         if self.version_rank > 0:
             return self.version_rank
 
-        # Determine the version_class for this package's type
-        version_class = RANGE_CLASS_BY_SCHEMES.get(self.type).version_class
-        if not version_class:
-            raise ValueError(f"No version_class defined for package type {self.type}")
-
         group_packages = Package.objects.filter(
             type=self.type,
             namespace=self.namespace,
             name=self.name,
         )
 
-        # if all packages have version rank 0
+        sorted_packages = sorted(group_packages, key=lambda p: version_class(p.version))
 
         if all(p.version_rank == 0 for p in group_packages):
-            sorted_packages = sorted(group_packages, key=lambda p: version_class(p.version))
             for rank, package in enumerate(sorted_packages, start=1):
                 package.version_rank = rank
             Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
             return self.version_rank
 
-        group_packages = group_packages.exclude(version_rank=0)
+        packages_with_zero_vesion_rank = group_packages.filter(version_rank=0)
         sorted_packages = sorted(group_packages, key=lambda p: version_class(p.version))
-        current_version = version_class(self.version)
 
-        lower_package, higher_package = None, None
-        for package in sorted_packages:
-            package_version = version_class(package.version)
-            if package_version < current_version:
-                lower_package = package
-            elif package_version > current_version:
-                higher_package = package
-                break
+        if not packages_with_zero_vesion_rank:
+            return self.version_rank
 
-        if lower_package and higher_package:
-            # Interpolate rank between neighbors
-            return (lower_package.version_rank + higher_package.version_rank) / 2
-        elif lower_package:
-            # If only lower neighbor exists, assign a rank slightly higher than the lower neighbor
-            return lower_package.version_rank + 1
-        elif higher_package:
-            # If only higher neighbor exists, assign a rank slightly lower than the higher neighbor
-            return higher_package.version_rank - 1
-        else:
-            # No neighbors with version_rank; return default rank (e.g., 0)
-            return 0
+        for package in packages_with_zero_vesion_rank:
+            # Instead of interpolating the rank between the two closest neighbors,
+
+            # Should not we calculate rank for all packages again, we are using O(n^k) here where k is the number of packages with version_rank = 0
+            # If we reassign rank to all packages, we can avoid this issue
+            # It can be done in O(n) time complexity
+            # Determine the version_class for this package's type
+            version_class = RANGE_CLASS_BY_SCHEMES.get(package.type).version_class
+            if not version_class:
+                raise ValueError(f"No version_class defined for package type {package.type}")
+
+            current_version = version_class(package.version)
+
+            lower_package, higher_package = None, None
+
+            for package in sorted_packages:
+                package_version = version_class(package.version)
+                if package_version < current_version:
+                    lower_package = package
+                elif package_version > current_version:
+                    higher_package = package
+                    break
+
+            if lower_package and higher_package:
+                # Interpolate rank between neighbors
+                package.version_rank = (
+                    lower_package.version_rank + higher_package.version_rank
+                ) / 2
+
+            elif lower_package:
+                # If only lower neighbor exists, assign a rank slightly higher than the lower neighbor
+                package.version_rank = lower_package.version_rank + 1
+
+            elif higher_package:
+                # If only higher neighbor exists, assign a rank slightly lower than the higher neighbor
+                package.version_rank = higher_package.version_rank - 1
+
+            else:
+                # No neighbors with version_rank; return default rank (e.g., 0)
+                package.version_rank = 0
+
+        Package.objects.bulk_update(packages_with_zero_vesion_rank, fields=["version_rank"])
+        return self.version_rank
 
     @property
     def affected_by(self):

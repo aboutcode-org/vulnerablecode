@@ -19,6 +19,9 @@ from packageurl import PackageURL
 from packageurl import normalize_qualifiers
 from packageurl import normalize_subpath
 
+__version__ = "0.2.0"
+
+
 """
 General purpose utilities to create Vulnerability Ids aka. VCID and content-defined, hash-based
 paths to store Vulnerability and Package data using these paths in many balanced directories.

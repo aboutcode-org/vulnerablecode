@@ -36,6 +36,8 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
+from .pagination_mixin import PaginatedListViewMixin
+
 PAGE_SIZE = 20
 
 
@@ -62,25 +64,21 @@ def get_purl_version_class(purl: models.Package):
     return purl_version_class
 
 
-class PackageSearch(ListView):
+class PackageSearch(PaginatedListViewMixin, ListView):
+    """
+    View for searching and displaying packages with pagination.
+    """
+
     model = models.Package
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
-    paginate_by = PAGE_SIZE
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        request_query = self.request.GET
-        context["package_search_form"] = PackageSearchForm(request_query)
-        context["search"] = request_query.get("search")
+        context["package_search_form"] = PackageSearchForm(self.request.GET)
         return context
 
     def get_queryset(self, query=None):
-        """
-        Return a Package queryset for the ``query``.
-        Make a best effort approach to find matching packages either based
-        on exact purl, partial purl or just name and namespace.
-        """
         query = query or self.request.GET.get("search") or ""
         return (
             self.model.objects.search(query)
@@ -90,17 +88,18 @@ class PackageSearch(ListView):
         )
 
 
-class VulnerabilitySearch(ListView):
+class VulnerabilitySearch(PaginatedListViewMixin, ListView):
+    """
+    View for searching and displaying vulnerabilities with pagination.
+    """
+
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
     ordering = ["vulnerability_id"]
-    paginate_by = PAGE_SIZE
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        request_query = self.request.GET
-        context["vulnerability_search_form"] = VulnerabilitySearchForm(request_query)
-        context["search"] = request_query.get("search")
+        context["vulnerability_search_form"] = VulnerabilitySearchForm(self.request.GET)
         return context
 
     def get_queryset(self, query=None):

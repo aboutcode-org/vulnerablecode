@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -12,57 +12,9 @@ from django.core.validators import validate_email
 
 from vulnerabilities.models import ApiUser
 
-from .models import *
 
+class PackageSearchForm(forms.Form):
 
-class PaginationForm(forms.Form):
-    """Form to handle page size selection across the application."""
-
-    PAGE_CHOICES = [
-        ("20", "20 per page"),
-        ("50", "50 per page"),
-        ("100", "100 per page"),
-    ]
-
-    page_size = forms.ChoiceField(
-        choices=PAGE_CHOICES,
-        initial="20",
-        required=False,
-        widget=forms.Select(
-            attrs={
-                "class": "select is-small",
-                "onchange": "handlePageSizeChange(this.value)",
-                "id": "page-size-select",
-            }
-        ),
-    )
-
-
-class BaseSearchForm(forms.Form):
-    """Base form for implementing search functionality."""
-
-    search = forms.CharField(required=True)
-
-    def clean_search(self):
-        return self.cleaned_data.get("search", "")
-
-    def get_queryset(self, query=None):
-        """
-        Get queryset with search/filter/ordering applied.
-        Args:
-            query (str, optional): Direct query for testing
-        """
-        if query is not None:
-            return self._search(query)
-
-        if not self.is_valid():
-            return self.model.objects.none()
-
-        return self._search(self.clean_search())
-
-
-class PackageSearchForm(BaseSearchForm):
-    model = Package
     search = forms.CharField(
         required=True,
         widget=forms.TextInput(
@@ -70,28 +22,15 @@ class PackageSearchForm(BaseSearchForm):
         ),
     )
 
-    def _search(self, query):
-        """Execute package-specific search logic."""
-        return (
-            self.model.objects.search(query)
-            .with_vulnerability_counts()
-            .prefetch_related()
-            .order_by("package_url")
-        )
 
+class VulnerabilitySearchForm(forms.Form):
 
-class VulnerabilitySearchForm(BaseSearchForm):
-    model = Vulnerability
     search = forms.CharField(
         required=True,
         widget=forms.TextInput(
             attrs={"placeholder": "Vulnerability id or alias such as CVE or GHSA"}
         ),
     )
-
-    def _search(self, query):
-        """Execute vulnerability-specific search logic."""
-        return self.model.objects.search(query=query).with_package_counts()
 
 
 class ApiUserCreationForm(forms.ModelForm):

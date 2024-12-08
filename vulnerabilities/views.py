@@ -29,15 +29,16 @@ from univers.version_range import AlpineLinuxVersionRange
 from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
-from vulnerabilities.forms import PaginationForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerabilities.models import VulnerabilityStatusType
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
+from .pagination_mixin import PaginatedListViewMixin
+
 PAGE_SIZE = 20
-MAX_PAGE_SIZE = 100
 
 
 def purl_sort_key(purl: models.Package):
@@ -63,98 +64,47 @@ def get_purl_version_class(purl: models.Package):
     return purl_version_class
 
 
-class BaseSearchView(ListView):
-    """Base view for implementing search functionality with pagination."""
+class PackageSearch(PaginatedListViewMixin, ListView):
+    """
+    View for searching and displaying packages with pagination.
+    """
 
-    paginate_by = PAGE_SIZE
-    max_page_size = MAX_PAGE_SIZE
-
-    def get_paginate_by(self, queryset=None):
-        """
-        Get and validate the requested page size.
-        Required 2 positional_argument get_paginate_by(positional_argument1, positional_argument2)
-        """
-        try:
-            page_size = int(self.request.GET.get("page_size", self.paginate_by))
-            if page_size <= 0:
-                return self.paginate_by
-            return min(page_size, self.max_page_size)
-        except (ValueError, TypeError):
-            return self.paginate_by
-
-    def get_context_data(self, **kwargs):
-        """Add pagination form to the template context."""
-        context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "pagination_form": PaginationForm(initial={"page_size": self.get_paginate_by()}),
-            }
-        )
-        return context
-
-
-class PackageSearch(BaseSearchView):
     model = models.Package
     template_name = "packages.html"
-    form_class = PackageSearchForm
     ordering = ["type", "namespace", "name", "version"]
 
-    def get_queryset(self, query=None):
-        """Get queryset from form's search method."""
-        if query is not None:
-            form = self.form_class()
-            return form.get_queryset(query=query)
-
-        if hasattr(self, "request"):
-            self.form = self.form_class(self.request.GET)
-            return self.form.get_queryset()
-
-        return self.model.objects.none()
-
     def get_context_data(self, **kwargs):
-        """Extends the template context with search form and search query for Packages."""
         context = super().get_context_data(**kwargs)
-        if not hasattr(self, "form"):
-            self.form = self.form_class()
-        context.update(
-            {
-                "package_search_form": self.form,
-                "search": getattr(self.request, "GET", {}).get("search"),
-            }
-        )
+        context["package_search_form"] = PackageSearchForm(self.request.GET)
         return context
 
+    def get_queryset(self, query=None):
+        query = query or self.request.GET.get("search") or ""
+        return (
+            self.model.objects.search(query)
+            .with_vulnerability_counts()
+            .prefetch_related()
+            .order_by("package_url")
+        )
 
-class VulnerabilitySearch(BaseSearchView):
+
+class VulnerabilitySearch(PaginatedListViewMixin, ListView):
+    """
+    View for searching and displaying vulnerabilities with pagination.
+    """
+
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
-    form_class = VulnerabilitySearchForm
     ordering = ["vulnerability_id"]
 
-    def get_queryset(self, query=None):
-        """Get queryset from form's search method."""
-        if query is not None:
-            form = self.form_class()
-            return form.get_queryset(query=query)
-
-        if hasattr(self, "request"):
-            self.form = self.form_class(self.request.GET)
-            return self.form.get_queryset()
-
-        return self.model.objects.none()
-
     def get_context_data(self, **kwargs):
-        """Extends the template context with search form and search query for Vulnerability."""
         context = super().get_context_data(**kwargs)
-        if not hasattr(self, "form"):
-            self.form = self.form_class()
-        context.update(
-            {
-                "vulnerability_search_form": self.form,
-                "search": getattr(self.request, "GET", {}).get("search"),
-            }
-        )
+        context["vulnerability_search_form"] = VulnerabilitySearchForm(self.request.GET)
         return context
+
+    def get_queryset(self, query=None):
+        query = query or self.request.GET.get("search") or ""
+        return self.model.objects.search(query=query).with_package_counts()
 
 
 class PackageDetails(DetailView):
@@ -317,15 +267,11 @@ Here is your API key:
 
    Token {auth_token}
 
-If you did NOT request this API key, you can either ignore
-this email or contact us at support@nexb.com and let us know in the forward
-that you did not request an API key.
+If you did NOT request this API key, you can either ignore this email or contact us at support@nexb.com and let us know in the forward that you did not request an API key.
 
 The API root is at https://public.vulnerablecode.io/api
-To learn more about using the VulnerableCode.io API,
-please refer to the live API documentation at https://public.vulnerablecode.io/api/docs
-To learn about VulnerableCode, refer to the
-general documentation at https://vulnerablecode.readthedocs.io
+To learn more about using the VulnerableCode.io API, please refer to the live API documentation at https://public.vulnerablecode.io/api/docs
+To learn about VulnerableCode, refer to the general documentation at https://vulnerablecode.readthedocs.io
 
 --
 Sincerely,

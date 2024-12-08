@@ -20,6 +20,8 @@ from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
+from vulnerabilities.api_v2 import PackageV2ViewSet
+from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails
@@ -43,7 +45,12 @@ api_router.register("vulnerabilities", VulnerabilityViewSet, basename="vulnerabi
 api_router.register("cpes", CPEViewSet, basename="cpe")
 api_router.register("aliases", AliasViewSet, basename="alias")
 
+api_v2_router = OptionalSlashRouter()
+api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
+api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
+
 urlpatterns = [
+    path("api/v2/", include(api_v2_router.urls)),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),

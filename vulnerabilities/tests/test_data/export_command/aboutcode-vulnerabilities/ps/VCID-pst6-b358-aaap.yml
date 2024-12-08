@@ -7,10 +7,7 @@ severities:
     scoring_system: cvssv3_vector
     scoring_elements: CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H
     published_at:
-    reference:
-      url: https://..
-      reference_type:
-      reference_id: fake
+    url: https://..
 weaknesses:
   - CWE-15
 references:

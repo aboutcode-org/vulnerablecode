@@ -489,6 +489,7 @@ class APIPerformanceTest(TestCase):
         self.pkg_2_14_0_rc1 = from_purl(
             "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1"
         )
+        self.pkg_2_12_6.calculate_version_rank
 
         set_as_fixing(package=self.pkg_2_12_6, vulnerability=self.vul3)
 
@@ -608,6 +609,7 @@ class APITestCasePackage(TestCase):
         self.pkg_2_14_0_rc1 = from_purl(
             "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.14.0-rc1"
         )
+        self.pkg_2_12_6.calculate_version_rank
 
         self.ref = VulnerabilityReference.objects.create(
             reference_type="advisory", reference_id="CVE-xxx-xxx", url="https://example.com"
@@ -806,7 +808,7 @@ class APITestCasePackage(TestCase):
             "qualifiers": {},
             "subpath": "",
             "is_vulnerable": True,
-            "next_non_vulnerable_version": "2.14.0-rc1",
+            "next_non_vulnerable_version": "2.12.6",
             "latest_non_vulnerable_version": "2.14.0-rc1",
             "affected_by_vulnerabilities": [
                 {

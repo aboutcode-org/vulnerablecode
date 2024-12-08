@@ -808,7 +808,7 @@ class APITestCasePackage(TestCase):
             "qualifiers": {},
             "subpath": "",
             "is_vulnerable": True,
-            "next_non_vulnerable_version": "2.14.0-rc1",
+            "next_non_vulnerable_version": "2.12.6",
             "latest_non_vulnerable_version": "2.14.0-rc1",
             "affected_by_vulnerabilities": [
                 {

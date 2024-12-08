@@ -22,9 +22,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
-from rest_framework.throttling import UserRateThrottle
 
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Exploit
@@ -369,6 +367,10 @@ class PackageSerializer(BaseResourceSerializer):
         """
         Return a mapping of vulnerabilities fixed in the given `package`.
         """
+        # Ghost package should not fix any vulnerability.
+        if package.is_ghost:
+            return []
+
         return self.get_vulnerabilities_for_a_package(package=package, fix=True)
 
     def get_affected_vulnerabilities(self, package) -> dict:
@@ -643,7 +645,10 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
         """
         return (
             self.get_packages_qs()
-            .filter(fixingpackagerelatedvulnerability__isnull=False)
+            .filter(
+                fixingpackagerelatedvulnerability__isnull=False,
+                is_ghost=False,
+            )
             .with_is_vulnerable()
         )
 
@@ -669,6 +674,9 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
             .get_queryset()
             .prefetch_related(
                 "weaknesses",
+                "references",
+                "exploits",
+                "severities",
                 Prefetch(
                     "fixed_by_packages",
                     queryset=self.get_fixed_packages_qs(),

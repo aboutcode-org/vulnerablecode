@@ -91,9 +91,3 @@ class ComputeVersionRankPipeline(VulnerableCodePipeline):
         if not version_class:
             version_class = Version
         return sorted(packages, key=lambda p: version_class(p.version))
-
-    def log(self, message):
-        """
-        Simple logging function.
-        """
-        print(message)

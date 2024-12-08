@@ -4,7 +4,7 @@ build-backend = "flot.buildapi"
 
 [project]
 name = "aboutcode.hashid"
-version = "0.1.0"
+version = "0.2.0"
 description = "A library for aboutcode hash-based identifiers for VCID, and PURLs"
 readme = "aboutcode/hashid/README.rst"
 license = { text = "Apache-2.0 AND Python-2.0" }

@@ -423,8 +423,11 @@ class TestPackageModel(TestCase):
             version="3.0.0",
         )
 
-        sorted_pkgs = requesting_package.sort_by_version(vuln_pkg_list)
-        first_sorted_item = sorted_pkgs[0]
+        requesting_package.calculate_version_rank
+
+        sorted_pkgs = Package.objects.filter(package_url__in=list_to_sort)
+
+        sorted_pkgs = list(sorted_pkgs)
 
         assert sorted_pkgs[0].purl == "pkg:npm/sequelize@3.9.1"
         assert sorted_pkgs[-1].purl == "pkg:npm/sequelize@3.40.1"

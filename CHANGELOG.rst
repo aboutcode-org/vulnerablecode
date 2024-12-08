@@ -2,6 +2,15 @@ Release notes
 =============
 
 
+Version v35.1.0
+---------------------
+
+- Use AboutCode mirror for collecting CISA KEV #1685
+- Do not report ghost package as a fix for vulnerability #1679
+- Add pipeline to sort packages #1686
+- Fix urls for API #1678
+
+
 Version v35.0.0
 ---------------------
 

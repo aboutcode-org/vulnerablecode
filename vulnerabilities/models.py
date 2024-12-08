@@ -770,7 +770,7 @@ class Package(PackageURLMixin):
             for rank, package in enumerate(sorted_packages, start=1):
                 package.version_rank = rank
             Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
-            return self.version_rank
+        return self.version_rank
 
     @property
     def affected_by(self):

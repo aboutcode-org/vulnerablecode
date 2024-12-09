@@ -42,6 +42,7 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines import rockylinux_importer
 
 IMPORTERS_REGISTRY = [
     alpine_linux.AlpineImporter,
@@ -77,6 +78,7 @@ IMPORTERS_REGISTRY = [
     gitlab_importer.GitLabImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     nvd_importer.NVDImporterPipeline,
+    rockylinux_importer.RockylinuxImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
 ]
 

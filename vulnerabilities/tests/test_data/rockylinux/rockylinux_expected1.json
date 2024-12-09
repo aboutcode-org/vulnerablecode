@@ -1,0 +1,455 @@
+{
+  "aliases": "RLSA-2022:2013",
+  "summary": "OpenSSH is an SSH protocol implementation supported by a number of Linux, UNIX, and similar operating systems. It includes the core files necessary for both the OpenSSH client and server.\n\nSecurity Fix(es):\n\n* openssh: privilege escalation when AuthorizedKeysCommand or AuthorizedPrincipalsCommand are configured (CVE-2021-41617)\n\nFor more details about the security issue(s), including the impact, a CVSS score, acknowledgments, and other related information, refer to the CVE page(s) listed in the References section.\n\nAdditional Changes:\n\nFor detailed information on changes in this release, see the Rocky Linux 8.6 Release Notes linked from the References section.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh",
+        "version": "",
+        "qualifiers": "arch=src",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-askpass",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-askpass",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-askpass-debuginfo",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-askpass-debuginfo",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-cavs",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-cavs",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-cavs-debuginfo",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-cavs-debuginfo",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-clients",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-clients",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-clients-debuginfo",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-clients-debuginfo",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-debuginfo",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-debuginfo",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-debugsource",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-debugsource",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-keycat",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-keycat",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-keycat-debuginfo",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-keycat-debuginfo",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-ldap",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-ldap",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-ldap-debuginfo",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-ldap-debuginfo",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-server",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-server",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-server-debuginfo",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "openssh-server-debuginfo",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/8.0p1-13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "pam_ssh_agent_auth",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/0.10.3-7.13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "pam_ssh_agent_auth",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/0.10.3-7.13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "pam_ssh_agent_auth-debuginfo",
+        "version": "",
+        "qualifiers": "arch=aarch64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/0.10.3-7.13.el8",
+      "fixed_version": null
+    },
+    {
+      "package": {
+        "type": "rpm",
+        "namespace": "rocky-linux",
+        "name": "pam_ssh_agent_auth-debuginfo",
+        "version": "",
+        "qualifiers": "arch=x86_64",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:rpm/0.10.3-7.13.el8",
+      "fixed_version": null
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "2008291",
+      "reference_type": "",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2008291",
+      "severities": []
+    },
+    {
+      "reference_id": "2015828",
+      "reference_type": "",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2015828",
+      "severities": []
+    },
+    {
+      "reference_id": "CVE-2021-41617",
+      "reference_type": "",
+      "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-41617",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "7.0",
+          "scoring_elements": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+        }
+      ]
+    }
+  ],
+  "date_published": "2022-05-10T06:45:24+00:00",
+  "weaknesses": [273, 546, 123],
+  "url": "https://errata.rockylinux.org/RLSA-2022:2013"
+}

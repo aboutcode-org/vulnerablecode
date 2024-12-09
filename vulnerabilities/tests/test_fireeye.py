@@ -13,6 +13,7 @@ from unittest import TestCase
 from vulnerabilities.importer import Reference
 from vulnerabilities.importers.fireeye import get_aliases
 from vulnerabilities.importers.fireeye import get_references
+from vulnerabilities.importers.fireeye import get_weaknesses
 from vulnerabilities.importers.fireeye import md_list_to_dict
 from vulnerabilities.importers.fireeye import parse_advisory_data
 from vulnerabilities.tests import util_tests
@@ -217,3 +218,20 @@ class TestFireeyeImporter(TestCase):
             md_list = f.readlines()
             md_dict = md_list_to_dict(md_list)
             assert md_dict == expected_output
+
+    def test_get_weaknesses(self):
+        assert get_weaknesses(
+            [
+                "CWE-379: Creation of Temporary File in Directory with Insecure Permissions",
+                "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')",
+            ]
+        ) == [379, 362]
+
+        assert (
+            get_weaknesses(
+                [
+                    "CWE-2345: This cwe id does not exist so it should generate Invalid CWE id error and return empty list."
+                ]
+            )
+            == []
+        )

@@ -713,6 +713,17 @@ class Package(PackageURLMixin):
 
     objects = PackageQuerySet.as_manager()
 
+    class Meta:
+        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
+
+    def __str__(self):
+        return self.package_url
+
+    @property
+    def purl(self):
+        return self.package_url
+
     def save(self, *args, **kwargs):
         """
         Save, normalizing PURL fields.
@@ -737,17 +748,6 @@ class Package(PackageURLMixin):
         plain_purl = utils.plain_purl(normalized)
         self.plain_package_url = str(plain_purl)
         super().save(*args, **kwargs)
-
-    @property
-    def purl(self):
-        return self.package_url
-
-    class Meta:
-        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
-        ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
-
-    def __str__(self):
-        return self.package_url
 
     @property
     def calculate_version_rank(self):

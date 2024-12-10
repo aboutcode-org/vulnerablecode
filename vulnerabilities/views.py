@@ -65,10 +65,13 @@ def get_purl_version_class(purl: models.Package):
 
 
 class PackageSearch(PaginatedListViewMixin, ListView):
+<<<<<<< Updated upstream
     """
     View for searching and displaying packages with pagination.
     """
 
+=======
+>>>>>>> Stashed changes
     model = models.Package
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
@@ -89,10 +92,13 @@ class PackageSearch(PaginatedListViewMixin, ListView):
 
 
 class VulnerabilitySearch(PaginatedListViewMixin, ListView):
+<<<<<<< Updated upstream
     """
     View for searching and displaying vulnerabilities with pagination.
     """
 
+=======
+>>>>>>> Stashed changes
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
     ordering = ["vulnerability_id"]

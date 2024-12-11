@@ -562,3 +562,7 @@ class PackageV2ViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # No packages or vulnerabilities should be returned
         self.assertEqual(len(response.data), 0)
+
+    def test_api_packages_single_with_purl_in_query_num_queries(self):
+        with self.assertNumQueries(13):
+            self.client.get(f"/api/v2/packages/?purl={self.package2.purl}", format="json")

@@ -8,6 +8,7 @@
 #
 
 
+from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
@@ -141,6 +142,13 @@ class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
         if aliases:
             queryset = queryset.filter(aliases__alias__in=aliases).distinct()
 
+        # Prefetch related fields to reduce queries in serializers
+        queryset = queryset.prefetch_related(
+            "aliases",
+            "weaknesses",
+            "vulnerabilityreference_set",
+            "severities",
+        )
         return queryset
 
     def get_serializer_class(self):
@@ -152,7 +160,6 @@ class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = self.get_queryset()
         vulnerability_ids = request.query_params.getlist("vulnerability_id")
 
-        # If exactly one vulnerability_id is provided, return the serialized data
         if len(vulnerability_ids) == 1:
             try:
                 vulnerability = queryset.get(vulnerability_id=vulnerability_ids[0])
@@ -161,17 +168,14 @@ class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
             except Vulnerability.DoesNotExist:
                 return Response({"detail": "Not found."}, status=404)
 
-        # Otherwise, return a dictionary of vulnerabilities keyed by vulnerability_id
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            data = serializer.data
-            vulnerabilities = {item["vulnerability_id"]: item for item in data}
+            vulnerabilities = {item["vulnerability_id"]: item for item in serializer.data}
             return self.get_paginated_response({"vulnerabilities": vulnerabilities})
 
         serializer = self.get_serializer(queryset, many=True)
-        data = serializer.data
-        vulnerabilities = {item["vulnerability_id"]: item for item in data}
+        vulnerabilities = {item["vulnerability_id"]: item for item in serializer.data}
         return Response({"vulnerabilities": vulnerabilities})
 
 
@@ -180,8 +184,8 @@ class PackageV2Serializer(serializers.ModelSerializer):
     risk_score = serializers.FloatField(read_only=True)
     affected_by_vulnerabilities = serializers.SerializerMethodField()
     fixing_vulnerabilities = serializers.SerializerMethodField()
-    next_non_vulnerable_version = serializers.CharField(read_only=True)
-    latest_non_vulnerable_version = serializers.CharField(read_only=True)
+    next_non_vulnerable_package = serializers.CharField(read_only=True)
+    latest_non_vulnerable_package = serializers.CharField(read_only=True)
 
     class Meta:
         model = Package
@@ -189,8 +193,8 @@ class PackageV2Serializer(serializers.ModelSerializer):
             "purl",
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
-            "next_non_vulnerable_version",
-            "latest_non_vulnerable_version",
+            "next_non_vulnerable_package",
+            "latest_non_vulnerable_package",
             "risk_score",
         ]
 
@@ -254,7 +258,28 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(
                 fixing_vulnerabilities__vulnerability_id=fixing_vulnerability
             )
-        return queryset.with_is_vulnerable()
+
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                "affected_by_vulnerabilities",
+                queryset=Vulnerability.objects.prefetch_related(
+                    "aliases",
+                    "weaknesses",
+                    "vulnerabilityreference_set",
+                    "severities",
+                ),
+            ),
+            Prefetch(
+                "fixing_vulnerabilities",
+                queryset=Vulnerability.objects.prefetch_related(
+                    "aliases",
+                    "weaknesses",
+                    "vulnerabilityreference_set",
+                    "severities",
+                ),
+            ),
+        )
+        return queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -262,28 +287,27 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         # Apply pagination
         page = self.paginate_queryset(queryset)
         if page is not None:
-            # Collect only vulnerabilities for packages in the current page
+            # Collect vulnerabilities from prefetched data
             vulnerabilities = set()
             for package in page:
                 vulnerabilities.update(package.affected_by_vulnerabilities.all())
                 vulnerabilities.update(package.fixing_vulnerabilities.all())
 
-            # Serialize the vulnerabilities with vulnerability_id as keys
+            # Serialize vulnerabilities
             vulnerability_data = {
                 vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data
                 for vuln in vulnerabilities
             }
 
-            # Serialize the current page of packages
+            # Serialize packages
             serializer = self.get_serializer(page, many=True)
             data = serializer.data
 
-            # Use 'self.get_paginated_response' to include pagination data
             return self.get_paginated_response(
                 {"vulnerabilities": vulnerability_data, "packages": data}
             )
 
-        # If pagination is not applied, collect vulnerabilities for all packages
+        # If no pagination
         vulnerabilities = set()
         for package in queryset:
             vulnerabilities.update(package.affected_by_vulnerabilities.all())
@@ -293,10 +317,10 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             vuln.vulnerability_id: VulnerabilityV2Serializer(vuln).data for vuln in vulnerabilities
         }
 
-        # Serialize all packages when pagination is not applied
         serializer = self.get_serializer(queryset, many=True)
         data = serializer.data
         return Response({"vulnerabilities": vulnerability_data, "packages": data})
+
 
     @extend_schema(
         request=PackageurlListSerializer,

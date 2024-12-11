@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -39,7 +39,7 @@ from aboutcode.hashid import build_vcid  # NOQA
 
 logger = logging.getLogger(__name__)
 
-cve_regex = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
+cve_regex = re.compile(r"CVE-[0-9]{4}-[0-9]{4,19}", re.IGNORECASE)
 is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
 

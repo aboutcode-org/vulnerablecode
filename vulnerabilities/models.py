@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -87,7 +87,7 @@ class VulnerabilityQuerySet(BaseQuerySet):
         """
         Return a queryset of Vulnerability that affect a package.
         """
-        return self.filter(packagerelatedvulnerability__fix=False)
+        return self.filter(affecting_packages__isnull=False)
 
     def with_cpes(self):
         """
@@ -151,13 +151,45 @@ class VulnerabilityQuerySet(BaseQuerySet):
 
     def with_package_counts(self):
         return self.annotate(
-            vulnerable_package_count=Count(
-                "packages", filter=Q(packagerelatedvulnerability__fix=False), distinct=True
-            ),
-            patched_package_count=Count(
-                "packages", filter=Q(packagerelatedvulnerability__fix=True), distinct=True
-            ),
+            vulnerable_package_count=Count("affecting_packages", distinct=True),
+            patched_package_count=Count("fixed_by_packages", distinct=True),
         )
+
+
+class VulnerabilitySeverity(models.Model):
+    url = models.URLField(
+        max_length=1024,
+        null=True,
+        help_text="URL to the vulnerability severity",
+    )
+
+    scoring_system_choices = tuple(
+        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
+    )
+
+    scoring_system = models.CharField(
+        max_length=50,
+        choices=scoring_system_choices,
+        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
+            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
+        ),
+    )
+
+    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+
+    scoring_elements = models.CharField(
+        max_length=150,
+        null=True,
+        help_text="Supporting scoring elements used to compute the score values. "
+        "For example a CVSS vector string as used to compute a CVSS score.",
+    )
+
+    published_at = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
+    )
+
+    class Meta:
+        ordering = ["url", "scoring_system", "value"]
 
 
 class VulnerabilityStatusType(models.IntegerChoices):
@@ -191,14 +223,52 @@ class Vulnerability(models.Model):
         to="VulnerabilityReference", through="VulnerabilityRelatedReference"
     )
 
-    packages = models.ManyToManyField(
+    affecting_packages = models.ManyToManyField(
         to="Package",
-        through="PackageRelatedVulnerability",
+        through="AffectedByPackageRelatedVulnerability",
+    )
+
+    fixed_by_packages = models.ManyToManyField(
+        to="Package",
+        through="FixingPackageRelatedVulnerability",
+        related_name="fixing_vulnerabilities",  # Unique related_name
     )
 
     status = models.IntegerField(
         choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
     )
+
+    severities = models.ManyToManyField(
+        VulnerabilitySeverity,
+        related_name="vulnerabilities",
+    )
+
+    exploitability = models.DecimalField(
+        null=True,
+        max_digits=2,
+        decimal_places=1,
+        help_text="Exploitability indicates the likelihood that a vulnerability in a software package could be used by malicious actors to compromise systems, "
+        "applications, or networks. This metric is determined automatically based on the discovery of known exploits.",
+    )
+
+    weighted_severity = models.DecimalField(
+        null=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10.",
+    )
+
+    @property
+    def risk_score(self):
+        """
+        Risk expressed as a number ranging from 0 to 10.
+        Risk is calculated from weighted severity and exploitability values.
+        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
+        Risk = min(weighted severity * exploitability, 10)
+        """
+        if self.exploitability and self.weighted_severity:
+            risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
+            return round(risk_score, 1)
 
     objects = VulnerabilityQuerySet.as_manager()
 
@@ -214,31 +284,24 @@ class Vulnerability(models.Model):
         return self.vulnerability_id
 
     @property
-    def severities(self):
-        """
-        Return a queryset of VulnerabilitySeverity for this vulnerability.
-        """
-        return VulnerabilitySeverity.objects.filter(reference__in=self.references.all())
-
-    @property
     def affected_packages(self):
         """
         Return a queryset of packages that are affected by this vulnerability.
         """
-        return self.packages.affected()
+        return self.affecting_packages.with_is_vulnerable()
+
+    @property
+    def packages_fixing(self):
+        """
+        Return a queryset of packages that are fixing this vulnerability.
+        """
+        return self.fixed_by_packages
 
     # legacy aliases
     vulnerable_packages = affected_packages
 
-    @property
-    def fixed_by_packages(self):
-        """
-        Return a queryset of packages that are fixing this vulnerability.
-        """
-        return self.packages.fixing()
-
     # legacy alias
-    patched_packages = fixed_by_packages
+    patched_packages = packages_fixing
 
     @property
     def get_aliases(self):
@@ -404,7 +467,7 @@ class VulnerabilityReference(models.Model):
     @property
     def is_cpe(self):
         """
-        Return Trueis this is a CPE reference.
+        Return True if this is a CPE reference.
         """
         return self.reference_id.startswith("cpe")
 
@@ -444,7 +507,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         }
 
         if fix:
-            filter_dict["packagerelatedvulnerability__fix"] = True
+            filter_dict["fixing_vulnerabilities__isnull"] = False
 
         return Package.objects.filter(**filter_dict).distinct()
 
@@ -466,7 +529,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages affected by a vulnerability.
         """
-        return self.filter(packagerelatedvulnerability__fix=False)
+        return self.filter(affected_by_vulnerabilities__isnull=False)
 
     vulnerable = affected
 
@@ -474,17 +537,15 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages fixing a vulnerability .
         """
-        return self.filter(packagerelatedvulnerability__fix=True)
+        return self.filter(fixing_vulnerabilities__isnull=False)
 
     def with_vulnerability_counts(self):
         return self.annotate(
             vulnerability_count=Count(
-                "vulnerabilities",
-                filter=Q(packagerelatedvulnerability__fix=False),
+                "affected_by_vulnerabilities",
             ),
             patched_vulnerability_count=Count(
-                "vulnerabilities",
-                filter=Q(packagerelatedvulnerability__fix=True),
+                "fixing_vulnerabilities",
             ),
         )
 
@@ -557,13 +618,12 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
 
     def with_is_vulnerable(self):
         """
-        Annotate Package with ``with_is_vulnerable`` boolean attribute.
+        Annotate Package with ``is_vulnerable`` boolean attribute.
         """
         return self.annotate(
             is_vulnerable=Exists(
-                PackageRelatedVulnerability.objects.filter(
+                AffectedByPackageRelatedVulnerability.objects.filter(
                     package=OuterRef("pk"),
-                    fix=False,
                 )
             )
         )
@@ -572,13 +632,19 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         return self._vulnerable(True)
 
     def only_non_vulnerable(self):
-        return self._vulnerable(False)
+        return self._vulnerable(False).filter(is_ghost=False)
 
     def _vulnerable(self, vulnerable=True):
         """
         Filter to select only vulnerable or non-vulnearble packages.
         """
         return self.with_is_vulnerable().filter(is_vulnerable=vulnerable)
+
+    def vulnerable(self):
+        """
+        Return only packages that are vulnerable.
+        """
+        return self.filter(affected_by_vulnerabilities__isnull=False)
 
 
 def get_purl_query_lookups(purl):
@@ -601,8 +667,15 @@ class Package(PackageURLMixin):
     # https://github.com/package-url/packageurl-python/pull/67
     # gets merged
 
-    vulnerabilities = models.ManyToManyField(
-        to="Vulnerability", through="PackageRelatedVulnerability"
+    affected_by_vulnerabilities = models.ManyToManyField(
+        to="Vulnerability",
+        through="AffectedByPackageRelatedVulnerability",
+    )
+
+    fixing_vulnerabilities = models.ManyToManyField(
+        to="Vulnerability",
+        through="FixingPackageRelatedVulnerability",
+        related_name="fixed_by_packages",  # Unique related_name
     )
 
     package_url = models.CharField(
@@ -622,6 +695,20 @@ class Package(PackageURLMixin):
     is_ghost = models.BooleanField(
         default=False,
         help_text="True if the package does not exist in the upstream package manager or its repository.",
+    )
+
+    risk_score = models.DecimalField(
+        null=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Risk score between 0.00 and 10.00, where higher values "
+        "indicate greater vulnerability risk for the package.",
+    )
+
+    version_rank = models.IntegerField(
+        help_text="Rank of the version to support ordering by version. Rank "
+        "zero means the rank has not been defined yet",
+        default=0,
     )
 
     objects = PackageQuerySet.as_manager()
@@ -657,17 +744,40 @@ class Package(PackageURLMixin):
 
     class Meta:
         unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
-        ordering = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
 
     def __str__(self):
         return self.package_url
+
+    @property
+    def calculate_version_rank(self):
+        """
+        Calculate and return the `version_rank` for a package that does not have one.
+        If this package already has a `version_rank`, return it.
+
+        The calculated rank will be interpolated between two packages that have
+        `version_rank` values and are closest to this package in terms of version order.
+        """
+
+        group_packages = Package.objects.filter(
+            type=self.type,
+            namespace=self.namespace,
+            name=self.name,
+        )
+
+        if any(p.version_rank == 0 for p in group_packages):
+            sorted_packages = sorted(group_packages, key=lambda p: self.version_class(p.version))
+            for rank, package in enumerate(sorted_packages, start=1):
+                package.version_rank = rank
+            Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
+        return self.version_rank
 
     @property
     def affected_by(self):
         """
         Return a queryset of vulnerabilities affecting this package.
         """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
+        return self.affected_by_vulnerabilities.all()
 
     # legacy aliases
     vulnerable_to = affected_by
@@ -678,7 +788,7 @@ class Package(PackageURLMixin):
         """
         Return a queryset of vulnerabilities fixed by this package.
         """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
+        return self.fixing_vulnerabilities.all()
 
     # legacy aliases
     resolved_to = fixing
@@ -708,14 +818,6 @@ class Package(PackageURLMixin):
 
         return reverse("package_details", kwargs={"purl": self.purl}, request=request)
 
-    def sort_by_version(self, packages):
-        """
-        Return a sequence of `packages` sorted by version.
-        """
-        if not packages:
-            return []
-        return sorted(packages, key=lambda x: self.version_class(x.version))
-
     @cached_property
     def version_class(self):
         range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
@@ -734,6 +836,10 @@ class Package(PackageURLMixin):
         return next_non_vulnerable.version if next_non_vulnerable else None
 
     @property
+    def vulnerabilities(self):
+        return self.affected_by_vulnerabilities.all() | self.fixing_vulnerabilities.all()
+
+    @property
     def latest_non_vulnerable_version(self):
         """
         Return the version string of the latest non-vulnerable package version.
@@ -746,19 +852,20 @@ class Package(PackageURLMixin):
         Return a tuple of the next and latest non-vulnerable versions as Package instance.
         Return a tuple of (None, None) if there is no non-vulnerable version.
         """
+        if self.version_rank == 0:
+            self.calculate_version_rank
         non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
             self, fix=False
         ).only_non_vulnerable()
-        sorted_versions = self.sort_by_version(non_vulnerable_versions)
 
-        later_non_vulnerable_versions = [
-            non_vuln_ver
-            for non_vuln_ver in sorted_versions
-            if self.version_class(non_vuln_ver.version) > self.current_version
-        ]
+        later_non_vulnerable_versions = non_vulnerable_versions.filter(
+            version_rank__gt=self.version_rank
+        )
+
+        later_non_vulnerable_versions = list(later_non_vulnerable_versions)
 
         if later_non_vulnerable_versions:
-            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
+            sorted_versions = later_non_vulnerable_versions
             next_non_vulnerable = sorted_versions[0]
             latest_non_vulnerable = sorted_versions[-1]
             return next_non_vulnerable, latest_non_vulnerable
@@ -787,13 +894,15 @@ class Package(PackageURLMixin):
         Return a list of vulnerabilities that affect this package together with information regarding
         the versions that fix the vulnerabilities.
         """
+        if self.version_rank == 0:
+            self.calculate_version_rank
         package_details_vulns = []
 
         fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
 
-        package_vulnerabilities = self.vulnerabilities.affecting_vulnerabilities().prefetch_related(
+        package_vulnerabilities = self.affected_by_vulnerabilities.prefetch_related(
             Prefetch(
-                "packages",
+                "fixed_by_packages",
                 queryset=fixed_by_packages,
                 to_attr="fixed_packages",
             )
@@ -810,12 +919,13 @@ class Package(PackageURLMixin):
                 if fixed_version > self.current_version:
                     later_fixed_packages.append(fixed_pkg)
 
-            next_fixed_package = None
             next_fixed_package_vulns = []
 
             sort_fixed_by_packages_by_version = []
             if later_fixed_packages:
-                sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
+                sort_fixed_by_packages_by_version = sorted(
+                    later_fixed_packages, key=lambda p: p.version_rank
+                )
 
             fixed_by_pkgs = []
 
@@ -845,16 +955,8 @@ class Package(PackageURLMixin):
         """
         Return a queryset of Vulnerabilities that are fixed by this package.
         """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=True)
-
-    @property
-    def affected_by_vulnerabilities(self):
-        """
-        Return a queryset of Vulnerabilities that affect this package.
-        """
-        return self.vulnerabilities.filter(packagerelatedvulnerability__fix=False)
-
-    affecting_vulnerabilities = affected_by_vulnerabilities
+        print("A")
+        return self.fixed_by_vulnerabilities.all()
 
     @property
     def affecting_vulns(self):
@@ -862,37 +964,39 @@ class Package(PackageURLMixin):
         Return a queryset of Vulnerabilities that affect this `package`.
         """
         fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
-        return self.vulnerabilities.affecting_vulnerabilities().prefetch_related(
+        return self.affected_by_vulnerabilities.all().prefetch_related(
             Prefetch(
-                "packages",
+                "fixed_by_packages",
                 queryset=fixed_by_packages,
                 to_attr="fixed_packages",
             )
         )
 
 
-class PackageRelatedVulnerability(models.Model):
+class PackageRelatedVulnerabilityBase(models.Model):
     """
-    Track the relationship between a Package and Vulnerability.
+    Abstract base class for package-vulnerability relations.
     """
 
-    # TODO: Fix related_name
     package = models.ForeignKey(
         Package,
         on_delete=models.CASCADE,
+        # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 
     vulnerability = models.ForeignKey(
         Vulnerability,
         on_delete=models.CASCADE,
+        # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 
     created_by = models.CharField(
         max_length=100,
         blank=True,
-        help_text="Fully qualified name of the improver prefixed with the"
-        "module name responsible for creating this relation. Eg:"
-        "vulnerabilities.importers.nginx.NginxBasicImprover",
+        help_text=(
+            "Fully qualified name of the improver prefixed with the module name "
+            "responsible for creating this relation. Eg: vulnerabilities.importers.nginx.NginxBasicImprover"
+        ),
     )
 
     from vulnerabilities.improver import MAX_CONFIDENCE
@@ -903,54 +1007,45 @@ class PackageRelatedVulnerability(models.Model):
         help_text="Confidence score for this relation",
     )
 
-    fix = models.BooleanField(
-        default=False,
-        db_index=True,
-        help_text="Does this relation fix the specified vulnerability ?",
-    )
-
     class Meta:
+        abstract = True
         unique_together = ["package", "vulnerability"]
-        verbose_name_plural = "PackageRelatedVulnerabilities"
-        indexes = [models.Index(fields=["fix"])]
         ordering = ["package", "vulnerability"]
 
     def __str__(self):
-        return f"{self.package.package_url} {self.vulnerability.vulnerability_id}"
+        relation = "fixes" if isinstance(self, FixingPackageRelatedVulnerability) else "affected by"
+        return f"{self.package.package_url} {relation} {self.vulnerability.vulnerability_id}"
 
     def update_or_create(self, advisory):
         """
-        Update if supplied record has more confidence than existing record
-        Create if doesn't exist
+        Update if supplied record has more confidence than existing record.
+        Create if it doesn't exist.
         """
+        model_class = self.__class__
         try:
-            existing = PackageRelatedVulnerability.objects.get(
+            existing = model_class.objects.get(
                 vulnerability=self.vulnerability, package=self.package
             )
             if self.confidence > existing.confidence:
                 existing.created_by = self.created_by
                 existing.confidence = self.confidence
-                existing.fix = self.fix
                 existing.save()
-                # TODO: later we want these to be part of a log field in the DB
                 logger.info(
                     f"Confidence improved for {self.package} R {self.vulnerability}, "
                     f"new confidence: {self.confidence}"
                 )
             self.add_package_vulnerability_changelog(advisory=advisory)
-
-        except self.DoesNotExist:
-            PackageRelatedVulnerability.objects.create(
+        except model_class.DoesNotExist:
+            model_class.objects.create(
                 vulnerability=self.vulnerability,
                 created_by=self.created_by,
                 package=self.package,
                 confidence=self.confidence,
-                fix=self.fix,
             )
 
             logger.info(
                 f"New relationship {self.package} R {self.vulnerability}, "
-                f"fix: {self.fix}, confidence: {self.confidence}"
+                f"confidence: {self.confidence}"
             )
 
             self.add_package_vulnerability_changelog(advisory=advisory)
@@ -960,7 +1055,7 @@ class PackageRelatedVulnerability(models.Model):
         from vulnerabilities.utils import get_importer_name
 
         importer_name = get_importer_name(advisory)
-        if self.fix:
+        if isinstance(self, FixingPackageRelatedVulnerability):
             change_logger = PackageChangeLog.log_fixing
         else:
             change_logger = PackageChangeLog.log_affected_by
@@ -972,37 +1067,20 @@ class PackageRelatedVulnerability(models.Model):
         )
 
 
-class VulnerabilitySeverity(models.Model):
-    reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
+class FixingPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
+    class Meta(PackageRelatedVulnerabilityBase.Meta):
+        verbose_name_plural = "Fixing Package Related Vulnerabilities"
 
-    scoring_system_choices = tuple(
-        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
+
+class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
+
+    severities = models.ManyToManyField(
+        VulnerabilitySeverity,
+        related_name="affected_package_vulnerability_relations",
     )
 
-    scoring_system = models.CharField(
-        max_length=50,
-        choices=scoring_system_choices,
-        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
-            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
-        ),
-    )
-
-    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
-
-    scoring_elements = models.CharField(
-        max_length=150,
-        null=True,
-        help_text="Supporting scoring elements used to compute the score values. "
-        "For example a CVSS vector string as used to compute a CVSS score.",
-    )
-
-    published_at = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
-    )
-
-    class Meta:
-        unique_together = ["reference", "scoring_system", "value"]
-        ordering = ["reference", "scoring_system", "value"]
+    class Meta(PackageRelatedVulnerabilityBase.Meta):
+        verbose_name_plural = "Affected By Package Related Vulnerabilities"
 
 
 class AliasQuerySet(BaseQuerySet):
@@ -1103,7 +1181,7 @@ class Advisory(models.Model):
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the"
         "module name importing the advisory. Eg:"
-        "vulnerabilities.importers.nginx.NginxImporter",
+        "vulnerabilities.pipeline.nginx_importer.NginxImporterPipeline",
     )
     url = models.URLField(
         blank=True,
@@ -1137,7 +1215,9 @@ class Advisory(models.Model):
         return AdvisoryData(
             aliases=self.aliases,
             summary=self.summary,
-            affected_packages=[AffectedPackage.from_dict(pkg) for pkg in self.affected_packages],
+            affected_packages=[
+                AffectedPackage.from_dict(pkg) for pkg in self.affected_packages if pkg
+            ],
             references=[Reference.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
             weaknesses=self.weaknesses,
@@ -1227,7 +1307,8 @@ class ChangeLog(models.Model):
     software_version = models.CharField(
         max_length=100,
         help_text="Version of the software at the time of change",
-        default=VULNERABLECODE_VERSION,
+        blank=False,
+        null=False,
     )
 
     @property
@@ -1389,49 +1470,90 @@ class PackageChangeLog(ChangeLog):
         )
 
 
-class Kev(models.Model):
+class Exploit(models.Model):
     """
-    Known Exploited Vulnerabilities
+    A vulnerability exploit is code used to
+    take advantage of a security flaw for unauthorized access or malicious activity.
     """
 
-    vulnerability = models.OneToOneField(
+    vulnerability = models.ForeignKey(
         Vulnerability,
+        related_name="exploits",
         on_delete=models.CASCADE,
-        related_name="kev",
     )
 
     date_added = models.DateField(
-        help_text="The date the vulnerability was added to the Known Exploited Vulnerabilities"
-        " (KEV) catalog in the format YYYY-MM-DD.",
         null=True,
         blank=True,
+        help_text="The date the vulnerability was added to an exploit catalog.",
     )
 
     description = models.TextField(
-        help_text="Description of the vulnerability in the Known Exploited Vulnerabilities"
-        " (KEV) catalog, usually a refinement of the original CVE description"
+        null=True,
+        blank=True,
+        help_text="Description of the vulnerability in an exploit catalog, often a refinement of the original CVE description",
     )
 
     required_action = models.TextField(
+        null=True,
+        blank=True,
         help_text="The required action to address the vulnerability, typically to "
-        "apply vendor updates or apply vendor mitigations or to discontinue use."
+        "apply vendor updates or apply vendor mitigations or to discontinue use.",
     )
 
     due_date = models.DateField(
-        help_text="The date the required action is due in the format YYYY-MM-DD,"
-        "which applies to all USA federal civilian executive branch (FCEB) agencies,"
-        "but all organizations are strongly encouraged to execute the required action."
+        null=True,
+        blank=True,
+        help_text="The date the required action is due, which applies"
+        " to all USA federal civilian executive branch (FCEB) agencies, "
+        "but all organizations are strongly encouraged to execute the required action",
     )
 
-    resources_and_notes = models.TextField(
+    notes = models.TextField(
+        null=True,
+        blank=True,
         help_text="Additional notes and resources about the vulnerability,"
-        " often a URL to vendor instructions."
+        " often a URL to vendor instructions.",
     )
 
     known_ransomware_campaign_use = models.BooleanField(
         default=False,
-        help_text="""Known if this vulnerability is known to have been leveraged as part of a ransomware campaign;
-        or 'Unknown' if CISA lacks confirmation that the vulnerability has been utilized for ransomware.""",
+        help_text="""Known' if this vulnerability is known to have been leveraged as part of a ransomware campaign; 
+        or 'Unknown' if there is no confirmation that the vulnerability has been utilized for ransomware.""",
+    )
+
+    source_date_published = models.DateField(
+        null=True, blank=True, help_text="The date that the exploit was published or disclosed."
+    )
+
+    exploit_type = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The type of the exploit as provided by the original upstream data source.",
+    )
+
+    platform = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The platform associated with the exploit as provided by the original upstream data source.",
+    )
+
+    source_date_updated = models.DateField(
+        null=True,
+        blank=True,
+        help_text="The date the exploit was updated in the original upstream data source.",
+    )
+
+    data_source = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The source of the exploit information, such as CISA KEV, exploitdb, metaspoit, or others.",
+    )
+
+    source_url = models.URLField(
+        null=True,
+        blank=True,
+        help_text="The URL to the exploit as provided in the original upstream data source.",
     )
 
     @property

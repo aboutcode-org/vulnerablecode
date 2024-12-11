@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -16,7 +16,6 @@ from vulnerabilities.api_extension import V2VulnerabilityReferenceSerializer
 from vulnerabilities.api_extension import V2VulnerabilitySeveritySerializer
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
@@ -46,7 +45,7 @@ def vulnerability_severity(vulnerability_reference):
         scoring_system="cvssv3_vector",
         value="7.0",
         scoring_elements="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-        reference_id=vulnerability_reference.id,
+        url=f"https://..",
     )
 
 
@@ -68,10 +67,9 @@ def vulnerability(db, vulnerability_reference, vulnerability_severity):
 
 @fixture
 def package_related_vulnerability(db, package, vulnerability):
-    PackageRelatedVulnerability.objects.create(
+    AffectedByPackageRelatedVulnerability.objects.create(
         package=package,
         vulnerability=vulnerability,
-        fix=False,
     )
     return package
 
@@ -88,7 +86,7 @@ def test_V2VulnerabilitySeveritySerializer(vulnerability_severity):
     results = V2VulnerabilitySeveritySerializer(instance=vulnerability_severity).data
     expected = {
         "published_at": None,
-        "reference": {"reference_id": "fake", "reference_type": "", "reference_url": "https://.."},
+        "url": "https://..",
         "score": "7.0",
         "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
         "scoring_system": "cvssv3_vector",

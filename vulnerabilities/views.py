@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
@@ -23,6 +23,8 @@ from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
 
 from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
@@ -35,6 +37,29 @@ from vulnerabilities.utils import get_severity_range
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
+
+
+def purl_sort_key(purl: models.Package):
+    """
+    Return a sort key for the built-in sorted() function when sorting a list
+    of Package objects.  If the Package ``type`` is supported by univers, apply
+    the univers version class to the Package ``version``, and otherwise use the
+    ``version`` attribute as is.
+    """
+    purl_version_class = get_purl_version_class(purl)
+    purl_sort_version = purl.version
+    if purl_version_class:
+        purl_sort_version = purl_version_class(purl.version)
+    return (purl.type, purl.namespace, purl.name, purl_sort_version, purl.qualifiers, purl.subpath)
+
+
+def get_purl_version_class(purl: models.Package):
+    RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
+    purl_version_class = None
+    check_version_class = RANGE_CLASS_BY_SCHEMES.get(purl.type, None)
+    if check_version_class:
+        purl_version_class = check_version_class.version_class
+    return purl_version_class
 
 
 class PackageSearch(ListView):
@@ -94,7 +119,10 @@ class PackageDetails(DetailView):
         package = self.object
         context["package"] = package
         context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
-        context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
+        # Ghost package should not fix any vulnerability.
+        context["fixing_vulnerabilities"] = (
+            None if package.is_ghost else package.fixing.order_by("vulnerability_id")
+        )
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = package.fixed_package_details
 
@@ -128,7 +156,17 @@ class VulnerabilityDetails(DetailView):
     slug_field = "vulnerability_id"
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("references", "aliases", "weaknesses")
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                "references",
+                "aliases",
+                "weaknesses",
+                "severities",
+                "exploits",
+            )
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -140,7 +178,7 @@ class VulnerabilityDetails(DetailView):
 
         severity_vectors = []
         severity_values = set()
-        for s in self.object.severities:
+        for s in self.object.severities.all():
             if s.scoring_system == EPSS.identifier:
                 continue
 
@@ -159,20 +197,52 @@ class VulnerabilityDetails(DetailView):
             if s.value:
                 severity_values.add(s.value)
 
+        sorted_affected_packages = sorted(self.object.affected_packages.all(), key=purl_sort_key)
+        sorted_fixed_by_packages = sorted(self.object.fixed_by_packages.all(), key=purl_sort_key)
+
+        all_affected_fixed_by_matches = []
+        for sorted_affected_package in sorted_affected_packages:
+            affected_fixed_by_matches = {}
+            affected_fixed_by_matches["affected_package"] = sorted_affected_package
+            matched_fixed_by_packages = []
+            for fixed_by_package in sorted_fixed_by_packages:
+
+                # Ghost Package can't fix vulnerability.
+                if fixed_by_package.is_ghost:
+                    continue
+
+                sorted_affected_version_class = get_purl_version_class(sorted_affected_package)
+                fixed_by_version_class = get_purl_version_class(fixed_by_package)
+                if (
+                    (fixed_by_package.type == sorted_affected_package.type)
+                    and (fixed_by_package.namespace == sorted_affected_package.namespace)
+                    and (fixed_by_package.name == sorted_affected_package.name)
+                    and (fixed_by_package.qualifiers == sorted_affected_package.qualifiers)
+                    and (fixed_by_package.subpath == sorted_affected_package.subpath)
+                    and (
+                        fixed_by_version_class(fixed_by_package.version)
+                        > sorted_affected_version_class(sorted_affected_package.version)
+                    )
+                ):
+                    matched_fixed_by_packages.append(fixed_by_package.purl)
+            affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
+            all_affected_fixed_by_matches.append(affected_fixed_by_matches)
+
         context.update(
             {
                 "vulnerability": self.object,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
-                "severities": list(self.object.severities),
+                "severities": list(self.object.severities.all()),
                 "severity_score_range": get_severity_range(severity_values),
                 "severity_vectors": severity_vectors,
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
-                "affected_packages": self.object.affected_packages.all(),
-                "fixed_by_packages": self.object.fixed_by_packages.all(),
+                "affected_packages": sorted_affected_packages,
+                "fixed_by_packages": sorted_fixed_by_packages,
                 "weaknesses": weaknesses_present_in_db,
                 "status": status,
                 "history": self.object.history,
+                "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
             }
         )
         return context

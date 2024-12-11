@@ -18,15 +18,16 @@ from django.db import transaction
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
+from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 
 
-def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable = None):
+def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):
     obj = None
     try:
         obj, _ = Advisory.objects.get_or_create(
@@ -38,7 +39,7 @@ def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable
             weaknesses=advisory.weaknesses,
             url=advisory.url,
             defaults={
-                "created_by": pipeline_name,
+                "created_by": pipeline_id,
                 "date_collected": datetime.now(timezone.utc),
             },
         )
@@ -55,7 +56,7 @@ def insert_advisory(advisory: AdvisoryData, pipeline_name: str, logger: Callable
 @transaction.atomic
 def import_advisory(
     advisory: Advisory,
-    pipeline_name: str,
+    pipeline_id: str,
     confidence: int = MAX_CONFIDENCE,
     logger: Callable = None,
 ):
@@ -90,7 +91,7 @@ def import_advisory(
 
     if not vulnerability:
         if logger:
-            logger(f"Unable to get vulnerability for advisory: {advisory!r}", level=logging.WARNING)
+            logger(f"Unable to get vulnerability for advisory: {advisory!r}", level=logging.ERROR)
         return
 
     for ref in advisory_data.references:
@@ -103,25 +104,24 @@ def import_advisory(
                 reference_id=ref.reference_id,
                 url=ref.url,
             )
-            if not reference:
-                continue
-
-        VulnerabilityRelatedReference.objects.update_or_create(
-            reference=reference,
-            vulnerability=vulnerability,
-        )
+        if reference:
+            VulnerabilityRelatedReference.objects.update_or_create(
+                reference=reference,
+                vulnerability=vulnerability,
+            )
         for severity in ref.severities:
             try:
                 published_at = str(severity.published_at) if severity.published_at else None
-                _, created = VulnerabilitySeverity.objects.update_or_create(
+                vulnerability_severity, created = VulnerabilitySeverity.objects.update_or_create(
                     scoring_system=severity.system.identifier,
-                    reference=reference,
+                    url=ref.url,
+                    value=severity.value,
+                    scoring_elements=severity.scoring_elements,
                     defaults={
-                        "value": str(severity.value),
-                        "scoring_elements": str(severity.scoring_elements),
                         "published_at": published_at,
                     },
                 )
+                vulnerability.severities.add(vulnerability_severity)
             except:
                 if logger:
                     logger(
@@ -131,29 +131,27 @@ def import_advisory(
             if not created:
                 if logger:
                     logger(
-                        f"Severity updated for reference {ref!r} to value: {severity.value!r} "
+                        f"Severity updated for reference {ref.url!r} to value: {severity.value!r} "
                         f"and scoring_elements: {severity.scoring_elements!r}",
                         level=logging.DEBUG,
                     )
 
     for affected_purl in affected_purls or []:
         vulnerable_package, _ = Package.objects.get_or_create_from_purl(purl=affected_purl)
-        PackageRelatedVulnerability(
+        AffectedByPackageRelatedVulnerability(
             vulnerability=vulnerability,
             package=vulnerable_package,
-            created_by=pipeline_name,
+            created_by=pipeline_id,
             confidence=confidence,
-            fix=False,
         ).update_or_create(advisory=advisory)
 
     for fixed_purl in fixed_purls:
         fixed_package, _ = Package.objects.get_or_create_from_purl(purl=fixed_purl)
-        PackageRelatedVulnerability(
+        FixingPackageRelatedVulnerability(
             vulnerability=vulnerability,
             package=fixed_package,
-            created_by=pipeline_name,
+            created_by=pipeline_id,
             confidence=confidence,
-            fix=True,
         ).update_or_create(advisory=advisory)
 
     if advisory_data.weaknesses and vulnerability:

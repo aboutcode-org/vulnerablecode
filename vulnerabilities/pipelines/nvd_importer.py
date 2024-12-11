@@ -9,7 +9,10 @@
 
 import gzip
 import json
+import logging
 from datetime import date
+from traceback import format_exc as traceback_format_exc
+from typing import Iterable
 
 import attr
 import requests
@@ -17,14 +20,18 @@ from dateutil import parser as dateparser
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 
 
-class NVDImporter(Importer):
+class NVDImporterPipeline(VulnerableCodeBaseImporterPipeline):
+    """Collect advisories from NVD."""
+
+    pipeline_id = "nvd_importer"
+
     # See https://github.com/nexB/vulnerablecode/issues/665 for follow up
     spdx_license_expression = (
         "LicenseRef-scancode-us-govt-public-domain  AND LicenseRef-scancode-cve-tou"
@@ -61,19 +68,46 @@ class NVDImporter(Importer):
     """
     importer_name = "NVD Importer"
 
-    def advisory_data(self):
-        for _year, cve_data in fetch_cve_data_1_1():
+    @classmethod
+    def steps(cls):
+        return (
+            cls.collect_and_store_advisories,
+            cls.import_new_advisories,
+        )
+
+    def advisories_count(self):
+        url = "https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=1"
+
+        advisory_count = 0
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+        except requests.HTTPError as http_err:
+            self.log(
+                f"HTTP error occurred: {http_err} \n {traceback_format_exc()}",
+                level=logging.ERROR,
+            )
+            return advisory_count
+
+        advisory_count = data.get("totalResults", 0)
+        return advisory_count
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        for _year, cve_data in fetch_cve_data_1_1(logger=self.log):
             yield from to_advisories(cve_data=cve_data)
 
 
 # Isolating network calls for simplicity of testing
-def fetch(url):
+def fetch(url, logger=None):
+    if logger:
+        logger(f"Fetching `{url}`")
     gz_file = requests.get(url)
     data = gzip.decompress(gz_file.content)
     return json.loads(data)
 
 
-def fetch_cve_data_1_1(starting_year=2002):
+def fetch_cve_data_1_1(starting_year=2002, logger=None):
     """
     Yield tuples of (year, lists of CVE mappings) from the NVD, one for each
     year since ``starting_year`` defaulting to 2002.
@@ -82,7 +116,7 @@ def fetch_cve_data_1_1(starting_year=2002):
     # NVD json feeds start from 2002.
     for year in range(starting_year, current_year + 1):
         download_url = f"https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-{year}.json.gz"
-        yield year, fetch(url=download_url)
+        yield year, fetch(url=download_url, logger=logger)
 
 
 def to_advisories(cve_data):

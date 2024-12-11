@@ -19,7 +19,7 @@ from vulnerabilities.importers import IMPORTERS_REGISTRY
 )
 def test_updated_advisories(importer_name, importer_class):
     # FIXME: why are we doing this?
-    if importer_name.endswith("GitHubAPIImporter"):
+    if importer_name.endswith("GitHubAPIImporterPipeline"):
         return
 
     advisory_datas = importer_class().advisory_data()

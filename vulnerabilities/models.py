@@ -509,6 +509,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         if fix:
             filter_dict["fixing_vulnerabilities__isnull"] = False
 
+        # TODO: why do we need distinct
         return Package.objects.filter(**filter_dict).distinct()
 
     def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
@@ -714,6 +715,7 @@ class Package(PackageURLMixin):
     objects = PackageQuerySet.as_manager()
 
     class Meta:
+        # index = 
         unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
         ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
 

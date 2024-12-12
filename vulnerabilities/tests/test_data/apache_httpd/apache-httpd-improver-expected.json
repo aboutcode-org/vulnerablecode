@@ -54,7 +54,7 @@
         ]
       }
     ],
-    "weaknesses": []
+    "weaknesses": [476]
   },
   {
     "vulnerability_id": null,
@@ -103,6 +103,6 @@
         ]
       }
     ],
-    "weaknesses": []
+    "weaknesses": [476]
   }
 ]

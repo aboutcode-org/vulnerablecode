@@ -12,14 +12,13 @@ from pathlib import Path
 from typing import Iterable
 from typing import List
 
-from cwe2.database import Database
-
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
+from vulnerabilities.utils import create_weaknesses_list
+from vulnerabilities.utils import cwe_regex
 from vulnerabilities.utils import dedupe
-from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
@@ -160,19 +159,8 @@ def get_weaknesses(cwe_data):
     """
     cwe_list = []
     for line in cwe_data:
-        cwe_ids = re.findall(r"CWE-\d+", line)
+        cwe_ids = re.findall(cwe_regex, line)
         cwe_list.extend(cwe_ids)
 
-    weaknesses = []
-    db = Database()
-
-    for cwe_string in cwe_list:
-
-        if cwe_string:
-            cwe_id = get_cwe_id(cwe_string)
-            try:
-                db.get(cwe_id)
-                weaknesses.append(cwe_id)
-            except Exception:
-                logger.error("Invalid CWE id")
+    weaknesses = create_weaknesses_list(cwe_list)
     return weaknesses

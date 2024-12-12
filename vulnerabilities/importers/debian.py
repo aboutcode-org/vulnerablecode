@@ -24,8 +24,8 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from vulnerabilities.utils import create_weaknesses_list
 from vulnerabilities.utils import dedupe
-from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 
 logger = logging.getLogger(__name__)
@@ -178,14 +178,5 @@ def get_cwe_from_debian_advisory(record):
     description = record.get("description") or ""
     pattern = r"CWE-\d+"
     cwe_strings = re.findall(pattern, description)
-    weaknesses = []
-    db = Database()
-    for cwe_string in cwe_strings:
-        if cwe_string:
-            cwe_id = get_cwe_id(cwe_string)
-            try:
-                db.get(cwe_id)
-                weaknesses.append(cwe_id)
-            except Exception:
-                logger.error("Invalid CWE id")
+    weaknesses = create_weaknesses_list(cwe_strings)
     return weaknesses

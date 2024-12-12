@@ -13,7 +13,6 @@ import urllib
 
 import requests
 from bs4 import BeautifulSoup
-from cwe2.database import Database
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
@@ -25,7 +24,8 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_HTTPD
-from vulnerabilities.utils import get_cwe_id
+from vulnerabilities.utils import create_weaknesses_list
+from vulnerabilities.utils import cwe_regex
 from vulnerabilities.utils import get_item
 
 logger = logging.getLogger(__name__)
@@ -234,33 +234,21 @@ def get_weaknesses(cve_data):
         >>> get_weaknesses(mock_cve_data2)
         [190, 200]
     """
-
     alias = get_item(cve_data, "CVE_data_meta", "ID")
-    cwe_id = []
-    db = Database()
+    cwe_strings = []
     if alias:
         problemtype_data = get_item(cve_data, "problemtype", "problemtype_data") or []
         for problem in problemtype_data:
-            for desc in problem["description"]:
+            for desc in problem.get("description", []):
                 value = desc.get("value", "")
-                cwe_pattern = r"CWE-\d+"
-                cwe_id_string_list = re.findall(cwe_pattern, value)
-                for cwe_id_string in cwe_id_string_list:
-                    cwe_id.append(get_cwe_id(cwe_id_string))
-
+                cwe_id_string_list = re.findall(cwe_regex, value)
+                cwe_strings.extend(cwe_id_string_list)
     else:
         problemTypes = cve_data.get("containers", {}).get("cna", {}).get("problemTypes", [])
         descriptions = problemTypes[0].get("descriptions", []) if len(problemTypes) > 0 else []
         for description in descriptions:
             cwe_id_string = description.get("cweId", "")
-            cwe_id.append(get_cwe_id(cwe_id_string))
+            cwe_strings.append(cwe_id_string)
 
-    weaknesses = []
-    for cwe in cwe_id:
-        try:
-            db.get(cwe)
-            weaknesses.append(cwe)
-        except Exception:
-            logger.error("Invalid CWE id")
-
+    weaknesses = create_weaknesses_list(cwe_strings)
     return weaknesses

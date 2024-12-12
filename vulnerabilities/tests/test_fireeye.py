@@ -226,7 +226,6 @@ class TestFireeyeImporter(TestCase):
                 "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')",
             ]
         ) == [379, 362]
-
         assert (
             get_weaknesses(
                 [

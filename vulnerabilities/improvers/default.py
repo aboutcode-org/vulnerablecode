@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -105,6 +105,8 @@ def get_exact_purls(affected_package: AffectedPackage) -> Tuple[List[PackageURL]
     ... )
     >>> assert expected == got
     """
+    if not affected_package:
+        return [], []
 
     try:
         vr = affected_package.affected_version_range

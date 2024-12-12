@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -105,6 +105,9 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipeline):
         if self.vcs_response:
             self.log(f"Removing cloned repository")
             self.vcs_response.delete()
+
+    def on_failure(self):
+        self.clean_downloads()
 
 
 def parse_advisory_path(base_path: Path, file_path: Path) -> Tuple[str, str, str]:

@@ -1,3 +1,12 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 import logging
 from traceback import format_exc as traceback_format_exc
 
@@ -26,9 +35,7 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
         )
 
     def fetch_exploits(self):
-        kev_url = (
-            "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
-        )
+        kev_url = "https://raw.githubusercontent.com/aboutcode-org/aboutcode-mirror-kev/refs/heads/main/known_exploited_vulnerabilities.json"
         self.log(f"Fetching {kev_url}")
 
         try:

@@ -1,8 +1,117 @@
 Release notes
 =============
 
-Version (next)
+
+Version v35.1.0
+---------------------
+
+- Use AboutCode mirror for collecting CISA KEV #1685
+- Do not report ghost package as a fix for vulnerability #1679
+- Add pipeline to sort packages #1686
+- Fix urls for API #1678
+
+
+Version v35.0.0
+---------------------
+
+- Add scores in bulk search V1 API #1675
+- Add improver pipeline to flag ghost packages #644 #917 #1395 by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1533
+- Add base pipeline for importers and migrate PyPa importer to aboutcode pipeline by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1559
+- Remove dupe Package.get_non_vulnerable_versions by @pombredanne in https://github.com/aboutcode-org/vulnerablecode/pull/1570
+- Import data from GSD #706 by @ziadhany in https://github.com/aboutcode-org/vulnerablecode/pull/787
+- Add curl advisories importer by @ambuj-1211 in https://github.com/aboutcode-org/vulnerablecode/pull/1439
+- Update dependencies by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1590
+- Bump django from 4.2.0 to 4.2.15 by @dependabot in https://github.com/aboutcode-org/vulnerablecode/pull/1591
+- Bump cryptography from 42.0.4 to 43.0.1 by @dependabot in https://github.com/aboutcode-org/vulnerablecode/pull/1582
+- Bump actions/download-artifact from 3 to 4.1.7 in /.github/workflows by @dependabot in https://github.com/aboutcode-org/vulnerablecode/pull/1581
+- Improve export command by @pombredanne in https://github.com/aboutcode-org/vulnerablecode/pull/1571
+- Fix typo in Kev requests import by @ziadhany in https://github.com/aboutcode-org/vulnerablecode/pull/1594
+- Prepare for release v34.0.1 by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1595
+- Bump upload-artifact to v4 by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1596
+- Migrate Npm importer to aboutcode pipeline by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1574
+- Use correct regex for CVE by @pombredanne in https://github.com/aboutcode-org/vulnerablecode/pull/1599
+- Migrate Nginx importer to aboutcode pipeline by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1575
+- Migrate GitLab importer to aboutcode pipeline by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1580
+- Migrate GitHub importer to aboutcode pipeline by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1584
+- Migrate NVD importer to aboutcode pipeline by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1587
+- Match affected and fixed-by Packages by @johnmhoran in https://github.com/aboutcode-org/vulnerablecode/pull/1528
+- Add management command to commit exported data by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1600
+- Add support to Exploits model by @ziadhany in https://github.com/aboutcode-org/vulnerablecode/pull/1562
+- Fix 500 Server Error with DRF browsable API and resolve blank Swagger API documentation by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1603
+- Release v34.0.2 by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1604
+- Bump VCIO version by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1605
+- Bump django from 4.2.15 to 4.2.16 by @dependabot in https://github.com/aboutcode-org/vulnerablecode/pull/1608
+- Bump fetchcode from v0.3.0 to v0.6.0 by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1607
+- Use 4-tier system for storing package metadata by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1609
+- Fix vers range crash by @pombredanne in https://github.com/aboutcode-org/vulnerablecode/pull/1598
+- Add GitHub action to publish aboutcode.hashid PyPI by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1615
+- Segregate PackageRelatedVulnerability model to new models by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1612
+- Add documentation for new pipeline design by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1621
+- Fix 500 error in /api/cpes endpoint by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1629
+- Migrate pysec importer to aboutcode pipeline by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1628
+- Avoid memory exhaustion during data migration by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1630
+- Add support for Calculating Risk in VulnerableCode by @ziadhany in https://github.com/aboutcode-org/vulnerablecode/pull/1593
+- Bulk create in migrations by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1640
+- Update README.rst by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1641
+- Prepare for release v34.1.0 by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1642
+- Add V2 API endpoints by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1631
+- Prepare for release v34.2.0 by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1647
+- Refactor severity score model and fix incorrect suse scores by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1636
+- Add bulk search in v2 by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1649
+- Prepare release v34.3.0 by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1652
+- Add `on_failure` to handle cleanup during pipeline failure by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1651
+- Fix API bug by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1654
+- Add reference score to package endpoint  by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1655
+- Prepare for release v34.3.2 by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1656
+- Add support for storing  exploitability and weighted severity by @ziadhany in https://github.com/aboutcode-org/vulnerablecode/pull/1646
+- Avoid migrations on version bumps by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1660
+- Prepare v35.0.0rc1 by @TG1999 in https://github.com/aboutcode-org/vulnerablecode/pull/1664
+
+
+
+Version v35.0.0rc1
+---------------------
+
+- Add support for storing exploitability and weighted severity #1646
+- Avoid migrations on version bumps #1660
+
+
+Version v34.3.2
+----------------
+
+- HOTFIX: Add reference score to package endpoint #1655
+
+
+Version v34.3.1
+----------------
+
+- HOTFIX: Fix API bug #1654
+
+
+Version v34.3.0
+-----------------
+
+- Add bulk search in v2 #1649 
+- Refactor severity score model and fix incorrect suse scores #1636
+
+
+Version v34.2.0
 -------------------
+
+- Add V2 API endpoints #1631
+
+
+Version v34.1.0
+-------------------
+
+- Add support for Calculating Package Vulnerability Risk #1593
+- Migrate pysec importer to aboutcode pipeline #1628
+- Fix 500 error in /api/cpes endpoint #1629
+- Add documentation for new pipeline design #1621
+- Segregate PackageRelatedVulnerability model to new models #1612
+- Add GitHub action to publish aboutcode.hashid PyPI #1615
+- Fix vers range crash #1598
+- Use 4-tier system for storing package metadata #1609
 
 
 Version v34.0.2

@@ -3,13 +3,15 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
 from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipelines import compute_package_risk
+from vulnerabilities.pipelines import compute_package_version_rank
 from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
 from vulnerabilities.pipelines import enhance_with_metasploit
@@ -37,6 +39,8 @@ IMPROVERS_REGISTRY = [
     enhance_with_kev.VulnerabilityKevPipeline,
     enhance_with_metasploit.MetasploitImproverPipeline,
     enhance_with_exploitdb.ExploitDBImproverPipeline,
+    compute_package_risk.ComputePackageRiskPipeline,
+    compute_package_version_rank.ComputeVersionRankPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

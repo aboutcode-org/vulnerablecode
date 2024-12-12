@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
@@ -22,20 +22,12 @@ logger = logging.getLogger(__name__)
 
 
 def serialize_severity(sev):
-    # inlines refs
-    ref = sev.reference
-    sevref = {
-        "url": ref.url,
-        "reference_type": ref.reference_type,
-        "reference_id": ref.reference_id,
-    }
-
     return {
         "score": sev.value,
         "scoring_system": sev.scoring_system,
         "scoring_elements": sev.scoring_elements,
         "published_at": sev.published_at,
-        "reference": sevref,
+        "url": sev.url,
     }
 
 
@@ -44,7 +36,7 @@ def serialize_vulnerability(vuln):
     Return a plain data mapping seralized from ``vuln`` Vulnerability instance.
     """
     aliases = list(vuln.aliases.values_list("alias", flat=True))
-    severities = [serialize_severity(sev) for sev in vuln.severities]
+    severities = [serialize_severity(sev) for sev in vuln.severities.all()]
     weaknesses = [wkns.cwe for wkns in vuln.weaknesses.all()]
 
     references = list(
@@ -116,7 +108,7 @@ class Command(BaseCommand):
                     }
                     package_vulnerabilities.append(package_data)
 
-                    for vuln in pkg_version.vulnerabilities.all():
+                    for vuln in pkg_version.vulnerabilities:
                         vcid = vuln.vulnerability_id
                         # do not write twice the same file
                         if vcid in seen_vcid:
@@ -158,10 +150,14 @@ def packages_by_type_ns_name():
     qs = (
         Package.objects.order_by("type", "namespace", "name", "version")
         .prefetch_related(
-            "vulnerabilities",
-            "vulnerabilities__references",
-            "vulnerabilities__weaknesses",
-            "vulnerabilities__references__vulnerabilityseverity_set",
+            "affected_by_vulnerabilities",
+            "affected_by_vulnerabilities__references",
+            "affected_by_vulnerabilities__weaknesses",
+            "affected_by_vulnerabilities__severities",
+            "fixing_vulnerabilities",
+            "fixing_vulnerabilities__references",
+            "fixing_vulnerabilities__weaknesses",
+            "fixing_vulnerabilities__severities",
         )
         .paginated()
     )

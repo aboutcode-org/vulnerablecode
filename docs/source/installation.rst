@@ -6,7 +6,7 @@ Installation
 .. warning::
    VulnerableCode is going through a major structural change and the
    installations are likely to not produce enough results.
-   This is tracked in https://github.com/nexB/vulnerablecode/issues/597
+   This is tracked in https://github.com/aboutcode-org/vulnerablecode/issues/597
 
 Welcome to **VulnerableCode** installation guide! This guide describes how to install
 VulnerableCode on various platforms.
@@ -40,10 +40,10 @@ Build the Image
 VulnerableCode is distributed with ``Dockerfile`` and ``docker-compose.yml`` files
 required for the creation of the Docker image.
 
-Clone the git `VulnerableCode repo <https://github.com/nexB/vulnerablecode>`_,
+Clone the git `VulnerableCode repo <https://github.com/aboutcode-org/vulnerablecode>`_,
 create an environment file, and build the Docker image::
 
-    git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
+    git clone https://github.com/aboutcode-org/vulnerablecode.git && cd vulnerablecode
     make envfile
     docker compose build
 
@@ -146,9 +146,9 @@ Make sure those are installed::
 Clone and Configure
 ^^^^^^^^^^^^^^^^^^^
 
-Clone the `VulnerableCode Git repository <https://github.com/nexB/vulnerablecode>`_::
+Clone the `VulnerableCode Git repository <https://github.com/aboutcode-org/vulnerablecode>`_::
 
-    git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
+    git clone https://github.com/aboutcode-org/vulnerablecode.git && cd vulnerablecode
 
 Install the required dependencies::
 

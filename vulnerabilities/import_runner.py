@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -21,9 +21,10 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.improver import Inference
 from vulnerabilities.improvers.default import DefaultImporter
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
+from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
-from vulnerabilities.models import PackageRelatedVulnerability
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityChangeLog
 from vulnerabilities.models import VulnerabilityReference
@@ -179,54 +180,55 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                     reference_id=ref.reference_id,
                     url=ref.url,
                 )
-                if not reference:
-                    continue
 
-            VulnerabilityRelatedReference.objects.update_or_create(
-                reference=reference,
-                vulnerability=vulnerability,
-            )
+            if reference:
+                VulnerabilityRelatedReference.objects.update_or_create(
+                    reference=reference,
+                    vulnerability=vulnerability,
+                )
             updated = False
             for severity in ref.severities:
                 try:
                     published_at = str(severity.published_at) if severity.published_at else None
-                    _vs, updated = VulnerabilitySeverity.objects.update_or_create(
+                    (
+                        vulnerability_severity,
+                        updated,
+                    ) = VulnerabilitySeverity.objects.update_or_create(
                         scoring_system=severity.system.identifier,
-                        reference=reference,
+                        url=ref.url,
+                        value=severity.value,
+                        scoring_elements=severity.scoring_elements,
                         defaults={
-                            "value": str(severity.value),
-                            "scoring_elements": str(severity.scoring_elements),
                             "published_at": published_at,
                         },
                     )
+                    vulnerability.severities.add(vulnerability_severity)
                 except:
                     logger.error(
                         f"Failed to create VulnerabilitySeverity for: {severity} with error:\n{traceback_format_exc()}"
                     )
                 if updated:
                     logger.info(
-                        f"Severity updated for reference {ref!r} to value: {severity.value!r} "
+                        f"Severity updated for reference {ref.url!r} to value: {severity.value!r} "
                         f"and scoring_elements: {severity.scoring_elements!r}"
                     )
 
         for affected_purl in inference.affected_purls or []:
             vulnerable_package, _ = Package.objects.get_or_create_from_purl(purl=affected_purl)
-            PackageRelatedVulnerability(
+            AffectedByPackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=vulnerable_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
-                fix=False,
             ).update_or_create(advisory=advisory)
 
         if inference.fixed_purl:
             fixed_package, _ = Package.objects.get_or_create_from_purl(purl=inference.fixed_purl)
-            PackageRelatedVulnerability(
+            FixingPackageRelatedVulnerability(
                 vulnerability=vulnerability,
                 package=fixed_package,
                 created_by=improver_name,
                 confidence=inference.confidence,
-                fix=True,
             ).update_or_create(advisory=advisory)
 
         if inference.weaknesses and vulnerability:

@@ -101,6 +101,7 @@ snowballstemmer==2.2.0
 soupsieve==2.3.2
 Sphinx==4.5.0
 sphinxcontrib-applehelp==1.0.2
+sphinx-autobuild==2024.10.3
 sphinxcontrib-devhelp==1.0.2
 sphinxcontrib-django2==1.5
 sphinxcontrib-htmlhelp==2.0.0

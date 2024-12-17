@@ -161,6 +161,7 @@ class VulnerabilitySeverity(models.Model):
         max_length=1024,
         null=True,
         help_text="URL to the vulnerability severity",
+        db_index=True,
     )
 
     scoring_system_choices = tuple(
@@ -454,6 +455,7 @@ class VulnerabilityReference(models.Model):
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
+        db_index=True,
     )
 
     objects = VulnerabilityReferenceQuerySet.as_manager()

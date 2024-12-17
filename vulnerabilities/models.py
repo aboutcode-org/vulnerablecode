@@ -212,6 +212,7 @@ class Vulnerability(models.Model):
         default=utils.build_vcid,
         help_text="Unique identifier for a vulnerability in the external representation. "
         "It is prefixed with VCID-",
+        db_index=True,
     )
 
     summary = models.TextField(
@@ -696,6 +697,7 @@ class Package(PackageURLMixin):
     is_ghost = models.BooleanField(
         default=False,
         help_text="True if the package does not exist in the upstream package manager or its repository.",
+        db_index=True,
     )
 
     risk_score = models.DecimalField(
@@ -710,14 +712,18 @@ class Package(PackageURLMixin):
         help_text="Rank of the version to support ordering by version. Rank "
         "zero means the rank has not been defined yet",
         default=0,
+        db_index=True,
     )
 
     objects = PackageQuerySet.as_manager()
 
     class Meta:
-        # index = 
         unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
         ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
+        indexes = [
+            models.Index(fields=["type", "namespace", "name"]),
+            models.Index(fields=["type", "namespace", "name", "qualifiers", "subpath"]),
+        ]
 
     def __str__(self):
         return self.package_url
@@ -983,12 +989,14 @@ class PackageRelatedVulnerabilityBase(models.Model):
     package = models.ForeignKey(
         Package,
         on_delete=models.CASCADE,
+        db_index=True,
         # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 
     vulnerability = models.ForeignKey(
         Vulnerability,
         on_delete=models.CASCADE,
+        db_index=True,
         # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 

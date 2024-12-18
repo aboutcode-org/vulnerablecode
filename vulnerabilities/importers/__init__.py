@@ -42,6 +42,7 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines import vmwarephoton_importer
 
 IMPORTERS_REGISTRY = [
     alpine_linux.AlpineImporter,
@@ -78,6 +79,7 @@ IMPORTERS_REGISTRY = [
     github_importer.GitHubAPIImporterPipeline,
     nvd_importer.NVDImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
+    vmwarephoton_importer.VMWAREPHOTONImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

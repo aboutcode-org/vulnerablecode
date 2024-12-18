@@ -727,7 +727,14 @@ class Package(PackageURLMixin):
             models.Index(fields=["type", "namespace", "name"]),
             models.Index(fields=["type", "namespace", "name", "qualifiers", "subpath"]),
             # Index for getting a specific version of a package
-            models.Index(fields=["type", "namespace", "name", "version",])
+            models.Index(
+                fields=[
+                    "type",
+                    "namespace",
+                    "name",
+                    "version",
+                ]
+            ),
         ]
 
     def __str__(self):

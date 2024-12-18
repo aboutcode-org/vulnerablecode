@@ -723,8 +723,11 @@ class Package(PackageURLMixin):
         unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
         ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
         indexes = [
+            # Index for getting al versions of a package
             models.Index(fields=["type", "namespace", "name"]),
             models.Index(fields=["type", "namespace", "name", "qualifiers", "subpath"]),
+            # Index for getting a specific version of a package
+            models.Index(fields=["type", "namespace", "name", "version",])
         ]
 
     def __str__(self):

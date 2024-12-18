@@ -161,6 +161,7 @@ class VulnerabilitySeverity(models.Model):
         max_length=1024,
         null=True,
         help_text="URL to the vulnerability severity",
+        db_index=True,
     )
 
     scoring_system_choices = tuple(
@@ -212,6 +213,7 @@ class Vulnerability(models.Model):
         default=utils.build_vcid,
         help_text="Unique identifier for a vulnerability in the external representation. "
         "It is prefixed with VCID-",
+        db_index=True,
     )
 
     summary = models.TextField(
@@ -453,6 +455,7 @@ class VulnerabilityReference(models.Model):
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
+        db_index=True,
     )
 
     objects = VulnerabilityReferenceQuerySet.as_manager()
@@ -509,6 +512,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         if fix:
             filter_dict["fixing_vulnerabilities__isnull"] = False
 
+        # TODO: why do we need distinct
         return Package.objects.filter(**filter_dict).distinct()
 
     def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
@@ -695,6 +699,7 @@ class Package(PackageURLMixin):
     is_ghost = models.BooleanField(
         default=False,
         help_text="True if the package does not exist in the upstream package manager or its repository.",
+        db_index=True,
     )
 
     risk_score = models.DecimalField(
@@ -709,9 +714,35 @@ class Package(PackageURLMixin):
         help_text="Rank of the version to support ordering by version. Rank "
         "zero means the rank has not been defined yet",
         default=0,
+        db_index=True,
     )
 
     objects = PackageQuerySet.as_manager()
+
+    class Meta:
+        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
+        indexes = [
+            # Index for getting al versions of a package
+            models.Index(fields=["type", "namespace", "name"]),
+            models.Index(fields=["type", "namespace", "name", "qualifiers", "subpath"]),
+            # Index for getting a specific version of a package
+            models.Index(
+                fields=[
+                    "type",
+                    "namespace",
+                    "name",
+                    "version",
+                ]
+            ),
+        ]
+
+    def __str__(self):
+        return self.package_url
+
+    @property
+    def purl(self):
+        return self.package_url
 
     def save(self, *args, **kwargs):
         """
@@ -737,17 +768,6 @@ class Package(PackageURLMixin):
         plain_purl = utils.plain_purl(normalized)
         self.plain_package_url = str(plain_purl)
         super().save(*args, **kwargs)
-
-    @property
-    def purl(self):
-        return self.package_url
-
-    class Meta:
-        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
-        ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
-
-    def __str__(self):
-        return self.package_url
 
     @property
     def calculate_version_rank(self):
@@ -981,12 +1001,14 @@ class PackageRelatedVulnerabilityBase(models.Model):
     package = models.ForeignKey(
         Package,
         on_delete=models.CASCADE,
+        db_index=True,
         # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 
     vulnerability = models.ForeignKey(
         Vulnerability,
         on_delete=models.CASCADE,
+        db_index=True,
         # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 

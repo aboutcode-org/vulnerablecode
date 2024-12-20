@@ -1581,3 +1581,32 @@ class Exploit(models.Model):
     @property
     def get_known_ransomware_campaign_use_type(self):
         return "Known" if self.known_ransomware_campaign_use else "Unknown"
+
+
+class CodeChange(models.Model):
+    commits = models.JSONField(blank=True, default=list)
+    pulls = models.JSONField(blank=True, default=list)
+    downloads = models.JSONField(blank=True, default=list)
+    patch = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+    references = models.JSONField(blank=True, default=list)
+    status_reviewed = models.BooleanField(default=False)
+    base_version = models.ForeignKey(
+        "Package",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="base_version_changes",
+    )
+    base_commit = models.CharField(max_length=255, blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class CodeFix(CodeChange):
+    vulnerabilities = models.ManyToManyField("Vulnerability", related_name="codefixes", blank=True)
+    applies_to_versions = models.ManyToManyField("Package", related_name="fixes", blank=True)

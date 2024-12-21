@@ -8,22 +8,23 @@
 #
 import json
 import os
+from pathlib import Path
 from unittest import TestCase
 
-from vulnerabilities.importers.almalinux import parse_advisory_data
+from vulnerabilities.importers.osv import parse_advisory_data
 from vulnerabilities.tests import util_tests
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/almalinux")
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "almalinux"
 
 
-class AlmaImporter(TestCase):
+class TestAlmalinuxImporterPipelin(TestCase):
     def test_almalinux_importer1(self):
         with open(os.path.join(TEST_DATA, "almalinux_test_1.json")) as f:
             mock_response = json.load(f)
         expected_file = os.path.join(TEST_DATA, "almalinux_expected_1.json")
         imported_data = parse_advisory_data(
-            mock_response,
+            raw_data=mock_response,
+            supported_ecosystems="rpm",
             advisory_url="https://github.com/AlmaLinux/osv-database"
             "/blob/master/advisories/almalinux8/almalinux_test_1.json",
         )
@@ -35,7 +36,8 @@ class AlmaImporter(TestCase):
             mock_response = json.load(f)
         expected_file = os.path.join(TEST_DATA, "almalinux_expected_2.json")
         imported_data = parse_advisory_data(
-            mock_response,
+            raw_data=mock_response,
+            supported_ecosystems="rpm",
             advisory_url="https://github.com/AlmaLinux/osv-database"
             "/blob/master/advisories/almalinux8/almalinux_test_2.json",
         )
@@ -47,7 +49,8 @@ class AlmaImporter(TestCase):
             mock_response = json.load(f)
         expected_file = os.path.join(TEST_DATA, "almalinux_expected_3.json")
         imported_data = parse_advisory_data(
-            mock_response,
+            raw_data=mock_response,
+            supported_ecosystems="rpm",
             advisory_url="https://github.com/AlmaLinux/osv-database"
             "/blob/master/advisories/almalinux8/almalinux_test_3.json",
         )

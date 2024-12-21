@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from vulnerabilities.importers import almalinux
 from vulnerabilities.importers import alpine_linux
 from vulnerabilities.importers import apache_httpd
 from vulnerabilities.importers import apache_kafka
@@ -36,6 +35,7 @@ from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import almalinux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
@@ -69,7 +69,6 @@ IMPORTERS_REGISTRY = [
     oss_fuzz.OSSFuzzImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
-    almalinux.AlmaImporter,
     curl.CurlImporter,
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,
@@ -80,6 +79,7 @@ IMPORTERS_REGISTRY = [
     github_importer.GitHubAPIImporterPipeline,
     nvd_importer.NVDImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
+    almalinux_importer.AlmalinuxImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

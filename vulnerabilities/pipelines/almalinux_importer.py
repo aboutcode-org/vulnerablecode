@@ -28,7 +28,7 @@ class AlmalinuxImporterPipeline(VulnerableCodeBaseImporterPipeline):
     spdx_license_expression = "MIT"
     license_url = "https://github.com/AlmaLinux/osv-database/blob/master/LICENSE"
     importer_name = "Almalinux Importer"
-    repo_url = "https://github.com/AlmaLinux/osv-database"
+    repo_url = "git+https://github.com/AlmaLinux/osv-database"
 
     @classmethod
     def steps(cls):
@@ -44,22 +44,23 @@ class AlmalinuxImporterPipeline(VulnerableCodeBaseImporterPipeline):
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
     def advisories_count(self):
-        vuln_directory = Path(self.vcs_response.dest_dir) / "tree" / "master" / "advisories"
+        vuln_directory = Path(self.vcs_response.dest_dir) / "advisories"
         return sum(1 for _ in vuln_directory.rglob("*.json"))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        base_path = Path(self.vcs_response.dest_dir)
-        vuln_directory = base_path / "tree" / "master" / "advisories"
+        base_directory = Path(self.vcs_response.dest_dir)
+        vuln_directory = base_directory / "advisories"
+
         for file in vuln_directory.rglob("*.json"):
             advisory_url = get_advisory_url(
                 file=file,
-                base_path=base_path,
-                url="https://github.com/AlmaLinux/osv-database/blob/master",
+                base_path=base_directory,
+                url="https://github.com/AlmaLinux/osv-database/blob/master/",
             )
             with open(file) as f:
                 raw_data = json.load(f)
             yield parse_advisory_data(
-                raw_data=raw_data, supported_ecosystems="rpm", advisory_url=advisory_url
+                raw_data=raw_data, supported_ecosystems=["rpm"], advisory_url=advisory_url
             )
 
     def clean_downloads(self):

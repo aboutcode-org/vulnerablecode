@@ -16,21 +16,6 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
-def extract_commit_id(url):
-    """
-    Extract a commit ID from a URL, if available.
-    Supports different URL structures for commit references.
-
-    >>> extract_commit_id("https://github.com/hedgedoc/hedgedoc/commit/c1789474020a6d668d616464cb2da5e90e123f65")
-    'c1789474020a6d668d616464cb2da5e90e123f65'
-    """
-    if "/commit/" in url:
-        parts = url.split("/")
-        if len(parts) > 1 and parts[-2] == "commit":
-            return parts[-1]
-    return None
-
-
 def is_reference_already_processed(reference_url, commit_id):
     """
     Check if a reference and commit ID pair already exists in a CodeFix entry.
@@ -62,15 +47,14 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
         for reference in progress.iter(references.paginated(per_page=500)):
             for vulnerability in reference.vulnerabilities.all():
                 vcs_url = normalize_vcs_url(reference.url)
-                commit_id = extract_commit_id(reference.url)
 
-                if not commit_id or not vcs_url:
+                if not vcs_url:
                     continue
 
                 # Skip if already processed
-                if is_reference_already_processed(reference.url, commit_id):
+                if is_reference_already_processed(reference.url, vcs_url):
                     self.log(
-                        f"Skipping already processed reference: {reference.url} with commit {commit_id}"
+                        f"Skipping already processed reference: {reference.url} with VCS URL {vcs_url}"
                     )
                     continue
                 purl = url2purl(vcs_url)
@@ -81,7 +65,7 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
                 codefix = self.create_codefix_entry(
                     vulnerability=vulnerability,
                     package=package,
-                    commit_id=commit_id,
+                    vcs_url=vcs_url,
                     reference=reference.url,
                 )
                 if codefix:
@@ -100,7 +84,7 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
             self.log(f"Error creating package from purl {purl}: {e}")
             return None
 
-    def create_codefix_entry(self, vulnerability, package, commit_id, reference):
+    def create_codefix_entry(self, vulnerability, package, vcs_url, reference):
         """
         Create a CodeFix entry associated with the given vulnerability and package.
         """
@@ -108,7 +92,7 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
             codefix, created = CodeFix.objects.get_or_create(
                 base_version=package,
                 defaults={
-                    "commits": [commit_id],
+                    "commits": [vcs_url],
                     "references": [reference],
                 },
             )

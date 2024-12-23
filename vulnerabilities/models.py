@@ -1619,7 +1619,7 @@ class CodeChange(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name="base_version_changes",
+        related_name="base_version_codechanges",
         help_text="The base version of the package to which this code change applies.",
     )
     base_commit = models.CharField(

@@ -1584,29 +1584,64 @@ class Exploit(models.Model):
 
 
 class CodeChange(models.Model):
-    commits = models.JSONField(blank=True, default=list)
-    pulls = models.JSONField(blank=True, default=list)
-    downloads = models.JSONField(blank=True, default=list)
-    patch = models.TextField(blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
-    references = models.JSONField(blank=True, default=list)
-    status_reviewed = models.BooleanField(default=False)
+    """
+    Abstract base model representing a change in code, either introducing or fixing a vulnerability.
+    This includes details about commits, patches, and related metadata.
+    """
+
+    commits = models.JSONField(
+        blank=True,
+        default=list,
+        help_text="List of commit identifiers associated with the code change.",
+    )
+    pulls = models.JSONField(
+        blank=True,
+        default=list,
+        help_text="List of pull request URLs associated with the code change.",
+    )
+    downloads = models.JSONField(
+        blank=True, default=list, help_text="List of download URLs for the patched code."
+    )
+    patch = models.TextField(
+        blank=True, null=True, help_text="The code change in patch format (e.g., git diff)."
+    )
+    notes = models.TextField(
+        blank=True, null=True, help_text="Additional notes or instructions about the code change."
+    )
+    references = models.JSONField(
+        blank=True, default=list, help_text="External references related to this code change."
+    )
+    status_reviewed = models.BooleanField(
+        default=False, help_text="Indicates if the code change has been reviewed."
+    )
     base_version = models.ForeignKey(
         "Package",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="base_version_changes",
+        help_text="The base version of the package to which this code change applies.",
     )
-    base_commit = models.CharField(max_length=255, blank=True, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    base_commit = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="The commit ID representing the state of the code before applying the fix or change.",
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True, help_text="Timestamp indicating when the code change was created."
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True, help_text="Timestamp indicating when the code change was last updated."
+    )
 
     class Meta:
         abstract = True
 
 
 class CodeFix(CodeChange):
-    vulnerabilities = models.ManyToManyField("Vulnerability", related_name="codefixes", blank=True)
-    applies_to_versions = models.ManyToManyField("Package", related_name="fixes", blank=True)
+    package_vulnerabilities = models.ManyToManyField(
+        "AffectedByPackageRelatedVulnerability",
+        related_name="code_fixes",
+        help_text="The vulnerabilities fixed by this code change.",
+    )

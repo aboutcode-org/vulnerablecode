@@ -8,12 +8,36 @@
 #
 
 from aboutcode.pipeline import LoopProgress
+from packageurl.contrib.url2purl import url2purl
 
 from vulnerabilities.models import CodeFix
 from vulnerabilities.models import Package
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.utils import normalize_purl
+
+
+def extract_commit_id(url):
+    """
+    Extract a commit ID from a URL, if available.
+    Supports different URL structures for commit references.
+
+    >>> extract_commit_id("https://github.com/hedgedoc/hedgedoc/commit/c1789474020a6d668d616464cb2da5e90e123f65")
+    'c1789474020a6d668d616464cb2da5e90e123f65'
+    """
+    if "/commit/" in url:
+        parts = url.split("/")
+        if len(parts) > 1 and parts[-2] == "commit":
+            return parts[-1]
+    return None
+
+
+def is_reference_already_processed(reference_url, commit_id):
+    """
+    Check if a reference and commit ID pair already exists in a CodeFix entry.
+    """
+    return CodeFix.objects.filter(
+        references__contains=[reference_url], commits__contains=[commit_id]
+    ).exists()
 
 
 class CollectFixCommitsPipeline(VulnerableCodePipeline):
@@ -37,48 +61,33 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
         progress = LoopProgress(total_iterations=references.count(), logger=self.log)
         for reference in progress.iter(references.paginated(per_page=500)):
             for vulnerability in reference.vulnerabilities.all():
-                package_urls = self.extract_package_urls(reference)
-                commit_id = self.extract_commit_id(reference.url)
+                vcs_url = normalize_vcs_url(reference.url)
+                commit_id = extract_commit_id(reference.url)
 
-                if commit_id and package_urls:
-                    for purl in package_urls:
-                        normalized_purl = normalize_purl(purl)
-                        package = self.get_or_create_package(normalized_purl)
-                        codefix = self.create_codefix_entry(
-                            vulnerability=vulnerability,
-                            package=package,
-                            commit_id=commit_id,
-                            reference=reference.url,
-                        )
-                        if codefix:
-                            created_fix_count += 1
+                if not commit_id or not vcs_url:
+                    continue
+
+                # Skip if already processed
+                if is_reference_already_processed(reference.url, commit_id):
+                    self.log(
+                        f"Skipping already processed reference: {reference.url} with commit {commit_id}"
+                    )
+                    continue
+                purl = url2purl(vcs_url)
+                if not purl:
+                    self.log(f"Could not create purl from url: {vcs_url}")
+                    continue
+                package = self.get_or_create_package(purl)
+                codefix = self.create_codefix_entry(
+                    vulnerability=vulnerability,
+                    package=package,
+                    commit_id=commit_id,
+                    reference=reference.url,
+                )
+                if codefix:
+                    created_fix_count += 1
 
         self.log(f"Successfully created {created_fix_count:,d} CodeFix entries.")
-
-    def extract_package_urls(self, reference):
-        """
-        Extract Package URLs from a reference.
-        Returns a list of Package URLs inferred from the reference.
-        """
-        urls = []
-        if "github" in reference.url:
-            parts = reference.url.split("/")
-            if len(parts) >= 5:
-                namespace = parts[-3]
-                name = parts[-2]
-                commit = parts[-1]
-                if commit:
-                    urls.append(f"pkg:github/{namespace}/{name}@{commit}")
-        return urls
-
-    def extract_commit_id(self, url):
-        """
-        Extract a commit ID from a URL, if available.
-        """
-        if "github" in url:
-            parts = url.split("/")
-            return parts[-1] if len(parts) > 0 else None
-        return None
 
     def get_or_create_package(self, purl):
         """
@@ -109,4 +118,98 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
             return codefix
         except Exception as e:
             self.log(f"Error creating CodeFix entry: {e}")
-            return None
+            return
+
+
+PLAIN_URLS = (
+    "https://",
+    "http://",
+)
+
+VCS_URLS = (
+    "git://",
+    "git+git://",
+    "git+https://",
+    "git+http://",
+    "hg://",
+    "hg+http://",
+    "hg+https://",
+    "svn://",
+    "svn+https://",
+    "svn+http://",
+)
+
+
+def normalize_vcs_url(repo_url, vcs_tool=None):
+    """
+    Return a normalized vcs_url version control URL given some `repo_url` and an
+    optional `vcs_tool` hint (such as 'git', 'hg', etc.
+
+    Handles shortcuts for GitHub, GitHub gist, Bitbucket, or GitLab repositories
+    and more using the same approach as npm install:
+
+    See https://docs.npmjs.com/files/package.json#repository
+    or https://getcomposer.org/doc/05-repositories.md
+
+    This is done here in npm:
+    https://github.com/npm/npm/blob/d3c858ce4cfb3aee515bb299eb034fe1b5e44344/node_modules/hosted-git-info/git-host-info.js
+
+    These should be resolved:
+        npm/npm
+        gist:11081aaa281
+        bitbucket:example/repo
+        gitlab:another/repo
+        expressjs/serve-static
+        git://github.com/angular/di.js.git
+        git://github.com/hapijs/boom
+        git@github.com:balderdashy/waterline-criteria.git
+        http://github.com/ariya/esprima.git
+        http://github.com/isaacs/nopt
+        https://github.com/chaijs/chai
+        https://github.com/christkv/kerberos.git
+        https://gitlab.com/foo/private.git
+        git@gitlab.com:foo/private.git
+    """
+    if not repo_url or not isinstance(repo_url, str):
+        return
+
+    repo_url = repo_url.strip()
+    if not repo_url:
+        return
+
+    # TODO: If we match http and https, we may should add more check in
+    # case if the url is not a repo one. For example, check the domain
+    # name in the url...
+    if repo_url.startswith(VCS_URLS + PLAIN_URLS):
+        return repo_url
+
+    if repo_url.startswith("git@"):
+        tool, _, right = repo_url.partition("@")
+        if ":" in repo_url:
+            host, _, repo = right.partition(":")
+        else:
+            # git@github.com/Filirom1/npm2aur.git
+            host, _, repo = right.partition("/")
+
+        if any(r in host for r in ("bitbucket", "gitlab", "github")):
+            scheme = "https"
+        else:
+            scheme = "git"
+
+        return f"{scheme}://{host}/{repo}"
+
+    # FIXME: where these URL schemes come from??
+    if repo_url.startswith(("bitbucket:", "gitlab:", "github:", "gist:")):
+        hoster_urls = {
+            "bitbucket": f"https://bitbucket.org/{repo}",
+            "github": f"https://github.com/{repo}",
+            "gitlab": f"https://gitlab.com/{repo}",
+            "gist": f"https://gist.github.com/{repo}",
+        }
+        hoster, _, repo = repo_url.partition(":")
+        return hoster_urls[hoster] % locals()
+
+    if len(repo_url.split("/")) == 2:
+        # implicit github, but that's only on NPM?
+        return f"https://github.com/{repo_url}"
+    return repo_url

@@ -89,7 +89,7 @@ Helpful Resources
 
 - Review our `comprehensive guide <https://scancode-toolkit.readthedocs.io/en/latest/contribute/index.html>`_
   for more details on how to add quality contributions to our codebase and documentation
-- Check this free resource on `how to contribute to an open source project on github <https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github>`_
+- Check this free resource on `How to contribute to an open source project on github <https://egghead.io/lessons/javascript-identifying-how-to-contribute-to-an-open-source-project-on-github>`_
 - Follow `this wiki page <https://aboutcode.readthedocs.io/en/latest/contributing/writing_good_commit_messages.html>`_
   on how to write good commit messages
 - `Pro Git book <https://git-scm.com/book/en/v2>`_

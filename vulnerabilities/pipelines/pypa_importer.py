@@ -68,3 +68,6 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipeline):
         if self.vcs_response:
             self.log(f"Removing cloned repository")
             self.vcs_response.delete()
+
+    def on_failure(self):
+        self.clean_downloads()

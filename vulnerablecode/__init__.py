@@ -9,10 +9,8 @@
 
 import os
 import sys
-import warnings
-from pathlib import Path
 
-__version__ = "34.0.2"
+__version__ = "35.1.0"
 
 
 def command_line():

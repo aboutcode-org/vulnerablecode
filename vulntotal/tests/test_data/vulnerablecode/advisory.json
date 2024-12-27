@@ -1,1614 +1,1608 @@
 [
-  {
-    "url":"http://localhost:8001/api/vulnerabilities/7870",
-    "vulnerability_id":"VULCOID-62M",
-    "summary":"Cross-site Scripting in Apache Tomcat",
-    "aliases":[
-      {
-        "alias":"GHSA-6j88-6whg-x687"
-      },
-      {
-        "alias":"CVE-2022-34305"
-      }
-    ],
-    "fixed_packages":[
-      {
-        "url":"http://localhost:8001/api/packages/100195",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.82"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100221",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.65"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100240",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.22"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100255",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M17"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/72871",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M1"
-      }
-    ],
-    "affected_packages":[
-      {
-        "url":"http://localhost:8001/api/packages/100194",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.50"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100220",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.30"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/74553",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M1"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100253",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M1"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100254",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M16"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108992",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.51"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137900",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.53"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137901",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.54"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107840",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.55"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107822",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.56"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107835",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.57"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137902",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.58"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107695",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.59"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108023",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.60"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137903",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.61"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137904",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.63"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108090",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.64"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108155",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.65"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137905",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.66"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107712",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.68"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137906",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.69"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137907",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.70"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137908",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.71"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108024",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.72"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137909",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.73"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107591",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.75"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137910",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.76"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137911",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.77"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137912",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.78"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137913",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.79"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137914",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.81"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/109040",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.31"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129719",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.33"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129720",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.34"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/72872",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.35"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107824",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.36"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107836",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.37"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137915",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.38"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107697",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.39"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108025",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.40"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137916",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.41"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137917",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.43"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108092",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.44"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108156",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.45"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137918",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.46"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107713",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.48"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137919",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.50"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137920",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.52"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137921",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.53"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108026",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.54"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137922",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.55"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137923",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.56"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107893",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.58"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137924",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.59"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137925",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.60"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137926",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.62"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137927",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.63"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137928",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.64"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129721",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M3"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/74554",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/74555",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107825",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107837",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M7"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107698",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107699",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M9"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137929",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107894",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137930",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.2"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108093",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108158",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137931",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107714",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.7"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137932",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137933",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137934",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.11"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108027",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.12"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137935",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.13"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137936",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.14"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107895",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.16"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137937",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.17"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137938",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.18"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137939",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.20"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137940",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.21"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137941",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M2"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137942",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108029",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108030",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137943",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M7"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137944",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137945",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137946",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M11"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137947",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M12"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137948",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M14"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137949",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M15"
-      }
-    ],
-    "references":[
-      {
-        "reference_url":"https://nvd.nist.gov/vuln/detail/CVE-2022-34305",
-        "reference_id":"CVE-2022-34305",
-        "scores":[
-          {
-            "value":"6.1",
-            "scoring_system":"cvssv3"
-          },
-          {
-            "value":"CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
-            "scoring_system":"cvssv3_vector"
-          },
-          {
-            "value":"4.3",
-            "scoring_system":"cvssv2"
-          },
-          {
-            "value":"AV:N/AC:M/Au:N/C:N/I:P/A:N",
-            "scoring_system":"cvssv2_vector"
-          }
+    {
+        "url": "http://localhost:8001/api/vulnerabilities/50e89648-daa3-4287-9f3d-9bffc7ff0431",
+        "vulnerability_id": "VULCOID-62M",
+        "summary": "Cross-site Scripting in Apache Tomcat",
+        "aliases": [
+            {
+                "alias": "GHSA-6j88-6whg-x687"
+            },
+            {
+                "alias": "CVE-2022-34305"
+            }
         ],
-        "url":"https://nvd.nist.gov/vuln/detail/CVE-2022-34305"
-      },
-      {
-        "reference_url":"https://lists.apache.org/thread/k04zk0nq6w57m72w5gb0r6z9ryhmvr4k",
-        "reference_id":"",
-        "scores":[
-          
+        "fixed_packages": [
+            {
+                "url": "http://localhost:8001/api/packages/3bb4b3f6-be80-4361-ad91-b4ec6e4fd436",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.82"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c61f1f4b-d212-4044-bb0e-1053257ddb97",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.65"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/51175d8e-690d-4274-b62c-3e86713446f0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.22"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/df354103-7114-4d5e-a9f4-824349fee1e5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M17"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9191965e-0747-4882-a132-3a99cba53b9b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M1"
+            }
         ],
-        "url":"https://lists.apache.org/thread/k04zk0nq6w57m72w5gb0r6z9ryhmvr4k"
-      },
-      {
-        "reference_url":"https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-34305.json",
-        "reference_id":"",
-        "scores":[
-          {
-            "value":"5.4",
-            "scoring_system":"cvssv3"
-          },
-          {
-            "value":"CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
-            "scoring_system":"cvssv3_vector"
-          }
+        "affected_packages": [
+            {
+                "url": "http://localhost:8001/api/packages/522761dd-3d53-4ffd-9072-cb9c75e3d8c6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.50"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/04dc8d33-9b62-4859-95d2-bc12a17d3afe",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.30"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d122808d-e0e5-48fb-bb79-c429c9917d53",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M1"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/04b8337c-1ff8-4774-bf69-a6368f303b09",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M1"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9d6e656d-c11e-4eb6-b413-260ba9060809",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M16"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3c1788c0-4e2f-45ec-a43e-822bc9c63575",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.51"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/2a5d96e4-6338-4243-ba66-c0713a2a3c79",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.53"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/574cfb2a-2e9c-4409-9b54-2309e908e134",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.54"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/1c7d18e9-23bf-488d-91e0-fa50007c8b15",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.55"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8eab8b89-6238-41b1-b39a-d0fb5dfed544",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.56"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a31d3daa-e4c7-4886-be08-4df457cdeae1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.57"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3dc35416-3ce1-41fb-b82e-0ae5e3d49775",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.58"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5124562d-4c12-48f4-ae5c-07c5276b93ac",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.59"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9b1883d9-3925-4bac-90b6-24bb204dc062",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.60"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/29749cd8-ccf9-4754-9e0c-69a34441c6fa",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.61"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6656bd28-dc54-4db2-babe-a2876e028d79",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.63"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c27a44ae-d35d-4c7d-b871-c935c3c38bcd",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.64"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/87cd45b4-8ae4-4209-a4ca-8f9fb931f17a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.65"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4199e204-2475-4729-b637-b787e85f25f0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.66"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7dbce01d-09dd-4418-a572-c3d8f84bcf64",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.68"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4d289856-1a6f-493d-9059-3da2bcbed43b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.69"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c1c7377b-df8b-4d73-bc95-8f9f09fd57e3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.70"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/90806d62-5710-4ab9-83cf-be49cfb4ff69",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.71"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3b6ee3fd-abb6-4706-b659-9ae6c8a93c73",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.72"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7b97867d-dbec-4856-bf84-9435c0e0f21f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.73"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6f66ec68-8f9d-4f19-ab4d-993b4d1304a1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.75"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/148982d6-acd9-4d1e-8a4b-45b9f0af663f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.76"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a57c07a7-adfc-4df9-9a68-3b2a00513bc1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.77"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7a0adddb-6f5f-4530-a610-f2a1a61ded65",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.78"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ef29f38a-5233-48ff-92fa-5e545d17f38b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.79"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4c5a1f9a-db28-4b54-bce7-4b1692f3f3b3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.81"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/95018add-0f59-4fde-bdae-bdb02376de3e",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.31"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9372906e-0d14-41c9-9caa-95b78b645940",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.33"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f0e610a6-b4e1-4cf7-bb0b-a93ada4e5177",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.34"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3e4aed8f-02cd-4138-9626-4d476146f91d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.35"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/904ef8a4-20d3-4ab0-92a3-9cec866cbade",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.36"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f1a3ea9e-f29d-4b92-8af5-83a7f3b9c987",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.37"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ebb3b2cf-1209-43b3-b790-1af02204a447",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.38"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ad37c8cc-25ad-4478-ad66-ac0af40297e2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.39"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9dd4d97a-a34f-4cba-aa1d-11dfea0d7b6d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.40"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/eb5f75f2-4203-43dc-bc58-d5ae9518ff6f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.41"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/25e70db9-c31e-47ef-8963-c5447f19ebdd",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.43"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3efdd761-f2d8-4069-9b98-1d46038f1bfc",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.44"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4be874b9-ceae-49a4-9afe-0a36c03a732b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.45"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/412933f8-21ee-414e-ba08-10bd0eda0446",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.46"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3f102497-5676-413e-bc7a-40713a90b017",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.48"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7e38cbef-3838-4cb6-8564-3614571754b1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.50"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/40aac7ee-df42-4173-8755-bd517c223752",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.52"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ba8db700-be5c-451b-a75a-294d5350791c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.53"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e8d9ff06-bd57-4a2e-8ff3-172d6abc0eb0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.54"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/30a706fc-07ce-49f7-abd4-071094ed0ed6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.55"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/cf8a4880-5473-4b6f-95c2-8038cb544341",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.56"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ffa158b6-f748-4d91-a068-9e8a721089fe",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.58"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b547c3c3-e6cc-4b96-a849-ba45a9418c79",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.59"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/29d83221-53dd-4625-a991-4ff83cf854b8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.60"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6653ed6c-362e-40b3-993f-dbdebf9110ac",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.62"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e86f06bb-3249-4f4b-b22e-38956ce355b8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.63"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5fa4b823-5c32-4c05-ad69-7f5ab6cc6e97",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.64"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d0435ce5-490b-407d-b8d7-649ba8c978b3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M3"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5075b78a-efca-4918-92ee-878e31410a0d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/efe2a2a7-7bbc-4bbf-ad96-d056b3d5ec7b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ed50a735-1089-4731-8242-59f7fa851146",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/41ad1bb0-5a02-4451-a92e-ac311416e3f2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M7"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c6dce492-0092-4a20-8d06-c83eb2507ee6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/54cbe0df-b793-449e-98b4-747a37d6f5c5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M9"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a21bd26d-03e9-47df-aa1e-aaed1f32cd81",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/79338e77-1b95-4ae1-9964-e8462bfa6db7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9ffb5a3f-9938-4400-b451-c0c0fea2d458",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.2"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/57226623-b62c-4149-ad1b-cffba1b33846",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a6c44a82-f939-4c99-9948-adde88d0f1a7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/0ffde8e0-c108-4a6d-9be0-bdf317b89c00",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/20336e60-b88e-4265-8214-0abb6be3d47b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.7"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c58610e5-8546-4ec2-84b7-ca8e885a6279",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/fb7040f0-d24b-4a3f-8885-09d82aee4094",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ef4befe7-e369-410e-82cb-ebc9aaeafa8c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.11"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/61cfdf21-c4b2-463a-828c-52d24cc0d37e",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.12"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/20443e2a-3936-4b08-bc6f-e5eb60250c81",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.13"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7aca59fc-14d9-45a7-927d-a31982c7270f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.14"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4effe096-ce64-4d0c-b145-51efb6f55d3f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.16"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3d8a72b4-a609-4283-ac21-e496530a5c0b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.17"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/29022a85-d930-4bde-a96a-8e76099ef68c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.18"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b619fc5f-3583-4ddf-bfd6-039f78e30f76",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.20"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c4da5c91-0439-4674-8e0c-338c17c71708",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.21"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/755371dc-7562-456e-8a6a-ddad9bbaf9eb",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M2"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/229f0b8c-d516-4cff-a783-ddc28335375d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a53dd5ea-eecd-486d-9adb-ba84c5407e98",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/415266d1-8126-485e-9c5b-e5b75c1551ae",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/30253800-24d6-4a67-b965-bc813af923ff",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M7"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b0702eff-9ffd-4f7a-94a3-20526649bb61",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/57cdc9aa-2f6f-4680-a0d1-3521bfe0a084",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/17d9894e-5dc7-4602-aaba-1b27821b0779",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M11"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ea281dfb-c292-4f34-acb1-e3d012087bbb",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M12"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a603fa90-1ec5-4c2e-a6d3-3abddd955c48",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M14"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ff1dfdf1-9a62-4c82-8bb8-69c3cec7408d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M15"
+            }
         ],
-        "url":"https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-34305.json"
-      }
-    ]
-  },
-  {
-    "url":"http://localhost:8001/api/vulnerabilities/8420",
-    "vulnerability_id":"VULCOID-6HW",
-    "summary":"Unrestricted Upload of File with Dangerous Type Apache Tomcat",
-    "aliases":[
-      {
-        "alias":"GHSA-xjgh-84hx-56c5"
-      },
-      {
-        "alias":"CVE-2017-12617"
-      }
-    ],
-    "fixed_packages":[
-      {
-        "url":"http://localhost:8001/api/packages/107247",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.82"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107249",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.47"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107251",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.23"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107253",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.1"
-      }
-    ],
-    "affected_packages":[
-      {
-        "url":"http://localhost:8001/api/packages/93717",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.0"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107246",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.81"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100012",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.0"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107248",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.46"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107127",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.0"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107250",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.22"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107252",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0M27"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/72871",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M1"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131037",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.35"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131038",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.37"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131039",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.39"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/106872",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.40"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107312",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.41"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131040",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.42"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131041",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.47"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/106927",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.50"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131042",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.52"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/106958",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.53"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/106962",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.54"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/106968",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.55"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131043",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.56"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131044",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.57"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131045",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.59"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131046",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.61"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131047",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.62"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131048",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.63"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/94062",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.64"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/94063",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.65"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137848",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.67"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107105",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.68"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137849",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.69"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107120",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.70"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100014",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.72"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107192",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.73"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107294",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.75"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107284",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.76"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107299",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.77"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107300",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.78"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107313",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.79"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131049",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.1"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131050",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.3"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131051",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131052",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/106967",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.9"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131053",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.11"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131054",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.12"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131055",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.14"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131056",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.15"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131057",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.17"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131058",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.18"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131059",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.20"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131060",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.21"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131061",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.22"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131062",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.23"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/131063",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.24"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/94077",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.26"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/94078",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.27"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137844",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.28"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137845",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.29"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107106",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.30"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107121",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.32"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137846",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.33"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137847",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.35"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107126",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.36"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100013",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.37"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/141874",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.38"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107194",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.39"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107286",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.41"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107287",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.42"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107301",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.43"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107302",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.44"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107314",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.45"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137842",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.2"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137843",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.3"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107128",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100005",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/141875",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107187",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142151",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.9"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142152",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.11"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107288",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.12"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107289",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.13"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107303",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.14"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107304",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.15"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107315",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.16"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142153",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.19"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142154",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.20"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142155",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.21"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142156",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.84"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142157",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.85"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142158",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.86"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142159",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.88"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142160",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.90"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142161",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.91"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142162",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.92"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142163",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.93"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142164",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.94"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142165",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.96"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142166",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.99"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/109042",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.100"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142167",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.103"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107839",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.104"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142168",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.105"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142169",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.106"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142170",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.107"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142171",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.108"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142172",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@7.0.109"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/106924",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.0-RC1"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/141872",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.0-RC3"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/141873",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.0-RC5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/106926",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.0-RC10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142173",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.48"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142174",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.49"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142175",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.50"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142176",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.51"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142177",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.52"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107834",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.0.53"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142178",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.24"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142179",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.27"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142180",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.28"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142181",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.29"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142182",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.30"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142183",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.31"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142184",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.32"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142185",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.33"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142186",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.34"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142187",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.35"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142188",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.37"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142189",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.38"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142190",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.39"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142191",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.40"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142192",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.41"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142193",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.42"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142194",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.43"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142195",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.45"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142196",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.46"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142197",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.47"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142198",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.49"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100194",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.50"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108992",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.51"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137900",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.53"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137901",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.54"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107840",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.55"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107822",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.56"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107835",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.57"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137902",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.58"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107695",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.59"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108023",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.60"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137903",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.61"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137904",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.63"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108090",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.64"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108155",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.65"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137905",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.66"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107712",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.68"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137906",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.69"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137907",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.70"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137908",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.71"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108024",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.72"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137909",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.73"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107591",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.75"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137910",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.76"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137911",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.77"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137912",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.78"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137913",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.79"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137914",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@8.5.81"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107123",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M3"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129691",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129692",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129693",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100002",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M9"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100003",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107188",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M11"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129694",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M13"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129695",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M15"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107295",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M17"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107290",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M18"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107291",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M19"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107305",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M20"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107306",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M21"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107316",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M22"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129696",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M25"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129697",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M26"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129698",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.0.M27"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129699",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.2"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129700",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129701",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129702",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129703",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.7"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129704",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129705",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129706",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.11"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129707",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.12"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129708",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.13"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129709",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.14"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129710",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.16"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129711",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.17"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129712",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.19"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107590",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.20"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129713",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.21"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129714",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.22"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129715",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.24"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129716",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.26"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129717",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.27"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129718",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.29"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100220",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.30"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/109040",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.31"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129719",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.33"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129720",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.34"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/72872",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.35"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107824",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.36"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107836",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.37"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137915",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.38"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107697",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.39"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108025",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.40"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137916",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.41"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137917",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.43"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108092",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.44"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108156",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.45"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137918",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.46"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107713",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.48"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137919",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.50"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137920",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.52"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137921",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.53"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108026",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.54"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137922",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.55"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137923",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.56"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107893",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.58"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137924",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.59"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137925",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.60"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137926",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.62"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137927",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.63"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137928",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.64"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100221",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@9.0.65"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/74553",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M1"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/129721",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M3"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/74554",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/74555",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107825",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107837",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M7"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107698",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107699",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M9"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137929",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0-M10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107894",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.0"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137930",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.2"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108093",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108158",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137931",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107714",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.7"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137932",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137933",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137934",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.11"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108027",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.12"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137935",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.13"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137936",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.14"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/107895",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.16"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137937",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.17"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137938",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.18"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137939",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.20"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137940",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.21"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100240",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.22"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/142199",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.0.23"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100253",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M1"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137941",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M2"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137942",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M4"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108029",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M5"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/108030",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M6"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137943",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M7"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137944",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137945",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M10"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137946",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M11"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137947",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M12"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137948",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M14"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/137949",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M15"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100254",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M16"
-      },
-      {
-        "url":"http://localhost:8001/api/packages/100255",
-        "purl":"pkg:maven/org.apache.tomcat/tomcat@10.1.0-M17"
-      }
-    ],
-    "references":[
-      {
-        "reference_url":"https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html",
-        "reference_id":"",
-        "scores":[
-          
+        "references": [
+            {
+                "reference_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34305",
+                "reference_id": "CVE-2022-34305",
+                "scores": [
+                    {
+                        "value": "6.1",
+                        "scoring_system": "cvssv3"
+                    },
+                    {
+                        "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
+                        "scoring_system": "cvssv3_vector"
+                    },
+                    {
+                        "value": "4.3",
+                        "scoring_system": "cvssv2"
+                    },
+                    {
+                        "value": "AV:N/AC:M/Au:N/C:N/I:P/A:N",
+                        "scoring_system": "cvssv2_vector"
+                    }
+                ],
+                "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-34305"
+            },
+            {
+                "reference_url": "https://lists.apache.org/thread/k04zk0nq6w57m72w5gb0r6z9ryhmvr4k",
+                "reference_id": "",
+                "scores": [],
+                "url": "https://lists.apache.org/thread/k04zk0nq6w57m72w5gb0r6z9ryhmvr4k"
+            },
+            {
+                "reference_url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-34305.json",
+                "reference_id": "",
+                "scores": [
+                    {
+                        "value": "5.4",
+                        "scoring_system": "cvssv3"
+                    },
+                    {
+                        "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N",
+                        "scoring_system": "cvssv3_vector"
+                    }
+                ],
+                "url": "https://access.redhat.com/hydra/rest/securitydata/cve/CVE-2022-34305.json"
+            }
+        ]
+    },
+    {
+        "url": "http://localhost:8001/api/vulnerabilities/fb82b547-1327-4608-8c14-84046b1d8d5f",
+        "vulnerability_id": "VULCOID-6HW",
+        "summary": "Unrestricted Upload of File with Dangerous Type Apache Tomcat",
+        "aliases": [
+            {
+                "alias": "GHSA-xjgh-84hx-56c5"
+            },
+            {
+                "alias": "CVE-2017-12617"
+            }
         ],
-        "url":"https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
-      },
-      {
-        "reference_url":"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:apache:tomcat:9.0.0:m22:*:*:*:*:*:*",
-        "reference_id":"cpe:2.3:a:apache:tomcat:9.0.0:m22:*:*:*:*:*:*",
-        "scores":[
-          
+        "fixed_packages": [
+            {
+                "url": "http://localhost:8001/api/packages/00a325a6-5fe5-4a3d-b645-74eb4b6c6d2a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.82"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/55395866-c6e7-4e72-b0af-fc3283849358",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.47"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a8de739e-853e-4187-a03d-3248725b1f3e",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.23"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/aa715142-8060-4186-b80f-d4c8bea8c7ec",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.1"
+            }
         ],
-        "url":"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:apache:tomcat:9.0.0:m22:*:*:*:*:*:*"
-      }
-    ]
-  }
+        "affected_packages": [
+            {
+                "url": "http://localhost:8001/api/packages/3ab3e040-016b-4362-9cc6-83fa007c2a7c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.0"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/49389c99-8471-4515-862e-de26fdb62af2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.81"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4f08fd4a-6fcd-4fb3-893a-e75270cbfb42",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.0"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/29a3a5c2-c11a-48c1-b5a5-cb5107f90bd2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.46"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/af5b8093-4503-410b-8ddd-fa028b988a95",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.0"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5ed518d6-ec88-4d89-9b3c-6141f9ba6cd3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.22"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/da6b3a45-fe51-4f73-84b8-b01548780fcf",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0M27"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ed7fdfae-3454-4ab2-a320-7b4b95abd302",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M1"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/cdda3389-4747-4296-8119-d47260cb59a1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.35"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e31b4a6e-3880-4291-a5d7-32179b3083f9",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.37"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b69888fc-95b2-459d-8f04-e344946bda87",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.39"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/28e511ca-0903-470a-b044-1336776a3801",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.40"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/973918ab-958a-464f-b61a-3dfbb6dfdf39",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.41"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d5bdef6b-b811-4f46-b4b0-69ba9ef171cc",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.42"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a50cb445-5c51-40c3-b7e3-a3b7e5c1da28",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.47"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/359e94f6-4874-40d8-bed3-2f7f98d69713",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.50"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/02d3fa75-89aa-4170-8838-2e9d35ea7259",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.52"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/73dc319c-0e01-4b41-9fa9-ab63039f8218",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.53"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/15904aee-b95e-4dd7-9a76-ee05cabd2d4a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.54"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3365e4c1-a25e-4a67-be53-1365a3a53778",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.55"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/689e2d00-dbd9-446d-ab5e-2f9e17dc2943",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.56"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4ee2dbd8-256d-4586-8cd0-28c17ba5cbdb",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.57"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c0efa8d2-9530-4c4b-95d7-0849bcbee899",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.59"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9586e376-2619-4777-858e-398b7c817da3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.61"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/827f0cc5-bf88-4669-8b80-8dca6f0fcd57",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.62"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/97da6c9d-33b2-435d-9120-afffe7beb0c8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.63"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c2ee4e5b-ba30-4676-9af4-f93efdd71650",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.64"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/68142085-74a6-46a8-acd8-c2d463273c11",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.65"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b5683518-6006-4a41-a0dd-e1ee8600a990",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.67"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7c08f7c0-8acd-420d-b12a-9f4ac84f17b6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.68"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ff72e595-2379-484c-9c13-2b4d2a4bc5b6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.69"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c7aa7a46-2763-4ce7-9ec6-70b38c1cff2f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.70"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/da07c969-276b-40bc-b0ab-2d398d19d8d3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.72"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e9e40b42-2942-455a-b229-c5649e08a103",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.73"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/1ac8c21c-ed91-49b2-87c1-e3c6892de773",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.75"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/bf46b116-b164-4636-a5cf-afcbe1d26170",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.76"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d6cc2c1c-0bd7-4f89-bf7c-76fee38c2416",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.77"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/22a566d1-2114-469b-b156-e54569f610e8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.78"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8f3b7160-4c61-4a4f-b773-014d0db8cdad",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.79"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d8810065-0376-44a5-b81a-b36670cc3c6a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.1"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/bfe89cb8-a856-4c3c-b604-b6d9fb1432e8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.3"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3838cbaf-e36c-4074-ba5a-6d35c9524f38",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6d356e8c-3e52-4180-a0a7-dcf66d159e6b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f3f9688f-b03e-41dd-8e75-280055af348b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.9"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4da65b1c-ea48-482f-90a8-cb9c3ae20bf5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.11"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3ee49d64-a843-4667-954b-1aa63a3bd617",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.12"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7c70db80-86f7-4e29-bc5a-dbce8eb2b203",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.14"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c86cc5ae-504e-4746-8288-0ba47c03fa1c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.15"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d2712db1-a608-4a69-b874-b1e0aa224378",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.17"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b54bf6d9-cb14-41a5-a157-0a6f0b396efb",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.18"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6f479628-1459-4820-a91e-44cb863343d4",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.20"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b0c57bf5-91bc-4b60-9003-48eea9d2705c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.21"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/2e37a343-65a3-4ebd-bce9-f7f46408ad15",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.22"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3a9cf350-83b9-472e-8344-6cb76b268515",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.23"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/79b59b79-c88c-430c-af04-79d7f48dc94f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.24"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4c8b0864-309e-4dac-84e1-5369bf9fa0c1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.26"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/dbb44857-986f-4443-9338-bdf08997df1a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.27"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/eb148729-4168-48d6-a3ea-4b97716021b8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.28"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/36421cda-b1b4-4291-a24c-f0c70ebb05e1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.29"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4e292fe6-72a0-480c-8f68-6c9d6280e16c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.30"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9569f42c-1e11-4075-b710-095106845f10",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.32"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/873312d9-f002-4b2a-afa4-5b68c5433803",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.33"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/da3cc5dc-0d84-4e68-ae98-a65d2b70090a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.35"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c44704ca-9373-4276-8e12-1b1f64fd5ffd",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.36"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4f73f7c7-a50e-4c9e-bcca-6b34f11597b3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.37"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e24fc450-fdbe-4813-8386-8901c0415c3d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.38"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9eca5b1f-3053-4e20-ae2a-f14f4d819c48",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.39"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/1f48ecc1-dd7f-49d3-8fbb-4628ec13a480",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.41"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ddc2f1d8-7a80-47b9-9f16-ced9caf90276",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.42"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c4db3563-4430-4a88-a48c-86721616e072",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.43"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8befab74-397c-4ed3-adfd-faa1602d9515",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.44"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/81e3bf2b-7ca2-448f-a3eb-5ecfe8c00715",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.45"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d4484805-0255-4783-a661-e33177db83f0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.2"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d00f9184-6546-40f8-871c-01a551fc41b9",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.3"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ee080152-735a-421e-99f6-adb575828eb6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c2c58caa-f882-4087-a6a2-43307e1d6631",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9548d094-e14d-4803-bc09-b790881eb9e0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d3b73740-f646-4f16-9247-1565c06d1e0f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c04b6f82-2639-48be-8b00-50004ff4e47b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.9"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e1c8089b-d9e3-415e-a7b9-6288b76c7a2f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.11"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/310044f6-2b74-4e30-9428-821ef2e5746b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.12"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c6a7b379-9ea7-46ef-a13e-94f04e544340",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.13"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/dee29151-f3ab-4493-840e-84fbd9d038ae",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.14"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d41a3135-f5cc-4899-a140-993fd846b87b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.15"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7cdf8b12-0da9-47ca-a150-4d3b6b8bdd04",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.16"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/185728ef-f5b4-4a0d-96de-60010733a373",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.19"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/26df5eff-976f-4d8e-8dc7-6ddbc4747ea2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.20"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/997ded9f-8f72-494f-8203-f366fc9a2666",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.21"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/61ad0979-83c3-4d97-9af4-de14c33f08b0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.84"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/bc82dce2-cd98-45ba-bac9-1c2bac5f58e8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.85"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d3568942-8a56-44fb-8013-b401576138a6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.86"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/47143cb0-0410-4839-80f0-40438834c848",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.88"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b9ee1414-0a53-405e-a29f-817b4e75ca26",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.90"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6257c47a-b765-434f-a37a-a6a97e465b2f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.91"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ce4a0efe-0a10-4b91-8e15-5eccb29081b4",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.92"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d66502d8-653d-475b-b18f-c6d6a91f0bd2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.93"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/1a680920-0b06-411c-90a6-cea4c81ba7a5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.94"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/1739b8c7-d678-4a79-8c41-49283df1508b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.96"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/bbc5aa3f-8b02-4ae3-aaed-ef13f1d17d19",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.99"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/cedb2d21-5150-41eb-8549-f7adccf771ca",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.100"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/86db1e71-d83f-468f-929b-617122dbfd11",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.103"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/2e83f81b-0603-4cf2-8b94-0ea14e6db7ea",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.104"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d740eaeb-2f1b-46dd-88be-2b1a5fefa63d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.105"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d64336a9-203d-42c8-9f05-3167ba8d7b7c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.106"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/46168f48-6f6a-49fc-9f82-8346c69c70e1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.107"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4b9e589e-788b-470f-a1a9-2003b7faee98",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.108"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/489a3696-aaa5-42cc-aa5a-7209b15dd2b1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@7.0.109"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5320e1ec-e33a-4e5d-a99a-ac161deebfd2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.0-RC1"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/55dff1fb-d8c7-4b3d-8970-425ce4433dac",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.0-RC3"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/02c25809-e28d-4ef9-a299-a97b4391e834",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.0-RC5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/21804813-6a9a-4ab8-8479-f7116a3b5305",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.0-RC10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d886a29b-fb29-4fd2-8aed-ce633720747d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.48"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/0c73f509-a579-4865-a7d1-5601ea4afe0d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.49"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/05955491-d024-4163-9e31-d495fd5a50e3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.50"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b722fc96-71f7-4fd5-bfd6-7e7ef80da787",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.51"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/12283055-95af-46c1-b56a-bb8bd9c8087b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.52"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a808a507-7fc9-4981-a98e-a68b10a68bd5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.0.53"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3334b74d-bbbe-4072-810f-01d12d984737",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.24"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/363dae72-81fd-4fce-91a2-c9f4d81a9753",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.27"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a848497d-9813-46f4-ad4f-867a274bb011",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.28"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6cd1a830-a692-4261-a375-8c005f55fca4",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.29"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d97ea890-c3da-49d4-81ac-e311767c25f9",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.30"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/181aa2ba-1d0a-47bd-8a1a-2f2de895f2d2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.31"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4fd8dc1f-2434-488e-b269-240ae14baaa8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.32"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/88ff23ea-dfb9-4f67-81ae-ce6f853f9bb6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.33"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ab62d2ef-8d63-4d3b-b34d-97fda86670a4",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.34"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e7374c94-50e1-449c-ad06-4cdc9deb3faa",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.35"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/458e9958-dc6c-4f88-9527-8bb309322d64",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.37"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9dc4e3f9-4903-49da-84a8-75e250640a41",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.38"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3bb23e6c-f19c-4bef-9837-d6a8929db2f0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.39"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7a37403c-13e6-4a15-a320-397558d97f16",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.40"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/cbf317a4-c4dd-4152-894b-6f9ec3f86510",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.41"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9334970f-0d1d-400c-a71d-b23814756013",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.42"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8ea614a6-0edc-4b83-b16c-e5d76f04ed28",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.43"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a6297880-6d2c-40e0-8506-81161b226ea7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.45"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4f311603-6140-4888-97bb-e1562f203ae8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.46"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/20f70732-92b5-4bf3-8a4c-b2c557d530fe",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.47"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ef931713-8a57-4a18-a61d-fbf01c647341",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.49"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/cb2d19a9-db3b-40f3-9b42-858238f1a4c6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.50"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f970551b-a6b0-418a-bdcd-d4cea195d4a7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.51"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/abf420b5-191e-4e91-bef4-c948f33f6783",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.53"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ddbe24bd-1066-441b-b5b9-641f51284101",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.54"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/9b0fabb0-f7b2-4101-b1f0-0b9ff13d85cc",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.55"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f41cb9f7-5a66-4845-a894-5ced9a094287",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.56"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6b707d05-7175-4902-8f7a-a975ce562968",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.57"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ac5fad57-8a5f-4999-9dab-e73ddcd86118",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.58"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/dec09e6e-de13-4ce9-856e-970e51505d53",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.59"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/96a6ec33-657b-443b-aec4-a4ae1516f923",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.60"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8b9418ed-5034-4c31-abf6-bd69266491e3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.61"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/27e0d586-b415-4ad3-a09d-8008e44ee443",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.63"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ea732f18-d9ca-48ac-9a90-9dda78c25da5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.64"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/193db995-9d51-4c07-b454-2edee499877e",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.65"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d28eef71-d35e-496d-99d7-eb0bd59c9684",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.66"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/2d2bb8a1-8990-4d70-8627-123a2322fc76",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.68"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/72c00908-2cd9-4a77-bf3e-d9de5f6b9743",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.69"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8776d010-0672-46b2-b60f-1ed0ef503535",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.70"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/dbcdc5a8-b064-489a-9026-39bc52ec1e62",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.71"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/256dbc28-154e-4506-bd57-135e56ba8424",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.72"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6e4f542c-47e9-42f7-a746-32616e76f639",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.73"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d73f710f-84d8-4da3-886a-e86c7930c2ff",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.75"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f36bc5bb-4fb4-4cc2-8a57-f74b2acf016a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.76"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/56509f91-868b-4c82-b0a2-1dfc6703bc2d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.77"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f26b9ccb-5976-4297-a8ef-7d56cd602470",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.78"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/15e898a4-d6cf-40e6-8b6c-6d93bef7b62b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.79"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3b62966a-86fa-40e6-bcec-04a9ee3c4e7f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@8.5.81"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/17c7d7d8-a626-46fc-a9cd-db8eb86360ca",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M3"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/37522920-26e8-430e-b109-d6f91248ae01",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a18ab725-b583-4c6f-a7d5-27a703d700f7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4217a51d-f27b-4d0f-99a5-bd2a401a0cf7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d6039aba-d8ef-4538-94d3-07451abd8467",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M9"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6343b282-db82-4a69-b0fb-5b70f0423851",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/eb2ab89a-afc5-4847-bb3d-dbcfaeb7852d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M11"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/265d690f-44db-4931-8c53-b6459c4a898b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M13"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7380928c-6b0a-4ab6-913f-21e751dbff6f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M15"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c90505ae-7ad3-42f8-9f6a-4c9de0e17f29",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M17"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/75782236-b483-43d8-9421-7d20a0e52173",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M18"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6fe98ce1-ab0a-4b73-ab7c-668cfa76b2b5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M19"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/1c1453b9-18c9-4cad-a3b4-7e6d2a24e955",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M20"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/2958a350-7a7b-49f9-b3c5-d1d7271048a2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M21"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/432a1192-c89a-41f9-8266-dae003c74162",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M22"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4c438505-b440-4a37-a36e-8780837ca051",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M25"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/801b62a1-e2ab-4a0c-a8ef-ae10b7957ba8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M26"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c9cebe82-d4bb-4830-9e0f-d0401a4fbee7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.0.M27"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/db4b5d33-7bea-4d97-b757-e1a972f41d78",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.2"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d737d47d-839e-4719-9cf0-d1ee649da389",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/cbac215c-60a0-4e34-b28d-968c2fe4526b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7e3c3e11-23dc-48b8-8a64-ddb86dde7b43",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/131a189a-ff9f-43af-9981-eaeeeb613ff0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.7"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/dce85589-53dc-473a-bdc8-e4b6a2bd29f0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3d425397-4060-4e3f-9006-bfab9eb020f5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/44a73ec7-f800-4ae7-b82e-869c4e6c6107",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.11"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/2f666435-3c44-449e-ba03-163304b7b81f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.12"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/516d24bd-bcd3-4639-be35-0f2eecab90d7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.13"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/705924ee-f799-45c4-b14c-a420bb120cc1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.14"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a3ad04c8-780e-477b-bead-3e3675542f67",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.16"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/29449e7b-3ef6-4a82-8d41-04782f896f6e",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.17"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b23e2dc9-b02e-4f25-bff2-a6097bf71b01",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.19"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d7241af9-f607-4663-a835-8236fd6126c2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.20"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5f362f9b-77d4-49d1-a90a-1d8878fd3da6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.21"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/96e32d25-a295-4e3b-aacc-ad438c9c4073",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.22"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/7b69deff-6a07-4c75-938b-2244f3f09bc5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.24"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e078ec17-1e87-4c77-b62a-28d73438bf5a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.26"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b1618a63-7a26-4744-b0c9-a792e0efdd9f",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.27"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/1aa971bd-18da-4696-8ce4-06e74c27609b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.29"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d324c9cb-93ab-458c-9ddc-bdd7ff4fcd84",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.30"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5aa950f4-c33f-492b-996e-a05eb59ccef1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.31"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c143eda9-4ea8-4d3a-9a0d-f857eb18301d",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.33"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/007fd2d1-fc6d-4329-9d84-6aa845725d73",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.34"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d8f8c2d3-de85-4333-a454-3016294da87b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.35"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3c0f03e6-5302-4673-b876-8122da7df1ea",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.36"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f8ca4f6f-5c58-41f5-9393-8c3d8004d5f4",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.37"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d7a2b86d-5f84-4b37-bf09-5f692c46bcbe",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.38"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a7d37b02-f782-4a0a-8016-3161ebf60259",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.39"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3c4bd879-446d-4c75-b880-2a326c05bf46",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.40"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d77be3fd-5b9f-4d37-88b3-a8d78c93ea32",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.41"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/f001ca59-0636-4909-a345-e2dd805ccc23",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.43"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/08ac9576-59da-4503-a673-5e728389c8d6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.44"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ed1e7b38-bb0e-4740-8b7b-e2ef13afe35c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.45"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d5f2fda8-593a-4c07-b02a-5d7429c6a1a8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.46"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8db62416-7fa9-461f-a0fc-bc9302c552e9",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.48"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4fa2d4ae-bcf7-4a45-8ef9-7626c8be7ca3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.50"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/62d277ce-c3a0-4b5c-8789-58e478d72bcc",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.52"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8599259a-5d23-4248-a0eb-d57e9fa9cca0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.53"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/3c47cb33-64ff-4c1a-a7a3-68e9726baed5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.54"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a7f3d936-590e-42aa-8f72-e9802986f3a8",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.55"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c222c328-b296-4998-906b-32db6a11604e",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.56"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d3547f34-0d6b-4329-b659-5062adc3fded",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.58"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/28178265-0050-496f-8028-d1701c058caf",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.59"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/403552a9-1c1f-40a3-b5d3-b68e58635030",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.60"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/bed88d9c-7043-40ba-9a1f-e7887af1bfbf",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.62"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ac2bd840-b8c1-42c7-92bc-c63494e2d6c9",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.63"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6285258e-dac7-46f0-9d5a-fcf34bb9bda9",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.64"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5bf1934f-119e-462a-9aec-61f18f0126ff",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@9.0.65"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d097a7fe-0527-4f26-adb3-a71594be6305",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M1"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/15079bba-d41b-46cf-b06b-8351d1e47141",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M3"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/bec4db3d-b792-4ca9-8fa7-efdbcc4730b7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/0a3d4042-336c-475f-ba2e-6ee4a32951d7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c97fde5f-74e7-408a-a214-69ed6c7703c0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ead58bd5-675c-4ae0-8d1d-d4bfe1d88040",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M7"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e7f42d07-a0ea-492d-8149-bcc6a2f42a5a",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/18edebf6-36ee-4b49-b94f-ab5455cfab83",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M9"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/38abce6b-b040-4f05-94b0-8076eb30a7f5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0-M10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b5ad4698-8f29-4158-8b8a-092ddb322354",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.0"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b4a92196-15dc-4cde-9560-3338e5a976fa",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.2"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/83c551f7-4505-48c7-bffa-7ac76925ba12",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5bad56fb-12b6-437e-b7ee-a36ce7accba0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4700f36b-b7f7-4410-9316-9df4450ede69",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c0450bbb-1a83-4f3b-ab95-c54ff75cecf2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.7"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/4aebf0c4-55a3-4bbc-be0c-6661a12354c5",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/296176b8-c9eb-4451-bfd5-c45028dac98c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/a8cd28fe-2341-4b99-b954-c48a9d98cec2",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.11"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d1baa8fb-c5a1-40cc-81a4-5b1d1b96bc2e",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.12"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e9eae6a8-f2a7-460b-9395-4e43786c0d72",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.13"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/89892765-9e08-4367-b201-0954301cdd66",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.14"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/2334aad0-3f94-4f9a-9284-282d4c8c9b36",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.16"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/e32805ce-8a0f-4d62-8051-d330319a9ece",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.17"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/af05b39d-d4ef-49cc-a821-de344833e103",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.18"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/6393ce61-cf91-4fc5-8f54-7057ddfc6317",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.20"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/0693d5f6-0f84-4c69-9840-f5a889cd83fd",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.21"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/8b843f7d-f632-46ec-9746-19da4f7f0fb1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.22"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/61fe8218-8814-475f-8d0e-918ca9f5d6b1",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.0.23"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5c8ceb82-722e-47ee-bff7-2d027e54943c",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M1"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b8667f13-74c4-4207-9539-ac4e78387cb0",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M2"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/fb2bcd1d-dfdd-4a5b-8a09-1b9b2b305b9b",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M4"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/43f750e1-416c-42d5-ae18-fa6e0c739c48",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M5"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/d145d122-640c-4d7d-bac5-bcf5f8dd7a91",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M6"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5fe5641c-51b4-412b-a223-d49c28a227b9",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M7"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/b292b1ba-9f13-4d3b-8f7c-e572d3cc18fc",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ba637bba-6592-4276-99b1-7f0884d820e3",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M10"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/464bf6ee-d396-49d7-b8ef-970a428bd201",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M11"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/333d94b6-b4af-4ee9-ae92-4b18ac0e1366",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M12"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/ad4069ff-941e-4e41-a772-a8ecf1792454",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M14"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/5f11d6c0-0edb-4398-8ff8-fd8917ee3ca6",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M15"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/13ac9946-e7e2-468a-837f-998a14941ec7",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M16"
+            },
+            {
+                "url": "http://localhost:8001/api/packages/c8cfe7ad-2235-4868-bbaf-f51e3e276386",
+                "purl": "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M17"
+            }
+        ],
+        "references": [
+            {
+                "reference_url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html",
+                "reference_id": "",
+                "scores": [],
+                "url": "https://www.oracle.com/technetwork/security-advisory/cpuapr2019-5072813.html"
+            },
+            {
+                "reference_url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:apache:tomcat:9.0.0:m22:*:*:*:*:*:*",
+                "reference_id": "cpe:2.3:a:apache:tomcat:9.0.0:m22:*:*:*:*:*:*",
+                "scores": [],
+                "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:apache:tomcat:9.0.0:m22:*:*:*:*:*:*"
+            }
+        ]
+    }
 ]

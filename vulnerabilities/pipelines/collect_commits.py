@@ -44,15 +44,25 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
 
         created_fix_count = 0
         progress = LoopProgress(total_iterations=references.count(), logger=self.log)
+
+        Reference
+        AffectedByPackageRelatedVulnerability
+        # FixingPackageRelatedVulnerability
+
+
+        for apv in AffectedByPackageRelatedVulnerability.objects.all():
+            vuln = apv.vulnerability
+            for ref in vuln.references:
+
         for reference in progress.iter(references.paginated(per_page=500)):
             for vulnerability in reference.vulnerabilities.all():
-                vcs_url = normalize_vcs_url(reference.url)
+                vcs_url = normalize_vcs_url(repo_url=reference.url)
 
                 if not vcs_url:
                     continue
 
                 # Skip if already processed
-                if is_reference_already_processed(reference.url, vcs_url):
+                if is_reference_already_processed(reference_url=reference.url, commit_id=vcs_url):
                     self.log(
                         f"Skipping already processed reference: {reference.url} with VCS URL {vcs_url}"
                     )
@@ -97,7 +107,8 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
                 },
             )
             if created:
-                codefix.vulnerabilities.add(vulnerability)
+                AffectedByPackageRelatedVulnerability.objects.get
+                codefix.package_vulnerabilities.add(vulnerability)
                 codefix.save()
             return codefix
         except Exception as e:
@@ -124,10 +135,13 @@ VCS_URLS = (
 )
 
 
+# TODO: This function was borrowed from scancode-toolkit. We need to create a shared library for that.
 def normalize_vcs_url(repo_url, vcs_tool=None):
     """
     Return a normalized vcs_url version control URL given some `repo_url` and an
-    optional `vcs_tool` hint (such as 'git', 'hg', etc.
+    optional `vcs_tool` hint (such as 'git', 'hg', etc.)
+
+    Return None if repo_url is not recognized as a VCS URL.
 
     Handles shortcuts for GitHub, GitHub gist, Bitbucket, or GitLab repositories
     and more using the same approach as npm install:

@@ -266,7 +266,10 @@ class PackageV2ViewSetTest(APITestCase):
         self.assertIn("next_non_vulnerable_version", data)
         self.assertIn("latest_non_vulnerable_version", data)
         self.assertEqual(data["purl"], "pkg:pypi/django@3.2")
-        self.assertEqual(data["affected_by_vulnerabilities"], ["VCID-1234"])
+        self.assertEqual(
+            data["affected_by_vulnerabilities"],
+            {"VCID-1234": {"vulnerability_id": "VCID-1234", "fixed_by_packages": None}},
+        )
         self.assertEqual(data["fixing_vulnerabilities"], [])
 
     def test_list_packages_pagination(self):
@@ -321,7 +324,10 @@ class PackageV2ViewSetTest(APITestCase):
         package = Package.objects.get(package_url="pkg:pypi/django@3.2")
         serializer = PackageV2Serializer()
         vulnerabilities = serializer.get_affected_by_vulnerabilities(package)
-        self.assertEqual(vulnerabilities, ["VCID-1234"])
+        self.assertEqual(
+            vulnerabilities,
+            {"VCID-1234": {"vulnerability_id": "VCID-1234", "fixed_by_packages": None}},
+        )
 
     def test_get_fixing_vulnerabilities(self):
         """
@@ -523,7 +529,10 @@ class PackageV2ViewSetTest(APITestCase):
         self.assertIn("next_non_vulnerable_version", response.data[0])
         self.assertIn("latest_non_vulnerable_version", response.data[0])
         self.assertEqual(response.data[0]["purl"], "pkg:pypi/django@3.2")
-        self.assertEqual(response.data[0]["affected_by_vulnerabilities"], ["VCID-1234"])
+        self.assertEqual(
+            response.data[0]["affected_by_vulnerabilities"],
+            {"VCID-1234": {"vulnerability_id": "VCID-1234", "fixed_by_packages": None}},
+        )
         self.assertEqual(response.data[0]["fixing_vulnerabilities"], [])
 
     def test_lookup_with_invalid_purl(self):

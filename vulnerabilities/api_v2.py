@@ -195,7 +195,21 @@ class PackageV2Serializer(serializers.ModelSerializer):
         ]
 
     def get_affected_by_vulnerabilities(self, obj):
-        return [vuln.vulnerability_id for vuln in obj.affected_by_vulnerabilities.all()]
+        """
+        Return a dictionary with vulnerabilities as keys and their details, including fixed_by_packages.
+        """
+        vulnerabilities = obj.affected_by_vulnerabilities.prefetch_related("fixed_by_packages")
+        result = {}
+        for vuln in vulnerabilities:
+            fixed_by_package = vuln.fixed_by_packages.first()
+            purl = None
+            if fixed_by_package:
+                purl = fixed_by_package.package_url
+            result[vuln.vulnerability_id] = {
+                "vulnerability_id": vuln.vulnerability_id,
+                "fixed_by_packages": purl,
+            }
+        return result
 
     def get_fixing_vulnerabilities(self, obj):
         # Ghost package should not fix any vulnerability.

@@ -199,7 +199,11 @@ class VulnerabilityDetails(DetailView):
             if s.value:
                 severity_values.add(s.value)
 
-        sorted_fixed_by_packages, sorted_affected_packages, all_affected_fixed_by_matches = self.aggregate_fixed_and_affected_packages()
+        (
+            sorted_fixed_by_packages,
+            sorted_affected_packages,
+            all_affected_fixed_by_matches,
+        ) = self.aggregate_fixed_and_affected_packages()
 
         context.update(
             {
@@ -269,7 +273,7 @@ class VulnerabilityDetails(DetailView):
 
             affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
             all_affected_fixed_by_matches.append(affected_fixed_by_matches)
-        return sorted_fixed_by_packages,sorted_affected_packages,all_affected_fixed_by_matches
+        return sorted_fixed_by_packages, sorted_affected_packages, all_affected_fixed_by_matches
 
 
 class HomePage(View):

@@ -178,7 +178,7 @@ class VulnerabilityDetails(DetailView):
         ]
         status = self.object.get_status_label
 
-        severity_vectors, severity_values = self.get_severity_vectors_and_values()
+        # severity_vectors, severity_values = self.get_severity_vectors_and_values()
 
         (
             sorted_fixed_by_packages,
@@ -191,8 +191,8 @@ class VulnerabilityDetails(DetailView):
                 "vulnerability": self.object,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
                 "severities": list(self.object.severities.all()),
-                "severity_score_range": get_severity_range(severity_values),
-                "severity_vectors": severity_vectors,
+                # "severity_score_range": get_severity_range(severity_values),
+                # "severity_vectors": severity_vectors,
                 "references": self.object.references.all(),
                 "aliases": self.object.aliases.all(),
                 "affected_packages": sorted_affected_packages,

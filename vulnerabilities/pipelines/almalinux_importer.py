@@ -45,7 +45,7 @@ class AlmalinuxImporterPipeline(VulnerableCodeBaseImporterPipeline):
 
     def advisories_count(self):
         vuln_directory = Path(self.vcs_response.dest_dir) / "advisories"
-        return sum(1 for _ in vuln_directory.rglob("*.json"))
+        return len(list(vuln_directory.rglob("*.json")))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         base_directory = Path(self.vcs_response.dest_dir)

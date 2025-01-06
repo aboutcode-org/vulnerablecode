@@ -263,26 +263,32 @@ class VulnerabilityDetails(DetailView):
         severity_vectors = []
         severity_values = set()
 
-        severities = self.object.severities.exclude(scoring_system=EPSS.identifier)
+        # Exclude EPSS scoring system
+        base_severities = self.object.severities.exclude(scoring_system=EPSS.identifier)
 
-        for severity in severities:
-            if severity.scoring_elements and severity.scoring_system in SCORING_SYSTEMS:
-                try:
-                    vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
-                        severity.scoring_elements
-                    )
-                    if vector_values:
-                        severity_vectors.append(vector_values)
-                except (
-                    CVSS2MalformedError,
-                    CVSS3MalformedError,
-                    CVSS4MalformedError,
-                    NotImplementedError,
-                ) as e:
-                    logging.error(f"CVSSMalformedError for {severity.scoring_elements}: {e}")
+        # QuerySet for severities with valid scoring_elements and scoring_system in SCORING_SYSTEMS
+        valid_scoring_severities = base_severities.filter(
+            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
+        )
 
-            if severity.value:
-                severity_values.add(severity.value)
+        for severity in valid_scoring_severities:
+            try:
+                vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
+                    severity.scoring_elements
+                )
+                if vector_values:
+                    severity_vectors.append(vector_values)
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ) as e:
+                logging.error(f"CVSSMalformedError for {severity.scoring_elements}: {e}")
+
+        valid_value_severities = base_severities.filter(value__isnull=False).exclude(value="")
+
+        severity_values.update(valid_value_severities.values_list("value", flat=True))
 
         return severity_vectors, severity_values
 

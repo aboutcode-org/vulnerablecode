@@ -32,10 +32,34 @@ from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import get_purl_version_class
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
+
+
+def purl_sort_key(purl: models.Package):
+    """
+    Return a sort key for the built-in sorted() function when sorting a list
+    of Package objects.  If the Package ``type`` is supported by univers, apply
+    the univers version class to the Package ``version``, and otherwise use the
+    ``version`` attribute as is.
+    """
+    purl_version_class = get_purl_version_class(purl)
+    purl_sort_version = purl.version
+    if purl_version_class:
+        purl_sort_version = purl_version_class(purl.version)
+    return (purl.type, purl.namespace, purl.name, purl_sort_version, purl.qualifiers, purl.subpath)
+
+
+def get_purl_version_class(purl: models.Package):
+    RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
+    purl_version_class = None
+    check_version_class = RANGE_CLASS_BY_SCHEMES.get(purl.type, None)
+    if check_version_class:
+        purl_version_class = check_version_class.version_class
+    return purl_version_class
 
 
 class PackageSearch(ListView):

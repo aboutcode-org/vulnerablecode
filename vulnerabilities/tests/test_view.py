@@ -17,7 +17,7 @@ from packageurl import PackageURL
 from univers import versions
 
 from vulnerabilities import models
-from vulnerabilities.models import Alias
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability, Alias, FixingPackageRelatedVulnerability, VulnerabilitySeverity
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.templatetags.url_filters import url_quote_filter
@@ -279,47 +279,53 @@ class TestCustomFilters:
 
 class VulnerabilitySearchTestCaseWithPackages(TestCase):
     def setUp(self):
-        self.vuln1 = models.Vulnerability.objects.create(
+        self.vuln1 = Vulnerability.objects.create(
             vulnerability_id="VCID-1", summary="Vuln 1"
         )
-        self.vuln2 = models.Vulnerability.objects.create(
+        self.vuln2 = Vulnerability.objects.create(
             vulnerability_id="VCID-2", summary="Vuln 2"
         )
-        self.vuln3 = models.Vulnerability.objects.create(
+        self.vuln3 = Vulnerability.objects.create(
             vulnerability_id="VCID-3", summary="Vuln 3"
         )
-        self.vuln4 = models.Vulnerability.objects.create(
+        self.vuln4 = Vulnerability.objects.create(
             vulnerability_id="VCID-4", summary="Vuln 4"
         )
-        self.vuln5 = models.Vulnerability.objects.create(
+        self.vuln5 = Vulnerability.objects.create(
             vulnerability_id="VCID-5", summary="Vuln 5"
         )
 
-        self.package1 = models.Package.objects.create(type="pypi", name="django", version="1.0.0")
-        self.package2 = models.Package.objects.create(type="pypi", name="django", version="2.0.0")
-        self.package3 = models.Package.objects.create(type="pypi", name="django", version="3.0.0")
+        self.package1 = Package.objects.create(type="pypi", name="django", version="1.0.0")
+        self.package2 = Package.objects.create(type="pypi", name="django", version="2.0.0")
+        self.package3 = Package.objects.create(type="pypi", name="django", version="3.0.0")
 
-        models.AffectedByPackageRelatedVulnerability.objects.create(
+        AffectedByPackageRelatedVulnerability.objects.create(
             package=self.package1, vulnerability=self.vuln1
         )
-
-        models.AffectedByPackageRelatedVulnerability.objects.create(
+        AffectedByPackageRelatedVulnerability.objects.create(
             package=self.package1, vulnerability=self.vuln2
         )
-
-        models.AffectedByPackageRelatedVulnerability.objects.create(
+        AffectedByPackageRelatedVulnerability.objects.create(
             package=self.package2, vulnerability=self.vuln3
         )
-
-        models.AffectedByPackageRelatedVulnerability.objects.create(
+        AffectedByPackageRelatedVulnerability.objects.create(
             package=self.package2, vulnerability=self.vuln4
         )
 
-        # Associate fixed_by package with vuln5
-
-        models.FixingPackageRelatedVulnerability.objects.create(
+        FixingPackageRelatedVulnerability.objects.create(
             package=self.package3, vulnerability=self.vuln5
         )
+
+        self.severity1 = VulnerabilitySeverity.objects.create(
+            scoring_system="CVSSv3", value="9.8", scoring_elements="AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+        )
+        self.severity2 = VulnerabilitySeverity.objects.create(
+            scoring_system="CVSSv3", value="7.5", scoring_elements="AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+        )
+
+        self.vuln1.severities.add(self.severity1)
+        self.vuln1.severities.add(self.severity2)
+        self.vuln1.save()
 
     def test_aggregate_fixed_and_affected_packages(self):
         with self.assertNumQueries(11):

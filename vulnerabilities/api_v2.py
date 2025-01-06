@@ -8,6 +8,7 @@
 #
 
 
+from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
@@ -20,8 +21,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from vulnerabilities.api import PackageFilterSet
-from vulnerabilities.api import VulnerabilitySeveritySerializer
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -198,9 +197,8 @@ class PackageV2Serializer(serializers.ModelSerializer):
         """
         Return a dictionary with vulnerabilities as keys and their details, including fixed_by_packages.
         """
-        vulnerabilities = obj.affected_by_vulnerabilities.prefetch_related("fixed_by_packages")
         result = {}
-        for vuln in vulnerabilities:
+        for vuln in getattr(obj, "prefetched_affected_vulnerabilities", []):
             fixed_by_package = vuln.fixed_by_packages.first()
             purl = None
             if fixed_by_package:
@@ -247,7 +245,13 @@ class PackageV2FilterSet(filters.FilterSet):
 
 
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Package.objects.all()
+    queryset = Package.objects.all().prefetch_related(
+        Prefetch(
+            "affected_by_vulnerabilities",
+            queryset=Vulnerability.objects.prefetch_related("fixed_by_packages"),
+            to_attr="prefetched_affected_vulnerabilities",
+        )
+    )
     serializer_class = PackageV2Serializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageV2FilterSet

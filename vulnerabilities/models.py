@@ -382,19 +382,13 @@ class Vulnerability(models.Model):
         return [p.package_url for p in self.packages.distinct().all()]
 
     def aggregate_fixed_and_affected_packages(self):
-        from vulnerabilities.utils import get_purl_version_class
+        from vulnerabilities.views import get_purl_version_class
 
         sorted_fixed_by_packages = self.fixed_by_packages.filter(is_ghost=False).order_by(
             "type", "namespace", "name", "qualifiers", "subpath"
         )
 
-        if sorted_fixed_by_packages:
-            sorted_fixed_by_packages.first().calculate_version_rank
-
         sorted_affected_packages = self.affected_packages.all()
-
-        if sorted_affected_packages:
-            sorted_affected_packages.first().calculate_version_rank
 
         grouped_fixed_by_packages = {
             key: list(group)

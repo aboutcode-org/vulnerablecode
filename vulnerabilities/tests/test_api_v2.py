@@ -124,8 +124,8 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         url = reverse("vulnerability-v2-list")
         with self.assertNumQueries(5):
             response = self.client.get(
-            url, {"vulnerability_id": ["VCID-1234", "VCID-5678"]}, format="json"
-        )
+                url, {"vulnerability_id": ["VCID-1234", "VCID-5678"]}, format="json"
+            )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["vulnerabilities"]), 2)
 
@@ -136,8 +136,8 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         url = reverse("vulnerability-v2-list")
         with self.assertNumQueries(5):
             response = self.client.get(
-            url, {"alias": ["CVE-2021-1234", "CVE-2021-5678"]}, format="json"
-        )
+                url, {"alias": ["CVE-2021-1234", "CVE-2021-5678"]}, format="json"
+            )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["vulnerabilities"]), 2)
 
@@ -250,7 +250,9 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-list")
         with self.assertNumQueries(19):
-            response = self.client.get(url, {"affected_by_vulnerability": "VCID-1234"}, format="json")
+            response = self.client.get(
+                url, {"affected_by_vulnerability": "VCID-1234"}, format="json"
+            )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["packages"]), 1)
         self.assertEqual(response.data["results"]["packages"][0]["purl"], "pkg:pypi/django@3.2")
@@ -346,7 +348,9 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-list")
         with self.assertNumQueries(4):
-            response = self.client.get(url, {"affected_by_vulnerability": "VCID-9999"}, format="json")
+            response = self.client.get(
+                url, {"affected_by_vulnerability": "VCID-9999"}, format="json"
+            )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["packages"]), 0)
 
@@ -357,7 +361,9 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-list")
         with self.assertNumQueries(4):
-            response = self.client.get(url, {"purl": "pkg:nonexistent/package@1.0.0"}, format="json")
+            response = self.client.get(
+                url, {"purl": "pkg:nonexistent/package@1.0.0"}, format="json"
+            )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["packages"]), 0)
 

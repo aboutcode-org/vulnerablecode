@@ -178,26 +178,7 @@ class VulnerabilityDetails(DetailView):
         ]
         status = self.object.get_status_label
 
-        severity_vectors = []
-        severity_values = set()
-        for s in self.object.severities.all():
-            if s.scoring_system == EPSS.identifier:
-                continue
-
-            if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
-                try:
-                    vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
-                    severity_vectors.append(vector_values)
-                except (
-                    CVSS2MalformedError,
-                    CVSS3MalformedError,
-                    CVSS4MalformedError,
-                    NotImplementedError,
-                ):
-                    logging.error(f"CVSSMalformedError for {s.scoring_elements}")
-
-            if s.value:
-                severity_values.add(s.value)
+        severity_vectors, severity_values = self.get_severity_vectors_and_values()
 
         (
             sorted_fixed_by_packages,
@@ -274,6 +255,36 @@ class VulnerabilityDetails(DetailView):
             affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
             all_affected_fixed_by_matches.append(affected_fixed_by_matches)
         return sorted_fixed_by_packages, sorted_affected_packages, all_affected_fixed_by_matches
+
+    def get_severity_vectors_and_values(self):
+        """
+        Collect severity vectors and values, excluding EPSS scoring systems and handling errors gracefully.
+        """
+        severity_vectors = []
+        severity_values = set()
+
+        severities = self.object.severities.exclude(scoring_system=EPSS.identifier)
+
+        for severity in severities:
+            if severity.scoring_elements and severity.scoring_system in SCORING_SYSTEMS:
+                try:
+                    vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
+                        severity.scoring_elements
+                    )
+                    if vector_values:
+                        severity_vectors.append(vector_values)
+                except (
+                    CVSS2MalformedError,
+                    CVSS3MalformedError,
+                    CVSS4MalformedError,
+                    NotImplementedError,
+                ) as e:
+                    logging.error(f"CVSSMalformedError for {severity.scoring_elements}: {e}")
+
+            if severity.value:
+                severity_values.add(severity.value)
+
+        return severity_vectors, severity_values
 
 
 class HomePage(View):

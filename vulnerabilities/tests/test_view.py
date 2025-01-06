@@ -8,6 +8,7 @@
 #
 
 import os
+import time
 
 import pytest
 from django.test import Client
@@ -15,6 +16,7 @@ from django.test import TestCase
 from packageurl import PackageURL
 from univers import versions
 
+from vulnerabilities import models
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
@@ -273,3 +275,56 @@ class TestCustomFilters:
     def test_url_quote_filter(self, input_value, expected_output):
         filtered = url_quote_filter(input_value)
         assert filtered == expected_output
+
+
+class VulnerabilitySearchTestCaseWithPackages(TestCase):
+    def setUp(self):
+        self.vuln1 = models.Vulnerability.objects.create(
+            vulnerability_id="VCID-1", summary="Vuln 1"
+        )
+        self.vuln2 = models.Vulnerability.objects.create(
+            vulnerability_id="VCID-2", summary="Vuln 2"
+        )
+        self.vuln3 = models.Vulnerability.objects.create(
+            vulnerability_id="VCID-3", summary="Vuln 3"
+        )
+        self.vuln4 = models.Vulnerability.objects.create(
+            vulnerability_id="VCID-4", summary="Vuln 4"
+        )
+        self.vuln5 = models.Vulnerability.objects.create(
+            vulnerability_id="VCID-5", summary="Vuln 5"
+        )
+
+        self.package1 = models.Package.objects.create(type="pypi", name="django", version="1.0.0")
+        self.package2 = models.Package.objects.create(type="pypi", name="django", version="2.0.0")
+        self.package3 = models.Package.objects.create(type="pypi", name="django", version="3.0.0")
+
+        models.AffectedByPackageRelatedVulnerability.objects.create(
+            package=self.package1, vulnerability=self.vuln1
+        )
+
+        models.AffectedByPackageRelatedVulnerability.objects.create(
+            package=self.package1, vulnerability=self.vuln2
+        )
+
+        models.AffectedByPackageRelatedVulnerability.objects.create(
+            package=self.package2, vulnerability=self.vuln3
+        )
+
+        models.AffectedByPackageRelatedVulnerability.objects.create(
+            package=self.package2, vulnerability=self.vuln4
+        )
+
+        # Associate fixed_by package with vuln5
+
+        models.FixingPackageRelatedVulnerability.objects.create(
+            package=self.package3, vulnerability=self.vuln5
+        )
+
+    def test_aggregate_fixed_and_affected_packages(self):
+        with self.assertNumQueries(11):
+            start_time = time.time()
+            response = self.client.get(f"/vulnerabilities/{self.vuln1.vulnerability_id}")
+            end_time = time.time()
+            assert end_time - start_time < 0.05
+            self.assertEqual(response.status_code, 200)

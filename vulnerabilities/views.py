@@ -7,6 +7,8 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
+from itertools import groupby
+from operator import attrgetter
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
@@ -197,36 +199,7 @@ class VulnerabilityDetails(DetailView):
             if s.value:
                 severity_values.add(s.value)
 
-        sorted_affected_packages = sorted(self.object.affected_packages.all(), key=purl_sort_key)
-        sorted_fixed_by_packages = sorted(self.object.fixed_by_packages.all(), key=purl_sort_key)
-
-        all_affected_fixed_by_matches = []
-        for sorted_affected_package in sorted_affected_packages:
-            affected_fixed_by_matches = {}
-            affected_fixed_by_matches["affected_package"] = sorted_affected_package
-            matched_fixed_by_packages = []
-            for fixed_by_package in sorted_fixed_by_packages:
-
-                # Ghost Package can't fix vulnerability.
-                if fixed_by_package.is_ghost:
-                    continue
-
-                sorted_affected_version_class = get_purl_version_class(sorted_affected_package)
-                fixed_by_version_class = get_purl_version_class(fixed_by_package)
-                if (
-                    (fixed_by_package.type == sorted_affected_package.type)
-                    and (fixed_by_package.namespace == sorted_affected_package.namespace)
-                    and (fixed_by_package.name == sorted_affected_package.name)
-                    and (fixed_by_package.qualifiers == sorted_affected_package.qualifiers)
-                    and (fixed_by_package.subpath == sorted_affected_package.subpath)
-                    and (
-                        fixed_by_version_class(fixed_by_package.version)
-                        > sorted_affected_version_class(sorted_affected_package.version)
-                    )
-                ):
-                    matched_fixed_by_packages.append(fixed_by_package.purl)
-            affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
-            all_affected_fixed_by_matches.append(affected_fixed_by_matches)
+        sorted_fixed_by_packages, sorted_affected_packages, all_affected_fixed_by_matches = self.aggregate_fixed_and_affected_packages()
 
         context.update(
             {
@@ -246,6 +219,57 @@ class VulnerabilityDetails(DetailView):
             }
         )
         return context
+
+    def aggregate_fixed_and_affected_packages(self):
+        sorted_fixed_by_packages = self.object.fixed_by_packages.filter(is_ghost=False).order_by(
+            "type", "namespace", "name", "qualifiers", "subpath"
+        )
+
+        sorted_affected_packages = self.object.affected_packages.all()
+
+        grouped_fixed_by_packages = {
+            key: list(group)
+            for key, group in groupby(
+                sorted_fixed_by_packages,
+                key=attrgetter("type", "namespace", "name", "qualifiers", "subpath"),
+            )
+        }
+
+        all_affected_fixed_by_matches = []
+
+        for sorted_affected_package in sorted_affected_packages:
+            affected_fixed_by_matches = {
+                "affected_package": sorted_affected_package,
+                "matched_fixed_by_packages": [],
+            }
+
+            # Build the key to find matching group
+            key = (
+                sorted_affected_package.type,
+                sorted_affected_package.namespace,
+                sorted_affected_package.name,
+                sorted_affected_package.qualifiers,
+                sorted_affected_package.subpath,
+            )
+
+            # Get matching group from pre-grouped fixed_by_packages
+            matching_fixed_packages = grouped_fixed_by_packages.get(key, [])
+
+            # Get version classes for comparison
+            affected_version_class = get_purl_version_class(sorted_affected_package)
+            affected_version = affected_version_class(sorted_affected_package.version)
+
+            # Compare versions and filter valid matches
+            matched_fixed_by_packages = [
+                fixed_by_package.purl
+                for fixed_by_package in matching_fixed_packages
+                if get_purl_version_class(fixed_by_package)(fixed_by_package.version)
+                > affected_version
+            ]
+
+            affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
+            all_affected_fixed_by_matches.append(affected_fixed_by_matches)
+        return sorted_fixed_by_packages,sorted_affected_packages,all_affected_fixed_by_matches
 
 
 class HomePage(View):

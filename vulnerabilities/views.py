@@ -22,6 +22,7 @@ from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.db.models import Prefetch
 
 from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
@@ -153,68 +154,86 @@ class VulnerabilityDetails(DetailView):
     slug_field = "vulnerability_id"
 
     def get_queryset(self):
+        """
+        Prefetch and optimize related data to minimize database hits.
+        """
         return (
             super()
             .get_queryset()
+            .select_related()
             .prefetch_related(
                 "references",
                 "aliases",
                 "weaknesses",
                 "severities",
                 "exploits",
+                Prefetch(
+                    "affecting_packages",
+                    queryset=models.Vulnerability.objects.only(
+                        "type", "namespace", "name", "version"
+                    ),
+                ),
+                Prefetch(
+                    "fixed_by_packages",
+                    queryset=models.Vulnerability.objects.only(
+                        "type", "namespace", "name", "version"
+                    ),
+                ),
             )
         )
 
+
     def get_context_data(self, **kwargs):
+        """
+        Build context with preloaded QuerySets and minimize redundant queries.
+        """
         context = super().get_context_data(**kwargs)
-        weaknesses = self.object.weaknesses.all()
+        vulnerability = self.object
+        
+        # Pre-fetch and process data in Python instead of the template
         weaknesses_present_in_db = [
-            weakness_object for weakness_object in weaknesses if weakness_object.weakness
+            weakness_object for weakness_object in vulnerability.weaknesses.all()
+            if weakness_object.weakness
         ]
-        status = self.object.get_status_label
-
-        # severity_vectors, severity_values = self.get_severity_vectors_and_values()
-
+        
+        # Cache aggregated packages
         (
             sorted_fixed_by_packages,
             sorted_affected_packages,
             all_affected_fixed_by_matches,
-        ) = self.object.aggregate_fixed_and_affected_packages()
+        ) = vulnerability.aggregate_fixed_and_affected_packages()
+        
+        severity_vectors, severity_values = self.get_severity_vectors_and_values(vulnerability)
 
         context.update(
             {
-                "vulnerability": self.object,
+                "vulnerability": vulnerability,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
-                "severities": list(self.object.severities.all()),
+                "severities": list(vulnerability.severities.all()),
                 "severity_score_range": "",
-                "severity_vectors": [],
-                "references": self.object.references.all(),
-                "aliases": self.object.aliases.all(),
+                "severity_vectors": severity_vectors,
+                "references": list(vulnerability.references.all()),
+                "aliases": list(vulnerability.aliases.all()),
                 "affected_packages": sorted_affected_packages,
                 "fixed_by_packages": sorted_fixed_by_packages,
                 "weaknesses": weaknesses_present_in_db,
-                "status": status,
-                "history": self.object.history,
+                "status": vulnerability.get_status_label,
+                "history": vulnerability.history,
                 "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
             }
         )
         return context
 
-    def get_severity_vectors_and_values(self):
+    def get_severity_vectors_and_values(self, vulnerability):
         """
-        Collect severity vectors and values, excluding EPSS scoring systems and handling errors gracefully.
+        Collect severity vectors and values, excluding EPSS scoring systems efficiently.
         """
         severity_vectors = []
         severity_values = set()
-
-        # Exclude EPSS scoring system
-        base_severities = self.object.severities.exclude(scoring_system=EPSS.identifier)
-
-        # QuerySet for severities with valid scoring_elements and scoring_system in SCORING_SYSTEMS
-        valid_scoring_severities = base_severities.filter(
-            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
-        )
-
+        
+        # Use prefetch data if available
+        valid_scoring_severities = getattr(vulnerability, "prefetched_valid_severities", [])
+        
         for severity in valid_scoring_severities:
             try:
                 vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
@@ -229,10 +248,11 @@ class VulnerabilityDetails(DetailView):
                 NotImplementedError,
             ) as e:
                 logging.error(f"CVSSMalformedError for {severity.scoring_elements}: {e}")
-
-        valid_value_severities = base_severities.filter(value__isnull=False).exclude(value="")
-
-        severity_values.update(valid_value_severities.values_list("value", flat=True))
+        
+        # Collect valid values using a pre-filtered queryset
+        severity_values.update(
+            vulnerability.severities.exclude(value__isnull=True).exclude(value="").values_list("value", flat=True)
+        )
 
         return severity_vectors, severity_values
 

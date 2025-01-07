@@ -7,22 +7,24 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import re
+
 from aboutcode.pipeline import LoopProgress
 from packageurl.contrib.url2purl import url2purl
 
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import CodeFix
+from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
-def is_reference_already_processed(reference_url, commit_id):
+def is_vcs_url_already_processed(commit_id):
     """
-    Check if a reference and commit ID pair already exists in a CodeFix entry.
+    Check if a VCS URL exists in a CodeFix entry.
     """
-    return CodeFix.objects.filter(
-        references__contains=[reference_url], commits__contains=[commit_id]
-    ).exists()
+    return CodeFix.objects.filter(commits__contains=[commit_id]).exists()
 
 
 class CollectFixCommitsPipeline(VulnerableCodePipeline):
@@ -38,82 +40,53 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
         return (cls.collect_and_store_fix_commits,)
 
     def collect_and_store_fix_commits(self):
-        references = VulnerabilityReference.objects.prefetch_related("vulnerabilities").distinct()
+        affected_by_package_related_vulnerabilities = (
+            AffectedByPackageRelatedVulnerability.objects.all().prefetch_related(
+                "vulnerability", "vulnerability__references"
+            )
+        )
 
-        self.log(f"Processing {references.count():,d} references to collect fix commits.")
+        self.log(
+            f"Processing {affected_by_package_related_vulnerabilities.count():,d} references to collect fix commits."
+        )
 
         created_fix_count = 0
-        progress = LoopProgress(total_iterations=references.count(), logger=self.log)
+        progress = LoopProgress(
+            total_iterations=affected_by_package_related_vulnerabilities.count(), logger=self.log
+        )
 
-        Reference
-        AffectedByPackageRelatedVulnerability
-        # FixingPackageRelatedVulnerability
+        for apv in progress.iter(
+            affected_by_package_related_vulnerabilities.paginated(per_page=500)
+        ):
+            vulnerability = apv.vulnerability
+            for reference in vulnerability.references:
 
+                if not is_vcs_url(reference.url):
+                    continue
 
-        for apv in AffectedByPackageRelatedVulnerability.objects.all():
-            vuln = apv.vulnerability
-            for ref in vuln.references:
-
-        for reference in progress.iter(references.paginated(per_page=500)):
-            for vulnerability in reference.vulnerabilities.all():
                 vcs_url = normalize_vcs_url(repo_url=reference.url)
 
                 if not vcs_url:
                     continue
 
                 # Skip if already processed
-                if is_reference_already_processed(reference_url=reference.url, commit_id=vcs_url):
+                if is_vcs_url_already_processed(commit_id=vcs_url):
                     self.log(
                         f"Skipping already processed reference: {reference.url} with VCS URL {vcs_url}"
                     )
                     continue
-                purl = url2purl(vcs_url)
-                if not purl:
-                    self.log(f"Could not create purl from url: {vcs_url}")
-                    continue
-                package = self.get_or_create_package(purl)
-                codefix = self.create_codefix_entry(
-                    vulnerability=vulnerability,
-                    package=package,
-                    vcs_url=vcs_url,
-                    reference=reference.url,
+                code_fix, created = CodeFix.objects.get_or_create(
+                    commits=[vcs_url],
+                    affected_package_vulnerability=apv,
                 )
-                if codefix:
+
+                if created:
                     created_fix_count += 1
+                    self.log(
+                        f"Created CodeFix entry for reference: {reference.url} with VCS URL {vcs_url}"
+                    )
 
         self.log(f"Successfully created {created_fix_count:,d} CodeFix entries.")
-
-    def get_or_create_package(self, purl):
-        """
-        Get or create a Package object from a Package URL.
-        """
-        try:
-            package, _ = Package.objects.get_or_create_from_purl(purl)
-            return package
-        except Exception as e:
-            self.log(f"Error creating package from purl {purl}: {e}")
-            return None
-
-    def create_codefix_entry(self, vulnerability, package, vcs_url, reference):
-        """
-        Create a CodeFix entry associated with the given vulnerability and package.
-        """
-        try:
-            codefix, created = CodeFix.objects.get_or_create(
-                base_version=package,
-                defaults={
-                    "commits": [vcs_url],
-                    "references": [reference],
-                },
-            )
-            if created:
-                AffectedByPackageRelatedVulnerability.objects.get
-                codefix.package_vulnerabilities.add(vulnerability)
-                codefix.save()
-            return codefix
-        except Exception as e:
-            self.log(f"Error creating CodeFix entry: {e}")
-            return
 
 
 PLAIN_URLS = (
@@ -211,3 +184,72 @@ def normalize_vcs_url(repo_url, vcs_tool=None):
         # implicit github, but that's only on NPM?
         return f"https://github.com/{repo_url}"
     return repo_url
+
+
+def is_vcs_url(repo_url):
+    """
+    Check if a given URL or string matches a valid VCS (Version Control System) URL.
+
+    Supports:
+    - Standard VCS URL protocols (git, http, https, ssh)
+    - Shortcut syntax (e.g., github:user/repo, gitlab:group/repo)
+    - GitHub shortcut (e.g., user/repo)
+
+    Args:
+        repo_url (str): The repository URL or shortcut to validate.
+
+    Returns:
+        bool: True if the string is a valid VCS URL, False otherwise.
+
+    Examples:
+        >>> is_vcs_url("git://github.com/angular/di.js.git")
+        True
+        >>> is_vcs_url("github:user/repo")
+        True
+        >>> is_vcs_url("user/repo")
+        True
+        >>> is_vcs_url("https://github.com/user/repo.git")
+        True
+        >>> is_vcs_url("git@github.com:user/repo.git")
+        True
+        >>> is_vcs_url("http://github.com/isaacs/nopt")
+        True
+        >>> is_vcs_url("https://gitlab.com/foo/private.git")
+        True
+        >>> is_vcs_url("git@gitlab.com:foo/private.git")
+        True
+        >>> is_vcs_url("bitbucket:example/repo")
+        True
+        >>> is_vcs_url("gist:11081aaa281")
+        True
+        >>> is_vcs_url("ftp://example.com/not-a-repo")
+        False
+        >>> is_vcs_url("random-string")
+        False
+        >>> is_vcs_url("https://example.com/not-a-repo")
+        False
+    """
+    if not repo_url or not isinstance(repo_url, str):
+        return False
+
+    repo_url = repo_url.strip()
+    if not repo_url:
+        return False
+
+    # 1. Match URLs with standard protocols
+    if re.match(r"^(git|ssh|http|https)://", repo_url):
+        return True
+
+    # 2. Match SSH URLs (e.g., git@github.com:user/repo.git)
+    if re.match(r"^git@\w+\.\w+:[\w\-./]+$", repo_url):
+        return True
+
+    # 3. Match shortcut syntax (e.g., github:user/repo)
+    if re.match(r"^(github|gitlab|bitbucket|gist):[\w\-./]+$", repo_url):
+        return True
+
+    # 4. Match implicit GitHub shortcut (e.g., user/repo)
+    if re.match(r"^[\w\-]+/[\w\-]+$", repo_url):
+        return True
+
+    return False

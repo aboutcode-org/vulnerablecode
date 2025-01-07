@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from vulnerabilities.models import CodeFix
 from vulnerabilities.pipelines.collect_commits import CollectFixCommitsPipeline
-from vulnerabilities.pipelines.collect_commits import is_reference_already_processed
+from vulnerabilities.pipelines.collect_commits import is_vcs_url_already_processed
 from vulnerabilities.pipelines.collect_commits import normalize_vcs_url
 
 
@@ -27,7 +27,7 @@ class MockPackage:
 @patch("vulnerabilities.models.CodeFix.objects.filter")
 def test_reference_already_processed_true(mock_filter):
     mock_filter.return_value.exists.return_value = True
-    result = is_reference_already_processed("http://example.com", "commit123")
+    result = is_vcs_url_already_processed("http://example.com", "commit123")
     assert result is True
     mock_filter.assert_called_once_with(
         references__contains=["http://example.com"], commits__contains=["commit123"]
@@ -37,7 +37,7 @@ def test_reference_already_processed_true(mock_filter):
 @patch("vulnerabilities.models.CodeFix.objects.filter")
 def test_reference_already_processed_false(mock_filter):
     mock_filter.return_value.exists.return_value = False
-    result = is_reference_already_processed("http://example.com", "commit123")
+    result = is_vcs_url_already_processed("http://example.com", "commit123")
     assert result is False
 
 

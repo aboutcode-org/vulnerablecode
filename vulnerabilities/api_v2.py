@@ -535,11 +535,6 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(PackageV2Serializer(qs, many=True, context={"request": request}).data)
 
 
-from rest_framework import serializers
-
-from vulnerabilities.models import CodeFix
-
-
 class CodeFixSerializer(serializers.ModelSerializer):
     """
     Serializer for the CodeFix model.

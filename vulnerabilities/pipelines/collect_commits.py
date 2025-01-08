@@ -10,13 +10,9 @@
 import re
 
 from aboutcode.pipeline import LoopProgress
-from packageurl.contrib.url2purl import url2purl
 
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import CodeFix
-from vulnerabilities.models import FixingPackageRelatedVulnerability
-from vulnerabilities.models import Package
-from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
@@ -59,8 +55,7 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
             affected_by_package_related_vulnerabilities.paginated(per_page=500)
         ):
             vulnerability = apv.vulnerability
-            for reference in vulnerability.references:
-
+            for reference in vulnerability.references.all():
                 if not is_vcs_url(reference.url):
                     continue
 
@@ -171,6 +166,7 @@ def normalize_vcs_url(repo_url, vcs_tool=None):
 
     # FIXME: where these URL schemes come from??
     if repo_url.startswith(("bitbucket:", "gitlab:", "github:", "gist:")):
+        repo = repo_url.split(":")[1]
         hoster_urls = {
             "bitbucket": f"https://bitbucket.org/{repo}",
             "github": f"https://github.com/{repo}",
@@ -236,12 +232,15 @@ def is_vcs_url(repo_url):
     if not repo_url:
         return False
 
-    # 1. Match URLs with standard protocols
-    if re.match(r"^(git|ssh|http|https)://", repo_url):
+    # Define valid VCS domains
+    vcs_domains = r"(github\.com|gitlab\.com|bitbucket\.org|gist\.github\.com)"
+
+    # 1. Match URLs with standard protocols pointing to VCS domains
+    if re.match(rf"^(git|ssh|http|https)://{vcs_domains}/[\w\-.]+/[\w\-.]+", repo_url):
         return True
 
     # 2. Match SSH URLs (e.g., git@github.com:user/repo.git)
-    if re.match(r"^git@\w+\.\w+:[\w\-./]+$", repo_url):
+    if re.match(rf"^git@{vcs_domains}:[\w\-.]+/[\w\-.]+(\.git)?$", repo_url):
         return True
 
     # 3. Match shortcut syntax (e.g., github:user/repo)

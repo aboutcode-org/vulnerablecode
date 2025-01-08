@@ -1,129 +1,166 @@
-from unittest.mock import patch
+from django.test import TestCase
 
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import CodeFix
+from vulnerabilities.models import Package
+from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.pipelines.collect_commits import CollectFixCommitsPipeline
+from vulnerabilities.pipelines.collect_commits import is_vcs_url
 from vulnerabilities.pipelines.collect_commits import is_vcs_url_already_processed
 from vulnerabilities.pipelines.collect_commits import normalize_vcs_url
 
 
-# --- Mocked Dependencies ---
-class MockVulnerability:
-    def __init__(self, id):
-        self.id = id
+class CollectFixCommitsPipelineTests(TestCase):
+    def setUp(self):
+        self.vulnerability = Vulnerability.objects.create(
+            vulnerability_id="VCID-1234", summary="Test vulnerability"
+        )
+
+        package = Package.objects.create(type="npm", namespace="abc", name="def", version="1")
+
+        self.affected_by_vuln = AffectedByPackageRelatedVulnerability.objects.create(
+            package=package, vulnerability=self.vulnerability
+        )
+
+        self.reference1 = VulnerabilityReference.objects.create(
+            url="https://github.com/example/repo/commit/abcd1234"
+        )
+
+        self.reference2 = VulnerabilityReference.objects.create(
+            url="https://gitlab.com/example/repo/commit/efgh5678"
+        )
+        VulnerabilityRelatedReference.objects.create(
+            vulnerability=self.vulnerability, reference=self.reference2
+        )
+        VulnerabilityRelatedReference.objects.create(
+            vulnerability=self.vulnerability, reference=self.reference1
+        )
+
+    def test_is_vcs_url(self):
+        valid_urls = [
+            "git://github.com/angular/di.js.git",
+            "https://github.com/user/repo.git",
+            "git@gitlab.com:user/repo.git",
+        ]
+        invalid_urls = [
+            "ftp://example.com/not-a-repo",
+            "random-string",
+            "https://example.com/not-a-repo",
+        ]
+        for url in valid_urls:
+            assert is_vcs_url(url) is True
+
+        for url in invalid_urls:
+            assert is_vcs_url(url) is False
+
+    def test_normalize_vcs_url(self):
+
+        assert (
+            normalize_vcs_url("git@github.com:user/repo.git") == "https://github.com/user/repo.git"
+        )
+        assert normalize_vcs_url("github:user/repo") == "https://github.com/user/repo"
+        assert normalize_vcs_url(
+            "https://github.com/user/repo.git"
+        ), "https://github.com/user/repo.git"
+
+    def test_is_vcs_url_already_processed(self):
+        CodeFix.objects.create(
+            commits=["https://github.com/example/repo/commit/abcd1234"],
+            affected_package_vulnerability=self.affected_by_vuln,
+        )
+        assert (
+            is_vcs_url_already_processed("https://github.com/example/repo/commit/abcd1234") is True
+        )
+        assert (
+            is_vcs_url_already_processed("https://github.com/example/repo/commit/unknown") is False
+        )
+
+    def test_collect_and_store_fix_commits(self):
+        pipeline = CollectFixCommitsPipeline()
+        pipeline.collect_and_store_fix_commits()
+
+        assert (
+            CodeFix.objects.filter(
+                commits__contains=["https://github.com/example/repo/commit/abcd1234"]
+            ).exists()
+            is True
+        )
+        assert (
+            CodeFix.objects.filter(
+                commits__contains=["https://gitlab.com/example/repo/commit/efgh5678"]
+            ).exists()
+            is True
+        )
+
+    def test_skip_already_processed_commit(self):
+        CodeFix.objects.create(
+            commits=["https://github.com/example/repo/commit/abcd1234"],
+            affected_package_vulnerability=self.affected_by_vuln,
+        )
+
+        pipeline = CollectFixCommitsPipeline()
+        pipeline.collect_and_store_fix_commits()
+
+        # Ensure duplicate entry was not created
+        self.assertEqual(
+            CodeFix.objects.filter(
+                commits__contains=["https://github.com/example/repo/commit/abcd1234"]
+            ).count(),
+            1,
+        )
 
 
-class MockReference:
-    def __init__(self, url, vulnerabilities):
-        self.url = url
-        self.vulnerabilities = vulnerabilities
+class IsVCSURLTests(TestCase):
+    def test_valid_vcs_urls(self):
+        valid_urls = [
+            "git://github.com/example/repo.git",
+            "https://github.com/example/repo.git",
+            "git@github.com:example/repo.git",
+            "github:user/repo",
+        ]
+        for url in valid_urls:
+            with self.subTest(url=url):
+                self.assertTrue(is_vcs_url(url))
+
+    def test_invalid_vcs_urls(self):
+        invalid_urls = ["http://example.com", "ftp://example.com/repo", "random-string"]
+        for url in invalid_urls:
+            with self.subTest(url=url):
+                self.assertFalse(is_vcs_url(url))
 
 
-class MockPackage:
-    def __init__(self, purl):
-        self.purl = purl
+class NormalizeVCSURLTests(TestCase):
+    def test_normalize_valid_vcs_urls(self):
+        self.assertEqual(
+            normalize_vcs_url("git@github.com:user/repo.git"), "https://github.com/user/repo.git"
+        )
+        self.assertEqual(normalize_vcs_url("github:user/repo"), "https://github.com/user/repo")
+        self.assertEqual(
+            normalize_vcs_url("https://github.com/user/repo.git"),
+            "https://github.com/user/repo.git",
+        )
 
 
-# --- Tests for Utility Functions ---
-@patch("vulnerabilities.models.CodeFix.objects.filter")
-def test_reference_already_processed_true(mock_filter):
-    mock_filter.return_value.exists.return_value = True
-    result = is_vcs_url_already_processed("http://example.com", "commit123")
-    assert result is True
-    mock_filter.assert_called_once_with(
-        references__contains=["http://example.com"], commits__contains=["commit123"]
-    )
+class IsVCSURLAlreadyProcessedTests(TestCase):
+    def setUp(self):
+        self.vulnerability = Vulnerability.objects.create(vulnerability_id="VCID-5678")
+        package = Package.objects.create(type="npm", namespace="abc", name="def", version="1")
+        self.affected_by_vuln = AffectedByPackageRelatedVulnerability.objects.create(
+            package=package, vulnerability=self.vulnerability
+        )
+        self.code_fix = CodeFix.objects.create(
+            commits=["https://github.com/example/repo/commit/commit1"],
+            affected_package_vulnerability=self.affected_by_vuln,
+        )
 
+    def test_commit_already_processed(self):
+        self.assertTrue(
+            is_vcs_url_already_processed("https://github.com/example/repo/commit/commit1")
+        )
 
-@patch("vulnerabilities.models.CodeFix.objects.filter")
-def test_reference_already_processed_false(mock_filter):
-    mock_filter.return_value.exists.return_value = False
-    result = is_vcs_url_already_processed("http://example.com", "commit123")
-    assert result is False
-
-
-# --- Tests for normalize_vcs_url ---
-def test_normalize_plain_url():
-    url = normalize_vcs_url("https://github.com/user/repo.git")
-    assert url == "https://github.com/user/repo.git"
-
-
-def test_normalize_git_ssh_url():
-    url = normalize_vcs_url("git@github.com:user/repo.git")
-    assert url == "https://github.com/user/repo.git"
-
-
-def test_normalize_implicit_github():
-    url = normalize_vcs_url("user/repo")
-    assert url == "https://github.com/user/repo"
-
-
-# --- Tests for CollectFixCommitsPipeline ---
-@patch("vulnerabilities.models.VulnerabilityReference.objects.prefetch_related")
-@patch("vulnerabilities.pipelines.collect_commits.CollectFixCommitsPipeline.get_or_create_package")
-@patch("vulnerabilities.pipelines.collect_commits.is_reference_already_processed")
-@patch("vulnerabilities.pipelines.collect_commits.url2purl")
-def test_collect_and_store_fix_commits(
-    mock_url2purl, mock_is_processed, mock_get_package, mock_prefetch
-):
-    mock_vuln = MockVulnerability(id=1)
-    mock_reference = MockReference(url="http://example.com", vulnerabilities=[mock_vuln])
-    mock_prefetch.return_value.distinct.return_value.paginated.return_value = [mock_reference]
-    mock_url2purl.return_value = "pkg:example/package@1.0.0"
-    mock_is_processed.return_value = False
-    mock_get_package.return_value = MockPackage(purl="pkg:example/package@1.0.0")
-
-    pipeline = CollectFixCommitsPipeline()
-    pipeline.log = lambda msg: None
-    pipeline.collect_and_store_fix_commits()
-
-    mock_is_processed.assert_called_once_with("http://example.com", "pkg:example/package@1.0.0")
-    mock_get_package.assert_called_once_with("pkg:example/package@1.0.0")
-
-
-@patch("vulnerabilities.pipelines.collect_commits.CollectFixCommitsPipeline.get_or_create_package")
-def test_get_or_create_package_success(mock_get_or_create):
-    mock_get_or_create.return_value = (MockPackage(purl="pkg:example/package@1.0.0"), True)
-    pipeline = CollectFixCommitsPipeline()
-    package = pipeline.get_or_create_package("pkg:example/package@1.0.0")
-    assert package.purl == "pkg:example/package@1.0.0"
-
-
-@patch("vulnerabilities.pipelines.collect_commits.CollectFixCommitsPipeline.get_or_create_package")
-def test_get_or_create_package_failure(mock_get_or_create):
-    mock_get_or_create.side_effect = Exception("Error")
-    pipeline = CollectFixCommitsPipeline()
-    logs = []
-    pipeline.log = lambda msg: logs.append(msg)
-    result = pipeline.get_or_create_package("pkg:example/package@1.0.0")
-    assert result is None
-    assert len(logs) == 1
-
-
-@patch("vulnerabilities.models.CodeFix.objects.get_or_create")
-def test_create_codefix_entry_success(mock_get_or_create):
-    mock_get_or_create.return_value = (CodeFix(), True)
-    pipeline = CollectFixCommitsPipeline()
-    result = pipeline.create_codefix_entry(
-        MockVulnerability(1),
-        MockPackage("pkg:example/package@1.0.0"),
-        "http://example.com",
-        "http://reference",
-    )
-    assert result is not None
-    mock_get_or_create.assert_called_once()
-
-
-@patch("vulnerabilities.models.CodeFix.objects.get_or_create")
-def test_create_codefix_entry_failure(mock_get_or_create):
-    mock_get_or_create.side_effect = Exception("Error")
-    pipeline = CollectFixCommitsPipeline()
-    logs = []
-    pipeline.log = lambda msg: logs.append(msg)
-    result = pipeline.create_codefix_entry(
-        MockVulnerability(1),
-        MockPackage("pkg:example/package@1.0.0"),
-        "http://example.com",
-        "http://reference",
-    )
-    assert result is None
-    assert len(logs) == 1
+    def test_commit_not_processed(self):
+        self.assertFalse(
+            is_vcs_url_already_processed("https://github.com/example/repo/commit/commit2")
+        )

@@ -21,6 +21,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
+from vulnerabilities.models import CodeFix
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -198,14 +199,25 @@ class PackageV2Serializer(serializers.ModelSerializer):
         Return a dictionary with vulnerabilities as keys and their details, including fixed_by_packages.
         """
         result = {}
+        request = self.context.get("request")
         for vuln in getattr(obj, "prefetched_affected_vulnerabilities", []):
             fixed_by_package = vuln.fixed_by_packages.first()
             purl = None
             if fixed_by_package:
                 purl = fixed_by_package.package_url
+            # Get code fixed for a vulnerability
+            code_fixes = CodeFix.objects.filter(
+                affected_package_vulnerability__vulnerability=vuln
+            ).distinct()
+            code_fix_urls = [
+                reverse("codefix-detail", args=[code_fix.id], request=request)
+                for code_fix in code_fixes
+            ]
+
             result[vuln.vulnerability_id] = {
                 "vulnerability_id": vuln.vulnerability_id,
                 "fixed_by_packages": purl,
+                "code_fixes": code_fix_urls,
             }
         return result
 
@@ -521,3 +533,81 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
         qs = self.get_queryset().for_purls([purl]).with_is_vulnerable()
         return Response(PackageV2Serializer(qs, many=True, context={"request": request}).data)
+
+
+from rest_framework import serializers
+
+from vulnerabilities.models import CodeFix
+
+
+class CodeFixSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the CodeFix model.
+    Provides detailed information about a code fix.
+    """
+
+    affected_vulnerability_id = serializers.CharField(
+        source="affected_package_vulnerability.vulnerability.vulnerability_id",
+        read_only=True,
+        help_text="ID of the affected vulnerability.",
+    )
+    affected_package_purl = serializers.CharField(
+        source="affected_package_vulnerability.package.package_url",
+        read_only=True,
+        help_text="PURL of the affected package.",
+    )
+    fixed_package_purl = serializers.CharField(
+        source="fixed_package_vulnerability.package.package_url",
+        read_only=True,
+        help_text="PURL of the fixing package (if available).",
+    )
+    created_at = serializers.DateTimeField(
+        format="%Y-%m-%dT%H:%M:%SZ",
+        read_only=True,
+        help_text="Timestamp when the code fix was created.",
+    )
+    updated_at = serializers.DateTimeField(
+        format="%Y-%m-%dT%H:%M:%SZ",
+        read_only=True,
+        help_text="Timestamp when the code fix was last updated.",
+    )
+
+    class Meta:
+        model = CodeFix
+        fields = [
+            "id",
+            "commits",
+            "pulls",
+            "downloads",
+            "patch",
+            "affected_vulnerability_id",
+            "affected_package_purl",
+            "fixed_package_purl",
+            "notes",
+            "references",
+            "is_reviewed",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["created_at", "updated_at"]
+
+
+class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows viewing CodeFix entries.
+    """
+
+    queryset = CodeFix.objects.all()
+    serializer_class = CodeFixSerializer
+
+    def get_queryset(self):
+        """
+        Optionally filter by vulnerability ID.
+        """
+        queryset = super().get_queryset()
+        vulnerability_id = self.request.query_params.get("vulnerability_id")
+        if vulnerability_id:
+            queryset = queryset.filter(
+                affected_package_vulnerability__vulnerability__vulnerability_id=vulnerability_id
+            )
+        return queryset

@@ -1101,6 +1101,8 @@ class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
         related_name="affected_package_vulnerability_relations",
     )
 
+    objects = BaseQuerySet.as_manager()
+
     class Meta(PackageRelatedVulnerabilityBase.Meta):
         verbose_name_plural = "Affected By Package Related Vulnerabilities"
 

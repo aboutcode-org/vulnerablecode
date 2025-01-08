@@ -20,8 +20,7 @@ def is_vcs_url_already_processed(commit_id):
     """
     Check if a VCS URL exists in a CodeFix entry.
     """
-    if "commit" in commit_id:
-        return CodeFix.objects.filter(commits__contains=[commit_id]).exists()
+    return CodeFix.objects.filter(commits__contains=[commit_id]).exists()
 
 
 class CollectFixCommitsPipeline(VulnerableCodePipeline):
@@ -57,6 +56,8 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
         ):
             vulnerability = apv.vulnerability
             for reference in vulnerability.references.all():
+                if not "/commit/" in reference.url:
+                    continue
                 if not is_vcs_url(reference.url):
                     continue
 
@@ -72,17 +73,16 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
                     )
                     continue
                 # check if vcs_url has commit
-                if "/commit/" in vcs_url:
-                    code_fix, created = CodeFix.objects.get_or_create(
-                        commits=[vcs_url],
-                        affected_package_vulnerability=apv,
-                    )
+                code_fix, created = CodeFix.objects.get_or_create(
+                    commits=[vcs_url],
+                    affected_package_vulnerability=apv,
+                )
 
-                    if created:
-                        created_fix_count += 1
-                        self.log(
-                            f"Created CodeFix entry for reference: {reference.url} with VCS URL {vcs_url}"
-                        )
+                if created:
+                    created_fix_count += 1
+                    self.log(
+                        f"Created CodeFix entry for reference: {reference.url} with VCS URL {vcs_url}"
+                    )
 
         self.log(f"Successfully created {created_fix_count:,d} CodeFix entries.")
 

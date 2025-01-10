@@ -1101,6 +1101,8 @@ class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
         related_name="affected_package_vulnerability_relations",
     )
 
+    objects = BaseQuerySet.as_manager()
+
     class Meta(PackageRelatedVulnerabilityBase.Meta):
         verbose_name_plural = "Affected By Package Related Vulnerabilities"
 
@@ -1581,3 +1583,81 @@ class Exploit(models.Model):
     @property
     def get_known_ransomware_campaign_use_type(self):
         return "Known" if self.known_ransomware_campaign_use else "Unknown"
+
+
+class CodeChange(models.Model):
+    """
+    Abstract base model representing a change in code, either introducing or fixing a vulnerability.
+    This includes details about commits, patches, and related metadata.
+
+    We are tracking commits, pulls and downloads as references to the code change. The goal is to
+    keep track and store the actual code patch in the ``patch`` field. When not available the patch
+    will be inferred from these references using improvers.
+    """
+
+    commits = models.JSONField(
+        blank=True,
+        default=list,
+        help_text="List of commit identifiers using VCS URLs associated with the code change.",
+    )
+    pulls = models.JSONField(
+        blank=True,
+        default=list,
+        help_text="List of pull request URLs associated with the code change.",
+    )
+    downloads = models.JSONField(
+        blank=True, default=list, help_text="List of download URLs for the patched code."
+    )
+    patch = models.TextField(
+        blank=True, null=True, help_text="The code change as a patch in unified diff format."
+    )
+    base_package_version = models.ForeignKey(
+        "Package",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="codechanges",
+        help_text="The base package version to which this code change applies.",
+    )
+    notes = models.TextField(
+        blank=True, null=True, help_text="Notes or instructions about this code change."
+    )
+    references = models.JSONField(
+        blank=True, default=list, help_text="URL references related to this code change."
+    )
+    is_reviewed = models.BooleanField(
+        default=False, help_text="Indicates if this code change has been reviewed."
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True, help_text="Timestamp indicating when this code change was created."
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True, help_text="Timestamp indicating when this code change was last updated."
+    )
+
+    class Meta:
+        abstract = True
+
+
+class CodeFix(CodeChange):
+    """
+    A code fix is a code change that addresses a vulnerability and is associated:
+    - with a specific affected package version
+    - optionally with a specific fixing package version when it is known
+    """
+
+    affected_package_vulnerability = models.ForeignKey(
+        "AffectedByPackageRelatedVulnerability",
+        on_delete=models.CASCADE,
+        related_name="code_fix",
+        help_text="The affected package version to which this code fix applies.",
+    )
+
+    fixed_package_vulnerability = models.ForeignKey(
+        "FixingPackageRelatedVulnerability",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="code_fix",
+        help_text="The fixing package version with this code fix",
+    )

@@ -216,7 +216,7 @@ class PackageV2ViewSetTest(APITestCase):
         Should return a list of packages with their details and associated vulnerabilities.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(31):
+        with self.assertNumQueries(32):
             response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -238,7 +238,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by one or more PURLs.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(19):
+        with self.assertNumQueries(20):
             response = self.client.get(url, {"purl": "pkg:pypi/django@3.2"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["packages"]), 1)
@@ -249,7 +249,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by affected_by_vulnerability.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(19):
+        with self.assertNumQueries(20):
             response = self.client.get(
                 url, {"affected_by_vulnerability": "VCID-1234"}, format="json"
             )
@@ -308,7 +308,11 @@ class PackageV2ViewSetTest(APITestCase):
 
         # Verify affected_by_vulnerabilities structure
         expected_affected_by_vulnerabilities = {
-            "VCID-1234": {"vulnerability_id": "VCID-1234", "fixed_by_packages": None}
+            "VCID-1234": {
+                "code_fixes": [],
+                "vulnerability_id": "VCID-1234",
+                "fixed_by_packages": None,
+            }
         }
         self.assertEqual(data["affected_by_vulnerabilities"], expected_affected_by_vulnerabilities)
 
@@ -387,7 +391,13 @@ class PackageV2ViewSetTest(APITestCase):
         vulnerabilities = serializer.get_affected_by_vulnerabilities(package)
         self.assertEqual(
             vulnerabilities,
-            {"VCID-1234": {"vulnerability_id": "VCID-1234", "fixed_by_packages": None}},
+            {
+                "VCID-1234": {
+                    "code_fixes": [],
+                    "vulnerability_id": "VCID-1234",
+                    "fixed_by_packages": None,
+                }
+            },
         )
 
     def test_get_fixing_vulnerabilities(self):
@@ -591,7 +601,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-lookup")
         data = {"purl": "pkg:pypi/django@3.2"}
-        with self.assertNumQueries(12):
+        with self.assertNumQueries(13):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(1, len(response.data))
@@ -603,7 +613,13 @@ class PackageV2ViewSetTest(APITestCase):
         self.assertEqual(response.data[0]["purl"], "pkg:pypi/django@3.2")
         self.assertEqual(
             response.data[0]["affected_by_vulnerabilities"],
-            {"VCID-1234": {"vulnerability_id": "VCID-1234", "fixed_by_packages": None}},
+            {
+                "VCID-1234": {
+                    "code_fixes": [],
+                    "vulnerability_id": "VCID-1234",
+                    "fixed_by_packages": None,
+                }
+            },
         )
         self.assertEqual(response.data[0]["fixing_vulnerabilities"], [])
 

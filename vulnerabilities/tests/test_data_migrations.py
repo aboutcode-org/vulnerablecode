@@ -884,8 +884,8 @@ class TestUpdatePysecAdvisoryCreatedByField(TestMigrations):
 
 class TestUpdateAlpineAdvisoryCreatedByField(TestMigrations):
     app_name = "vulnerabilities"
-    migrate_from = "0085_alter_package_is_ghost_alter_package_version_rank_and_more"
-    migrate_to = "0086_update_alpine_advisory_created_by"
+    migrate_from = "0086_codefix"
+    migrate_to = "0087_update_alpine_advisory_created_by"
 
     advisory_data1 = AdvisoryData(
         aliases=["CVE-2020-13371337"],

@@ -210,8 +210,14 @@ class CveItem:
         base_metric_v3 = impact.get("baseMetricV3") or {}
         if base_metric_v3:
             cvss_v3 = get_item(base_metric_v3, "cvssV3")
+            version = cvss_v3.get("version")
+            system = None
+            if version == "3.1":
+                system = severity_systems.CVSSV31
+            else:
+                system = severity_systems.CVSSV3
             vs = VulnerabilitySeverity(
-                system=severity_systems.CVSSV3,
+                system=system,
                 value=str(cvss_v3.get("baseScore") or ""),
                 scoring_elements=str(cvss_v3.get("vectorString") or ""),
             )

@@ -36,8 +36,8 @@ def test_process_record():
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={
@@ -52,8 +52,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "armhf", "distroversion": "v3.11", "reponame": "main"},
@@ -64,8 +64,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "armv7", "distroversion": "v3.11", "reponame": "main"},
@@ -76,8 +76,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={
@@ -92,8 +92,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "s390x", "distroversion": "v3.11", "reponame": "main"},
@@ -104,8 +104,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "x86", "distroversion": "v3.11", "reponame": "main"},
@@ -116,8 +116,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
@@ -143,8 +143,8 @@ def test_process_record():
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={
@@ -159,8 +159,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "armhf", "distroversion": "v3.11", "reponame": "main"},
@@ -171,8 +171,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "armv7", "distroversion": "v3.11", "reponame": "main"},
@@ -183,8 +183,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={
@@ -199,8 +199,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "s390x", "distroversion": "v3.11", "reponame": "main"},
@@ -211,8 +211,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "x86", "distroversion": "v3.11", "reponame": "main"},
@@ -223,8 +223,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
@@ -250,8 +250,8 @@ def test_process_record():
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={
@@ -266,8 +266,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "armhf", "distroversion": "v3.11", "reponame": "main"},
@@ -278,8 +278,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "armv7", "distroversion": "v3.11", "reponame": "main"},
@@ -290,8 +290,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={
@@ -306,8 +306,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "s390x", "distroversion": "v3.11", "reponame": "main"},
@@ -318,8 +318,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "x86", "distroversion": "v3.11", "reponame": "main"},
@@ -330,8 +330,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
@@ -351,8 +351,8 @@ def test_process_record():
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={
@@ -367,8 +367,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "armhf", "distroversion": "v3.11", "reponame": "main"},
@@ -379,8 +379,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "armv7", "distroversion": "v3.11", "reponame": "main"},
@@ -391,8 +391,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={
@@ -407,8 +407,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "s390x", "distroversion": "v3.11", "reponame": "main"},
@@ -419,8 +419,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "x86", "distroversion": "v3.11", "reponame": "main"},
@@ -431,8 +431,8 @@ def test_process_record():
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},

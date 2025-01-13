@@ -189,6 +189,8 @@ class VulnerabilitySeverity(models.Model):
         blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
     )
 
+    objects = BaseQuerySet.as_manager()
+
     class Meta:
         ordering = ["url", "scoring_system", "value"]
 

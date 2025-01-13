@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
-from datetime import datetime
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
@@ -34,6 +33,7 @@ from vulnerabilities.models import VulnerabilityStatusType
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_severity_range
+from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
@@ -256,6 +256,7 @@ class HomePage(View):
         context = {
             "vulnerability_search_form": VulnerabilitySearchForm(request_query),
             "package_search_form": PackageSearchForm(request_query),
+            "release_url": f"https://github.com/aboutcode-org/vulnerablecode/releases/tag/v{VULNERABLECODE_VERSION}",
         }
         return render(request=request, template_name=self.template_name, context=context)
 

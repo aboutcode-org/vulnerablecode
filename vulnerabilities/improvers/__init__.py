@@ -10,6 +10,7 @@
 from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipelines import add_cvss31_to_CVEs
 from vulnerabilities.pipelines import collect_commits
 from vulnerabilities.pipelines import compute_package_risk
 from vulnerabilities.pipelines import compute_package_version_rank
@@ -17,7 +18,6 @@ from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
 from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
-from vulnerabilities.pipelines import add_cvss31_to_CVEs
 
 IMPROVERS_REGISTRY = [
     valid_versions.GitHubBasicImprover,

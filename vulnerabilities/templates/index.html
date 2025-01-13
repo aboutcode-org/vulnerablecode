@@ -8,8 +8,18 @@ VulnerableCode Home
 {% block content %}
 <section class="section pt-2">
     <div class="container">
+        <div class="columns is-centered mb-5 mt-2">
+            <div class="column is-full-tablet is-full-desktop">
+                {% include "vulnerability_search_box.html" %}
+            </div>
+        </div>
+        <div class="columns is-centered mb-5">
+            <div class="column is-full-tablet is-full-desktop">
+                {% include "package_search_box.html" %}
+            </div>
+        </div>
         <div class="notification is-info is-light has-text-centered">
-            <p class="is-size-5 has-text-grey-dark has-text-centered mb-2">
+            <p class="is-size-6 has-text-grey-dark has-text-centered mb-3">
                 <strong>VulnerableCode</strong> aggregates software
                 vulnerabilities from multiple public advisory sources
                 and presents their details along with their affected
@@ -22,16 +32,6 @@ VulnerableCode Home
                     Check out latest updates here!
                 </a>
             </p>
-        </div>
-        <div class="columns is-centered mb-5 mt-2">
-            <div class="column is-full-tablet is-full-desktop">
-                {% include "vulnerability_search_box.html" %}
-            </div>
-        </div>
-        <div class="columns is-centered mb-5">
-            <div class="column is-full-tablet is-full-desktop">
-                {% include "package_search_box.html" %}
-            </div>
         </div>
     </div>
 </section>

@@ -880,3 +880,45 @@ class TestUpdatePysecAdvisoryCreatedByField(TestMigrations):
 
         assert adv.filter(created_by="vulnerabilities.importers.pysec.PyPIImporter").count() == 0
         assert adv.filter(created_by="pysec_importer").count() == 1
+
+
+class TestUpdateAlpineAdvisoryCreatedByField(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0086_codefix"
+    migrate_to = "0087_update_alpine_advisory_created_by"
+
+    advisory_data1 = AdvisoryData(
+        aliases=["CVE-2020-13371337"],
+        summary="vulnerability description here",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="pypi", name="foobar"),
+                affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+            )
+        ],
+        references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+        date_published=timezone.now(),
+        url="https://test.com",
+    )
+
+    def setUpBeforeMigration(self, apps):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv1 = Advisory.objects.create(
+            aliases=self.advisory_data1.aliases,
+            summary=self.advisory_data1.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data1.references],
+            url=self.advisory_data1.url,
+            created_by="vulnerabilities.importers.alpine_linux.AlpineImporter",
+            date_collected=timezone.now(),
+        )
+
+    def test_update_pysec_created_by_field(self):
+        Advisory = apps.get_model("vulnerabilities", "Advisory")
+        adv = Advisory.objects.all()
+
+        assert (
+            adv.filter(created_by="vulnerabilities.importers.alpine_linux.AlpineImporter").count()
+            == 0
+        )
+        assert adv.filter(created_by="alpine_linux_importer").count() == 1

@@ -1,13 +1,19 @@
 import logging
-import requests
 import xml.etree.ElementTree as ET
+
 import pytz
+import requests
 from dateutil.parser import parse
 from packageurl import PackageURL
-from vulnerabilities.importer import AdvisoryData, AffectedPackage, Importer, Reference
 from univers.version_range import MavenVersionRange
 
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Importer
+from vulnerabilities.importer import Reference
+
 logger = logging.getLogger(__name__)
+
 
 class ApacheLog4jImporter(Importer):
     XML_URL = "https://logging.apache.org/cyclonedx/vdr.xml"
@@ -63,39 +69,88 @@ class ApacheLog4jImporter(Importer):
         """
         advisories = []
         version_mapping = [
-            '2.0-beta1', '2.0-beta2', '2.0-beta3', '2.0-beta5', '2.0-alpha1', '2.0-beta7',
-            '2.0-beta8', '2.0-beta9', '2.0-rc1', '2.0-beta4', '2.0-beta6', '2.0-rc2', 
-            '2.0', '2.0.1', '2.0.2', '2.1', '2.2', '2.3', '2.3.1', '2.3.2', '2.4', '2.4.1',
-            '2.5', '2.6', '2.6.1', '2.6.2', '2.7', '2.8', '2.8.1', '2.8.2', '2.9.0', '2.9.1',
-            '2.10.0', '2.11.0', '2.11.1', '2.11.2', '2.12.0', '2.12.1', '2.12.2', '2.12.3', 
-            '2.12.4', '2.13.0', '2.13.1', '2.13.2', '2.13.3', '2.14.0', '2.14.1', '2.15.0', 
-            '2.15.1', '2.16.0', '2.17.0', '2.17.1'
+            "2.0-beta1",
+            "2.0-beta2",
+            "2.0-beta3",
+            "2.0-beta5",
+            "2.0-alpha1",
+            "2.0-beta7",
+            "2.0-beta8",
+            "2.0-beta9",
+            "2.0-rc1",
+            "2.0-beta4",
+            "2.0-beta6",
+            "2.0-rc2",
+            "2.0",
+            "2.0.1",
+            "2.0.2",
+            "2.1",
+            "2.2",
+            "2.3",
+            "2.3.1",
+            "2.3.2",
+            "2.4",
+            "2.4.1",
+            "2.5",
+            "2.6",
+            "2.6.1",
+            "2.6.2",
+            "2.7",
+            "2.8",
+            "2.8.1",
+            "2.8.2",
+            "2.9.0",
+            "2.9.1",
+            "2.10.0",
+            "2.11.0",
+            "2.11.1",
+            "2.11.2",
+            "2.12.0",
+            "2.12.1",
+            "2.12.2",
+            "2.12.3",
+            "2.12.4",
+            "2.13.0",
+            "2.13.1",
+            "2.13.2",
+            "2.13.3",
+            "2.14.0",
+            "2.14.1",
+            "2.15.0",
+            "2.15.1",
+            "2.16.0",
+            "2.17.0",
+            "2.17.1",
         ]
 
         try:
             root = ET.fromstring(xml_content)
-            ns = {'ns0': 'http://cyclonedx.org/schema/bom/1.5'}
-            vulnerabilities = root.findall('.//ns0:vulnerability', ns)
+            ns = {"ns0": "http://cyclonedx.org/schema/bom/1.5"}
+            vulnerabilities = root.findall(".//ns0:vulnerability", ns)
 
             for vuln in vulnerabilities:
-                cve_id = vuln.find('./ns0:id', ns)
+                cve_id = vuln.find("./ns0:id", ns)
                 if cve_id is None or not cve_id.text:
                     continue
                 cve_id = cve_id.text.strip()
 
-                description = vuln.find('./ns0:description', ns)
+                description = vuln.find("./ns0:description", ns)
                 description_text = description.text.strip() if description is not None else ""
 
-                published_date_text = vuln.find('./ns0:published', ns)
+                published_date_text = vuln.find("./ns0:published", ns)
                 date_published = None
                 if published_date_text is not None and published_date_text.text:
                     try:
-                        date_published = parse(published_date_text.text.strip()).replace(tzinfo=pytz.UTC)
+                        date_published = parse(published_date_text.text.strip()).replace(
+                            tzinfo=pytz.UTC
+                        )
                     except ValueError as e:
                         logger.error(f"Error parsing date {published_date_text.text}: {e}")
 
                 references = [
-                    Reference(url=f"https://nvd.nist.gov/vuln/detail/{cve_id}", reference_id=cve_id),
+                    Reference(
+                        url=f"https://nvd.nist.gov/vuln/detail/{cve_id}", reference_id=cve_id
+                    ),
                     Reference(url=f"{self.ASF_PAGE_URL}#{cve_id}", reference_id=cve_id),
                 ]
 
@@ -120,43 +175,55 @@ class ApacheLog4jImporter(Importer):
         """
         Extract affected packages from the vulnerability element.
         """
-        ns = {'ns0': 'http://cyclonedx.org/schema/bom/1.5'}
+        ns = {"ns0": "http://cyclonedx.org/schema/bom/1.5"}
         affected_packages = []
 
-        recommendation = vuln.find('.//ns0:recommendation', ns)
+        recommendation = vuln.find(".//ns0:recommendation", ns)
         fixed_versions = []
         if recommendation is not None and recommendation.text:
-            fixed_versions = [v.strip('`') for v in recommendation.text.split('`') 
-                              if v.strip().replace('.', '').replace('-', '').isalnum()]
+            fixed_versions = [
+                v.strip("`")
+                for v in recommendation.text.split("`")
+                if v.strip().replace(".", "").replace("-", "").isalnum()
+            ]
 
-        targets = vuln.findall('.//ns0:target', ns)
+        targets = vuln.findall(".//ns0:target", ns)
         for target in targets:
-            ref = target.find('./ns0:ref', ns)
+            ref = target.find("./ns0:ref", ns)
             if ref is None or not ref.text:
                 continue
 
-            version_ranges = target.findall('./ns0:versions/ns0:version/ns0:range', ns)
+            version_ranges = target.findall("./ns0:versions/ns0:version/ns0:range", ns)
             for version_range in version_ranges:
                 if version_range is None or not version_range.text:
                     continue
 
                 start_version, end_version = self.parse_version_range(version_range.text.strip())
-                if start_version and end_version:
-                    affected_versions = self.get_versions_in_range(start_version, end_version, version_mapping)
+                if not start_version or not end_version:
+                    continue
 
-                    fixed_version = self.get_fixed_version(fixed_versions, end_version, version_mapping)
+                affected_versions = self.get_versions_in_range(
+                    start_version, end_version, version_mapping
+                )
+                if not affected_versions:
+                    continue
 
-                    if fixed_version and affected_versions:
-                        for affected_version in affected_versions:
-                            affected_package = AffectedPackage(
-                                package=PackageURL(
-                                    type="apache",
-                                    name="log4j-core",
-                                ),
-                                affected_version_range=MavenVersionRange.from_string(f"vers:maven/{affected_version}"),
-                                fixed_version=fixed_version
-                            )
-                            affected_packages.append(affected_package)
+                fixed_version = self.get_fixed_version(fixed_versions, end_version, version_mapping)
+                if not fixed_version:
+                    continue
+
+                for affected_version in affected_versions:
+                    affected_package = AffectedPackage(
+                        package=PackageURL(
+                            type="apache",
+                            name="log4j-core",
+                        ),
+                        affected_version_range=MavenVersionRange.from_string(
+                            f"vers:maven/{affected_version}"
+                        ),
+                        fixed_version=fixed_version,
+                    )
+                    affected_packages.append(affected_package)
 
         return affected_packages
 
@@ -166,7 +233,9 @@ class ApacheLog4jImporter(Importer):
         Get the fixed version from the list of fixed versions.
         """
         for fix_ver in fixed_versions:
-            if fix_ver in version_mapping and version_mapping.index(fix_ver) >= version_mapping.index(end_version):
+            if fix_ver in version_mapping and version_mapping.index(
+                fix_ver
+            ) >= version_mapping.index(end_version):
                 return fix_ver
         return None
 
@@ -178,6 +247,6 @@ class ApacheLog4jImporter(Importer):
         if not xml_content:
             logger.error("No XML content fetched.")
             return []
-        
+
         advisories = self.to_advisory(xml_content)
         return advisories

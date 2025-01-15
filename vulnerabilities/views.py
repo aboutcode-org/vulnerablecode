@@ -169,13 +169,13 @@ class VulnerabilityDetails(DetailView):
                 "exploits",
                 Prefetch(
                     "affecting_packages",
-                    queryset=models.Vulnerability.objects.only(
+                    queryset=models.Package.objects.only(
                         "type", "namespace", "name", "version"
                     ),
                 ),
                 Prefetch(
                     "fixed_by_packages",
-                    queryset=models.Vulnerability.objects.only(
+                    queryset=models.Package.objects.only(
                         "type", "namespace", "name", "version"
                     ),
                 ),
@@ -195,15 +195,6 @@ class VulnerabilityDetails(DetailView):
             weakness_object for weakness_object in vulnerability.weaknesses.all()
             if weakness_object.weakness
         ]
-        
-        # Cache aggregated packages
-        (
-            sorted_fixed_by_packages,
-            sorted_affected_packages,
-            all_affected_fixed_by_matches,
-        ) = vulnerability.aggregate_fixed_and_affected_packages()
-        
-        severity_vectors, severity_values = self.get_severity_vectors_and_values(vulnerability)
 
         context.update(
             {
@@ -211,51 +202,14 @@ class VulnerabilityDetails(DetailView):
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
                 "severities": list(vulnerability.severities.all()),
                 "severity_score_range": "",
-                "severity_vectors": severity_vectors,
                 "references": list(vulnerability.references.all()),
                 "aliases": list(vulnerability.aliases.all()),
-                "affected_packages": sorted_affected_packages,
-                "fixed_by_packages": sorted_fixed_by_packages,
                 "weaknesses": weaknesses_present_in_db,
                 "status": vulnerability.get_status_label,
                 "history": vulnerability.history,
-                "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
             }
         )
         return context
-
-    def get_severity_vectors_and_values(self, vulnerability):
-        """
-        Collect severity vectors and values, excluding EPSS scoring systems efficiently.
-        """
-        severity_vectors = []
-        severity_values = set()
-        
-        # Use prefetch data if available
-        valid_scoring_severities = getattr(vulnerability, "prefetched_valid_severities", [])
-        
-        for severity in valid_scoring_severities:
-            try:
-                vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
-                    severity.scoring_elements
-                )
-                if vector_values:
-                    severity_vectors.append(vector_values)
-            except (
-                CVSS2MalformedError,
-                CVSS3MalformedError,
-                CVSS4MalformedError,
-                NotImplementedError,
-            ) as e:
-                logging.error(f"CVSSMalformedError for {severity.scoring_elements}: {e}")
-        
-        # Collect valid values using a pre-filtered queryset
-        severity_values.update(
-            vulnerability.severities.exclude(value__isnull=True).exclude(value="").values_list("value", flat=True)
-        )
-
-        return severity_vectors, severity_values
-
 
 class HomePage(View):
     template_name = "index.html"
@@ -325,3 +279,52 @@ class ApiUserCreateView(generic.CreateView):
 
     def get_success_url(self):
         return reverse_lazy("api_user_request")
+
+
+class VulnerabilityPackagesDetails(DetailView):
+    """
+    View to display all packages affected by or fixing a specific vulnerability.
+    URL: /vulnerabilities/{vulnerability_id}/packages
+    """
+
+    model = models.Vulnerability
+    template_name = "vulnerability_package_details.html"
+    slug_url_kwarg = "vulnerability_id"
+    slug_field = "vulnerability_id"
+
+    def get_queryset(self):
+        """
+        Prefetch and optimize related data to minimize database hits.
+        """
+        return super().get_queryset().prefetch_related(
+            Prefetch(
+                    "affecting_packages",
+                    queryset=models.Package.objects.only(
+                        "type", "namespace", "name", "version"
+                    ),
+                ),
+                Prefetch(
+                    "fixed_by_packages",
+                    queryset=models.Package.objects.only(
+                        "type", "namespace", "name", "version"
+                    ),
+                ),
+        )
+
+    def get_context_data(self, **kwargs):
+        """
+        Build context with preloaded QuerySets and minimize redundant queries.
+        """
+        context = super().get_context_data(**kwargs)
+        vulnerability = self.object
+        (
+            sorted_fixed_by_packages,
+            sorted_affected_packages,
+            all_affected_fixed_by_matches,
+        ) = vulnerability.aggregate_fixed_and_affected_packages()
+        context.update({
+            "affected_packages": sorted_affected_packages,
+            "fixed_by_packages": sorted_fixed_by_packages,
+            "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
+        })
+        return context

@@ -9,6 +9,7 @@
 
 from vulnerabilities.importers import apache_httpd
 from vulnerabilities.importers import apache_kafka
+from vulnerabilities.importers import apache_log4j
 from vulnerabilities.importers import apache_tomcat
 from vulnerabilities.importers import archlinux
 from vulnerabilities.importers import curl
@@ -60,6 +61,7 @@ IMPORTERS_REGISTRY = [
     suse_scores.SUSESeverityScoreImporter,
     elixir_security.ElixirSecurityImporter,
     apache_tomcat.ApacheTomcatImporter,
+    apache_log4j.ApacheLog4jImporter,
     xen.XenImporter,
     ubuntu_usn.UbuntuUSNImporter,
     fireeye.FireyeImporter,

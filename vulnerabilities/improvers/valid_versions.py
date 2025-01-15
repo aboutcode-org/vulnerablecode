@@ -27,6 +27,7 @@ from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
+from vulnerabilities.importers.apache_log4j import ApacheLog4jImporter
 from vulnerabilities.importers.curl import CurlImporter
 from vulnerabilities.importers.debian import DebianImporter
 from vulnerabilities.importers.debian_oval import DebianOvalImporter
@@ -480,4 +481,9 @@ class GithubOSVImprover(ValidVersionImprover):
 
 class CurlImprover(ValidVersionImprover):
     importer = CurlImporter
+    ignorable_versions = []
+
+
+class Log4jImprover(ValidVersionImprover):
+    importer = ApacheLog4jImporter
     ignorable_versions = []

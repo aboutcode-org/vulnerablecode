@@ -1,5 +1,4 @@
-name: run tests
-
+name: CI Pipeline
 on: [push, pull_request]
 
 env:
@@ -8,6 +7,7 @@ env:
   DB_PASSWORD: vulnerablecode
 
 jobs:
+  # Original test job
   build:
     runs-on: ubuntu-20.04
 
@@ -56,3 +56,38 @@ jobs:
           VULNERABLECODE_DB_NAME: ${{ env.DB_NAME }}
           VULNERABLECODE_DB_USER: ${{ env.DB_USER }}
           VULNERABLECODE_DB_PASSWORD: ${{ env.DB_PASSWORD }}
+
+
+
+  # New job for Docker-based tests
+  docker-tests:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        run: docker compose build --no-cache
+
+      - name: Run Tests in Docker Container
+        run: |
+          docker compose up -d 
+          docker compose exec vulnerablecode sh -c "
+           python3 -m venv venv &&
+           chmod +x venv &&
+           . venv/bin/activate &&
+           pip install -r requirements.txt &&
+           make test && "
+        env:
+          GH_TOKEN: 1 
+          POSTGRES_HOST: vulnerablecode-db
+          POSTGRES_PORT: 5432
+          VULNERABLECODE_DB_NAME: ${{ env.DB_NAME }}
+          VULNERABLECODE_DB_USER: ${{ env.DB_USER }}
+          VULNERABLECODE_DB_PASSWORD: ${{ env.DB_PASSWORD }}
+
+      - name: Tear Down Docker Environment
+        if: always()
+        run: docker compose down --remove-orphans
+

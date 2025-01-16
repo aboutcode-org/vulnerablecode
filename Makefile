@@ -42,6 +42,10 @@ else
 	SUDO_POSTGRES=
 endif
 
+ifeq ($(UNAME), Darwin)
+	GET_SECRET_KEY=`head /dev/urandom | base64 | head -c50`
+endif
+
 virtualenv:
 	@echo "-> Bootstrap the virtualenv with PYTHON_EXE=${PYTHON_EXE}"
 	@${PYTHON_EXE} ${VIRTUALENV_PYZ} --never-download --no-periodic-update ${VENV}

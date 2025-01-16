@@ -2258,3 +2258,58 @@ class PipelineSchedule(models.Model):
             schedules.clear_job(self.schedule_work_id)
 
         return schedules.schedule_execution(self, execute_now) if self.is_active else None
+class AdvisoryTODO(models.Model):
+    """Track the TODOs for advisory/ies that need to be addressed."""
+
+    ISSUE_TYPE_CHOICES = [
+        ("MISSING_AFFECTED_PACKAGE", "Advisory is missing affected package"),
+        ("MISSING_FIXED_BY_PACKAGE", "Advisory is missing fixed-by package"),
+        (
+            "MISSING_AFFECTED_AND_FIXED_BY_PACKAGES",
+            "Advisory is missing both affected and fixed-by packages",
+        ),
+        ("MISSING_SUMMARY", "Advisory is missing summary"),
+        ("CONFLICTING_FIXED_BY_PACKAGES", "Advisories have conflicting fixed-by packages"),
+        ("CONFLICTING_AFFECTED_PACKAGES", "Advisories have conflicting affected packages"),
+        (
+            "CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES",
+            "Advisories have conflicting affected and fixed-by packages",
+        ),
+        ("CONFLICTING_SEVERITY_SCORES", "Advisories have conflicting severity scores"),
+    ]
+
+    issue_type = models.CharField(
+        max_length=50,
+        choices=ISSUE_TYPE_CHOICES,
+        blank=False,
+        null=False,
+        db_index=True,
+        help_text="Select the issue that needs to be addressed from the available options.",
+    )
+    issue_detail = models.TextField(
+        help_text="Additional details about the issue.",
+    )
+    advisories = models.ManyToManyField(
+        Advisory,
+        related_name="advisory_todos",
+        help_text="Advisory/ies where this TODO is applicable.",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Timestamp indicating when this TODO was created.",
+    )
+
+    is_resolved = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text="This TODO is resolved or not.",
+    )
+
+    resolved_at = models.DateTimeField(
+        help_text="Timestamp indicating when this TODO was resolved.",
+    )
+
+    resolution_detail = models.TextField(
+        help_text="Additional detail on how this TODO was resolved.",
+    )

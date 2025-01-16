@@ -14,6 +14,7 @@ from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.db.models import Prefetch
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -22,7 +23,6 @@ from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.db.models import Prefetch
 
 from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
@@ -169,19 +169,14 @@ class VulnerabilityDetails(DetailView):
                 "exploits",
                 Prefetch(
                     "affecting_packages",
-                    queryset=models.Package.objects.only(
-                        "type", "namespace", "name", "version"
-                    ),
+                    queryset=models.Package.objects.only("type", "namespace", "name", "version"),
                 ),
                 Prefetch(
                     "fixed_by_packages",
-                    queryset=models.Package.objects.only(
-                        "type", "namespace", "name", "version"
-                    ),
+                    queryset=models.Package.objects.only("type", "namespace", "name", "version"),
                 ),
             )
         )
-
 
     def get_context_data(self, **kwargs):
         """
@@ -189,10 +184,11 @@ class VulnerabilityDetails(DetailView):
         """
         context = super().get_context_data(**kwargs)
         vulnerability = self.object
-        
+
         # Pre-fetch and process data in Python instead of the template
         weaknesses_present_in_db = [
-            weakness_object for weakness_object in vulnerability.weaknesses.all()
+            weakness_object
+            for weakness_object in vulnerability.weaknesses.all()
             if weakness_object.weakness
         ]
 
@@ -210,6 +206,7 @@ class VulnerabilityDetails(DetailView):
             }
         )
         return context
+
 
 class HomePage(View):
     template_name = "index.html"
@@ -296,19 +293,19 @@ class VulnerabilityPackagesDetails(DetailView):
         """
         Prefetch and optimize related data to minimize database hits.
         """
-        return super().get_queryset().prefetch_related(
-            Prefetch(
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
                     "affecting_packages",
-                    queryset=models.Package.objects.only(
-                        "type", "namespace", "name", "version"
-                    ),
+                    queryset=models.Package.objects.only("type", "namespace", "name", "version"),
                 ),
                 Prefetch(
                     "fixed_by_packages",
-                    queryset=models.Package.objects.only(
-                        "type", "namespace", "name", "version"
-                    ),
+                    queryset=models.Package.objects.only("type", "namespace", "name", "version"),
                 ),
+            )
         )
 
     def get_context_data(self, **kwargs):
@@ -322,9 +319,11 @@ class VulnerabilityPackagesDetails(DetailView):
             sorted_affected_packages,
             all_affected_fixed_by_matches,
         ) = vulnerability.aggregate_fixed_and_affected_packages()
-        context.update({
-            "affected_packages": sorted_affected_packages,
-            "fixed_by_packages": sorted_fixed_by_packages,
-            "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
-        })
+        context.update(
+            {
+                "affected_packages": sorted_affected_packages,
+                "fixed_by_packages": sorted_fixed_by_packages,
+                "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
+            }
+        )
         return context

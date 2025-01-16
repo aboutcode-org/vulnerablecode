@@ -27,7 +27,8 @@ from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
-from vulnerabilities.views import VulnerabilityDetails, VulnerabilityPackagesDetails
+from vulnerabilities.views import VulnerabilityDetails
+from vulnerabilities.views import VulnerabilityPackagesDetails
 from vulnerabilities.views import VulnerabilitySearch
 from vulnerablecode.settings import DEBUG_TOOLBAR
 

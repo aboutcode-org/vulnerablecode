@@ -78,7 +78,7 @@ jobs:
            chmod +x venv &&
            . venv/bin/activate &&
            pip install -r requirements.txt &&
-           make test && "
+           make test  "
         env:
           GH_TOKEN: 1 
           POSTGRES_HOST: vulnerablecode-db

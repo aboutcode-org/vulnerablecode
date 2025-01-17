@@ -192,12 +192,33 @@ class VulnerabilityDetails(DetailView):
             if weakness_object.weakness
         ]
 
+        severity_vectors = []
+        severity_values = set()
+        for s in self.object.severities.all():
+            if s.scoring_system == EPSS.identifier:
+                continue
+
+            if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
+                try:
+                    vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
+                    severity_vectors.append(vector_values)
+                except (
+                    CVSS2MalformedError,
+                    CVSS3MalformedError,
+                    CVSS4MalformedError,
+                    NotImplementedError,
+                ):
+                    logging.error(f"CVSSMalformedError for {s.scoring_elements}")
+
+            if s.value:
+                severity_values.add(s.value)
+
         context.update(
             {
                 "vulnerability": vulnerability,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
                 "severities": list(vulnerability.severities.all()),
-                "severity_score_range": "",
+                "severity_vectors": severity_vectors,
                 "references": list(vulnerability.references.all()),
                 "aliases": list(vulnerability.aliases.all()),
                 "weaknesses": weaknesses_present_in_db,

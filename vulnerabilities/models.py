@@ -10,10 +10,8 @@
 import hashlib
 import json
 import logging
-import typing
 from contextlib import suppress
 from functools import cached_property
-from typing import Optional
 from typing import Union
 
 from cwe2.database import Database
@@ -56,7 +54,7 @@ models.CharField.register_lookup(Length)
 models.CharField.register_lookup(Trim)
 
 # patch univers for missing entry
-RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
+RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
 
 
 class BaseQuerySet(models.QuerySet):

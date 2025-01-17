@@ -16,7 +16,6 @@ from django.test import TestCase
 from packageurl import PackageURL
 from univers import versions
 
-from vulnerabilities import models
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
 from vulnerabilities.models import FixingPackageRelatedVulnerability
@@ -249,8 +248,8 @@ class TestCustomFilters:
                 "pkg%3Arpm/redhat/katello-client-bootstrap%401.1.0-2%3Farch%3Del6sat",
             ),
             (
-                "pkg:alpine/nginx@1.10.3-r1?arch=armhf&distroversion=v3.5&reponame=main",
-                "pkg%3Aalpine/nginx%401.10.3-r1%3Farch%3Darmhf%26distroversion%3Dv3.5%26reponame%3Dmain",
+                "pkg:apk/alpine/nginx@1.10.3-r1?arch=armhf&distroversion=v3.5&reponame=main",
+                "pkg%3Aapk/alpine/nginx%401.10.3-r1%3Farch%3Darmhf%26distroversion%3Dv3.5%26reponame%3Dmain",
             ),
             ("pkg:nginx/nginx@0.9.0?os=windows", "pkg%3Anginx/nginx%400.9.0%3Fos%3Dwindows"),
             (

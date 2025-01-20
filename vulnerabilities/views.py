@@ -23,6 +23,8 @@ from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
 
 from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
@@ -30,8 +32,8 @@ from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerabilities.utils import get_purl_version_class
+from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20

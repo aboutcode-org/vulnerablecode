@@ -193,7 +193,6 @@ class VulnerabilityDetails(DetailView):
         ]
 
         severity_vectors = []
-        severity_values = set()
         for s in self.object.severities.all():
             if s.scoring_system == EPSS.identifier:
                 continue
@@ -201,7 +200,7 @@ class VulnerabilityDetails(DetailView):
             if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
                 try:
                     vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
-                    severity_vectors.append(vector_values)
+                    severity_vectors.append({"vector": vector_values, "origin": s.url})
                 except (
                     CVSS2MalformedError,
                     CVSS3MalformedError,
@@ -209,9 +208,6 @@ class VulnerabilityDetails(DetailView):
                     NotImplementedError,
                 ):
                     logging.error(f"CVSSMalformedError for {s.scoring_elements}")
-
-            if s.value:
-                severity_values.add(s.value)
 
         context.update(
             {

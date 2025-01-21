@@ -57,6 +57,9 @@ from vulnerabilities.utils import compute_content_id
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
+from cwe2.weakness import Weakness as DBWeakness
+from cwe2.mappings import xml_database_path
+import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
 
@@ -470,6 +473,21 @@ class Vulnerability(models.Model):
 
         return severity_vectors, severity_values
 
+def get_cwes(self):
+    """Yield CWE Weakness objects"""
+    for cwe_category in self.cwe_files:
+        cwe_category.seek(0)
+        reader = csv.DictReader(cwe_category)
+        for row in reader:
+            yield DBWeakness(*list(row.values())[0:-1])
+    tree = ET.parse(xml_database_path)
+    root = tree.getroot()
+    for tag_num in [1, 2]:  # Categories , Views
+        tag = root[tag_num]
+        for child in tag:
+            yield DBWeakness(*[child.attrib["ID"], child.attrib.get("Name"),None,child.attrib.get("Status"),child[0].text])
+
+Database.get_cwes = get_cwes
 
 def get_cwes(self):
     """Yield CWE Weakness objects"""

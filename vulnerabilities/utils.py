@@ -540,7 +540,7 @@ def normalize_purl(purl: Union[PackageURL, str]):
 
 
 def get_purl_version_class(purl):
-    RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
+    RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
     purl_version_class = None
     check_version_class = RANGE_CLASS_BY_SCHEMES.get(purl.type, None)
     if check_version_class:

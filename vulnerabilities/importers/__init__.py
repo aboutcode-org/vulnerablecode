@@ -23,6 +23,7 @@ from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
+from vulnerabilities.importers import huawei
 from vulnerabilities.importers import postgresql
 from vulnerabilities.importers import project_kb_msr2019
 from vulnerabilities.importers import redhat
@@ -65,6 +66,7 @@ IMPORTERS_REGISTRY = [
     fireeye.FireyeImporter,
     apache_kafka.ApacheKafkaImporter,
     oss_fuzz.OSSFuzzImporter,
+    huawei.HuaweiImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
     curl.CurlImporter,

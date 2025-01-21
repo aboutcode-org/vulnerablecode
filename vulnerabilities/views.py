@@ -156,26 +156,32 @@ class VulnerabilityDetails(DetailView):
     slug_field = "vulnerability_id"
 
     def get_queryset(self):
-        """
-        Prefetch and optimize related data to minimize database hits.
-        """
         return (
             super()
             .get_queryset()
             .select_related()
             .prefetch_related(
-                "references",
-                "aliases",
-                "weaknesses",
-                "severities",
-                "exploits",
                 Prefetch(
-                    "affecting_packages",
-                    queryset=models.Package.objects.only("type", "namespace", "name", "version"),
+                    "references",
+                    queryset=models.VulnerabilityReference.objects.only("reference_id", "reference_type", "url"),
                 ),
                 Prefetch(
-                    "fixed_by_packages",
-                    queryset=models.Package.objects.only("type", "namespace", "name", "version"),
+                    "aliases",
+                    queryset=models.Alias.objects.only("alias"),
+                ),
+                Prefetch(
+                    "weaknesses",
+                    queryset=models.Weakness.objects.only("cwe_id"),
+                ),
+                Prefetch(
+                    "severities",
+                    queryset=models.VulnerabilitySeverity.objects.only("scoring_system", "value", "url", "scoring_elements", "published_at"),
+                ),
+                Prefetch(
+                    "exploits",
+                    queryset=models.Exploit.objects.only(
+                        "data_source", "description", "required_action", "due_date", "notes"
+                    ),
                 ),
             )
         )

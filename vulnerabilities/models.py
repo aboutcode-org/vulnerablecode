@@ -387,7 +387,13 @@ class Vulnerability(models.Model):
             "type", "namespace", "name", "qualifiers", "subpath"
         )
 
+        if sorted_fixed_by_packages:
+            sorted_fixed_by_packages.first().calculate_version_rank
+
         sorted_affected_packages = self.affected_packages.all()
+
+        if sorted_affected_packages:
+            sorted_affected_packages.first().calculate_version_rank
 
         grouped_fixed_by_packages = {
             key: list(group)

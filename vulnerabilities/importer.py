@@ -111,7 +111,6 @@ class Reference:
     def from_dict(cls, ref: dict):
         return cls(
             reference_type=ref.get("reference_type") or "",
-            reference_type=ref["reference_type"],
             url=ref["url"],
             severities=[
                 VulnerabilitySeverity.from_dict(severity) for severity in ref["severities"]

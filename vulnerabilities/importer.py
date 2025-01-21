@@ -110,7 +110,7 @@ class Reference:
     @classmethod
     def from_dict(cls, ref: dict):
         return cls(
-            reference_id=ref["reference_id"],
+            reference_type=ref.get("reference_type") or "",
             reference_type=ref["reference_type"],
             url=ref["url"],
             severities=[

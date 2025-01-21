@@ -7,9 +7,11 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import csv
 import hashlib
 import json
 import logging
+import xml.etree.ElementTree as ET
 from contextlib import suppress
 from functools import cached_property
 from itertools import groupby
@@ -20,6 +22,8 @@ from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from cwe2.database import Database
+from cwe2.mappings import xml_database_path
+from cwe2.weakness import Weakness as DBWeakness
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
@@ -46,7 +50,6 @@ from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 from univers.versions import Version
 
-from aboutcode import hashid
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
@@ -467,6 +470,32 @@ class Vulnerability(models.Model):
         return severity_vectors, severity_values
 
 
+def get_cwes(self):
+    """Yield CWE Weakness objects"""
+    for cwe_category in self.cwe_files:
+        cwe_category.seek(0)
+        reader = csv.DictReader(cwe_category)
+        for row in reader:
+            yield DBWeakness(*list(row.values())[0:-1])
+    tree = ET.parse(xml_database_path)
+    root = tree.getroot()
+    for tag_num in [1, 2]:  # Categories , Views
+        tag = root[tag_num]
+        for child in tag:
+            yield DBWeakness(
+                *[
+                    child.attrib["ID"],
+                    child.attrib.get("Name"),
+                    None,
+                    child.attrib.get("Status"),
+                    child[0].text,
+                ]
+            )
+
+
+Database.get_cwes = get_cwes
+
+
 class Weakness(models.Model):
     """
     A Common Weakness Enumeration model
@@ -474,7 +503,15 @@ class Weakness(models.Model):
 
     cwe_id = models.IntegerField(help_text="CWE id")
     vulnerabilities = models.ManyToManyField(Vulnerability, related_name="weaknesses")
-    db = Database()
+
+    cwe_by_id = {}
+
+    def get_cwe(self, cwe_id):
+        if not self.cwe_by_id:
+            db = Database()
+            for weakness in db.get_cwes():
+                self.cwe_by_id[str(weakness.cwe_id)] = weakness
+        return self.cwe_by_id[cwe_id]
 
     @property
     def cwe(self):
@@ -486,7 +523,7 @@ class Weakness(models.Model):
         Return a queryset of Weakness for this vulnerability.
         """
         try:
-            weakness = self.db.get(self.cwe_id)
+            weakness = self.get_cwe(str(self.cwe_id))
             return weakness
         except Exception as e:
             logger.warning(f"Could not find CWE {self.cwe_id}: {e}")

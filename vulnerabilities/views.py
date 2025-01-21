@@ -224,6 +224,15 @@ class VulnerabilityDetails(DetailView):
                 NotImplementedError,
             ):
                 logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
+        
+        epss_severity = vulnerability.severities.filter(scoring_system='epss').first()
+        epss_data = None
+        if epss_severity:
+            epss_data = {
+                "percentile": epss_severity.scoring_elements,
+                "score": epss_severity.value,
+                "published_at": epss_severity.published_at,
+            }
 
         epss_severity = vulnerability.severities.filter(scoring_system="epss").first()
         epss_data = None

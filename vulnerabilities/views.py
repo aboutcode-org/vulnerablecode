@@ -163,7 +163,9 @@ class VulnerabilityDetails(DetailView):
             .prefetch_related(
                 Prefetch(
                     "references",
-                    queryset=models.VulnerabilityReference.objects.only("reference_id", "reference_type", "url"),
+                    queryset=models.VulnerabilityReference.objects.only(
+                        "reference_id", "reference_type", "url"
+                    ),
                 ),
                 Prefetch(
                     "aliases",
@@ -175,7 +177,9 @@ class VulnerabilityDetails(DetailView):
                 ),
                 Prefetch(
                     "severities",
-                    queryset=models.VulnerabilitySeverity.objects.only("scoring_system", "value", "url", "scoring_elements", "published_at"),
+                    queryset=models.VulnerabilitySeverity.objects.only(
+                        "scoring_system", "value", "url", "scoring_elements", "published_at"
+                    ),
                 ),
                 Prefetch(
                     "exploits",
@@ -201,21 +205,27 @@ class VulnerabilityDetails(DetailView):
         ]
 
         valid_severities = self.object.severities.exclude(scoring_system=EPSS.identifier).filter(
-            scoring_elements__isnull=False, 
-            scoring_system__in=SCORING_SYSTEMS.keys()
+            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
         )
 
         severity_vectors = []
 
         for severity in valid_severities:
             try:
-                vector_values = SCORING_SYSTEMS[severity.scoring_system].get(severity.scoring_elements)
+                vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
+                    severity.scoring_elements
+                )
                 if vector_values:
                     severity_vectors.append({"vector": vector_values, "origin": severity.url})
-            except (CVSS2MalformedError, CVSS3MalformedError, CVSS4MalformedError, NotImplementedError):
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ):
                 logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
-        
-        epss_severity = vulnerability.severities.filter(scoring_system='epss').first()
+
+        epss_severity = vulnerability.severities.filter(scoring_system="epss").first()
         epss_data = None
         if epss_severity:
             epss_data = {
@@ -235,7 +245,7 @@ class VulnerabilityDetails(DetailView):
                 "weaknesses": weaknesses_present_in_db,
                 "status": vulnerability.get_status_label,
                 "history": vulnerability.history,
-                "epss_data": epss_data
+                "epss_data": epss_data,
             }
         )
         return context

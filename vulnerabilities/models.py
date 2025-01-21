@@ -11,6 +11,7 @@ import csv
 import hashlib
 import json
 import logging
+import xml.etree.ElementTree as ET
 from contextlib import suppress
 from functools import cached_property
 from itertools import groupby
@@ -21,6 +22,8 @@ from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from cwe2.database import Database
+from cwe2.mappings import xml_database_path
+from cwe2.weakness import Weakness as DBWeakness
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
@@ -53,9 +56,6 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
-from cwe2.weakness import Weakness as DBWeakness
-from cwe2.mappings import xml_database_path
-import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
 
@@ -469,6 +469,7 @@ class Vulnerability(models.Model):
 
         return severity_vectors, severity_values
 
+
 def get_cwes(self):
     """Yield CWE Weakness objects"""
     for cwe_category in self.cwe_files:
@@ -481,9 +482,19 @@ def get_cwes(self):
     for tag_num in [1, 2]:  # Categories , Views
         tag = root[tag_num]
         for child in tag:
-            yield DBWeakness(*[child.attrib["ID"], child.attrib.get("Name"),None,child.attrib.get("Status"),child[0].text])
+            yield DBWeakness(
+                *[
+                    child.attrib["ID"],
+                    child.attrib.get("Name"),
+                    None,
+                    child.attrib.get("Status"),
+                    child[0].text,
+                ]
+            )
+
 
 Database.get_cwes = get_cwes
+
 
 class Weakness(models.Model):
     """

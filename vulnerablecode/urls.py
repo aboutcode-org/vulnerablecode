@@ -28,6 +28,7 @@ from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import VulnerabilityDetails
+from vulnerabilities.views import VulnerabilityPackagesDetails
 from vulnerabilities.views import VulnerabilitySearch
 from vulnerablecode.settings import DEBUG_TOOLBAR
 
@@ -82,6 +83,11 @@ urlpatterns = [
         "vulnerabilities/<str:vulnerability_id>",
         VulnerabilityDetails.as_view(),
         name="vulnerability_details",
+    ),
+    path(
+        "vulnerabilities/<str:vulnerability_id>/packages",
+        VulnerabilityPackagesDetails.as_view(),
+        name="vulnerability_package_details",
     ),
     path(
         "api/",

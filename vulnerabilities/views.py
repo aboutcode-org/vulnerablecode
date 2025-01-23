@@ -86,14 +86,14 @@ class PackageSearch(ListView):
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
-            .order_by("package_url")
+            .order_by("type", "namespace", "name", "-version")
         )
 
 
 class VulnerabilitySearch(ListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
-    ordering = ["vulnerability_id"]
+    ordering = ["aliases"]
     paginate_by = PAGE_SIZE
 
     def get_context_data(self, **kwargs):
@@ -105,7 +105,7 @@ class VulnerabilitySearch(ListView):
 
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query=query).with_package_counts()
+        return self.model.objects.search(query=query).with_package_counts().order_by("-aliases")
 
 
 class PackageDetails(DetailView):
@@ -118,10 +118,10 @@ class PackageDetails(DetailView):
         context = super().get_context_data(**kwargs)
         package = self.object
         context["package"] = package
-        context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
+        context["affected_by_vulnerabilities"] = package.affected_by.order_by("-aliases")
         # Ghost package should not fix any vulnerability.
         context["fixing_vulnerabilities"] = (
-            None if package.is_ghost else package.fixing.order_by("vulnerability_id")
+            None if package.is_ghost else package.fixing.order_by("-aliases")
         )
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = package.fixed_package_details

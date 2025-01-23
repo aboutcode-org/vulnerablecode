@@ -141,7 +141,7 @@ class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
         if aliases:
             queryset = queryset.filter(aliases__alias__in=aliases).distinct()
 
-        return queryset
+        return queryset.order_by("-aliases__alias")
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -284,7 +284,7 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(
                 fixing_vulnerabilities__vulnerability_id=fixing_vulnerability
             )
-        return queryset.with_is_vulnerable()
+        return queryset.with_is_vulnerable().order_by("type", "namespace", "name", "-version")
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -427,8 +427,8 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
             query = (
                 Package.objects.filter(plain_package_url__in=plain_purls)
-                .order_by("plain_package_url")
-                .distinct("plain_package_url")
+                .order_by("type", "namespace", "name", "-version")
+                .distinct("type", "namespace", "name", "version")
                 .with_is_vulnerable()
             )
 
@@ -498,8 +498,8 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         vulnerable_purls = (
             Package.objects.vulnerable()
             .only("package_url")
-            .order_by("package_url")
-            .distinct()
+            .order_by("type", "namespace", "name", "-version")
+            .distinct("type", "namespace", "name", "version")
             .values_list("package_url", flat=True)
         )
         return Response(vulnerable_purls)

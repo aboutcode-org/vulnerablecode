@@ -20,6 +20,7 @@ from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
+from vulnerabilities.api_v2 import AdvisoryViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
@@ -50,6 +51,7 @@ api_v2_router = OptionalSlashRouter()
 api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
+api_v2_router.register("advisories", AdvisoryViewSet, basename="advisory")
 
 
 urlpatterns = [

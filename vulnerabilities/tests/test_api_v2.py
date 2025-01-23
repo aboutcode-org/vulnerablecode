@@ -8,7 +8,9 @@
 #
 
 from django.db.models import Prefetch
+from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 from packageurl import PackageURL
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -16,6 +18,7 @@ from rest_framework.test import APITestCase
 
 from vulnerabilities.api_v2 import PackageV2Serializer
 from vulnerabilities.api_v2 import VulnerabilityListSerializer
+from vulnerabilities.models import Advisory
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
@@ -662,3 +665,59 @@ class PackageV2ViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # No packages or vulnerabilities should be returned
         self.assertEqual(len(response.data), 0)
+
+
+class AdvisoryAPITest(TestCase):
+    def setUp(self):
+        self.user = ApiUser.objects.create_api_user(username="test@test.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
+
+        self.now = timezone.now()
+        self.advisories = []
+        for i in range(10):
+            advisory = Advisory.objects.create(
+                aliases=[f"CVE-2020-{i}"],
+                summary=f"Test Advisory {i}",
+                affected_packages=[{"package_url": f"pkg:npm/package{i}@1.0.0"}],
+                references=[{"url": f"https://example.com/vuln/{i}"}],
+                date_published=self.now,
+                date_collected=self.now,
+                created_by="test_importer",
+                url=f"https://example.com/{i}",
+            )
+            self.advisories.append(advisory)
+
+    def test_advisory_list(self):
+        with self.assertNumQueries(5):  # save + auth + count + data + release
+            response = self.client.get("/api/v2/advisories/", format="json")
+            self.assertEqual(200, response.status_code)
+            data = response.json()
+            self.assertEqual(10, data["count"])
+            self.assertEqual(10, len(data["results"]))
+
+            first_result = data["results"][0]
+            expected_fields = {
+                "aliases",
+                "summary",
+                "affected_packages",
+                "references",
+                "date_published",
+                "url",
+            }
+            self.assertEqual(expected_fields, set(first_result.keys()))
+
+    def test_advisory_pagination(self):
+        with self.assertNumQueries(5):
+            response = self.client.get("/api/v2/advisories/?page_size=5", format="json")
+            self.assertEqual(200, response.status_code)
+            data = response.json()
+            self.assertEqual(10, data["count"])
+            self.assertEqual(5, len(data["results"]))
+            self.assertIsNotNone(data["next"])
+            self.assertIsNone(data["previous"])
+
+    def test_advisory_invalid_page(self):
+        response = self.client.get("/api/v2/advisories/?page=999", format="json")
+        self.assertEqual(404, response.status_code)

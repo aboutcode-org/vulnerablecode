@@ -21,6 +21,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
+from vulnerabilities.models import Advisory
 from vulnerabilities.models import CodeFix
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
@@ -606,3 +607,24 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
                 affected_package_vulnerability__vulnerability__vulnerability_id=vulnerability_id
             )
         return queryset
+
+
+class AdvisorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advisory
+        fields = ["aliases", "summary", "affected_packages", "references", "date_published", "url"]
+
+
+class AdvisoryViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = AdvisorySerializer
+
+    def get_queryset(self):
+        return Advisory.objects.only(
+            "aliases", "summary", "affected_packages", "references", "date_published", "url"
+        ).order_by("-date_published")
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)

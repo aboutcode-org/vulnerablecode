@@ -32,6 +32,7 @@ import urllib3
 from packageurl import PackageURL
 from packageurl.contrib.django.utils import without_empty_values
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
@@ -536,3 +537,12 @@ def normalize_purl(purl: Union[PackageURL, str]):
     if isinstance(purl, PackageURL):
         purl = str(purl)
     return PackageURL.from_string(purl)
+
+
+def get_purl_version_class(purl):
+    RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
+    purl_version_class = None
+    check_version_class = RANGE_CLASS_BY_SCHEMES.get(purl.type, None)
+    if check_version_class:
+        purl_version_class = check_version_class.version_class
+    return purl_version_class

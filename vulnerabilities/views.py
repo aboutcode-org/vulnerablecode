@@ -40,7 +40,7 @@ from .pagination import PaginatedListViewMixin
 PAGE_SIZE = 20
 
 
-class PackageSearch(PaginatedListViewMixin,ListView):
+class PackageSearch(PaginatedListViewMixin, ListView):
     model = models.Package
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
@@ -68,7 +68,7 @@ class PackageSearch(PaginatedListViewMixin,ListView):
         )
 
 
-class VulnerabilitySearch(PaginatedListViewMixin,ListView):
+class VulnerabilitySearch(PaginatedListViewMixin, ListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
     ordering = ["vulnerability_id"]

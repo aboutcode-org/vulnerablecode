@@ -35,10 +35,12 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
+from .pagination import PaginatedListViewMixin
+
 PAGE_SIZE = 20
 
 
-class PackageSearch(ListView):
+class PackageSearch(PaginatedListViewMixin, ListView):
     model = models.Package
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
@@ -66,7 +68,7 @@ class PackageSearch(ListView):
         )
 
 
-class VulnerabilitySearch(ListView):
+class VulnerabilitySearch(PaginatedListViewMixin, ListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
     ordering = ["vulnerability_id"]

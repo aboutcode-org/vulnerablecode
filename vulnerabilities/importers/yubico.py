@@ -191,4 +191,3 @@ def get_adv_data(url):
             #print(link)
             output["score"]=a_tag.text
     return output
-

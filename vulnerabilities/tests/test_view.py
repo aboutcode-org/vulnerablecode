@@ -26,8 +26,7 @@ from vulnerabilities.templatetags.url_filters import url_quote_filter
 from vulnerabilities.utils import get_purl_version_class
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
-from vulnerabilities.views import get_purl_version_class
-from vulnerabilities.views import purl_sort_key
+from vulnerabilities.utils import get_purl_version_class
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DIR = os.path.join(BASE_DIR, "test_data/package_sort")

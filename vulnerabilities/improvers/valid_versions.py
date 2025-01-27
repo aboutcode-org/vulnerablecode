@@ -26,7 +26,6 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
-from vulnerabilities.importers.apache_log4j import ApacheLog4jImporter
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
 from vulnerabilities.importers.curl import CurlImporter
 from vulnerabilities.importers.debian import DebianImporter
@@ -42,6 +41,7 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines.apache_log4j_importer import ApacheLog4jImporterPipeline
 from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
@@ -485,5 +485,5 @@ class CurlImprover(ValidVersionImprover):
 
 
 class Log4jImprover(ValidVersionImprover):
-    importer = ApacheLog4jImporter
+    importer = ApacheLog4jImporterPipeline
     ignorable_versions = []

@@ -2258,9 +2258,9 @@ class PipelineSchedule(models.Model):
             schedules.clear_job(self.schedule_work_id)
 
         return schedules.schedule_execution(self, execute_now) if self.is_active else None
-class AdvisoryTODO(models.Model):
-    """Track the TODOs for advisory/ies that need to be addressed."""
 
+
+class AdvisoryTODO(models.Model):
     ISSUE_TYPE_CHOICES = [
         ("MISSING_AFFECTED_PACKAGE", "Advisory is missing affected package"),
         ("MISSING_FIXED_BY_PACKAGE", "Advisory is missing fixed-by package"),
@@ -2278,6 +2278,20 @@ class AdvisoryTODO(models.Model):
         ("CONFLICTING_SEVERITY_SCORES", "Advisories have conflicting severity scores"),
     ]
 
+
+class AdvisoryToDo(models.Model):
+    """Track the TODOs for advisory/ies that need to be addressed."""
+
+    # Since we can not make advisories field (M2M field) unique
+    # (see https://code.djangoproject.com/ticket/702), we use related_advisories_id
+    # to avoid creating duplicate issue for same set of advisories,
+    related_advisories_id = models.CharField(
+        max_length=40,
+        blank=False,
+        null=False,
+        help_text="SHA1 digest of the unique_content_id field of the applicable advisories.",
+    )
+
     issue_type = models.CharField(
         max_length=50,
         choices=ISSUE_TYPE_CHOICES,
@@ -2286,9 +2300,11 @@ class AdvisoryTODO(models.Model):
         db_index=True,
         help_text="Select the issue that needs to be addressed from the available options.",
     )
+
     issue_detail = models.TextField(
         help_text="Additional details about the issue.",
     )
+
     advisories = models.ManyToManyField(
         Advisory,
         related_name="advisory_todos",
@@ -2313,3 +2329,6 @@ class AdvisoryTODO(models.Model):
     resolution_detail = models.TextField(
         help_text="Additional detail on how this TODO was resolved.",
     )
+
+    class Meta:
+        unique_together = ("related_advisories_id", "issue_type")

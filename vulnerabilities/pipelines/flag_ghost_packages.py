@@ -9,15 +9,14 @@
 
 import logging
 from itertools import groupby
-from traceback import format_exc as traceback_format_exc
 
 from aboutcode.pipeline import LoopProgress
 from fetchcode.package_versions import SUPPORTED_ECOSYSTEMS as FETCHCODE_SUPPORTED_ECOSYSTEMS
-from fetchcode.package_versions import versions
 from packageurl import PackageURL
 
 from vulnerabilities.models import Package
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipes.fetchcode_utils import get_versions
 
 
 class FlagGhostPackagePipeline(VulnerableCodePipeline):
@@ -89,16 +88,3 @@ def flag_ghost_packages(base_purl, packages, logger=None):
         pkg.save()
 
     return ghost_packages
-
-
-def get_versions(purl, logger=None):
-    """Return set of known versions for the given purl."""
-    try:
-        return {v.value.lstrip("vV") for v in versions(str(purl))}
-    except Exception as e:
-        if logger:
-            logger(
-                f"Error while fetching known versions for {purl!s}: {e!r} \n {traceback_format_exc()}",
-                level=logging.ERROR,
-            )
-        return

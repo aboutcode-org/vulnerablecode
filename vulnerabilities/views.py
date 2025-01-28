@@ -41,7 +41,7 @@ PAGE_SIZE = 20
 class PackageSearch(ListView):
     model = models.Package
     template_name = "packages.html"
-    ordering = ["type", "namespace", "name", "version"]
+    ordering = ["type", "namespace", "name", "-version_rank"]
     paginate_by = PAGE_SIZE
 
     def get_context_data(self, **kwargs):
@@ -62,7 +62,7 @@ class PackageSearch(ListView):
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
-            .order_by("type", "namespace", "name", "-version")
+            .order_by("type", "namespace", "name", "-version_rank")
         )
 
 

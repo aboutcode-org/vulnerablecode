@@ -284,7 +284,9 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(
                 fixing_vulnerabilities__vulnerability_id=fixing_vulnerability
             )
-        return queryset.with_is_vulnerable().order_by("type", "namespace", "name", "-version")
+        return queryset.with_is_vulnerable().order_by(
+            "type", "namespace", "name", "-version_rank", "version"
+        )
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -427,8 +429,8 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
             query = (
                 Package.objects.filter(plain_package_url__in=plain_purls)
-                .order_by("type", "namespace", "name", "-version")
-                .distinct("type", "namespace", "name", "version")
+                .order_by("type", "namespace", "name", "-version_rank", "version")
+                .distinct("type", "namespace", "name", "version_rank", "version")
                 .with_is_vulnerable()
             )
 
@@ -498,8 +500,8 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         vulnerable_purls = (
             Package.objects.vulnerable()
             .only("package_url")
-            .order_by("type", "namespace", "name", "-version")
-            .distinct("type", "namespace", "name", "version")
+            .order_by("type", "namespace", "name", "-version_rank", "version")
+            .distinct("type", "namespace", "name", "version_rank", "version")
             .values_list("package_url", flat=True)
         )
         return Response(vulnerable_purls)

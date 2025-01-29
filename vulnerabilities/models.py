@@ -53,7 +53,7 @@ from univers.versions import Version
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import normalize_purl
+from vulnerabilities.utils import compute_content_id, normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 
@@ -1367,6 +1367,11 @@ class Advisory(models.Model):
             value = json.dumps(field, separators=(",", ":")).encode("utf-8")
             checksum.update(value)
         self.unique_content_id = checksum.hexdigest()
+        super().save(*args, **kwargs)
+    
+    def save(self, *args, **kwargs):
+        advisory_data = self.to_advisory_data()
+        self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)
         super().save(*args, **kwargs)
 
     def to_advisory_data(self) -> "AdvisoryData":

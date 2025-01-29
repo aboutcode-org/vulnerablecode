@@ -10,6 +10,7 @@
 import bisect
 import csv
 import dataclasses
+import hashlib
 import json
 import logging
 import os
@@ -546,3 +547,42 @@ def get_purl_version_class(purl):
     if check_version_class:
         purl_version_class = check_version_class.version_class
     return purl_version_class
+
+
+def compute_content_id(advisory_data, include_metadata=False):
+    """
+    Computes a unique content_id for an advisory by normalizing its data and hashing it.
+
+    :param advisory_data: An AdvisoryData object
+    :param include_metadata: Boolean indicating whether to include `created_by` and `url`
+    :return: SHA-256 hash digest as content_id
+    """
+
+    def normalize_text(text):
+        """Normalize text by removing spaces and converting to lowercase."""
+        return text.replace(" ", "").lower() if text else ""
+
+    def normalize_list(lst):
+        """Sort a list to ensure consistent ordering."""
+        return sorted(lst) if lst else []
+
+    def normalize_dict(obj):
+        """Ensure dictionary keys are ordered."""
+        return json.loads(json.dumps(obj, sort_keys=True)) if obj else {}
+
+    # Normalize fields
+    normalized_data = {
+        "summary": normalize_text(advisory_data.summary),
+        "affected_packages": normalize_list(advisory_data.affected_packages),
+        "references": normalize_list(advisory_data.references),
+        "weaknesses": normalize_list(advisory_data.weaknesses),
+    }
+
+    if include_metadata:
+        normalized_data["created_by"] = advisory_data.created_by
+        normalized_data["url"] = advisory_data.url
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    content_id = hashlib.sha512(normalized_json.encode("utf-8")).hexdigest()
+
+    return content_id

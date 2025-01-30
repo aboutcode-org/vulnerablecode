@@ -19,11 +19,14 @@ from defusedxml import ElementTree as SafeElementTree
 from packageurl import PackageURL
 from univers.versions import MavenVersion
 
+from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.utils import fetch_response
+from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
@@ -157,11 +160,29 @@ class ApacheLog4jImporterPipeline(VulnerableCodeBaseImporterPipeline):
         if vulnerability.published:
             published_str = str(vulnerability.published)
             date_published = parse(published_str).replace(tzinfo=pytz.UTC)
+        severities = []
+        weaknesses = []
+        for cwe in vulnerability.cwes:
+            cwe_id = cwe
+            weaknesses.append(get_cwe_id(f"CWE-{cwe_id}"))
 
         references = [
             Reference(url=f"https://nvd.nist.gov/vuln/detail/{cve_id}", reference_id=cve_id),
             Reference(url=f"{self.ASF_PAGE_URL}#{cve_id}", reference_id=cve_id),
         ]
+
+        for rating in vulnerability.ratings:
+            cvssv3_score = str(rating.score)
+            cvssv3_vector = rating.vector
+            cvssv3_url = str(rating.source.url)
+            severities.append(
+                VulnerabilitySeverity(
+                    system=severity_systems.CVSSV3,
+                    value=cvssv3_score,
+                    scoring_elements=cvssv3_vector,
+                )
+            )
+            references.append(Reference(url=cvssv3_url, severities=severities))
 
         fixed_versions = self._extract_fixed_versions(vulnerability.recommendation)
         affected_packages = self._get_affected_packages(vulnerability, fixed_versions)
@@ -173,6 +194,7 @@ class ApacheLog4jImporterPipeline(VulnerableCodeBaseImporterPipeline):
                 affected_packages=affected_packages,
                 references=references,
                 date_published=date_published,
+                weaknesses=weaknesses,
                 url=f"{self.ASF_PAGE_URL}#{cve_id}",
             )
 

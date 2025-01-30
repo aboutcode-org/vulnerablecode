@@ -30,10 +30,24 @@
         "reference_type": "",
         "url": "https://logging.apache.org/security.html#CVE-2017-5645",
         "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator?vector=(AV:N/AC:L/Au:N/C:P/I:P/A:P)&version=2.0",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "7.5",
+            "scoring_elements": "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+          }
+        ]
       }
     ],
     "date_published": "2017-04-17T00:00:00+00:00",
-    "weaknesses": [],
+    "weaknesses": [
+      502
+    ],
     "url": "https://logging.apache.org/security.html#CVE-2017-5645"
   },
   {
@@ -79,10 +93,24 @@
         "reference_type": "",
         "url": "https://logging.apache.org/security.html#CVE-2020-9488",
         "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "3.7",
+            "scoring_elements": "AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          }
+        ]
       }
     ],
     "date_published": "2017-04-27T00:00:00+00:00",
-    "weaknesses": [],
+    "weaknesses": [
+      295
+    ],
     "url": "https://logging.apache.org/security.html#CVE-2020-9488"
   },
   {
@@ -140,10 +168,27 @@
         "reference_type": "",
         "url": "https://logging.apache.org/security.html#CVE-2021-44228",
         "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "10.0",
+            "scoring_elements": "AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+          }
+        ]
       }
     ],
     "date_published": "2021-12-10T00:00:00+00:00",
-    "weaknesses": [],
+    "weaknesses": [
+      20,
+      400,
+      502,
+      917
+    ],
     "url": "https://logging.apache.org/security.html#CVE-2021-44228"
   },
   {
@@ -201,10 +246,25 @@
         "reference_type": "",
         "url": "https://logging.apache.org/security.html#CVE-2021-44832",
         "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "6.6",
+            "scoring_elements": "AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H"
+          }
+        ]
       }
     ],
     "date_published": "2021-12-28T00:00:00+00:00",
-    "weaknesses": [],
+    "weaknesses": [
+      20,
+      74
+    ],
     "url": "https://logging.apache.org/security.html#CVE-2021-44832"
   },
   {
@@ -262,10 +322,24 @@
         "reference_type": "",
         "url": "https://logging.apache.org/security.html#CVE-2021-45046",
         "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "9.0",
+            "scoring_elements": "AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H"
+          }
+        ]
       }
     ],
     "date_published": "2021-12-14T00:00:00+00:00",
-    "weaknesses": [],
+    "weaknesses": [
+      917
+    ],
     "url": "https://logging.apache.org/security.html#CVE-2021-45046"
   },
   {
@@ -323,10 +397,25 @@
         "reference_type": "",
         "url": "https://logging.apache.org/security.html#CVE-2021-45105",
         "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "5.9",
+            "scoring_elements": "AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          }
+        ]
       }
     ],
     "date_published": "2021-12-18T00:00:00+00:00",
-    "weaknesses": [],
+    "weaknesses": [
+      20,
+      674
+    ],
     "url": "https://logging.apache.org/security.html#CVE-2021-45105"
   }
 ]

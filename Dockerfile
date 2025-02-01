@@ -10,6 +10,13 @@ FROM python:3.9
 
 WORKDIR /app
 
+# Labels 
+LABEL org.opencontainers.image.source="https://github.com/aboutcode-org/vulnerablecode"
+LABEL org.opencontainers.image.title="VulnerableCode"
+LABEL org.opencontainers.image.documentation="https://vulnerablecode.readthedocs.io/en/latest/introduction.html"
+LABEL org.opencontainers.image.version="v35.1.0"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+
 # Python settings: Force unbuffered stdout and stderr (i.e. they are flushed to terminal immediately)
 ENV PYTHONUNBUFFERED 1
 # Python settings: do not write pyc files

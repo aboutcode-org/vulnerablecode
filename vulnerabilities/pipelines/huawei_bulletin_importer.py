@@ -7,15 +7,16 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
-from typing import Iterable, Tuple
 from datetime import datetime
 from datetime import timezone
+from typing import Iterable
+from typing import Tuple
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from univers.version_range import VersionRange
-from univers.versions import GenericVersion 
+from univers.versions import GenericVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -45,23 +46,24 @@ class HuaweiBulletinImporterPipeline(VulnerableCodeBaseImporterPipeline):
     Scrapes security bullitin data from Huawei's website:
     https://consumer.huawei.com/en/support/bulletin/
     """
+
     pipeline_id = "huawei_bulletin_importer"
-    spdx_license_expression = "LicenseRef-Terms-Of-Use"  
+    spdx_license_expression = "LicenseRef-Terms-Of-Use"
     license_url = "https://consumer.huawei.com/en/legal/terms-of-use/"
     url = "https://consumer.huawei.com/en/support/bulletin/"
     importer_name = "Huawei Bulletin Importer"
 
     def __init__(self):
         super().__init__()
-        self.raw_data = None 
+        self.raw_data = None
 
     @classmethod
     def steps(cls):
         """The steps we need to run in order"""
         return (
-            cls.fetch_bulletin,  
-            cls.collect_and_store_advisories,  
-            cls.import_new_advisories,  
+            cls.fetch_bulletin,
+            cls.collect_and_store_advisories,
+            cls.import_new_advisories,
         )
 
     def fetch_bulletin(self):
@@ -87,11 +89,11 @@ class HuaweiBulletinImporterPipeline(VulnerableCodeBaseImporterPipeline):
             return 0
 
         tables = self.raw_data.find_all("table")
-        if not tables: 
+        if not tables:
             return 0
-        huawei_rows = len(tables[0].find_all("tr")[1:])  
-        thirdparty_rows = len(tables[1].find_all("tr")[1:])  
-        return huawei_rows + thirdparty_rows  
+        huawei_rows = len(tables[0].find_all("tr")[1:])
+        thirdparty_rows = len(tables[1].find_all("tr")[1:])
+        return huawei_rows + thirdparty_rows
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         """
@@ -102,12 +104,12 @@ class HuaweiBulletinImporterPipeline(VulnerableCodeBaseImporterPipeline):
             return []
 
         tables = self.raw_data.find_all("table")
-        if len(tables) < 2:  
+        if len(tables) < 2:
             return []
 
-        for row in tables[0].find_all("tr")[1:]: 
+        for row in tables[0].find_all("tr")[1:]:
             cols = row.find_all("td")
-            if len(cols) != 5: 
+            if len(cols) != 5:
                 continue
             advisory = {
                 "cve_id": cols[0].text.strip(),
@@ -115,21 +117,21 @@ class HuaweiBulletinImporterPipeline(VulnerableCodeBaseImporterPipeline):
                 "impact": cols[2].text.strip(),
                 "severity": cols[3].text.strip(),
                 "affected_versions": cols[4].text.strip(),
-                "is_huawei": True
+                "is_huawei": True,
             }
             advisory_data = self.to_advisory_data(advisory)
-            if advisory_data: 
+            if advisory_data:
                 yield advisory_data
-        for row in tables[1].find_all("tr")[1:]:  
+        for row in tables[1].find_all("tr")[1:]:
             cols = row.find_all("td")
-            if len(cols) != 3: 
+            if len(cols) != 3:
                 continue
 
             advisory = {
                 "cve_id": cols[0].text.strip(),
                 "severity": cols[1].text.strip(),
                 "affected_versions": cols[2].text.strip(),
-                "is_huawei": False
+                "is_huawei": False,
             }
             advisory_data = self.to_advisory_data(advisory)
             if advisory_data:
@@ -145,26 +147,22 @@ class HuaweiBulletinImporterPipeline(VulnerableCodeBaseImporterPipeline):
                 return None
             affected_packages = []
             versions = [v.strip() for v in data["affected_versions"].split(",") if v.strip()]
-            
+
             for version in versions:
                 system_type, version_number = extract_version(version)
-                if not system_type: 
+                if not system_type:
                     continue
                 affected_packages.append(
                     AffectedPackage(
-                        package=PackageURL(
-                            type="huawei",
-                            name=system_type
+                        package=PackageURL(type="huawei", name=system_type),
+                        affected_version_range=VersionRange.from_string(
+                            f"vers:generic/={version_number}"
                         ),
-                        affected_version_range=VersionRange.from_string(f"vers:generic/={version_number}") 
                     )
                 )
             if not affected_packages:
                 return None
-            severity = VulnerabilitySeverity(
-                system=GENERIC,
-                value=data["severity"].lower()
-            )
+            severity = VulnerabilitySeverity(system=GENERIC, value=data["severity"].lower())
             references = [
                 Reference(
                     reference_id=data["cve_id"],
@@ -177,12 +175,12 @@ class HuaweiBulletinImporterPipeline(VulnerableCodeBaseImporterPipeline):
             else:
                 summary = f"Third-party vulnerability affecting {''.join(data['affected_versions'].split())}"
             return AdvisoryData(
-                summary=summary if summary else f"Security update for {data['cve_id']}", 
+                summary=summary if summary else f"Security update for {data['cve_id']}",
                 aliases=[data["cve_id"]],
                 affected_packages=affected_packages,
                 references=references,
-                date_published=None,  
-                url=f"{self.url}2024/9/"  
+                date_published=None,
+                url=f"{self.url}2024/9/",
             )
         except Exception as e:
             self.log(f"Failed to process advisory {data.get('cve_id')}: {e}", logging.ERROR)

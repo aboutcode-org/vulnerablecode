@@ -583,24 +583,28 @@ def compute_content_id(advisory_data, include_metadata=False):
     :param include_metadata: Boolean indicating whether to include `created_by` and `url`
     :return: SHA-256 hash digest as content_id
     """
-
     def normalize_text(text):
         """Normalize text by removing spaces and converting to lowercase."""
         return text.replace(" ", "").lower() if text else ""
 
+    def normalize_affected_packages(packages):
+        """Normalize a list of AffectedPackage objects"""
+        if not packages:
+            return []
+        return sorted([pkg.to_dict() for pkg in packages])
+
     def normalize_list(lst):
         """Sort a list to ensure consistent ordering."""
         return sorted(lst) if lst else []
-
-    def normalize_dict(obj):
-        """Ensure dictionary keys are ordered."""
-        return json.loads(json.dumps(obj, sort_keys=True)) if obj else {}
-
+    
+    def normalize_references(references):
+        """Normalize a list of references"""
+        return sorted([ref.to_dict() for ref in references])
     # Normalize fields
     normalized_data = {
         "summary": normalize_text(advisory_data.summary),
-        "affected_packages": normalize_list(advisory_data.affected_packages),
-        "references": normalize_list(advisory_data.references),
+        "affected_packages": normalize_affected_packages(advisory_data.affected_packages),
+        "references": normalize_references(advisory_data.references),
         "weaknesses": normalize_list(advisory_data.weaknesses),
     }
 

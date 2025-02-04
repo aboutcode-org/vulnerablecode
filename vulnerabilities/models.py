@@ -1389,6 +1389,7 @@ class Advisory(models.Model):
             date_published=self.date_published,
             weaknesses=self.weaknesses,
             url=self.url,
+            created_by=self.created_by
         )
 
 

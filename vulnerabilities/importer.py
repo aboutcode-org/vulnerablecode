@@ -46,7 +46,7 @@ from vulnerabilities.utils import update_purl_version
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(order=True)
+@dataclasses.dataclass(frozen=True)
 class VulnerabilitySeverity:
     # FIXME: this should be named scoring_system, like in the model
     system: ScoringSystem
@@ -65,6 +65,16 @@ class VulnerabilitySeverity:
             **published_at_dict,
         }
 
+    def __eq__(self, other):
+        if not isinstance(other, VulnerabilitySeverity):
+            return NotImplemented
+        return str(self.to_dict()) == str(other.to_dict())
+
+    def __lt__(self, other):
+        if not isinstance(other, VulnerabilitySeverity):
+            return NotImplemented
+        return str(self.to_dict()) < str(other.to_dict())
+
     @classmethod
     def from_dict(cls, severity: dict):
         """
@@ -79,7 +89,7 @@ class VulnerabilitySeverity:
         )
 
 
-@dataclasses.dataclass(order=True)
+@dataclasses.dataclass(frozen=True)
 class Reference:
     reference_id: str = ""
     reference_type: str = ""
@@ -98,6 +108,16 @@ class Reference:
             severities=severities,
             reference_type=self.reference_type,
         )
+
+    def __eq__(self, other):
+        if not isinstance(other, Reference):
+            return NotImplemented
+        return str(self.to_dict()) == str(other.to_dict())
+
+    def __lt__(self, other):
+        if not isinstance(other, Reference):
+            return NotImplemented
+        return str(self.to_dict()) < str(other.to_dict())
 
     def to_dict(self):
         return {
@@ -140,7 +160,7 @@ class NoAffectedPackages(Exception):
     """
 
 
-@dataclasses.dataclass(order=True, frozen=True)
+@dataclasses.dataclass(frozen=True)
 class AffectedPackage:
     """
     Relate a Package URL with a range of affected versions and a fixed version.
@@ -169,6 +189,16 @@ class AffectedPackage:
         if not self.fixed_version:
             raise ValueError(f"Affected Package {self.package!r} does not have a fixed version")
         return update_purl_version(purl=self.package, version=str(self.fixed_version))
+
+    def __eq__(self, other):
+        if not isinstance(other, AffectedPackage):
+            return NotImplemented
+        return str(self.to_dict()) == str(other.to_dict())
+
+    def __lt__(self, other):
+        if not isinstance(other, AffectedPackage):
+            return NotImplemented
+        return str(self.to_dict()) < str(other.to_dict())
 
     @classmethod
     def merge(
@@ -274,6 +304,7 @@ class AdvisoryData:
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
     url: Optional[str] = None
+    created_by: Optional[str] = None
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:

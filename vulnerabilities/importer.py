@@ -9,6 +9,7 @@
 
 import dataclasses
 import datetime
+import functools
 import logging
 import os
 import shutil
@@ -46,7 +47,8 @@ from vulnerabilities.utils import update_purl_version
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(eq=True)
+@functools.total_ordering
 class VulnerabilitySeverity:
     # FIXME: this should be named scoring_system, like in the model
     system: ScoringSystem
@@ -55,25 +57,23 @@ class VulnerabilitySeverity:
     published_at: Optional[datetime.datetime] = None
 
     def to_dict(self):
-        published_at_dict = (
-            {"published_at": self.published_at.isoformat()} if self.published_at else {}
-        )
-        return {
+        data = {
             "system": self.system.identifier,
             "value": self.value,
             "scoring_elements": self.scoring_elements,
-            **published_at_dict,
         }
-
-    def __eq__(self, other):
-        if not isinstance(other, VulnerabilitySeverity):
-            return NotImplemented
-        return str(self.to_dict()) == str(other.to_dict())
+        if self.published_at:
+            data["published_at"] = self.published_at.isoformat()
+        return data
 
     def __lt__(self, other):
         if not isinstance(other, VulnerabilitySeverity):
             return NotImplemented
-        return str(self.to_dict()) < str(other.to_dict())
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (str(self.system), self.value, self.scoring_elements, self.published_at)
 
     @classmethod
     def from_dict(cls, severity: dict):
@@ -89,7 +89,8 @@ class VulnerabilitySeverity:
         )
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(eq=True)
+@functools.total_ordering
 class Reference:
     reference_id: str = ""
     reference_type: str = ""
@@ -100,31 +101,22 @@ class Reference:
         if not self.url:
             raise TypeError("Reference must have a url")
 
-    def normalized(self):
-        severities = sorted(self.severities)
-        return Reference(
-            reference_id=self.reference_id,
-            url=self.url,
-            severities=severities,
-            reference_type=self.reference_type,
-        )
-
-    def __eq__(self, other):
-        if not isinstance(other, Reference):
-            return NotImplemented
-        return str(self.to_dict()) == str(other.to_dict())
-
     def __lt__(self, other):
         if not isinstance(other, Reference):
             return NotImplemented
-        return str(self.to_dict()) < str(other.to_dict())
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (self.reference_id, self.reference_type, self.url, tuple(self.severities))
 
     def to_dict(self):
+        """Return a normalized dictionary representation"""
         return {
             "reference_id": self.reference_id,
             "reference_type": self.reference_type,
             "url": self.url,
-            "severities": [severity.to_dict() for severity in self.severities],
+            "severities": [severity.to_dict() for severity in sorted(self.severities)],
         }
 
     @classmethod
@@ -160,7 +152,8 @@ class NoAffectedPackages(Exception):
     """
 
 
-@dataclasses.dataclass(frozen=True)
+@functools.total_ordering
+@dataclasses.dataclass(eq=True)
 class AffectedPackage:
     """
     Relate a Package URL with a range of affected versions and a fixed version.
@@ -190,15 +183,14 @@ class AffectedPackage:
             raise ValueError(f"Affected Package {self.package!r} does not have a fixed version")
         return update_purl_version(purl=self.package, version=str(self.fixed_version))
 
-    def __eq__(self, other):
-        if not isinstance(other, AffectedPackage):
-            return NotImplemented
-        return str(self.to_dict()) == str(other.to_dict())
-
     def __lt__(self, other):
         if not isinstance(other, AffectedPackage):
             return NotImplemented
-        return str(self.to_dict()) < str(other.to_dict())
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (str(self.package), str(self.affected_version_range), str(self.fixed_version))
 
     @classmethod
     def merge(
@@ -304,7 +296,6 @@ class AdvisoryData:
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
     url: Optional[str] = None
-    created_by: Optional[str] = None
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:

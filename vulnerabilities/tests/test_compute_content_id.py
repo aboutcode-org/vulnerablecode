@@ -1,11 +1,14 @@
 import datetime
-import pytz
 from unittest import TestCase
 
+import pytz
 from packageurl import PackageURL
 from univers.version_range import VersionRange
 
-from vulnerabilities.importer import AdvisoryData, AffectedPackage, Reference, VulnerabilitySeverity
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Reference
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import compute_content_id
 
@@ -54,10 +57,7 @@ class TestComputeContentId(TestCase):
             date_published=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
         )
 
-        self.assertEqual(
-            compute_content_id(advisory1),
-            compute_content_id(advisory2),
-        )
+        assert compute_content_id(advisory1) == compute_content_id(advisory2)
 
     def test_different_metadata_same_content_same_id(self):
         """
@@ -67,18 +67,14 @@ class TestComputeContentId(TestCase):
         advisory1 = self.base_advisory
 
         advisory2 = AdvisoryData(
-            summary="Test summary",
+            summary=self.base_advisory.summary,
             affected_packages=self.base_advisory.affected_packages,
             references=self.base_advisory.references,
-            date_published=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
-            created_by="different_importer",
-            url="https://different.url",
+            date_published=self.base_advisory.date_published,
+            url=self.base_advisory.url,
         )
 
-        self.assertEqual(
-            compute_content_id(advisory1),
-            compute_content_id(advisory2),
-        )
+        assert compute_content_id(advisory1) == compute_content_id(advisory2)
 
     def test_different_metadata_different_id_when_included(self):
         """
@@ -92,7 +88,6 @@ class TestComputeContentId(TestCase):
             affected_packages=self.base_advisory.affected_packages,
             references=self.base_advisory.references,
             date_published=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
-            created_by="different_importer",
             url="https://different.url",
         )
 
@@ -221,4 +216,4 @@ class TestComputeContentId(TestCase):
         self.assertEqual(
             compute_content_id(advisory1),
             compute_content_id(advisory2),
-        ) 
+        )

@@ -575,44 +575,37 @@ def get_purl_version_class(purl):
     return purl_version_class
 
 
+def normalize_text(text):
+    """Normalize text by removing whitespace and converting to lowercase."""
+    return "".join(text.split()).lower() if text else ""
+
+
+def normalize_list(lst):
+    """Sort a list to ensure consistent ordering."""
+    return sorted(lst) if lst else []
+
+
 def compute_content_id(advisory_data, include_metadata=False):
     """
-    Computes a unique content_id for an advisory by normalizing its data and hashing it.
+    Compute a unique content_id for an advisory by normalizing its data and hashing it.
 
     :param advisory_data: An AdvisoryData object
     :param include_metadata: Boolean indicating whether to include `created_by` and `url`
     :return: SHA-256 hash digest as content_id
     """
-    def normalize_text(text):
-        """Normalize text by removing spaces and converting to lowercase."""
-        return text.replace(" ", "").lower() if text else ""
 
-    def normalize_affected_packages(packages):
-        """Normalize a list of AffectedPackage objects"""
-        if not packages:
-            return []
-        return sorted([pkg.to_dict() for pkg in packages])
-
-    def normalize_list(lst):
-        """Sort a list to ensure consistent ordering."""
-        return sorted(lst) if lst else []
-    
-    def normalize_references(references):
-        """Normalize a list of references"""
-        return sorted([ref.to_dict() for ref in references])
     # Normalize fields
     normalized_data = {
         "summary": normalize_text(advisory_data.summary),
-        "affected_packages": normalize_affected_packages(advisory_data.affected_packages),
-        "references": normalize_references(advisory_data.references),
+        "affected_packages": [
+            pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+        ],
+        "references": [ref.to_dict() for ref in normalize_list(advisory_data.references) if ref],
         "weaknesses": normalize_list(advisory_data.weaknesses),
     }
-
-    if include_metadata:
-        normalized_data["created_by"] = advisory_data.created_by
-        normalized_data["url"] = advisory_data.url
+    normalized_data["url"] = advisory_data.url
 
     normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
-    content_id = hashlib.sha512(normalized_json.encode("utf-8")).hexdigest()
+    content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
 
     return content_id

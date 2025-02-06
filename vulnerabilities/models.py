@@ -53,7 +53,8 @@ from univers.versions import Version
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import compute_content_id, normalize_purl
+from vulnerabilities.utils import compute_content_id
+from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 
@@ -1315,7 +1316,7 @@ class Advisory(models.Model):
     """
 
     unique_content_id = models.CharField(
-        max_length=32,
+        max_length=64,
         blank=True,
     )
     aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
@@ -1368,10 +1369,10 @@ class Advisory(models.Model):
             checksum.update(value)
         self.unique_content_id = checksum.hexdigest()
         super().save(*args, **kwargs)
-    
+
     def save(self, *args, **kwargs):
         advisory_data = self.to_advisory_data()
-        self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)
+        self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)[:31]
         super().save(*args, **kwargs)
 
     def to_advisory_data(self) -> "AdvisoryData":
@@ -1389,7 +1390,6 @@ class Advisory(models.Model):
             date_published=self.date_published,
             weaknesses=self.weaknesses,
             url=self.url,
-            created_by=self.created_by
         )
 
 

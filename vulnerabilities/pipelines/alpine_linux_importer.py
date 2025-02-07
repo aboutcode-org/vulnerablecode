@@ -254,7 +254,8 @@ def load_advisories(
                     affected_packages.append(
                         AffectedPackage(
                             package=PackageURL(
-                                type="alpine",
+                                type="apk",
+                                namespace="alpine",
                                 name=pkg_infos["name"],
                                 qualifiers=qualifiers,
                             ),
@@ -266,7 +267,8 @@ def load_advisories(
                 affected_packages.append(
                     AffectedPackage(
                         package=PackageURL(
-                            type="alpine",
+                            type="apk",
+                            namespace="alpine",
                             name=pkg_infos["name"],
                             qualifiers=qualifiers,
                         ),

@@ -34,6 +34,7 @@ from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import alpine_linux_importer
+from vulnerabilities.pipelines import anchore_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
@@ -41,8 +42,6 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
-from vulnerabilities.pipelines.anchore_importer import AnchoreImporterPipeline
-
 
 IMPORTERS_REGISTRY = [
     openssl.OpensslImporter,
@@ -79,7 +78,7 @@ IMPORTERS_REGISTRY = [
     nvd_importer.NVDImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
     alpine_linux_importer.AlpineLinuxImporterPipeline,
-    AnchoreImporterPipeline,
+    anchore_importer.AnchoreImporterPipeline,  # Updated to follow the consistent style
 ]
 
 IMPORTERS_REGISTRY = {

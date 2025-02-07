@@ -1,11 +1,23 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 from datetime import datetime
 from typing import Iterable
+
 import requests
 import yaml
 from packageurl import PackageURL
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData, AffectedPackage, Reference
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Reference
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 
 

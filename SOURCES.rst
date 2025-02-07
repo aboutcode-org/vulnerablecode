@@ -1,3 +1,10 @@
+.. _anchore:
+
+Anchore NVD Overrides
+---------------------
+Anchore provides overrides for NVD data to improve accuracy. This importer fetches data from their
+`nvd-data-overrides <https://github.com/anchore/nvd-data-overrides>`_ repository.
+
 +----------------+------------------------------------------------------------------------------------------------------+----------------------------------------------------+
 |Importer Name   | Data Source                                                                                          |Ecosystems Covered                                  |
 +================+======================================================================================================+====================================================+

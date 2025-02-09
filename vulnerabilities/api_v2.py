@@ -570,7 +570,7 @@ class CodeFixSerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeFix
         fields = [
-            "id",
+            "uuid",
             "commits",
             "pulls",
             "downloads",
@@ -594,6 +594,8 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = CodeFix.objects.all()
     serializer_class = CodeFixSerializer
+    lookup_field = 'uuid'
+    lookup_url_kwarg = 'uuid'
 
     def get_queryset(self):
         """

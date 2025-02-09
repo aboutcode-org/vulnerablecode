@@ -50,7 +50,7 @@ api_router.register("aliases", AliasViewSet, basename="alias")
 api_v2_router = OptionalSlashRouter()
 api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
-api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
+api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix", lookup_field="uuid",)
 
 
 urlpatterns = [

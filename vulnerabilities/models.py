@@ -11,12 +11,14 @@ import csv
 import hashlib
 import json
 import logging
+import uuid
 import xml.etree.ElementTree as ET
 from contextlib import suppress
 from functools import cached_property
 from itertools import groupby
 from operator import attrgetter
 from typing import Union
+from django.db import models
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
@@ -1783,6 +1785,14 @@ class CodeFix(CodeChange):
     - with a specific affected package version
     - optionally with a specific fixing package version when it is known
     """
+
+    uuid = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+        help_text="Unique identifier for this code fix"
+    )
 
     affected_package_vulnerability = models.ForeignKey(
         "AffectedByPackageRelatedVulnerability",

@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     "drf_spectacular",
     # required for Django collectstatic discovery
     "drf_spectacular_sidecar",
+    "agent",
 )
 
 MIDDLEWARE = (

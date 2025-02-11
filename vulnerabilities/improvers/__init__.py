@@ -17,6 +17,7 @@ from vulnerabilities.pipelines import compute_package_version_rank
 from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
 from vulnerabilities.pipelines import enhance_with_metasploit
+from vulnerabilities.pipelines import fill_vulnerability_summary_pipeline
 from vulnerabilities.pipelines import flag_ghost_packages
 
 IMPROVERS_REGISTRY = [
@@ -45,6 +46,7 @@ IMPROVERS_REGISTRY = [
     compute_package_version_rank.ComputeVersionRankPipeline,
     collect_commits.CollectFixCommitsPipeline,
     add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
+    fill_vulnerability_summary_pipeline.FillVulnerabilitySummariesPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

@@ -1360,19 +1360,6 @@ class Advisory(models.Model):
         ordering = ["aliases", "date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
-        checksum = hashlib.md5()
-        for field in (
-            self.summary,
-            self.affected_packages,
-            self.references,
-            self.weaknesses,
-        ):
-            value = json.dumps(field, separators=(",", ":")).encode("utf-8")
-            checksum.update(value)
-        self.unique_content_id = checksum.hexdigest()
-        super().save(*args, **kwargs)
-
-    def save(self, *args, **kwargs):
         advisory_data = self.to_advisory_data()
         self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)
         super().save(*args, **kwargs)

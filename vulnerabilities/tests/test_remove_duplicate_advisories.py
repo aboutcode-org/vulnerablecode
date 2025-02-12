@@ -50,12 +50,13 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
 
         # Run the pipeline
         pipeline = RemoveDuplicateAdvisoriesPipeline()
+        pipeline.recompute_content_ids()
         pipeline.remove_duplicates()
 
-        # Check that only the latest advisory remains
+        # Check that only the first advisory remains
         remaining = Advisory.objects.all()
         self.assertEqual(remaining.count(), 1)
-        self.assertEqual(remaining.first().date_imported, dates[-1])
+        self.assertEqual(remaining.first().date_imported, dates[0])
 
     def test_different_content_preserved(self):
         """
@@ -85,7 +86,7 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
         # Check that both advisories remain
         self.assertEqual(Advisory.objects.count(), 2)
 
-    def test_update_content_ids(self):
+    def test_recompute_content_ids(self):
         """
         Test that advisories without content IDs get them updated.
         """
@@ -100,7 +101,7 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
 
         # Run the pipeline
         pipeline = RemoveDuplicateAdvisoriesPipeline()
-        pipeline.update_content_ids()
+        pipeline.recompute_content_ids()
 
         # Check that content ID was updated
         advisory.refresh_from_db()

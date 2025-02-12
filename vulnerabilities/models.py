@@ -1317,7 +1317,9 @@ class Advisory(models.Model):
 
     unique_content_id = models.CharField(
         max_length=64,
+        db_index=True,
         blank=True,
+        help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
     )
     aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
     summary = models.TextField(
@@ -1372,7 +1374,7 @@ class Advisory(models.Model):
 
     def save(self, *args, **kwargs):
         advisory_data = self.to_advisory_data()
-        self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)[:31]
+        self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)
         super().save(*args, **kwargs)
 
     def to_advisory_data(self) -> "AdvisoryData":

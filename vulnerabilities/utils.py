@@ -595,15 +595,32 @@ def compute_content_id(advisory_data, include_metadata=False):
     """
 
     # Normalize fields
-    normalized_data = {
-        "summary": normalize_text(advisory_data.summary),
-        "affected_packages": [
-            pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
-        ],
-        "references": [ref.to_dict() for ref in normalize_list(advisory_data.references) if ref],
-        "weaknesses": normalize_list(advisory_data.weaknesses),
-    }
-    normalized_data["url"] = advisory_data.url
+    from vulnerabilities.importer import AdvisoryData
+    from vulnerabilities.models import Advisory
+
+    if isinstance(advisory_data, Advisory):
+        normalized_data = {
+            "summary": normalize_text(advisory_data.summary),
+            "affected_packages": [
+                pkg for pkg in normalize_list(advisory_data.affected_packages) if pkg
+            ],
+            "references": [ref for ref in normalize_list(advisory_data.references) if ref],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+        }
+        normalized_data["url"] = advisory_data.url
+
+    elif isinstance(advisory_data, AdvisoryData):
+        normalized_data = {
+            "summary": normalize_text(advisory_data.summary),
+            "affected_packages": [
+                pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+            ],
+            "references": [
+                ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
+            ],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+        }
+        normalized_data["url"] = advisory_data.url
 
     normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
     content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()

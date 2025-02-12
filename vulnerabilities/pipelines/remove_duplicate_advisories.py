@@ -9,8 +9,8 @@
 
 import logging
 from itertools import groupby
-from operator import attrgetter
 
+from aboutcode.pipeline import LoopProgress
 from django.db.models import Count
 from django.db.models import Q
 
@@ -26,54 +26,58 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
 
     @classmethod
     def steps(cls):
-        return (cls.remove_duplicates,)
+        return (
+            cls.recompute_content_ids,
+            cls.remove_duplicates,
+        )
 
     def remove_duplicates(self):
         """
         Find advisories with the same content and keep only the latest one.
         """
-        # Get all advisories that have duplicates based on content ID
-        duplicate_content_ids = (
-            Advisory.objects.values("unique_content_id")
-            .annotate(count=Count("id"))
-            .filter(count__gt=1)
-            .values_list("unique_content_id", flat=True)
+
+        duplicated_advisories = groupby(
+            Advisory.objects.order_by("unique_content_id").all().paginated(),
+            key=lambda x: x.unique_content_id,
         )
+        progress = LoopProgress(total_iterations=Advisory.objects.count(), logger=self.log)
+        for _content_id, advisories in progress.iter(duplicated_advisories):
+            advisories = list(advisories)
+            self.log(
+                f"Removing duplicates for content ID {_content_id} {len(advisories)}",
+                level=logging.INFO,
+            )
+            oldest = min(advisories, key=lambda x: x.date_imported)
+            try:
+                advisory_ids = []
+                for adv in advisories:
+                    if adv.id != oldest.id:
+                        advisory_ids.append(adv.id)
+                Advisory.objects.filter(id__in=advisory_ids).delete()
+            except Exception as e:
+                self.log(f"Error deleting advisories: {e}", level=logging.ERROR)
 
-        self.log(
-            f"Found {len(duplicate_content_ids)} content IDs with duplicates", level=logging.INFO
-        )
+            self.log(
+                f"Kept advisory {oldest.id} and removed "
+                f"{len(list(advisories)) - 1} duplicates for content ID {_content_id}",
+                level=logging.INFO,
+            )
 
-        for content_id in duplicate_content_ids:
-            # Get all advisories with this content ID
-            advisories = Advisory.objects.filter(unique_content_id=content_id)
-
-            # Find the latest advisory
-            latest = advisories.latest("date_imported")
-
-            # Delete all except the latest
-            advisories.exclude(id=latest.id).delete()
-
-            if self.log:
-                self.log(
-                    f"Kept advisory {latest.id} and removed "
-                    f"{advisories.count() - 1} duplicates for content ID {content_id}",
-                    level=logging.INFO,
-                )
-
-    def update_content_ids(self):
+    def recompute_content_ids(self):
         """
-        Update content IDs for all advisories that don't have one.
+        Recompute content IDs for all advisories.
         """
-        advisories = Advisory.objects.filter(
-            Q(unique_content_id="") | Q(unique_content_id__isnull=True)
+
+        advisories = []
+
+        progress = LoopProgress(
+            total_iterations=Advisory.objects.count(),
+            progress_step=1,
+            logger=self.log,
         )
 
-        self.log(f"Found {advisories.count()} advisories without content ID", level=logging.INFO)
-
-        for advisory in advisories:
+        for advisory in progress.iter(Advisory.objects.all().paginated()):
             advisory.unique_content_id = compute_content_id(advisory)
-            advisory.save()
+            advisories.append(advisory)
 
-            if self.log:
-                self.log(f"Updated content ID for advisory {advisory.id}", level=logging.DEBUG)
+        Advisory.objects.bulk_update(advisories, ["unique_content_id"], batch_size=1000)

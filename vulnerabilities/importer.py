@@ -73,7 +73,7 @@ class VulnerabilitySeverity:
 
     # TODO: Add cache
     def _cmp_key(self):
-        return (str(self.system), self.value, self.scoring_elements, self.published_at)
+        return (self.system.identifier, self.value, self.scoring_elements, self.published_at)
 
     @classmethod
     def from_dict(cls, severity: dict):
@@ -190,7 +190,11 @@ class AffectedPackage:
 
     # TODO: Add cache
     def _cmp_key(self):
-        return (str(self.package), str(self.affected_version_range), str(self.fixed_version))
+        return (
+            str(self.package),
+            str(self.affected_version_range or ""),
+            str(self.fixed_version or ""),
+        )
 
     @classmethod
     def merge(

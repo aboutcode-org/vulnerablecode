@@ -1318,7 +1318,10 @@ class Advisory(models.Model):
         max_length=32,
         blank=True,
     )
-    aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
+    aliases = models.ManyToManyField(
+        Alias,
+        related_name="advisories",
+    )
     summary = models.TextField(
         blank=True,
     )
@@ -1353,8 +1356,8 @@ class Advisory(models.Model):
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
-        unique_together = ["aliases", "unique_content_id", "date_published", "url"]
-        ordering = ["aliases", "date_published", "unique_content_id"]
+        unique_together = ["unique_content_id", "date_published", "url"]
+        ordering = ["date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
         checksum = hashlib.md5()

@@ -63,7 +63,10 @@ class VulnerabilitySeverity:
             "scoring_elements": self.scoring_elements,
         }
         if self.published_at:
-            data["published_at"] = self.published_at.isoformat()
+            if isinstance(self.published_at, datetime.datetime):
+                data["published_at"] = self.published_at.isoformat()
+            else:
+                data["published_at"] = self.published_at
         return data
 
     def __lt__(self, other):

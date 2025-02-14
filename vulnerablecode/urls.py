@@ -20,6 +20,7 @@ from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
+from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.views import ApiUserCreateView
@@ -27,6 +28,7 @@ from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import VulnerabilityDetails
+from vulnerabilities.views import VulnerabilityPackagesDetails
 from vulnerabilities.views import VulnerabilitySearch
 from vulnerablecode.settings import DEBUG_TOOLBAR
 
@@ -48,6 +50,8 @@ api_router.register("aliases", AliasViewSet, basename="alias")
 api_v2_router = OptionalSlashRouter()
 api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
+api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
+
 
 urlpatterns = [
     path("api/v2/", include(api_v2_router.urls)),
@@ -79,6 +83,11 @@ urlpatterns = [
         "vulnerabilities/<str:vulnerability_id>",
         VulnerabilityDetails.as_view(),
         name="vulnerability_details",
+    ),
+    path(
+        "vulnerabilities/<str:vulnerability_id>/packages",
+        VulnerabilityPackagesDetails.as_view(),
+        name="vulnerability_package_details",
     ),
     path(
         "api/",

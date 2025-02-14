@@ -9,6 +9,7 @@
 
 import json
 import os
+from pathlib import Path
 
 import pytest
 from packageurl import PackageURL
@@ -16,17 +17,18 @@ from univers.versions import AlpineLinuxVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importers.alpine_linux import fetch_advisory_directory_links
-from vulnerabilities.importers.alpine_linux import fetch_advisory_links
-from vulnerabilities.importers.alpine_linux import load_advisories
-from vulnerabilities.importers.alpine_linux import process_record
+from vulnerabilities.pipelines.alpine_linux_importer import fetch_advisory_directory_links
+from vulnerabilities.pipelines.alpine_linux_importer import fetch_advisory_links
+from vulnerabilities.pipelines.alpine_linux_importer import load_advisories
+from vulnerabilities.pipelines.alpine_linux_importer import process_record
 from vulnerabilities.references import XsaReference
+from vulnerabilities.tests.pipelines import TestLogger
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data", "alpine")
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "alpine"
 
 
-def test_process_record(caplog):
+def test_process_record():
+    logger = TestLogger()
     expected_advisories = [
         AdvisoryData(
             aliases=[],
@@ -34,8 +36,8 @@ def test_process_record(caplog):
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={
@@ -50,8 +52,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "armhf", "distroversion": "v3.11", "reponame": "main"},
@@ -62,8 +64,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "armv7", "distroversion": "v3.11", "reponame": "main"},
@@ -74,8 +76,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={
@@ -90,8 +92,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "s390x", "distroversion": "v3.11", "reponame": "main"},
@@ -102,8 +104,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "x86", "distroversion": "v3.11", "reponame": "main"},
@@ -114,8 +116,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
@@ -141,8 +143,8 @@ def test_process_record(caplog):
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={
@@ -157,8 +159,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "armhf", "distroversion": "v3.11", "reponame": "main"},
@@ -169,8 +171,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "armv7", "distroversion": "v3.11", "reponame": "main"},
@@ -181,8 +183,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={
@@ -197,8 +199,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "s390x", "distroversion": "v3.11", "reponame": "main"},
@@ -209,8 +211,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "x86", "distroversion": "v3.11", "reponame": "main"},
@@ -221,8 +223,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="xen",
                         version=None,
                         qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
@@ -248,8 +250,8 @@ def test_process_record(caplog):
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={
@@ -264,8 +266,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "armhf", "distroversion": "v3.11", "reponame": "main"},
@@ -276,8 +278,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "armv7", "distroversion": "v3.11", "reponame": "main"},
@@ -288,8 +290,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={
@@ -304,8 +306,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "s390x", "distroversion": "v3.11", "reponame": "main"},
@@ -316,8 +318,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "x86", "distroversion": "v3.11", "reponame": "main"},
@@ -328,8 +330,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
@@ -349,8 +351,8 @@ def test_process_record(caplog):
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={
@@ -365,8 +367,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "armhf", "distroversion": "v3.11", "reponame": "main"},
@@ -377,8 +379,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "armv7", "distroversion": "v3.11", "reponame": "main"},
@@ -389,8 +391,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={
@@ -405,8 +407,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "s390x", "distroversion": "v3.11", "reponame": "main"},
@@ -417,8 +419,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "x86", "distroversion": "v3.11", "reponame": "main"},
@@ -429,8 +431,8 @@ def test_process_record(caplog):
                 ),
                 AffectedPackage(
                     package=PackageURL(
-                        type="alpine",
-                        namespace=None,
+                        type="apk",
+                        namespace="alpine",
                         name="apk-tools",
                         version=None,
                         qualifiers={"arch": "x86_64", "distroversion": "v3.11", "reponame": "main"},
@@ -445,14 +447,18 @@ def test_process_record(caplog):
             url="https://secdb.alpinelinux.org/v3.11/",
         ),
     ]
-    with open(os.path.join(TEST_DATA, os.path.join(TEST_DATA, "v3.11", "main.json"))) as f:
+    with open(TEST_DATA / "v3.11/main.json") as f:
         found_advisories = list(
-            process_record(json.loads(f.read()), "https://secdb.alpinelinux.org/v3.11/")
+            process_record(
+                json.loads(f.read()),
+                "https://secdb.alpinelinux.org/v3.11/",
+                logger=logger.write,
+            )
         )
         assert found_advisories == expected_advisories
     assert (
         "'4.10-1-r1' is not a valid AlpineVersion InvalidVersion(\"'4.10-1-r1' is not a valid <class 'univers.versions.AlpineLinuxVersion'>\")"
-        in caplog.text
+        in logger.getvalue()
     )
 
 
@@ -474,14 +480,22 @@ def test_fetch_advisory_directory_links():
         "https://secdb.alpinelinux.org/v3.8/",
         "https://secdb.alpinelinux.org/v3.9/",
     ]
-    with open(os.path.join(TEST_DATA, "web_pages", "directory.html")) as f:
-        assert fetch_advisory_directory_links(f.read()) == expected
+    with open(TEST_DATA / "web_pages/directory.html") as f:
+        assert (
+            fetch_advisory_directory_links(f.read(), "https://secdb.alpinelinux.org/") == expected
+        )
 
 
-def test_fetch_advisory_directory_links_failure(caplog):
-    with open(os.path.join(TEST_DATA, "web_pages", "fail_directory.html")) as f:
-        assert fetch_advisory_directory_links(f.read()) == []
-        assert "No versions found in 'https://secdb.alpinelinux.org/'" in caplog.text
+def test_fetch_advisory_directory_links_failure():
+    logger = TestLogger()
+    with open(TEST_DATA / "web_pages/fail_directory.html") as f:
+        assert (
+            fetch_advisory_directory_links(
+                f.read(), "https://secdb.alpinelinux.org/", logger=logger.write
+            )
+            == []
+        )
+        assert "No versions found in 'https://secdb.alpinelinux.org/'" in logger.getvalue()
 
 
 def test_fetch_advisory_links():
@@ -489,45 +503,49 @@ def test_fetch_advisory_links():
         "https://secdb.alpinelinux.org/v3.11/community.json",
         "https://secdb.alpinelinux.org/v3.11/main.json",
     ]
-    with open(os.path.join(TEST_DATA, "web_pages", "v3.11.html")) as f:
+    with open(TEST_DATA / "web_pages/v3.11.html") as f:
         assert (
             list(fetch_advisory_links(f.read(), "https://secdb.alpinelinux.org/v3.11/")) == expected
         )
 
 
-def test_fetch_advisory_links_failure(caplog):
-    with open(os.path.join(TEST_DATA, "web_pages", "fail_directory.html")) as f:
-        assert list(fetch_advisory_links(f.read(), "v3.11")) == []
-        assert "No anchor tags found in 'v3.11'" in caplog.text
+def test_fetch_advisory_links_failure():
+    logger = TestLogger()
+    with open(TEST_DATA / "web_pages/fail_directory.html") as f:
+        assert list(fetch_advisory_links(f.read(), "v3.11", logger=logger.write)) == []
+        assert "No anchor tags found in 'v3.11'" in logger.getvalue()
 
 
-def test_process_record_without_packages(caplog):
-    with open(os.path.join(TEST_DATA, os.path.join(TEST_DATA, "v3.3", "community.json"))) as f:
-        assert list(process_record(json.loads(f.read()), "")) == []
+def test_process_record_without_packages():
+    logger = TestLogger()
+    with open(TEST_DATA / TEST_DATA / "v3.3/community.json") as f:
+        assert list(process_record(json.loads(f.read()), "", logger=logger.write)) == []
         assert (
             "\"packages\" not found in this record {'apkurl': '{{urlprefix}}/{{distroversion}}/{{reponame}}/{{arch}}/{{pkg.name}}-{{pkg.ver}}.apk', 'archs': ['armhf', 'x86', 'x86_64'], 'reponame': 'community', 'urlprefix': 'https://dl-cdn.alpinelinux.org/alpine', 'distroversion': 'v3.3', 'packages': []}"
-            in caplog.text
+            in logger.getvalue()
         )
 
 
-def test_load_advisories_package_without_name(caplog):
+def test_load_advisories_package_without_name():
+    logger = TestLogger()
     package = {
         "secfixes": {"4.10.0-r1": ["XSA-248"], "4.10.0-r2": ["CVE-2018-7540 XSA-252"]},
     }
-    list(load_advisories(package, "v3.11", "main", archs=[], url=""))
+    list(load_advisories(package, "v3.11", "main", archs=[], url="", logger=logger.write))
     assert (
         "\"name\" is not available in package {'secfixes': {'4.10.0-r1': ['XSA-248'], '4.10.0-r2': ['CVE-2018-7540 XSA-252']}}"
-        in caplog.text
+        in logger.getvalue()
     )
 
 
-def test_load_advisories_package_without_secfixes(caplog):
+def test_load_advisories_package_without_secfixes():
+    logger = TestLogger()
     package = {
         "name": "xen",
         "secfixes": {"4.10.0-r1": []},
     }
-    list(load_advisories(package, "v3.11", "main", archs=[], url=""))
-    assert "No fixed vulnerabilities in version '4.10.0-r1'" in caplog.text
+    list(load_advisories(package, "v3.11", "main", archs=[], url="", logger=logger.write))
+    assert "No fixed vulnerabilities in version '4.10.0-r1'" in logger.getvalue()
 
 
 @pytest.mark.parametrize(
@@ -542,13 +560,14 @@ def test_load_advisories_package_without_secfixes(caplog):
         "4.10-1-r1",
     ],
 )
-def test_load_advisories_package_with_invalid_alpine_version(test_case, caplog):
+def test_load_advisories_package_with_invalid_alpine_version(test_case):
+    logger = TestLogger()
     package = {
         "name": "xen",
         "secfixes": {f"{test_case}": ["XSA-248"]},
     }
-    list(load_advisories(package, "v3.11", "main", archs=[], url=""))
+    list(load_advisories(package, "v3.11", "main", archs=[], url="", logger=logger.write))
     assert (
         f"{test_case!r} is not a valid AlpineVersion InvalidVersion(\"{test_case!r} is not a valid <class 'univers.versions.AlpineLinuxVersion'>\")"
-        in caplog.text
+        in logger.getvalue()
     )

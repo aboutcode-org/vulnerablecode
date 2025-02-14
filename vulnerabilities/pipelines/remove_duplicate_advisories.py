@@ -79,7 +79,7 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
         batch_size = 1000
 
         for advisory in progress.iter(Advisory.objects.all().paginated()):
-            advisory.unique_content_id = compute_content_id(advisory)
+            advisory.unique_content_id = compute_content_id(advisory.to_advisory_data())
             advisories.append(advisory)
             if len(advisories) % batch_size == 0:
                 Advisory.objects.bulk_update(

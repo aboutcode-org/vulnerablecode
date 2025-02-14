@@ -600,6 +600,7 @@ def compute_content_id(advisory_data, include_metadata=False):
 
     if isinstance(advisory_data, Advisory):
         normalized_data = {
+            "aliases": normalize_list(advisory_data.aliases),
             "summary": normalize_text(advisory_data.summary),
             "affected_packages": [
                 pkg for pkg in normalize_list(advisory_data.affected_packages) if pkg
@@ -611,6 +612,7 @@ def compute_content_id(advisory_data, include_metadata=False):
 
     elif isinstance(advisory_data, AdvisoryData):
         normalized_data = {
+            "aliases": normalize_list(advisory_data.aliases),
             "summary": normalize_text(advisory_data.summary),
             "affected_packages": [
                 pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg

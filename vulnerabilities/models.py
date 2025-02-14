@@ -1356,7 +1356,7 @@ class Advisory(models.Model):
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
-        unique_together = ["aliases", "unique_content_id", "date_published", "url"]
+        unique_together = ["aliases", "date_published", "url"]
         ordering = ["aliases", "date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):

@@ -1,0 +1,46 @@
+import re
+import json
+import uuid
+
+def is_valid_uuid(value):
+    try:
+        uuid.UUID(value, version=4)
+        return True
+    except ValueError:
+        return False
+
+def test_api_invalid_codefix_ids(test_client, mocker):
+    # Mock an invalid response
+    mock_data = {
+        "vulnerabilities": [
+            {"codefix_id": "invalid-uuid-format", "name": "Fake Vuln"},
+        ]
+    }
+    # Use a simple mock response instead of the real API call
+    mocker.patch.object(test_client, "get", return_value=mocker.Mock(json=lambda: mock_data, status_code=200))
+
+    response = test_client.get("/api/vulnerabilities/")
+    data = response.json()
+
+    # Verify that the test fails if an invalid UUID is present
+    for vulnerability in data.get("vulnerabilities", []):
+        if "codefix_id" in vulnerability:
+            codefix_id = vulnerability["codefix_id"]
+            assert not is_valid_uuid(codefix_id), (
+                f"'{codefix_id}' was unexpectedly treated as a valid UUID."
+            )
+    
+  
+    for vulnerability in data.get("vulnerabilities", []):
+        if "codefix_id" in vulnerability:
+            codefix_id = vulnerability["codefix_id"]
+            # Check that it is a valid UUID
+            assert is_valid_uuid(codefix_id), (
+                f"codefix_id '{codefix_id}' is not a valid UUID."
+            )
+    
+    
+    response_str = json.dumps(data)
+
+    leaked_pattern = re.compile(r"id\d+")
+    assert not leaked_pattern.search(response_str), "Old codefix ID format still present in the response."

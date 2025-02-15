@@ -68,7 +68,7 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
         Recompute content IDs for all advisories.
         """
 
-        advisories = []
+        advisories_list = []
 
         advisories = Advisory.objects.exclude(unique_content_id__length=64)
 
@@ -82,12 +82,12 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
 
         for advisory in progress.iter(advisories.paginated(per_page=batch_size)):
             advisory.unique_content_id = compute_content_id(advisory.to_advisory_data())
-            advisories.append(advisory)
-            if len(advisories) % batch_size == 0:
+            advisories_list.append(advisory)
+            if len(advisories_list) % batch_size == 0:
                 Advisory.objects.bulk_update(
-                    advisories, ["unique_content_id"], batch_size=batch_size
+                    advisories_list, ["unique_content_id"], batch_size=batch_size
                 )
-                advisories = []
+                advisories_list = []
 
         if advisories:
             Advisory.objects.bulk_update(advisories, ["unique_content_id"], batch_size=batch_size)

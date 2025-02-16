@@ -58,12 +58,18 @@ class PackageSearch(ListView):
         on exact purl, partial purl or just name and namespace.
         """
         query = query or self.request.GET.get("search") or ""
-        return (
+        queryset = (
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
             .order_by("package_url")
         )
+        if hasattr(self, "request"):
+            vulnerable_only = self.request.GET.get("vulnerable_only", "").lower()
+            if vulnerable_only in ["true", "false"]:
+                queryset = queryset.with_is_vulnerable()
+                queryset = queryset.filter(is_vulnerable=vulnerable_only == "true")
+        return queryset
 
 
 class VulnerabilitySearch(ListView):

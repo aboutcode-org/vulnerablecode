@@ -70,6 +70,14 @@ urlpatterns = [
         name="package_search",
     ),
     re_path(
+        r'^api/packages/(?P<package_url>pkg:.+?)/?$',
+        PackageViewSet.as_view({"get": "retrieve"}),
+    ),
+    re_path(r"^api/vulnerabilities/(?P<vulnerability_id>VCID-[\w-]+)/$", 
+        VulnerabilityViewSet.as_view({"get": "retrieve"}), 
+        name="vulnerability-detail"),
+
+    re_path(
         r"^packages/(?P<purl>pkg:.+)$",
         PackageDetails.as_view(),
         name="package_details",

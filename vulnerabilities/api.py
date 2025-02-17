@@ -13,6 +13,10 @@ from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from django.db.models import Prefetch
+from django.db.models import Exists
+from django.db.models import OuterRef
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from packageurl import PackageURL
@@ -22,6 +26,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 
 from vulnerabilities.models import Alias
@@ -236,6 +241,10 @@ class VulnerabilitySerializer(BaseResourceSerializer):
     exploits = ExploitSerializer(many=True, read_only=True)
     weaknesses = WeaknessSerializer(many=True)
     severity_range_score = serializers.SerializerMethodField()
+    url = serializers.HyperlinkedIdentityField(
+        view_name="vulnerability-detail",
+        lookup_field="vulnerability_id"
+    )
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -308,6 +317,8 @@ class PackageSerializer(BaseResourceSerializer):
     next_non_vulnerable_version = serializers.CharField(read_only=True)
     latest_non_vulnerable_version = serializers.CharField(read_only=True)
 
+    url = serializers.SerializerMethodField()
+
     purl = serializers.CharField(source="package_url")
 
     affected_by_vulnerabilities = serializers.SerializerMethodField("get_affected_vulnerabilities")
@@ -317,6 +328,10 @@ class PackageSerializer(BaseResourceSerializer):
     qualifiers = serializers.SerializerMethodField()
 
     is_vulnerable = serializers.BooleanField()
+
+    def get_url(self, package):
+        request = self.context.get("request")
+        return reverse("package_details", kwargs={'purl': package.purl}, request=request)
 
     def get_qualifiers(self, package):
         return normalize_qualifiers(package.qualifiers, encode=False)
@@ -469,6 +484,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
+    lookup_field = "package_url"
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
     throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
@@ -689,6 +705,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
     throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+    lookup_field = "vulnerability_id"
 
 
 class CPEFilterSet(filters.FilterSet):

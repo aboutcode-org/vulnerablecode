@@ -6,7 +6,6 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
 from vulnerabilities.importers import apache_httpd
 from vulnerabilities.importers import apache_kafka
 from vulnerabilities.importers import apache_tomcat
@@ -35,6 +34,7 @@ from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import alpine_linux_importer
+from vulnerabilities.pipelines import anchore_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
@@ -78,6 +78,7 @@ IMPORTERS_REGISTRY = [
     nvd_importer.NVDImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
     alpine_linux_importer.AlpineLinuxImporterPipeline,
+    anchore_importer.AnchoreImporterPipeline,  # Updated to follow the consistent style
 ]
 
 IMPORTERS_REGISTRY = {

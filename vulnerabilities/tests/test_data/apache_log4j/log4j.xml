@@ -1,0 +1,425 @@
+<bom xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://cyclonedx.org/schema/bom/1.5" xsi:schemaLocation="http://cyclonedx.org/schema/bom/1.5 https://cyclonedx.org/schema/bom-1.5.xsd" version="2" serialNumber="urn:uuid:dfa35519-9734-4259-bba1-3e825cf4be06">
+
+  <!-- We add *dummy* components to refer to in `affects` blocks.
+       This is necessary, since not all Log4j components have SBOMs associated with them. -->
+  <components>
+    <component type="library" bom-ref="pkg:maven/org.apache.logging.log4j/log4j-core?type=jar">
+      <group>org.apache.logging.log4j</group>
+      <name>log4j-core</name>
+      <cpe>cpe:2.3:a:apache:log4j:*:*:*:*:*:*:*:*</cpe>
+      <purl>pkg:maven/org.apache.logging.log4j/log4j-core?type=jar</purl>
+    </component>
+  </components>
+
+  <vulnerabilities>
+
+    <vulnerability>
+      <id>CVE-2021-44832</id>
+      <source>
+        <name>NVD</name>
+        <url>https://nvd.nist.gov/vuln/detail/CVE-2021-44832</url>
+      </source>
+      <ratings>
+        <rating>
+          <source>
+            <name>NVD</name>
+            <url>
+              <![CDATA[https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H&version=3.1]]></url>
+          </source>
+          <score>6.6</score>
+          <severity>medium</severity>
+          <method>CVSSv3</method>
+          <vector>AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H</vector>
+        </rating>
+      </ratings>
+      <cwes>
+        <cwe>20</cwe>
+        <cwe>74</cwe>
+      </cwes>
+      <description><![CDATA[An attacker with write access to the logging configuration can construct a malicious configuration using a JDBC Appender with a data source referencing a JNDI URI which can execute remote code.
+This issue is fixed by limiting JNDI data source names to the `java` protocol.]]></description>
+      <recommendation><![CDATA[Upgrade to `2.3.2` (for Java 6), `2.12.4` (for Java 7), or `2.17.1` (for Java 8 and later).
+
+In prior releases confirm that if the JDBC Appender is being used it is not configured to use any protocol other than `java`.]]></recommendation>
+      <created>2021-12-28T00:00:00Z</created>
+      <published>2021-12-28T00:00:00Z</published>
+      <updated>2022-08-08T00:00:00Z</updated>
+      <affects>
+        <target>
+          <ref>pkg:maven/org.apache.logging.log4j/log4j-core?type=jar</ref>
+          <versions>
+            <version>
+              <range><![CDATA[vers:maven/>=2.0-beta7|<2.3.2]]></range>
+            </version>
+            <version>
+              <range><![CDATA[vers:maven/>=2.4|<2.12.4]]></range>
+            </version>
+            <version>
+              <range><![CDATA[vers:maven/>=2.13.0|<2.17.1]]></range>
+            </version>
+          </versions>
+        </target>
+      </affects>
+    </vulnerability>
+
+    <vulnerability>
+      <id>CVE-2021-45105</id>
+      <source>
+        <name>NVD</name>
+        <url>https://nvd.nist.gov/vuln/detail/CVE-2021-45105</url>
+      </source>
+      <references>
+        <reference>
+          <id>LOG4J2-3230</id>
+          <source>
+            <name>Issue tracker</name>
+            <url>https://issues.apache.org/jira/browse/LOG4J2-3230</url>
+          </source>
+        </reference>
+      </references>
+      <ratings>
+        <rating>
+          <source>
+            <name>NVD</name>
+            <url>
+              <![CDATA[https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H&version=3.1]]></url>
+          </source>
+          <score>5.9</score>
+          <severity>medium</severity>
+          <method>CVSSv3</method>
+          <vector>AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H</vector>
+        </rating>
+      </ratings>
+      <cwes>
+        <cwe>20</cwe>
+        <cwe>674</cwe>
+      </cwes>
+      <description><![CDATA[Log4j versions `2.0-alpha1` through `2.16.0` (excluding `2.3.1` and `2.12.3`), did not protect from uncontrolled recursion that can be implemented using self-referential lookups.
+When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, `$${ctx:loginId}`), attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup, resulting in a `StackOverflowError` that will terminate the process.]]></description>
+      <recommendation><![CDATA[Upgrade to `2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later).
+
+Alternatively, this infinite recursion issue can be mitigated in configuration:
+
+* In PatternLayout in the logging configuration, replace Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` with Thread Context Map patterns (`%X`, `%mdc`, or `%MDC`).
+* Otherwise, in the configuration, remove references to Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` where they originate
+from sources external to the application such as HTTP headers or user input.
+Note that this mitigation is insufficient in releases older than `2.12.2` (for Java 7), and `2.16.0` (for Java 8 and later) as the issues fixed in those releases will still be present.]]></recommendation>
+      <created>2021-12-18T00:00:00Z</created>
+      <published>2021-12-18T00:00:00Z</published>
+      <updated>2022-10-06T00:00:00Z</updated>
+      <credits>
+        <individuals>
+          <individual>
+            <name>Hideki Okamoto</name>
+          </individual>
+          <individual>
+            <name>Guy Lederfein</name>
+          </individual>
+        </individuals>
+      </credits>
+      <affects>
+        <target>
+          <ref>pkg:maven/org.apache.logging.log4j/log4j-core?type=jar</ref>
+          <versions>
+            <version>
+              <range><![CDATA[vers:maven/>=2.0-alpha1|<2.3.1]]></range>
+            </version>
+            <version>
+              <range><![CDATA[vers:maven/>=2.4|<2.12.3]]></range>
+            </version>
+            <version>
+              <range><![CDATA[vers:maven/>=2.13.0|<2.17.0]]></range>
+            </version>
+          </versions>
+        </target>
+      </affects>
+    </vulnerability>
+
+    <vulnerability>
+      <id>CVE-2021-45046</id>
+      <source>
+        <name>NVD</name>
+        <url>https://nvd.nist.gov/vuln/detail/CVE-2021-45046</url>
+      </source>
+      <references>
+        <reference>
+          <id>LOG4J2-3221</id>
+          <source>
+            <name>Issue tracker</name>
+            <url>https://issues.apache.org/jira/browse/LOG4J2-3221</url>
+          </source>
+        </reference>
+      </references>
+      <ratings>
+        <rating>
+          <source>
+            <name>NVD</name>
+            <url>
+              <![CDATA[https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H&version=3.1]]></url>
+          </source>
+          <score>9.0</score>
+          <severity>critical</severity>
+          <method>CVSSv3</method>
+          <vector>AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H</vector>
+        </rating>
+      </ratings>
+      <cwes>
+        <cwe>917</cwe>
+      </cwes>
+      <description><![CDATA[It was found that the fix to address CVE-2021-44228 in Log4j `2.15.0` was incomplete in certain non-default configurations.
+When the logging configuration uses a non-default Pattern Layout with a Thread Context Lookup (for example, `$${ctx:loginId}`), attackers with control over Thread Context Map (MDC) can craft malicious input data using a JNDI Lookup pattern, resulting in an information leak and remote code execution in some environments and local code execution in all environments.
+Remote code execution has been demonstrated on macOS, Fedora, Arch Linux, and Alpine Linux.
+
+Note that this vulnerability is not limited to just the JNDI lookup.
+Any other Lookup could also be included in a Thread Context Map variable and possibly have private details exposed to anyone with access to the logs.]]></description>
+      <recommendation><![CDATA[Upgrade to Log4j `2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later).]]></recommendation>
+      <created>2021-12-14T00:00:00Z</created>
+      <published>2021-12-14T00:00:00Z</published>
+      <updated>2023-10-26T00:00:00Z</updated>
+      <credits>
+        <individuals>
+          <individual>
+            <name>Kai Mindermann</name>
+          </individual>
+          <individual>
+            <name>4ra1n</name>
+          </individual>
+          <individual>
+            <name>Ash Fox</name>
+          </individual>
+          <individual>
+            <name>Alvaro Muñoz</name>
+          </individual>
+          <individual>
+            <name>Tony Torralba</name>
+          </individual>
+          <individual>
+            <name>Anthony Weems</name>
+          </individual>
+          <individual>
+            <name>RyotaK</name>
+          </individual>
+        </individuals>
+      </credits>
+      <affects>
+        <target>
+          <ref>pkg:maven/org.apache.logging.log4j/log4j-core?type=jar</ref>
+          <versions>
+            <version>
+              <range><![CDATA[vers:maven/>=2.0-beta9|<2.3.1]]></range>
+            </version>
+            <version>
+              <range><![CDATA[vers:maven/>=2.4|<2.12.3]]></range>
+            </version>
+            <version>
+              <range><![CDATA[vers:maven/>=2.13.0|<2.17.0]]></range>
+            </version>
+          </versions>
+        </target>
+      </affects>
+    </vulnerability>
+
+    <vulnerability>
+      <id>CVE-2021-44228</id>
+      <source>
+        <name>NVD</name>
+        <url>https://nvd.nist.gov/vuln/detail/CVE-2021-44228</url>
+      </source>
+      <references>
+        <reference>
+          <id>LOG4J2-3198</id>
+          <source>
+            <name>Issue tracker</name>
+            <url>https://issues.apache.org/jira/browse/LOG4J2-3198</url>
+          </source>
+        </reference>
+        <reference>
+          <id>LOG4J2-3201</id>
+          <source>
+            <name>Issue tracker</name>
+            <url>https://issues.apache.org/jira/browse/LOG4J2-3201</url>
+          </source>
+        </reference>
+      </references>
+      <ratings>
+        <rating>
+          <source>
+            <name>NVD</name>
+            <url><![CDATA[https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H&version=3.1]]></url>
+          </source>
+          <score>10.0</score>
+          <severity>critical</severity>
+          <method>CVSSv3</method>
+          <vector>AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H</vector>
+        </rating>
+      </ratings>
+      <cwes>
+        <cwe>20</cwe>
+        <cwe>400</cwe>
+        <cwe>502</cwe>
+        <cwe>917</cwe>
+      </cwes>
+      <description><![CDATA[In Log4j, the JNDI features used in configurations, log messages, and parameters do not protect against attacker-controlled LDAP and other JNDI related endpoints.
+An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers.]]></description>
+      <recommendation><![CDATA[Upgrade to Log4j `2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later).]]></recommendation>
+      <created>2021-12-10T00:00:00Z</created>
+      <published>2021-12-10T00:00:00Z</published>
+      <updated>2023-04-03T00:00:00Z</updated>
+      <credits>
+        <individuals>
+          <individual>
+            <name>Chen Zhaojun</name>
+          </individual>
+        </individuals>
+      </credits>
+      <affects>
+        <target>
+          <ref>pkg:maven/org.apache.logging.log4j/log4j-core?type=jar</ref>
+          <versions>
+            <version>
+              <range><![CDATA[vers:maven/>=2.0-beta9|<2.3.1]]></range>
+            </version>
+            <version>
+              <range><![CDATA[vers:maven/>=2.4|<2.12.3]]></range>
+            </version>
+            <version>
+              <range><![CDATA[vers:maven/>=2.13.0|<2.17.0]]></range>
+            </version>
+          </versions>
+        </target>
+      </affects>
+    </vulnerability>
+
+    <vulnerability>
+      <id>CVE-2020-9488</id>
+      <source>
+        <name>NVD</name>
+        <url>https://nvd.nist.gov/vuln/detail/CVE-2020-9488</url>
+      </source>
+      <references>
+        <reference>
+          <id>LOG4J2-2819</id>
+          <source>
+            <name>Issue tracker</name>
+            <url>https://issues.apache.org/jira/browse/LOG4J2-2819</url>
+          </source>
+        </reference>
+      </references>
+      <ratings>
+        <rating>
+          <source>
+            <name>NVD</name>
+            <url><![CDATA[https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N&version=3.1]]></url>
+          </source>
+          <score>3.7</score>
+          <severity>low</severity>
+          <method>CVSSv3</method>
+          <vector>AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N</vector>
+        </rating>
+      </ratings>
+      <cwes>
+        <cwe>295</cwe>
+      </cwes>
+      <description><![CDATA[Improper validation of certificate with host mismatch in SMTP appender.
+This could allow an SMTPS connection to be intercepted by a man-in-the-middle attack which could leak any log
+messages sent through that appender.
+
+The reported issue was caused by an error in `SslConfiguration`.
+Any element using `SslConfiguration` in the Log4j `Configuration` is also affected by this issue.
+This includes `HttpAppender`, `SocketAppender`, and `SyslogAppender`.
+Usages of `SslConfiguration` that are configured via system properties are not affected.]]></description>
+      <recommendation><![CDATA[Upgrade to `2.12.3` (Java 7) or `2.13.2` (Java 8 and later).
+
+Alternatively, users can set the `mail.smtp.ssl.checkserveridentity` system property to `true` to enable SMTPS hostname verification for all SMTPS mail sessions.]]></recommendation>
+      <created>2017-04-27T00:00:00Z</created>
+      <published>2017-04-27T00:00:00Z</published>
+      <updated>2022-05-12T00:00:00Z</updated>
+      <credits>
+        <individuals>
+          <individual>
+            <name>Peter Stöckli</name>
+          </individual>
+        </individuals>
+      </credits>
+      <affects>
+        <target>
+          <ref>pkg:maven/org.apache.logging.log4j/log4j-core?type=jar</ref>
+          <versions>
+            <version>
+              <range><![CDATA[vers:maven/>=2.0-beta1|<2.12.3]]></range>
+            </version>
+            <version>
+              <version><![CDATA[vers:maven/2.13.1]]></version>
+            </version>
+          </versions>
+        </target>
+      </affects>
+    </vulnerability>
+
+    <vulnerability>
+      <id>CVE-2017-5645</id>
+      <source>
+        <name>NVD</name>
+        <url>https://nvd.nist.gov/vuln/detail/CVE-2017-5645</url>
+      </source>
+      <references>
+        <reference>
+          <id>LOG4J2-1863</id>
+          <source>
+            <name>Issue tracker</name>
+            <url>https://issues.apache.org/jira/browse/LOG4J2-1863</url>
+          </source>
+        </reference>
+        <reference>
+          <id>the security fix commit</id>
+          <source>
+            <name>Source code repository</name>
+            <url>https://github.com/apache/logging-log4j2/commit/5dcc192</url>
+          </source>
+        </reference>
+      </references>
+      <ratings>
+        <rating>
+          <source>
+            <name>NVD</name>
+            <url><![CDATA[https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator?vector=(AV:N/AC:L/Au:N/C:P/I:P/A:P)&version=2.0]]></url>
+          </source>
+          <score>7.5</score>
+          <severity>high</severity>
+          <method>CVSSv2</method>
+          <vector>AV:N/AC:L/Au:N/C:P/I:P/A:P</vector>
+        </rating>
+      </ratings>
+      <cwes>
+        <cwe>502</cwe>
+      </cwes>
+      <description><![CDATA[When using the TCP socket server or UDP socket server to receive serialized log events from another application, a specially crafted binary payload can be sent that, when deserialized, can execute arbitrary code.]]></description>
+      <recommendation><![CDATA[Java 7 and above users should migrate to version `2.8.2` or avoid using the socket server classes.
+Java 6 users should avoid using the TCP or UDP socket server classes, or they can manually backport the security fix commit[1] from `2.8.2`.
+
+[1] https://github.com/apache/logging-log4j2/commit/5dcc192]]></recommendation>
+      <created>2017-04-17T00:00:00Z</created>
+      <published>2017-04-17T00:00:00Z</published>
+      <updated>2022-04-04T00:00:00Z</updated>
+      <credits>
+        <individuals>
+          <individual>
+            <name>Marcio Almeida de Macedo</name>
+          </individual>
+        </individuals>
+      </credits>
+      <affects>
+        <target>
+          <ref>pkg:maven/org.apache.logging.log4j/log4j-core?type=jar</ref>
+          <versions>
+            <version>
+              <range><![CDATA[vers:maven/>=2.0-alpha1|<2.8.2]]></range>
+            </version>
+          </versions>
+        </target>
+      </affects>
+    </vulnerability>
+
+  </vulnerabilities>
+
+</bom>

@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import os
 import sys
 from pathlib import Path
 
@@ -322,6 +323,8 @@ if DEBUG_TOOLBAR:
         "127.0.0.1",
     ]
 
+LOG_DIR = env.str("VULNERABLECODE_LOG_DIR", "/var/log/vulnerablecode")
+os.makedirs(LOG_DIR, exist_ok=True)
 
 LOGGING = {
     "version": 1,
@@ -339,6 +342,13 @@ LOGGING = {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "simple",
+        },
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIR, "vulnerablecode.log"),
+            "formatter": "simple",
+            "maxBytes": 10485760,
+            "backupCount": 5,
         },
     },
     "loggers": {

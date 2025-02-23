@@ -16,10 +16,10 @@ from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
+from vulnerabilities.pipes.advisory import get_or_create_aliases
 from vulnerabilities.pipes.advisory import import_advisory
 
 advisory_data1 = AdvisoryData(
-    aliases=["CVE-2020-13371337"],
     summary="vulnerability description here",
     affected_packages=[
         AffectedPackage(
@@ -34,8 +34,7 @@ advisory_data1 = AdvisoryData(
 
 
 def get_advisory1(created_by="test_pipeline"):
-    return models.Advisory.objects.create(
-        aliases=advisory_data1.aliases,
+    advisory = models.Advisory.objects.create(
         summary=advisory_data1.summary,
         affected_packages=[pkg.to_dict() for pkg in advisory_data1.affected_packages],
         references=[ref.to_dict() for ref in advisory_data1.references],
@@ -43,6 +42,8 @@ def get_advisory1(created_by="test_pipeline"):
         created_by=created_by,
         date_collected=timezone.now(),
     )
+    advisory.aliases.add(*get_or_create_aliases(advisory_data1.aliases))
+    return advisory
 
 
 def get_all_vulnerability_relationships_objects():

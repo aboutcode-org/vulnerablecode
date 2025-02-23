@@ -65,6 +65,10 @@ urlpatterns = [
         name="home",
     ),
     path(
+        "agent",
+        include("agent.urls"),
+    ),
+    path(
         "packages/search",
         PackageSearch.as_view(),
         name="package_search",

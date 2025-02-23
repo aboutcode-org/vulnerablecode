@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+{% load markdown_to_html %}
+
+{% block title %}
+VulnerableCode Agent
+{% endblock %}
+
+{% block content %}
+<section class="section pt-0">
+
+    <article class='panel is-info'>
+        <div class='panel-heading py-2 is-size-6'>
+            Ask VulnerableCode Agent
+            <div class="dropdown is-hoverable has-text-weight-normal">
+                <div class="dropdown-trigger">
+                    <i class="fa fa-question-circle ml-2"></i>
+                </div>
+                <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
+                    <div class="dropdown-content dropdown-instructions-box-shadow">
+                        <div class="dropdown-item">
+                            <div>
+                                Ask the agent to analyze a vulnerability, examine the affected version, and retrieve more details about it.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-block">
+            <div class="pb-3 width-100-pct">
+                <form
+                    action="{% url 'vuln-agent' %}"
+                    method="post"
+                    name="vulnerability_agent_form"
+                >
+                    <div class="field has-addons mt-3">
+                        <div class="control width-100-pct">
+                            {{ vulnerability_agent_form.message|add_class:"input" }}
+                        </div>
+                        <div class="control">
+                            <button class="button is-link" type="submit" id="submit_pkg">
+                                Send
+                            </button>
+                            {% csrf_token %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <div id="tab-content">
+        {{ message|markdown_to_html|safe }}
+    </div>
+    </article>
+
+</section>
+
+{% endblock %}

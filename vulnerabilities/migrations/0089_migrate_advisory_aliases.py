@@ -10,6 +10,7 @@
 from aboutcode.pipeline import LoopProgress
 from django.db import migrations
 from django.db import models
+import django.db.models.deletion
 
 """
 Model and data migration for converting the Advisory aliases
@@ -85,6 +86,19 @@ class Migration(migrations.Migration):
         )
 
     operations = [
+        # Make vulnerability relation optional
+        migrations.AlterField(
+            model_name="alias",
+            name="vulnerability",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="aliases",
+                to="vulnerabilities.vulnerability",
+            ),
+        ),
+
         # Rename aliases field to old_aliases
         migrations.AlterModelOptions(
             name="advisory",
@@ -109,7 +123,7 @@ class Migration(migrations.Migration):
             code=populate_new_advisory_aliases_field,
             reverse_code=reverse_populate_new_advisory_aliases_field,
         ),
-        # Delete old_alias field
+        # Delete JSON aliases field
         migrations.RemoveField(
             model_name="advisory",
             name="old_aliases",

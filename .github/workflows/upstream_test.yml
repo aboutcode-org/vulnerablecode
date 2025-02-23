@@ -31,3 +31,6 @@ jobs:
         run: make webtest
         env:
           GH_TOKEN: 1 
+    
+      - name: Run URL health checks
+        run: pytest -v tests/test_urls.py

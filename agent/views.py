@@ -20,6 +20,7 @@ from langchain_ollama import OllamaLLM
 from tqdm import tqdm
 
 from agent.forms import VulnerabilityAgentForm
+from vulnerablecode.settings import env
 
 
 class YAMLLoader(BaseLoader):
@@ -36,16 +37,17 @@ class YAMLLoader(BaseLoader):
                 # Load the YAML content
                 data = yaml.safe_load(file)
                 # Convert the YAML content to a string (or you can format it differently)
-                text = str(data.get("summary", ""))
+                summary = data.get("summary", "")
             except yaml.YAMLError as e:
+                summary = ""  # Set text to empty in case of error
                 print(f"Error loading YAML file {self.file_path}: {e}")
-                text = ""  # Set text to empty in case of error
+
 
         # Define metadata with file path information
         metadata = {"source": str(self.file_path)}
 
         # Return the loaded content as a list of Documents
-        return [Document(page_content=text, metadata=metadata)]
+        return [Document(page_content=str(summary), metadata=metadata)]
 
 
 # Initialize embeddings
@@ -69,7 +71,7 @@ except Exception as e:
 
     # Load documents from a directory
     loader = DirectoryLoader(
-        "vulnerablecode-data",  # ADD THE vulnerablecode-data PATH
+        env.str("VULNERABLECODE_DATA_PATH"),  # ADD THE vulnerablecode-data PATH
         glob="**/*.yaml",
         use_multithreading=True,
         loader_cls=YAMLLoader,
@@ -111,7 +113,11 @@ except Exception as e:
     print("✅ Documents indexed in ChromaDB.")
 
 
-llm = OllamaLLM(model="deepseek-r1:14b")
+llm = OllamaLLM(
+    model=env.str("OLLAMA_MODEL_NAME"),
+    base_url=env.str("OLLAMA_BASE_URL")
+)
+
 vector_db = Chroma(
     client=chroma_client, collection_name="vuln_embeddings", embedding_function=embeddings
 )

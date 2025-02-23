@@ -7,7 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from vulnerabilities.improvers import valid_versions
+from vulnerabilities.improvers import valid_versions, ai_summary_version
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipelines import add_cvss31_to_CVEs
@@ -45,6 +45,7 @@ IMPROVERS_REGISTRY = [
     compute_package_version_rank.ComputeVersionRankPipeline,
     collect_commits.CollectFixCommitsPipeline,
     add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
+    ai_summary_version.AISummaryImprover,
 ]
 
 IMPROVERS_REGISTRY = {

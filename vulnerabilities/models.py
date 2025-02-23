@@ -1275,8 +1275,10 @@ class Alias(models.Model):
 
     vulnerability = models.ForeignKey(
         Vulnerability,
-        on_delete=models.CASCADE,
         related_name="aliases",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     objects = AliasQuerySet.as_manager()
@@ -1318,7 +1320,10 @@ class Advisory(models.Model):
         max_length=32,
         blank=True,
     )
-    aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
+    aliases = models.ManyToManyField(
+        Alias,
+        related_name="advisories",
+    )
     summary = models.TextField(
         blank=True,
     )
@@ -1353,8 +1358,8 @@ class Advisory(models.Model):
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
-        unique_together = ["aliases", "unique_content_id", "date_published", "url"]
-        ordering = ["aliases", "date_published", "unique_content_id"]
+        unique_together = ["unique_content_id", "date_published", "url"]
+        ordering = ["date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
         checksum = hashlib.md5()
@@ -1375,7 +1380,7 @@ class Advisory(models.Model):
         from vulnerabilities.importer import Reference
 
         return AdvisoryData(
-            aliases=self.aliases,
+            aliases=[item.alias for item in self.aliases.all()],
             summary=self.summary,
             affected_packages=[
                 AffectedPackage.from_dict(pkg) for pkg in self.affected_packages if pkg

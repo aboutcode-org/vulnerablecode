@@ -17,6 +17,7 @@ from univers.versions import SemverVersion
 from vulnerabilities import models
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
+from vulnerabilities.pipes.advisory import get_or_create_aliases
 
 
 @pytest.mark.django_db
@@ -37,8 +38,8 @@ def test_package_changelog():
                 fixed_version=SemverVersion("1.0"),
             ).to_dict()
         ],
-        aliases=["CVE-123"],
     )
+    adv.aliases.add(*get_or_create_aliases(["CVE-123"]))
     NpmImporterPipeline().import_advisory(advisory=adv)
     assert models.PackageChangeLog.objects.filter(package=pkg).count() == 1
     NpmImporterPipeline().import_advisory(advisory=adv)
@@ -65,8 +66,8 @@ def test_package_changelog():
                 affected_version_range=NpmVersionRange.from_native(">=2.0"),
             ).to_dict()
         ],
-        aliases=["CVE-145"],
     )
+    adv.aliases.add(*get_or_create_aliases(["CVE-123"]))
     NpmImporterPipeline().import_advisory(advisory=adv)
     assert models.PackageChangeLog.objects.filter(package=pkg1).count() == 1
     NpmImporterPipeline().import_advisory(advisory=adv)
@@ -96,8 +97,8 @@ def test_vulnerability_changelog():
                 fixed_version=SemverVersion("1.0"),
             ).to_dict()
         ],
-        aliases=["CVE-TEST-1234"],
     )
+    adv.aliases.add(*get_or_create_aliases(["CVE-TEST-1234"]))
     NpmImporterPipeline().import_advisory(advisory=adv)
     # 1 Changelogs is expected here:
     # 1 for importing vuln details
@@ -129,8 +130,8 @@ def test_vulnerability_changelog_software_version():
                 fixed_version=SemverVersion("1.0"),
             ).to_dict()
         ],
-        aliases=["CVE-TEST-1234"],
     )
+    adv.aliases.add(*get_or_create_aliases(["CVE-TEST-1234"]))
     NpmImporterPipeline().import_advisory(advisory=adv)
     npm_vulnerability_log = models.VulnerabilityChangeLog.objects.first()
 

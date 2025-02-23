@@ -163,7 +163,10 @@ def test_process_advisories_can_import_advisories_with_severities_and_no_date():
     }
     ad = AdvisoryData.from_dict(advisory)
     ImportRunner(DummyImporter).process_advisories([ad], "test_importer_date")
-    advisory_aliases = list(models.Advisory.objects.all().values("aliases"))
+    advisory_aliases = [
+        {"aliases": [item.alias for item in adv.aliases.all()]}
+        for adv in models.Advisory.objects.all()
+    ]
     assert advisory_aliases == [{"aliases": ["CVE-2024-31079"]}]
 
 

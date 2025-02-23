@@ -30,7 +30,6 @@ from vulnerabilities.tests import util_tests
 
 ADVISORY_FIELDS_TO_TEST = (
     "unique_content_id",
-    "aliases",
     "summary",
     "affected_packages",
     "references",

@@ -32,7 +32,7 @@ def bulk_update(model, items, fields, logger):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("vulnerabilities", "0088_fix_alpine_purl_type"),
+        ("vulnerabilities", "0089_alter_advisory_unique_content_id"),
     ]
 
     def populate_new_advisory_aliases_field(apps, schema_editor):

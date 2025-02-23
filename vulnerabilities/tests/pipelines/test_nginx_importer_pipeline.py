@@ -30,7 +30,6 @@ from vulnerabilities.utils import is_vulnerable_nginx_version
 
 ADVISORY_FIELDS_TO_TEST = (
     "unique_content_id",
-    "aliases",
     "summary",
     "affected_packages",
     "references",

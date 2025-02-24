@@ -160,7 +160,7 @@ def test_remove_duplicates_with_multiple_batches_no_workers(advisory_data):
             (i % 28) + 1,  # Day (1-28)
             tzinfo=pytz.UTC,
         )
-        for i in range(100)  # Create 2500 advisories
+        for i in range(100)  # Create 100 advisories
     ]
 
     for date in dates:

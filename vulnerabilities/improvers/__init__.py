@@ -20,6 +20,7 @@ from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
 from vulnerabilities.pipelines import recompute_content_ids
 from vulnerabilities.pipelines import remove_duplicate_advisories
+
 IMPROVERS_REGISTRY = [
     valid_versions.GitHubBasicImprover,
     valid_versions.GitLabBasicImprover,

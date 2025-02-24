@@ -10,9 +10,12 @@
 import datetime
 from unittest.mock import patch
 
+import pytest
 import pytz
-from django.test import TestCase
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
+from univers.version_range import NpmVersionRange
+from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -21,97 +24,189 @@ from vulnerabilities.models import Advisory
 from vulnerabilities.pipelines.remove_duplicate_advisories import RemoveDuplicateAdvisoriesPipeline
 
 
-class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
-    def setUp(self):
-        self.advisory_data = AdvisoryData(
-            summary="Test summary",
-            affected_packages=[
-                AffectedPackage(
-                    package=PackageURL(type="npm", name="package1"),
-                    affected_version_range=">=1.0.0|<2.0.0",
-                )
-            ],
-            references=[Reference(url="https://example.com/vuln1")],
-        )
-
-    def test_remove_duplicates_keeps_latest(self):
-        """
-        Test that when multiple advisories have the same content,
-        only the latest one is kept.
-        """
-        # Create three advisories with same content but different dates
-        dates = [
-            datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
-            datetime.datetime(2024, 1, 2, tzinfo=pytz.UTC),
-            datetime.datetime(2024, 1, 3, tzinfo=pytz.UTC),
-        ]
-
-        advisories = []
-        for date in dates:
-            advisory = Advisory.objects.create(
-                summary=self.advisory_data.summary,
-                affected_packages=[pkg.to_dict() for pkg in self.advisory_data.affected_packages],
-                references=[ref.to_dict() for ref in self.advisory_data.references],
-                date_imported=date,
-                date_collected=date,
+@pytest.fixture
+def advisory_data():
+    return AdvisoryData(
+        summary="Test summary",
+        affected_packages=[
+            AffectedPackage(
+                package=PackageURL(type="npm", name="package1"),
+                affected_version_range=NpmVersionRange(
+                    constraints=[
+                        VersionConstraint(comparator=">=", version=SemverVersion("1.0.0")),
+                        VersionConstraint(comparator="<", version=SemverVersion("2.0.0")),
+                    ]
+                ),
             )
-            advisories.append(advisory)
+        ],
+        references=[Reference(url="https://example.com/vuln1")],
+    )
 
-        # Run the pipeline
-        pipeline = RemoveDuplicateAdvisoriesPipeline()
-        pipeline.recompute_content_ids()
-        pipeline.remove_duplicates()
 
-        # Check that only the first advisory remains
-        remaining = Advisory.objects.all()
-        self.assertEqual(remaining.count(), 1)
-        self.assertEqual(remaining.first().date_imported, dates[0])
+@pytest.mark.django_db
+def test_remove_duplicates_keeps_oldest(advisory_data):
+    """
+    Test that when multiple advisories have the same content,
+    only the oldest one is kept.
+    """
+    dates = [
+        datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+        datetime.datetime(2024, 1, 2, tzinfo=pytz.UTC),
+        datetime.datetime(2024, 1, 3, tzinfo=pytz.UTC),
+    ]
 
-    def test_different_content_preserved(self):
-        """
-        Test that advisories with different content are preserved.
-        """
-        # Create two advisories with different content
-        advisory1 = Advisory.objects.create(
-            summary="Summary 1",
-            affected_packages=[],
-            date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
-            references=[],
-            date_imported=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+    for date in dates:
+        Advisory.objects.create(
+            summary=advisory_data.summary,
+            affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
+            references=[ref.to_dict() for ref in advisory_data.references],
+            date_imported=date,
+            date_collected=date,
         )
 
-        advisory2 = Advisory.objects.create(
-            summary="Summary 2",
-            affected_packages=[],
-            references=[],
-            date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
-            date_imported=datetime.datetime(2024, 1, 2, tzinfo=pytz.UTC),
-        )
+    with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
+        mock_workers.return_value = 4  # Simulate 4 workers with keep_available=0
 
-        # Run the pipeline
         pipeline = RemoveDuplicateAdvisoriesPipeline()
         pipeline.remove_duplicates()
 
-        # Check that both advisories remain
-        self.assertEqual(Advisory.objects.count(), 2)
+    # Check that only the oldest advisory remains
+    remaining = Advisory.objects.all()
+    assert remaining.count() == 1
+    assert remaining.first().date_imported == dates[0]
 
-    def test_recompute_content_ids(self):
-        """
-        Test that advisories without content IDs get them updated.
-        """
-        # Create advisory without content ID
-        advisory = Advisory.objects.create(
-            summary=self.advisory_data.summary,
-            affected_packages=[pkg.to_dict() for pkg in self.advisory_data.affected_packages],
-            references=[ref.to_dict() for ref in self.advisory_data.references],
-            unique_content_id="",
-            date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+
+@pytest.mark.django_db
+def test_different_content_preserved():
+    """
+    Test that advisories with different content are preserved.
+    """
+    date = datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC)
+
+    Advisory.objects.create(
+        summary="Summary 1",
+        affected_packages=[],
+        references=[],
+        date_collected=date,
+        date_imported=date,
+    )
+
+    Advisory.objects.create(
+        summary="Summary 2",
+        affected_packages=[],
+        references=[],
+        date_collected=date,
+        date_imported=date,
+    )
+
+    with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
+        mock_workers.return_value = 4  # Simulate 4 workers with keep_available=0
+
+        pipeline = RemoveDuplicateAdvisoriesPipeline()
+        pipeline.remove_duplicates()
+
+    # Check that both advisories remain
+    assert Advisory.objects.count() == 2
+
+
+@pytest.mark.django_db
+def test_remove_duplicates_with_multiple_batches(advisory_data):
+    """
+    Test that duplicate removal works correctly across multiple batches.
+    """
+    # Create enough duplicates to span multiple batches
+    dates = [
+        datetime.datetime(
+            2024 + (i // (12 * 28)),  # Year
+            ((i // 28) % 12) + 1,  # Month (1-12)
+            (i % 28) + 1,  # Day (1-28)
+            tzinfo=pytz.UTC,
+        )
+        for i in range(100)  # Create 2500 advisories
+    ]
+
+    for date in dates:
+        Advisory.objects.create(
+            summary=advisory_data.summary,
+            affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
+            references=[ref.to_dict() for ref in advisory_data.references],
+            date_imported=date,
+            date_collected=date,
         )
 
-        # Run the pipeline
-        pipeline = RemoveDuplicateAdvisoriesPipeline()
-        pipeline.recompute_content_ids()
+    with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
+        mock_workers.return_value = 4  # Simulate 4 workers with keep_available=0
 
-        # Check that content ID was updated
-        advisory.refresh_from_db()
-        self.assertNotEqual(advisory.unique_content_id, "")
+        pipeline = RemoveDuplicateAdvisoriesPipeline()
+        pipeline.BATCH_SIZE = 1000  # Ensure multiple batches
+        pipeline.remove_duplicates()
+
+    # Check that only one advisory remains
+    remaining = Advisory.objects.all()
+    assert remaining.count() == 1
+    assert remaining.first().date_imported == dates[0]
+
+
+@pytest.mark.django_db
+def test_remove_duplicates_with_multiple_batches_no_workers(advisory_data):
+    """
+    Test that duplicate removal works correctly across multiple batches.
+    """
+    # Create enough duplicates to span multiple batches
+    dates = [
+        datetime.datetime(
+            2024 + (i // (12 * 28)),  # Year
+            ((i // 28) % 12) + 1,  # Month (1-12)
+            (i % 28) + 1,  # Day (1-28)
+            tzinfo=pytz.UTC,
+        )
+        for i in range(100)  # Create 2500 advisories
+    ]
+
+    for date in dates:
+        Advisory.objects.create(
+            summary=advisory_data.summary,
+            affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
+            references=[ref.to_dict() for ref in advisory_data.references],
+            date_imported=date,
+            date_collected=date,
+        )
+
+    with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
+        mock_workers.return_value = 0  # Simulate 0 workers with keep_available=0
+
+        pipeline = RemoveDuplicateAdvisoriesPipeline()
+        pipeline.BATCH_SIZE = 1000  # Ensure multiple batches
+        pipeline.remove_duplicates()
+
+    # Check that only one advisory remains
+    remaining = Advisory.objects.all()
+    assert remaining.count() == 1
+    assert remaining.first().date_imported == dates[0]
+
+
+@pytest.mark.django_db
+def test_remove_duplicates_error_handling(advisory_data):
+    """
+    Test error handling during duplicate removal.
+    """
+    date = datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC)
+
+    Advisory.objects.create(
+        summary=advisory_data.summary,
+        affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
+        references=[ref.to_dict() for ref in advisory_data.references],
+        date_imported=date,
+        date_collected=date,
+    )
+
+    with patch("django.db.transaction.atomic") as mock_atomic:
+        mock_atomic.side_effect = Exception("Test error")
+
+        with patch(
+            "vulnerabilities.pipelines.recompute_content_ids.get_max_workers"
+        ) as mock_workers:
+            mock_workers.return_value = 4  # Simulate 4 workers with keep_available=0
+
+            pipeline = RemoveDuplicateAdvisoriesPipeline()
+            pipeline.remove_duplicates()

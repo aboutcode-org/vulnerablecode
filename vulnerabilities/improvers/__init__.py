@@ -18,8 +18,8 @@ from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
 from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
+from vulnerabilities.pipelines import recompute_content_ids
 from vulnerabilities.pipelines import remove_duplicate_advisories
-
 IMPROVERS_REGISTRY = [
     valid_versions.GitHubBasicImprover,
     valid_versions.GitLabBasicImprover,
@@ -46,6 +46,7 @@ IMPROVERS_REGISTRY = [
     compute_package_version_rank.ComputeVersionRankPipeline,
     collect_commits.CollectFixCommitsPipeline,
     add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
+    recompute_content_ids.RecomputeContentIDPipeline,
     remove_duplicate_advisories.RemoveDuplicateAdvisoriesPipeline,
 ]
 

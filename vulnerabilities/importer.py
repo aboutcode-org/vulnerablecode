@@ -72,7 +72,7 @@ class VulnerabilitySeverity:
     def __lt__(self, other):
         if not isinstance(other, VulnerabilitySeverity):
             return NotImplemented
-        return self._cmp_key() < other._cmp_key()
+        return str(self._cmp_key()) < str(other._cmp_key())
 
     # TODO: Add cache
     def _cmp_key(self):
@@ -107,7 +107,7 @@ class Reference:
     def __lt__(self, other):
         if not isinstance(other, Reference):
             return NotImplemented
-        return self._cmp_key() < other._cmp_key()
+        return str(self._cmp_key()) < str(other._cmp_key())
 
     # TODO: Add cache
     def _cmp_key(self):
@@ -189,7 +189,7 @@ class AffectedPackage:
     def __lt__(self, other):
         if not isinstance(other, AffectedPackage):
             return NotImplemented
-        return self._cmp_key() < other._cmp_key()
+        return str(self._cmp_key()) < str(other._cmp_key())
 
     # TODO: Add cache
     def _cmp_key(self):

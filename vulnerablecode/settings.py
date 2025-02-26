@@ -355,3 +355,8 @@ if DEBUG:
         "handlers": ["console"],
         "level": "ERROR",
     }
+
+# Set the number of parallel processes to use for Vulnerablecode execution.
+# If the VULNERABLECODE_PROCESSES argument is not set, defaults to an optimal number of CPUs
+# available on the machine.
+VULNERABLECODE_PROCESSES = env.int("VULNERABLECODE_PROCESSES", default=None)

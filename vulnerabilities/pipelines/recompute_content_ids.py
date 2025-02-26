@@ -99,7 +99,7 @@ def process_advisories(
         log(f"Running function in single process", level=logging.INFO)
         for advisory_ids in progress.iter(advisory_batches):
             progress.log_progress()
-            advisory_func(advisory_ids=advisory_ids, logger=log)
+            advisory_func(advisory_ids=advisory_ids, log=log)
         return
 
     log(
@@ -147,7 +147,7 @@ def get_advisory_batches(advisories, batch_size=1000, log=None):
         yield advisory_ids
 
 
-def recompute_content_ids(advisory_ids, logger):
+def recompute_content_ids(advisory_ids, log):
     """
     Recompute content IDs for all `advisory_ids`.
     """
@@ -155,15 +155,15 @@ def recompute_content_ids(advisory_ids, logger):
     total_count = advisories.count()
 
     if not total_count:
-        logger("No advisories need content ID recomputation", level=logging.INFO)
+        log("No advisories need content ID recomputation", level=logging.INFO)
         return
 
-    logger(f"Recomputing content IDs for {total_count} advisories", level=logging.INFO)
+    log(f"Recomputing content IDs for {total_count} advisories", level=logging.INFO)
 
     progress = LoopProgress(
         total_iterations=total_count,
         progress_step=total_count // 100,
-        logger=logger,
+        logger=log,
     )
 
     with transaction.atomic():
@@ -181,8 +181,8 @@ def recompute_content_ids(advisory_ids, logger):
                 ["unique_content_id"],
                 batch_size=len(advisories_to_update),
             )
-            if logger:
-                logger(
+            if log:
+                log(
                     f"Updated content IDs for {len(advisories_to_update)} advisories",
                     level=logging.INFO,
                 )

@@ -8,6 +8,7 @@
 #
 
 import logging
+import traceback
 from itertools import groupby
 
 from aboutcode.pipeline import LoopProgress
@@ -19,7 +20,7 @@ from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipelines.recompute_content_ids import process_advisories
 
 
-def remove_duplicates_batch(advisory_ids, logger=None):
+def remove_duplicates_batch(advisory_ids, log=None):
     """
     Process a batch of advisories to remove duplicates.
     Keep only the oldest advisory for each content ID.
@@ -37,7 +38,7 @@ def remove_duplicates_batch(advisory_ids, logger=None):
                 key=lambda x: x.unique_content_id,
             )
 
-            progress = LoopProgress(total_iterations=advisories.count(), logger=logger)
+            progress = LoopProgress(total_iterations=advisories.count(), logger=log)
 
             for content_id, group_advisories in progress.iter(advisories_by_content_id):
                 group_advisories = list(group_advisories)
@@ -45,23 +46,25 @@ def remove_duplicates_batch(advisory_ids, logger=None):
                 if len(group_advisories) <= 1:
                     continue
 
-                logger(
+                log(
                     f"Found {len(group_advisories)} duplicates for content ID {content_id}",
+                    level=logging.INFO,
                 )
 
-                oldest = min(group_advisories, key=lambda x: x.date_imported)
+                oldest = min(group_advisories, key=lambda x: x.date_collected)
 
                 advisory_ids_to_delete = [adv.id for adv in group_advisories if adv.id != oldest.id]
                 if advisory_ids_to_delete:
                     Advisory.objects.filter(id__in=advisory_ids_to_delete).delete()
-                    logger(
+                    log(
                         f"Kept advisory {oldest.id} and removed "
                         f"{len(advisory_ids_to_delete)} duplicates for content ID {content_id}",
+                        level=logging.INFO,
                     )
 
     except Exception as e:
-        logger(
-            f"Error processing batch of advisories: {e}",
+        log(
+            f"Error removing duplicates for batch of advisories: {traceback.format_exc()}",
             level=logging.ERROR,
         )
 

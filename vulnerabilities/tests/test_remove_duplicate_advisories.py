@@ -64,6 +64,14 @@ def test_remove_duplicates_keeps_oldest(advisory_data):
             date_collected=date,
         )
 
+    Advisory.objects.create(
+        summary="Test summary 21",
+        affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
+        references=[ref.to_dict() for ref in advisory_data.references],
+        date_imported=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+        date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+    )
+
     with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
         mock_workers.return_value = 0  # Simulate 4 workers with keep_available=0
         pipeline = RemoveDuplicateAdvisoriesPipeline()
@@ -71,7 +79,7 @@ def test_remove_duplicates_keeps_oldest(advisory_data):
 
     # Check that only the oldest advisory remains
     remaining = Advisory.objects.all()
-    assert remaining.count() == 1
+    assert remaining.count() == 2
     assert remaining.first().date_imported == dates[0]
 
 

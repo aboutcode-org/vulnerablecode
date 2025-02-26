@@ -83,7 +83,9 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
         """
         while True:
             duplicate_content_ids = (
-                Advisory.objects.values("unique_content_id")
+                Advisory.objects.filter(unique_content_id__isnull=False)
+                .filter(unique_content_id__length=64)
+                .values("unique_content_id")
                 .annotate(count=Count("id"))
                 .filter(count__gt=1)
                 .values_list("unique_content_id", flat=True)

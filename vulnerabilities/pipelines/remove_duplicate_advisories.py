@@ -101,7 +101,7 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
             process_advisories(
                 advisories=advisories,
                 advisory_func=remove_duplicates_batch,
-                progress_logger=self.log,
+                log=self.log,
                 batch_size=self.BATCH_SIZE,
             )
 

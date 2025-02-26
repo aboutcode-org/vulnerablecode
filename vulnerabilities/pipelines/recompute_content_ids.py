@@ -10,6 +10,7 @@
 import logging
 import multiprocessing
 import os
+import traceback
 import warnings
 from concurrent import futures
 
@@ -67,7 +68,7 @@ class InsufficientResourcesError(Exception):
 def process_advisories(
     advisories,
     advisory_func,
-    progress_logger=None,
+    log=None,
     batch_size=1000,
 ):
     """
@@ -83,23 +84,27 @@ def process_advisories(
     """
     advisories_count = advisories.count()
     logger.info(f"Process {advisories_count} advisories with {advisory_func.__name__}")
-    progress = LoopProgress(advisories_count, logger=progress_logger)
+    progress = LoopProgress(advisories_count, logger=log)
     max_workers = get_max_workers(keep_available=4)
 
-    advisory_batches = get_advisory_batches(advisories, batch_size)
+    advisory_batches = get_advisory_batches(
+        advisories=advisories,
+        batch_size=batch_size,
+        log=log,
+    )
 
     if max_workers <= 0:
         for advisory_ids in progress.iter(advisory_batches):
             progress.log_progress()
             logger.debug(f"{advisory_func.__name__} len={len(advisory_ids)}")
-            advisory_func(advisory_ids=advisory_ids, logger=progress_logger)
+            advisory_func(advisory_ids=advisory_ids, logger=log)
         return
 
     logger.info(f"Starting ProcessPoolExecutor with {max_workers} max_workers")
 
     with futures.ProcessPoolExecutor(max_workers) as executor:
         future_to_advisories = {
-            executor.submit(advisory_func, advisory_ids, progress_logger): advisory_ids
+            executor.submit(advisory_func, advisory_ids, log): advisory_ids
             for advisory_ids in advisory_batches
         }
 
@@ -120,14 +125,22 @@ def process_advisories(
                 raise broken_pool_error from InsufficientResourcesError(message)
 
 
-def get_advisory_batches(advisories, batch_size=1000):
+def get_advisory_batches(advisories, batch_size=1000, log=None):
     """
     Yield lists of advisory ids each of upto batch size length.
     """
     paginator = Paginator(advisories, per_page=batch_size)
     for page_number in paginator.page_range:
         page = paginator.page(page_number)
-        yield [obj.id for obj in page.object_list]
+        advisory_ids = None
+        try:
+            advisory_ids = [obj.id for obj in page.object_list]
+        except Exception as e:
+            if log:
+                log(f"Error getting advisory batch {traceback.format_exc()}", level=logging.ERROR)
+                log(f"While processing advisories {advisory_ids}", level=logging.ERROR)
+            raise
+        yield advisory_ids
 
 
 def recompute_content_ids(advisory_ids, logger):
@@ -193,6 +206,6 @@ class RecomputeContentIDPipeline(VulnerableCodePipeline):
             process_advisories(
                 advisories=advisories,
                 advisory_func=recompute_content_ids,
-                progress_logger=self.log,
+                log=self.log,
                 batch_size=1000,
             )

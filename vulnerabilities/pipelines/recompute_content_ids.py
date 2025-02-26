@@ -83,7 +83,7 @@ def process_advisories(
     this can result in a significant reduction in memory usage.
     """
     advisories_count = advisories.count()
-    logger.info(f"Process {advisories_count} advisories with {advisory_func.__name__}")
+    log(f"Process {advisories_count} advisories with {advisory_func.__name__}", level=logging.INFO)
     progress = LoopProgress(advisories_count, logger=log)
     max_workers = get_max_workers(keep_available=4)
 
@@ -93,14 +93,18 @@ def process_advisories(
         log=log,
     )
 
-    if max_workers <= 0:
+    log(f"Running function: {advisory_func.__name__}", level=logging.INFO)
+    # if max_workers <= 0:
+    if True:
+        log(f"Running function in single process", level=logging.INFO)
         for advisory_ids in progress.iter(advisory_batches):
             progress.log_progress()
-            logger.debug(f"{advisory_func.__name__} len={len(advisory_ids)}")
             advisory_func(advisory_ids=advisory_ids, logger=log)
         return
 
-    logger.info(f"Starting ProcessPoolExecutor with {max_workers} max_workers")
+    log(
+        f"Running function in multiple processes with {max_workers} max_workers", level=logging.INFO
+    )
 
     with futures.ProcessPoolExecutor(max_workers) as executor:
         future_to_advisories = {
@@ -113,7 +117,6 @@ def process_advisories(
         for future in progress.iter(future_as_completed):
             advisory_ids = future_to_advisories[future]
             progress.log_progress()
-            logger.debug(f"{advisory_func.__name__} len={len(advisory_ids)}")
             try:
                 future.result()
             except futures.process.BrokenProcessPool as broken_pool_error:
@@ -131,6 +134,7 @@ def get_advisory_batches(advisories, batch_size=1000, log=None):
     """
     paginator = Paginator(advisories, per_page=batch_size)
     for page_number in paginator.page_range:
+        log(f"Getting advisory batch {page_number}", level=logging.INFO)
         page = paginator.page(page_number)
         advisory_ids = None
         try:

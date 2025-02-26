@@ -1360,7 +1360,8 @@ class Advisory(models.Model):
 
     def save(self, *args, **kwargs):
         advisory_data = self.to_advisory_data()
-        self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)
+        if not self.unique_content_id:
+            self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)
         super().save(*args, **kwargs)
 
     def to_advisory_data(self) -> "AdvisoryData":

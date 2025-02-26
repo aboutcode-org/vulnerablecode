@@ -65,8 +65,39 @@ def test_remove_duplicates_keeps_oldest(advisory_data):
         )
 
     with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
-        mock_workers.return_value = 4  # Simulate 4 workers with keep_available=0
+        mock_workers.return_value = 0  # Simulate 4 workers with keep_available=0
+        pipeline = RemoveDuplicateAdvisoriesPipeline()
+        pipeline.remove_duplicates()
 
+    # Check that only the oldest advisory remains
+    remaining = Advisory.objects.all()
+    assert remaining.count() == 1
+    assert remaining.first().date_imported == dates[0]
+
+
+@pytest.mark.django_db
+def test_remove_duplicates_keeps_oldest_async(advisory_data):
+    """
+    Test that when multiple advisories have the same content,
+    only the oldest one is kept.
+    """
+    dates = [
+        datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+        datetime.datetime(2024, 1, 2, tzinfo=pytz.UTC),
+        datetime.datetime(2024, 1, 3, tzinfo=pytz.UTC),
+    ]
+
+    for date in dates:
+        Advisory.objects.create(
+            summary=advisory_data.summary,
+            affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
+            references=[ref.to_dict() for ref in advisory_data.references],
+            date_imported=date,
+            date_collected=date,
+        )
+
+    with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
+        mock_workers.return_value = 4  # Simulate 4 workers with keep_available=0
         pipeline = RemoveDuplicateAdvisoriesPipeline()
         pipeline.remove_duplicates()
 
@@ -122,7 +153,7 @@ def test_remove_duplicates_with_multiple_batches(advisory_data):
             (i % 28) + 1,  # Day (1-28)
             tzinfo=pytz.UTC,
         )
-        for i in range(100)  # Create 2500 advisories
+        for i in range(100)
     ]
 
     for date in dates:

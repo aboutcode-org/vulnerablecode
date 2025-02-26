@@ -27,7 +27,7 @@ def remove_duplicates_batch(advisory_ids, logger=None):
     try:
         with transaction.atomic():
             advisories = Advisory.objects.filter(id__in=advisory_ids).select_for_update(
-                nowait=True, skip_locked=True
+                skip_locked=True
             )
             if not advisories.exists():
                 return
@@ -45,28 +45,25 @@ def remove_duplicates_batch(advisory_ids, logger=None):
                 if len(group_advisories) <= 1:
                     continue
 
-                if logger:
-                    logger.info(
-                        f"Found {len(group_advisories)} duplicates for content ID {content_id}",
-                    )
+                logger(
+                    f"Found {len(group_advisories)} duplicates for content ID {content_id}",
+                )
 
                 oldest = min(group_advisories, key=lambda x: x.date_imported)
 
                 advisory_ids_to_delete = [adv.id for adv in group_advisories if adv.id != oldest.id]
                 if advisory_ids_to_delete:
                     Advisory.objects.filter(id__in=advisory_ids_to_delete).delete()
-                    if logger:
-                        logger.info(
-                            f"Kept advisory {oldest.id} and removed "
-                            f"{len(advisory_ids_to_delete)} duplicates for content ID {content_id}",
-                        )
+                    logger(
+                        f"Kept advisory {oldest.id} and removed "
+                        f"{len(advisory_ids_to_delete)} duplicates for content ID {content_id}",
+                    )
 
     except Exception as e:
-        if logger:
-            logger(
-                f"Error processing batch of advisories: {e}",
-                level=logging.ERROR,
-            )
+        logger(
+            f"Error processing batch of advisories: {e}",
+            level=logging.ERROR,
+        )
 
 
 class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
@@ -91,11 +88,7 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
                 .filter(count__gt=1)
                 .values_list("unique_content_id", flat=True)
             )
-
-            print(f"duplicate_content_ids: {duplicate_content_ids}")
-
             advisories = Advisory.objects.filter(unique_content_id__in=duplicate_content_ids)
-
             if not advisories.exists():
                 break
 
@@ -103,7 +96,6 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
                 f"Processing {advisories.count()} content IDs with duplicates",
                 level=logging.INFO,
             )
-
             process_advisories(
                 advisories=advisories,
                 advisory_func=remove_duplicates_batch,

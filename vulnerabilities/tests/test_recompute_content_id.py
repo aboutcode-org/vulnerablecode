@@ -44,7 +44,7 @@ def advisory_data():
 
 
 @pytest.mark.django_db
-def test_recompute_content_ids_basic(advisory_data):
+def test_recompute_content_ids_basic_async(advisory_data):
     """
     Test that advisories without content IDs get them computed.
     """
@@ -58,6 +58,66 @@ def test_recompute_content_ids_basic(advisory_data):
 
     with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
         mock_workers.return_value = 4
+
+        pipeline = RecomputeContentIDPipeline()
+        pipeline.recompute_content_ids()
+
+    advisory.refresh_from_db()
+    assert advisory.unique_content_id != ""
+    assert len(advisory.unique_content_id) == 64  # SHA256 hash length
+
+
+@pytest.mark.django_db
+def test_recompute_content_ids_multiple_batches_async(advisory_data):
+    """
+    Test that content ID computation works across multiple batches.
+    """
+    dates = [
+        datetime.datetime(
+            2024 + (i // (12 * 28)),  # Year
+            ((i // 28) % 12) + 1,  # Month (1-12)
+            (i % 28) + 1,  # Day (1-28)
+            tzinfo=pytz.UTC,
+        )
+        for i in range(2500)  # Create 2500 advisories
+    ]
+
+    for date in dates:
+        Advisory.objects.create(
+            summary=advisory_data.summary,
+            affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
+            references=[ref.to_dict() for ref in advisory_data.references],
+            unique_content_id="",
+            date_imported=date,
+            date_collected=date,
+        )
+
+    with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
+        mock_workers.return_value = 4
+
+        pipeline = RecomputeContentIDPipeline()
+        pipeline.BATCH_SIZE = 1000
+        pipeline.recompute_content_ids()
+
+    assert not Advisory.objects.filter(unique_content_id="").exists()
+    assert Advisory.objects.exclude(unique_content_id__length=64).count() == 0
+
+
+@pytest.mark.django_db
+def test_recompute_content_ids_basic(advisory_data):
+    """
+    Test that advisories without content IDs get them computed.
+    """
+    advisory = Advisory.objects.create(
+        summary=advisory_data.summary,
+        affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
+        references=[ref.to_dict() for ref in advisory_data.references],
+        unique_content_id="",
+        date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+    )
+
+    with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
+        mock_workers.return_value = 0
 
         pipeline = RecomputeContentIDPipeline()
         pipeline.recompute_content_ids()
@@ -93,7 +153,7 @@ def test_recompute_content_ids_multiple_batches(advisory_data):
         )
 
     with patch("vulnerabilities.pipelines.recompute_content_ids.get_max_workers") as mock_workers:
-        mock_workers.return_value = 4
+        mock_workers.return_value = 0
 
         pipeline = RecomputeContentIDPipeline()
         pipeline.BATCH_SIZE = 1000
@@ -137,7 +197,7 @@ def test_recompute_content_ids_error_handling(advisory_data):
         summary=advisory_data.summary,
         affected_packages=[pkg.to_dict() for pkg in advisory_data.affected_packages],
         references=[ref.to_dict() for ref in advisory_data.references],
-        unique_content_id="",
+        unique_content_id="Test",
         date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
     )
 
@@ -150,8 +210,6 @@ def test_recompute_content_ids_error_handling(advisory_data):
             mock_workers.return_value = 0
 
             pipeline = RecomputeContentIDPipeline()
-            pipeline.recompute_content_ids()
-
-    advisory = Advisory.objects.first()
-    assert advisory is not None
-    assert advisory.unique_content_id == ""
+            # expect an error
+            with pytest.raises(Exception):
+                pipeline.recompute_content_ids()

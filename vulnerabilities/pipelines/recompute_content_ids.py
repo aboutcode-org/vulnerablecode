@@ -92,14 +92,14 @@ def process_advisories(
         for advisory_ids in progress.iter(advisory_batches):
             progress.log_progress()
             logger.debug(f"{advisory_func.__name__} len={len(advisory_ids)}")
-            advisory_func(advisory_ids=advisory_ids, logger=None)
+            advisory_func(advisory_ids=advisory_ids, logger=progress_logger)
         return
 
     logger.info(f"Starting ProcessPoolExecutor with {max_workers} max_workers")
 
     with futures.ProcessPoolExecutor(max_workers) as executor:
         future_to_advisories = {
-            executor.submit(advisory_func, advisory_ids, None): advisory_ids
+            executor.submit(advisory_func, advisory_ids, progress_logger): advisory_ids
             for advisory_ids in advisory_batches
         }
 
@@ -187,6 +187,7 @@ class RecomputeContentIDPipeline(VulnerableCodePipeline):
         """
         while True:
             advisories = Advisory.objects.exclude(unique_content_id__length=64)
+            print(f"advisories: {advisories.count()}")
             if not advisories.exists():
                 break
             process_advisories(

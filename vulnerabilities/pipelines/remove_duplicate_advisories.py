@@ -73,7 +73,7 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
     """Pipeline to remove duplicate advisories based on their content."""
 
     pipeline_id = "remove_duplicate_advisories"
-    BATCH_SIZE = 1000
+    BATCH_SIZE = 200
 
     @classmethod
     def steps(cls):

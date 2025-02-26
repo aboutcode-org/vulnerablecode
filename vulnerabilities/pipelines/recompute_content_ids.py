@@ -94,8 +94,7 @@ def process_advisories(
     )
 
     log(f"Running function: {advisory_func.__name__}", level=logging.INFO)
-    # if max_workers <= 0:
-    if True:
+    if max_workers <= 0:
         log(f"Running function in single process", level=logging.INFO)
         for advisory_ids in progress.iter(advisory_batches):
             progress.log_progress()

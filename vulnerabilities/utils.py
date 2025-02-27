@@ -29,9 +29,12 @@ import requests
 import saneyaml
 import toml
 import urllib3
+from cwe2.database import Database
+from cwe2.database import InvalidCWEError
 from packageurl import PackageURL
 from packageurl.contrib.django.utils import without_empty_values
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
@@ -42,6 +45,7 @@ logger = logging.getLogger(__name__)
 cve_regex = re.compile(r"CVE-[0-9]{4}-[0-9]{4,19}", re.IGNORECASE)
 is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
+cwe_regex = r"CWE-\d+"
 
 
 @dataclasses.dataclass(order=True, frozen=True)
@@ -399,6 +403,29 @@ def get_cwe_id(cwe_string: str) -> int:
     return int(cwe_id)
 
 
+def create_weaknesses_list(cwe_strings: str):
+    """
+    Convert the CWE string to CWE ids and store them to weaknesses list.
+    >>> create_weaknesses_list(["CWE-125","CWE-379"])
+    [125, 379]
+    """
+    weaknesses = []
+    db = Database()
+    for cwe_string in cwe_strings:
+        if not cwe_string:
+            continue
+        cwe_id = get_cwe_id(cwe_string)
+        if not cwe_id:
+            logger.error("Invalid CWE id: No CWE ID found")
+            continue
+        try:
+            db.get(cwe_id)
+            weaknesses.append(cwe_id)
+        except InvalidCWEError as e:
+            logger.error(f"Error: {e}")
+    return weaknesses
+
+
 def clean_nginx_git_tag(tag):
     """
     Return a cleaned ``version`` string from an nginx git tag.
@@ -536,3 +563,12 @@ def normalize_purl(purl: Union[PackageURL, str]):
     if isinstance(purl, PackageURL):
         purl = str(purl)
     return PackageURL.from_string(purl)
+
+
+def get_purl_version_class(purl):
+    RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
+    purl_version_class = None
+    check_version_class = RANGE_CLASS_BY_SCHEMES.get(purl.type, None)
+    if check_version_class:
+        purl_version_class = check_version_class.version_class
+    return purl_version_class

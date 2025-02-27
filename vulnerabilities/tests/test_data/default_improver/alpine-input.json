@@ -4,8 +4,8 @@
   "affected_packages": [
     {
       "package": {
-        "type": "alpine",
-        "namespace": null,
+        "type": "apk",
+        "namespace": "alpine",
         "name": "xen",
         "version": null,
         "qualifiers": {
@@ -20,8 +20,8 @@
     },
     {
       "package": {
-        "type": "alpine",
-        "namespace": null,
+        "type": "apk",
+        "namespace": "alpine",
         "name": "xen",
         "version": null,
         "qualifiers": {
@@ -36,8 +36,8 @@
     },
     {
       "package": {
-        "type": "alpine",
-        "namespace": null,
+        "type": "apk",
+        "namespace": "alpine",
         "name": "xen",
         "version": null,
         "qualifiers": {
@@ -52,8 +52,8 @@
     },
     {
       "package": {
-        "type": "alpine",
-        "namespace": null,
+        "type": "apk",
+        "namespace": "alpine",
         "name": "xen",
         "version": null,
         "qualifiers": {
@@ -68,8 +68,8 @@
     },
     {
       "package": {
-        "type": "alpine",
-        "namespace": null,
+        "type": "apk",
+        "namespace": "alpine",
         "name": "xen",
         "version": null,
         "qualifiers": {
@@ -84,8 +84,8 @@
     },
     {
       "package": {
-        "type": "alpine",
-        "namespace": null,
+        "type": "apk",
+        "namespace": "alpine",
         "name": "xen",
         "version": null,
         "qualifiers": {
@@ -100,8 +100,8 @@
     },
     {
       "package": {
-        "type": "alpine",
-        "namespace": null,
+        "type": "apk",
+        "namespace": "alpine",
         "name": "xen",
         "version": null,
         "qualifiers": {

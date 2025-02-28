@@ -355,14 +355,24 @@ class PackageSerializer(BaseResourceSerializer):
                 "fixed_by_packages",
                 queryset=fixed_packages,
                 to_attr="filtered_fixed_packages",
+            ),
+            Prefetch(
+                "weaknesses",
+                queryset=Weakness.objects.all(),
+                to_attr="prefetched_weaknesses",
             )
         )
-        return VulnSerializerRefsAndSummary(
+        vulnerabilities_data = VulnSerializerRefsAndSummary(
             instance=qs,
             many=True,
             context={"request": self.context["request"]},
         ).data
 
+        for vuln, vuln_instance in zip(vulnerabilities_data, qs):
+            vuln["weaknesses"] = [weakness.to_dict() for weakness in vuln_instance.prefetched_weaknesses]
+
+        return vulnerabilities_data
+    
     def get_fixing_vulnerabilities(self, package) -> dict:
         """
         Return a mapping of vulnerabilities fixed in the given `package`.

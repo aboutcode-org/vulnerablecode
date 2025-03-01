@@ -22,7 +22,7 @@
 # Modified for VulnerableCode use
 
 # Python version can be specified with `$ PYTHON_EXE=python3.x make conf`
-PYTHON_EXE?=python3
+PYTHON_EXE?=python3.12
 VENV=venv
 MANAGE=${VENV}/bin/python manage.py
 ACTIVATE?=. ${VENV}/bin/activate;

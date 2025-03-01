@@ -18,7 +18,6 @@ from functools import cached_property
 from itertools import groupby
 from operator import attrgetter
 from typing import Union
-from django.db import models
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
@@ -66,6 +65,26 @@ models.CharField.register_lookup(Trim)
 
 # patch univers for missing entry
 RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
+
+
+class CodeFix(models.Model):
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    vulnerability = models.ForeignKey(
+        "Vulnerability", on_delete=models.CASCADE, related_name="code_fixes"
+    )
+    package = models.ForeignKey("Package", on_delete=models.CASCADE, related_name="code_fixes")
+    commit_hash = models.CharField(max_length=64)
+    commit_url = models.URLField(max_length=1024)
+    patch_url = models.URLField(max_length=1024, blank=True)
+    description = models.TextField(blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # Keep existing created_at
+    updated_at = models.DateTimeField(auto_now=True)  # Keep existing updated_at
+
+    def __str__(self):
+        return f"Fix for {self.vulnerability} in {self.package}"
 
 
 class BaseQuerySet(models.QuerySet):
@@ -1791,7 +1810,7 @@ class CodeFix(CodeChange):
         default=uuid.uuid4,
         editable=False,
         unique=True,
-        help_text="Unique identifier for this code fix"
+        help_text="Unique identifier for this code fix",
     )
 
     affected_package_vulnerability = models.ForeignKey(

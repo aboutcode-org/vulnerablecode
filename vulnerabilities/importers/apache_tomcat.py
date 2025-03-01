@@ -16,10 +16,8 @@ import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
-from univers.version_range import ApacheVersionRange
 from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
-from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -313,11 +311,6 @@ def generate_advisory_data_objects(url, tomcat_advisory_data_object):
             else:
                 pass
 
-            affected_version_range_apache = to_version_ranges_apache(
-                affected_versions,
-                fixed_versions,
-            )
-
             affected_version_range_maven = to_version_ranges_maven(
                 affected_versions,
                 fixed_versions,
@@ -339,16 +332,6 @@ def generate_advisory_data_objects(url, tomcat_advisory_data_object):
             affected_packages.append(
                 AffectedPackage(
                     package=PackageURL(
-                        type="apache",
-                        name="tomcat",
-                    ),
-                    affected_version_range=affected_version_range_apache,
-                )
-            )
-
-            affected_packages.append(
-                AffectedPackage(
-                    package=PackageURL(
                         type="maven",
                         namespace="org.apache.tomcat",
                         name="tomcat",
@@ -364,79 +347,6 @@ def generate_advisory_data_objects(url, tomcat_advisory_data_object):
                 references=references,
                 url=url,
             )
-
-
-def to_version_ranges_apache(versions_data, fixed_versions):
-    constraints = []
-
-    VersionConstraintTuple = namedtuple("VersionConstraintTuple", ["comparator", "version"])
-    affected_constraint_tuple_list = []
-    fixed_constraint_tuple_list = []
-
-    for version_item in versions_data:
-        version_item = version_item.strip()
-        if "to" in version_item:
-            version_item_split = version_item.split(" ")
-            affected_constraint_tuple_list.append(
-                VersionConstraintTuple(">=", version_item_split[0])
-            )
-            affected_constraint_tuple_list.append(
-                VersionConstraintTuple("<=", version_item_split[-1])
-            )
-
-        elif "-" in version_item:
-            version_item_split = version_item.split("-")
-            affected_constraint_tuple_list.append(
-                VersionConstraintTuple(">=", version_item_split[0])
-            )
-            affected_constraint_tuple_list.append(
-                VersionConstraintTuple("<=", version_item_split[-1])
-            )
-
-        elif version_item.startswith("<"):
-            version_item_split = version_item.split("<")
-            affected_constraint_tuple_list.append(
-                VersionConstraintTuple("<", version_item_split[-1])
-            )
-
-        else:
-            version_item_split = version_item.split(" ")
-            affected_constraint_tuple_list.append(
-                VersionConstraintTuple("=", version_item_split[0])
-            )
-
-    for fixed_item in fixed_versions:
-
-        if "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
-            fixed_item_split = fixed_item.split(" ")
-            fixed_constraint_tuple_list.append(VersionConstraintTuple(">=", fixed_item_split[0]))
-            fixed_constraint_tuple_list.append(VersionConstraintTuple("<=", fixed_item_split[-1]))
-
-        else:
-            fixed_item_split = fixed_item.split(" ")
-            fixed_constraint_tuple_list.append(VersionConstraintTuple("=", fixed_item_split[0]))
-
-    for record in affected_constraint_tuple_list:
-        try:
-            constraints.append(
-                VersionConstraint(
-                    comparator=record.comparator,
-                    version=SemverVersion(record.version),
-                )
-            )
-        except Exception as e:
-            LOGGER.error(f"{record.version!r} is not a valid SemverVersion {e!r}")
-            continue
-
-    for record in fixed_constraint_tuple_list:
-        constraints.append(
-            VersionConstraint(
-                comparator=record.comparator,
-                version=SemverVersion(record.version),
-            ).invert()
-        )
-
-    return ApacheVersionRange(constraints=constraints)
 
 
 def to_version_ranges_maven(versions_data, fixed_versions):

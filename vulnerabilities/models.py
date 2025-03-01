@@ -11,6 +11,7 @@ import csv
 import hashlib
 import json
 import logging
+import uuid
 import xml.etree.ElementTree as ET
 from contextlib import suppress
 from functools import cached_property
@@ -64,6 +65,26 @@ models.CharField.register_lookup(Trim)
 
 # patch univers for missing entry
 RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
+
+
+class CodeFix(models.Model):
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    vulnerability = models.ForeignKey(
+        "Vulnerability", on_delete=models.CASCADE, related_name="code_fixes"
+    )
+    package = models.ForeignKey("Package", on_delete=models.CASCADE, related_name="code_fixes")
+    commit_hash = models.CharField(max_length=64)
+    commit_url = models.URLField(max_length=1024)
+    patch_url = models.URLField(max_length=1024, blank=True)
+    description = models.TextField(blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # Keep existing created_at
+    updated_at = models.DateTimeField(auto_now=True)  # Keep existing updated_at
+
+    def __str__(self):
+        return f"Fix for {self.vulnerability} in {self.package}"
 
 
 class BaseQuerySet(models.QuerySet):
@@ -1783,6 +1804,14 @@ class CodeFix(CodeChange):
     - with a specific affected package version
     - optionally with a specific fixing package version when it is known
     """
+
+    uuid = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+        help_text="Unique identifier for this code fix",
+    )
 
     affected_package_vulnerability = models.ForeignKey(
         "AffectedByPackageRelatedVulnerability",

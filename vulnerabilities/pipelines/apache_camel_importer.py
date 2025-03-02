@@ -219,4 +219,3 @@ def parse_apache_camel_versions(version_string):
         )
 
     return MavenVersionRange(constraints=version_ranges)
-

@@ -18,6 +18,7 @@ from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
 from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
+from vulnerabilities.pipelines.liferay_advisories import LiferayAdvisoryPipeline
 
 IMPROVERS_REGISTRY = [
     valid_versions.GitHubBasicImprover,
@@ -45,6 +46,7 @@ IMPROVERS_REGISTRY = [
     compute_package_version_rank.ComputeVersionRankPipeline,
     collect_commits.CollectFixCommitsPipeline,
     add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
+    LiferayAdvisoryPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

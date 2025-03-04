@@ -7,12 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import logging
-from itertools import groupby
-
 from aboutcode.pipeline import LoopProgress
-from django.db.models import Count
-from django.db.models import Q
 
 from vulnerabilities.models import Advisory
 from vulnerabilities.pipelines import VulnerableCodePipeline
@@ -26,69 +21,86 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
 
     @classmethod
     def steps(cls):
-        return (
-            cls.recompute_content_ids,
-            cls.remove_duplicates,
-        )
+        return (cls.remove_duplicates,)
 
     def remove_duplicates(self):
         """
-        Find advisories with the same content and keep only the latest one.
+        Recompute content id and remove advisories with the same content and keep only the latest one.
         """
 
-        duplicated_advisories = groupby(
-            Advisory.objects.order_by("unique_content_id").all().paginated(),
-            key=lambda x: x.unique_content_id,
-        )
-        progress = LoopProgress(total_iterations=Advisory.objects.count(), logger=self.log)
-        for _content_id, advisories in progress.iter(duplicated_advisories):
-            advisories = list(advisories)
-            self.log(
-                f"Removing duplicates for content ID {_content_id} {len(advisories)}",
-                level=logging.INFO,
-            )
-            oldest = min(advisories, key=lambda x: x.date_imported)
-            try:
-                advisory_ids = []
-                for adv in advisories:
-                    if adv.id != oldest.id:
-                        advisory_ids.append(adv.id)
-                Advisory.objects.filter(id__in=advisory_ids).delete()
-            except Exception as e:
-                self.log(f"Error deleting advisories: {e}", level=logging.ERROR)
+        advisories_count = Advisory.objects.all().count()
+        self.log(f"Computing new content id for {advisories_count} and removing duplicates.")
 
-            self.log(
-                f"Kept advisory {oldest.id} and removed "
-                f"{len(list(advisories)) - 1} duplicates for content ID {_content_id}",
-                level=logging.INFO,
-            )
+        update_batch_size = 500
+        delete_batch_size = 1000
+        chunk_size = 50000
+        deleted_advisory_count = 0
+        updated_advisory_count = 0
+        duplicate_advisory_id = []
+        updated_advisory = []
+        content_ids = set()
 
-    def recompute_content_ids(self):
-        """
-        Recompute content IDs for all advisories.
-        """
-
-        advisories_list = []
-
-        advisories = Advisory.objects.exclude(unique_content_id__length=64)
-
+        advisories = Advisory.objects.all().order_by("-id").paginated(per_page=chunk_size)
         progress = LoopProgress(
-            total_iterations=advisories.count(),
-            progress_step=1000,
+            total_iterations=advisories_count,
+            logger=self.log,
+            progress_step=1,
+        )
+
+        for advisory in progress.iter(advisories):
+            content_id = compute_content_id(advisory.to_advisory_data())
+            if content_id in content_ids:
+                duplicate_advisory_id.append(advisory.id)
+            else:
+                if advisory.unique_content_id != content_id:
+                    advisory.unique_content_id = content_id
+                    updated_advisory.append(advisory)
+                    content_ids.add(content_id)
+            if len(duplicate_advisory_id) > delete_batch_size:
+                deleted_advisory_count += delete_advisories(
+                    advisory_ids=duplicate_advisory_id,
+                    logger=self.log,
+                )
+            if len(updated_advisory) > update_batch_size:
+                updated_advisory_count += bulk_update_advisory(
+                    items=updated_advisory,
+                    fields=["unique_content_id"],
+                    logger=self.log,
+                )
+
+        deleted_advisory_count += delete_advisories(
+            advisory_ids=duplicate_advisory_id,
+            logger=self.log,
+        )
+        updated_advisory_count += bulk_update_advisory(
+            items=updated_advisory,
+            fields=["unique_content_id"],
             logger=self.log,
         )
 
-        batch_size = 50000
+        self.log(f"Removed {deleted_advisory_count} duplicates advisories.")
+        self.log(f"Updated content id for {deleted_advisory_count} advisories.")
 
-        for advisory in progress.iter(advisories.paginated(per_page=batch_size)):
-            self.log(f"Recomputing content ID for advisory {advisory.id}", level=logging.INFO)
-            advisory.unique_content_id = compute_content_id(advisory.to_advisory_data())
-            advisories_list.append(advisory)
-            if len(advisories_list) % batch_size == 0:
-                Advisory.objects.bulk_update(
-                    advisories_list, ["unique_content_id"], batch_size=batch_size
-                )
-                advisories_list = []
 
-        if advisories:
-            Advisory.objects.bulk_update(advisories, ["unique_content_id"], batch_size=batch_size)
+def bulk_update_advisory(items, fields, logger):
+    item_count = 0
+    if items:
+        try:
+            Advisory.objects.bulk_update(objs=items, fields=fields)
+            item_count += len(items)
+        except Exception as e:
+            logger(f"Error updating Advisory: {e}")
+        items.clear()
+    return item_count
+
+
+def delete_advisories(advisory_ids, logger):
+    item_count = 0
+    if advisory_ids:
+        try:
+            Advisory.objects.filter(id__in=advisory_ids).delete()
+            item_count += len(advisory_ids)
+        except Exception as e:
+            logger(f"Error deleting Advisory: {e}")
+        advisory_ids.clear()
+    return item_count

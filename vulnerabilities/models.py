@@ -1317,7 +1317,6 @@ class Advisory(models.Model):
 
     unique_content_id = models.CharField(
         max_length=64,
-        db_index=True,
         blank=True,
         help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
     )
@@ -1356,6 +1355,7 @@ class Advisory(models.Model):
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
+        unique_together = ["aliases", "unique_content_id", "date_published", "url"]
         ordering = ["aliases", "date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):

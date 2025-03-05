@@ -1,3 +1,16 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
+
+from datetime import datetime
+from typing import Iterable
+
 import requests
 from bs4 import BeautifulSoup
 from django.db import transaction
@@ -7,6 +20,8 @@ from requests.exceptions import HTTPError
 from requests.exceptions import RequestException
 from requests.exceptions import Timeout
 
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import Reference
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -146,7 +161,7 @@ class LiferayAdvisoryPipeline(VulnerableCodePipeline):
                     name="dxp" if "dxp" in parsed_version.lower() else "portal",
                     version=parsed_version,
                 ).to_string()
-                # Do something with purl_str, e.g., store in your DB or logs
+
                 self.log(f"Affected version PURL: {purl_str}")
 
         self.log(f"Imported {len(self.parsed_advisories)} Liferay advisories")
@@ -155,3 +170,43 @@ class LiferayAdvisoryPipeline(VulnerableCodePipeline):
         if "DXP" in text:
             return f"liferay-dxp-{text.split()[-1].lower()}"
         return f"liferay-portal-{text.split()[0]}"
+
+    def advisory_data(self) -> Iterable[AdvisoryData]:
+        import logging
+
+        from vulnerabilities.importer import AffectedPackage
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            # Execute pipeline steps
+            self.fetch_advisories()
+            self.parse_advisories()
+
+            # Convert parsed data to AdvisoryData objects
+            for data in getattr(self, "parsed_advisories", []):
+                # Create affected packages list
+                affected_packages = []
+            for version in data.get("affected_versions", []):
+                parsed_version = self.parse_versions(version)
+                affected_packages.append(
+                    AffectedPackage(
+                        package=PackageURL(
+                            type="liferay",
+                            name="dxp" if "dxp" in parsed_version.lower() else "portal",
+                            version=parsed_version,
+                        )
+                    )
+                )
+
+            yield AdvisoryData(
+                aliases=[data["cve_id"]],
+                summary=data.get("summary", ""),
+                references=[Reference(url=ref) for ref in data.get("references", [])],
+                affected_packages=affected_packages,
+                severity=data.get("severity"),
+            )
+
+        except Exception as e:
+            logger.error(f"Error in Liferay pipeline: {str(e)}")
+        raise

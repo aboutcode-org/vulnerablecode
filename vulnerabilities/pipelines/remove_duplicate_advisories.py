@@ -32,15 +32,16 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
         self.log(f"Computing new content id for {advisories_count} and removing duplicates.")
 
         update_batch_size = 500
-        delete_batch_size = 1000
+        delete_batch_size = 5000
         chunk_size = 50000
-        deleted_advisory_count = 0
-        updated_advisory_count = 0
-        duplicate_advisory_id = []
-        updated_advisory = []
+        deleted_advisories_count = 0
+        updated_advisories_count = 0
+        duplicate_advisory_ids = []
+        advisories_to_update = []
         content_ids = set()
 
-        advisories = Advisory.objects.all().order_by("-id").paginated(per_page=chunk_size)
+        advisories = Advisory.objects.all().order_by("id").paginated(per_page=chunk_size)
+
         progress = LoopProgress(
             total_iterations=advisories_count,
             logger=self.log,
@@ -49,48 +50,52 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
 
         for advisory in progress.iter(advisories):
             content_id = compute_content_id(advisory.to_advisory_data())
+
             if content_id in content_ids:
-                duplicate_advisory_id.append(advisory.id)
+                duplicate_advisory_ids.append(advisory.id)
             else:
+                content_ids.add(content_id)
                 if advisory.unique_content_id != content_id:
                     advisory.unique_content_id = content_id
-                    updated_advisory.append(advisory)
-                    content_ids.add(content_id)
-            if len(duplicate_advisory_id) > delete_batch_size:
-                deleted_advisory_count += delete_advisories(
-                    advisory_ids=duplicate_advisory_id,
+                    advisories_to_update.append(advisory)
+
+            if len(duplicate_advisory_ids) > delete_batch_size:
+                deleted_advisories_count += delete_advisories(
+                    advisory_ids=duplicate_advisory_ids,
                     logger=self.log,
                 )
-            if len(updated_advisory) > update_batch_size:
-                updated_advisory_count += bulk_update_advisory(
-                    items=updated_advisory,
+                duplicate_advisory_ids.clear()
+
+            if len(advisories_to_update) > update_batch_size:
+                updated_advisories_count += bulk_update_advisories(
+                    advisories=advisories_to_update,
                     fields=["unique_content_id"],
                     logger=self.log,
                 )
+                advisories_to_update.clear()
 
-        deleted_advisory_count += delete_advisories(
-            advisory_ids=duplicate_advisory_id,
+        deleted_advisories_count += delete_advisories(
+            advisory_ids=duplicate_advisory_ids,
             logger=self.log,
         )
-        updated_advisory_count += bulk_update_advisory(
-            items=updated_advisory,
+        updated_advisories_count += bulk_update_advisories(
+            advisories=advisories_to_update,
             fields=["unique_content_id"],
             logger=self.log,
         )
 
-        self.log(f"Removed {deleted_advisory_count} duplicates advisories.")
-        self.log(f"Updated content id for {deleted_advisory_count} advisories.")
+        self.log(f"Removed {deleted_advisories_count} duplicates advisories.")
+        self.log(f"Updated content id for {deleted_advisories_count} advisories.")
 
 
-def bulk_update_advisory(items, fields, logger):
+def bulk_update_advisories(advisories, fields, logger):
     item_count = 0
-    if items:
+    if advisories:
         try:
-            Advisory.objects.bulk_update(objs=items, fields=fields)
-            item_count += len(items)
+            Advisory.objects.bulk_update(objs=advisories, fields=fields)
+            item_count += len(advisories)
         except Exception as e:
             logger(f"Error updating Advisory: {e}")
-        items.clear()
     return item_count
 
 
@@ -102,5 +107,4 @@ def delete_advisories(advisory_ids, logger):
             item_count += len(advisory_ids)
         except Exception as e:
             logger(f"Error deleting Advisory: {e}")
-        advisory_ids.clear()
     return item_count

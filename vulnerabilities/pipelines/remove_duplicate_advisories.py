@@ -15,7 +15,7 @@ from vulnerabilities.utils import compute_content_id
 
 
 class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
-    """Pipeline to remove duplicate advisories based on their content."""
+    """Pipeline to compute new advisory content id and remove duplicate advisories based on their content."""
 
     pipeline_id = "remove_duplicate_advisories"
 
@@ -25,7 +25,7 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
 
     def remove_duplicates(self):
         """
-        Recompute content id and remove advisories with the same content and keep only the latest one.
+        Recompute the content ID and remove duplicate advisories, keeping the oldest one.
         """
 
         advisories_count = Advisory.objects.all().count()
@@ -33,14 +33,14 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
 
         update_batch_size = 500
         delete_batch_size = 5000
-        chunk_size = 50000
+        chunk_size = 5000
         deleted_advisories_count = 0
         updated_advisories_count = 0
         duplicate_advisory_ids = []
         advisories_to_update = []
         content_ids = set()
 
-        advisories = Advisory.objects.all().order_by("id").paginated(per_page=chunk_size)
+        advisories = Advisory.objects.all().order_by("id").iterator(chunk_size=chunk_size)
 
         progress = LoopProgress(
             total_iterations=advisories_count,

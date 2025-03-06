@@ -28,16 +28,16 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
             affected_packages=[
                 AffectedPackage(
                     package=PackageURL(type="npm", name="package1"),
-                    affected_version_range=">=1.0.0|<2.0.0",
+                    affected_version_range="vers:npm/>=1.0.0|<2.0.0",
                 )
             ],
             references=[Reference(url="https://example.com/vuln1")],
         )
 
-    def test_remove_duplicates_keeps_latest(self):
+    def test_remove_duplicates_keeps_oldest(self):
         """
         Test that when multiple advisories have the same content,
-        only the latest one is kept.
+        only the oldest one is kept.
         """
         # Create three advisories with same content but different dates
         dates = [
@@ -56,11 +56,11 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
                 date_collected=date,
             )
             advisories.append(advisory)
+            print(advisory.id)
 
         # Run the pipeline
         pipeline = RemoveDuplicateAdvisoriesPipeline()
-        pipeline.recompute_content_ids()
-        pipeline.remove_duplicates()
+        pipeline.execute()
 
         # Check that only the first advisory remains
         remaining = Advisory.objects.all()
@@ -90,7 +90,7 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
 
         # Run the pipeline
         pipeline = RemoveDuplicateAdvisoriesPipeline()
-        pipeline.remove_duplicates()
+        pipeline.execute()
 
         # Check that both advisories remain
         self.assertEqual(Advisory.objects.count(), 2)
@@ -110,7 +110,7 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
 
         # Run the pipeline
         pipeline = RemoveDuplicateAdvisoriesPipeline()
-        pipeline.recompute_content_ids()
+        pipeline.execute()
 
         # Check that content ID was updated
         advisory.refresh_from_db()

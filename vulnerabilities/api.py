@@ -157,6 +157,8 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
 
     aliases = serializers.SerializerMethodField()
 
+    weaknesses = serializers.SerializerMethodField()
+
     def get_aliases(self, obj):
         # Assuming `obj.aliases` is a queryset of `Alias` objects
         return [alias.alias for alias in obj.aliases.all()]
@@ -173,6 +175,9 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
 
         return serialized_references
 
+    def get_weaknesses(self, obj):
+        return [weakness.to_dict() for weakness in getattr(obj, "prefetched_weaknesses", [])]
+
     class Meta:
         model = Vulnerability
         fields = [
@@ -185,6 +190,7 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
             "risk_score",
             "exploitability",
             "weighted_severity",
+            "weaknesses",
         ]
 
 
@@ -362,16 +368,11 @@ class PackageSerializer(BaseResourceSerializer):
                 to_attr="prefetched_weaknesses",
             )
         )
-        vulnerabilities_data = VulnSerializerRefsAndSummary(
+        return VulnSerializerRefsAndSummary(
             instance=qs,
             many=True,
             context={"request": self.context["request"]},
         ).data
-
-        for vuln, vuln_instance in zip(vulnerabilities_data, qs):
-            vuln["weaknesses"] = [weakness.to_dict() for weakness in vuln_instance.prefetched_weaknesses]
-
-        return vulnerabilities_data
     
     def get_fixing_vulnerabilities(self, package) -> dict:
         """

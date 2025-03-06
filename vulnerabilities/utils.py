@@ -10,6 +10,7 @@
 import bisect
 import csv
 import dataclasses
+import hashlib
 import json
 import logging
 import os
@@ -572,3 +573,58 @@ def get_purl_version_class(purl):
     if check_version_class:
         purl_version_class = check_version_class.version_class
     return purl_version_class
+
+
+def normalize_text(text):
+    """Normalize text by removing whitespace and converting to lowercase."""
+    return "".join(text.split()).lower() if text else ""
+
+
+def normalize_list(lst):
+    """Sort a list to ensure consistent ordering."""
+    return sorted(lst) if lst else []
+
+
+def compute_content_id(advisory_data, include_metadata=False):
+    """
+    Compute a unique content_id for an advisory by normalizing its data and hashing it.
+
+    :param advisory_data: An AdvisoryData object
+    :param include_metadata: Boolean indicating whether to include `created_by` and `url`
+    :return: SHA-256 hash digest as content_id
+    """
+
+    # Normalize fields
+    from vulnerabilities.importer import AdvisoryData
+    from vulnerabilities.models import Advisory
+
+    if isinstance(advisory_data, Advisory):
+        normalized_data = {
+            "aliases": normalize_list(advisory_data.aliases),
+            "summary": normalize_text(advisory_data.summary),
+            "affected_packages": [
+                pkg for pkg in normalize_list(advisory_data.affected_packages) if pkg
+            ],
+            "references": [ref for ref in normalize_list(advisory_data.references) if ref],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+        }
+        normalized_data["url"] = advisory_data.url
+
+    elif isinstance(advisory_data, AdvisoryData):
+        normalized_data = {
+            "aliases": normalize_list(advisory_data.aliases),
+            "summary": normalize_text(advisory_data.summary),
+            "affected_packages": [
+                pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+            ],
+            "references": [
+                ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
+            ],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+        }
+        normalized_data["url"] = advisory_data.url
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+
+    return content_id

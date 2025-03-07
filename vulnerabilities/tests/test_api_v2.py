@@ -216,7 +216,7 @@ class PackageV2ViewSetTest(APITestCase):
         Should return a list of packages with their details and associated vulnerabilities.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(32):
+        with self.assertNumQueries(33):
             response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -238,7 +238,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by one or more PURLs.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(20):
+        with self.assertNumQueries(21):
             response = self.client.get(url, {"purl": "pkg:pypi/django@3.2"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["packages"]), 1)
@@ -249,7 +249,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by affected_by_vulnerability.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(20):
+        with self.assertNumQueries(21):
             response = self.client.get(
                 url, {"affected_by_vulnerability": "VCID-1234"}, format="json"
             )
@@ -311,6 +311,7 @@ class PackageV2ViewSetTest(APITestCase):
             "VCID-1234": {
                 "code_fixes": [],
                 "vulnerability_id": "VCID-1234",
+                "severities": [],
                 "fixed_by_packages": None,
             }
         }
@@ -395,6 +396,7 @@ class PackageV2ViewSetTest(APITestCase):
                 "VCID-1234": {
                     "code_fixes": [],
                     "vulnerability_id": "VCID-1234",
+                    "severities": [],
                     "fixed_by_packages": None,
                 }
             },
@@ -601,7 +603,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-lookup")
         data = {"purl": "pkg:pypi/django@3.2"}
-        with self.assertNumQueries(13):
+        with self.assertNumQueries(14):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(1, len(response.data))
@@ -617,6 +619,7 @@ class PackageV2ViewSetTest(APITestCase):
                 "VCID-1234": {
                     "code_fixes": [],
                     "vulnerability_id": "VCID-1234",
+                    "severities": [],
                     "fixed_by_packages": None,
                 }
             },

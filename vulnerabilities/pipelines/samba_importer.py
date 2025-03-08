@@ -34,7 +34,7 @@ from vulnerabilities.utils import get_cwe_id
 class SambaImporterPipeline(VulnerableCodeBaseImporterPipeline):
     pipeline_id = "samba_importer"
     spdx_license_expression = "GPL-3.0-only"
-    license_url = "https://www.samba.org/samba/docs/GPL.txt"
+    license_url = "https://www.samba.org/samba/ms_license.html"
     url = "https://www.samba.org/samba/history/security.html"
     importer_name = "Samba Importer"
 

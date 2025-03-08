@@ -51,9 +51,7 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
             total_iterations=affected_by_package_related_vulnerabilities.count(), logger=self.log
         )
 
-        for apv in progress.iter(
-            affected_by_package_related_vulnerabilities.paginated(per_page=500)
-        ):
+        for apv in progress.iter(affected_by_package_related_vulnerabilities.iterator()):
             vulnerability = apv.vulnerability
             for reference in vulnerability.references.all():
                 if not "/commit/" in reference.url:

@@ -64,8 +64,8 @@ class ValidVersionImprover(Improver):
     @property
     def interesting_advisories(self) -> QuerySet:
         if issubclass(self.importer, VulnerableCodeBaseImporterPipeline):
-            return Advisory.objects.filter(Q(created_by=self.importer.pipeline_id)).paginated()
-        return Advisory.objects.filter(Q(created_by=self.importer.qualified_name)).paginated()
+            return Advisory.objects.filter(Q(created_by=self.importer.pipeline_id)).iterator()
+        return Advisory.objects.filter(Q(created_by=self.importer.qualified_name)).iterator()
 
     def get_package_versions(
         self, package_url: PackageURL, until: Optional[datetime] = None
@@ -222,7 +222,7 @@ class NginxBasicImprover(Improver):
 
     @property
     def interesting_advisories(self) -> QuerySet:
-        return Advisory.objects.filter(created_by=NginxImporterPipeline.pipeline_id).paginated()
+        return Advisory.objects.filter(created_by=NginxImporterPipeline.pipeline_id).iterator()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         all_versions = list(self.fetch_nginx_version_from_git_tags())

@@ -44,9 +44,9 @@ class DefaultImprover(Improver):
             return (
                 Advisory.objects.filter(Q(created_by=self.importer.qualified_name))
                 .order_by("-date_collected")
-                .paginated()
+                .iterator()
             )
-        return Advisory.objects.all().order_by("-date_collected").paginated()
+        return Advisory.objects.all().order_by("-date_collected").iterator()
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         if not advisory_data:

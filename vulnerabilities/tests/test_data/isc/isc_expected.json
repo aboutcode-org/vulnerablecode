@@ -1,0 +1,59 @@
+{
+    "aliases": "CVE-2024-12705",
+    "summary": "Clients using DNS-over-HTTPS (DoH) can exhaust a DNS resolver's CPU and/or memory by flooding it with crafted valid or invalid HTTP/2 traffic.",
+    "affected_packages": [
+        {
+            "package": {
+                "type": "isc",
+                "namespace": "",
+                "name": "BIND",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": "vers:generic/9.18.0|9.18.32",
+            "fixed_version": "9.18.33"
+        },
+        {
+            "package": {
+                "type": "isc",
+                "namespace": "",
+                "name": "BIND",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": "vers:generic/9.20.0|9.20.4",
+            "fixed_version": "9.20.5"
+        },
+        {
+            "package": {
+                "type": "isc",
+                "namespace": "",
+                "name": "BIND",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": "vers:generic/9.21.0|9.21.3",
+            "fixed_version": "9.21.4"
+        }
+    ],
+    "references": [
+        {
+            "reference_id": "CVE-2024-12705",
+            "reference_type": "",
+            "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-12705",
+            "severities": [
+                {
+                    "system": "cvssv3.1",
+                    "value": "7.5",
+                    "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                }
+            ]
+        }
+    ],
+    "date_published": "2025-01-29T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://kb.isc.org/v1/docs/cve-2024-12705"
+}

@@ -15,18 +15,23 @@ from vulnerabilities.pipelines import isc_importer
 
 TEST_DATA = Path(__file__).parent.parent / "test_data" / "isc" / "isc_expected.json"
 HTML_DATA = Path(__file__).parent.parent / "test_data" / "isc" / "isc_test.html"
+LINKS_DATA = Path(__file__).parent.parent / "test_data" / "isc" / "isc_links.html"
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 }
 
 
-def test_extract_advisory_links():
-    root_url = "https://kb.isc.org/docs/aa-00913"
+def test_fetch_advisory_links():
+    """Test fetching advisory links from ISC security advisories page."""
+    with open(LINKS_DATA) as f:
+        mock_html_content = f.read()
 
-    advisory_links = isc_importer.fetch_advisory_links(root_url, headers)
+    with mock.patch("requests.get") as mock_get:
+        mock_get.return_value.content = mock_html_content.encode()
+        links = isc_importer.fetch_advisory_links("https://kb.isc.org/docs/aa-00913", headers)
 
-    assert "https://kb.isc.org/v1/docs/cve-2024-12705" in advisory_links
+    assert "https://kb.isc.org/v1/docs/cve-2024-12705" in links
 
 
 def test_fetch_advisory_data():

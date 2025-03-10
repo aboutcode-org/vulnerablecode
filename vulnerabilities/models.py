@@ -13,6 +13,7 @@ import json
 import logging
 import xml.etree.ElementTree as ET
 from contextlib import suppress
+from datetime import timedelta
 from functools import cached_property
 from itertools import groupby
 from operator import attrgetter
@@ -56,6 +57,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
+from vulnerablecode import settings
 
 logger = logging.getLogger(__name__)
 
@@ -1390,6 +1392,26 @@ class Advisory(models.Model):
 UserModel = get_user_model()
 
 
+class ExpiringToken(Token):
+    """
+    Extends Django Rest Framework's Token model to include an expiration date.
+    """
+
+    expires = models.DateTimeField(null=False)
+
+    def is_expired(self):
+        return timezone.now() > self.expires
+
+    @classmethod
+    def get_or_create(cls, user):
+        token, created = Token._default_manager.get_or_create(user=user)
+
+        if created:
+            token.expires = timezone.now() + timedelta(days=settings.TOKEN_EXPIRY_DAYS)  # 30days
+            token.save()
+        return token, created
+
+
 class ApiUserManager(UserManager):
     def create_api_user(self, username, first_name="", last_name="", **extra_fields):
         """
@@ -1415,7 +1437,7 @@ class ApiUserManager(UserManager):
         user.set_unusable_password()
         user.save()
 
-        Token._default_manager.get_or_create(user=user)
+        ExpiringToken.get_or_create(user=user)
 
         return user
 

@@ -257,7 +257,12 @@ def create_valid_vulnerability_reference(url, reference_id=None):
     try:
         reference.full_clean()
     except ValidationError as e:
-        logger.warning(f"Invalid vulnerability reference: {reference!r}: {e}")
+        error_message = str(e)
+        if "Vulnerability reference with this Url already exists." in error_message:
+            logger.debug(f"Duplicate vulnerability reference ignored: {reference!r}")
+        else:
+            logger.warning(f"Invalid vulnerability reference: {reference!r}: {e}")
+
         return
 
     reference.save()

@@ -58,14 +58,17 @@ class PackageSearchTestCase(TestCase):
             Package.objects.create(**attrs)
 
     def test_packages_search_view_paginator(self):
-        response = self.client.get("/packages/search?type=deb&name=&page=1")
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get("/packages/search?type=deb&name=&page=*")
-        self.assertEqual(response.status_code, 404)
-        response = self.client.get("/packages/search?type=deb&name=&page=")
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get("/packages/search?type=&name=&page=")
-        self.assertEqual(response.status_code, 200)
+        test_cases = [
+            ("/packages/search?type=deb&name=&page=1", 200),
+            ("/packages/search?type=deb&name=&page=*", 200),
+            ("/packages/search?type=deb&name=&page=", 200),
+            ("/packages/search?type=&name=&page=", 200),
+        ]
+        for url, expected_status in test_cases:
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, expected_status)
+            if "*" in url or "&page=" in url:
+                self.assertEqual(response.context["page_obj"].number, 1)
 
     def test_package_view(self):
         qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1.0.15?foo=bar")

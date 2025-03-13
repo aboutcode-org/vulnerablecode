@@ -496,6 +496,7 @@ def get_cwes(self):
 
 Database.get_cwes = get_cwes
 
+
 def get_cwes(self):
     """Yield CWE Weakness objects"""
     for cwe_category in self.cwe_files:

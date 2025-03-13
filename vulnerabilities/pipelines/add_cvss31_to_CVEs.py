@@ -44,10 +44,9 @@ class CVEAdvisoryMappingPipeline(VulnerableCodePipeline):
             progress_step=5,
         )
 
-        batch_size = 1000
         results = []
 
-        for severity in progress.iter(nvd_severities.iterator()):
+        for severity in progress.iter(nvd_severities.iterator(chunk_size=2000)):
             print(severity.url)
             cve_pattern = re.compile(r"(CVE-\d{4}-\d{4,7})").search
             cve_match = cve_pattern(severity.url)

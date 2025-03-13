@@ -54,7 +54,7 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         updated_vulnerability_count = 0
         batch_size = 5000
 
-        for vulnerability in progress.iter(affected_vulnerabilities.iterator()):
+        for vulnerability in progress.iter(affected_vulnerabilities.iterator(chunk_size=2000)):
             severities = vulnerability.severities.all()
             references = vulnerability.references.all()
             exploits = vulnerability.exploits.all()
@@ -110,7 +110,7 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         updated_package_count = 0
         batch_size = 10000
 
-        for package in progress.iter(affected_packages.iterator()):
+        for package in progress.iter(affected_packages.iterator(chunk_size=2000)):
             risk_score = compute_package_risk(package)
 
             if not risk_score:

@@ -1,0 +1,68 @@
+<article _ngcontent-serverapp-c3581880329="" id="articleContent" appglossaryrenderer="" appimageviewer="" apphighlight="" appeditor360tabs="" appeditor360tableshadow="" class="md-article"><p><strong>CVE:</strong> <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-12705">CVE-2024-12705</a></p>
+<p><strong>Title:</strong> DNS-over-HTTPS implementation suffers from multiple issues under heavy query load</p>
+<p><strong>Document version:</strong> 2.0</p>
+<p><strong>Posting date:</strong> 29 January 2025</p>
+<p><strong>Program impacted:</strong> <a href="https://www.isc.org/bind/">BIND 9</a></p>
+<p><strong>Versions affected:</strong></p>
+<p>BIND</p>
+<ul>
+<li>9.18.0 -&gt; 9.18.32</li>
+<li>9.20.0 -&gt; 9.20.4</li>
+<li>9.21.0 -&gt; 9.21.3</li>
+</ul>
+<p>(Versions prior to 9.18.27 were not assessed.)</p>
+<p>BIND Supported Preview Edition</p>
+<ul>
+<li>9.18.11-S1 -&gt; 9.18.32-S1</li>
+</ul>
+<p>(Versions prior to 9.18.27-S1 were not assessed.)</p>
+<p><strong>Severity:</strong> High</p>
+<p><strong>Exploitable:</strong> Remotely</p>
+<p><strong>Description:</strong></p>
+<p>Clients using DNS-over-HTTPS (DoH) can exhaust a DNS resolver's CPU and/or memory by flooding it with crafted valid or invalid HTTP/2 traffic.</p>
+<p><strong>Impact:</strong></p>
+<p>By flooding a target resolver with HTTP/2 traffic and exploiting this flaw, an attacker could overwhelm the server, causing high CPU and/or memory usage and preventing other clients from establishing DoH connections. This would significantly impair the resolver's performance and effectively deny legitimate clients access to the DNS resolution service.</p>
+<ul>
+<li>
+<p>Authoritative servers are affected by this vulnerability.</p>
+</li>
+<li>
+<p>Resolvers are affected by this vulnerability.</p>
+</li>
+</ul>
+<p><strong>CVSS Score:</strong> 7.5</p>
+<p><strong>CVSS Vector:</strong> CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H</p>
+<p>For more information on the Common Vulnerability Scoring System and to obtain your specific environmental score please visit: <a href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H&amp;version=3.1">https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H&amp;version=3.1</a>.</p>
+<p><strong>Workarounds:</strong></p>
+<p>The issue affects only the DNS-over-HTTPS protocol and does not apply to instances where DoH is not enabled.</p>
+<p><strong>Active exploits:</strong></p>
+<p>We are not aware of any active exploits.</p>
+<p><strong>Solution:</strong></p>
+<p>Upgrade to the patched release most closely related to your current version of BIND 9:</p>
+<ul>
+<li>9.18.33</li>
+<li>9.20.5</li>
+<li>9.21.4</li>
+</ul>
+<p>BIND Supported Preview Edition is a special feature preview branch of BIND provided to eligible ISC support customers.</p>
+<ul>
+<li>9.18.33-S1</li>
+</ul>
+<p><strong>Acknowledgments:</strong></p>
+<p>ISC would like to thank Jean-François Billaud for bringing this vulnerability to our attention.</p>
+<p><strong>Document revision history:</strong></p>
+<ul>
+<li>1.0 Early Notification, 22 January 2025</li>
+<li>2.0 Public disclosure, 29 January 2025</li>
+</ul>
+<p><strong>Related documents:</strong></p>
+<p>See our <a href="https://kb.isc.org/docs/aa-00913">BIND 9 Security Vulnerability Matrix</a> for a complete listing of security vulnerabilities and versions affected.</p>
+<p><strong>Do you still have questions?</strong> Questions regarding this advisory should be mailed to <a href="mailto:bind-security@isc.org">bind-security@isc.org</a> or posted as confidential GitLab issues at <a href="https://gitlab.isc.org/isc-projects/bind9/-/issues/new?issue%5Bconfidential%5D=true">https://gitlab.isc.org/isc-projects/bind9/-/issues/new?issue[confidential]=true</a>.</p>
+<p><strong>Note:</strong></p>
+<p>ISC patches only currently supported versions. When possible we indicate EOL versions affected. For current information on which versions are actively supported, please see <a href="https://www.isc.org/download/">https://www.isc.org/download/</a>.</p>
+<p><strong>ISC Security Vulnerability Disclosure Policy:</strong></p>
+<p>Details of our current security advisory policy and practice can be found in the ISC Software Defect and Security Vulnerability Disclosure Policy at <a href="https://kb.isc.org/docs/aa-00861">https://kb.isc.org/docs/aa-00861</a>.</p>
+<p>The Knowledgebase article <a href="https://kb.isc.org/docs/cve-2024-12705">https://kb.isc.org/docs/cve-2024-12705</a> is the complete and official security advisory document.</p>
+<p><strong>Legal Disclaimer:</strong></p>
+<p>Internet Systems Consortium (ISC) is providing this notice on an "AS IS" basis. No warranty or guarantee of any kind is expressed in this notice and none should be implied. ISC expressly excludes and disclaims any warranties regarding this notice or materials referred to in this notice, including, without limitation, any implied warranty of merchantability, fitness for a particular purpose, absence of hidden defects, or of non-infringement. Your use or reliance on this notice or materials referred to in this notice is at your own risk. ISC may change this notice at any time. A stand-alone copy or paraphrase of the text of this document that omits the document URL is an uncontrolled copy. Uncontrolled copies may lack important information, be out of date, or contain factual errors.</p>
+</article>

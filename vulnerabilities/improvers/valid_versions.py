@@ -41,6 +41,7 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines.apache_log4j_importer import ApacheLog4jImporterPipeline
 from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
@@ -480,4 +481,9 @@ class GithubOSVImprover(ValidVersionImprover):
 
 class CurlImprover(ValidVersionImprover):
     importer = CurlImporter
+    ignorable_versions = []
+
+
+class Log4jImprover(ValidVersionImprover):
+    importer = ApacheLog4jImporterPipeline
     ignorable_versions = []

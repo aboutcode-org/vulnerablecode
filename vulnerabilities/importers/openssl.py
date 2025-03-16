@@ -8,16 +8,14 @@
 #
 
 import logging
-from datetime import timezone
-from typing import Iterable
-from urllib.parse import urljoin
 
-import defusedxml.ElementTree as DET
-import requests
-from dateutil import parser as dateparser
+import re
+from bs4 import BeautifulSoup
 from packageurl import PackageURL
-from univers.version_range import OpensslVersionRange
-from univers.versions import OpensslVersion
+from vulnerabilities.utils import get_item
+from vulnerabilities.utils import fetch_response
+from datetime import timezone
+from dateutil import parser as dateparser
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -25,138 +23,139 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from univers.version_range import OpensslVersionRange
 
 logger = logging.getLogger(__name__)
 
-
 class OpensslImporter(Importer):
-    spdx_license_expression = "Apache-2.0"
-    license_url = "https://github.com/openssl/openssl/blob/master/LICENSE.txt"
-    url = "https://www.openssl.org/news/vulnerabilities.xml"
-    importer_name = "OpenSSL Importer"
+    
+    root_url = 'https://openssl-library.org/news/vulnerabilities/index.html'
+    license_url = 'https://spdx.org/licenses/OpenSSL-standalone.html'
+    spdx_license_expression = 'OpenSSL-standalone'
 
-    def fetch(self):
-        response = requests.get(url=self.url)
-        if not response.status_code == 200:
-            logger.error(f"Error while fetching {self.url}: {response.status_code}")
-            return
-        return response.content
+    def advisory_data(self):
+        output_data = get_adv_data(self.root_url)
+        for data in output_data:
+            yield self.to_advisory(data)
 
-    def advisory_data(self) -> Iterable[AdvisoryData]:
-        xml_response = self.fetch()
-        return parse_vulnerabilities(xml_response)
+    def to_advisory(self,data):
+        #alias
+        alias = get_item(data,"CVE")
 
-
-def parse_vulnerabilities(xml_response) -> Iterable[AdvisoryData]:
-    root = DET.fromstring(xml_response)
-    for xml_issue in root:
-        if xml_issue.tag == "issue":
-            advisory = to_advisory_data(xml_issue)
-            if advisory:
-                yield advisory
-
-
-def to_advisory_data(xml_issue) -> AdvisoryData:
-    """
-    Return AdvisoryData from given xml_issue
-    """
-
-    purl = PackageURL(type="openssl", name="openssl")
-    cve = advisory_url = severity = summary = None
-    safe_pkg_versions = {}
-    vuln_pkg_versions_by_base_version = {}
-    aliases = []
-    references = []
-    affected_packages = []
-    date_published = xml_issue.attrib["public"].strip()
-
-    for info in xml_issue:
-        if info.tag == "impact":
-            severity = VulnerabilitySeverity(
-                system=SCORING_SYSTEMS["generic_textual"], value=info.attrib["severity"]
-            )
-
-        elif info.tag == "advisory":
-            advisory_url = info.attrib["url"]
-            if not advisory_url.startswith("https://web.archive.org"):
-                advisory_url = urljoin("https://www.openssl.org", advisory_url)
-
-        elif info.tag == "cve":
-            cve = info.attrib.get("name")
-            # use made up alias to compensate for case when advisory doesn't have CVE-ID
-            madeup_alias = f"VC-OPENSSL-{date_published}"
-            if cve:
-                cve = f"CVE-{cve}"
-                madeup_alias = f"{madeup_alias}-{cve}"
-                aliases.append(cve)
-                references.append(
-                    Reference(reference_id=cve, url=f"https://nvd.nist.gov/vuln/detail/{cve}")
-                )
-            aliases.append(madeup_alias)
-
-        elif info.tag == "affects":
-            affected_base = info.attrib["base"]
-            affected_version = info.attrib["version"]
-            if affected_base.startswith("fips"):
-                logger.error(
-                    f"{affected_base!r} is a OpenSSL-FIPS Object Module and isn't supported by OpensslImporter. Use a different importer."
-                )
-                return
-            if affected_base in vuln_pkg_versions_by_base_version:
-                vuln_pkg_versions_by_base_version[affected_base].append(affected_version)
-            else:
-                vuln_pkg_versions_by_base_version[affected_base] = [affected_version]
-
-        elif info.tag == "fixed":
-            fixed_base = info.attrib["base"]
-            fixed_version = info.attrib["version"]
-            safe_pkg_versions[fixed_base] = fixed_version
-            for commit in info:
-                commit_hash = commit.attrib["hash"]
-                references.append(
-                    Reference(
-                        url=urljoin("https://github.com/openssl/openssl/commit/", commit_hash)
-                    )
-                )
-
-        elif info.tag == "description":
-            summary = " ".join(info.text.split())
-
-        elif info.tag in ("reported", "problemtype", "title"):
-            # as of now, these info isn't useful for AdvisoryData
-            # for more see: https://github.com/nexB/vulnerablecode/issues/688
-            continue
-        else:
-            logger.error(
-                f"{info.tag!r} is a newly introduced tag. Modify the importer to make use of this new info."
-            )
-
-    for base_version, affected_versions in vuln_pkg_versions_by_base_version.items():
-        affected_version_range = OpensslVersionRange.from_versions(affected_versions)
-        fixed_version = None
-        if base_version in safe_pkg_versions:
-            fixed_version = OpensslVersion(safe_pkg_versions[base_version])
-        affected_package = AffectedPackage(
-            package=purl,
-            affected_version_range=affected_version_range,
-            fixed_version=fixed_version,
+        #published data
+        date_published = get_item(data,'date_published')
+        parsed_date_published = dateparser.parse(date_published, yearfirst=True).replace(
+            tzinfo=timezone.utc
         )
-        affected_packages.append(affected_package)
 
-    if severity and advisory_url:
-        references.append(Reference(url=advisory_url, severities=[severity]))
-    elif advisory_url:
-        references.append(Reference(url=advisory_url))
+        #affected packages
+        affected_packages = []
+        affected_package_out = get_item(data,'affected_packages')
+        for affected in affected_package_out:
+            if 'fips' in affected:
+                break
+            versions = re.findall(r"(?<=from\s)([^\s]+)|(?<=before\s)([^\s]+)", affected)
+            versions = [v for group in versions for v in group if v] # Output: ['1.0.1', '1.0.1j']
+            affected_version = OpensslVersionRange.from_versions(versions)
+            affected_packages.append(AffectedPackage(
+                package=PackageURL(
+                    type="openssl",
+                    name="openssl"
+                ),
+                affected_version_range=affected_version
+            ))
+        
+        #Severity
+        severity = VulnerabilitySeverity(
+            system=SCORING_SYSTEMS["generic_textual"], value=get_item(data,"severity")
+        )
 
-    parsed_date_published = dateparser.parse(date_published, yearfirst=True).replace(
-        tzinfo=timezone.utc
-    )
+        #Reference
+        references = []
+        for reference in get_item(data,"references"):
+            references.append(Reference(
+                severities=[severity],
+                reference_id=alias,
+                url=reference
+            ))
 
-    return AdvisoryData(
-        aliases=aliases,
-        summary=summary,
-        affected_packages=affected_packages,
-        references=references,
-        date_published=parsed_date_published,
-        url=advisory_url if advisory_url else "https://www.openssl.org/news/vulnerabilities.xml",
-    )
+        #summary
+        summary = get_item(data,"summary")
+
+        return AdvisoryData(
+            aliases=alias,
+            summary=summary,
+            affected_packages=affected_packages,
+            references=references,
+            date_published=parsed_date_published,
+            url=self.root_url+'#'+alias
+        )
+
+'''
+The structure is like:
+<h3> CVE
+<dl>
+    <dt>
+    <dd>
+in <dd> affected packages as <li>
+in <dd> references as <li> <a>
+'''
+def get_adv_data(url):
+    try:
+        response = fetch_response(url).content
+        soup = BeautifulSoup(response,'html.parser')
+    except:
+        logger.error(f"Failed to fetch URL {url}")
+
+    advisories =[]
+
+    #all the CVEs are h3 with id="CVE-.."
+    for cve_section in soup.find_all("h3"):
+        data_output = {
+            "date_published" : '',
+            "CVE" : '',
+            "affected_packages" :[],
+            "references" : [],
+            "summary" : '',
+            "severity" : ''
+        }
+
+        #CVE is in a link
+        data_output["CVE"] = cve_section.find("a").text
+
+        #the <dl> tag in this section
+        dl = cve_section.find_next_sibling("dl")
+        for dt,dd in zip(dl.find_all('dt'),dl.find_all('dd')): #combines both the lists,for better iteration 
+            key = dt.text
+            value = dd.text
+
+            #Severity
+            if key == "Severity":
+                data_output["severity"] =value
+            #Published Date
+            elif key == "Published at":
+                data_output['date_published'] = value
+            #Affected Packages
+            elif key == "Affected":
+                affected_list = [li.text.strip() for li in dd.find_all("li")]
+                data_output["affected_packages"] = affected_list
+            #references
+            elif key == "References":
+                references = [a["href"] for a in dd.find_all("a")]
+                data_output["references"] = references
+
+        #for summary
+        for sibling in dl.find_next_siblings():
+            if sibling.name == "h2" or sibling.name == "h3":
+                break
+            if sibling.name == "p":
+                if 'Issue summary:' in sibling.text:
+                    data_output["summary"] = sibling.text.strip("Issue summary:")
+
+    
+        #append all the output  data to the list
+        advisories.append(data_output)
+    
+    #return the list with all the advisory data
+    return advisories
+

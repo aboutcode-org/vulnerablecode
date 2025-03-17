@@ -1,8 +1,3 @@
-<!-- 
-Thanks for submitting a pull request! Let's make VulnerableCode better together.
-Please fill out the info below to help us understand and review your changes.
--->
-
 <!-- Delete Template sections if unneccesary -->
 <!-- Add issue number here (We encourage you to create the Issue First) -->
 <!-- You can also link the issue in Commit Messages -->
@@ -22,31 +17,29 @@ Fixes #(issue number)
 ## What kind of change is this?
 
 <!-- Check the boxes that apply to your PR -->
-* [ ] 🐛 Bug fix 
-* [ ] ✨ New feature
-* [ ] 📚 Documentation update
-* [ ] 📥 New importer pipeline ([How to add](https://vulnerablecode.readthedocs.io/en/latest/tutorial_add_importer_pipeline.html))
-* [ ] 🔧 New improver pipeline ([How to add](https://vulnerablecode.readthedocs.io/en/latest/tutorial_add_improver_pipeline.html))
-* [ ] 🧹 Code cleanup or performance improvement
-* [ ] 🔄 Other: _____
+* [ ] Bug fix 
+* [ ] New feature
+* [ ] Documentation update
+* [ ] New importer pipeline ([How to add](https://vulnerablecode.readthedocs.io/en/latest/tutorial_add_importer_pipeline.html))
+* [ ] New improver pipeline ([How to add](https://vulnerablecode.readthedocs.io/en/latest/tutorial_add_improver_pipeline.html))
+* [ ] Code cleanup or performance improvement
+* [ ] Other: _____
 
 ## Checklist before requesting a review
 
-* [ ] I've read the [contribution guidelines](https://vulnerablecode.readthedocs.io/en/latest/contributing.html)
-* [ ] My code follows the project style
-* [ ] I've titled my PR clearly and linked the issue it resolves
-* [ ] I've added tests for my changes
-* [ ] I've updated docs if needed
-* [ ] I've updated the [CHANGELOG](https://github.com/aboutcode-org/vulnerablecode/blob/main/CHANGELOG.rst) if needed
-* [ ] My code passes all tests locally
-* [ ] My commits follow the [project's commit message style](https://aboutcode.readthedocs.io/en/latest/contributing/writing_good_commit_messages.html)
+* [ ] read the [contribution guidelines](https://vulnerablecode.readthedocs.io/en/latest/contributing.html)
+* [ ] code follows the project style
+* [ ] titled my PR clearly and linked the issue it resolves
+* [ ] added tests for my changes
+* [ ] updated docs if needed
+* [ ] updated the [CHANGELOG](https://github.com/aboutcode-org/vulnerablecode/blob/main/CHANGELOG.rst) if needed
+* [ ] code passes all tests locally
+* [ ] commits follow the [project's commit message style](https://aboutcode.readthedocs.io/en/latest/contributing/writing_good_commit_messages.html)
 
 ## AI assistance?
 
-* [ ] I used AI tools (like ChatGPT, Copilot, etc.) to help with this PR
+* [ ] used AI tools (like ChatGPT, Copilot, etc.) to help with this PR
   * If yes, please share which parts: <!-- "Some code in file X," "documentation," etc. -->
-
-Using AI is perfectly fine! We just need transparency so maintainers can review appropriately. This helps ensure the quality and security of our codebase.
 
 ## Anything else we should know?
 

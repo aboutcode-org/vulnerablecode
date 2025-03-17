@@ -38,6 +38,49 @@ from vulnerablecode.settings import env
 PAGE_SIZE = 20
 
 
+def vulnerability_details(request, vulnerability_id):
+    vulnerability = get_object_or_404(Vulnerability, pk=vulnerability_id)
+    severities = vulnerability.severities.all()
+
+    # Process CVSS entries
+    cvss_entries = {}
+    for sev in severities:
+        system_lower = sev.system.lower()
+        if system_lower.startswith("cvss"):
+            version = system_lower.replace("cvssv", "").upper()
+            key = (sev.reference, version)
+            if key not in cvss_entries:
+                cvss_entries[key] = {"score": None, "text": None}
+            # Check if value is numerical or textual
+            try:
+                float(sev.value)
+                cvss_entries[key]["score"] = sev.value
+            except ValueError:
+                cvss_entries[key]["text"] = sev.value
+
+    cvss_list = [
+        {"reference": key[0], "version": key[1], "score": entry["score"], "text": entry["text"]}
+        for key, entry in cvss_entries.items()
+    ]
+
+    # Process EPSS entries, deduplicate
+    epss_entries = {}
+    for sev in severities:
+        if sev.system.lower() == "epss":
+            key = (sev.reference, sev.value)
+            if key not in epss_entries:
+                epss_entries[key] = sev.value
+
+    epss_list = [{"reference": key[0], "score": key[1]} for key in epss_entries]
+
+    context = {
+        "vulnerability": vulnerability,
+        "cvss_entries": cvss_list,
+        "epss_entries": epss_list,
+    }
+    return render(request, "vulnerability_details.html", context)
+
+
 class PackageSearch(ListView):
     model = models.Package
     template_name = "packages.html"

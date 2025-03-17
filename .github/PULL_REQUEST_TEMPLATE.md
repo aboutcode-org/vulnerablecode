@@ -12,7 +12,7 @@ Make sure these boxes are checked before your pull request (PR) is ready to be r
 
 <!-- Tell us what you've changed and why. -->
 
-Fixes #(issue number)
+Fixes #0000
 
 ## What kind of change is this?
 

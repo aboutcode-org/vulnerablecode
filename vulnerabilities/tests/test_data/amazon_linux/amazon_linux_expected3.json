@@ -1,0 +1,79 @@
+{
+    "aliases": [
+        "ALAS-2024-676",
+        "CVE-2024-6345"
+    ],
+    "summary": "A vulnerability in the package_index module of pypa/setuptools versions up to 69.1.1 allows for remote code execution via its download functions. These functions, which are used to download packages from URLs provided by users or retrieved from package index servers, are susceptible to code injection. If these functions are exposed to user-controlled inputs, such as package URLs, they can execute arbitrary commands on the system. The issue is fixed in version 70.0. (CVE-2024-6345).",
+    "affected_packages": [
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "python3-setuptools-wheel",
+                "version": "",
+                "qualifiers": "arch=noarch",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "59.6.0-2.amzn2023.0.5"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "python3-setuptools",
+                "version": "",
+                "qualifiers": "arch=noarch",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "59.6.0-2.amzn2023.0.5"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "python-setuptools",
+                "version": "",
+                "qualifiers": "arch=src",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "59.6.0-2.amzn2023.0.5"
+        }
+    ],
+    "references": [
+        {
+            "reference_id": "CVE-2024-6345",
+            "reference_type": "",
+            "url": "https://alas.aws.amazon.com/cve/html/CVE-2024-6345.html",
+            "severities": [
+                {
+                    "system": "cvssv3",
+                    "value": "8.8",
+                    "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                },
+                {
+                    "system": "cvssv3",
+                    "value": "8.8",
+                    "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+                }
+            ]
+        },
+        {
+            "reference_id": "CVE-2024-6345",
+            "reference_type": "",
+            "url": "https://access.redhat.com/security/cve/CVE-2024-6345",
+            "severities": []
+        },
+        {
+            "reference_id": "CVE-2024-6345",
+            "reference_type": "",
+            "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-6345",
+            "severities": []
+        }
+    ],
+    "date_published": "2024-08-01T04:06:00-07:00",
+    "weaknesses": [],
+    "url": "https://alas.aws.amazon.com/AL2023/ALAS-2024-676.html"
+}

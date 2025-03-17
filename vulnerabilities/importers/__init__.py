@@ -7,6 +7,8 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from vulnerabilities.importers import alpine_linux
+from vulnerabilities.importers import amazon_linux
 from vulnerabilities.importers import apache_httpd
 from vulnerabilities.importers import apache_kafka
 from vulnerabilities.importers import apache_tomcat
@@ -70,6 +72,7 @@ IMPORTERS_REGISTRY = [
     curl.CurlImporter,
     epss.EPSSImporter,
     vulnrichment.VulnrichImporter,
+    amazon_linux.AmazonLinuxImporter,
     pypa_importer.PyPaImporterPipeline,
     npm_importer.NpmImporterPipeline,
     nginx_importer.NginxImporterPipeline,

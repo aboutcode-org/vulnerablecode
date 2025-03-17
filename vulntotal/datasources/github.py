@@ -11,7 +11,7 @@ import logging
 from typing import Iterable
 
 from dotenv import load_dotenv
-from fetchcode.package_versions import github_response
+from fetchcode.utils import github_response
 from packageurl import PackageURL
 
 from vulntotal.validator import DataSource

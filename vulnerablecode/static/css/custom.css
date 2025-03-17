@@ -187,12 +187,6 @@ code {
     border-color: #dbdbdb;
 }
 
-/* 2023-08-28 Monday 14:55:42.  Is this still needed or does wrap-strings take its place?  Keep eyes peeled for any odd <td> displays. */
-/* .table td {
-    word-wrap: break-word;
-} */
-
-
 .wrap-strings {
     word-break: break-word;
 }
@@ -356,10 +350,9 @@ a.small_page_button {
 }
 
 .details-container {
-    border: solid 1px #e8e8e8;
     border: 0;
     border-radius: 6px;
-    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
+    box-shadow: 0 0.5em 1em -0.125em rgba(8, 8, 8, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
 }
 
 .about-hover-div {
@@ -373,7 +366,7 @@ a.small_page_button {
 }
 
 span.tag.custom {
-    margin: 0px 0px 6px 10px;
+    margin: 0px 0px 0px 10px;
 }
 
 /* CSS for dev fixed by headers */
@@ -428,14 +421,9 @@ span.tag.custom {
     border: solid 1px #dbdbdb;
     background-color: #ffffff;
 }
-/* test bulleted list */
 
 ul.fixed_by_bullet {
     list-style-type: disc;
-    /*margin-top: 2px;
-margin-bottom: 10px;*/
-    /*margin-left: -24px;*/
-    /*margin-left: -30px;*/
     margin-top: 0.25em;
     margin-left: 7px;
     margin-bottom: 0.25em;
@@ -444,11 +432,8 @@ margin-bottom: 10px;*/
 
 ul.fixed_by_bullet ul {
     list-style-type: disc;
-    /*margin-top: 10px;*/
-    margin-top: 5px;
     margin-top: 0px;
     margin-bottom: 0px;
-    margin-left: 23px;
     margin-left: 18px;
     padding: 0;
     border: none;
@@ -472,7 +457,6 @@ ul.fixed_by_bullet li:last-child {
     font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     font-size: 13px;
     font-weight: normal;
-    /*margin-bottom: 10px;*/
     margin-bottom: 0px;
 }
 
@@ -486,12 +470,11 @@ ul.fixed_by_bullet li li {
     color: #000000;
 }
 
-/* 10/10/15 add 3rd-level bullets */
+/* 3rd-level bullets */
 ul.fixed_by_bullet ul ul {
     list-style-type: disc;
     margin-top: 0px;
     margin-bottom: 0px;
-    margin-left: 50px;
     margin-left: 17px;
     padding: 0;
     border: none;
@@ -569,10 +552,106 @@ ul.fixed_by_bullet li li li {
 /* Emphasis for not vulnerable. */
 .emphasis-not-vulnerable {
     background-color: #e6ffe6;
-    /* background-color: #e6ffff; */
+    word-wrap: break-word; word-break: break-all;
+    display: block;
 }
 
 /* Emphasis for vulnerable. */
 .emphasis-vulnerable {
     background-color: #ffe6e6;
+}
+
+/* From https://github.com/jgthms/bulma/issues/2040#issuecomment-734507270 (the Bulma GH repo under the author's top-level GH entity).  This helps display the responsive navbar dropdown properly < 1024px width. JMH: some added styles to remove box-shadow and make other adjustnments for the collapsed navbar. */
+@media screen and (max-width: 1024px) {
+    .navbar-menu {
+        align-items: stretch;
+        background-color: transparent;
+        font-size: 0.875rem;
+        display: flex;
+        flex-grow: 1;
+        flex-shrink: 0;
+        padding: 0;
+
+        margin-right: 0px !important;
+
+        .navbar-item.is-active .navbar-dropdown,
+        .navbar-item.is-hoverable:focus .navbar-dropdown,
+        .navbar-item.is-hoverable:focus-within .navbar-dropdown,
+        .navbar-item.is-hoverable:hover .navbar-dropdown {
+            display: block;
+        }
+
+        .navbar-end {
+            justify-content: flex-end;
+            margin-left: auto;
+            align-items: stretch;
+            display: flex;
+
+            .navbar-item.has-dropdown {
+                align-items: stretch;
+            }
+
+            .navbar-item,
+            .navbar-link {
+                align-items: center;
+                display: flex;
+            }
+
+            .navbar-dropdown {
+                border-bottom-left-radius: 6px;
+                border-bottom-right-radius: 6px;
+                border-top: 2px solid #dbdbdb;
+                box-shadow: 0 8px 8px rgba(10, 10, 10, 0.1);
+                display: none;
+                font-size: 0.875rem;
+                left: 0;
+                min-width: 100%;
+                position: absolute;
+                top: 100%;
+                z-index: 20;
+            }
+        }
+    }
+
+    /* Make sure the 'About' navbar link hovering div appears left-aligned on narrower screens so it's visible rather than forced beyond the left-hand screen edge. */
+    .dropdown.is-right .dropdown-menu {
+        left: 0;
+        right: auto;
+    }
+
+    /* Remove the collapsed menu's right-hand dark bar, inherited because of how Bulma handles this process. */
+    div.navbar-end.mr-3 {
+        margin-right: 0 !important;
+    }
+
+    .navbar-item,
+    .navbar-item:active,
+    .navbar-item:focus,
+    .navbar-item:visited {
+        color: #ffffff;
+        background-color: transparent;
+        align-items: stretch;
+        display: flex;
+    }
+
+    div.navbar-start {
+        width: 100%;
+    }
+
+    a.navbar-item:focus {
+      background-color: transparent;
+      color: #ffffff;
+    }
+
+    a.navbar-item:hover {
+        color: #ffffff;
+        background-color: #000000;
+    }
+
+}
+
+@media screen and (max-width: 1023px) {
+    .navbar-menu {
+        box-shadow: none;
+    }
 }

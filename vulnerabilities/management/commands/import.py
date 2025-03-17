@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import traceback
@@ -57,14 +57,15 @@ class Command(BaseCommand):
         failed_importers = []
 
         for importer in importers:
-            self.stdout.write(f"Importing data using {importer.qualified_name}")
             if issubclass(importer, VulnerableCodeBaseImporterPipeline):
+                self.stdout.write(f"Importing data using {importer.pipeline_id}")
                 status, error = importer().execute()
                 if status != 0:
                     self.stdout.write(error)
-                    failed_importers.append(importer.qualified_name)
+                    failed_importers.append(importer.pipeline_id)
                 continue
 
+            self.stdout.write(f"Importing data using {importer.qualified_name}")
             try:
                 ImportRunner(importer).run()
                 self.stdout.write(

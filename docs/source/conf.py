@@ -35,6 +35,7 @@ linkcheck_ignore = [
     "https://anongit.gentoo.org/git/data/glsa.git",  # Git only link
     "https://www.softwaretestinghelp.com/how-to-write-good-bug-report/",  # Cloudflare protection
     "https://www.openssl.org/news/vulnerabilities.xml",  # OpenSSL legacy advisory URL, not longer available
+    "https://example.org/api/non-existent-packages",
 ]
 
 # Add any Sphinx extension module names here, as strings. They can be

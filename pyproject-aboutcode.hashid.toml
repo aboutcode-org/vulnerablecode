@@ -1,0 +1,74 @@
+[build-system]
+requires = [ "flot>=0.7.0" ]
+build-backend = "flot.buildapi"
+
+[project]
+name = "aboutcode.hashid"
+version = "0.2.0"
+description = "A library for aboutcode hash-based identifiers for VCID, and PURLs"
+readme = "aboutcode/hashid/README.rst"
+license = { text = "Apache-2.0 AND Python-2.0" }
+requires-python = ">=3.8"
+
+authors = [
+    { name = "AboutCode, nexB Inc. and others", email = "info@aboutcode.org" },
+]
+
+keywords = [
+    "purl",
+    "Package-URL",
+    "open source",
+    "package",
+    "sca",
+    "scan",
+    "VCID",
+    "hash",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "packageurl_python >= 0.15.6",
+]
+
+urls = { Homepage = "https://github.com/aboutcode-org/vulnerablecode" }
+
+
+[tool.bumpversion]
+current_version = "0.1.0"
+allow_dirty = true
+
+files = [
+    { filename = "pyproject-aboutcode.hashid.toml" },
+]
+
+[tool.flot]
+includes = [
+    "aboutcode/**/*",
+]
+
+excludes = [
+    # Python compiled files
+    "**/*.py[cod]",
+    "**/*.egg-info",
+    # Various junk and temp files
+    "**/.DS_Store",
+    "**/*~",
+    "**/.*.sw[po]",
+    "**/.ve",
+    "**/*.bak",
+    "**/.ipynb_checkpoints",
+    "aboutcode/hashid/python.LICENSE",
+    "aboutcode/hashid/tests/**/*",
+]
+
+metadata_files = ["apache-2.0.LICENSE", "NOTICE",  "aboutcode/hashid/python.LICENSE"]
+editable_paths = ["aboutcode"]
+

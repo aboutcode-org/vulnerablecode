@@ -3,11 +3,10 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
-from datetime import datetime
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
@@ -15,6 +14,7 @@ from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.db.models import Prefetch
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -23,15 +23,16 @@ from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import AlpineLinuxVersionRange
 
 from vulnerabilities import models
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import VulnerabilitySearchForm
-from vulnerabilities.models import VulnerabilityStatusType
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import get_severity_range
+from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
@@ -94,7 +95,10 @@ class PackageDetails(DetailView):
         package = self.object
         context["package"] = package
         context["affected_by_vulnerabilities"] = package.affected_by.order_by("vulnerability_id")
-        context["fixing_vulnerabilities"] = package.fixing.order_by("vulnerability_id")
+        # Ghost package should not fix any vulnerability.
+        context["fixing_vulnerabilities"] = (
+            None if package.is_ghost else package.fixing.order_by("vulnerability_id")
+        )
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = package.fixed_package_details
 
@@ -128,51 +132,96 @@ class VulnerabilityDetails(DetailView):
     slug_field = "vulnerability_id"
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("references", "aliases", "weaknesses")
+        return (
+            super()
+            .get_queryset()
+            .select_related()
+            .prefetch_related(
+                Prefetch(
+                    "references",
+                    queryset=models.VulnerabilityReference.objects.only(
+                        "reference_id", "reference_type", "url"
+                    ),
+                ),
+                Prefetch(
+                    "aliases",
+                    queryset=models.Alias.objects.only("alias"),
+                ),
+                Prefetch(
+                    "weaknesses",
+                    queryset=models.Weakness.objects.only("cwe_id"),
+                ),
+                Prefetch(
+                    "severities",
+                    queryset=models.VulnerabilitySeverity.objects.only(
+                        "scoring_system", "value", "url", "scoring_elements", "published_at"
+                    ),
+                ),
+                Prefetch(
+                    "exploits",
+                    queryset=models.Exploit.objects.only(
+                        "data_source", "description", "required_action", "due_date", "notes"
+                    ),
+                ),
+            )
+        )
 
     def get_context_data(self, **kwargs):
+        """
+        Build context with preloaded QuerySets and minimize redundant queries.
+        """
         context = super().get_context_data(**kwargs)
-        weaknesses = self.object.weaknesses.all()
+        vulnerability = self.object
+
+        # Pre-fetch and process data in Python instead of the template
         weaknesses_present_in_db = [
-            weakness_object for weakness_object in weaknesses if weakness_object.weakness
+            weakness_object
+            for weakness_object in vulnerability.weaknesses.all()
+            if weakness_object.weakness
         ]
-        status = self.object.get_status_label
+
+        valid_severities = self.object.severities.exclude(scoring_system=EPSS.identifier).filter(
+            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
+        )
 
         severity_vectors = []
-        severity_values = set()
-        for s in self.object.severities:
-            if s.scoring_system == EPSS.identifier:
-                continue
 
-            if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
-                try:
-                    vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
-                    severity_vectors.append(vector_values)
-                except (
-                    CVSS2MalformedError,
-                    CVSS3MalformedError,
-                    CVSS4MalformedError,
-                    NotImplementedError,
-                ):
-                    logging.error(f"CVSSMalformedError for {s.scoring_elements}")
+        for severity in valid_severities:
+            try:
+                vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
+                    severity.scoring_elements
+                )
+                if vector_values:
+                    severity_vectors.append({"vector": vector_values, "origin": severity.url})
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ):
+                logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
 
-            if s.value:
-                severity_values.add(s.value)
+        epss_severity = vulnerability.severities.filter(scoring_system="epss").first()
+        epss_data = None
+        if epss_severity:
+            epss_data = {
+                "percentile": epss_severity.scoring_elements,
+                "score": epss_severity.value,
+                "published_at": epss_severity.published_at,
+            }
 
         context.update(
             {
-                "vulnerability": self.object,
+                "vulnerability": vulnerability,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
-                "severities": list(self.object.severities),
-                "severity_score_range": get_severity_range(severity_values),
+                "severities": list(vulnerability.severities.all()),
                 "severity_vectors": severity_vectors,
-                "references": self.object.references.all(),
-                "aliases": self.object.aliases.all(),
-                "affected_packages": self.object.affected_packages.all(),
-                "fixed_by_packages": self.object.fixed_by_packages.all(),
+                "references": list(vulnerability.references.all()),
+                "aliases": list(vulnerability.aliases.all()),
                 "weaknesses": weaknesses_present_in_db,
-                "status": status,
-                "history": self.object.history,
+                "status": vulnerability.get_status_label,
+                "history": vulnerability.history,
+                "epss_data": epss_data,
             }
         )
         return context
@@ -186,6 +235,7 @@ class HomePage(View):
         context = {
             "vulnerability_search_form": VulnerabilitySearchForm(request_query),
             "package_search_form": PackageSearchForm(request_query),
+            "release_url": f"https://github.com/aboutcode-org/vulnerablecode/releases/tag/v{VULNERABLECODE_VERSION}",
         }
         return render(request=request, template_name=self.template_name, context=context)
 
@@ -245,3 +295,54 @@ class ApiUserCreateView(generic.CreateView):
 
     def get_success_url(self):
         return reverse_lazy("api_user_request")
+
+
+class VulnerabilityPackagesDetails(DetailView):
+    """
+    View to display all packages affected by or fixing a specific vulnerability.
+    URL: /vulnerabilities/{vulnerability_id}/packages
+    """
+
+    model = models.Vulnerability
+    template_name = "vulnerability_package_details.html"
+    slug_url_kwarg = "vulnerability_id"
+    slug_field = "vulnerability_id"
+
+    def get_queryset(self):
+        """
+        Prefetch and optimize related data to minimize database hits.
+        """
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "affecting_packages",
+                    queryset=models.Package.objects.only("type", "namespace", "name", "version"),
+                ),
+                Prefetch(
+                    "fixed_by_packages",
+                    queryset=models.Package.objects.only("type", "namespace", "name", "version"),
+                ),
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        """
+        Build context with preloaded QuerySets and minimize redundant queries.
+        """
+        context = super().get_context_data(**kwargs)
+        vulnerability = self.object
+        (
+            sorted_fixed_by_packages,
+            sorted_affected_packages,
+            all_affected_fixed_by_matches,
+        ) = vulnerability.aggregate_fixed_and_affected_packages()
+        context.update(
+            {
+                "affected_packages": sorted_affected_packages,
+                "fixed_by_packages": sorted_fixed_by_packages,
+                "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
+            }
+        )
+        return context

@@ -181,7 +181,7 @@ def parse_cve_advisory(raw_data, advisory_url):
         summary=summary,
         references=references,
         date_published=date_published,
-        weaknesses=list(weaknesses),
+        weaknesses=sorted(weaknesses),
         url=advisory_url,
     )
 

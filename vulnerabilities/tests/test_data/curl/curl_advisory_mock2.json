@@ -1,0 +1,61 @@
+{
+    "schema_version": "1.5.0",
+    "id": "CURL-CVE-2024-0853",
+    "aliases": [
+      "CVE-2024-0853"
+    ],
+    "summary": "OCSP verification bypass with TLS session reuse",
+    "modified": "2024-01-31T08:07:21.00Z",
+    "database_specific": {
+      "package": "curl",
+      "URL": "https://curl.se/docs/CVE-2024-0853.json",
+      "www": "https://curl.se/docs/CVE-2024-0853.html",
+      "issue": "https://hackerone.com/reports/2298922",
+      "CWE": {
+        "id": "CWE-299",
+        "desc": "Improper Check for Certificate Revocation"
+      },
+      "award": {
+        "amount": "540",
+        "currency": "USD"
+      },
+      "last_affected": "8.5.0",
+      "severity": "Low"
+    },
+    "published": "2024-01-31T08:00:00.00Z",
+    "affected": [
+      {
+        "ranges": [
+          {
+             "type": "SEMVER",
+             "events": [
+               {"introduced": "8.5.0"},
+               {"fixed": "8.6.0"}
+             ]
+          },
+          {
+             "type": "GIT",
+             "repo": "https://github.com/curl/curl.git",
+             "events": [
+               {"introduced": "395365ad2d9a6c3f1a35d5e268a6af2824129832"},
+               {"fixed": "c28e9478cb2548848eca9b765d0d409bfb18668c"}
+             ]
+          }
+        ],
+        "versions": [
+          "8.5.0"
+        ]
+      }
+    ],
+    "credits": [
+      {
+        "name": "Hiroki Kurosawa",
+        "type": "FINDER"
+      },
+      {
+        "name": "Daniel Stenberg",
+        "type": "REMEDIATION_DEVELOPER"
+      }
+    ],
+    "details": "curl inadvertently kept the SSL session ID for connections in its cache even\nwhen the verify status (*OCSP stapling*) test failed. A subsequent transfer to\nthe same hostname could then succeed if the session ID cache was still fresh,\nwhich then skipped the verify status check."
+}

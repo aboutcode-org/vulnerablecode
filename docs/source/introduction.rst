@@ -110,4 +110,4 @@ How can I contribute to VulnerableCode?
 ---------------------------------------
 
 Please get in touch on our `Gitter channel <https://gitter.im/aboutcode-org/vulnerablecode>`__.
-You can review or get the code and report issues at our `GitHub repo <https://github.com/nexB/vulnerablecode/issues>`__.
+You can review or get the code and report issues at our `GitHub repo <https://github.com/aboutcode-org/vulnerablecode/issues>`__.

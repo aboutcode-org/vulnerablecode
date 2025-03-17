@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -22,6 +22,8 @@ from vulnerabilities.pipelines import VulnerableCodePipeline
 
 class FlagGhostPackagePipeline(VulnerableCodePipeline):
     """Detect and flag packages that do not exist upstream."""
+
+    pipeline_id = "flag_ghost_packages"
 
     @classmethod
     def steps(cls):

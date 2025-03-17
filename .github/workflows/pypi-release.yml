@@ -37,7 +37,7 @@ jobs:
         run: python -m build --sdist --wheel --outdir dist/
 
       - name: Upload built archives
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pypi_archives
           path: dist/*
@@ -51,7 +51,7 @@ jobs:
 
     steps:
       - name: Download built archives
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: pypi_archives
           path: dist
@@ -71,7 +71,7 @@ jobs:
 
     steps:
       - name: Download built archives
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: pypi_archives
           path: dist

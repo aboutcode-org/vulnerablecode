@@ -1,0 +1,93 @@
+{
+  "auxiliary_admin/2wire/xslt_password_reset": {
+    "name": "2Wire Cross-Site Request Forgery Password Reset Vulnerability",
+    "fullname": "auxiliary/admin/2wire/xslt_password_reset",
+    "aliases": [
+    ],
+    "rank": 300,
+    "disclosure_date": "2007-08-15",
+    "type": "auxiliary",
+    "author": [
+      "hkm <hkm@hakim.ws>",
+      "Travis Phillips"
+    ],
+    "description": "This module will reset the admin password on a 2Wire wireless router.  This is\n        done by using the /xslt page where authentication is not required, thus allowing\n        configuration changes (such as resetting the password) as administrators.",
+    "references": [
+      "CVE-2007-4387",
+      "OSVDB-37667",
+      "BID-36075",
+      "URL-https://seclists.org/bugtraq/2007/Aug/225"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": null,
+    "mod_time": "2020-10-02 17:38:06 +0000",
+    "path": "/modules/auxiliary/admin/2wire/xslt_password_reset.rb",
+    "is_install_path": true,
+    "ref_name": "admin/2wire/xslt_password_reset",
+    "check": false,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+    },
+    "session_types": false,
+    "needs_cleanup": false,
+    "actions": [
+    ]
+  },
+  "post_firefox/manage/webcam_chat": {
+    "name": "Firefox Webcam Chat on Privileged Javascript Shell",
+    "fullname": "post/firefox/manage/webcam_chat",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": "2014-05-13",
+    "type": "post",
+    "author": [
+      "joev <joev@metasploit.com>"
+    ],
+    "description": "This module allows streaming a webcam from a privileged Firefox Javascript shell.",
+    "references": [
+      "URL-http://www.rapid7.com/db/modules/exploit/firefox/local/exec_shellcode"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": null,
+    "autofilter_ports": null,
+    "autofilter_services": null,
+    "targets": null,
+    "mod_time": "2023-02-08 13:47:34 +0000",
+    "path": "/modules/post/firefox/manage/webcam_chat.rb",
+    "is_install_path": true,
+    "ref_name": "firefox/manage/webcam_chat",
+    "check": false,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+    },
+    "session_types": [
+
+    ],
+    "needs_cleanup": null,
+    "actions": [
+
+    ]
+  }
+}

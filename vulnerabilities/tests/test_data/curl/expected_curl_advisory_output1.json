@@ -1,0 +1,45 @@
+{
+  "aliases": [
+    "CVE-2024-2379"
+  ],
+  "summary": "QUIC certificate check bypass with wolfSSL",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "generic",
+        "namespace": "curl.se",
+        "name": "curl",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:generic/8.6.0",
+      "fixed_version": "8.7.0"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://curl.se/docs/CVE-2024-2379.html",
+      "severities": [
+        {
+          "system": "cvssv3.1",
+          "value": "Low",
+          "scoring_elements": ""
+        }
+      ]
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://hackerone.com/reports/2410774",
+      "severities": []
+    }
+  ],
+  "date_published": "2024-03-27T08:00:00+00:00",
+  "weaknesses": [
+    295
+  ],
+  "url": "https://curl.se/docs/CVE-2024-2379.json"
+}

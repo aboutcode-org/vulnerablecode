@@ -3,10 +3,10 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-import logging
+
 from pathlib import Path
 from typing import Iterable
 
@@ -14,15 +14,14 @@ import saneyaml
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importers.osv import parse_advisory_data
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.utils import get_advisory_url
-
-module_logger = logging.getLogger(__name__)
 
 
 class PyPaImporterPipeline(VulnerableCodeBaseImporterPipeline):
     """Collect advisories from PyPA GitHub repository."""
+
+    pipeline_id = "pypa_importer"
 
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
@@ -47,9 +46,10 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipeline):
         return sum(1 for _ in vulns_directory.rglob("*.yaml"))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
+        from vulnerabilities.importers.osv import parse_advisory_data
+
         base_directory = Path(self.vcs_response.dest_dir)
         vulns_directory = base_directory / "vulns"
-        self.advisories_count = sum(1 for _ in vulns_directory.rglob("*.yaml"))
 
         for advisory in vulns_directory.rglob("*.yaml"):
             advisory_url = get_advisory_url(
@@ -68,3 +68,6 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipeline):
         if self.vcs_response:
             self.log(f"Removing cloned repository")
             self.vcs_response.delete()
+
+    def on_failure(self):
+        self.clean_downloads()

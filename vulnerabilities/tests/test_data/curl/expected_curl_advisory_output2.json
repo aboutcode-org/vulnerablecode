@@ -1,0 +1,45 @@
+{
+    "aliases": [
+        "CVE-2024-0853"
+    ],
+    "summary": "OCSP verification bypass with TLS session reuse",
+    "affected_packages": [
+        {
+            "package": {
+                "type": "generic",
+                "namespace": "curl.se",
+                "name": "curl",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": "vers:generic/8.5.0",
+            "fixed_version": "8.6.0"
+        }
+    ],
+    "references": [
+        {
+            "reference_id": "",
+            "reference_type": "",
+            "url": "https://curl.se/docs/CVE-2024-0853.html",
+            "severities": [
+                {
+                    "system": "cvssv3.1",
+                    "value": "Low",
+                    "scoring_elements": ""
+                }
+            ]
+        },
+        {
+            "reference_id": "",
+            "reference_type": "",
+            "url": "https://hackerone.com/reports/2298922",
+            "severities": []
+        }
+    ],
+    "date_published": "2024-01-31T08:00:00+00:00",
+    "weaknesses": [
+        299
+    ],
+    "url": "https://curl.se/docs/CVE-2024-0853.json"
+}

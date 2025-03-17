@@ -16,7 +16,7 @@ import saneyaml
 from vulnerabilities.importers.osv import parse_advisory_data
 from vulnerabilities.tests import util_tests
 
-TEST_DATA = data = Path(__file__).parent.parent / "test_data" / "pypa"
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "pypa"
 
 
 class TestPyPaImporterPipeline(TestCase):

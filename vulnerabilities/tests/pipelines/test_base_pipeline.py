@@ -19,6 +19,8 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.tests.pipelines import TestLogger
 
 advisory_data1 = AdvisoryData(
     aliases=["CVE-2020-13371337"],
@@ -47,6 +49,33 @@ def get_advisory1(created_by="test_pipeline"):
     )
 
 
+class TestVulnerableCodePipeline(TestCase):
+    def test_on_failure(self):
+        class TestPipeline(VulnerableCodePipeline):
+            def __init__(self, test_logger):
+                super().__init__()
+                self.log = test_logger.write
+
+            @classmethod
+            def steps(cls):
+                return (cls.step1,)
+
+            def step1(self):
+                raise Exception("Something went wrong!")
+
+            def on_failure(self):
+                self.log("Doing cleanup.")
+
+        logger = TestLogger()
+        pipeline = TestPipeline(test_logger=logger)
+
+        pipeline.execute()
+        log_result = logger.getvalue()
+
+        self.assertIn("Pipeline failed", log_result)
+        self.assertIn("Running [on_failure] tasks", log_result)
+
+
 class TestVulnerableCodeBaseImporterPipeline(TestCase):
     @patch.object(
         VulnerableCodeBaseImporterPipeline,
@@ -62,6 +91,8 @@ class TestVulnerableCodeBaseImporterPipeline(TestCase):
         self.assertEqual(0, models.Advisory.objects.count())
 
         base_pipeline = VulnerableCodeBaseImporterPipeline()
+        base_pipeline.pipeline_id = "test_pipeline"
+
         base_pipeline.collect_and_store_advisories()
 
         mock_advisories_count.assert_called_once()
@@ -74,13 +105,14 @@ class TestVulnerableCodeBaseImporterPipeline(TestCase):
         expected_aliases = advisory_data1.aliases
 
         self.assertEqual(expected_aliases, result_aliases)
-        self.assertEqual(base_pipeline.qualified_name, collected_advisory.created_by)
+        self.assertEqual(base_pipeline.pipeline_id, collected_advisory.created_by)
 
     def test_import_new_advisories(self):
         self.assertEqual(0, models.Vulnerability.objects.count())
 
         base_pipeline = VulnerableCodeBaseImporterPipeline()
-        advisory1 = get_advisory1(created_by=base_pipeline.qualified_name)
+        base_pipeline.pipeline_id = "test_pipeline"
+        advisory1 = get_advisory1()
         base_pipeline.import_new_advisories()
 
         self.assertEqual(1, models.Vulnerability.objects.count())

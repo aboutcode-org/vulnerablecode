@@ -3,10 +3,12 @@ version: "3"
 services:
   db:
     image: postgres:13
+    command: -c config_file=/etc/postgresql/postgresql.conf
     env_file:
       - docker.env
     volumes:
       - db_data:/var/lib/postgresql/data/
+      - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
 
   vulnerablecode:
     build: .

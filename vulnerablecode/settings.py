@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -78,6 +78,7 @@ INSTALLED_APPS = (
     "rest_framework.authtoken",
     "widget_tweaks",
     "crispy_forms",
+    "crispy_bootstrap4",
     # for API doc
     "drf_spectacular",
     # required for Django collectstatic discovery
@@ -196,6 +197,7 @@ STATICFILES_DIRS = [
     str(PROJECT_DIR / "static"),
 ]
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
@@ -347,3 +349,9 @@ LOGGING = {
         },
     },
 }
+
+if DEBUG:
+    LOGGING["django"] = {
+        "handlers": ["console"],
+        "level": "ERROR",
+    }

@@ -4,7 +4,7 @@ Google Summer of Code 2021 Final Report
 Organization - `AboutCode <https://www.aboutcode.org>`_
 -----------------------------------------------------------
 | `Hritik Vijay <https://github.com/hritik14>`_
-| Project: `VulnerableCode <https://github.com/nexB/vulnerablecode>`_
+| Project: `VulnerableCode <https://github.com/aboutcode-org/vulnerablecode>`_
 
 Overview
 ---------
@@ -30,7 +30,7 @@ structure::
 
 Yielding an average of 93% reduction in time (14x faster)
 
-More: https://github.com/nexB/vulnerablecode/pull/478
+More: https://github.com/aboutcode-org/vulnerablecode/pull/478
 
 Speed up upstream tests
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -50,7 +50,7 @@ usage cap. In the end, this is a trade off between resource usage and data
 accuracy.  This brings major performance improvement during the test.
 
 | Before: ~6hrs, now ~9 minutes
-| More: https://github.com/nexB/vulnerablecode/pull/490
+| More: https://github.com/aboutcode-org/vulnerablecode/pull/490
 
 Improve Docker Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,8 +63,8 @@ using a docker image. The current configuration makes use of files like
 over any unnecessary files for deployment.
 
 | More:
-| https://github.com/nexB/vulnerablecode/pull/497
-| https://github.com/nexB/vulnerablecode/pull/521
+| https://github.com/aboutcode-org/vulnerablecode/pull/497
+| https://github.com/aboutcode-org/vulnerablecode/pull/521
 
 Add Makefile
 ^^^^^^^^^^^^^
@@ -78,8 +78,8 @@ relevant part of the documentation and updated settings to reject insecure
 deployments.
 
 | More:
-| https://github.com/nexB/vulnerablecode/pull/497
-| https://github.com/nexB/vulnerablecode/pull/523
+| https://github.com/aboutcode-org/vulnerablecode/pull/497
+| https://github.com/aboutcode-org/vulnerablecode/pull/523
 
 Use svn to collects tags in GitHubTagsAPI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -87,11 +87,11 @@ Surprisingly, GitHub allows svn requests to repositories. Now we can
 have all the tags with a single request. This is much more efficient and
 gentle to the APIs.
 This was as issue since the importers based on GithubDataSource were `failing
-<https://github.com/nexB/vulnerablecode/issues/507>`_ because of being rate
+<https://github.com/aboutcode-org/vulnerablecode/issues/507>`_ because of being rate
 limited by GitHub.
 
 | `Philippe <https://github.com/pombredanne>`_, thank you so much for the suggestion
-| More: https://github.com/nexB/vulnerablecode/pull/508
+| More: https://github.com/aboutcode-org/vulnerablecode/pull/508
 
 Separate import and improve operations - WIP
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -106,14 +106,14 @@ As a bonus, writing importers will be very easy and welcome more contributors
 to the project. As of writing this report, this remains a work in progress
 which will be finished very soon.
 
-More: https://github.com/nexB/vulnerablecode/pull/525
+More: https://github.com/aboutcode-org/vulnerablecode/pull/525
 
 Others
 ^^^^^^^
-- helper: split_markdown_front_matter: https://github.com/nexB/vulnerablecode/pull/443
-- Dump yaml in favor of saneyaml https://github.com/nexB/vulnerablecode/pull/452
-- Refactor package_managers https://github.com/nexB/vulnerablecode/pull/495/commits
-- Importers bugfix https://github.com/nexB/vulnerablecode/pull/505
+- helper: split_markdown_front_matter: https://github.com/aboutcode-org/vulnerablecode/pull/443
+- Dump yaml in favor of saneyaml https://github.com/aboutcode-org/vulnerablecode/pull/452
+- Refactor package_managers https://github.com/aboutcode-org/vulnerablecode/pull/495/commits
+- Importers bugfix https://github.com/aboutcode-org/vulnerablecode/pull/505
 
 Pre GSoC
 ----------
@@ -123,14 +123,14 @@ exploring the codebase, I realized that there is a lot of room for improvement.
 Thus I looked for simple improvements and bugs to fix in the early stage, which
 were:
 
-- `Correct API docs path and fix pytest invocation <https://github.com/nexB/vulnerablecode/pull/379>`_
-- `Explicity provide lxml parser to beautifulsoup <https://github.com/nexB/vulnerablecode/pull/382>`_
-- `Make sure vulnerability id is_cve or is_vulcoid <https://github.com/nexB/vulnerablecode/pull/389>`_
-- `Fix istio importer <https://github.com/nexB/vulnerablecode/pull/395>`_ (cleared a huge confusion about the codebase)
-- `Add me to AUTHORS <https://github.com/nexB/vulnerablecode/pull/405>`_ (Should've done this a lot earlier)
-- `Add unspecified scoring system <https://github.com/nexB/vulnerablecode/pull/415>`_
-- `Fix redhat import failure <https://github.com/nexB/vulnerablecode/pull/418>`_ (This one took a *lot* of effort to pinpoint)
-- `expose find_all_cve helper <https://github.com/nexB/vulnerablecode/pull/439>`_
+- `Correct API docs path and fix pytest invocation <https://github.com/aboutcode-org/vulnerablecode/pull/379>`_
+- `Explicity provide lxml parser to beautifulsoup <https://github.com/aboutcode-org/vulnerablecode/pull/382>`_
+- `Make sure vulnerability id is_cve or is_vulcoid <https://github.com/aboutcode-org/vulnerablecode/pull/389>`_
+- `Fix istio importer <https://github.com/aboutcode-org/vulnerablecode/pull/395>`_ (cleared a huge confusion about the codebase)
+- `Add me to AUTHORS <https://github.com/aboutcode-org/vulnerablecode/pull/405>`_ (Should've done this a lot earlier)
+- `Add unspecified scoring system <https://github.com/aboutcode-org/vulnerablecode/pull/415>`_
+- `Fix redhat import failure <https://github.com/aboutcode-org/vulnerablecode/pull/418>`_ (This one took a *lot* of effort to pinpoint)
+- `expose find_all_cve helper <https://github.com/aboutcode-org/vulnerablecode/pull/439>`_
 
 Post GSoC - Future Plans and what's left
 -------------------------------------------
@@ -167,7 +167,7 @@ I really enjoyed working on the project. There were ups and downs when I met
 some weird bugs but every one of them taught me something new about Python,
 Django and programming in general. The best part of working with my amazing
 mentors - Philippe and Shivam - were the `weekly meets
-<https://github.com/nexB/vulnerablecode/wiki/WeeklyMeetings#meeting-on-tuesday-2021-08-17-at-1400-utc>`_
+<https://github.com/aboutcode-org/vulnerablecode/wiki/WeeklyMeetings#meeting-on-tuesday-2021-08-17-at-1400-utc>`_
 where we would together try to figure out how to proceed with the development.
 I learned something new with every call and interaction we had. Thank you so
 much my mentors for providing a very smooth experience and Google for showing

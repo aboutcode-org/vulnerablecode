@@ -34,6 +34,7 @@ from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import almalinux_importer
 from vulnerabilities.pipelines import alpine_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
@@ -77,6 +78,7 @@ IMPORTERS_REGISTRY = [
     github_importer.GitHubAPIImporterPipeline,
     nvd_importer.NVDImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
+    almalinux_importer.AlmalinuxImporterPipeline,
     alpine_linux_importer.AlpineLinuxImporterPipeline,
 ]
 

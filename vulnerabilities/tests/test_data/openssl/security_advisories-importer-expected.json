@@ -1,6 +1,6 @@
 [
   {
-    "unique_content_id": "88aac050ad73754e929805f2ab5e64e7",
+    "unique_content_id": "4ee23c143c0a01cd7035e1646adaf2222725ad2c96447ffc524eb79d1ac532dd",
     "aliases": [
       "VC-OPENSSL-20141015"
     ],
@@ -48,7 +48,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "35448b5f7b3fba9f72b91c02f114fb54",
+    "unique_content_id": "db3632c3ff2c87ef3524c93e91dc8cbeca0778583bcb08c9a8807cbb282d31cb",
     "aliases": [
       "CVE-2002-0655",
       "VC-OPENSSL-20020730-CVE-2002-0655"
@@ -86,7 +86,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "829a6d1f23353afa49ace62ba465a58f",
+    "unique_content_id": "f4f8760e71f028224b6bdbe5b477b90217df8ca6905036317584b92781c2a119",
     "aliases": [
       "CVE-2002-0656",
       "VC-OPENSSL-20020730-CVE-2002-0656"
@@ -124,7 +124,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "167751346aa8fefc0a6e3b73ccb1f1a0",
+    "unique_content_id": "9bdebb1f707c4c32b8834d1c6d0b55faa70072728c35bc0215df164af8448367",
     "aliases": [
       "CVE-2002-0657",
       "VC-OPENSSL-20020730-CVE-2002-0657"
@@ -162,7 +162,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "cd2aa8fefe14c523b0f404ea639582db",
+    "unique_content_id": "01616cd468b12076531c0a0453c8766381afac45b3bae651b2535336c25195c6",
     "aliases": [
       "CVE-2002-0659",
       "VC-OPENSSL-20020730-CVE-2002-0659"
@@ -200,7 +200,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8544420c83cf74faff35e8829adaa340",
+    "unique_content_id": "49964979bdbf578d45f122df679ba527fd8fbf64cc2d077728fb1c7f506f4c7f",
     "aliases": [
       "CVE-2002-1568",
       "VC-OPENSSL-20020808-CVE-2002-1568"
@@ -238,7 +238,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "61d2edb3343321c505bed6e2c93025b1",
+    "unique_content_id": "9a471da876825cebb089f856300f156b2987e0ffe50686b1646bb2041e7e4c8b",
     "aliases": [
       "CVE-2003-0078",
       "VC-OPENSSL-20030219-CVE-2003-0078"
@@ -288,7 +288,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a0eeb293e46b8d3bbd5029ccaa8585bd",
+    "unique_content_id": "ea79326dc573c9da310a5d90e901d9c1c6844afbc7ba492ee6edcf3fc6ed9208",
     "aliases": [
       "CVE-2003-0131",
       "VC-OPENSSL-20030319-CVE-2003-0131"
@@ -338,7 +338,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4fbc2d1aad1223b8ab887ce8d4d07175",
+    "unique_content_id": "29882534d53b1efc839bf130322ad85c220fa6326b24268aeed6af66f2855d02",
     "aliases": [
       "CVE-2003-0147",
       "VC-OPENSSL-20030314-CVE-2003-0147"
@@ -388,7 +388,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "525144b2cfc83c2afb4746cbb043f665",
+    "unique_content_id": "2ba1e73cd00bc41e969ea310ec78534f4c6d5124ca0b871dc4ce322a4b34e232",
     "aliases": [
       "CVE-2003-0543",
       "VC-OPENSSL-20030930-CVE-2003-0543"
@@ -438,7 +438,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b20ae6e077855796c5fa2ea663a88269",
+    "unique_content_id": "038ee7715473ae9e8184e755bbc864397d9e9c4bdc7b878782197d5f445085ac",
     "aliases": [
       "CVE-2003-0544",
       "VC-OPENSSL-20030930-CVE-2003-0544"
@@ -488,7 +488,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "23009992dbac485c71608f4cf9811ef2",
+    "unique_content_id": "e510e167dfcfce7357fe0616e7ae6ff525c3c2325ea6e0011c06d1300f1d7c10",
     "aliases": [
       "CVE-2003-0545",
       "VC-OPENSSL-20030930-CVE-2003-0545"
@@ -526,7 +526,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "47507506fbd9633ba7a6429dc0db28b5",
+    "unique_content_id": "fb504a9108cb16e440dc0db440f4bae47f2683838b518db42a371fc0453d6a88",
     "aliases": [
       "CVE-2003-0851",
       "VC-OPENSSL-20031104-CVE-2003-0851"
@@ -564,7 +564,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2c802d89f18645aa477b635d3a5242ad",
+    "unique_content_id": "a467aec230d90bf340b7325fe9207425c4d35680a470268682407639819c56f6",
     "aliases": [
       "CVE-2004-0079",
       "VC-OPENSSL-20040317-CVE-2004-0079"
@@ -614,7 +614,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6f23a0db775050dc33df47c7cc883b11",
+    "unique_content_id": "7a9fed2602761c2ae8073bce2e5e1dfa60cb84b83c4fe6e05906bbbaf5e46c7a",
     "aliases": [
       "CVE-2004-0081",
       "VC-OPENSSL-20040317-CVE-2004-0081"
@@ -652,7 +652,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "cb0e8758b89ae43b1ed34bfb3c0b3b56",
+    "unique_content_id": "9d9976f31462bb2e67fbf400706c1d2b0299c697e42bf4d3b8dd8e57a37d8e6a",
     "aliases": [
       "CVE-2004-0112",
       "VC-OPENSSL-20040317-CVE-2004-0112"
@@ -690,7 +690,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "de61ebaf88fec68edc50b1bbc3c82f15",
+    "unique_content_id": "5b55cf4a1e9c3add130bf345864834163a6924f0165a25458ddf710b31d56b70",
     "aliases": [
       "CVE-2004-0975",
       "VC-OPENSSL-20040930-CVE-2004-0975"
@@ -740,7 +740,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9cc871a9e62ad5ca419397816ae02f3f",
+    "unique_content_id": "cba43db55e749a2cd6a8e2b4a8859b0cfb99c57ebb384b08ff64687b69982e0c",
     "aliases": [
       "CVE-2005-2969",
       "VC-OPENSSL-20051011-CVE-2005-2969"
@@ -802,7 +802,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "95ecb527c6494eb3dc0e22337c257b02",
+    "unique_content_id": "9257f845c847e35c7d1aa8587eac8fecc3e42ea36da4a73525adfc9c552d92d6",
     "aliases": [
       "CVE-2006-2937",
       "VC-OPENSSL-20060928-CVE-2006-2937"
@@ -852,7 +852,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "1ed97c8f77a2948144952bbf2df0d15f",
+    "unique_content_id": "1012d0129bc2bf8d506f3a5abe83570b93979b82add79f0167a08320e397d181",
     "aliases": [
       "CVE-2006-2940",
       "VC-OPENSSL-20060928-CVE-2006-2940"
@@ -914,7 +914,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "275102d3f86e163b329b3bd7e4032658",
+    "unique_content_id": "8280b343c51657b22636bc717abb349ca3c44f0c053bc1e4a5f0b36440229d47",
     "aliases": [
       "CVE-2006-3738",
       "VC-OPENSSL-20060928-CVE-2006-3738"
@@ -976,7 +976,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "509415f8d684ef69f274426ff454ee18",
+    "unique_content_id": "d40f47b16b42d15836f11963090ae9bd8ee81396815649437c05a3763f5c0028",
     "aliases": [
       "CVE-2006-4339",
       "VC-OPENSSL-20060905-CVE-2006-4339"
@@ -1038,7 +1038,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "65804b3824faa47750e76089a0851d29",
+    "unique_content_id": "6ce834bf29c1216739243c40e4e7e13563b6e7ee37195b59489542cdae28c644",
     "aliases": [
       "CVE-2006-4343",
       "VC-OPENSSL-20060928-CVE-2006-4343"
@@ -1100,7 +1100,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "df251bb60bdec54891d4de225180f2ee",
+    "unique_content_id": "af7a8ad59af270f7ef97f3219807aacf3e5ef68c009a1a127593c7ed0371393d",
     "aliases": [
       "CVE-2007-4995",
       "VC-OPENSSL-20071012-CVE-2007-4995"
@@ -1138,7 +1138,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "987af90a510832e0adfe428cf642f8b3",
+    "unique_content_id": "6e1fe5317b3377fba03774a136517301651a683c7bd40e56718a77b14718f8ba",
     "aliases": [
       "CVE-2007-5135",
       "VC-OPENSSL-20071012-CVE-2007-5135"
@@ -1176,7 +1176,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2583bf8ccba8c985bab919b69ccc00e5",
+    "unique_content_id": "31901d67d2f1a8a6e0558d82580f7223d7f5d8986fa025f202bbc2f8bfbcf282",
     "aliases": [
       "CVE-2008-0891",
       "VC-OPENSSL-20080528-CVE-2008-0891"
@@ -1214,7 +1214,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "707840f8f10854ba4abf1409b159f35d",
+    "unique_content_id": "0a025dba94a703c96c56234016505ec5bb2424a29bb0881b837d2a7e0fc0c9a4",
     "aliases": [
       "CVE-2008-1672",
       "VC-OPENSSL-20080528-CVE-2008-1672"
@@ -1252,7 +1252,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a52c691f587165864b42caa4be445576",
+    "unique_content_id": "7537c1d90dd6c6ff6c065a4a9b2ebd8f7060d69f1c2f4e8d1029c6cd17dbac0c",
     "aliases": [
       "CVE-2008-5077",
       "VC-OPENSSL-20090107-CVE-2008-5077"
@@ -1290,7 +1290,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6ec3760bac617981cc8cd2369115f10e",
+    "unique_content_id": "ec18943f7b002b1a3999bfb8b71078f6c0cc14fadd2a226accc81b7e3c07b57d",
     "aliases": [
       "CVE-2009-0590",
       "VC-OPENSSL-20090325-CVE-2009-0590"
@@ -1328,7 +1328,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2b44645ffc6197aaeb99296cc87b3258",
+    "unique_content_id": "2ca10b0c5e2883828105f49783b0369798b610871a821fd020a9cd541a82539e",
     "aliases": [
       "CVE-2009-0591",
       "VC-OPENSSL-20090325-CVE-2009-0591"
@@ -1366,7 +1366,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4fffdc4369dd44a30fae0836347f91de",
+    "unique_content_id": "f414a498973b8e2d69129426ea6a5e3201efd1b8c5f9f6a4f8f3cba543701cb3",
     "aliases": [
       "CVE-2009-0789",
       "VC-OPENSSL-20090325-CVE-2009-0789"
@@ -1404,7 +1404,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e250eb725e8ae34ba3933779594935f6",
+    "unique_content_id": "12e1eced51b649340678cf2d6e9b206e411c2fcd76c9a2d2f4c358b4ce480589",
     "aliases": [
       "CVE-2009-1377",
       "VC-OPENSSL-20090512-CVE-2009-1377"
@@ -1448,7 +1448,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "868b6df2d8ffc22c9f9d83fd7da54401",
+    "unique_content_id": "bac66dcd2f0ad0469f600dbec41e0ec28219aab575fd5319a4f6d71675deda30",
     "aliases": [
       "CVE-2009-1378",
       "VC-OPENSSL-20090512-CVE-2009-1378"
@@ -1492,7 +1492,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9233bcc1b091ea2d0fe8d8a2820191f5",
+    "unique_content_id": "bd12a0b86dcdd5a9a410597243f1700603dd5cd3ca6f0c40ab08aaeafd7d4edf",
     "aliases": [
       "CVE-2009-1379",
       "VC-OPENSSL-20090512-CVE-2009-1379"
@@ -1536,7 +1536,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "0097aaf34c70d34f665917931de0a380",
+    "unique_content_id": "b28a70e21f739116e19415a8ce53ecc95060ceacba347960a8292cc70a46762b",
     "aliases": [
       "CVE-2009-1386",
       "VC-OPENSSL-20090602-CVE-2009-1386"
@@ -1574,7 +1574,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e872aef605740cacbb7547101151f4c7",
+    "unique_content_id": "42f716c07ad6ec9ae3eaece55884154a042ca5fe1ebc7abc0b6bd1e56aabe942",
     "aliases": [
       "CVE-2009-1387",
       "VC-OPENSSL-20090205-CVE-2009-1387"
@@ -1612,7 +1612,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e4f35efada1573e600eeb3f197a9654e",
+    "unique_content_id": "850ee33c668bfb81f14d0412e4339312cfc05088304246c02b4ec3cf8274f1b1",
     "aliases": [
       "CVE-2009-3245",
       "VC-OPENSSL-20100223-CVE-2009-3245"
@@ -1650,7 +1650,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3ede4a6de30467e840dadb6b1a2f94fc",
+    "unique_content_id": "e4c27c5b08884c79d2350038aa3ea44e57ac58d20ea4dcf682658288b7ec4268",
     "aliases": [
       "CVE-2009-3555",
       "VC-OPENSSL-20091105-CVE-2009-3555"
@@ -1688,7 +1688,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "91d6f4b44c2f61e0b1d98cbec9e4633d",
+    "unique_content_id": "61e80d10d33dde52fc3c7bc32f19fe3763bffef204240f578b490986e1ce7aff",
     "aliases": [
       "CVE-2009-4355",
       "VC-OPENSSL-20100113-CVE-2009-4355"
@@ -1726,7 +1726,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "f07be07de5fe8173dc2934d11c36c94d",
+    "unique_content_id": "08e65d1f3043871ffe0f802544cb08ac0822cf486e7cb9aebb04b301c46b986c",
     "aliases": [
       "CVE-2010-0433",
       "VC-OPENSSL-20100119-CVE-2010-0433"
@@ -1764,7 +1764,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "94276d565fb0e1af8800da5df17f96be",
+    "unique_content_id": "bd7aef7bfdb58b2311644f5ef6b9fba6252b4ee4823061cce018f34f38e61ac6",
     "aliases": [
       "CVE-2010-0740",
       "VC-OPENSSL-20100324-CVE-2010-0740"
@@ -1802,7 +1802,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "fdfe8fe89fb08b0cedb50a64445793f9",
+    "unique_content_id": "f7669cb060a5572fa05fd4e5dcbb589def9270038f39957489fe982c2b723713",
     "aliases": [
       "CVE-2010-0742",
       "VC-OPENSSL-20100601-CVE-2010-0742"
@@ -1852,7 +1852,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "bfee13b4a1f7df094ab9f172cf3556c9",
+    "unique_content_id": "806fa09aede3c5095c3bf55d4973cc6160bf7786a6efe3201815ceeb30cccf2b",
     "aliases": [
       "CVE-2010-1633",
       "VC-OPENSSL-20100601-CVE-2010-1633"
@@ -1890,7 +1890,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "76c3ba83fe766ac2a084b0bd3de847f5",
+    "unique_content_id": "7b65ee41c2d48ae2fc3ab1c1935814347695def01407b8da246cab5018fd4f01",
     "aliases": [
       "CVE-2010-3864",
       "VC-OPENSSL-20101116-CVE-2010-3864"
@@ -1940,7 +1940,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "316f2dc208adb956396af86e8d35c818",
+    "unique_content_id": "e0c32279e2afef8a7c959758dd603e340e8b3ae83744f2af395802b4d7152546",
     "aliases": [
       "CVE-2010-4180",
       "VC-OPENSSL-20101202-CVE-2010-4180"
@@ -1990,7 +1990,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a65500a311ab1c4e556fa47df1b487e1",
+    "unique_content_id": "93fa5cf53d6cabf247c30a66821d9a5e07a1013f64a2417d5e26ac28581c4301",
     "aliases": [
       "CVE-2010-4252",
       "VC-OPENSSL-20101202-CVE-2010-4252"
@@ -2028,7 +2028,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5c73df85af33b3649d0f8f5cf48465d3",
+    "unique_content_id": "23f38bdcf51ed382203722a20b7d4821569824f9d019c122bf958aa76dd50613",
     "aliases": [
       "CVE-2010-5298",
       "VC-OPENSSL-20140408-CVE-2010-5298"
@@ -2078,7 +2078,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4d2690fa788437a1517d397eabb14249",
+    "unique_content_id": "b9846e705257211137a5d75434ca61d87844c9fae7bc25a5a943b397a57a32c2",
     "aliases": [
       "CVE-2011-0014",
       "VC-OPENSSL-20110208-CVE-2011-0014"
@@ -2128,7 +2128,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "220a4682b4ef1cc32a29898f3057b9b3",
+    "unique_content_id": "ceda83e23c529430797c0b2affbe99cfbd68a5919628c3a8921070972ad425d3",
     "aliases": [
       "CVE-2011-3207",
       "VC-OPENSSL-20110906-CVE-2011-3207"
@@ -2166,7 +2166,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "990e85544590d4e2411449cfbc182afd",
+    "unique_content_id": "63385b83187d8305d4b3a99688f51116e1e99e77469a4de02e39611bbc58cf10",
     "aliases": [
       "CVE-2011-3210",
       "VC-OPENSSL-20110906-CVE-2011-3210"
@@ -2216,7 +2216,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6a353734271d92996f12a08fde03f7bb",
+    "unique_content_id": "392d936885fcdae2fb2b4200be4c4dbe8cb7fef88164723777c37de37b84d573",
     "aliases": [
       "CVE-2011-4108",
       "VC-OPENSSL-20120104-CVE-2011-4108"
@@ -2266,7 +2266,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5459b1f4a775b3122cdb0ec3ad815b3d",
+    "unique_content_id": "617f7a0525e9e761eae4eb9c93e690fabebd6717a3295b104064c694207f1897",
     "aliases": [
       "CVE-2011-4109",
       "VC-OPENSSL-20120104-CVE-2011-4109"
@@ -2304,7 +2304,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "85e39cd316fb40cbdc47d19d1f93fade",
+    "unique_content_id": "985ab2093b4bed8444751c8a5f106add9b1f71fefbe400f56ff4a34d7fc29d00",
     "aliases": [
       "CVE-2011-4576",
       "VC-OPENSSL-20120104-CVE-2011-4576"
@@ -2354,7 +2354,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "578281e8060ac1dc67b9d229e4b003ab",
+    "unique_content_id": "a75d293b72e75c3618655c718811f59a039e176e1592a13e7fc6a723dd4003d6",
     "aliases": [
       "CVE-2011-4577",
       "VC-OPENSSL-20120104-CVE-2011-4577"
@@ -2404,7 +2404,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "48361e01b38b28352705c300f7ee407b",
+    "unique_content_id": "c10f7480d6e0decea7f1d9b9884ea97b04025caa0c39bbc1338955d9ac46b48d",
     "aliases": [
       "CVE-2011-4619",
       "VC-OPENSSL-20120104-CVE-2011-4619"
@@ -2454,7 +2454,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9c9b9e8b9a5f1a355656382f71722432",
+    "unique_content_id": "b98fd56170c94c5fe71a1823c88ad50a789a513aa656f1cef217a11c83d645b7",
     "aliases": [
       "CVE-2012-0027",
       "VC-OPENSSL-20120104-CVE-2012-0027"
@@ -2492,7 +2492,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5af91d2aece046ccf3bc688d3dff09d5",
+    "unique_content_id": "525a3a5ff9914fd1388fdd071f143b794e6c642f2e45beb7d7d0bc49a78057a3",
     "aliases": [
       "CVE-2012-0050",
       "VC-OPENSSL-20120104-CVE-2012-0050"
@@ -2542,7 +2542,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6744bf2a3fd6eba6b18d59fb648d443b",
+    "unique_content_id": "c60189dfbd7ddb73a1d2a470d59fa6fcb7bedad776a8d717a0cbca7d3b416095",
     "aliases": [
       "CVE-2012-0884",
       "VC-OPENSSL-20120312-CVE-2012-0884"
@@ -2592,7 +2592,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c4e836c345751d38a3bff43c10e5a655",
+    "unique_content_id": "9d1e4715f7138b1a78fbf5251551b5d200ccd9ec52515b1b2939757df362997b",
     "aliases": [
       "CVE-2012-2110",
       "VC-OPENSSL-20120419-CVE-2012-2110"
@@ -2654,7 +2654,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "7451866670acf0bd4a5f0c9d74bdfb18",
+    "unique_content_id": "ea921fcdf273dfa8a452dab36604e137574b2bd9234e81b08a4885a267939e64",
     "aliases": [
       "CVE-2012-2131",
       "VC-OPENSSL-20120424-CVE-2012-2131"
@@ -2692,7 +2692,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9a9efe32bb6fb903c9814b808b7f0206",
+    "unique_content_id": "0fd2dc9500a45c761c7a6ddadcaca6403b0dcaefd25ec7c8a9a2e4dba0211efe",
     "aliases": [
       "CVE-2012-2333",
       "VC-OPENSSL-20120510-CVE-2012-2333"
@@ -2754,7 +2754,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9c755e2b9ac36e9d77e7aa63ca6b91e5",
+    "unique_content_id": "37fd821acfb83d5e24554010a0319b02b5c7c1c552d4dba2918bb1047836ed2c",
     "aliases": [
       "CVE-2012-2686",
       "VC-OPENSSL-20130205-CVE-2012-2686"
@@ -2792,7 +2792,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "084bb9ad1da9dafc260f041cfdaf868e",
+    "unique_content_id": "fcd18f8ddd7c4c680932ce9d21da72cd35ad71fe163ce5734f136cf4d1913002",
     "aliases": [
       "CVE-2013-0166",
       "VC-OPENSSL-20130205-CVE-2013-0166"
@@ -2854,7 +2854,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "d1003ac6fdcb1a2a4d7bca936e239b42",
+    "unique_content_id": "274bafa8474e5913afcb27cc6ffde809fb6f6ba505f13df3234f8ee946e218ee",
     "aliases": [
       "CVE-2013-0169",
       "VC-OPENSSL-20130204-CVE-2013-0169"
@@ -2916,7 +2916,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "0e3a3a12e8060b9395fe7b48a7276377",
+    "unique_content_id": "98a0e5556bb1bf1ef2d84156a75154a169ffed9e73af5bedc7e7d76c7e2dda3c",
     "aliases": [
       "CVE-2013-4353",
       "VC-OPENSSL-20140106-CVE-2013-4353"
@@ -2954,7 +2954,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "bd7c16b098a35e13b1659e8c4934253d",
+    "unique_content_id": "7628f9cd3cb03285c9bfdbb9b7dc222f54c2e5ae9498bce55eb751f6dfce660d",
     "aliases": [
       "CVE-2013-6449",
       "VC-OPENSSL-20131214-CVE-2013-6449"
@@ -2992,7 +2992,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "cd972700acea991417121019f009bac1",
+    "unique_content_id": "bc2e1522ce53f1d9658df6561b069413fd1a1e237b8d127da67a245315e1763f",
     "aliases": [
       "CVE-2013-6450",
       "VC-OPENSSL-20131213-CVE-2013-6450"
@@ -3042,7 +3042,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5d7762928fe0665ff593f8b93f0f7c2d",
+    "unique_content_id": "84057cab1e58fea9c99a32830b1f9459f608e4a1842a5c621e56d7570923cad5",
     "aliases": [
       "CVE-2014-0076",
       "VC-OPENSSL-20140214-CVE-2014-0076"
@@ -3116,7 +3116,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3b9f07c3f3fc9a3177b7cba6994626f2",
+    "unique_content_id": "757f04cde75470cb2bec8053f5fc874a82bae6b35945ec483df2e28eeb0cfc78",
     "aliases": [
       "CVE-2014-0160",
       "VC-OPENSSL-20140407-CVE-2014-0160"
@@ -3154,7 +3154,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "da21b7edec2a01bd2495586e3e344a2c",
+    "unique_content_id": "e09b36d835f2209f6be06a5138c917c4210c32191bef1c9dc5a2faa1f8850e32",
     "aliases": [
       "CVE-2014-0195",
       "VC-OPENSSL-20140605-CVE-2014-0195"
@@ -3216,7 +3216,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ee4174c785ef4de123c8f5c8c4fbf9b2",
+    "unique_content_id": "156f765a217953dbd4da2ecb89c9f1998f67752ff9a12bbb575d396f7f8902a2",
     "aliases": [
       "CVE-2014-0198",
       "VC-OPENSSL-20140421-CVE-2014-0198"
@@ -3266,7 +3266,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "bc12de8c2221021ccb7c3659b08cd3f5",
+    "unique_content_id": "1220fb598061d81d0d92e10093d9cf1e9de722b48ce1e08513ff839410106623",
     "aliases": [
       "CVE-2014-0221",
       "VC-OPENSSL-20140605-CVE-2014-0221"
@@ -3328,7 +3328,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a73f61be805e75d9468e11afb3158d45",
+    "unique_content_id": "8e650cb3afbf00bdf5312f07bb03de889b8709b53e66779f3ff6664d49f060cb",
     "aliases": [
       "CVE-2014-0224",
       "VC-OPENSSL-20140605-CVE-2014-0224"
@@ -3390,7 +3390,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4e8f724565b6429137ea959defa72090",
+    "unique_content_id": "3af893757d5d17f3214542da1f1511d519cfbcda8bc5691a205aadb469f130f3",
     "aliases": [
       "CVE-2014-3470",
       "VC-OPENSSL-20140530-CVE-2014-3470"
@@ -3452,7 +3452,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "913ba8a6e88c02283428f89a6d24952b",
+    "unique_content_id": "73269c9023356431d683604381118286fb8aeddcd87d0151e488b7255fa89f2c",
     "aliases": [
       "CVE-2014-3505",
       "VC-OPENSSL-20140806-CVE-2014-3505"
@@ -3514,7 +3514,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "27f89a41dfab2654a12a2d701b68ad9c",
+    "unique_content_id": "c96902798094fef86133d6163da3a0ef8e16161941fb0c9987451c3856334da2",
     "aliases": [
       "CVE-2014-3506",
       "VC-OPENSSL-20140806-CVE-2014-3506"
@@ -3576,7 +3576,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "48ecff4dbadf3f99198fcfb4138048d8",
+    "unique_content_id": "2947a778fbea64d8f99d370af3a8d0169602ff5adff88d86ccf57a09c3fb556c",
     "aliases": [
       "CVE-2014-3507",
       "VC-OPENSSL-20140806-CVE-2014-3507"
@@ -3638,7 +3638,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e1e9269594db16c804a566e20f436cd2",
+    "unique_content_id": "e111b3c925ff4930bf9df47e3c68ad219bfc78029011f026f5db9dfcb3623cba",
     "aliases": [
       "CVE-2014-3508",
       "VC-OPENSSL-20140806-CVE-2014-3508"
@@ -3700,7 +3700,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "db4e7a865c812a2f137555357a4ea54a",
+    "unique_content_id": "d999097e03330b37701e1a362f85711c43272b4fc8606896b221ff2c09a6f5cb",
     "aliases": [
       "CVE-2014-3509",
       "VC-OPENSSL-20140806-CVE-2014-3509"
@@ -3750,7 +3750,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "073034548d58e9674b4080cd0c36f8cb",
+    "unique_content_id": "f3294bb2b90c0dac71eb21010721728aa9fbaf64cd7b1aff3bbe97099e5db16e",
     "aliases": [
       "CVE-2014-3510",
       "VC-OPENSSL-20140806-CVE-2014-3510"
@@ -3812,7 +3812,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a5d66943f85ab01f18b1181d5dccceb3",
+    "unique_content_id": "99661f6b61c2befbf0a840ac395f67ae171810c041a0400837c4e202fff1c6ef",
     "aliases": [
       "CVE-2014-3511",
       "VC-OPENSSL-20140806-CVE-2014-3511"
@@ -3850,7 +3850,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4c289b7168ed3ac1dc649dd94e296ee2",
+    "unique_content_id": "52bc0907465cbad85c1cf82eecf18885bbbe24de573bda4cdb9f8367f269a783",
     "aliases": [
       "CVE-2014-3512",
       "VC-OPENSSL-20140806-CVE-2014-3512"
@@ -3888,7 +3888,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3dbf91d5443471c2da6cf221eddf9898",
+    "unique_content_id": "c54c6fed589f1ca8024f1917126aae2983baa39871610960f380e5340ce50252",
     "aliases": [
       "CVE-2014-3513",
       "VC-OPENSSL-20141015-CVE-2014-3513"
@@ -3932,7 +3932,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "63bf7bb20dcd1c7a3214c025ea53c1da",
+    "unique_content_id": "dcced98f8929707dec2045556ad27a5f407f0a6da5b0de6bb9cb0bf6c4eba16c",
     "aliases": [
       "CVE-2014-3567",
       "VC-OPENSSL-20141015-CVE-2014-3567"
@@ -4000,7 +4000,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ba13f3aea682e9e1c5fab3672da07088",
+    "unique_content_id": "0441ee6483168f14e3eb89495aa9144a146935020e60b4fafdd5de9dc52fbb05",
     "aliases": [
       "CVE-2014-3568",
       "VC-OPENSSL-20141015-CVE-2014-3568"
@@ -4068,7 +4068,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "d615f85fc740c95b6b98e150b56d1ae3",
+    "unique_content_id": "753342c985991295f308ceffe0455636ac19375dc81d8e311fa5cf1d23473dd5",
     "aliases": [
       "CVE-2014-3569",
       "VC-OPENSSL-20141021-CVE-2014-3569"
@@ -4136,7 +4136,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "f2f9de1344eacac2f17f6642b9655651",
+    "unique_content_id": "4247eafd0646ef018955aac7a30d2c023512a5b5f3a1803427473090a57766e5",
     "aliases": [
       "CVE-2014-3570",
       "VC-OPENSSL-20150108-CVE-2014-3570"
@@ -4204,7 +4204,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b80715d645997362b4be69a335b46cd5",
+    "unique_content_id": "bf213d08073d8ca6d471398fe7b23b4ee5111732d9f7976e6ed6740944653e2d",
     "aliases": [
       "CVE-2014-3571",
       "VC-OPENSSL-20150105-CVE-2014-3571"
@@ -4272,7 +4272,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "16d87492de289b2cbfd7ba3ef7e106fc",
+    "unique_content_id": "38ffe37c3e05fc10c74d621c2a23b78e2b3238c88a8cec376705a04e80131162",
     "aliases": [
       "CVE-2014-3572",
       "VC-OPENSSL-20150105-CVE-2014-3572"
@@ -4340,7 +4340,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "cca76ec7e4ca1da60dc37bfb7065a74d",
+    "unique_content_id": "173da4e79bb96a760519a18feb9667b22c727def897afd7cab56b2fc840ff141",
     "aliases": [
       "CVE-2014-5139",
       "VC-OPENSSL-20140806-CVE-2014-5139"
@@ -4378,7 +4378,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "1d42619f9d572e6c6f831da1d4b5347c",
+    "unique_content_id": "c6cf5f33fdcc803e66a88537cf41831c6b88ce19c6c320843d5c59c63c148c83",
     "aliases": [
       "CVE-2014-8176",
       "VC-OPENSSL-20150611-CVE-2014-8176"
@@ -4446,7 +4446,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3f5c428c988da21fcf75625d7764c31e",
+    "unique_content_id": "a7261d54aab29faf70f12bbfbdd3f3e78cf2beebfeb915dbd7a29714a8955fed",
     "aliases": [
       "CVE-2014-8275",
       "VC-OPENSSL-20150105-CVE-2014-8275"
@@ -4514,7 +4514,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ecbce64df0cdd160db419c6db1cd9dc4",
+    "unique_content_id": "60f12268a60e39fd28c928e89af1f4038210aff7ad1f1fd748b8968ca65dfbdd",
     "aliases": [
       "CVE-2015-0204",
       "VC-OPENSSL-20150106-CVE-2015-0204"
@@ -4582,7 +4582,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "14a72a501af8865388558895f94f4719",
+    "unique_content_id": "f5bac2344614e13386f702b70ba31694e5db10133151e5372c410e6fbff702ca",
     "aliases": [
       "CVE-2015-0205",
       "VC-OPENSSL-20150108-CVE-2015-0205"
@@ -4638,7 +4638,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ae55e9f4f7210581875a2de83cc058ec",
+    "unique_content_id": "f94fa5bd638308939b95d4d520dd8e57678c3f4709d63229a75fe3868c15446d",
     "aliases": [
       "CVE-2015-0206",
       "VC-OPENSSL-20150108-CVE-2015-0206"
@@ -4694,7 +4694,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "66636a0c48ff0f39676cc43ff2fad975",
+    "unique_content_id": "45236a4d12fbe78a8b2d6a428b53a890bddcc1dedee31cb6d41b20af54e9bbb3",
     "aliases": [
       "CVE-2015-0207",
       "VC-OPENSSL-20150319-CVE-2015-0207"
@@ -4738,7 +4738,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5d5cb3ddc2d7d372e96fc9e7eb0e6172",
+    "unique_content_id": "774c0aaa394ae3ac59c32105e791fec7c71c602f342a042afd485ed819983fc6",
     "aliases": [
       "CVE-2015-0208",
       "VC-OPENSSL-20150319-CVE-2015-0208"
@@ -4782,7 +4782,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b91a75f67326a148c90e6ad45ba11839",
+    "unique_content_id": "f53c9570c9efdac69f3e8300699223b0497562e4c9fb9398fdf2f29ba05efb53",
     "aliases": [
       "CVE-2015-0209",
       "VC-OPENSSL-20150319-CVE-2015-0209"
@@ -4862,7 +4862,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "92852e9f71e2d4220063d01c7e871d0f",
+    "unique_content_id": "ae10e26137b18ce0f074a9e88ad800799cfa131e4c9075c49e5cd736bd4ae7ef",
     "aliases": [
       "CVE-2015-0285",
       "VC-OPENSSL-20150310-CVE-2015-0285"
@@ -4906,7 +4906,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "d0946aba30cf839fdbc468685b6bd683",
+    "unique_content_id": "fcff8a052ccf49c48dbe7f8d5a88a485de1a213799585647c2124b98ae5ccb52",
     "aliases": [
       "CVE-2015-0286",
       "VC-OPENSSL-20150319-CVE-2015-0286"
@@ -4986,7 +4986,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "7f14c539a7b1d7b62b178e81a164ca57",
+    "unique_content_id": "3964ca62faf5fd2df7ebf079fc420e480621026d27cc10f9de31e2738a05936c",
     "aliases": [
       "CVE-2015-0287",
       "VC-OPENSSL-20150319-CVE-2015-0287"
@@ -5066,7 +5066,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "fde824bdb24f286066693f15a53a9c11",
+    "unique_content_id": "751dcb76349de0d4bd85b5a27c52b97bf0f472fc1bd4b3a334c67afd762a0bf1",
     "aliases": [
       "CVE-2015-0288",
       "VC-OPENSSL-20150302-CVE-2015-0288"
@@ -5146,7 +5146,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a6996bfe711e793b22ceb3d47c975099",
+    "unique_content_id": "66bbf7b524be1160d1805c966d32418f2dd42b204296d6b885939dafb1ce52f5",
     "aliases": [
       "CVE-2015-0289",
       "VC-OPENSSL-20150319-CVE-2015-0289"
@@ -5226,7 +5226,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8c8ab1d205efac4fa9eeb6888a73d02b",
+    "unique_content_id": "23b9fdf2b9a73946210388721d4df0de3a020ac58b1e6669c3696b33a602ec98",
     "aliases": [
       "CVE-2015-0290",
       "VC-OPENSSL-20150319-CVE-2015-0290"
@@ -5270,7 +5270,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9c790e8e82381b71bd62ae5a2403aa43",
+    "unique_content_id": "6bdb68d814ff5f69711b93446eb25ddf133d6fbb35bab358bb97b3c423bb5811",
     "aliases": [
       "CVE-2015-0291",
       "VC-OPENSSL-20150319-CVE-2015-0291"
@@ -5314,7 +5314,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "037837042ea4921162841a8a572dedb7",
+    "unique_content_id": "9928809c0f0a04e7ae6a89ccefdce3eb83e34e047f3470f7778b42182c3b0a3e",
     "aliases": [
       "CVE-2015-0292",
       "VC-OPENSSL-20150319-CVE-2015-0292"
@@ -5382,7 +5382,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6b326dde327d1535193796cfd337f305",
+    "unique_content_id": "d86068f891546989943214dbe20bceca4d29250299395048df1666ebef7ede03",
     "aliases": [
       "CVE-2015-0293",
       "VC-OPENSSL-20150319-CVE-2015-0293"
@@ -5462,7 +5462,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "87c491358b43983d41be3e34f577787f",
+    "unique_content_id": "e2e31fceb4d827820c9a6c2c0144827a16d464ad33bd6139cf5e5c7389864c4c",
     "aliases": [
       "CVE-2015-1787",
       "VC-OPENSSL-20150319-CVE-2015-1787"
@@ -5506,7 +5506,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "742341fd7596524c221d7ac8aa8025de",
+    "unique_content_id": "be2ba7ab66a7f53457702397f237a1894566b9d27e7d776969c121a98b0b48c3",
     "aliases": [
       "CVE-2015-1788",
       "VC-OPENSSL-20150611-CVE-2015-1788"
@@ -5586,7 +5586,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "154f6f04f63ee6fba925180ed9e059c1",
+    "unique_content_id": "6693aa99959f40abe75da63ee98844b32d6c80ee49cd880d7211f82f39bff9bf",
     "aliases": [
       "CVE-2015-1789",
       "VC-OPENSSL-20150611-CVE-2015-1789"
@@ -5666,7 +5666,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2b988a60b7d38da17ad12c1d84455a70",
+    "unique_content_id": "0d6ca333ae5301c543aa3d5fee659526e6e7df19d6cd23503b080d44f393be29",
     "aliases": [
       "CVE-2015-1790",
       "VC-OPENSSL-20150611-CVE-2015-1790"
@@ -5746,7 +5746,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c9cffc6fc71a28da39de00bca06f0ce3",
+    "unique_content_id": "2ad006bcecf434794b6cafb90c3e60eda8f3465baf0d60adf2eb0547f6075427",
     "aliases": [
       "CVE-2015-1791",
       "VC-OPENSSL-20150602-CVE-2015-1791"
@@ -5826,7 +5826,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "303206c390cb78e168c8425d3c6d2c91",
+    "unique_content_id": "fbbe723124334c66dbc53652a1a157264900e602a74ed731a2223c212d189f15",
     "aliases": [
       "CVE-2015-1792",
       "VC-OPENSSL-20150611-CVE-2015-1792"
@@ -5906,7 +5906,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "78795bf94381c0a1772ed444fb576c91",
+    "unique_content_id": "77f031f81329fda29782191d97de2003d3b4fadda5cae0ddf20bcd4ba0958c6e",
     "aliases": [
       "CVE-2015-1793",
       "VC-OPENSSL-20150709-CVE-2015-1793"
@@ -5962,7 +5962,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "34e7fc0f12a532fb0e3f133767651b82",
+    "unique_content_id": "6b2da461b684884127216718edee478e331e8b64439b5c98f36f9284ead68922",
     "aliases": [
       "CVE-2015-1794",
       "VC-OPENSSL-20150811-CVE-2015-1794"
@@ -6006,7 +6006,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c49999301ee8aa01a9ddd428979f0bc4",
+    "unique_content_id": "7c4c38c81c872cfcb7ae77bc45b1a78760ddda5aa1ebf6e061d41443c7a0870a",
     "aliases": [
       "CVE-2015-3193",
       "VC-OPENSSL-20151203-CVE-2015-3193"
@@ -6050,7 +6050,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3c8cc92c8be75ecbbf22aa5caa33bfa9",
+    "unique_content_id": "826e677a591d0d5e808454bc70f127fab4629f8ee5c2f16bc03c03740fc52661",
     "aliases": [
       "CVE-2015-3194",
       "VC-OPENSSL-20151203-CVE-2015-3194"
@@ -6106,7 +6106,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "aa54b531fb7b90075a099e3d74098089",
+    "unique_content_id": "7eedb5c223cb23e47aa9ce69cf53869fc975e43e734731737790f5355c57c46f",
     "aliases": [
       "CVE-2015-3195",
       "VC-OPENSSL-20151203-CVE-2015-3195"
@@ -6186,7 +6186,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "58623263c1b67d72553e0282afd5d03a",
+    "unique_content_id": "434c0477ef7b438f9b58ddb4cf5d072f24523f7231cf77fb3d492dc0ae358d03",
     "aliases": [
       "CVE-2015-3196",
       "VC-OPENSSL-20151203-CVE-2015-3196"
@@ -6254,7 +6254,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a1b7aec7c53c8018f9f0fc9118de71b4",
+    "unique_content_id": "582bb190d8800ea86907f44769c22a29e8f34079c0b2ce5e09052db99707480b",
     "aliases": [
       "CVE-2015-3197",
       "VC-OPENSSL-20160128-CVE-2015-3197"
@@ -6310,7 +6310,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "bb0ba32b691bb5c4273824bad2f457a9",
+    "unique_content_id": "202a2aec8d017aab9c615cfdaf94d9a7137c18c8e41c2d999025759310199b81",
     "aliases": [
       "CVE-2016-0701",
       "VC-OPENSSL-20160128-CVE-2016-0701"
@@ -6354,7 +6354,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5115d9fca6da89c0f09b18c66063043e",
+    "unique_content_id": "c2f87f5ea625ae3e87ab3a3ec82e47995b16601835ef7be500414932928f3c69",
     "aliases": [
       "CVE-2016-0702",
       "VC-OPENSSL-20160301-CVE-2016-0702"
@@ -6410,7 +6410,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "356419ba58928dd92651de3bd8726759",
+    "unique_content_id": "0dc285b8adde395581c94e422ef09ae80752d8b5b7e8177bee2bd05a9044f07c",
     "aliases": [
       "CVE-2016-0703",
       "VC-OPENSSL-20160301-CVE-2016-0703"
@@ -6490,7 +6490,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ca04670f15a036f2d20611d996b2e03d",
+    "unique_content_id": "e7bba3f95fb4b39e7b5f6a6297935e8cfcadbbabda552ee1b06e65e9282ab672",
     "aliases": [
       "CVE-2016-0704",
       "VC-OPENSSL-20160301-CVE-2016-0704"
@@ -6570,7 +6570,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "1e32ac05e706f05b60d0c367814faf5b",
+    "unique_content_id": "8f5d81b6201854025eba1228dc3dbb1562bdefdd101afb131581d6c49722d872",
     "aliases": [
       "CVE-2016-0705",
       "VC-OPENSSL-20160301-CVE-2016-0705"
@@ -6626,7 +6626,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "dcfad5e453c456b47b7dcb85f3bbf948",
+    "unique_content_id": "54d1b0ccbb4b663c9a43e3d2a6be131b6b5a0413fbb5f22cee822ed6936d94fe",
     "aliases": [
       "CVE-2016-0797",
       "VC-OPENSSL-20160301-CVE-2016-0797"
@@ -6682,7 +6682,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "56718964514021ad2571d5e9bb4e1ba9",
+    "unique_content_id": "5cee408201ad50518a04c7597ae547e01069a3e3a71411bb5d03665d395c9c3f",
     "aliases": [
       "CVE-2016-0798",
       "VC-OPENSSL-20160301-CVE-2016-0798"
@@ -6738,7 +6738,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "65ffc54cdd6e37ee324ff207835500d6",
+    "unique_content_id": "84fcbdaee2028d10d0a154f4562e0212135d6cce3bfd9eda6b933c8e302f6351",
     "aliases": [
       "CVE-2016-0799",
       "VC-OPENSSL-20160301-CVE-2016-0799"
@@ -6794,7 +6794,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4f983dc0849c0739895c99ff8042ef0f",
+    "unique_content_id": "3bb968a563522f059f423c3561dfed5d17a6d5c4d6bd3d1715133146dcc94142",
     "aliases": [
       "CVE-2016-0800",
       "VC-OPENSSL-20160301-CVE-2016-0800"
@@ -6850,7 +6850,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "80621d002083a0f1c1d9267b2575c2af",
+    "unique_content_id": "3eadfec35b5b88ba68ecb0d97d2cba4203556ca8be6c28566ff28d045dbeeaba",
     "aliases": [
       "CVE-2016-2105",
       "VC-OPENSSL-20160503-CVE-2016-2105"
@@ -6906,7 +6906,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6646efbc2c3440a5aaedd5479df16fe0",
+    "unique_content_id": "fb73586b842fb010ced45dc708d8346e3aded542fe78c11f03f83bf754997edd",
     "aliases": [
       "CVE-2016-2106",
       "VC-OPENSSL-20160503-CVE-2016-2106"
@@ -6962,7 +6962,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "eaa2fce419eaf5b4ea668e9106c1fd43",
+    "unique_content_id": "45c33cd5992b2f757ade809ec1b55e35aed7fa0d57bb8b46c8f7ab46d4cf5d81",
     "aliases": [
       "CVE-2016-2107",
       "VC-OPENSSL-20160503-CVE-2016-2107"
@@ -7024,7 +7024,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "eadc3ef5343caffdb16fc7a845983d99",
+    "unique_content_id": "2455be4d3319416de5807835a5e13cb7a40a862fcb21503efe33c9b0836132bc",
     "aliases": [
       "CVE-2016-2108",
       "VC-OPENSSL-20160503-CVE-2016-2108"
@@ -7080,7 +7080,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "0d33c0311add27a6e1a49d7a3d965c38",
+    "unique_content_id": "86acb94d7c04bbcbd8c25c43ae292bd04c94a03e34fdc267053638c248e0b7f3",
     "aliases": [
       "CVE-2016-2109",
       "VC-OPENSSL-20160503-CVE-2016-2109"
@@ -7136,7 +7136,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "9448f7ccc33194fa36bbdb2f40e749b2",
+    "unique_content_id": "79d98ea5b970167fc32b2dd513af82c8f21fc88f5863ff80c40bf92a86567dc8",
     "aliases": [
       "CVE-2016-2176",
       "VC-OPENSSL-20160503-CVE-2016-2176"
@@ -7192,7 +7192,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4c10365eacf49048d2ca1f3d490de4c2",
+    "unique_content_id": "7cf78e4965685dd994d47b5b4648c8671c19b75994e4b56ad143255738c4b716",
     "aliases": [
       "CVE-2016-2177",
       "VC-OPENSSL-20160601-CVE-2016-2177"
@@ -7248,7 +7248,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "69c98b0d04f2bf1a2d1f044b54108625",
+    "unique_content_id": "41d1b686cc25b51e538b1294c03f9bd49194604c0a5b1878a85ef935c82f0573",
     "aliases": [
       "CVE-2016-2178",
       "VC-OPENSSL-20160607-CVE-2016-2178"
@@ -7304,7 +7304,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c541cb508cce45e8ffa33b03c44a7706",
+    "unique_content_id": "24d135d43dac5961bd8e824a6be06bf737548a27b6908a9bdb06c4cf6be7da66",
     "aliases": [
       "CVE-2016-2179",
       "VC-OPENSSL-20160822-CVE-2016-2179"
@@ -7372,7 +7372,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c3ef560f8d241b1b75cdef3199faa45c",
+    "unique_content_id": "39ea5c947d194650d344e5adcd4353a31075fe76556175678092991fef56935a",
     "aliases": [
       "CVE-2016-2180",
       "VC-OPENSSL-20160722-CVE-2016-2180"
@@ -7428,7 +7428,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "bad085048774b51abab2b4e37c3868a0",
+    "unique_content_id": "2dcc23a57bd50008fd1ff1dd5ab1e15ac70d58a3b621d70b039cee4339be5439",
     "aliases": [
       "CVE-2016-2181",
       "VC-OPENSSL-20160819-CVE-2016-2181"
@@ -7496,7 +7496,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e29c5c80d781403086304ecb4fce7a59",
+    "unique_content_id": "fcd1d51451689926072528e12c9206f1c13c61ed97e42c132b0667ea48870171",
     "aliases": [
       "CVE-2016-2182",
       "VC-OPENSSL-20160816-CVE-2016-2182"
@@ -7552,12 +7552,12 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "659c848c83841e30d1052e8d49e18051",
+    "unique_content_id": "d87e634ab174d154043776ba4b3c6659d5f37175726b216710c42ec5144d3d95",
     "aliases": [
       "CVE-2016-2183",
       "VC-OPENSSL-20160824-CVE-2016-2183"
     ],
-    "summary": "Because DES (and triple-DES) has only a 64-bit block size, birthday attacks are a real concern. For example, with the ability to run Javascript in a browser, it is possible to send enough traffic to cause a collision, and then use that information to recover something like a session Cookie. Triple-DES, which shows up as “DES-CBC3” in an OpenSSL cipher string, is still used on the Web, and major browsers are not yet willing to completely disable it. If you run a server, you should disable triple-DES. This is generally a configuration issue. If you run an old server that doesn’t support any better ciphers than DES or RC4, you should upgrade. For 1.0.2 and 1.0.1, we removed the triple-DES ciphers from the “HIGH” keyword and put them into “MEDIUM.” Note that we did not remove them from the “DEFAULT” keyword. For the 1.1.0 release, we treat triple-DES just like we are treating RC4. It is not compiled by default; you have to use “enable-weak-ssl-ciphers” as a config option. Even when those ciphers are compiled, triple-DES is only in the “MEDIUM” keyword. In addition we also removed it from the “DEFAULT” keyword.",
+    "summary": "Because DES (and triple-DES) has only a 64-bit block size, birthday attacks are a real concern. For example, with the ability to run Javascript in a browser, it is possible to send enough traffic to cause a collision, and then use that information to recover something like a session Cookie. Triple-DES, which shows up as \u201cDES-CBC3\u201d in an OpenSSL cipher string, is still used on the Web, and major browsers are not yet willing to completely disable it. If you run a server, you should disable triple-DES. This is generally a configuration issue. If you run an old server that doesn\u2019t support any better ciphers than DES or RC4, you should upgrade. For 1.0.2 and 1.0.1, we removed the triple-DES ciphers from the \u201cHIGH\u201d keyword and put them into \u201cMEDIUM.\u201d Note that we did not remove them from the \u201cDEFAULT\u201d keyword. For the 1.1.0 release, we treat triple-DES just like we are treating RC4. It is not compiled by default; you have to use \u201cenable-weak-ssl-ciphers\u201d as a config option. Even when those ciphers are compiled, triple-DES is only in the \u201cMEDIUM\u201d keyword. In addition we also removed it from the \u201cDEFAULT\u201d keyword.",
     "affected_packages": [
       {
         "package": {
@@ -7596,7 +7596,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "cfaace2e186847527636a2195766fc52",
+    "unique_content_id": "e43493ec8a73bb371bf163314718c77edbe7d72190cd2e88e09e3a65d4500cdb",
     "aliases": [
       "CVE-2016-6302",
       "VC-OPENSSL-20160823-CVE-2016-6302"
@@ -7664,7 +7664,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2af63a761bf4ddbbaeb92afa382151cf",
+    "unique_content_id": "c6b031581915c5cc5b42df4000da62b01be62afbba15c264e9c189aac336f855",
     "aliases": [
       "CVE-2016-6303",
       "VC-OPENSSL-20160824-CVE-2016-6303"
@@ -7732,7 +7732,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3b3ff4143b6859104d216a310d58db58",
+    "unique_content_id": "aef1aa2ae8685c93c4869930f90ef8cd3bcc3fbadf949e4238d182e8fd2684a0",
     "aliases": [
       "CVE-2016-6304",
       "VC-OPENSSL-20160922-CVE-2016-6304"
@@ -7818,7 +7818,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ec3000e978936c5dc59eeb71d14f61d0",
+    "unique_content_id": "76c39ca965fe72efb7732d5f6a6388c6f20696a7d03dcbe47c0c548a60e41ca8",
     "aliases": [
       "CVE-2016-6305",
       "VC-OPENSSL-20160922-CVE-2016-6305"
@@ -7868,7 +7868,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "17585a9b090ed55460ac0cad6c3b5f6e",
+    "unique_content_id": "335b68ab52a7311993d1ba47eab3fb676dfaee4b10a497bd992f7cbcb13edd67",
     "aliases": [
       "CVE-2016-6306",
       "VC-OPENSSL-20160921-CVE-2016-6306"
@@ -7936,7 +7936,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "f598dbb4cacf63ed93e588c1db8ff5b8",
+    "unique_content_id": "4eaf09765e65f727f0d87c8ee1340fb5157d0195ebc4d87f7d243b7de0540731",
     "aliases": [
       "CVE-2016-6307",
       "VC-OPENSSL-20160921-CVE-2016-6307"
@@ -7986,7 +7986,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8ee9b8d2efa51108b44de0e5f0671902",
+    "unique_content_id": "afa659ff3079acf90f6cbb1cc37cf907f479517ed3f41f22ff048c397dccc1e5",
     "aliases": [
       "CVE-2016-6308",
       "VC-OPENSSL-20160921-CVE-2016-6308"
@@ -8036,7 +8036,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ec731ec05e8399f02edc888b078cfcf1",
+    "unique_content_id": "2c4faeb5ab598f4bcd7363261f979466b7ea8c02e2bfa6f68c53ef466d115f77",
     "aliases": [
       "CVE-2016-6309",
       "VC-OPENSSL-20160926-CVE-2016-6309"
@@ -8086,7 +8086,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "76efc0216d0391eac89b5097852a6f7e",
+    "unique_content_id": "3dea46bb518540bd2524894a1c99e33282ca9610f926cb1a2a6ab62fee7e9a8a",
     "aliases": [
       "CVE-2016-7052",
       "VC-OPENSSL-20160926-CVE-2016-7052"
@@ -8136,7 +8136,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ad064a076d4f4136c4ff5cc9a1c32cb4",
+    "unique_content_id": "ced21cf334c43c1968b1e630d0e5e466fc113b5ec477a716a9d2328d84a41e08",
     "aliases": [
       "CVE-2016-7053",
       "VC-OPENSSL-20161110-CVE-2016-7053"
@@ -8186,7 +8186,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "2260cd2fea019c35edd74053d43afbfa",
+    "unique_content_id": "de494f6e53a555a8a467bd0841b9b26accb6e568bdb3f941b8100b02f3325224",
     "aliases": [
       "CVE-2016-7054",
       "VC-OPENSSL-20161110-CVE-2016-7054"
@@ -8236,7 +8236,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c46f2f9d6517a007f907f8a2e4c84820",
+    "unique_content_id": "f65656f9a1a4be03cdd849a3aa82992f4af18eae8d67af063c16232e3f59f754",
     "aliases": [
       "CVE-2016-7055",
       "VC-OPENSSL-20161110-CVE-2016-7055"
@@ -8304,7 +8304,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "6f703a0f132094abbd39fd883ed6e241",
+    "unique_content_id": "a98bf1ba98e36233e2f7857bfdf284a1cedd8cfe0d07d9f913d8b075bee096f1",
     "aliases": [
       "CVE-2017-3730",
       "VC-OPENSSL-20170126-CVE-2017-3730"
@@ -8354,7 +8354,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c271a33647e7cdefdce8ed38c15e1bb7",
+    "unique_content_id": "16f408917ccdd649067c701789a6f062b284973f8da7ae2ce42116010005ffc2",
     "aliases": [
       "CVE-2017-3731",
       "VC-OPENSSL-20170126-CVE-2017-3731"
@@ -8422,7 +8422,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b14fc26f1382b65b58128617820053c3",
+    "unique_content_id": "d525e54aa33322501d8c100f7be2df5900113d09c8409a50ce37b77478001f13",
     "aliases": [
       "CVE-2017-3732",
       "VC-OPENSSL-20170126-CVE-2017-3732"
@@ -8490,7 +8490,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "e5c015c5ea09f74ca8830fc675109209",
+    "unique_content_id": "70561a8c52747e3882749934d40dc3c52e1a6fccd239925f1ff317779b30257e",
     "aliases": [
       "CVE-2017-3733",
       "VC-OPENSSL-20170216-CVE-2017-3733"
@@ -8540,7 +8540,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3e3d332a535202d4a355d9c6f46f8511",
+    "unique_content_id": "6e51a8310007cae6d2dd2da43402f0ce33e9bc503675618ae3ed5e22435384c0",
     "aliases": [
       "CVE-2017-3735",
       "VC-OPENSSL-20170828-CVE-2017-3735"
@@ -8608,7 +8608,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "135805c0fbb3f388567abe5a782e3678",
+    "unique_content_id": "723a84486e608c93ef84d012c9a3bdbec50fc03f94b6af7f2e3c6db35c4870db",
     "aliases": [
       "CVE-2017-3736",
       "VC-OPENSSL-20171102-CVE-2017-3736"
@@ -8676,7 +8676,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "37c832cd6a7a445e21de6bcaae2e6aad",
+    "unique_content_id": "99b0a08fcb1d6012836e07da86ee39aec6568240922f58640fcb7c9b8f561492",
     "aliases": [
       "CVE-2017-3737",
       "VC-OPENSSL-20171207-CVE-2017-3737"
@@ -8726,7 +8726,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "fe526b02e32f024f79ab16ad59c5cd59",
+    "unique_content_id": "9855d6d4847a8dac0b2ec4a4a8556a921f9a32c035e43bb98f4201ab12df0d4c",
     "aliases": [
       "CVE-2017-3738",
       "VC-OPENSSL-20171207-CVE-2017-3738"
@@ -8794,7 +8794,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "891a444705c4d9e9d6d9514e6152b93d",
+    "unique_content_id": "52b60416f56fbd4cf154ad29a878e1a745b607dcee1653acb5985fa68607508b",
     "aliases": [
       "CVE-2018-0732",
       "VC-OPENSSL-20180612-CVE-2018-0732"
@@ -8862,7 +8862,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "0add28e4bf2017a49afa086624548363",
+    "unique_content_id": "f62f0a22bd4695353076d3dc1b2e7670ed0bd9607d774a7cc31c86086cacb015",
     "aliases": [
       "CVE-2018-0733",
       "VC-OPENSSL-20180327-CVE-2018-0733"
@@ -8912,7 +8912,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c6585613e6f674c7ea39eefc5057e85d",
+    "unique_content_id": "d2c4e2cf5d78c3a480feea4e1721e0acbb60155c70d8b6a30a282b546f09afcf",
     "aliases": [
       "CVE-2018-0734",
       "VC-OPENSSL-20181030-CVE-2018-0734"
@@ -8998,7 +8998,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "3193861b88f934ec25c275d622932dc2",
+    "unique_content_id": "b208d67bce0a078a253edbd6b6f817f83f3c7e0f384dae57fd11f43aa6645a78",
     "aliases": [
       "CVE-2018-0735",
       "VC-OPENSSL-20181029-CVE-2018-0735"
@@ -9066,7 +9066,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "5ce5c73a388c1721baa86dd346bc5cca",
+    "unique_content_id": "fdffac35f130aaa543d59035f255119efd80363f868a8aac69b3b5036d4e9052",
     "aliases": [
       "CVE-2018-0737",
       "VC-OPENSSL-20180416-CVE-2018-0737"
@@ -9134,7 +9134,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "fd56a1d08c404d18a2425bde4a2cc222",
+    "unique_content_id": "40730ed1276c0a934bcd453d832b1b05ea61d1aeddf8d2a88ed31efc6625e1c9",
     "aliases": [
       "CVE-2018-0739",
       "VC-OPENSSL-20180327-CVE-2018-0739"
@@ -9202,7 +9202,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "a86eaada3e2c85065180d5d7eb1d3a31",
+    "unique_content_id": "dd129503db8d87d87f40d36a21b3e7ad7a51515303ca1ddff0a7722bf6b6b809",
     "aliases": [
       "CVE-2018-5407",
       "VC-OPENSSL-20181102-CVE-2018-5407"
@@ -9270,7 +9270,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "939439dfee2c7c3ef79f3f7fa3e5f90b",
+    "unique_content_id": "a182ef84f10d8869b39936326cf01831942571fde976d293e8cbb7f9182371de",
     "aliases": [
       "CVE-2019-1543",
       "VC-OPENSSL-20190306-CVE-2019-1543"
@@ -9338,7 +9338,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "c251f1e3c85429b0daa07cb6ea7d1e67",
+    "unique_content_id": "1608445a20cee1c7f70bf4d4567f869870a5bda078ae3054db819f7197868284",
     "aliases": [
       "CVE-2019-1547",
       "VC-OPENSSL-20190910-CVE-2019-1547"
@@ -9424,7 +9424,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "05226413367dc1d93fc68106f47a330c",
+    "unique_content_id": "efa3c01bca1f8857f755aac0413f6b448077604f02470f2887ccf96682279dba",
     "aliases": [
       "CVE-2019-1549",
       "VC-OPENSSL-20190910-CVE-2019-1549"
@@ -9474,7 +9474,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "70a045decd4328c7ff88c8a1d969e8c4",
+    "unique_content_id": "1386c9f10ab439a308d3b6c4bfa71d7f17de4bb9b041d065029c422a0d559caf",
     "aliases": [
       "CVE-2019-1551",
       "VC-OPENSSL-20191206-CVE-2019-1551"
@@ -9542,7 +9542,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4213f363ba037058475897c693173044",
+    "unique_content_id": "edd85067182fe9c90b55fc43bfb734f907e3209f959fe776fbca8d96c71accb6",
     "aliases": [
       "CVE-2019-1552",
       "VC-OPENSSL-20190730-CVE-2019-1552"
@@ -9634,7 +9634,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "bd17aac4dde8bee4fba0c673c8287082",
+    "unique_content_id": "d2ba9b6bba240765f8121e99e081e43b48475b118a7c16aed6cc5556d5b6be89",
     "aliases": [
       "CVE-2019-1559",
       "VC-OPENSSL-20190226-CVE-2019-1559"
@@ -9684,7 +9684,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "45ac1a1229fc8b49656c3e6fd99221cd",
+    "unique_content_id": "07c966215a883c2032c38139472d5ff371ad61b8affa5e951c49f96438ab07cc",
     "aliases": [
       "CVE-2019-1563",
       "VC-OPENSSL-20190910-CVE-2019-1563"
@@ -9770,7 +9770,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "afb9d94adcf86f7b0de8aa4f7ff7c6b4",
+    "unique_content_id": "5657b64f70e97033e61583196c24a7a9e4b643cd241052028cb0a2b764adbe7e",
     "aliases": [
       "CVE-2020-1967",
       "VC-OPENSSL-20200421-CVE-2020-1967"
@@ -9820,7 +9820,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "56010436497977628dcea6e96888d450",
+    "unique_content_id": "8291dd784cec9b49787a85058d536e4d4c9a136bdc21bcfb7e975a2c41218195",
     "aliases": [
       "CVE-2020-1968",
       "VC-OPENSSL-20200909-CVE-2020-1968"
@@ -9864,7 +9864,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "87b17158b6ad69a4d8043755547f45ad",
+    "unique_content_id": "a5da7dab57b99ce22236cb42d5329a816d2abf2481a6857c5b4ce16acb8b940f",
     "aliases": [
       "CVE-2020-1971",
       "VC-OPENSSL-20201208-CVE-2020-1971"
@@ -9932,7 +9932,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "ebbc5ad78a20128d4894106ef368c8f1",
+    "unique_content_id": "d94a89c4d33239b6b8b49b765224bdb2cff846ce52cf8d1bfd59e6401fd406d7",
     "aliases": [
       "CVE-2021-23839",
       "VC-OPENSSL-20210216-CVE-2021-23839"
@@ -9982,7 +9982,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "62778ba1713cdf9851ef92f4d2f46fa7",
+    "unique_content_id": "37127413ec3efbf57f25327ebbe739c46f14fb0992651a32236c3fc60a12e4a4",
     "aliases": [
       "CVE-2021-23840",
       "VC-OPENSSL-20210216-CVE-2021-23840"
@@ -10050,7 +10050,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "510307f6edf17f0620c4a096bb61df0c",
+    "unique_content_id": "4f747fd9c1e01f00c514c9af30852970db6eb6c9b83462affe737ebd3b893a0d",
     "aliases": [
       "CVE-2021-23841",
       "VC-OPENSSL-20210216-CVE-2021-23841"
@@ -10118,7 +10118,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "b9610772604a38aae37934639b563f2d",
+    "unique_content_id": "7e96ee7be9f83a18c1773a7c46610f55024cfbe0be196a47e2b3ea741ae398e2",
     "aliases": [
       "CVE-2021-3449",
       "VC-OPENSSL-20210325-CVE-2021-3449"
@@ -10168,7 +10168,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "8017a45e047c6a8a07ddcef5b019a5a9",
+    "unique_content_id": "943c0441bb44156232628b06433f25a6e1d5c4bef1db447845be8bb595d55320",
     "aliases": [
       "CVE-2021-3450",
       "VC-OPENSSL-20210325-CVE-2021-3450"
@@ -10218,7 +10218,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "7c59ebbda08fad46ad3628c58c6e1f4f",
+    "unique_content_id": "b2e254e7e251e702fd77c5eaf069909ab6e7ddf360fc3ff323ee75dc20566220",
     "aliases": [
       "CVE-2021-3711",
       "VC-OPENSSL-20210824-CVE-2021-3711"
@@ -10268,7 +10268,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "97ca2e1d473bc9e2e802285c56f85541",
+    "unique_content_id": "ac1bc5a0f0673f7e6556dd40ca607825904051f6f1686650f07ba5727dcab9f9",
     "aliases": [
       "CVE-2021-3712",
       "VC-OPENSSL-20210824-CVE-2021-3712"
@@ -10336,7 +10336,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "1c5bbe67613cfce3a310b822466ad17e",
+    "unique_content_id": "2480e0bc015e4765e66637e4b96ea45d8d93d41719e171100ca32011f81d6e80",
     "aliases": [
       "CVE-2021-4044",
       "VC-OPENSSL-20211214-CVE-2021-4044"
@@ -10386,7 +10386,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "0039548ab133f97e2138bb298ccc7cae",
+    "unique_content_id": "80c2054b079c7d69842fe524fdc6abcf1246a37323a9f29ce4f80f4300e8282f",
     "aliases": [
       "CVE-2021-4160",
       "VC-OPENSSL-20220128-CVE-2021-4160"
@@ -10472,7 +10472,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "caa5eb3135dc715346ce3a32211b024e",
+    "unique_content_id": "dc0cbb60dc9280799a925c566b952d1c952cf5c3b30d9e3d5726c30a815e49d2",
     "aliases": [
       "CVE-2022-0778",
       "VC-OPENSSL-20220315-CVE-2022-0778"

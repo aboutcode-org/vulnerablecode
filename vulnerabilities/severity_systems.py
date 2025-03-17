@@ -42,6 +42,9 @@ class ScoringSystem:
     def get(self, scoring_elements: str):
         return NotImplementedError
 
+    def __str__(self):
+        return f"{self.identifier}"
+
 
 @dataclasses.dataclass(order=True)
 class Cvssv2ScoringSystem(ScoringSystem):

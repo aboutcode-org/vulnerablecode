@@ -29,8 +29,8 @@ Fixes #0000
 
 * [ ] read the [contribution guidelines](https://vulnerablecode.readthedocs.io/en/latest/contributing.html)
 * [ ] code follows the project style
-* [ ] titled my PR clearly and linked the issue it resolves
-* [ ] added tests for my changes
+* [ ] titled PR clearly and linked the issue it resolves
+* [ ] added tests for changes
 * [ ] updated docs if needed
 * [ ] updated the [CHANGELOG](https://github.com/aboutcode-org/vulnerablecode/blob/main/CHANGELOG.rst) if needed
 * [ ] code passes all tests locally

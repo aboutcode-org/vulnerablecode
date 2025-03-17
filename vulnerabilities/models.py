@@ -7,16 +7,23 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import csv
 import hashlib
 import json
 import logging
-import typing
+import xml.etree.ElementTree as ET
 from contextlib import suppress
 from functools import cached_property
-from typing import Optional
+from itertools import groupby
+from operator import attrgetter
 from typing import Union
 
+from cvss.exceptions import CVSS2MalformedError
+from cvss.exceptions import CVSS3MalformedError
+from cvss.exceptions import CVSS4MalformedError
 from cwe2.database import Database
+from cwe2.mappings import xml_database_path
+from cwe2.weakness import Weakness as DBWeakness
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
@@ -43,9 +50,10 @@ from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 from univers.versions import Version
 
-from aboutcode import hashid
 from vulnerabilities import utils
+from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import compute_content_id
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
@@ -56,7 +64,7 @@ models.CharField.register_lookup(Length)
 models.CharField.register_lookup(Trim)
 
 # patch univers for missing entry
-RANGE_CLASS_BY_SCHEMES["alpine"] = AlpineLinuxVersionRange
+RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
 
 
 class BaseQuerySet(models.QuerySet):
@@ -156,6 +164,45 @@ class VulnerabilityQuerySet(BaseQuerySet):
         )
 
 
+class VulnerabilitySeverity(models.Model):
+    url = models.URLField(
+        max_length=1024,
+        null=True,
+        help_text="URL to the vulnerability severity",
+        db_index=True,
+    )
+
+    scoring_system_choices = tuple(
+        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
+    )
+
+    scoring_system = models.CharField(
+        max_length=50,
+        choices=scoring_system_choices,
+        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
+            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
+        ),
+    )
+
+    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+
+    scoring_elements = models.CharField(
+        max_length=150,
+        null=True,
+        help_text="Supporting scoring elements used to compute the score values. "
+        "For example a CVSS vector string as used to compute a CVSS score.",
+    )
+
+    published_at = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
+    )
+
+    objects = BaseQuerySet.as_manager()
+
+    class Meta:
+        ordering = ["url", "scoring_system", "value"]
+
+
 class VulnerabilityStatusType(models.IntegerChoices):
     """List of vulnerability statuses."""
 
@@ -176,6 +223,7 @@ class Vulnerability(models.Model):
         default=utils.build_vcid,
         help_text="Unique identifier for a vulnerability in the external representation. "
         "It is prefixed with VCID-",
+        db_index=True,
     )
 
     summary = models.TextField(
@@ -202,6 +250,38 @@ class Vulnerability(models.Model):
         choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
     )
 
+    severities = models.ManyToManyField(
+        VulnerabilitySeverity,
+        related_name="vulnerabilities",
+    )
+
+    exploitability = models.DecimalField(
+        null=True,
+        max_digits=2,
+        decimal_places=1,
+        help_text="Exploitability indicates the likelihood that a vulnerability in a software package could be used by malicious actors to compromise systems, "
+        "applications, or networks. This metric is determined automatically based on the discovery of known exploits.",
+    )
+
+    weighted_severity = models.DecimalField(
+        null=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10.",
+    )
+
+    @property
+    def risk_score(self):
+        """
+        Risk expressed as a number ranging from 0 to 10.
+        Risk is calculated from weighted severity and exploitability values.
+        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
+        Risk = min(weighted severity * exploitability, 10)
+        """
+        if self.exploitability and self.weighted_severity:
+            risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
+            return round(risk_score, 1)
+
     objects = VulnerabilityQuerySet.as_manager()
 
     class Meta:
@@ -214,13 +294,6 @@ class Vulnerability(models.Model):
     @property
     def vcid(self):
         return self.vulnerability_id
-
-    @property
-    def severities(self):
-        """
-        Return a queryset of VulnerabilitySeverity for this vulnerability.
-        """
-        return VulnerabilitySeverity.objects.filter(reference__in=self.references.all())
 
     @property
     def affected_packages(self):
@@ -308,6 +381,127 @@ class Vulnerability(models.Model):
         """
         return [p.package_url for p in self.packages.distinct().all()]
 
+    def aggregate_fixed_and_affected_packages(self):
+        from vulnerabilities.utils import get_purl_version_class
+
+        sorted_fixed_by_packages = self.fixed_by_packages.filter(is_ghost=False).order_by(
+            "type", "namespace", "name", "qualifiers", "subpath"
+        )
+
+        if sorted_fixed_by_packages:
+            sorted_fixed_by_packages.first().calculate_version_rank
+
+        sorted_affected_packages = self.affected_packages.all()
+
+        if sorted_affected_packages:
+            sorted_affected_packages.first().calculate_version_rank
+
+        grouped_fixed_by_packages = {
+            key: list(group)
+            for key, group in groupby(
+                sorted_fixed_by_packages,
+                key=attrgetter("type", "namespace", "name", "qualifiers", "subpath"),
+            )
+        }
+
+        all_affected_fixed_by_matches = []
+
+        for sorted_affected_package in sorted_affected_packages:
+            affected_fixed_by_matches = {
+                "affected_package": sorted_affected_package,
+                "matched_fixed_by_packages": [],
+            }
+
+            # Build the key to find matching group
+            key = (
+                sorted_affected_package.type,
+                sorted_affected_package.namespace,
+                sorted_affected_package.name,
+                sorted_affected_package.qualifiers,
+                sorted_affected_package.subpath,
+            )
+
+            # Get matching group from pre-grouped fixed_by_packages
+            matching_fixed_packages = grouped_fixed_by_packages.get(key, [])
+
+            # Get version classes for comparison
+            affected_version_class = get_purl_version_class(sorted_affected_package)
+            affected_version = affected_version_class(sorted_affected_package.version)
+
+            # Compare versions and filter valid matches
+            matched_fixed_by_packages = [
+                fixed_by_package.purl
+                for fixed_by_package in matching_fixed_packages
+                if get_purl_version_class(fixed_by_package)(fixed_by_package.version)
+                > affected_version
+            ]
+
+            affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
+            all_affected_fixed_by_matches.append(affected_fixed_by_matches)
+        return sorted_fixed_by_packages, sorted_affected_packages, all_affected_fixed_by_matches
+
+    def get_severity_vectors_and_values(self):
+        """
+        Collect severity vectors and values, excluding EPSS scoring systems and handling errors gracefully.
+        """
+        severity_vectors = []
+        severity_values = set()
+
+        # Exclude EPSS scoring system
+        base_severities = self.severities.exclude(scoring_system=EPSS.identifier)
+
+        # QuerySet for severities with valid scoring_elements and scoring_system in SCORING_SYSTEMS
+        valid_scoring_severities = base_severities.filter(
+            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
+        )
+
+        for severity in valid_scoring_severities:
+            try:
+                vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
+                    severity.scoring_elements
+                )
+                if vector_values:
+                    severity_vectors.append(vector_values)
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ) as e:
+                logging.error(f"CVSSMalformedError for {severity.scoring_elements}: {e}")
+
+        valid_value_severities = base_severities.filter(value__isnull=False).exclude(value="")
+
+        severity_values.update(valid_value_severities.values_list("value", flat=True))
+
+        return severity_vectors, severity_values
+
+
+def get_cwes(self):
+    """Yield CWE Weakness objects"""
+    for cwe_category in self.cwe_files:
+        cwe_category.seek(0)
+        reader = csv.DictReader(cwe_category)
+        for row in reader:
+            yield DBWeakness(*list(row.values())[0:-1])
+    tree = ET.parse(xml_database_path)
+    root = tree.getroot()
+    for tag_num in [1, 2]:  # Categories , Views
+        tag = root[tag_num]
+        for child in tag:
+            yield DBWeakness(
+                *[
+                    child.attrib["ID"],
+                    child.attrib.get("Name"),
+                    None,
+                    child.attrib.get("Status"),
+                    child[0].text,
+                ]
+            )
+
+
+Database.get_cwes = get_cwes
+
 
 class Weakness(models.Model):
     """
@@ -316,7 +510,15 @@ class Weakness(models.Model):
 
     cwe_id = models.IntegerField(help_text="CWE id")
     vulnerabilities = models.ManyToManyField(Vulnerability, related_name="weaknesses")
-    db = Database()
+
+    cwe_by_id = {}
+
+    def get_cwe(self, cwe_id):
+        if not self.cwe_by_id:
+            db = Database()
+            for weakness in db.get_cwes():
+                self.cwe_by_id[str(weakness.cwe_id)] = weakness
+        return self.cwe_by_id[cwe_id]
 
     @property
     def cwe(self):
@@ -328,7 +530,7 @@ class Weakness(models.Model):
         Return a queryset of Weakness for this vulnerability.
         """
         try:
-            weakness = self.db.get(self.cwe_id)
+            weakness = self.get_cwe(str(self.cwe_id))
             return weakness
         except Exception as e:
             logger.warning(f"Could not find CWE {self.cwe_id}: {e}")
@@ -392,6 +594,7 @@ class VulnerabilityReference(models.Model):
         max_length=200,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
+        db_index=True,
     )
 
     objects = VulnerabilityReferenceQuerySet.as_manager()
@@ -448,6 +651,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         if fix:
             filter_dict["fixing_vulnerabilities__isnull"] = False
 
+        # TODO: why do we need distinct
         return Package.objects.filter(**filter_dict).distinct()
 
     def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
@@ -571,7 +775,7 @@ class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
         return self._vulnerable(True)
 
     def only_non_vulnerable(self):
-        return self._vulnerable(False)
+        return self._vulnerable(False).filter(is_ghost=False)
 
     def _vulnerable(self, vulnerable=True):
         """
@@ -634,9 +838,50 @@ class Package(PackageURLMixin):
     is_ghost = models.BooleanField(
         default=False,
         help_text="True if the package does not exist in the upstream package manager or its repository.",
+        db_index=True,
+    )
+
+    risk_score = models.DecimalField(
+        null=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Risk score between 0.00 and 10.00, where higher values "
+        "indicate greater vulnerability risk for the package.",
+    )
+
+    version_rank = models.IntegerField(
+        help_text="Rank of the version to support ordering by version. Rank "
+        "zero means the rank has not been defined yet",
+        default=0,
+        db_index=True,
     )
 
     objects = PackageQuerySet.as_manager()
+
+    class Meta:
+        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
+        indexes = [
+            # Index for getting al versions of a package
+            models.Index(fields=["type", "namespace", "name"]),
+            models.Index(fields=["type", "namespace", "name", "qualifiers", "subpath"]),
+            # Index for getting a specific version of a package
+            models.Index(
+                fields=[
+                    "type",
+                    "namespace",
+                    "name",
+                    "version",
+                ]
+            ),
+        ]
+
+    def __str__(self):
+        return self.package_url
+
+    @property
+    def purl(self):
+        return self.package_url
 
     def save(self, *args, **kwargs):
         """
@@ -664,15 +909,27 @@ class Package(PackageURLMixin):
         super().save(*args, **kwargs)
 
     @property
-    def purl(self):
-        return self.package_url
+    def calculate_version_rank(self):
+        """
+        Calculate and return the `version_rank` for a package that does not have one.
+        If this package already has a `version_rank`, return it.
 
-    class Meta:
-        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
-        ordering = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        The calculated rank will be interpolated between two packages that have
+        `version_rank` values and are closest to this package in terms of version order.
+        """
 
-    def __str__(self):
-        return self.package_url
+        group_packages = Package.objects.filter(
+            type=self.type,
+            namespace=self.namespace,
+            name=self.name,
+        )
+
+        if any(p.version_rank == 0 for p in group_packages):
+            sorted_packages = sorted(group_packages, key=lambda p: self.version_class(p.version))
+            for rank, package in enumerate(sorted_packages, start=1):
+                package.version_rank = rank
+            Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
+        return self.version_rank
 
     @property
     def affected_by(self):
@@ -720,14 +977,6 @@ class Package(PackageURLMixin):
 
         return reverse("package_details", kwargs={"purl": self.purl}, request=request)
 
-    def sort_by_version(self, packages):
-        """
-        Return a sequence of `packages` sorted by version.
-        """
-        if not packages:
-            return []
-        return sorted(packages, key=lambda x: self.version_class(x.version))
-
     @cached_property
     def version_class(self):
         range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
@@ -762,19 +1011,20 @@ class Package(PackageURLMixin):
         Return a tuple of the next and latest non-vulnerable versions as Package instance.
         Return a tuple of (None, None) if there is no non-vulnerable version.
         """
+        if self.version_rank == 0:
+            self.calculate_version_rank
         non_vulnerable_versions = Package.objects.get_fixed_by_package_versions(
             self, fix=False
         ).only_non_vulnerable()
-        sorted_versions = self.sort_by_version(non_vulnerable_versions)
 
-        later_non_vulnerable_versions = [
-            non_vuln_ver
-            for non_vuln_ver in sorted_versions
-            if self.version_class(non_vuln_ver.version) > self.current_version
-        ]
+        later_non_vulnerable_versions = non_vulnerable_versions.filter(
+            version_rank__gt=self.version_rank
+        )
+
+        later_non_vulnerable_versions = list(later_non_vulnerable_versions)
 
         if later_non_vulnerable_versions:
-            sorted_versions = self.sort_by_version(later_non_vulnerable_versions)
+            sorted_versions = later_non_vulnerable_versions
             next_non_vulnerable = sorted_versions[0]
             latest_non_vulnerable = sorted_versions[-1]
             return next_non_vulnerable, latest_non_vulnerable
@@ -803,6 +1053,8 @@ class Package(PackageURLMixin):
         Return a list of vulnerabilities that affect this package together with information regarding
         the versions that fix the vulnerabilities.
         """
+        if self.version_rank == 0:
+            self.calculate_version_rank
         package_details_vulns = []
 
         fixed_by_packages = Package.objects.get_fixed_by_package_versions(self, fix=True)
@@ -826,12 +1078,13 @@ class Package(PackageURLMixin):
                 if fixed_version > self.current_version:
                     later_fixed_packages.append(fixed_pkg)
 
-            next_fixed_package = None
             next_fixed_package_vulns = []
 
             sort_fixed_by_packages_by_version = []
             if later_fixed_packages:
-                sort_fixed_by_packages_by_version = self.sort_by_version(later_fixed_packages)
+                sort_fixed_by_packages_by_version = sorted(
+                    later_fixed_packages, key=lambda p: p.version_rank
+                )
 
             fixed_by_pkgs = []
 
@@ -861,6 +1114,7 @@ class Package(PackageURLMixin):
         """
         Return a queryset of Vulnerabilities that are fixed by this package.
         """
+        print("A")
         return self.fixed_by_vulnerabilities.all()
 
     @property
@@ -886,12 +1140,14 @@ class PackageRelatedVulnerabilityBase(models.Model):
     package = models.ForeignKey(
         Package,
         on_delete=models.CASCADE,
+        db_index=True,
         # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 
     vulnerability = models.ForeignKey(
         Vulnerability,
         on_delete=models.CASCADE,
+        db_index=True,
         # related_name="%(class)s_set",  # Unique related_name per subclass
     )
 
@@ -978,41 +1234,16 @@ class FixingPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
 
 
 class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
+
+    severities = models.ManyToManyField(
+        VulnerabilitySeverity,
+        related_name="affected_package_vulnerability_relations",
+    )
+
+    objects = BaseQuerySet.as_manager()
+
     class Meta(PackageRelatedVulnerabilityBase.Meta):
         verbose_name_plural = "Affected By Package Related Vulnerabilities"
-
-
-class VulnerabilitySeverity(models.Model):
-    reference = models.ForeignKey(VulnerabilityReference, on_delete=models.CASCADE)
-
-    scoring_system_choices = tuple(
-        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
-    )
-
-    scoring_system = models.CharField(
-        max_length=50,
-        choices=scoring_system_choices,
-        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
-            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
-        ),
-    )
-
-    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
-
-    scoring_elements = models.CharField(
-        max_length=150,
-        null=True,
-        help_text="Supporting scoring elements used to compute the score values. "
-        "For example a CVSS vector string as used to compute a CVSS score.",
-    )
-
-    published_at = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
-    )
-
-    class Meta:
-        unique_together = ["reference", "scoring_system", "value"]
-        ordering = ["reference", "scoring_system", "value"]
 
 
 class AliasQuerySet(BaseQuerySet):
@@ -1085,8 +1316,9 @@ class Advisory(models.Model):
     """
 
     unique_content_id = models.CharField(
-        max_length=32,
+        max_length=64,
         blank=True,
+        help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
     )
     aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
     summary = models.TextField(
@@ -1127,16 +1359,8 @@ class Advisory(models.Model):
         ordering = ["aliases", "date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
-        checksum = hashlib.md5()
-        for field in (
-            self.summary,
-            self.affected_packages,
-            self.references,
-            self.weaknesses,
-        ):
-            value = json.dumps(field, separators=(",", ":")).encode("utf-8")
-            checksum.update(value)
-        self.unique_content_id = checksum.hexdigest()
+        advisory_data = self.to_advisory_data()
+        self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)
         super().save(*args, **kwargs)
 
     def to_advisory_data(self) -> "AdvisoryData":
@@ -1239,7 +1463,8 @@ class ChangeLog(models.Model):
     software_version = models.CharField(
         max_length=100,
         help_text="Version of the software at the time of change",
-        default=VULNERABLECODE_VERSION,
+        blank=False,
+        null=False,
     )
 
     @property
@@ -1490,3 +1715,81 @@ class Exploit(models.Model):
     @property
     def get_known_ransomware_campaign_use_type(self):
         return "Known" if self.known_ransomware_campaign_use else "Unknown"
+
+
+class CodeChange(models.Model):
+    """
+    Abstract base model representing a change in code, either introducing or fixing a vulnerability.
+    This includes details about commits, patches, and related metadata.
+
+    We are tracking commits, pulls and downloads as references to the code change. The goal is to
+    keep track and store the actual code patch in the ``patch`` field. When not available the patch
+    will be inferred from these references using improvers.
+    """
+
+    commits = models.JSONField(
+        blank=True,
+        default=list,
+        help_text="List of commit identifiers using VCS URLs associated with the code change.",
+    )
+    pulls = models.JSONField(
+        blank=True,
+        default=list,
+        help_text="List of pull request URLs associated with the code change.",
+    )
+    downloads = models.JSONField(
+        blank=True, default=list, help_text="List of download URLs for the patched code."
+    )
+    patch = models.TextField(
+        blank=True, null=True, help_text="The code change as a patch in unified diff format."
+    )
+    base_package_version = models.ForeignKey(
+        "Package",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="codechanges",
+        help_text="The base package version to which this code change applies.",
+    )
+    notes = models.TextField(
+        blank=True, null=True, help_text="Notes or instructions about this code change."
+    )
+    references = models.JSONField(
+        blank=True, default=list, help_text="URL references related to this code change."
+    )
+    is_reviewed = models.BooleanField(
+        default=False, help_text="Indicates if this code change has been reviewed."
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True, help_text="Timestamp indicating when this code change was created."
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True, help_text="Timestamp indicating when this code change was last updated."
+    )
+
+    class Meta:
+        abstract = True
+
+
+class CodeFix(CodeChange):
+    """
+    A code fix is a code change that addresses a vulnerability and is associated:
+    - with a specific affected package version
+    - optionally with a specific fixing package version when it is known
+    """
+
+    affected_package_vulnerability = models.ForeignKey(
+        "AffectedByPackageRelatedVulnerability",
+        on_delete=models.CASCADE,
+        related_name="code_fix",
+        help_text="The affected package version to which this code fix applies.",
+    )
+
+    fixed_package_vulnerability = models.ForeignKey(
+        "FixingPackageRelatedVulnerability",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="code_fix",
+        help_text="The fixing package version with this code fix",
+    )

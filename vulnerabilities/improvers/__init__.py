@@ -10,10 +10,15 @@
 from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipelines import add_cvss31_to_CVEs
+from vulnerabilities.pipelines import collect_commits
+from vulnerabilities.pipelines import compute_package_risk
+from vulnerabilities.pipelines import compute_package_version_rank
 from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
 from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
+from vulnerabilities.pipelines import remove_duplicate_advisories
 
 IMPROVERS_REGISTRY = [
     valid_versions.GitHubBasicImprover,
@@ -38,6 +43,11 @@ IMPROVERS_REGISTRY = [
     enhance_with_kev.VulnerabilityKevPipeline,
     enhance_with_metasploit.MetasploitImproverPipeline,
     enhance_with_exploitdb.ExploitDBImproverPipeline,
+    compute_package_risk.ComputePackageRiskPipeline,
+    compute_package_version_rank.ComputeVersionRankPipeline,
+    collect_commits.CollectFixCommitsPipeline,
+    add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
+    remove_duplicate_advisories.RemoveDuplicateAdvisoriesPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

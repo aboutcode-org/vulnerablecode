@@ -8,6 +8,7 @@
 #
 
 import os
+import time
 
 import pytest
 from django.test import Client
@@ -15,14 +16,16 @@ from django.test import TestCase
 from packageurl import PackageURL
 from univers import versions
 
+from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
+from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.templatetags.url_filters import url_quote_filter
+from vulnerabilities.utils import get_purl_version_class
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
-from vulnerabilities.views import get_purl_version_class
-from vulnerabilities.views import purl_sort_key
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DIR = os.path.join(BASE_DIR, "test_data/package_sort")
@@ -198,12 +201,13 @@ class TestPackageSortTestCase(TestCase):
         for pkg in input_purls:
             real_purl = PackageURL.from_string(pkg)
             attrs = {k: v for k, v in real_purl.to_dict().items() if v}
-            Package.objects.create(**attrs)
+            pkg = Package.objects.create(**attrs)
+            pkg.calculate_version_rank
 
     def test_sorted_queryset(self):
         qs_all = Package.objects.all()
         pkgs_qs_all = list(qs_all)
-        sorted_pkgs_qs_all = sorted(pkgs_qs_all, key=purl_sort_key)
+        sorted_pkgs_qs_all = pkgs_qs_all
 
         pkg_package_urls = [obj.package_url for obj in sorted_pkgs_qs_all]
         sorted_purls = os.path.join(TEST_DIR, "sorted_purls.txt")
@@ -244,8 +248,8 @@ class TestCustomFilters:
                 "pkg%3Arpm/redhat/katello-client-bootstrap%401.1.0-2%3Farch%3Del6sat",
             ),
             (
-                "pkg:alpine/nginx@1.10.3-r1?arch=armhf&distroversion=v3.5&reponame=main",
-                "pkg%3Aalpine/nginx%401.10.3-r1%3Farch%3Darmhf%26distroversion%3Dv3.5%26reponame%3Dmain",
+                "pkg:apk/alpine/nginx@1.10.3-r1?arch=armhf&distroversion=v3.5&reponame=main",
+                "pkg%3Aapk/alpine/nginx%401.10.3-r1%3Farch%3Darmhf%26distroversion%3Dv3.5%26reponame%3Dmain",
             ),
             ("pkg:nginx/nginx@0.9.0?os=windows", "pkg%3Anginx/nginx%400.9.0%3Fos%3Dwindows"),
             (
@@ -273,3 +277,56 @@ class TestCustomFilters:
     def test_url_quote_filter(self, input_value, expected_output):
         filtered = url_quote_filter(input_value)
         assert filtered == expected_output
+
+
+class VulnerabilitySearchTestCaseWithPackages(TestCase):
+    def setUp(self):
+        self.vuln1 = Vulnerability.objects.create(vulnerability_id="VCID-1", summary="Vuln 1")
+        self.vuln2 = Vulnerability.objects.create(vulnerability_id="VCID-2", summary="Vuln 2")
+        self.vuln3 = Vulnerability.objects.create(vulnerability_id="VCID-3", summary="Vuln 3")
+        self.vuln4 = Vulnerability.objects.create(vulnerability_id="VCID-4", summary="Vuln 4")
+        self.vuln5 = Vulnerability.objects.create(vulnerability_id="VCID-5", summary="Vuln 5")
+
+        self.package1 = Package.objects.create(type="pypi", name="django", version="1.0.0")
+        self.package2 = Package.objects.create(type="pypi", name="django", version="2.0.0")
+        self.package3 = Package.objects.create(type="pypi", name="django", version="3.0.0")
+
+        AffectedByPackageRelatedVulnerability.objects.create(
+            package=self.package1, vulnerability=self.vuln1
+        )
+        AffectedByPackageRelatedVulnerability.objects.create(
+            package=self.package1, vulnerability=self.vuln2
+        )
+        AffectedByPackageRelatedVulnerability.objects.create(
+            package=self.package2, vulnerability=self.vuln3
+        )
+        AffectedByPackageRelatedVulnerability.objects.create(
+            package=self.package2, vulnerability=self.vuln4
+        )
+
+        FixingPackageRelatedVulnerability.objects.create(
+            package=self.package3, vulnerability=self.vuln5
+        )
+
+        self.severity1 = VulnerabilitySeverity.objects.create(
+            scoring_system="CVSSv3",
+            value="9.8",
+            scoring_elements="AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        )
+        self.severity2 = VulnerabilitySeverity.objects.create(
+            scoring_system="CVSSv3",
+            value="7.5",
+            scoring_elements="AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        )
+
+        self.vuln1.severities.add(self.severity1)
+        self.vuln1.severities.add(self.severity2)
+        self.vuln1.save()
+
+    def test_aggregate_fixed_and_affected_packages(self):
+        with self.assertNumQueries(11):
+            start_time = time.time()
+            response = self.client.get(f"/vulnerabilities/{self.vuln1.vulnerability_id}")
+            end_time = time.time()
+            assert end_time - start_time < 0.05
+            self.assertEqual(response.status_code, 200)

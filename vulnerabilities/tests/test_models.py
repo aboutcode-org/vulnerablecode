@@ -8,25 +8,17 @@
 #
 
 import urllib.parse
-from datetime import datetime
 from unittest import TestCase
-from unittest import mock
 
 import pytest
-from django.db import transaction
-from django.db.models.query import QuerySet
-from django.db.utils import IntegrityError
-from freezegun import freeze_time
 from packageurl import PackageURL
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
-from univers.version_range import AlpineLinuxVersionRange
 
 from vulnerabilities import models
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilityQuerySet
 
 
 class TestVulnerabilityModel(TestCase):
@@ -397,7 +389,9 @@ class TestPackageModel(TestCase):
         pypi_package_version = RANGE_CLASS_BY_SCHEMES[pypi_package.type].version_class
         assert pypi_package_version == versions.PypiVersion
 
-        alpine_package = models.Package.objects.create(type="alpine", name="lxml", version="0.9")
+        alpine_package = models.Package.objects.create(
+            type="apk", namespace="alpine", name="lxml", version="0.9"
+        )
         alpine_version = RANGE_CLASS_BY_SCHEMES[alpine_package.type].version_class
         assert alpine_version == versions.AlpineLinuxVersion
 
@@ -423,8 +417,11 @@ class TestPackageModel(TestCase):
             version="3.0.0",
         )
 
-        sorted_pkgs = requesting_package.sort_by_version(vuln_pkg_list)
-        first_sorted_item = sorted_pkgs[0]
+        requesting_package.calculate_version_rank
+
+        sorted_pkgs = Package.objects.filter(package_url__in=list_to_sort)
+
+        sorted_pkgs = list(sorted_pkgs)
 
         assert sorted_pkgs[0].purl == "pkg:npm/sequelize@3.9.1"
         assert sorted_pkgs[-1].purl == "pkg:npm/sequelize@3.40.1"

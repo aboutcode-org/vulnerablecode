@@ -27,7 +27,7 @@ class PaginationFunctionalityTests(TestCase):
             )
 
     def test_default_pagination(self):
-        response = self.client.get(reverse("package_search"))
+        response = self.client.get(reverse("package_search") + "?search=test")
         self.assertEqual(response.status_code, 200)
         page_obj = response.context["page_obj"]
         self.assertIsNotNone(page_obj)
@@ -38,13 +38,13 @@ class PaginationFunctionalityTests(TestCase):
     def test_page_size_variations(self):
         valid_page_sizes = [20, 50, 100]
         for size in valid_page_sizes:
-            url = f"{reverse('package_search')}?page_size={size}"
+            url = f"{reverse('package_search')}?search=test&page_size={size}"
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200)
-            self.assertIn(response.context["current_page_size"], [20, size])
+            self.assertEqual(response.context["current_page_size"], size)
 
     def test_page_navigation(self):
-        response = self.client.get(reverse("package_search"))
+        response = self.client.get(reverse("package_search") + "?search=test")
         first_page = response.context["page_obj"]
         self.assertEqual(first_page.number, 1)
         self.assertTrue(first_page.has_next())
@@ -78,7 +78,7 @@ class PaginationSecurityTests(TestCase):
             "",
         ]
         for input_value in malicious_inputs:
-            url = f"{reverse('package_search')}?page_size={input_value}"
+            url = f"{reverse('package_search')}?search=test&page_size={input_value}"
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.context["current_page_size"], 20)
@@ -93,8 +93,8 @@ class PaginationSecurityTests(TestCase):
         initial_package_count = Package.objects.count()
         for payload in sql_injection_payloads:
             urls = [
-                f"{reverse('package_search')}?page={payload}",
-                f"{reverse('package_search')}?page_size={payload}",
+                f"{reverse('package_search')}?search=test&page={payload}",
+                f"{reverse('package_search')}?search=test&page_size={payload}",
             ]
             for url in urls:
                 response = self.client.get(url)
@@ -114,15 +114,15 @@ class PaginationEdgeCaseTests(TestCase):
             )
 
     def test_small_dataset_pagination(self):
-        response = self.client.get(reverse("package_search"))
+        response = self.client.get(reverse("package_search") + "?search=test")
         self.assertEqual(response.status_code, 200)
         self.assertLessEqual(len(response.context["page_obj"].object_list), 20)
 
     def test_out_of_range_page_number(self):
         out_of_range_urls = [
-            f"{reverse('package_search')}?page=9999",
-            f"{reverse('package_search')}?page=-5",
-            f"{reverse('package_search')}?page=abc",
+            f"{reverse('package_search')}?search=test&page=9999",
+            f"{reverse('package_search')}?search=test&page=-5",
+            f"{reverse('package_search')}?search=test&page=abc",
         ]
         for url in out_of_range_urls:
             response = self.client.get(url)

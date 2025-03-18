@@ -23,10 +23,9 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.templatetags.url_filters import url_quote_filter
+from vulnerabilities.utils import get_purl_version_class
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
-from vulnerabilities.views import get_purl_version_class
-from vulnerabilities.views import purl_sort_key
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DIR = os.path.join(BASE_DIR, "test_data/package_sort")
@@ -59,14 +58,17 @@ class PackageSearchTestCase(TestCase):
             Package.objects.create(**attrs)
 
     def test_packages_search_view_paginator(self):
-        response = self.client.get("/packages/search?type=deb&name=&page=1")
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get("/packages/search?type=deb&name=&page=*")
-        self.assertEqual(response.status_code, 404)
-        response = self.client.get("/packages/search?type=deb&name=&page=")
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get("/packages/search?type=&name=&page=")
-        self.assertEqual(response.status_code, 200)
+        test_cases = [
+            ("/packages/search?type=deb&name=&page=1", 200),
+            ("/packages/search?type=deb&name=&page=*", 200),
+            ("/packages/search?type=deb&name=&page=", 200),
+            ("/packages/search?type=&name=&page=", 200),
+        ]
+        for url, expected_status in test_cases:
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, expected_status)
+            if "*" in url or "&page=" in url:
+                self.assertEqual(response.context["page_obj"].number, 1)
 
     def test_package_view(self):
         qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1.0.15?foo=bar")
@@ -202,12 +204,13 @@ class TestPackageSortTestCase(TestCase):
         for pkg in input_purls:
             real_purl = PackageURL.from_string(pkg)
             attrs = {k: v for k, v in real_purl.to_dict().items() if v}
-            Package.objects.create(**attrs)
+            pkg = Package.objects.create(**attrs)
+            pkg.calculate_version_rank
 
     def test_sorted_queryset(self):
         qs_all = Package.objects.all()
         pkgs_qs_all = list(qs_all)
-        sorted_pkgs_qs_all = sorted(pkgs_qs_all, key=purl_sort_key)
+        sorted_pkgs_qs_all = pkgs_qs_all
 
         pkg_package_urls = [obj.package_url for obj in sorted_pkgs_qs_all]
         sorted_purls = os.path.join(TEST_DIR, "sorted_purls.txt")

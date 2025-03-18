@@ -1,7 +1,7 @@
 import logging
 import re
 
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models.query import QuerySet
 from rest_framework.pagination import PageNumberPagination
 
@@ -18,13 +18,18 @@ class PaginatedListViewMixin:
     A mixin that adds pagination functionality to ListView-based views.
     """
 
-    paginate_by = 20
+    paginate_default = 20
     max_page_size = 100
-    PAGE_SIZE_CHOICES = [
+    page_size_choices = [
         {"value": 20, "label": "20 per page"},
         {"value": 50, "label": "50 per page"},
         {"value": 100, "label": "100 per page"},
     ]
+    
+    max_pages_without_truncation = 5 # it is a value for number of pages without truncation like is total number of pages are less than this number the pagination will show all pages.
+    pages_around_current = 2 # number of pages to be shown around current page
+    truncation_threshold_start = 4 # it is a threshold for start of truncation
+    truncation_threshold_end = 3 # it is a threshold for end of truncation
 
     def get_queryset(self):
         """
@@ -32,32 +37,37 @@ class PaginatedListViewMixin:
         """
         try:
             queryset = super().get_queryset()
-            if not queryset:
-                queryset = self.model.objects.all()
-            if not isinstance(queryset, QuerySet):
-                queryset = self.model.objects.all()
-            return queryset
         except Exception as e:
             logger.error(f"Error in get_queryset: {e}")
-            return self.model.objects.all()
+            return self.model.objects.none()
+        
+        if not queryset or not isinstance(queryset, QuerySet):
+            queryset = self.model.objects.none()
+        return queryset
 
     def sanitize_page_size(self, raw_page_size):
         """
         Sanitize page size input to prevent XSS and injection attempts.
         """
         if not raw_page_size:
-            return self.paginate_by
-        clean_page_size = re.sub(r"\D", "", str(raw_page_size))
+            return self.paginate_default
+            
+        clean_page_size = re.sub(r"\D", "", str(raw_page_size)) # it remove all non-digit characters like if 50abcd is their then it takes out 50
+        if not clean_page_size:
+            return self.paginate_default
+            
         try:
-            page_size = int(clean_page_size) if clean_page_size else self.paginate_by
-            valid_sizes = {choice["value"] for choice in self.PAGE_SIZE_CHOICES}
-            if page_size not in valid_sizes:
-                logger.warning(f"Attempted to use unauthorized page size: {page_size}")
-                return self.paginate_by
-            return page_size
+            page_size = int(clean_page_size)
         except (ValueError, TypeError):
-            logger.info("Empty or invalid page_size input attempted")
-            return self.paginate_by
+            logger.info("Invalid page_size input attempted")
+            return self.paginate_default
+            
+        valid_sizes = {choice["value"] for choice in self.page_size_choices}
+        if page_size not in valid_sizes:
+            logger.warning(f"Attempted to use unauthorized page size: {page_size}")
+            return self.paginate_default
+            
+        return page_size
 
     def get_paginate_by(self, queryset=None):
         """
@@ -72,57 +82,47 @@ class PaginatedListViewMixin:
         """
         num_pages = paginator.num_pages
         current_page = page_obj.number
-        if num_pages <= 7:
-            return list(range(1, num_pages + 1))
-        pages = []
-        pages.append(1)
-        if current_page > 4:
+        if num_pages <= self.max_pages_without_truncation:
+            return list(map(str, range(1, num_pages + 1)))
+        pages = [1]
+        
+        if current_page > self.truncation_threshold_start:
             pages.append("...")
-        start = max(2, current_page - 2)
-        end = min(num_pages - 1, current_page + 2)
+        start = max(2, current_page - self.pages_around_current)
+        end = min(num_pages - 1, current_page + self.pages_around_current)
         pages.extend(range(start, end + 1))
-        if current_page < num_pages - 3:
+        if current_page < num_pages - self.truncation_threshold_end:
             pages.append("...")
         if num_pages > 1:
             pages.append(num_pages)
-        return [str(p) for p in pages]
+        return list(map(str, pages))
 
     def paginate_queryset(self, queryset, page_size):
-        """
-        Robust pagination with comprehensive error handling
-        """
+        if not queryset:
+            queryset = self.model.objects.none()
+        paginator = Paginator(queryset, page_size)
         try:
-            if not queryset or queryset.count() == 0:
-                queryset = self.model.objects.all()
-            paginator = Paginator(queryset, page_size)
-            page_params = self.request.GET.getlist("page")
-            page_number = page_params[-1] if page_params else "1"
-            try:
-                page_number = int(re.sub(r"\D", "", str(page_number)))
-                if not page_number:
-                    page_number = 1
-            except (ValueError, TypeError):
-                page_number = 1
-            page_number = max(1, min(page_number, paginator.num_pages))
+            page_number = int(self.request.GET.get("page", "1")) 
+        except (ValueError, TypeError):
+            logger.error("Invalid page number input")
+            page_number = 1
+        page_number = max(1, min(page_number, paginator.num_pages))
+        try:
             page = paginator.page(page_number)
-            return (paginator, page, page.object_list, page.has_other_pages())
-        except Exception as e:
-            logger.error(f"Pagination error: {e}")
-            queryset = self.model.objects.all()
-            paginator = Paginator(queryset, page_size)
+        except (EmptyPage, PageNotAnInteger) as e:
+            logger.error(f"Specific pagination error: {e}")
             page = paginator.page(1)
-            return (paginator, page, page.object_list, page.has_other_pages())
+        return (paginator, page, page.object_list, page.has_other_pages())
 
     def get_context_data(self, **kwargs):
         """
         Return a mapping of pagination-related context data, preserving filters.
         """
-        queryset = self.get_queryset()
+        queryset = kwargs.pop('queryset', None) or self.get_queryset()
         page_size = self.get_paginate_by()
         paginator, page, object_list, is_paginated = self.paginate_queryset(queryset, page_size)
         page_range = self.get_page_range(paginator, page)
 
-        search = self.request.GET.get("search", "")
 
         context = super().get_context_data(
             object_list=object_list,
@@ -132,15 +132,16 @@ class PaginatedListViewMixin:
             **kwargs,
         )
 
-        context.update(
-            {
-                "current_page_size": page_size,
-                "page_size_choices": self.PAGE_SIZE_CHOICES,
-                "total_count": paginator.count,
-                "page_range": page_range,
-                "search": search,
-                "previous_page_url": page.previous_page_number() if page.has_previous() else None,
-                "next_page_url": page.next_page_number() if page.has_next() else None,
-            }
+        previous_page_url = page.previous_page_number() if page.has_previous() else None
+        next_page_url = page.next_page_number() if page.has_next() else None
+        context.update({
+            "current_page_size": page_size,
+            "page_size_choices": self.page_size_choices,
+            "total_count": paginator.count,
+            "page_range": page_range,
+            "search": self.request.GET.get("search", ""),
+            "previous_page_url": previous_page_url,
+            "next_page_url": next_page_url,
+        }
         )
         return context

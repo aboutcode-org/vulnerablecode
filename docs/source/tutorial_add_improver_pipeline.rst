@@ -24,15 +24,16 @@ functions. The pipeline provides an easy and effective way to log events inside 
 automatically handles rendering and dissemination for these logs).
 
 It also includes a built-in progress indicator, which is essential since some of the jobs we run
-in the pipeline are long-running tasks that require proper progress indicators. The pipeline provides
-a way to seamlessly record the progress (it automatically takes care of rendering and dissemination
-of this progress).
+in the pipeline are long-running tasks that require proper progress indicators. The pipeline
+provides a way to seamlessly record the progress (it automatically takes care of rendering
+and dissemination of this progress).
 
 Additionally, the pipeline offers a consistent structure, making it easy to run these pipeline steps
 with a message queue like RQ and store all events related to a particular pipeline for
 debugging or improvements.
 
-This tutorial contains all the information one should know to quickly implement an improver pipeline.
+This tutorial contains all the information one should know to quickly implement an improver
+pipeline.
 
 
 Prerequisites
@@ -99,7 +100,8 @@ can be found at `ScanCode LicenseDB <https://scancode-licensedb.aboutcode.org/>`
 Add skeleton for new pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In this scenario pipeline needs to do two things, fetch raw data and use that to flag those packages.
+In this scenario pipeline needs to do two things, fetch raw data and use that to flag those
+packages.
 
 At this point improver will look like this:
 

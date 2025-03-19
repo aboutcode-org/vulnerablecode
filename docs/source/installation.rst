@@ -80,7 +80,7 @@ to run on a different port than 8000.
 
 .. warning::
 
-   Serving VulnerableCode on a network could lead to security issues and 
+   Serving VulnerableCode on a network could lead to security issues and
    several steps may be needed to secure such a deployment.
    Currently, this is not recommended.
 

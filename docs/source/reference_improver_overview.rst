@@ -27,8 +27,8 @@ An ``Inference`` is more explicit than an ``Advisory`` and is able to answer que
 package A vulnerable to Vulnerability B ?". Of course, there is some confidence attached to the
 answer, which could also be ``MAX_CONFIDENCE`` in certain cases.
 
-The possibilities with improvers are endless; they are not restricted to taking one approach. Features
-like *Time Travel* and *finding fix commits* could be implemented as well.
+The possibilities with improvers are endless; they are not restricted to taking one approach.
+Features like *Time Travel* and *finding fix commits* could be implemented as well.
 
 You can find more in-code documentation about improvers in :file:`vulnerabilites/improver.py` and
 the framework responsible for invoking these improvers in :file:`vulnerabilites/improve_runner.py`.

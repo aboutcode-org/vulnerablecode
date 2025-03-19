@@ -93,7 +93,7 @@ Writing an Importer Pipeline
 
 
 Create a file for the new importer pipeline
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All pipelines, including the importer pipeline, are located in the
 `vulnerabilities/pipelines/

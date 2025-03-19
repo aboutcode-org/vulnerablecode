@@ -74,7 +74,7 @@ ghost packages.
 
 
 Create a file for the new improver pipeline
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All pipelines, including the improver pipeline, are located in the
 `vulnerabilities/pipelines/

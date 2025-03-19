@@ -29,6 +29,8 @@ class TestCVEAdvisoryMappingPipeline(TestCase):
                         }
                     ],
                     "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-1234",
+                    "reference_id": "CVE-2024-1234",
+                    "reference_type": "cve",
                 }
             ],
             date_collected="2024-09-27T19:38:00Z",

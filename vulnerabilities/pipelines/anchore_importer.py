@@ -71,9 +71,7 @@ class AnchoreImporterPipeline(VulnerableCodeBaseImporterPipeline):
             fixed_version=fixed_version,
         )
 
-        references = [
-            Reference(url=url) for url in raw_data.get("references", []) if url
-        ]
+        references = [Reference(url=url) for url in raw_data.get("references", []) if url]
         date_published = (
             datetime.strptime(raw_data["published_date"], "%Y-%m-%d")
             if raw_data.get("published_date")

@@ -78,7 +78,7 @@ IMPORTERS_REGISTRY = [
     nvd_importer.NVDImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
     alpine_linux_importer.AlpineLinuxImporterPipeline,
-    anchore_importer.AnchoreImporterPipeline,  # Updated to follow the consistent style
+    anchore_importer.AnchoreImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

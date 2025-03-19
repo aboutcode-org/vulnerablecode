@@ -9,34 +9,34 @@ TL;DR
 
 #. Create a new file ``{name}_importer.py`` inside **vulnerabilities/pipelines/**.
 #. Create a new importer pipeline by inheriting **VulnerableCodeBaseImporterPipeline**
-   defined in **vulnerabilities.pipelines**. By convention the importer pipeline
+   defined in **vulnerabilities.pipelines**. By convention, the importer pipeline
    class should end with **ImporterPipeline**.
-#. Specify the license of upstream data being imported.
+#. Specify the license of the upstream data being imported.
 #. Implement the ``advisories_count`` and ``collect_advisories`` methods.
 #. Add the newly created importer pipeline to the importers registry at
-   **vulnerabilities/importers/__init__.py**
+   **vulnerabilities/importers/__init__.py**.
 
 
 Pipeline
 --------
 
 We use `aboutcode.pipeline <https://github.com/aboutcode-org/scancode.io/tree/main/aboutcode/pipeline>`_
-for importing and improving data. At a very high level, a working pipeline contains classmethod
+for importing and improving data. At a very high level, a working pipeline contains a classmethod
 ``steps`` that defines what steps to run and in what order. These steps are essentially just
-functions. Pipeline provides an easy and effective way to log events inside these steps (it
-automatically handles rendering and dissemination for these logs.)
+functions. The pipeline provides an easy and effective way to log events inside these steps (it
+automatically handles rendering and dissemination for these logs).
 
-It also includes built-in progress indicator, which is essential since some of the jobs we run
-in the pipeline are long-running tasks that require proper progress indicators. Pipeline provides
-way to seamlessly records the progress (it automatically takes care of rendering and dissemination
-of these progress).
+It also includes a built-in progress indicator, which is essential since some of the jobs we run
+in the pipeline are long-running tasks that require proper progress indicators. The pipeline provides
+a way to seamlessly record the progress (it automatically takes care of rendering and dissemination
+of this progress).
 
 Additionally, the pipeline offers a consistent structure, making it easy to run these pipeline steps
-with message queue like RQ and store all events related to a particular pipeline for
-debugging/improvements.
+with a message queue like RQ and store all events related to a particular pipeline for
+debugging or improvements.
 
-This tutorial contains all the things one should know to quickly implement an importer pipeline.
-Many internal details about importer pipeline can be found inside the
+This tutorial contains all the information one should know to quickly implement an importer pipeline.
+Many internal details about the importer pipeline can be found inside the
 `vulnerabilities/pipelines/__init__.py
 <https://github.com/aboutcode-org/vulnerablecode/blob/main/vulnerabilities/pipelines/__init__.py>`_ file.
 
@@ -46,7 +46,7 @@ Many internal details about importer pipeline can be found inside the
 Prerequisites
 --------------
 
-Before writing pipeline to import advisories, it is important to familiarize yourself with
+Before writing a pipeline to import advisories, it is important to familiarize yourself with
 the following concepts.
 
 PackageURL
@@ -69,7 +69,7 @@ AdvisoryData
 
 ``AdvisoryData`` is an intermediate data format:
 it is expected that your importer will convert the raw scraped data into ``AdvisoryData`` objects.
-All the fields in ``AdvisoryData`` dataclass are optional; it is the importer's responsibility to
+All the fields in the ``AdvisoryData`` dataclass are optional; it is the importer's responsibility to
 ensure that it contains meaningful information about a vulnerability.
 
 AffectedPackage
@@ -84,7 +84,7 @@ Univers
 
 `univers <https://github.com/aboutcode-org/univers>`_ is a Python implementation of the `vers specification <https://github.com/package-url/purl-spec/pull/139>`_.
 It can parse and compare all the package versions and all the ranges,
-from debian, npm, pypi, ruby and more.
+from Debian, npm, PyPI, Ruby, and more.
 It processes all the version range specs and expressions.
 
 
@@ -92,7 +92,7 @@ Writing an Importer Pipeline
 -----------------------------
 
 
-Create file for the new importer pipeline
+Create a file for the new importer pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All pipelines, including the importer pipeline, are located in the
@@ -110,7 +110,7 @@ parsing it to create proper **AdvisoryData** objects.
 Specify the importer license
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The pipeline scrape data off the internet.  In order to make sure the data is useable, a license
+The pipeline scrapes data off the internet.  In order to make sure the data is usable, a license
 must be provided.
 
 Populate the ``spdx_license_expression`` with the appropriate value. The SPDX license identifiers
@@ -145,7 +145,7 @@ Implement the ``collect_advisories`` method
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``collect_advisories`` method collects and parses the advisories from the data source and
-yield an *AdvisoryData*.
+yields an *AdvisoryData* object.
 
 At this point, an example importer will look like this:
 

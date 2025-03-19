@@ -9,8 +9,8 @@ TL;DR
 #. Create a new file ``{improver_name}.py`` inside **vulnerabilities/pipelines/**.
 #. Create a new improver pipeline by inheriting **VulnerableCodePipeline** defined
    in **vulnerabilities.pipelines**.
-#. Implement ``steps`` **classmethod** to define what function to run and in which order.
-#. Implement the individual function defined in ``steps``
+#. Implement the ``steps`` **classmethod** to define what functions to run and in which order.
+#. Implement the individual function defined in ``steps``.
 #. Add the newly created pipeline to the improvers registry at
    **vulnerabilities/improvers/__init__.py**.
 
@@ -18,21 +18,21 @@ Pipeline
 --------
 
 We use `aboutcode.pipeline <https://github.com/aboutcode-org/scancode.io/tree/main/aboutcode/pipeline>`_
-for importing and improving data. At a very high level, a working pipeline contains classmethod
+for importing and improving data. At a very high level, a working pipeline contains a classmethod
 ``steps`` that defines what steps to run and in what order. These steps are essentially just
-functions. Pipeline provides an easy and effective way to log events inside these steps (it
-automatically handles rendering and dissemination for these logs.)
+functions. The pipeline provides an easy and effective way to log events inside these steps (it
+automatically handles rendering and dissemination for these logs).
 
-It also includes built-in progress indicator, which is essential since some of the jobs we run
-in the pipeline are long-running tasks that require proper progress indicators. Pipeline provides
-way to seamlessly records the progress (it automatically takes care of rendering and dissemination
-of these progress).
+It also includes a built-in progress indicator, which is essential since some of the jobs we run
+in the pipeline are long-running tasks that require proper progress indicators. The pipeline provides
+a way to seamlessly record the progress (it automatically takes care of rendering and dissemination
+of this progress).
 
 Additionally, the pipeline offers a consistent structure, making it easy to run these pipeline steps
-with message queue like RQ and store all events related to a particular pipeline for
-debugging/improvements.
+with a message queue like RQ and store all events related to a particular pipeline for
+debugging or improvements.
 
-This tutorial contains all the things one should know to quickly implement an improver pipeline.
+This tutorial contains all the information one should know to quickly implement an improver pipeline.
 
 
 Prerequisites
@@ -57,23 +57,23 @@ Some of those are:
 
 
 So you see, the new improver pipeline is very powerful in what you can achieve, but as always, with
-great power comes great responsibility. By design, the new improver are unconstrained, and you must
+great power comes great responsibility. By design, the new improver is unconstrained, and you must
 be absolutely sure of what you're doing and should have robust tests for these pipelines in place.
 
 
 Writing an Improver Pipeline
 -----------------------------
 
-**Scenario:** Suppose we come around a source that curates and stores the list of packages that
+**Scenario:** Suppose we come across a source that curates and stores the list of packages that
 don't exist upstream and makes it available through the REST API endpoint
 https://example.org/api/non-existent-packages, which gives a JSON response with a list of
 non-existent packages.
 
-Let's write a pipeline that will use this source to flag these non-existent package as
-ghost package.
+Let's write a pipeline that will use this source to flag these non-existent packages as
+ghost packages.
 
 
-Create file for the new improver pipeline
+Create a file for the new improver pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 All pipelines, including the improver pipeline, are located in the
@@ -99,7 +99,7 @@ can be found at `ScanCode LicenseDB <https://scancode-licensedb.aboutcode.org/>`
 Add skeleton for new pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In this scenario pipeline needs to do two thing fetch raw data and use that to flag those packages.
+In this scenario pipeline needs to do two things, fetch raw data and use that to flag those packages.
 
 At this point improver will look like this:
 

@@ -23,6 +23,8 @@ from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from rest_framework import serializers
+from rest_framework import viewsets
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 
@@ -36,6 +38,41 @@ from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
+
+
+class CodeFixSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CodeFix
+        fields = [
+            "uuid",
+            "vulnerability",
+            "package",
+            "commit_hash",
+            "commit_url",
+            "patch_url",
+            "description",
+            "created_date",
+            "modified_date",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["uuid", "created_at", "updated_at"]
+
+
+class CodeFixViewSet(viewsets.ModelViewSet):
+    lookup_field = "uuid"  # This sets the UUID as the lookup parameter
+    queryset = models.CodeFix.objects.all().order_by("-updated_at")
+    serializer_class = CodeFixSerializer
+    filterset_fields = {
+        "vulnerability": ["exact"],
+        "package": ["exact"],
+        "created_date": ["gte", "lte"],
+    }
+    search_fields = [
+        "vulnerability__vulnerability_id",
+        "package__purl",
+        "description",
+    ]
 
 
 class PackageSearch(ListView):

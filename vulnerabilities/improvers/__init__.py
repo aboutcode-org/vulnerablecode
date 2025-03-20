@@ -11,6 +11,7 @@ from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipelines import add_cvss31_to_CVEs
+from vulnerabilities.pipelines import check_mitre_api
 from vulnerabilities.pipelines import collect_commits
 from vulnerabilities.pipelines import compute_package_risk
 from vulnerabilities.pipelines import compute_package_version_rank
@@ -47,6 +48,7 @@ IMPROVERS_REGISTRY = [
     collect_commits.CollectFixCommitsPipeline,
     add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
     remove_duplicate_advisories.RemoveDuplicateAdvisoriesPipeline,
+    check_mitre_api.DetectNonExistentCvesPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

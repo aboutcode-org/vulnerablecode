@@ -1,4 +1,3 @@
-# tests/test_models.py
 from datetime import timedelta
 
 import pytest
@@ -15,13 +14,13 @@ User = get_user_model()
 @pytest.mark.django_db
 def test_expiring_token_creation():
     """
-    Test that an ExpiringToken is created with an expiration date.
+    Test tha ExpiringToken is created with an expiration date
     """
     user = User.objects.create_user(username="testuser", email="test@example.com")
     token, created = ExpiringToken.get_or_create(user=user)
 
-    # Debugging: Print the token and its expiration date 30days from today
-    print(f"Token: {token.key}, Expires: {token.expires}")
+    #token and its expiration date 30days from today
+    #print(f"Token: {token.key}, Expires: {token.expires}")
 
     assert created is True
     assert token.expires > timezone.now()
@@ -30,41 +29,41 @@ def test_expiring_token_creation():
 @pytest.mark.django_db
 def test_expiring_token_is_expired():
     """
-    Test that the is_expired method works correctly.
+    Test that is_expired method
     """
     user = User.objects.create_user(username="testuser", email="test@example.com")
     token = ExpiringToken.objects.create(user=user, expires=timezone.now() - timedelta(days=1))
-    # Debugging: Print the token and its expiration date,yesterday
+    # token and its expiration date,yesterday
     # print(f"Token: {token.key}, Expires: {token.expires}")
 
-    assert token.is_expired() is True
+    assert token.is_expired() is True #expired
 
 
 @pytest.mark.django_db
 def test_expiring_token_is_not_expired():
     """
-    Test that the is_expired method returns False for a non-expired token.
+    Test the is_expired method for a non-expired token
     """
     user = User.objects.create_user(username="testuser", email="test@example.com")
     token = ExpiringToken.objects.create(user=user, expires=timezone.now() + timedelta(days=1))
 
-    # Debugging: Print the token and its expiration date,tomorrow
+    #token and its expiration date,tomorrow
     # print(f"Token: {token.key}, Expires: {token.expires}")
 
-    assert token.is_expired() is False
+    assert token.is_expired() is False #not expired
 
 
 @pytest.mark.django_db
 def test_expiring_token_authentication_valid():
     """
-    Test that a valid token authenticates the user.
+    Test that a valid token authenticates the user
     """
     user = User.objects.create_user(username="testuser", email="test@example.com")
     token = ExpiringToken.objects.create(user=user, expires=timezone.now() + timedelta(days=1))
 
     auth = ExpiringTokenAuthentication()
     authenticated_user, authenticated_token = auth.authenticate_credentials(token.key)
-    # Debugging
+
     # print(f'Authenticated User:{authenticated_user} and Authenticated Token:{authenticated_token}')
 
     assert authenticated_user == user
@@ -74,7 +73,7 @@ def test_expiring_token_authentication_valid():
 @pytest.mark.django_db
 def test_expiring_token_authentication_expired():
     """
-    Test that an expired token raises an AuthenticationFailed error.
+    Test that an expired token raises an AuthenticationFailed error
     """
     user = User.objects.create_user(username="testuser", email="test@example.com")
     token = ExpiringToken.objects.create(user=user, expires=timezone.now() - timedelta(days=1))
@@ -88,7 +87,7 @@ def test_expiring_token_authentication_expired():
 @pytest.mark.django_db
 def test_expiring_token_authentication_invalid():
     """
-    Test that an invalid token raises an AuthenticationFailed error.
+    Test that an invalid/non-existin token raises an AuthenticationFailed error
     """
     auth = ExpiringTokenAuthentication()
 

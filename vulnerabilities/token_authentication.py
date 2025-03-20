@@ -9,13 +9,13 @@ class ExpiringTokenAuthentication(TokenAuthentication):
 
     def authenticate_credentials(self, key):
         try:
-            # Try to fetch the token from the database
+            #try to fetch the token
             user, token = super().authenticate_credentials(key)
         except self.model.DoesNotExist:
-            # If the token does not exist, raise an AuthenticationFailed exception
+            #if the token does not exist/invalid
             raise exceptions.AuthenticationFailed("Invalid token")
 
         if token.is_expired():
-            # If the token has expired raise exception
+            #if the token has expired
             raise exceptions.AuthenticationFailed("Token has expired")
         return user, token

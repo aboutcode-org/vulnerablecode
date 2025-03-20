@@ -144,9 +144,9 @@ API endpoints reference
 
 There are two primary endpoints:
 
-- packages/: this is the main endpoint where you can lookup vulnerabilities by package.
+- packages/: this is the main endpoint where you can look up vulnerabilities by package.
 
-- vulnerabilities/: to lookup by vulnerabilities
+- vulnerabilities/: to look up by vulnerabilities
 
 And two secondary endpoints, used to query vulnerability aliases (such as CVEs)
 and vulnerability by CPEs: cpes/ and aliases/

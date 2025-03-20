@@ -37,6 +37,7 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import alpine_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
+from vulnerabilities.pipelines import misp_importer
 from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
@@ -78,6 +79,7 @@ IMPORTERS_REGISTRY = [
     nvd_importer.NVDImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
     alpine_linux_importer.AlpineLinuxImporterPipeline,
+    misp_importer.MISPImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

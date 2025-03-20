@@ -9,6 +9,8 @@
 
 from django import forms
 from django.core.validators import validate_email
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Checkbox
 
 from vulnerabilities.models import ApiUser
 
@@ -37,6 +39,10 @@ class ApiUserCreationForm(forms.ModelForm):
     """
     Support a simplified creation for API-only users directly from the UI.
     """
+
+    captcha = ReCaptchaField(
+        error_messages={"required": ("Captcha is required")}, widget=ReCaptchaV2Checkbox
+    )
 
     class Meta:
         model = ApiUser

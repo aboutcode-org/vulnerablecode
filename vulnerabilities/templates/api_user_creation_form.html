@@ -14,11 +14,17 @@ VulnerableCode API key request
         </article>
       {% endfor %}
       <div id="form-errors" class="message is-danger {% if not form.errors %}is-hidden{% endif %}">
-        {% for field_name, errors in form.errors.items %}
+        {% if form.errors.captcha %}
         <div class="message-body">
-          {{ errors }}
+            {{ form.errors.captcha }}
         </div>
-        {% endfor %}
+        {% else %}
+        <div class="message-body">
+            {% for error in form.errors.values %}
+                {{ error }}
+            {% endfor %}
+        </div>
+        {% endif %}
       </div>
     <h2 class="subtitle mb-0 pt-2 mb-2">
       <b>VulnerableCode API key request</b>

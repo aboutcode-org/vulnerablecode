@@ -54,7 +54,7 @@ ipython==8.10.0
 isort==5.10.1
 itypes==1.2.0
 jedi==0.18.1
-Jinja2==3.1.5
+Jinja2==3.1.6
 jsonschema==3.2.0
 license-expression==30.3.1
 lxml==4.9.1

@@ -10,6 +10,7 @@
 import bisect
 import csv
 import dataclasses
+import hashlib
 import json
 import logging
 import os
@@ -30,6 +31,8 @@ import requests
 import saneyaml
 import toml
 import urllib3
+from cwe2.database import Database
+from cwe2.database import InvalidCWEError
 from packageurl import PackageURL
 from packageurl.contrib.django.utils import without_empty_values
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
@@ -44,6 +47,7 @@ logger = logging.getLogger(__name__)
 cve_regex = re.compile(r"CVE-[0-9]{4}-[0-9]{4,19}", re.IGNORECASE)
 is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
+cwe_regex = r"CWE-\d+"
 
 
 # Store the last request time for each domain
@@ -443,6 +447,29 @@ def get_cwe_id(cwe_string: str) -> int:
     return int(cwe_id)
 
 
+def create_weaknesses_list(cwe_strings: str):
+    """
+    Convert the CWE string to CWE ids and store them to weaknesses list.
+    >>> create_weaknesses_list(["CWE-125","CWE-379"])
+    [125, 379]
+    """
+    weaknesses = []
+    db = Database()
+    for cwe_string in cwe_strings:
+        if not cwe_string:
+            continue
+        cwe_id = get_cwe_id(cwe_string)
+        if not cwe_id:
+            logger.error("Invalid CWE id: No CWE ID found")
+            continue
+        try:
+            db.get(cwe_id)
+            weaknesses.append(cwe_id)
+        except InvalidCWEError as e:
+            logger.error(f"Error: {e}")
+    return weaknesses
+
+
 def clean_nginx_git_tag(tag):
     """
     Return a cleaned ``version`` string from an nginx git tag.
@@ -589,3 +616,58 @@ def get_purl_version_class(purl):
     if check_version_class:
         purl_version_class = check_version_class.version_class
     return purl_version_class
+
+
+def normalize_text(text):
+    """Normalize text by removing whitespace and converting to lowercase."""
+    return "".join(text.split()).lower() if text else ""
+
+
+def normalize_list(lst):
+    """Sort a list to ensure consistent ordering."""
+    return sorted(lst) if lst else []
+
+
+def compute_content_id(advisory_data, include_metadata=False):
+    """
+    Compute a unique content_id for an advisory by normalizing its data and hashing it.
+
+    :param advisory_data: An AdvisoryData object
+    :param include_metadata: Boolean indicating whether to include `created_by` and `url`
+    :return: SHA-256 hash digest as content_id
+    """
+
+    # Normalize fields
+    from vulnerabilities.importer import AdvisoryData
+    from vulnerabilities.models import Advisory
+
+    if isinstance(advisory_data, Advisory):
+        normalized_data = {
+            "aliases": normalize_list(advisory_data.aliases),
+            "summary": normalize_text(advisory_data.summary),
+            "affected_packages": [
+                pkg for pkg in normalize_list(advisory_data.affected_packages) if pkg
+            ],
+            "references": [ref for ref in normalize_list(advisory_data.references) if ref],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+        }
+        normalized_data["url"] = advisory_data.url
+
+    elif isinstance(advisory_data, AdvisoryData):
+        normalized_data = {
+            "aliases": normalize_list(advisory_data.aliases),
+            "summary": normalize_text(advisory_data.summary),
+            "affected_packages": [
+                pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+            ],
+            "references": [
+                ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
+            ],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+        }
+        normalized_data["url"] = advisory_data.url
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+
+    return content_id

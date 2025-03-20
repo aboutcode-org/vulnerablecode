@@ -14,6 +14,7 @@ import json
 import logging
 import os
 import re
+import time
 import urllib.request
 from collections import defaultdict
 from functools import total_ordering
@@ -47,6 +48,42 @@ is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
 cwe_regex = r"CWE-\d+"
 
+# store the last request time for each domain
+last_request_times = {}
+
+
+def polite_requests(url, method="GET", headers=None, data=None, delay=1, max_retries=3):
+    """
+    Make an API request while enforcing politeness (delays, retries, logging).
+
+    - Enforces a delay between requests to the same API.
+    - Retries if a request fails due to rate limits (429 Too Many Requests).
+    - Logs requests for debugging.
+    """
+    global last_request_times
+    domain = url.split("/")[2]
+    last_time = last_request_times.get(domain, 0)
+    elapsed_time = time.time() - last_time
+
+    # enforce a delay before making a requests
+    if elapsed_time < delay:
+        time.sleep(delay - elapsed_time)
+
+    for attempt in range(max_retries):
+        try:
+            response = requests.request(method, url, headers=headers, data=data)
+            if response.status_code == 429:
+                retry_after = int(response.headers.get("Retry-After", delay))
+                logging.warning(f"Rate limited! Retrying after {retry_after} seconds.")
+                time.sleep(retry_after)
+                continue  # retry again
+            last_request_times[domain] = time.time()
+            return response
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Request failed: {e}")
+            time.sleep(2**attempt)
+    raise Exception(f"Failed to fetch data from {url!r} after {max_retries} attempts.")
+
 
 @dataclasses.dataclass(order=True, frozen=True)
 class AffectedPackage:
@@ -70,7 +107,7 @@ def load_toml(path):
 
 
 def fetch_yaml(url):
-    response = requests.get(url)
+    response = polite_requests(url)
     return saneyaml.load(response.content)
 
 
@@ -265,7 +302,7 @@ def _get_gh_response(gh_token, graphql_query):
     """
     endpoint = "https://api.github.com/graphql"
     headers = {"Authorization": f"bearer {gh_token}"}
-    return requests.post(endpoint, headers=headers, json=graphql_query).json()
+    return polite_requests(endpoint, headers=headers, json=graphql_query).json()
 
 
 def dedupe(original: List) -> List:
@@ -365,7 +402,7 @@ def fetch_response(url):
     """
     Fetch and return `response` from the `url`
     """
-    response = requests.get(url)
+    response = polite_requests(url)
     if response.status_code == HTTPStatus.OK:
         return response
     raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
@@ -388,7 +425,7 @@ def plain_purl(purl):
 
 
 def fetch_and_read_from_csv(url):
-    response = urllib.request.urlopen(url)
+    response = polite_requests(url)
     lines = [l.decode("utf-8") for l in response.readlines()]
     return csv.reader(lines)
 

@@ -42,6 +42,7 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines import sudo_importer
 
 IMPORTERS_REGISTRY = [
     openssl.OpensslImporter,
@@ -78,6 +79,7 @@ IMPORTERS_REGISTRY = [
     nvd_importer.NVDImporterPipeline,
     pysec_importer.PyPIImporterPipeline,
     alpine_linux_importer.AlpineLinuxImporterPipeline,
+    sudo_importer.SUDOImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

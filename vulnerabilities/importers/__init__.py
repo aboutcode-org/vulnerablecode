@@ -21,7 +21,6 @@ from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github_osv
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
-from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
 from vulnerabilities.importers import project_kb_msr2019
@@ -40,11 +39,12 @@ from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
+from vulnerabilities.pipelines import openssl_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
 
 IMPORTERS_REGISTRY = [
-    openssl.OpensslImporter,
+    openssl_importer.OpenSSLImporterPipeline,
     redhat.RedhatImporter,
     debian.DebianImporter,
     postgresql.PostgreSQLImporter,

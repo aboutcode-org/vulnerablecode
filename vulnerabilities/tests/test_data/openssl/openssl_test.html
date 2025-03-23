@@ -1,0 +1,152 @@
+<html>
+    <h2 id="2025">2025</h2>
+    <h3 id="CVE-2024-12797">
+        <a href="#CVE-2024-12797">CVE-2024-12797</a>
+    </h3>
+    <dl>
+
+
+
+        <dt>Severity</dt>
+        <dd>High</dd>
+      
+        <dt>Published at</dt>
+        <dd>11 February 2025</dd>
+      
+        <dt>Title</dt>
+        <dd>RFC7250 handshakes with unauthenticated servers don't abort as expected</dd>
+      
+      
+      
+      
+        <dt>Found by</dt>
+        <dd>Apple Inc.</dd>
+      
+      
+      
+        <dt>Fix developed by</dt>
+        <dd>Viktor Dukhovni</dd>
+      
+      
+        <dt>Affected</dt>
+        <dd>
+          <ul>
+          
+          
+            <li>from 3.4.0 before 3.4.1 </li>
+          
+            <li>from 3.3.0 before 3.3.3 </li>
+          
+            <li>from 3.2.0 before 3.2.4 </li>
+          
+          </ul>          
+        </dd>
+        <dt>References</dt>
+        <dd>
+          <ul>
+            <li><a href="https://www.cve.org/CVERecord?id=CVE-2024-12797" target="_blank">CVE Record</a></li>
+          
+            <li><a href="https://openssl-library.org/news/secadv/20250211.txt" target="_blank">OpenSSL Advisory</a></li>
+          
+            <li><a href="https://github.com/openssl/openssl/commit/738d4f9fdeaad57660dcba50a619fafced3fd5e9" target="_blank">3.4.1 git commit</a></li>
+          
+            <li><a href="https://github.com/openssl/openssl/commit/87ebd203feffcf92ad5889df92f90bb0ee10a699" target="_blank">3.3.3 git commit</a></li>
+          
+            <li><a href="https://github.com/openssl/openssl/commit/798779d43494549b611233f92652f0da5328fbe7" target="_blank">3.2.4 git commit</a></li>
+          
+          </ul>
+        </dd>
+    </dl>
+    <p>Issue summary: Clients using RFC7250 Raw Public Keys (RPKs) to authenticate a server may fail to notice that the server was not authenticated, because handshakes don’t abort as expected when the SSL_VERIFY_PEER verification mode is set.</p>
+    <p>Impact summary: TLS and DTLS connections using raw public keys may be vulnerable to man-in-middle attacks when server authentication failure is not detected by clients.</p>
+    <p>RPKs are disabled by default in both TLS clients and TLS servers.  The issue only arises when TLS clients explicitly enable RPK use by the server, and the server, likewise, enables sending of an RPK instead of an X.509 certificate chain.  The affected clients are those that then rely on the handshake to fail when the server’s RPK fails to match one of the expected public keys, by setting the verification mode to SSL_VERIFY_PEER.</p>
+    <p>Clients that enable server-side raw public keys can still find out that raw public key verification failed by calling SSL_get_verify_result(), and those that do, and take appropriate action, are not affected.  This issue was introduced in the initial implementation of RPK support in OpenSSL 3.2.</p>
+    <p>The FIPS modules in 3.4, 3.3, 3.2, 3.1 and 3.0 are not affected by this issue.</p>
+
+    <h3 id="CVE-2024-13176">
+        <a href="#CVE-2024-13176">CVE-2024-13176</a>
+    </h3>
+    <dl>
+
+
+
+        <dt>Severity</dt>
+        <dd>Low</dd>
+      
+        <dt>Published at</dt>
+        <dd>20 January 2025</dd>
+      
+        <dt>Title</dt>
+        <dd>Timing side-channel in ECDSA signature computation</dd>
+      
+      
+      
+      
+        <dt>Found by</dt>
+        <dd>George Pantelakis (Red Hat)</dd>
+      
+      
+      
+        <dt>Fix developed by</dt>
+        <dd>Tomáš Mráz</dd>
+      
+      
+        <dt>Affected</dt>
+        <dd>
+          <ul>
+          
+          
+            <li>from 3.4.0 before 3.4.1 </li>
+          
+            <li>from 3.3.0 before 3.3.3 </li>
+          
+            <li>from 3.2.0 before 3.2.4 </li>
+          
+            <li>from 3.1.0 before 3.1.8 </li>
+          
+            <li>from 3.0.0 before 3.0.16 </li>
+          
+            <li>from 1.1.1 before 1.1.1zb </li>
+          
+            <li>from 1.0.2 before 1.0.2zl </li>
+          
+          </ul>          
+        </dd>
+        <dt>References</dt>
+        <dd>
+          <ul>
+            <li><a href="https://www.cve.org/CVERecord?id=CVE-2024-13176" target="_blank">CVE Record</a></li>
+          
+            <li><a href="https://openssl-library.org/news/secadv/20250120.txt" target="_blank">OpenSSL Advisory</a></li>
+          
+            <li><a href="https://github.com/openssl/openssl/commit/77c608f4c8857e63e98e66444e2e761c9627916f" target="_blank">3.3.4 git commit</a></li>
+          
+            <li><a href="https://github.com/openssl/openssl/commit/392dcb336405a0c94486aa6655057f59fd3a0902" target="_blank">3.3.3 git commit</a></li>
+          
+            <li><a href="https://github.com/openssl/openssl/commit/4b1cb94a734a7d4ec363ac0a215a25c181e11f65" target="_blank">3.2.4 git commit</a></li>
+          
+            <li><a href="https://github.com/openssl/openssl/commit/2af62e74fb59bc469506bc37eb2990ea408d9467" target="_blank">3.1.8 git commit</a></li>
+          
+            <li><a href="https://github.com/openssl/openssl/commit/07272b05b04836a762b4baa874958af51d513844" target="_blank">3.0.16 git commit</a></li>
+          
+            <li><a href="https://github.openssl.org/openssl/extended-releases/commit/a2639000db19878d5d89586ae7b725080592ae86" target="_blank">1.1.1zb git commit</a></li>
+          
+            <li><a href="https://github.openssl.org/openssl/extended-releases/commit/0d5fd1ab987f7571e2c955d8d8b638fc0fb54ded" target="_blank">1.0.2zl git commit</a></li>
+          
+          </ul>
+        </dd>
+    </dl>
+    <p>Issue summary: A timing side-channel which could potentially allow recovering the private key exists in the ECDSA signature computation.</p>
+    <p>Impact summary: A timing side-channel in ECDSA signature computations
+        could allow recovering the private key by an attacker. However, measuring
+        the timing would require either local access to the signing application or
+        a very fast network connection with low latency.</p>
+    <p>There is a timing signal of around 300 nanoseconds when the top word of
+        the inverted ECDSA nonce value is zero. This can happen with significant
+        probability only for some of the supported elliptic curves. In particular
+        the NIST P-521 curve is affected. To be able to measure this leak, the attacker
+        process must either be located in the same physical computer or must
+        have a very fast network connection with low latency. For that reason
+        the severity of this vulnerability is Low.</p>
+    <p>The FIPS modules in 3.4, 3.3, 3.2, 3.1 and 3.0 are affected by this issue.</p>
+</html>

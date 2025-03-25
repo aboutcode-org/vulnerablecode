@@ -39,16 +39,12 @@ advisory_data1 = AdvisoryData(
 
 
 def get_advisory1(created_by="test_pipeline"):
-    adv = models.Advisory.objects.create(
-        summary=advisory_data1.summary,
-        affected_packages=[pkg.to_dict() for pkg in advisory_data1.affected_packages],
-        references=[ref.to_dict() for ref in advisory_data1.references],
-        url=advisory_data1.url,
-        created_by=created_by,
-        date_collected=timezone.now(),
+    from vulnerabilities.pipes.advisory import insert_advisory
+
+    return insert_advisory(
+        advisory=advisory_data1,
+        pipeline_id=created_by,
     )
-    adv.aliases.add(*get_or_create_aliases(advisory_data1.aliases))
-    return adv
 
 
 class TestVulnerableCodePipeline(TestCase):

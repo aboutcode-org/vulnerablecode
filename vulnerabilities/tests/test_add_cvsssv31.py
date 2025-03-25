@@ -24,6 +24,7 @@ class TestCVEAdvisoryMappingPipeline(TestCase):
         self.pipeline = CVEAdvisoryMappingPipeline()
         advisory = Advisory.objects.create(
             created_by="nvd_importer",
+            unique_content_id="test-unique-content-id",
             references=[
                 {
                     "severities": [
@@ -41,6 +42,7 @@ class TestCVEAdvisoryMappingPipeline(TestCase):
             date_collected="2024-09-27T19:38:00Z",
         )
         advisory.aliases.add(*get_or_create_aliases(["CVE-2024-1234"]))
+
         vuln = Vulnerability.objects.create(vulnerability_id="CVE-2024-1234")
         sev = VulnerabilitySeverity.objects.create(
             scoring_system=CVSSV3.identifier,

@@ -177,7 +177,12 @@ def test_advisory_summary_clean_up():
     assert "\x00" not in adv.summary
 
 
-DUMMY_ADVISORY = models.Advisory(summary="dummy", created_by="tests", date_collected=timezone.now())
+DUMMY_ADVISORY = models.Advisory(
+    unique_content_id="test-unique-content-id",
+    summary="dummy",
+    created_by="tests",
+    date_collected=timezone.now(),
+)
 
 
 INFERENCES = [

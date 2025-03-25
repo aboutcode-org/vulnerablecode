@@ -585,12 +585,11 @@ def normalize_list(lst):
     return sorted(lst) if lst else []
 
 
-def compute_content_id(advisory_data, include_metadata=False):
+def compute_content_id(advisory_data):
     """
     Compute a unique content_id for an advisory by normalizing its data and hashing it.
 
     :param advisory_data: An AdvisoryData object
-    :param include_metadata: Boolean indicating whether to include `created_by` and `url`
     :return: SHA-256 hash digest as content_id
     """
 

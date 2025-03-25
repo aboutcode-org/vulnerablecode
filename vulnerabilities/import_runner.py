@@ -98,13 +98,16 @@ class ImportRunner:
         Return the number of inserted advisories.
         """
         from vulnerabilities.pipes.advisory import get_or_create_aliases
+        from vulnerabilities.utils import compute_content_id
 
         count = 0
         advisories = []
         for data in advisory_datas:
+            content_id = compute_content_id(advisory_data=data)
             try:
                 aliases = get_or_create_aliases(aliases=data.aliases)
                 obj, created = Advisory.objects.get_or_create(
+                    unique_content_id=content_id,
                     summary=data.summary,
                     affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
                     references=[ref.to_dict() for ref in data.references],

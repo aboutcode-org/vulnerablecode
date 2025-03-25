@@ -36,10 +36,14 @@ def get_or_create_aliases(aliases: List) -> List:
 
 
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):
+    from vulnerabilities.utils import compute_content_id
+
     advisory_obj = None
     aliases = get_or_create_aliases(aliases=advisory.aliases)
+    content_id = compute_content_id(advisory_data=advisory)
     try:
         advisory_obj, _ = Advisory.objects.get_or_create(
+            unique_content_id=content_id,
             summary=advisory.summary,
             affected_packages=[pkg.to_dict() for pkg in advisory.affected_packages],
             references=[ref.to_dict() for ref in advisory.references],

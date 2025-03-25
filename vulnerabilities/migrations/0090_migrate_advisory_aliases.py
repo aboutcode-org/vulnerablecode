@@ -86,6 +86,17 @@ class Migration(migrations.Migration):
         )
 
     operations = [
+        migrations.AlterField(
+            model_name="advisory",
+            name="unique_content_id",
+            field=models.CharField(
+                help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
+                max_length=64,
+                blank=False,
+                null=False,
+            ),
+        ),
+
         # Make vulnerability relation optional
         migrations.AlterField(
             model_name="alias",

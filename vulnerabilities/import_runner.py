@@ -108,16 +108,16 @@ class ImportRunner:
                 aliases = get_or_create_aliases(aliases=data.aliases)
                 obj, created = Advisory.objects.get_or_create(
                     unique_content_id=content_id,
-                    summary=data.summary,
-                    affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
-                    references=[ref.to_dict() for ref in data.references],
-                    date_published=data.date_published,
-                    weaknesses=data.weaknesses,
+                    url=data.url,
                     defaults={
+                        "summary": data.summary,
+                        "affected_packages": [pkg.to_dict() for pkg in data.affected_packages],
+                        "references": [ref.to_dict() for ref in data.references],
+                        "date_published": data.date_published,
+                        "weaknesses": data.weaknesses,
                         "created_by": importer_name,
                         "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
                     },
-                    url=data.url,
                 )
                 obj.aliases.add(*aliases)
                 if not obj.date_imported:

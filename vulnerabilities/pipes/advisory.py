@@ -15,6 +15,7 @@ from typing import Callable
 from typing import List
 
 from django.db import transaction
+from django.db.models.query import QuerySet
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
@@ -29,7 +30,7 @@ from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 
 
-def get_or_create_aliases(aliases: List) -> List:
+def get_or_create_aliases(aliases: List) -> QuerySet:
     for alias in aliases:
         Alias.objects.get_or_create(alias=alias)
     return Alias.objects.filter(alias__in=aliases)
@@ -44,13 +45,13 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
     try:
         advisory_obj, _ = Advisory.objects.get_or_create(
             unique_content_id=content_id,
-            summary=advisory.summary,
-            affected_packages=[pkg.to_dict() for pkg in advisory.affected_packages],
-            references=[ref.to_dict() for ref in advisory.references],
-            date_published=advisory.date_published,
-            weaknesses=advisory.weaknesses,
             url=advisory.url,
             defaults={
+                "summary": advisory.summary,
+                "affected_packages": [pkg.to_dict() for pkg in advisory.affected_packages],
+                "references": [ref.to_dict() for ref in advisory.references],
+                "date_published": advisory.date_published,
+                "weaknesses": advisory.weaknesses,
                 "created_by": pipeline_id,
                 "date_collected": datetime.now(timezone.utc),
             },

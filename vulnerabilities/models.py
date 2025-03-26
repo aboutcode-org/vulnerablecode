@@ -1325,6 +1325,7 @@ class Advisory(models.Model):
     )
     aliases = models.ManyToManyField(
         Alias,
+        through="AdvisoryRelatedAlias",
         related_name="advisories",
     )
     summary = models.TextField(
@@ -1384,6 +1385,21 @@ class Advisory(models.Model):
             weaknesses=self.weaknesses,
             url=self.url,
         )
+
+
+class AdvisoryRelatedAlias(models.Model):
+    advisory = models.ForeignKey(
+        Advisory,
+        on_delete=models.CASCADE,
+    )
+
+    alias = models.ForeignKey(
+        Alias,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("advisory", "alias")
 
 
 UserModel = get_user_model()

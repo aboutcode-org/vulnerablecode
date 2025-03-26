@@ -103,6 +103,8 @@ class Reference:
     def __post_init__(self):
         if not self.url:
             raise TypeError("Reference must have a url")
+        if self.reference_id and not isinstance(self.reference_id, str):
+            self.reference_id = str(self.reference_id)
 
     def __lt__(self, other):
         if not isinstance(other, Reference):

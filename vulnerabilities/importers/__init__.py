@@ -37,6 +37,7 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import alpine_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
+from vulnerabilities.pipelines import isc_importer
 from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
@@ -44,6 +45,7 @@ from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
 
 IMPORTERS_REGISTRY = [
+    isc_importer.ISCImporterPipeline,
     openssl.OpensslImporter,
     redhat.RedhatImporter,
     debian.DebianImporter,

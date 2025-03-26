@@ -1,0 +1,140 @@
+<html>
+<pre class="json-container" id="containerfkie_cve-2015-5719">{
+    "configurations": [
+      {
+        "nodes": [
+          {
+            "cpeMatch": [
+              {
+                "criteria": "cpe:2.3:a:misp-project:malware_information_sharing_platform:*:*:*:*:*:*:*:*",
+                "matchCriteriaId": "FC0C651C-5962-47D4-AA2E-220BB4B1A1B2",
+                "versionEndIncluding": "2.3.91",
+                "vulnerable": true
+              }
+            ],
+            "negate": false,
+            "operator": "OR"
+          }
+        ]
+      }
+    ],
+    "cveTags": [],
+    "descriptions": [
+      {
+        "lang": "en",
+        "value": "app/Controller/TemplatesController.php in Malware Information Sharing Platform (MISP) before 2.3.92 does not properly restrict filenames under the tmp/files/ directory, which has unspecified impact and attack vectors."
+      },
+      {
+        "lang": "es",
+        "value": "app/Controller/TemplatesController.php en Malware Information Sharing Platform (MISP) en versiones anteriores a 2.3.92 no restringe adecuadamente nombres de archivo bajo el directorio tmp/files/, lo que tiene un impacto y vectores de ataque no especificados."
+      }
+    ],
+    "id": "CVE-2015-5719",
+    "lastModified": "2024-11-21T02:33:42.317",
+    "metrics": {
+      "cvssMetricV2": [
+        {
+          "acInsufInfo": true,
+          "baseSeverity": "HIGH",
+          "cvssData": {
+            "accessComplexity": "LOW",
+            "accessVector": "NETWORK",
+            "authentication": "NONE",
+            "availabilityImpact": "COMPLETE",
+            "baseScore": 10.0,
+            "confidentialityImpact": "COMPLETE",
+            "integrityImpact": "COMPLETE",
+            "vectorString": "AV:N/AC:L/Au:N/C:C/I:C/A:C",
+            "version": "2.0"
+          },
+          "exploitabilityScore": 10.0,
+          "impactScore": 10.0,
+          "obtainAllPrivilege": false,
+          "obtainOtherPrivilege": false,
+          "obtainUserPrivilege": false,
+          "source": "nvd@nist.gov",
+          "type": "Primary",
+          "userInteractionRequired": false
+        }
+      ],
+      "cvssMetricV30": [
+        {
+          "cvssData": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 9.8,
+            "baseSeverity": "CRITICAL",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "NONE",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+            "version": "3.0"
+          },
+          "exploitabilityScore": 3.9,
+          "impactScore": 5.9,
+          "source": "nvd@nist.gov",
+          "type": "Primary"
+        }
+      ]
+    },
+    "published": "2016-09-03T20:59:00.153",
+    "references": [
+      {
+        "source": "cve@mitre.org",
+        "url": "http://www.securityfocus.com/bid/92740"
+      },
+      {
+        "source": "cve@mitre.org",
+        "tags": [
+          "Issue Tracking",
+          "Patch"
+        ],
+        "url": "https://github.com/MISP/MISP/commit/27cc167c3355ec76292235d7f5f4e0016bfd7699"
+      },
+      {
+        "source": "cve@mitre.org",
+        "tags": [
+          "Third Party Advisory"
+        ],
+        "url": "https://www.circl.lu/advisory/CVE-2015-5719/"
+      },
+      {
+        "source": "af854a3a-2127-422b-91ae-364da2661108",
+        "url": "http://www.securityfocus.com/bid/92740"
+      },
+      {
+        "source": "af854a3a-2127-422b-91ae-364da2661108",
+        "tags": [
+          "Issue Tracking",
+          "Patch"
+        ],
+        "url": "https://github.com/MISP/MISP/commit/27cc167c3355ec76292235d7f5f4e0016bfd7699"
+      },
+      {
+        "source": "af854a3a-2127-422b-91ae-364da2661108",
+        "tags": [
+          "Third Party Advisory"
+        ],
+        "url": "https://www.circl.lu/advisory/CVE-2015-5719/"
+      }
+    ],
+    "sourceIdentifier": "cve@mitre.org",
+    "vulnStatus": "Modified",
+    "weaknesses": [
+      {
+        "description": [
+          {
+            "lang": "en",
+            "value": "NVD-CWE-noinfo"
+          }
+        ],
+        "source": "nvd@nist.gov",
+        "type": "Primary"
+      }
+    ]
+  }</pre>
+
+</html>

@@ -18,7 +18,6 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.pipes.advisory import get_or_create_aliases
 from vulnerabilities.pipes.advisory import import_advisory
-from vulnerabilities.utils import compute_content_id
 
 advisory_data1 = AdvisoryData(
     summary="vulnerability description here",
@@ -71,3 +70,13 @@ def test_vulnerability_pipes_importer_import_advisory_different_pipelines():
     all_vulnerability_relation_objects = get_all_vulnerability_relationships_objects()
     import_advisory(advisory=advisory1, pipeline_id="test_importer2_pipeline")
     assert all_vulnerability_relation_objects == get_all_vulnerability_relationships_objects()
+
+
+@pytest.mark.django_db
+def test_vulnerability_pipes_get_or_create_aliases():
+    aliases = ["CVE-TEST-123", "CVE-TEST-124"]
+    result_aliases_qs = get_or_create_aliases(aliases=aliases)
+    result_aliases = [i.alias for i in result_aliases_qs]
+    assert 2 == result_aliases_qs.count()
+    assert "CVE-TEST-123" in result_aliases
+    assert "CVE-TEST-124" in result_aliases

@@ -16,10 +16,10 @@ from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
+from vulnerabilities.pipes.advisory import get_or_create_aliases
 from vulnerabilities.pipes.advisory import import_advisory
 
 advisory_data1 = AdvisoryData(
-    aliases=["CVE-2020-13371337"],
     summary="vulnerability description here",
     affected_packages=[
         AffectedPackage(
@@ -34,14 +34,11 @@ advisory_data1 = AdvisoryData(
 
 
 def get_advisory1(created_by="test_pipeline"):
-    return models.Advisory.objects.create(
-        aliases=advisory_data1.aliases,
-        summary=advisory_data1.summary,
-        affected_packages=[pkg.to_dict() for pkg in advisory_data1.affected_packages],
-        references=[ref.to_dict() for ref in advisory_data1.references],
-        url=advisory_data1.url,
-        created_by=created_by,
-        date_collected=timezone.now(),
+    from vulnerabilities.pipes.advisory import insert_advisory
+
+    return insert_advisory(
+        advisory=advisory_data1,
+        pipeline_id=created_by,
     )
 
 
@@ -73,3 +70,13 @@ def test_vulnerability_pipes_importer_import_advisory_different_pipelines():
     all_vulnerability_relation_objects = get_all_vulnerability_relationships_objects()
     import_advisory(advisory=advisory1, pipeline_id="test_importer2_pipeline")
     assert all_vulnerability_relation_objects == get_all_vulnerability_relationships_objects()
+
+
+@pytest.mark.django_db
+def test_vulnerability_pipes_get_or_create_aliases():
+    aliases = ["CVE-TEST-123", "CVE-TEST-124"]
+    result_aliases_qs = get_or_create_aliases(aliases=aliases)
+    result_aliases = [i.alias for i in result_aliases_qs]
+    assert 2 == result_aliases_qs.count()
+    assert "CVE-TEST-123" in result_aliases
+    assert "CVE-TEST-124" in result_aliases

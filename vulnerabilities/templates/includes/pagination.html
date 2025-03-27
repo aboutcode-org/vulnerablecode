@@ -1,39 +1,64 @@
-<nav class="pagination is-centered is-small" aria-label="pagination">
-  {% if page_obj.has_previous %}
-  <a href="?page={{ page_obj.previous_page_number }}&search={{ search|urlencode }}" class="pagination-previous">Previous</a>
-  {% else %}
-    <a class="pagination-previous" disabled>Previous</a>
-  {% endif %}
-
-  {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}&search={{ search|urlencode }}" class="pagination-next">Next</a>
-  {% else %}
-    <a class="pagination-next" disabled>Next</a>
-  {% endif %}
-
-  <ul class="pagination-list">
-    {% if page_obj.number != 1%}
-      <li>
-        <a href="?page=1&search={{ search|urlencode }}" class="pagination-link" aria-label="Goto page 1">1</a>
-      </li>
-      {% if page_obj.number > 2 %}
-        <li>
-          <span class="pagination-ellipsis">&hellip;</span>
-        </li>
-      {% endif %}
+<div class="pagination-controls mb-4">
+    <div class="is-flex is-justify-content-center mb-3">
+        <form method="get" action="">
+            {% if search %}
+                <input type="hidden" name="search" value="{{ search }}">
+            {% endif %}
+            <div class="select is-small {% if total_count < current_page_size %}is-disabled{% endif %}">
+                <select name="page_size" onchange="this.form.submit()" 
+                        {% if total_count < current_page_size %}disabled="disabled"{% endif %}>
+                    {% for choice in page_size_choices %}
+                        <option value="{{ choice.value }}" 
+                                {% if choice.value == current_page_size %}selected{% endif %}>
+                            {{ choice.label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+  
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&search={{ search|urlencode }}&page_size={{ current_page_size }}" 
+               class="pagination-previous">Previous</a>
+        {% else %}
+            <button class="pagination-previous" disabled>Previous</button>
+        {% endif %}
+  
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&search={{ search|urlencode }}&page_size={{ current_page_size }}" 
+               class="pagination-next">Next</a>
+        {% else %}
+            <button class="pagination-next" disabled>Next</button>
+        {% endif %}
+        <ul class="pagination-list">
+            {% for page_num in page_range %}
+                {% if page_num == '...' %}
+                    <li><span class="pagination-ellipsis">&hellip;</span></li>
+                {% else %}
+                    <li>
+                        <a href="?page={{ page_num }}&search={{ search|urlencode }}&page_size={{ current_page_size }}" 
+                           class="pagination-link {% if page_num == page_obj.number %}is-current{% endif %}"
+                           aria-label="Go to page {{ page_num }}"
+                           {% if page_num == page_obj.number %}aria-current="page"{% endif %}>
+                            {{ page_num }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
     {% endif %}
-    <li>
-      <a class="pagination-link is-current" aria-label="Page {{ page_obj.number }}" aria-current="page">{{ page_obj.number }}</a>
-    </li>
-    {% if page_obj.number != page_obj.paginator.num_pages %}
-      {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
-        <li>
-          <span class="pagination-ellipsis">&hellip;</span>
-        </li>
-      {% endif %}
-      <li>
-        <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search|urlencode }}" class="pagination-link" aria-label="Goto page {{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
-      </li>
-    {% endif %}
-  </ul>
-</nav>
+  </div>
+  
+  <style>
+  .select.is-disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  .select.is-disabled select {
+    cursor: not-allowed;
+  }
+  </style>

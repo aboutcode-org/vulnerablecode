@@ -20,6 +20,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipes.advisory import get_or_create_aliases
 from vulnerabilities.tests.pipelines import TestLogger
 
 advisory_data1 = AdvisoryData(
@@ -38,14 +39,11 @@ advisory_data1 = AdvisoryData(
 
 
 def get_advisory1(created_by="test_pipeline"):
-    return models.Advisory.objects.create(
-        aliases=advisory_data1.aliases,
-        summary=advisory_data1.summary,
-        affected_packages=[pkg.to_dict() for pkg in advisory_data1.affected_packages],
-        references=[ref.to_dict() for ref in advisory_data1.references],
-        url=advisory_data1.url,
-        created_by=created_by,
-        date_collected=timezone.now(),
+    from vulnerabilities.pipes.advisory import insert_advisory
+
+    return insert_advisory(
+        advisory=advisory_data1,
+        pipeline_id=created_by,
     )
 
 
@@ -101,7 +99,7 @@ class TestVulnerableCodeBaseImporterPipeline(TestCase):
         self.assertEqual(1, models.Advisory.objects.count())
 
         collected_advisory = models.Advisory.objects.first()
-        result_aliases = collected_advisory.aliases
+        result_aliases = [item.alias for item in collected_advisory.aliases.all()]
         expected_aliases = advisory_data1.aliases
 
         self.assertEqual(expected_aliases, result_aliases)
@@ -122,4 +120,5 @@ class TestVulnerableCodeBaseImporterPipeline(TestCase):
         self.assertEqual(1, imported_vulnerability.aliases.count())
 
         expected_alias = imported_vulnerability.aliases.first()
-        self.assertEqual(advisory1.aliases[0], expected_alias.alias)
+        result_alias = advisory1.aliases.first()
+        self.assertEqual(result_alias.alias, expected_alias.alias)

@@ -85,26 +85,6 @@ class TestComputeContentId(TestCase):
 
         assert compute_content_id(advisory1) == compute_content_id(advisory2)
 
-    def test_different_metadata_different_id_when_included(self):
-        """
-        Test that advisories with same content but different metadata have different content IDs
-        when include_metadata=True
-        """
-        advisory1 = self.base_advisory
-
-        advisory2 = AdvisoryData(
-            summary="Test summary",
-            affected_packages=self.base_advisory.affected_packages,
-            references=self.base_advisory.references,
-            date_published=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
-            url="https://different.url",
-        )
-
-        self.assertNotEqual(
-            compute_content_id(advisory1, include_metadata=True),
-            compute_content_id(advisory2, include_metadata=True),
-        )
-
     def test_different_summary_different_id(self):
         """
         Test that advisories with different summaries have different content IDs

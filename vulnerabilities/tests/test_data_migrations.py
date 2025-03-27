@@ -948,7 +948,6 @@ class TestFixAlpinePURLCreatedByField(TestMigrations):
     def test_fix_alpine_purl(self):
         Package = apps.get_model("vulnerabilities", "Package")
         package = Package.objects.all()
-        print(package)
 
         assert package.filter(type="alpine").count() == 0
         assert package.filter(type="apk").count() == 1

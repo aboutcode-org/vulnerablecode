@@ -19,6 +19,7 @@ from vulnerabilities.importers import epss
 from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github_osv
+from vulnerabilities.importers import huawei
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import openssl
@@ -65,6 +66,7 @@ IMPORTERS_REGISTRY = [
     fireeye.FireyeImporter,
     apache_kafka.ApacheKafkaImporter,
     oss_fuzz.OSSFuzzImporter,
+    huawei.HuaweiImporter,
     ruby.RubyImporter,
     github_osv.GithubOSVImporter,
     curl.CurlImporter,

@@ -17,27 +17,24 @@ dev:
 	@echo "-> Configure the development envt."
 	./configure --dev
 
-isort:
-	@echo "-> Apply isort changes to ensure proper imports ordering"
-	${VENV}/bin/isort --sl -l 100 src tests setup.py
-
-black:
-	@echo "-> Apply black code formatter"
-	${VENV}/bin/black -l 100 src tests setup.py
-
 doc8:
 	@echo "-> Run doc8 validation"
 	@${ACTIVATE} doc8 --max-line-length 100 --ignore-path docs/_build/ --quiet docs/
 
-valid: isort black
+valid:
+	@echo "-> Run Ruff format"
+	@${ACTIVATE} ruff format
+	@echo "-> Run Ruff linter"
+	@${ACTIVATE} ruff check --fix
 
 check:
-	@echo "-> Run pycodestyle (PEP8) validation"
-	@${ACTIVATE} pycodestyle --max-line-length=100 --exclude=.eggs,venv,lib,thirdparty,docs,migrations,settings.py,.cache .
-	@echo "-> Run isort imports ordering validation"
-	@${ACTIVATE} isort --sl --check-only -l 100 setup.py src tests .
-	@echo "-> Run black validation"
-	@${ACTIVATE} black --check --check -l 100 src tests setup.py
+	@echo "-> Run Ruff linter validation (pycodestyle, bandit, isort, and more)"
+	@${ACTIVATE} ruff check
+	@echo "-> Run Ruff format validation"
+	@${ACTIVATE} ruff format --check
+	@$(MAKE) doc8
+	@echo "-> Run ABOUT files validation"
+	@${ACTIVATE} about check etc/
 
 clean:
 	@echo "-> Clean the Python env"

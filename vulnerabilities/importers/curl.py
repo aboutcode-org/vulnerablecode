@@ -39,11 +39,12 @@ class CurlImporter(Importer):
     importer_name = "Curl Importer"
     api_url = "https://curl.se/docs/vuln.json"
 
-    def get_advisory_id(self, aliases: list[str]) -> str:
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
         """
         Return the Advisory ID for the given aliases.
         """
-        return self.get_cve_id(aliases)
+        return cls.get_cve_id(aliases)
 
     def fetch(self) -> Iterable[Mapping]:
         response = fetch_response(self.api_url)

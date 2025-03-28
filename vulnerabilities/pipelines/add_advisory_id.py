@@ -40,6 +40,8 @@ class AddAdvisoryID(VulnerableCodePipeline):
             importer_name = advisory.created_by
             aliases = Alias.objects.filter(advisories=advisory).values_list("alias", flat=True)
             advisory_id = IMPORTERS_REGISTRY[importer_name].get_advisory_id(aliases=aliases)
+            if advisory_id is None:
+                continue
             advisory.advisory_id = advisory_id
             advisories_to_update.append(advisory)
             if len(advisories_to_update) >= batch_size:

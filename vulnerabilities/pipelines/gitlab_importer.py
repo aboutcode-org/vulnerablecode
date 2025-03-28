@@ -66,7 +66,8 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipeline):
 
     gitlab_scheme_by_purl_type = {v: k for k, v in purl_type_by_gitlab_scheme.items()}
 
-    def get_advisory_id(self, aliases: list[str]) -> str:
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
         """
         Return the Advisory ID for the given aliases.
         """

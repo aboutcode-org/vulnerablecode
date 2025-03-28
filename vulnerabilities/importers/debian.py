@@ -82,6 +82,12 @@ class DebianImporter(Importer):
     api_url = "https://security-tracker.debian.org/tracker/data/json"
     importer_name = "Debian Importer"
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return self.get_cve_id(aliases)
+
     def get_response(self):
         response = requests.get(self.api_url)
         if response.status_code == 200:

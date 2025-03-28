@@ -37,6 +37,12 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipeline):
             cls.clean_downloads,
         )
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return self.get_cve_id(aliases)
+
     def clone(self):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)

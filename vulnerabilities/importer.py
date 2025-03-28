@@ -377,6 +377,21 @@ class Importer:
     # It needs to be unique and immutable
     importer_name = ""
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        raise NotImplementedError
+
+    def get_cve_id(self, aliases: list[str]) -> str:
+        """
+        Return the CVE ID for the given aliases.
+        """
+        for alias in aliases:
+            if alias.startswith("CVE-"):
+                return alias
+        return None
+
     def __init__(self):
         if not self.spdx_license_expression:
             raise Exception(f"Cannot run importer {self!r} without a license")

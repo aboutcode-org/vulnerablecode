@@ -30,6 +30,12 @@ class ArchlinuxImporter(Importer):
     license_url = "https://github.com/archlinux/arch-security-tracker/blob/master/LICENSE"
     importer_name = "Arch Linux Importer"
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return self.get_cve_id(aliases)
+
     def fetch(self) -> Iterable[Mapping]:
         response = fetch_response(self.url)
         return response.json()

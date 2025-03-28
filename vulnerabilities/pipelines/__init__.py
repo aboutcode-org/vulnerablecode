@@ -132,6 +132,22 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
         """
         raise NotImplementedError
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def get_cve_id(cls, aliases: list[str]) -> str:
+        """
+        Return the CVE ID for the given aliases.
+        """
+        for alias in aliases:
+            if alias.startswith("CVE-"):
+                return alias
+
     def advisories_count(self) -> int:
         """
         Return the estimated AdvisoryData to be yielded by ``collect_advisories``.

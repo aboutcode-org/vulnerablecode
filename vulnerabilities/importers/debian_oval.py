@@ -56,6 +56,12 @@ class DebianOvalImporter(OvalImporter):
     """
     importer_name = "Debian Oval Importer"
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return self.get_cve_id(aliases)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # we could avoid setting translations, and have it

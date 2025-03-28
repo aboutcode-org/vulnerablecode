@@ -45,6 +45,12 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipeline):
             cls.import_new_advisories,
         )
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return self.get_cve_id(aliases)
+
     def advisories_count(self) -> int:
         return 0
 

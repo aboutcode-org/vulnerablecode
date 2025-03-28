@@ -377,13 +377,15 @@ class Importer:
     # It needs to be unique and immutable
     importer_name = ""
 
-    def get_advisory_id(self, aliases: list[str]) -> str:
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
         """
         Return the Advisory ID for the given aliases.
         """
         raise NotImplementedError
 
-    def get_cve_id(self, aliases: list[str]) -> str:
+    @classmethod
+    def get_cve_id(cls, aliases: list[str]) -> str:
         """
         Return the CVE ID for the given aliases.
         """

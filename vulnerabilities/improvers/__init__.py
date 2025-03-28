@@ -48,7 +48,7 @@ IMPROVERS_REGISTRY = [
     collect_commits.CollectFixCommitsPipeline,
     add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
     remove_duplicate_advisories.RemoveDuplicateAdvisoriesPipeline,
-    fill_vulnerability_summary_pipeline.FillVulnerabilitySummariesPipeline,
+    fill_vulnerability_summary_pipeline.PopulateVulnerabilitySummariesPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

@@ -52,7 +52,7 @@ addopts = [
 ]
 
 [tool.ruff]
-line-length = 88
+line-length = 100
 extend-exclude = []
 target-version = "py310"
 

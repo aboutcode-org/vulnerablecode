@@ -64,6 +64,13 @@ class UbuntuUSNImporter(Importer):
     """
     importer_name = "Ubuntu USN Importer"
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def advisory_data(self):
         usn_db = fetch(self.db_url)
         yield from self.to_advisories(usn_db=usn_db)

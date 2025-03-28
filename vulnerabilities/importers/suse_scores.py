@@ -26,6 +26,13 @@ class SUSESeverityScoreImporter(Importer):
     license_url = "https://ftp.suse.com/pub/projects/security/yaml/LICENSE"
     importer_name = "SUSE Severity Score Importer"
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def advisory_data(self) -> Iterable[AdvisoryData]:
         score_data = fetch_yaml(URL)
         yield from self.to_advisory(score_data)

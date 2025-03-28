@@ -39,11 +39,12 @@ class MozillaImporter(Importer):
     repo_url = "git+https://github.com/mozilla/foundation-security-advisories/"
     importer_name = "Mozilla Importer"
 
-    def get_advisory_id(self, aliases: list[str]) -> str:
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
         """
         Return the Advisory ID for the given aliases.
         """
-        return self.get_cve_id(aliases)
+        return cls.get_cve_id(aliases)
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:

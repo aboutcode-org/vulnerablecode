@@ -36,11 +36,12 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
             cls.import_new_advisories,
         )
 
-    def get_advisory_id(self, aliases: list[str]) -> str:
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
         """
         Return the Advisory ID for the given aliases.
         """
-        return self.get_cve_id(aliases)
+        return cls.get_cve_id(aliases)
 
     def fetch_zip(self):
         self.log(f"Fetching `{self.url}`")

@@ -35,6 +35,15 @@ class OpensslImporter(Importer):
     url = "https://www.openssl.org/news/vulnerabilities.xml"
     importer_name = "OpenSSL Importer"
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        for alias in aliases:
+            if alias.startswith("VC-OPENSSL-"):
+                return alias
+        return None
+
     def fetch(self):
         response = requests.get(url=self.url)
         if not response.status_code == 200:

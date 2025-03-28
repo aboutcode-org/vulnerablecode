@@ -59,6 +59,16 @@ class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
         # "GO": "golang",
     }
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        # return GHSA ID from the aliases
+        for alias in aliases:
+            if alias.startswith("GHSA-"):
+                return alias
+        return self.get_cve_id(aliases)
+
     def advisories_count(self):
         advisory_query = """
         query{

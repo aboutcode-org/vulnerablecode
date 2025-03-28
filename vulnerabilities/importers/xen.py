@@ -46,6 +46,12 @@ class XenImporter(Importer):
     """
     importer_name = "Xen Importer"
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return self.get_cve_id(aliases)
+
     def advisory_data(self):
         data = fetch_response(self.url).json()
         # The data looks like this

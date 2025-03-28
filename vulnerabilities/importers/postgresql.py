@@ -30,6 +30,12 @@ class PostgreSQLImporter(Importer):
     spdx_license_expression = "PostgreSQL"
     importer_name = "PostgreSQL Importer"
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return self.get_cve_id(aliases)
+
     def advisory_data(self):
         known_urls = {self.root_url}
         visited_urls = set()

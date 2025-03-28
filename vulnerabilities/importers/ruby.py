@@ -72,6 +72,12 @@ class RubyImporter(Importer):
             if self.vcs_response:
                 self.vcs_response.delete()
 
+    def get_advisory_id(self, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return self.get_cve_id(aliases)
+
 
 def parse_ruby_advisory(record, schema_type, advisory_url):
     """

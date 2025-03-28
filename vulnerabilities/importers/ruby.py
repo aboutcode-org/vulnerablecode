@@ -52,6 +52,16 @@ class RubyImporter(Importer):
     SOFTWARE.
     """
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        for alias in aliases:
+            if alias.startswith("GHSA-"):
+                return alias
+        return cls.get_cve_id(aliases)
+
     def advisory_data(self) -> Iterable[AdvisoryData]:
         try:
             self.clone(self.repo_url)

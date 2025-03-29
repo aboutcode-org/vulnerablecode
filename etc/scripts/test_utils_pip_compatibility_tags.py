@@ -25,13 +25,12 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-from unittest.mock import patch
 import sysconfig
+from unittest.mock import patch
 
 import pytest
 
 import utils_pip_compatibility_tags
-
 
 @pytest.mark.parametrize(
     "version_info, expected",

@@ -16,8 +16,7 @@ import utils_thirdparty
 @click.option(
     "-d",
     "--dest",
-    type=click.Path(exists=True, readable=True,
-                    path_type=str, file_okay=False),
+    type=click.Path(exists=True, readable=True, path_type=str, file_okay=False),
     required=True,
     help="Path to the thirdparty directory to check.",
 )

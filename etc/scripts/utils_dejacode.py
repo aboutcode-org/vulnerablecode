@@ -32,8 +32,7 @@ DEJACODE_API_HEADERS = {
 
 def can_do_api_calls():
     if not DEJACODE_API_KEY and DEJACODE_API_URL:
-        print(
-            "DejaCode DEJACODE_API_KEY and DEJACODE_API_URL not configured. Doing nothing")
+        print("DejaCode DEJACODE_API_KEY and DEJACODE_API_URL not configured. Doing nothing")
         return False
     else:
         return True
@@ -68,8 +67,7 @@ def get_package_data(distribution):
         return results[0]
 
     elif len_results > 1:
-        print(
-            f"More than 1 entry exists, review at: {DEJACODE_API_URL_PACKAGES}")
+        print(f"More than 1 entry exists, review at: {DEJACODE_API_URL_PACKAGES}")
     else:
         print("Could not find package:", distribution.download_url)
 
@@ -150,12 +148,11 @@ def find_latest_dejacode_package(distribution):
     # there was no exact match, find the latest version
     # TODO: consider the closest version rather than the latest
     # or the version that has the best data
-    with_versions = [(packaging_version.parse(p["version"]), p)
-                     for p in packages]
+    with_versions = [(packaging_version.parse(p["version"]), p) for p in packages]
     with_versions = sorted(with_versions)
     latest_version, latest_package_version = sorted(with_versions)[-1]
     print(
-        f"Found DejaCode latest version: {latest_version} " f"for dist: {distribution.package_url}",
+        f"Found DejaCode latest version: {latest_version} for dist: {distribution.package_url}",
     )
 
     return latest_package_version
@@ -181,7 +178,7 @@ def create_dejacode_package(distribution):
     }
 
     fields_to_carry_over = [
-        "download_url" "type",
+        "download_urltype",
         "namespace",
         "name",
         "version",
@@ -209,5 +206,5 @@ def create_dejacode_package(distribution):
     if response.status_code != 201:
         raise Exception(f"Error, cannot create package for: {distribution}")
 
-    print(f'New Package created at: {new_package_data["absolute_url"]}')
+    print(f"New Package created at: {new_package_data['absolute_url']}")
     return new_package_data

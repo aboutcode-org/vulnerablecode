@@ -69,7 +69,6 @@ def get_package_name_from_filename(filename):
             raise InvalidDistributionFilename(filename)
 
     elif filename.endswith(wheel_ext):
-
         wheel_info = get_wheel_from_filename(filename)
 
         if not wheel_info:
@@ -200,11 +199,10 @@ def build_pypi_index(directory, base_url="https://thirdparty.aboutcode.org/pypi"
     simple_html_index = [
         "<!DOCTYPE html>",
         "<html><head><title>PyPI Simple Index</title>",
-        '<meta charset="UTF-8">' '<meta name="api-version" value="2" /></head><body>',
+        '<meta charset="UTF-8"><meta name="api-version" value="2" /></head><body>',
     ]
 
     for pkg_file in directory.iterdir():
-
         pkg_filename = pkg_file.name
 
         if (

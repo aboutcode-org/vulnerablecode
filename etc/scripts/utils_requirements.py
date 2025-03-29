@@ -106,8 +106,7 @@ def lock_dev_requirements(
     all_req_nvs = get_required_name_versions(all_req_lines)
     dev_only_req_nvs = {n: v for n, v in all_req_nvs if n not in main_names}
 
-    new_reqs = "\n".join(
-        f"{n}=={v}" for n, v in sorted(dev_only_req_nvs.items()))
+    new_reqs = "\n".join(f"{n}=={v}" for n, v in sorted(dev_only_req_nvs.items()))
     with open(dev_requirements_file, "w") as fo:
         fo.write(new_reqs)
 
@@ -118,12 +117,10 @@ def get_installed_reqs(site_packages_dir):
     as a text.
     """
     if not os.path.exists(site_packages_dir):
-        raise Exception(
-            f"site_packages directory: {site_packages_dir!r} does not exists")
+        raise Exception(f"site_packages directory: {site_packages_dir!r} does not exists")
     # Also include these packages in the output with --all: wheel, distribute,
     # setuptools, pip
-    args = ["pip", "freeze", "--exclude-editable",
-            "--all", "--path", site_packages_dir]
+    args = ["pip", "freeze", "--exclude-editable", "--all", "--path", site_packages_dir]
     return subprocess.check_output(args, encoding="utf-8")  # noqa: S603
 
 

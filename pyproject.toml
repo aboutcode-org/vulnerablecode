@@ -55,6 +55,14 @@ addopts = [
 line-length = 100
 extend-exclude = []
 target-version = "py310"
+include = [
+  "pyproject.toml",
+  "src/**/*.py",
+  "etc/**/*.py",
+  "test/**/*.py",
+  "doc/**/*",
+  "*.py"
+]
 
 [tool.ruff.lint]
 # Rules: https://docs.astral.sh/ruff/rules/

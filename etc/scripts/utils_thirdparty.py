@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) nexB Inc. and others. All rights reserved.
 # ScanCode is a trademark of nexB Inc.
@@ -559,7 +558,8 @@ class Distribution(NameVer):
         Download this distribution into `dest_dir` directory.
         Return the fetched filename.
         """
-        assert self.filename
+        if not self.filename:
+            raise ValueError(f"self.filename has no value but is required: {self.filename!r}")
         if TRACE_DEEP:
             print(
                 f"Fetching distribution of {self.name}=={self.version}:",
@@ -829,10 +829,9 @@ class Distribution(NameVer):
         urls = LinksRepository.from_url(
             use_cached_index=use_cached_index).links
         errors = []
-        extra_lic_names = [l.get("file")
-                           for l in self.extra_data.get("licenses", {})]
+        extra_lic_names = [lic.get("file") for lic in self.extra_data.get("licenses", {})]
         extra_lic_names += [self.extra_data.get("license_file")]
-        extra_lic_names = [ln for ln in extra_lic_names if ln]
+        extra_lic_names = [eln for eln in extra_lic_names if eln]
         lic_names = [f"{key}.LICENSE" for key in self.get_license_keys()]
         for filename in lic_names + extra_lic_names:
             floc = os.path.join(dest_dir, filename)
@@ -853,7 +852,7 @@ class Distribution(NameVer):
                 if TRACE:
                     print(f"Fetched license from remote: {lic_url}")
 
-            except:
+            except Exception:
                 try:
                     # try licensedb second
                     lic_url = f"{LICENSEDB_API_URL}/{filename}"
@@ -866,8 +865,9 @@ class Distribution(NameVer):
                     if TRACE:
                         print(f"Fetched license from licensedb: {lic_url}")
 
-                except:
-                    msg = f'No text for license {filename} in expression "{self.license_expression}" from {self}'
+                except Exception:
+                    msg = f"No text for license {filename} in expression "
+                    f"{self.license_expression!r} from {self}"
                     print(msg)
                     errors.append(msg)
 
@@ -1009,7 +1009,7 @@ def get_license_link_for_filename(filename, urls):
     exception if no link is found or if there are more than one link for that
     file name.
     """
-    path_or_url = [l for l in urls if l.endswith(f"/{filename}")]
+    path_or_url = [url for url in urls if url.endswith(f"/{filename}")]
     if not path_or_url:
         raise Exception(f"Missing link to file: {filename}")
     if not len(path_or_url) == 1:
@@ -1140,7 +1140,6 @@ class Sdist(Distribution):
 
 @attr.attributes
 class Wheel(Distribution):
-
     """
     Represents a wheel file.
 
@@ -1301,7 +1300,7 @@ class Wheel(Distribution):
 def is_pure_wheel(filename):
     try:
         return Wheel.from_filename(filename).is_pure()
-    except:
+    except Exception:
         return False
 
 
@@ -1489,8 +1488,7 @@ class PypiPackage(NameVer):
                     )
             except InvalidDistributionFilename:
                 if TRACE_DEEP:
-                    print(
-                        f"     Skipping invalid distribution from: {path_or_url}")
+                    print(f"     Skipping invalid distribution from: {path_or_url}")
                 continue
         return dists
 
@@ -1500,8 +1498,7 @@ class PypiPackage(NameVer):
         """
         if self.sdist:
             yield self.sdist
-        for wheel in self.wheels:
-            yield wheel
+        yield from self.wheels
 
     def get_url_for_filename(self, filename):
         """
@@ -1632,7 +1629,8 @@ class PypiSimpleRepository:
         type=dict,
         default=attr.Factory(lambda: defaultdict(dict)),
         metadata=dict(
-            help="Mapping of {name: {version: PypiPackage, version: PypiPackage, etc} available in this repo"
+            help="Mapping of {name: {version: PypiPackage, version: PypiPackage, etc} "
+            "available in this repo"
         ),
     )
 
@@ -1647,7 +1645,8 @@ class PypiSimpleRepository:
         type=bool,
         default=False,
         metadata=dict(
-            help="If True, use any existing on-disk cached PyPI index files. Otherwise, fetch and cache."
+            help="If True, use any existing on-disk cached PyPI index files. "
+            "Otherwise, fetch and cache."
         ),
     )
 
@@ -1656,7 +1655,8 @@ class PypiSimpleRepository:
         Return a mapping of all available PypiPackage version for this package name.
         The mapping may be empty. It is ordered by version from oldest to newest
         """
-        assert name
+        if not name:
+            raise ValueError(f"name is required: {name!r}")
         normalized_name = NameVer.normalize_name(name)
         versions = self.packages[normalized_name]
         if not versions and normalized_name not in self.fetched_package_normalized_names:
@@ -1713,7 +1713,7 @@ class PypiSimpleRepository:
         )
         links = collect_urls(text)
         # TODO: keep sha256
-        links = [l.partition("#sha256=") for l in links]
+        links = [link.partition("#sha256=") for link in links]
         links = [url for url, _, _sha256 in links]
         return links
 
@@ -1936,7 +1936,7 @@ def get_remote_file_content(
     # several redirects and that we can ignore content there. A HEAD request may
     # not get us this last header
     print(f"    DOWNLOADING: {url}")
-    with requests.get(url, allow_redirects=True, stream=True, headers=headers) as response:
+    with requests.get(url, allow_redirects=True, stream=True, headers=headers) as response: # noqa: S113
         status = response.status_code
         if status != requests.codes.ok:  # NOQA
             if status == 429 and _delay < 20:
@@ -2161,7 +2161,7 @@ def call(args, verbose=TRACE):
     """
     if TRACE_DEEP:
         print("Calling:", " ".join(args))
-    with subprocess.Popen(
+    with subprocess.Popen( # noqa: S603
         args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf-8"
     ) as process:
 
@@ -2227,7 +2227,7 @@ def download_wheels_with_pip(
         cli_args.extend(["--requirement", req_file])
 
     if TRACE:
-        print(f"Downloading wheels using command:", " ".join(cli_args))
+        print("Downloading wheels using command:", " ".join(cli_args))
 
     existing = set(os.listdir(dest_dir))
     error = False
@@ -2260,7 +2260,7 @@ def download_wheels_with_pip(
 
 def check_about(dest_dir=THIRDPARTY_DIR):
     try:
-        subprocess.check_output(f"venv/bin/about check {dest_dir}".split())
+        subprocess.check_output(f"venv/bin/about check {dest_dir}".split()) # noqa: S603
     except subprocess.CalledProcessError as cpe:
         print()
         print("Invalid ABOUT files:")
@@ -2312,5 +2312,5 @@ def get_license_expression(declared_licenses):
         return get_only_expression_from_extracted_license(declared_licenses)
     except ImportError:
         # Scancode is not installed, clean and join all the licenses
-        lics = [python_safe_name(l).lower() for l in declared_licenses]
+        lics = [python_safe_name(lic).lower() for lic in declared_licenses]
         return " AND ".join(lics).lower()

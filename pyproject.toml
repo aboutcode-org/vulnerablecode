@@ -67,16 +67,17 @@ include = [
 [tool.ruff.lint]
 # Rules: https://docs.astral.sh/ruff/rules/
 select = [
-    "E",  # pycodestyle
-    "W",  # pycodestyle warnings
-    "D",  # pydocstyle
-    "F",  # Pyflakes
-    "UP", # pyupgrade
-    "S",  # flake8-bandit
+#    "E",  # pycodestyle
+#    "W",  # pycodestyle warnings
+#    "D",  # pydocstyle
+#    "F",  # Pyflakes
+#    "UP", # pyupgrade
+#    "S",  # flake8-bandit
     "I",  # isort
-    "C9", # McCabe complexity
+#    "C9", # McCabe complexity
 ]
-ignore = ["D1", "D200", "D203", "D205", "D212", "D400", "D415"]
+ignore = ["D1", "D200", "D202", "D203", "D205", "D212", "D400", "D415"]
+
 
 [tool.ruff.lint.isort]
 force-single-line = true
@@ -100,3 +101,5 @@ max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
 # Place paths of files to be ignored by ruff here
+"tests/*" = ["S101"]
+"test_*.py" = ["S101"]

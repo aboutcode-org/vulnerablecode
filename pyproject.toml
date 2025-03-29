@@ -61,7 +61,8 @@ include = [
   "etc/**/*.py",
   "test/**/*.py",
   "doc/**/*",
-  "*.py"
+  "*.py",
+  "."
 ]
 
 [tool.ruff.lint]
@@ -69,10 +70,10 @@ include = [
 select = [
 #    "E",  # pycodestyle
 #    "W",  # pycodestyle warnings
-#    "D",  # pydocstyle
+    "D",  # pydocstyle
 #    "F",  # Pyflakes
 #    "UP", # pyupgrade
-    "S",  # flake8-bandit
+#    "S",  # flake8-bandit
     "I",  # isort
 #    "C9", # McCabe complexity
 ]

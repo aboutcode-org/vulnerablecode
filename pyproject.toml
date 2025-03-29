@@ -72,11 +72,11 @@ select = [
 #    "D",  # pydocstyle
 #    "F",  # Pyflakes
 #    "UP", # pyupgrade
-#    "S",  # flake8-bandit
+    "S",  # flake8-bandit
     "I",  # isort
 #    "C9", # McCabe complexity
 ]
-ignore = ["D1", "D200", "D202", "D203", "D205", "D212", "D400", "D415"]
+ignore = ["D1", "D200", "D202", "D203", "D205", "D212", "D400", "D415", "I001"]
 
 
 [tool.ruff.lint.isort]

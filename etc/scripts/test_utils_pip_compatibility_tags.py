@@ -33,6 +33,7 @@ import pytest
 
 import utils_pip_compatibility_tags
 
+
 @pytest.mark.parametrize(
     "version_info, expected",
     [

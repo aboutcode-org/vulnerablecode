@@ -76,10 +76,15 @@ select = [
     "I",  # isort
     "C9", # McCabe complexity
 ]
-ignore = ["D1", "D203", "D205", "D212", "D400", "D415"]
+ignore = ["D1", "D200", "D203", "D205", "D212", "D400", "D415"]
 
 [tool.ruff.lint.isort]
 force-single-line = true
+lines-after-imports = 1
+default-section = "first-party"
+known-first-party = ["src", "tests", "etc/scripts/**/*.py"]
+known-third-party = ["click", "pytest"]
+
 sections = { django = ["django"] }
 section-order = [
     "future",

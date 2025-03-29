@@ -14,7 +14,6 @@ import zipfile
 
 import requests
 import saneyaml
-
 from packvers import version as packaging_version
 
 """

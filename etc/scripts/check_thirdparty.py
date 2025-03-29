@@ -12,7 +12,6 @@ import click
 
 import utils_thirdparty
 
-
 @click.command()
 @click.option(
     "-d",

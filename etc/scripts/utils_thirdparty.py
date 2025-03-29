@@ -91,7 +91,8 @@ Wheel downloader
 
 - parse requirement file
 - create a TODO queue of requirements to process
-- done: create an empty map of processed binary requirements as {package name: (list of versions/tags}
+- done: create an empty map of processed binary requirements as
+  {package name: (list of versions/tags}
 
 
 - while we have package reqs in TODO queue, process one requirement:

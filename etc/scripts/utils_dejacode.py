@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) nexB Inc. and others. All rights reserved.
 # ScanCode is a trademark of nexB Inc.
@@ -25,7 +24,7 @@ DEJACODE_API_URL = os.environ.get("DEJACODE_API_URL", "")
 
 DEJACODE_API_URL_PACKAGES = f"{DEJACODE_API_URL}packages/"
 DEJACODE_API_HEADERS = {
-    "Authorization": "Token {}".format(DEJACODE_API_KEY),
+    "Authorization": f"Token {DEJACODE_API_KEY}",
     "Accept": "application/json; indent=4",
 }
 
@@ -50,6 +49,7 @@ def fetch_dejacode_packages(params):
         DEJACODE_API_URL_PACKAGES,
         params=params,
         headers=DEJACODE_API_HEADERS,
+        timeout=10,
     )
 
     return response.json()["results"]
@@ -93,7 +93,7 @@ def update_with_dejacode_about_data(distribution):
     if package_data:
         package_api_url = package_data["api_url"]
         about_url = f"{package_api_url}about"
-        response = requests.get(about_url, headers=DEJACODE_API_HEADERS)
+        response = requests.get(about_url, headers=DEJACODE_API_HEADERS, timeout=10)
         # note that this is YAML-formatted
         about_text = response.json()["about_data"]
         about_data = saneyaml.load(about_text)
@@ -113,7 +113,7 @@ def fetch_and_save_about_files(distribution, dest_dir="thirdparty"):
     if package_data:
         package_api_url = package_data["api_url"]
         about_url = f"{package_api_url}about_files"
-        response = requests.get(about_url, headers=DEJACODE_API_HEADERS)
+        response = requests.get(about_url, headers=DEJACODE_API_HEADERS, timeout=10)
         about_zip = response.content
         with io.BytesIO(about_zip) as zf:
             with zipfile.ZipFile(zf) as zi:
@@ -201,6 +201,7 @@ def create_dejacode_package(distribution):
         DEJACODE_API_URL_PACKAGES,
         data=new_package_payload,
         headers=DEJACODE_API_HEADERS,
+        timeout=10,
     )
     new_package_data = response.json()
     if response.status_code != 201:

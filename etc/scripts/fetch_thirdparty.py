@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) nexB Inc. and others. All rights reserved.
 # ScanCode is a trademark of nexB Inc.
@@ -10,7 +9,6 @@
 #
 
 import itertools
-import os
 import sys
 from collections import defaultdict
 
@@ -109,7 +107,8 @@ TRACE_DEEP = False
 @click.option(
     "--use-cached-index",
     is_flag=True,
-    help="Use on disk cached PyPI indexes list of packages and versions and do not refetch if present.",
+    help="Use on disk cached PyPI indexes list of packages and versions and "
+    "do not refetch if present.",
 )
 @click.option(
     "--sdist-only",
@@ -261,7 +260,7 @@ def fetch_thirdparty(
                 if not fetched:
                     wheels_or_sdist_not_found[f"{name}=={version}"].append(environment)
                     if TRACE:
-                        print(f"      NOT FOUND")
+                        print("      NOT FOUND")
 
         if sdists or (f"{name}=={version}" in wheels_or_sdist_not_found and name in sdist_only):
             if TRACE:
@@ -276,17 +275,17 @@ def fetch_thirdparty(
             if not fetched:
                 wheels_or_sdist_not_found[f"{name}=={version}"].append("sdist")
                 if TRACE:
-                    print(f"      NOT FOUND")
+                    print("      NOT FOUND")
 
     mia = []
     for nv, dists in wheels_or_sdist_not_found.items():
         name, _, version = nv.partition("==")
         if name in no_dist:
             continue
-        sdist_missing = sdists and "sdist" in dists and not name in wheel_only
+        sdist_missing = sdists and "sdist" in dists and name not in wheel_only
         if sdist_missing:
             mia.append(f"SDist missing: {nv} {dists}")
-        wheels_missing = wheels and any(d for d in dists if d != "sdist") and not name in sdist_only
+        wheels_missing = wheels and any(d for d in dists if d != "sdist") and name not in sdist_only
         if wheels_missing:
             mia.append(f"Wheels missing: {nv} {dists}")
 
@@ -295,12 +294,12 @@ def fetch_thirdparty(
             print(m)
         raise Exception(mia)
 
-    print(f"==> FETCHING OR CREATING ABOUT AND LICENSE FILES")
+    print("==> FETCHING OR CREATING ABOUT AND LICENSE FILES")
     utils_thirdparty.fetch_abouts_and_licenses(dest_dir=dest_dir, use_cached_index=use_cached_index)
     utils_thirdparty.clean_about_files(dest_dir=dest_dir)
 
     # check for problems
-    print(f"==> CHECK FOR PROBLEMS")
+    print("==> CHECK FOR PROBLEMS")
     utils_thirdparty.find_problems(
         dest_dir=dest_dir,
         report_missing_sources=sdists,

@@ -1,4 +1,5 @@
-"""Generate and work with PEP 425 Compatibility Tags.
+"""
+Generate and work with PEP 425 Compatibility Tags.
 
 copied from pip-20.3.1 pip/_internal/utils/compatibility_tags.py
 download_url: https://github.com/pypa/pip/blob/20.3.1/src/pip/_internal/utils/compatibility_tags.py
@@ -130,7 +131,7 @@ def _get_custom_interpreter(implementation=None, version=None):
         implementation = interpreter_name()
     if version is None:
         version = interpreter_version()
-    return "{}{}".format(implementation, version)
+    return f"{implementation}{version}"
 
 
 def get_supported(
@@ -140,7 +141,8 @@ def get_supported(
     abis=None,  # type: Optional[List[str]]
 ):
     # type: (...) -> List[Tag]
-    """Return a list of supported tags for each version specified in
+    """
+    Return a list of supported tags for each version specified in
     `versions`.
 
     :param version: a string version, of the form "33" or "32",

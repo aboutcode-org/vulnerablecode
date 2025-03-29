@@ -45,6 +45,7 @@ from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
 from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
+from vulnerabilities.pipelines.rockylinux_importer import RockylinuxImporterPipeline
 from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import clean_nginx_git_tag
 from vulnerabilities.utils import get_affected_packages_by_patched_package
@@ -475,6 +476,11 @@ class RubyImprover(ValidVersionImprover):
 
 class GithubOSVImprover(ValidVersionImprover):
     importer = GithubOSVImporter
+    ignorable_versions = []
+
+
+class RockyLinuxImprover(ValidVersionImprover):
+    importer = RockylinuxImporterPipeline
     ignorable_versions = []
 
 

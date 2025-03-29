@@ -48,4 +48,4 @@ docs:
 	rm -rf docs/_build/
 	@${ACTIVATE} sphinx-build docs/ docs/_build/
 
-.PHONY: conf dev check valid black isort clean test docs
+.PHONY: conf dev check valid clean test docs

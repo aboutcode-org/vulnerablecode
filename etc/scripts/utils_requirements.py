@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) nexB Inc. and others. All rights reserved.
 # ScanCode is a trademark of nexB Inc.
@@ -40,7 +39,7 @@ def get_required_name_versions(requirement_lines, with_unpinned=False):
         req_line = req_line.strip()
         if not req_line or req_line.startswith("#"):
             continue
-        if req_line.startswith("-") or (not with_unpinned and not "==" in req_line):
+        if req_line.startswith("-") or (not with_unpinned and "==" not in req_line):
             print(f"Requirement line is not supported: ignored: {req_line}")
             continue
         yield get_required_name_version(requirement=req_line, with_unpinned=with_unpinned)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # SPDX-License-Identifier: BSD-2-Clause-Views AND MIT
 # Copyright (c) 2010 David Wolever <david@wolever.net>. All rights reserved.
@@ -132,7 +131,7 @@ def build_links_package_index(packages_by_package_name, base_url):
     Return an HTML document as string which is a links index of all packages
     """
     document = []
-    header = f"""<!DOCTYPE html>
+    header = """<!DOCTYPE html>
 <html>
   <head>
     <title>Links for all packages</title>
@@ -177,13 +176,13 @@ class Package(NamedTuple):
 
 def build_pypi_index(directory, base_url="https://thirdparty.aboutcode.org/pypi"):
     """
-    Using a ``directory`` directory of wheels and sdists, create the a PyPI
-    simple directory index at ``directory``/simple/ populated with the proper
-    PyPI simple index directory structure crafted using symlinks.
+    Create the a PyPI simple directory index using a ``directory`` directory of wheels and sdists in
+    the direvctory at ``directory``/simple/ populated with the proper PyPI simple index directory
+    structure crafted using symlinks.
 
-    WARNING: The ``directory``/simple/ directory is removed if it exists.
-    NOTE: in addition to the a PyPI simple index.html there is also a links.html
-    index file generated which is suitable to use with pip's --find-links
+    WARNING: The ``directory``/simple/ directory is removed if it exists. NOTE: in addition to the a
+    PyPI simple index.html there is also a links.html index file generated which is suitable to use
+    with pip's --find-links
     """
 
     directory = Path(directory)

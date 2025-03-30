@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
-# Copyright (c) nexB Inc. and others. All rights reserved.
+# Copyright (c) nexB Inc. AboutCode, and others. All rights reserved.
 # ScanCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/skeleton for support or download.
+# See https://github.com/aboutcode-org/skeleton for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -16,7 +15,7 @@ import subprocess
 import click
 
 
-NEXB_PUBLIC_REPO_NAMES=[
+ABOUTCODE_PUBLIC_REPO_NAMES=[
     "aboutcode-toolkit",
     "ahocode",
     "bitcode",
@@ -56,9 +55,9 @@ NEXB_PUBLIC_REPO_NAMES=[
 
 @click.command()
 @click.help_option("-h", "--help")
-def update_skeleton_files(repo_names=NEXB_PUBLIC_REPO_NAMES):
+def update_skeleton_files(repo_names=ABOUTCODE_PUBLIC_REPO_NAMES):
     """
-    Update project files of nexB projects that use the skeleton
+    Update project files of AboutCode projects that use the skeleton
 
     This script will:
     - Clone the repo
@@ -81,14 +80,14 @@ def update_skeleton_files(repo_names=NEXB_PUBLIC_REPO_NAMES):
         os.chdir(work_dir_path)
 
         # Clone repo
-        repo_git = f"git@github.com:nexB/{repo_name}.git"
+        repo_git = f"git@github.com:aboutcode-org/{repo_name}.git"
         subprocess.run(["git", "clone", repo_git])
 
         # Go into cloned repo
         os.chdir(work_dir_path / repo_name)
 
         # Add skeleton as an origin
-        subprocess.run(["git", "remote", "add", "skeleton", "git@github.com:nexB/skeleton.git"])
+        subprocess.run(["git", "remote", "add", "skeleton", "git@github.com:aboutcode-org/skeleton.git"])
 
         # Fetch skeleton files
         subprocess.run(["git", "fetch", "skeleton"])

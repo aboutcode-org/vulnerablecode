@@ -8,109 +8,59 @@ Contributing to the Documentation
 Setup Local Build
 -----------------
 
-To get started, create or identify a working directory on your local machine.
+To get started, check out and configure the repository for development::
 
-Open that directory and execute the following command in a terminal session::
+    git clone https://github.com/aboutcode-org/<your-repo>.git
 
-    git clone https://github.com/aboutcode-org/skeleton.git
+    cd your-repo
+    ./configure --dev
 
-That will create an ``/skeleton`` directory in your working directory.
-Now you can install the dependencies in a virtualenv::
-
-    cd skeleton
-    ./configure --docs
+(Or use "make dev")
 
 .. note::
 
-    In case of windows, run ``configure --docs`` instead of this.
+    In case of windows, run ``configure --dev``.
 
-Now, this will install the following prerequisites:
+This will install and configure all requirements foer development including for docs development.
 
-- Sphinx
-- sphinx_rtd_theme (the format theme used by ReadTheDocs)
-- docs8 (style linter)
-
-These requirements are already present in setup.cfg and `./configure --docs` installs them.
-
-Now you can build the HTML documents locally::
+Now you can build the HTML documentation locally::
 
     source venv/bin/activate
-    cd docs
-    make html
+    make docs
 
-Assuming that your Sphinx installation was successful, Sphinx should build a local instance of the
-documentation .html files::
+This will build a local instance of the ``docs/_build`` directory::
 
-    open build/html/index.html
+    open docs/_build/index.html
 
-.. note::
 
-    In case this command did not work, for example on Ubuntu 18.04 you may get a message like “Couldn’t
-    get a file descriptor referring to the console”, try:
+To validate the documentation style and content, use::
 
-    ::
+    source venv/bin/activate
+    make doc8
+    make docs-check
 
-        see build/html/index.html
-
-You now have a local build of the AboutCode documents.
-
-.. _contrib_doc_share_improvements:
-
-Share Document Improvements
----------------------------
-
-Ensure that you have the latest files::
-
-    git pull
-    git status
-
-Before commiting changes run Continious Integration Scripts locally to run tests. Refer
-:ref:`doc_ci` for instructions on the same.
-
-Follow standard git procedures to upload your new and modified files. The following commands are
-examples::
-
-    git status
-    git add source/index.rst
-    git add source/how-to-scan.rst
-    git status
-    git commit -m "New how-to document that explains how to scan"
-    git status
-    git push
-    git status
-
-The Scancode-Toolkit webhook with ReadTheDocs should rebuild the documentation after your
-Pull Request is Merged.
-
-Refer the `Pro Git Book <https://git-scm.com/book/en/v2/>`_ available online for Git tutorials
-covering more complex topics on Branching, Merging, Rebasing etc.
 
 .. _doc_ci:
 
 Continuous Integration
 ----------------------
 
-The documentations are checked on every new commit through Travis-CI, so that common errors are
-avoided and documentation standards are enforced. Travis-CI presently checks for these 3 aspects
-of the documentation :
+The documentations are checked on every new commit, so that common errors are avoided and
+documentation standards are enforced. We checks for these aspects of the documentation:
 
 1. Successful Builds (By using ``sphinx-build``)
-2. No Broken Links   (By Using ``link-check``)
-3. Linting Errors    (By Using ``Doc8``)
+2. No Broken Links   (By Using ``linkcheck``)
+3. Linting Errors    (By Using ``doc8``)
 
-So run these scripts at your local system before creating a Pull Request::
+You myst run these scripts locally before creating a pull request::
 
-    cd docs
-    ./scripts/sphinx_build_link_check.sh
-    ./scripts/doc8_style_check.sh
+    make doc8
+    make check-docs
 
-If you don't have permission to run the scripts, run::
-
-    chmod u+x ./scripts/doc8_style_check.sh
 
 .. _doc_style_docs8:
 
-Style Checks Using ``Doc8``
+Style Checks Using ``doc8``
 ---------------------------
 
 How To Run Style Tests
@@ -118,8 +68,7 @@ How To Run Style Tests
 
 In the project root, run the following commands::
 
-    $ cd docs
-    $ ./scripts/doc8_style_check.sh
+    make doc8
 
 A sample output is::
 
@@ -143,11 +92,13 @@ A sample output is::
 
 Now fix the errors and run again till there isn't any style error in the documentation.
 
+
 What is Checked?
 ^^^^^^^^^^^^^^^^
 
 PyCQA is an Organization for code quality tools (and plugins) for the Python programming language.
-Doc8 is a sub-project of the same Organization. Refer this `README <https://github.com/PyCQA/doc8/blob/main/README.rst>`_ for more details.
+Doc8 is a sub-project of the same Organization. Refer this 
+`README <https://github.com/PyCQA/doc8/blob/main/README.rst>`_ for more details.
 
 What is checked:
 
@@ -164,16 +115,19 @@ What is checked:
     - no carriage returns (use UNIX newlines) - D004
     - no newline at end of file - D005
 
+
 .. _doc_interspinx:
 
 Interspinx
 ----------
 
-ScanCode toolkit documentation uses `Intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
+AboutCode documentation uses
+`Intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
 to link to other Sphinx Documentations, to maintain links to other Aboutcode Projects.
 
 To link sections in the same documentation, standart reST labels are used. Refer
-`Cross-Referencing <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html>`_ for more information.
+`Cross-Referencing <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html>`_
+for more information.
 
 For example::
 
@@ -222,6 +176,7 @@ Intersphinx, and you link to that label, it will create a link to the local labe
 
 For more information, refer this tutorial named
 `Using Intersphinx <https://my-favorite-documentation-test.readthedocs.io/en/latest/using_intersphinx.html>`_.
+
 
 .. _doc_style_conv:
 
@@ -303,12 +258,14 @@ Style Conventions for the Documentaion
     ``rst_snippets/warning_snippets/`` and then included to eliminate redundancy, as these are
     frequently used in multiple files.
 
+
 Converting from Markdown
 ------------------------
 
-If you want to convert a ``.md`` file to a ``.rst`` file, this `tool <https://github.com/chrissimpkins/md2rst>`_
-does it pretty well. You'd still have to clean up and check for errors as this contains a lot of
-bugs. But this is definitely better than converting everything by yourself.
+If you want to convert a ``.md`` file to a ``.rst`` file, this
+`tool <https://github.com/chrissimpkins/md2rst>`_ does it pretty well. 
+You will still have to clean up and check for errors as this contains a lot of bugs. But this is
+definitely better than converting everything by yourself.
 
 This will be helpful in converting GitHub wiki's (Markdown Files) to reStructuredtext files for
 Sphinx/ReadTheDocs hosting.

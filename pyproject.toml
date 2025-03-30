@@ -60,10 +60,25 @@ include = [
   "src/**/*.py",
   "etc/**/*.py",
   "test/**/*.py",
+  "tests/**/*.py",
   "doc/**/*",
+  "docs/**/*",
   "*.py",
   "."
 ]
+# ignore test data and testfiles: they should never be linted nor formatted 
+exclude = [
+# main style
+  "**/tests/data/**/*",
+# scancode-toolkit
+  "**/tests/*/data/**/*",
+# dejacode, purldb
+  "**/tests/testfiles/**/*",
+# vulnerablecode, fetchcode
+  "**/tests/*/test_data/**/*",
+  "**/tests/test_data/**/*",
+]
+
 
 [tool.ruff.lint]
 # Rules: https://docs.astral.sh/ruff/rules/

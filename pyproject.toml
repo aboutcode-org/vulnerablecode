@@ -61,8 +61,8 @@ include = [
   "etc/**/*.py",
   "test/**/*.py",
   "tests/**/*.py",
-  "doc/**/*",
-  "docs/**/*",
+  "doc/**/*.py",
+  "docs/**/*.py",
   "*.py",
   "."
 ]

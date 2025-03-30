@@ -119,3 +119,10 @@ max-complexity = 10
 # Place paths of files to be ignored by ruff here
 "tests/*" = ["S101"]
 "test_*.py" = ["S101"]
+
+
+[tool.doc8]
+
+ignore-path = ["docs/build", "doc/build", "docs/_build", "doc/_build"]
+max-line-length=100
+verbose=0

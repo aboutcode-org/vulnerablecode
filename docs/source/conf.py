@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "nexb-skeleton"
-copyright = "nexB Inc. and others."
+copyright = "nexB Inc., AboutCode and others."
 author = "AboutCode.org authors and contributors"
 
 

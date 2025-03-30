@@ -147,7 +147,7 @@ What is Checked?
 ^^^^^^^^^^^^^^^^
 
 PyCQA is an Organization for code quality tools (and plugins) for the Python programming language.
-Doc8 is a sub-project of the same Organization. Refer this `README <https://github.com/PyCQA/doc8/blob/master/README.rst>`_ for more details.
+Doc8 is a sub-project of the same Organization. Refer this `README <https://github.com/PyCQA/doc8/blob/main/README.rst>`_ for more details.
 
 What is checked:
 
@@ -169,11 +169,11 @@ What is checked:
 Interspinx
 ----------
 
-ScanCode toolkit documentation uses `Intersphinx <http://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
+ScanCode toolkit documentation uses `Intersphinx <https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html>`_
 to link to other Sphinx Documentations, to maintain links to other Aboutcode Projects.
 
 To link sections in the same documentation, standart reST labels are used. Refer
-`Cross-Referencing <http://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#ref-role>`_ for more information.
+`Cross-Referencing <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html>`_ for more information.
 
 For example::
 
@@ -230,7 +230,7 @@ Style Conventions for the Documentaion
 
 1. Headings
 
-    (`Refer <http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections>`_)
+    (`Refer <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections>`_)
     Normally, there are no heading levels assigned to certain characters as the structure is
     determined from the succession of headings. However, this convention is used in Python’s Style
     Guide for documenting which you may follow:

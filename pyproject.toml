@@ -122,7 +122,5 @@ max-complexity = 10
 
 
 [tool.doc8]
-
 ignore-path = ["docs/build", "doc/build", "docs/_build", "doc/_build"]
 max-line-length=100
-verbose=0

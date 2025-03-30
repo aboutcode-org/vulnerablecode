@@ -19,7 +19,7 @@ dev:
 
 doc8:
 	@echo "-> Run doc8 validation"
-	@${ACTIVATE} doc8 docs/ *.rst
+	@${ACTIVATE} doc8 --quiet docs/ *.rst
 
 valid:
 	@echo "-> Run Ruff format"
@@ -46,6 +46,10 @@ test:
 
 docs:
 	rm -rf docs/_build/
-	@${ACTIVATE} sphinx-build docs/ docs/_build/
+	@${ACTIVATE} sphinx-build docs/source docs/_build/
 
-.PHONY: conf dev check valid clean test docs
+docs-check:
+	@${ACTIVATE} sphinx-build -E -W -b html docs/source docs/_build/
+	@${ACTIVATE} sphinx-build -E -W -b linkcheck docs/source docs/_build/
+
+.PHONY: conf dev check valid clean test docs docs-check

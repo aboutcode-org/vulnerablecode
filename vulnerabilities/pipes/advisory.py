@@ -12,13 +12,16 @@ from datetime import datetime
 from datetime import timezone
 from traceback import format_exc as traceback_format_exc
 from typing import Callable
+from typing import List
 
 from django.db import transaction
+from django.db.models.query import QuerySet
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
+from vulnerabilities.models import Alias
 from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
 from vulnerabilities.models import VulnerabilityReference
@@ -27,22 +30,33 @@ from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 
 
+def get_or_create_aliases(aliases: List) -> QuerySet:
+    for alias in aliases:
+        Alias.objects.get_or_create(alias=alias)
+    return Alias.objects.filter(alias__in=aliases)
+
+
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):
-    obj = None
+    from vulnerabilities.utils import compute_content_id
+
+    advisory_obj = None
+    aliases = get_or_create_aliases(aliases=advisory.aliases)
+    content_id = compute_content_id(advisory_data=advisory)
     try:
-        obj, _ = Advisory.objects.get_or_create(
-            aliases=advisory.aliases,
-            summary=advisory.summary,
-            affected_packages=[pkg.to_dict() for pkg in advisory.affected_packages],
-            references=[ref.to_dict() for ref in advisory.references],
-            date_published=advisory.date_published,
-            weaknesses=advisory.weaknesses,
+        advisory_obj, _ = Advisory.objects.get_or_create(
+            unique_content_id=content_id,
             url=advisory.url,
             defaults={
+                "summary": advisory.summary,
+                "affected_packages": [pkg.to_dict() for pkg in advisory.affected_packages],
+                "references": [ref.to_dict() for ref in advisory.references],
+                "date_published": advisory.date_published,
+                "weaknesses": advisory.weaknesses,
                 "created_by": pipeline_id,
                 "date_collected": datetime.now(timezone.utc),
             },
         )
+        advisory_obj.aliases.add(*aliases)
     except Exception as e:
         if logger:
             logger(
@@ -50,7 +64,7 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
                 level=logging.ERROR,
             )
 
-    return obj
+    return advisory_obj
 
 
 @transaction.atomic
@@ -82,9 +96,10 @@ def import_advisory(
         affected_purls.extend(package_affected_purls)
         fixed_purls.extend(package_fixed_purls)
 
+    aliases = get_or_create_aliases(advisory_data.aliases)
     vulnerability = import_runner.get_or_create_vulnerability_and_aliases(
         vulnerability_id=None,
-        aliases=advisory_data.aliases,
+        aliases=aliases,
         summary=advisory_data.summary,
         advisory=advisory,
     )

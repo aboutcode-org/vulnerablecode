@@ -12,6 +12,7 @@ from django.db import transaction
 
 from vulnerabilities import severity_systems
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import Alias
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
@@ -48,7 +49,6 @@ class CVEAdvisoryMappingPipeline(VulnerableCodePipeline):
         results = []
 
         for severity in progress.iter(nvd_severities.paginated(per_page=batch_size)):
-            print(severity.url)
             cve_pattern = re.compile(r"(CVE-\d{4}-\d{4,7})").search
             cve_match = cve_pattern(severity.url)
             if cve_match:
@@ -57,12 +57,10 @@ class CVEAdvisoryMappingPipeline(VulnerableCodePipeline):
                 self.log(f"Could not find CVE ID in URL: {severity.url}")
                 continue
 
-            matching_advisories = Advisory.objects.filter(
-                aliases=[cve_id],
-                created_by="nvd_importer",
-            )
+            if matching_alias := Alias.objects.get(alias=cve_id):
+                matching_advisories = matching_alias.advisories.filter(created_by="nvd_importer")
 
-            for advisory in matching_advisories:
+            for advisory in matching_advisories or []:
                 for reference in advisory.references:
                     for sev in reference.get("severities", []):
                         if sev.get("system") == "cvssv3.1":
@@ -76,7 +74,6 @@ class CVEAdvisoryMappingPipeline(VulnerableCodePipeline):
                             )
 
         if results:
-            print(results)
             self._process_batch(results)
 
         self.log(f"Completed processing CVE to Advisory mappings")

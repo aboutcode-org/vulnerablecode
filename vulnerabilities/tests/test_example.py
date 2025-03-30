@@ -76,7 +76,7 @@ class TestExampleImporter(testcase.FileBasedTesting):
         ImportRunner(ExampleImporter).run()
 
         for expected in mock_fetch_advisory_data():
-            assert models.Advisory.objects.get(aliases__contains=expected["id"])
+            assert models.Alias.objects.get(alias=expected["id"]).advisories.all()
 
     @pytest.mark.django_db(transaction=True)
     def test_improve_framework_using_example_improver(self):

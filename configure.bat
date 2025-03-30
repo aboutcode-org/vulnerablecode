@@ -28,7 +28,6 @@
 @rem # Requirement arguments passed to pip and used by default or with --dev.
 set "REQUIREMENTS=--editable . --constraint requirements.txt"
 set "DEV_REQUIREMENTS=--editable .[testing] --constraint requirements.txt --constraint requirements-dev.txt"
-set "DOCS_REQUIREMENTS=--editable .[docs] --constraint requirements.txt"
 
 @rem # where we create a virtualenv
 set "VIRTUALENV_DIR=venv"
@@ -75,9 +74,6 @@ if not "%1" == "" (
     if "%1" EQU "--clean"  (goto clean)
     if "%1" EQU "--dev"    (
         set "CFG_REQUIREMENTS=%DEV_REQUIREMENTS%"
-    )
-    if "%1" EQU "--docs"    (
-        set "CFG_REQUIREMENTS=%DOCS_REQUIREMENTS%"
     )
     shift
     goto again

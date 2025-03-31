@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -22,12 +22,10 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
-from rest_framework.throttling import UserRateThrottle
 
 from vulnerabilities.models import Alias
-from vulnerabilities.models import Kev
+from vulnerabilities.models import Exploit
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
@@ -54,12 +52,24 @@ class VulnerabilitySeveritySerializer(serializers.ModelSerializer):
 
 
 class VulnerabilityReferenceSerializer(serializers.ModelSerializer):
-    scores = VulnerabilitySeveritySerializer(many=True, source="vulnerabilityseverity_set")
+    scores = serializers.SerializerMethodField()
     reference_url = serializers.CharField(source="url")
 
     class Meta:
         model = VulnerabilityReference
         fields = ["reference_url", "reference_id", "reference_type", "scores", "url"]
+
+    def get_scores(self, instance):
+        severities_related_to_reference = [
+            severity
+            for severity in self.context.get("severities", [])
+            if severity.url == instance.url
+        ]
+
+        return VulnerabilitySeveritySerializer(
+            severities_related_to_reference,
+            many=True,
+        ).data
 
 
 class BaseResourceSerializer(serializers.HyperlinkedModelSerializer):
@@ -143,7 +153,7 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
         many=True, source="filtered_fixed_packages", read_only=True
     )
 
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    references = serializers.SerializerMethodField()
 
     aliases = serializers.SerializerMethodField()
 
@@ -151,9 +161,31 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
         # Assuming `obj.aliases` is a queryset of `Alias` objects
         return [alias.alias for alias in obj.aliases.all()]
 
+    def get_references(self, vulnerability):
+        references = vulnerability.vulnerabilityreference_set.all()
+        severities = vulnerability.severities.all()
+
+        serialized_references = VulnerabilityReferenceSerializer(
+            references,
+            context={"severities": severities},
+            many=True,
+        ).data
+
+        return serialized_references
+
     class Meta:
         model = Vulnerability
-        fields = ["url", "vulnerability_id", "summary", "references", "fixed_packages", "aliases"]
+        fields = [
+            "url",
+            "vulnerability_id",
+            "summary",
+            "references",
+            "fixed_packages",
+            "aliases",
+            "risk_score",
+            "exploitability",
+            "weighted_severity",
+        ]
 
 
 class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
@@ -175,10 +207,23 @@ class WeaknessSerializer(serializers.HyperlinkedModelSerializer):
         return representation
 
 
-class KEVSerializer(serializers.ModelSerializer):
+class ExploitSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Kev
-        fields = ["date_added", "description", "required_action", "due_date", "resources_and_notes"]
+        model = Exploit
+        fields = [
+            "date_added",
+            "description",
+            "required_action",
+            "due_date",
+            "notes",
+            "known_ransomware_campaign_use",
+            "source_date_published",
+            "exploit_type",
+            "platform",
+            "source_date_updated",
+            "data_source",
+            "source_url",
+        ]
 
 
 class VulnerabilitySerializer(BaseResourceSerializer):
@@ -186,10 +231,9 @@ class VulnerabilitySerializer(BaseResourceSerializer):
         many=True, source="filtered_fixed_packages", read_only=True
     )
     affected_packages = MinimalPackageSerializer(many=True, read_only=True)
-
-    references = VulnerabilityReferenceSerializer(many=True, source="vulnerabilityreference_set")
+    references = serializers.SerializerMethodField()
     aliases = AliasSerializer(many=True, source="alias")
-    kev = KEVSerializer(read_only=True)
+    exploits = ExploitSerializer(many=True, read_only=True)
     weaknesses = WeaknessSerializer(many=True)
     severity_range_score = serializers.SerializerMethodField()
 
@@ -199,16 +243,24 @@ class VulnerabilitySerializer(BaseResourceSerializer):
         weaknesses = data.get("weaknesses", [])
         data["weaknesses"] = [weakness for weakness in weaknesses if weakness is not None]
 
-        kev = data.get("kev", None)
-        if not kev:
-            data.pop("kev")
-
         return data
+
+    def get_references(self, vulnerability):
+        references = vulnerability.vulnerabilityreference_set.all()
+        severities = vulnerability.severities.all()
+
+        serialized_references = VulnerabilityReferenceSerializer(
+            references,
+            context={"severities": severities},
+            many=True,
+        ).data
+
+        return serialized_references
 
     def get_severity_range_score(self, instance):
         severity_vectors = []
         severity_values = set()
-        for s in instance.severities:
+        for s in instance.severities.all():
             if s.scoring_system == EPSS.identifier:
                 continue
 
@@ -240,8 +292,11 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             "affected_packages",
             "references",
             "weaknesses",
-            "kev",
+            "exploits",
             "severity_range_score",
+            "exploitability",
+            "weighted_severity",
+            "risk_score",
         ]
 
 
@@ -278,7 +333,7 @@ class PackageSerializer(BaseResourceSerializer):
                 type=package.type,
                 qualifiers=package.qualifiers,
                 subpath=package.subpath,
-                packagerelatedvulnerability__fix=True,
+                fixingpackagerelatedvulnerability__isnull=False,
             )
             .with_is_vulnerable()
             .distinct()
@@ -291,10 +346,13 @@ class PackageSerializer(BaseResourceSerializer):
         otherwise return vulnerabilities fixed by the `package`.
         """
         fixed_packages = self.get_fixed_packages(package=package)
-        qs = package.vulnerabilities.filter(packagerelatedvulnerability__fix=fix)
+        if not fix:
+            qs = package.affected_by_vulnerabilities.all()
+        else:
+            qs = package.fixing_vulnerabilities.all()
         qs = qs.prefetch_related(
             Prefetch(
-                "packages",
+                "fixed_by_packages",
                 queryset=fixed_packages,
                 to_attr="filtered_fixed_packages",
             )
@@ -309,6 +367,10 @@ class PackageSerializer(BaseResourceSerializer):
         """
         Return a mapping of vulnerabilities fixed in the given `package`.
         """
+        # Ghost package should not fix any vulnerability.
+        if package.is_ghost:
+            return []
+
         return self.get_vulnerabilities_for_a_package(package=package, fix=True)
 
     def get_affected_vulnerabilities(self, package) -> dict:
@@ -347,6 +409,7 @@ class PackageSerializer(BaseResourceSerializer):
             "latest_non_vulnerable_version",
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
+            "risk_score",
         ]
 
 
@@ -363,7 +426,6 @@ class PackageFilterSet(filters.FilterSet):
             "qualifiers",
             "subpath",
             "purl",
-            "packagerelatedvulnerability__fix",
         ]
 
     def filter_purl(self, queryset, name, value):
@@ -486,12 +548,15 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["get"])
     def all(self, request):
         """
-        Return the Package URLs of all packages known to be vulnerable.
+        Return a list of Package URLs of vulnerable packages.
         """
-        vulnerable_packages = (
-            Package.objects.vulnerable().only("package_url").distinct().with_is_vulnerable()
+        vulnerable_purls = (
+            Package.objects.vulnerable()
+            .only("package_url")
+            .order_by("package_url")
+            .distinct()
+            .values_list("package_url", flat=True)
         )
-        vulnerable_purls = [str(package.package_url) for package in vulnerable_packages]
         return Response(vulnerable_purls)
 
     @extend_schema(
@@ -578,7 +643,14 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
         Filter the packages that fixes a vulnerability
         on fields like name, namespace and type.
         """
-        return self.get_packages_qs().filter(packagerelatedvulnerability__fix=True)
+        return (
+            self.get_packages_qs()
+            .filter(
+                fixingpackagerelatedvulnerability__isnull=False,
+                is_ghost=False,
+            )
+            .with_is_vulnerable()
+        )
 
     def get_packages_qs(self):
         """
@@ -601,13 +673,12 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
             super()
             .get_queryset()
             .prefetch_related(
-                Prefetch(
-                    "packages",
-                    queryset=self.get_packages_qs(),
-                ),
                 "weaknesses",
+                "references",
+                "exploits",
+                "severities",
                 Prefetch(
-                    "packages",
+                    "fixed_by_packages",
                     queryset=self.get_fixed_packages_qs(),
                     to_attr="filtered_fixed_packages",
                 ),
@@ -628,17 +699,13 @@ class CPEFilterSet(filters.FilterSet):
         return self.queryset.filter(vulnerabilityreference__reference_id__startswith=cpe).distinct()
 
 
-class CPEViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)
-    """
+class CPEViewSet(VulnerabilityViewSet):
+    """Lookup for vulnerabilities by CPE (https://nvd.nist.gov/products/cpe)"""
 
     queryset = Vulnerability.objects.filter(
         vulnerabilityreference__reference_id__startswith="cpe"
     ).distinct()
-    serializer_class = VulnerabilitySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+
     filterset_class = CPEFilterSet
 
     @action(detail=False, methods=["post"])
@@ -673,14 +740,10 @@ class AliasFilterSet(filters.FilterSet):
         return self.queryset.filter(aliases__alias__icontains=alias)
 
 
-class AliasViewSet(viewsets.ReadOnlyModelViewSet):
+class AliasViewSet(VulnerabilityViewSet):
     """
     Lookup for vulnerabilities by vulnerability aliases such as a CVE
     (https://nvd.nist.gov/general/cve-process).
     """
 
-    queryset = Vulnerability.objects.all()
-    serializer_class = VulnerabilitySerializer
-    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]

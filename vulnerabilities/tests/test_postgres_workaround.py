@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -23,6 +23,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.models import Advisory
+from vulnerabilities.pipes.advisory import get_or_create_aliases
 
 data = AdvisoryData(
     aliases=["CVE-2020-8908", "GHSA-5mg8-w23w-74h3"],
@@ -424,8 +425,8 @@ data = AdvisoryData(
 
 @pytest.mark.django_db
 def test_postgres_workaround_with_many_references_many_affected_packages_and_long_summary():
-    Advisory.objects.get_or_create(
-        aliases=data.aliases,
+    adv, _ = Advisory.objects.get_or_create(
+        unique_content_id="test-unique-content-id",
         summary=data.summary,
         affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
         references=[ref.to_dict() for ref in data.references],
@@ -435,3 +436,4 @@ def test_postgres_workaround_with_many_references_many_affected_packages_and_lon
             "date_collected": datetime.now(tz=timezone.utc),
         },
     )
+    adv.aliases.add(*get_or_create_aliases(data.aliases))

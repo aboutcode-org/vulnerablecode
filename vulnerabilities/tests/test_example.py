@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -76,7 +76,7 @@ class TestExampleImporter(testcase.FileBasedTesting):
         ImportRunner(ExampleImporter).run()
 
         for expected in mock_fetch_advisory_data():
-            assert models.Advisory.objects.get(aliases__contains=expected["id"])
+            assert models.Alias.objects.get(alias=expected["id"]).advisories.all()
 
     @pytest.mark.django_db(transaction=True)
     def test_improve_framework_using_example_improver(self):
@@ -85,8 +85,8 @@ class TestExampleImporter(testcase.FileBasedTesting):
         ImproveRunner(improver_class=ExampleAliasImprover).run()
 
         assert models.Package.objects.count() == 3
-        assert models.PackageRelatedVulnerability.objects.filter(fix=True).count() == 1
-        assert models.PackageRelatedVulnerability.objects.filter(fix=False).count() == 2
+        assert models.FixingPackageRelatedVulnerability.objects.count() == 1
+        assert models.AffectedByPackageRelatedVulnerability.objects.count() == 2
         assert models.VulnerabilitySeverity.objects.count() == 1
         assert models.VulnerabilityReference.objects.count() == 1
 

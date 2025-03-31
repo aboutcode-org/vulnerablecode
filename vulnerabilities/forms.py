@@ -3,12 +3,14 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
 from django import forms
 from django.core.validators import validate_email
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Checkbox
 
 from vulnerabilities.models import ApiUser
 
@@ -37,6 +39,10 @@ class ApiUserCreationForm(forms.ModelForm):
     """
     Support a simplified creation for API-only users directly from the UI.
     """
+
+    captcha = ReCaptchaField(
+        error_messages={"required": ("Captcha is required")}, widget=ReCaptchaV2Checkbox
+    )
 
     class Meta:
         model = ApiUser

@@ -3,12 +3,13 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
 import dataclasses
 import datetime
+import functools
 import logging
 import os
 import shutil
@@ -46,7 +47,8 @@ from vulnerabilities.utils import update_purl_version
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(order=True)
+@dataclasses.dataclass(eq=True)
+@functools.total_ordering
 class VulnerabilitySeverity:
     # FIXME: this should be named scoring_system, like in the model
     system: ScoringSystem
@@ -55,15 +57,26 @@ class VulnerabilitySeverity:
     published_at: Optional[datetime.datetime] = None
 
     def to_dict(self):
-        published_at_dict = (
-            {"published_at": self.published_at.isoformat()} if self.published_at else {}
-        )
-        return {
+        data = {
             "system": self.system.identifier,
             "value": self.value,
             "scoring_elements": self.scoring_elements,
-            **published_at_dict,
         }
+        if self.published_at:
+            if isinstance(self.published_at, datetime.datetime):
+                data["published_at"] = self.published_at.isoformat()
+            else:
+                data["published_at"] = self.published_at
+        return data
+
+    def __lt__(self, other):
+        if not isinstance(other, VulnerabilitySeverity):
+            return NotImplemented
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (self.system.identifier, self.value, self.scoring_elements, self.published_at)
 
     @classmethod
     def from_dict(cls, severity: dict):
@@ -79,7 +92,8 @@ class VulnerabilitySeverity:
         )
 
 
-@dataclasses.dataclass(order=True)
+@dataclasses.dataclass(eq=True)
+@functools.total_ordering
 class Reference:
     reference_id: str = ""
     reference_type: str = ""
@@ -89,29 +103,32 @@ class Reference:
     def __post_init__(self):
         if not self.url:
             raise TypeError("Reference must have a url")
+        if self.reference_id and not isinstance(self.reference_id, str):
+            self.reference_id = str(self.reference_id)
 
-    def normalized(self):
-        severities = sorted(self.severities)
-        return Reference(
-            reference_id=self.reference_id,
-            url=self.url,
-            severities=severities,
-            reference_type=self.reference_type,
-        )
+    def __lt__(self, other):
+        if not isinstance(other, Reference):
+            return NotImplemented
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (self.reference_id, self.reference_type, self.url, tuple(self.severities))
 
     def to_dict(self):
+        """Return a normalized dictionary representation"""
         return {
             "reference_id": self.reference_id,
             "reference_type": self.reference_type,
             "url": self.url,
-            "severities": [severity.to_dict() for severity in self.severities],
+            "severities": [severity.to_dict() for severity in sorted(self.severities)],
         }
 
     @classmethod
     def from_dict(cls, ref: dict):
         return cls(
-            reference_id=ref["reference_id"],
-            reference_type=ref["reference_type"],
+            reference_id=str(ref["reference_id"]),
+            reference_type=ref.get("reference_type") or "",
             url=ref["url"],
             severities=[
                 VulnerabilitySeverity.from_dict(severity) for severity in ref["severities"]
@@ -140,7 +157,8 @@ class NoAffectedPackages(Exception):
     """
 
 
-@dataclasses.dataclass(order=True, frozen=True)
+@functools.total_ordering
+@dataclasses.dataclass(eq=True)
 class AffectedPackage:
     """
     Relate a Package URL with a range of affected versions and a fixed version.
@@ -169,6 +187,19 @@ class AffectedPackage:
         if not self.fixed_version:
             raise ValueError(f"Affected Package {self.package!r} does not have a fixed version")
         return update_purl_version(purl=self.package, version=str(self.fixed_version))
+
+    def __lt__(self, other):
+        if not isinstance(other, AffectedPackage):
+            return NotImplemented
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (
+            str(self.package),
+            str(self.affected_version_range or ""),
+            str(self.fixed_version or ""),
+        )
 
     @classmethod
     def merge(
@@ -223,17 +254,29 @@ class AffectedPackage:
         """
         package = PackageURL(**affected_pkg["package"])
         affected_version_range = None
-        if (
-            affected_pkg["affected_version_range"]
-            and affected_pkg["affected_version_range"] != "None"
-        ):
-            affected_version_range = VersionRange.from_string(
-                affected_pkg["affected_version_range"]
-            )
+        affected_range = affected_pkg["affected_version_range"]
+
+        # TODO: "None" is a likely bug
+        if affected_range and affected_range != "None":
+            try:
+                affected_version_range = VersionRange.from_string(affected_range)
+            except:
+                tb = traceback.format_exc()
+                logger.error(
+                    f"Cannot create AffectedPackage with invalid or unknown range: {affected_pkg!r} with error: {tb!r}"
+                )
+                return
+
         fixed_version = affected_pkg["fixed_version"]
         if fixed_version and affected_version_range:
             # TODO: revisit after https://github.com/nexB/univers/issues/10
             fixed_version = affected_version_range.version_class(fixed_version)
+
+        if not fixed_version and not affected_version_range:
+            logger.error(
+                f"Cannot create AffectedPackage without fixed version or affected range: {affected_pkg!r}"
+            )
+            return
 
         return cls(
             package=package,
@@ -295,7 +338,9 @@ class AdvisoryData:
             "aliases": advisory_data["aliases"],
             "summary": advisory_data["summary"],
             "affected_packages": [
-                AffectedPackage.from_dict(pkg) for pkg in advisory_data["affected_packages"]
+                AffectedPackage.from_dict(pkg)
+                for pkg in advisory_data["affected_packages"]
+                if pkg is not None
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
             "date_published": datetime.datetime.fromisoformat(date_published)

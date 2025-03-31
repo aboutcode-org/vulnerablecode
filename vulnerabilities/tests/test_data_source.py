@@ -3,7 +3,7 @@
 # VulnerableCode is a trademark of nexB Inc.
 # SPDX-License-Identifier: Apache-2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
-# See https://github.com/nexB/vulnerablecode for support or download.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
@@ -22,11 +22,8 @@ from vulnerabilities.importers.elixir_security import ElixirSecurityImporter
 from vulnerabilities.importers.fireeye import FireyeImporter
 from vulnerabilities.importers.gentoo import GentooImporter
 from vulnerabilities.importers.github_osv import GithubOSVImporter
-from vulnerabilities.importers.gitlab import GitLabAPIImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.mozilla import MozillaImporter
-from vulnerabilities.importers.npm import NpmImporter
-from vulnerabilities.importers.pypa import PyPaImporter
 from vulnerabilities.importers.retiredotnet import RetireDotnetImporter
 from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.oval_parser import OvalParser
@@ -119,12 +116,9 @@ def test_git_importer(mock_clone):
         ElixirSecurityImporter,
         FireyeImporter,
         GentooImporter,
-        GitLabAPIImporter,
         IstioImporter,
         MozillaImporter,
-        NpmImporter,
         RetireDotnetImporter,
-        PyPaImporter,
         RubyImporter,
         GithubOSVImporter,
     ],

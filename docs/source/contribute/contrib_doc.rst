@@ -97,7 +97,7 @@ What is Checked?
 ^^^^^^^^^^^^^^^^
 
 PyCQA is an Organization for code quality tools (and plugins) for the Python programming language.
-Doc8 is a sub-project of the same Organization. Refer this 
+Doc8 is a sub-project of the same Organization. Refer this
 `README <https://github.com/PyCQA/doc8/blob/main/README.rst>`_ for more details.
 
 What is checked:
@@ -263,7 +263,7 @@ Converting from Markdown
 ------------------------
 
 If you want to convert a ``.md`` file to a ``.rst`` file, this
-`tool <https://github.com/chrissimpkins/md2rst>`_ does it pretty well. 
+`tool <https://github.com/chrissimpkins/md2rst>`_ does it pretty well.
 You will still have to clean up and check for errors as this contains a lot of bugs. But this is
 definitely better than converting everything by yourself.
 

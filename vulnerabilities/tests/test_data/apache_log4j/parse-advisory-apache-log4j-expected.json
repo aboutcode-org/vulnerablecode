@@ -1,0 +1,421 @@
+[
+  {
+    "aliases": [
+      "CVE-2017-5645"
+    ],
+    "summary": "When using the TCP socket server or UDP socket server to receive serialized log events from another application, a specially crafted binary payload can be sent that, when deserialized, can execute arbitrary code.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.0-alpha1|2.0-beta1|2.0-beta2|2.0-beta3|2.0-beta4|2.0-beta5|2.0-beta6|2.0-beta7|2.0-beta8|2.0-beta9|2.0-rc1|2.0-rc2|2.0|2.0.1|2.0.2|2.1|2.2|2.3|2.3.1|2.3.2|2.4|2.4.1|2.5|2.6|2.6.1|2.6.2|2.7|2.8|2.8.1",
+        "fixed_version": "2.8.2"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2017-5645",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-5645",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2017-5645",
+        "reference_type": "",
+        "url": "https://logging.apache.org/security.html#CVE-2017-5645",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator?vector=(AV:N/AC:L/Au:N/C:P/I:P/A:P)&version=2.0",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "7.5",
+            "scoring_elements": "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+          }
+        ]
+      }
+    ],
+    "date_published": "2017-04-17T00:00:00+00:00",
+    "weaknesses": [
+      502
+    ],
+    "url": "https://logging.apache.org/security.html#CVE-2017-5645"
+  },
+  {
+    "aliases": [
+      "CVE-2020-9488"
+    ],
+    "summary": "Improper validation of certificate with host mismatch in SMTP appender.\nThis could allow an SMTPS connection to be intercepted by a man-in-the-middle attack which could leak any log\nmessages sent through that appender.\n\nThe reported issue was caused by an error in `SslConfiguration`.\nAny element using `SslConfiguration` in the Log4j `Configuration` is also affected by this issue.\nThis includes `HttpAppender`, `SocketAppender`, and `SyslogAppender`.\nUsages of `SslConfiguration` that are configured via system properties are not affected.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.13.1",
+        "fixed_version": "2.13.2"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.0-beta1|2.0-beta2|2.0-beta3|2.0-beta4|2.0-beta5|2.0-beta6|2.0-beta7|2.0-beta8|2.0-beta9|2.0-rc1|2.0-rc2|2.0|2.0.1|2.0.2|2.1|2.2|2.3|2.3.1|2.3.2|2.4|2.4.1|2.5|2.6|2.6.1|2.6.2|2.7|2.8|2.8.1|2.8.2|2.9.0|2.9.1|2.10.0|2.11.0|2.11.1|2.11.2|2.12.0|2.12.1|2.12.2",
+        "fixed_version": "2.12.3"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2020-9488",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-9488",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2020-9488",
+        "reference_type": "",
+        "url": "https://logging.apache.org/security.html#CVE-2020-9488",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "3.7",
+            "scoring_elements": "AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          }
+        ]
+      }
+    ],
+    "date_published": "2017-04-27T00:00:00+00:00",
+    "weaknesses": [
+      295
+    ],
+    "url": "https://logging.apache.org/security.html#CVE-2020-9488"
+  },
+  {
+    "aliases": [
+      "CVE-2021-44228"
+    ],
+    "summary": "In Log4j, the JNDI features used in configurations, log messages, and parameters do not protect against attacker-controlled LDAP and other JNDI related endpoints.\nAn attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.0-beta9|2.0-rc1|2.0-rc2|2.0|2.0.1|2.0.2|2.1|2.2|2.3",
+        "fixed_version": "2.3.1"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.13.0|2.13.1|2.13.2|2.13.3|2.14.0|2.14.1|2.15.0|2.15.1|2.16.0",
+        "fixed_version": "2.17.0"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.4|2.4.1|2.5|2.6|2.6.1|2.6.2|2.7|2.8|2.8.1|2.8.2|2.9.0|2.9.1|2.10.0|2.11.0|2.11.1|2.11.2|2.12.0|2.12.1|2.12.2",
+        "fixed_version": "2.12.3"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2021-44228",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2021-44228",
+        "reference_type": "",
+        "url": "https://logging.apache.org/security.html#CVE-2021-44228",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "10.0",
+            "scoring_elements": "AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
+          }
+        ]
+      }
+    ],
+    "date_published": "2021-12-10T00:00:00+00:00",
+    "weaknesses": [
+      20,
+      400,
+      502,
+      917
+    ],
+    "url": "https://logging.apache.org/security.html#CVE-2021-44228"
+  },
+  {
+    "aliases": [
+      "CVE-2021-44832"
+    ],
+    "summary": "An attacker with write access to the logging configuration can construct a malicious configuration using a JDBC Appender with a data source referencing a JNDI URI which can execute remote code.\nThis issue is fixed by limiting JNDI data source names to the `java` protocol.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.0-beta7|2.0-beta8|2.0-beta9|2.0-rc1|2.0-rc2|2.0|2.0.1|2.0.2|2.1|2.2|2.3|2.3.1",
+        "fixed_version": "2.3.2"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.13.0|2.13.1|2.13.2|2.13.3|2.14.0|2.14.1|2.15.0|2.15.1|2.16.0|2.17.0",
+        "fixed_version": "2.17.1"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.4|2.4.1|2.5|2.6|2.6.1|2.6.2|2.7|2.8|2.8.1|2.8.2|2.9.0|2.9.1|2.10.0|2.11.0|2.11.1|2.11.2|2.12.0|2.12.1|2.12.2|2.12.3",
+        "fixed_version": "2.12.4"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2021-44832",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-44832",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2021-44832",
+        "reference_type": "",
+        "url": "https://logging.apache.org/security.html#CVE-2021-44832",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "6.6",
+            "scoring_elements": "AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H"
+          }
+        ]
+      }
+    ],
+    "date_published": "2021-12-28T00:00:00+00:00",
+    "weaknesses": [
+      20,
+      74
+    ],
+    "url": "https://logging.apache.org/security.html#CVE-2021-44832"
+  },
+  {
+    "aliases": [
+      "CVE-2021-45046"
+    ],
+    "summary": "It was found that the fix to address CVE-2021-44228 in Log4j `2.15.0` was incomplete in certain non-default configurations.\nWhen the logging configuration uses a non-default Pattern Layout with a Thread Context Lookup (for example, `$${ctx:loginId}`), attackers with control over Thread Context Map (MDC) can craft malicious input data using a JNDI Lookup pattern, resulting in an information leak and remote code execution in some environments and local code execution in all environments.\nRemote code execution has been demonstrated on macOS, Fedora, Arch Linux, and Alpine Linux.\n\nNote that this vulnerability is not limited to just the JNDI lookup.\nAny other Lookup could also be included in a Thread Context Map variable and possibly have private details exposed to anyone with access to the logs.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.0-beta9|2.0-rc1|2.0-rc2|2.0|2.0.1|2.0.2|2.1|2.2|2.3",
+        "fixed_version": "2.3.1"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.13.0|2.13.1|2.13.2|2.13.3|2.14.0|2.14.1|2.15.0|2.15.1|2.16.0",
+        "fixed_version": "2.17.0"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.4|2.4.1|2.5|2.6|2.6.1|2.6.2|2.7|2.8|2.8.1|2.8.2|2.9.0|2.9.1|2.10.0|2.11.0|2.11.1|2.11.2|2.12.0|2.12.1|2.12.2",
+        "fixed_version": "2.12.3"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2021-45046",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-45046",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2021-45046",
+        "reference_type": "",
+        "url": "https://logging.apache.org/security.html#CVE-2021-45046",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "9.0",
+            "scoring_elements": "AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H"
+          }
+        ]
+      }
+    ],
+    "date_published": "2021-12-14T00:00:00+00:00",
+    "weaknesses": [
+      917
+    ],
+    "url": "https://logging.apache.org/security.html#CVE-2021-45046"
+  },
+  {
+    "aliases": [
+      "CVE-2021-45105"
+    ],
+    "summary": "Log4j versions `2.0-alpha1` through `2.16.0` (excluding `2.3.1` and `2.12.3`), did not protect from uncontrolled recursion that can be implemented using self-referential lookups.\nWhen the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, `$${ctx:loginId}`), attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup, resulting in a `StackOverflowError` that will terminate the process.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.0-alpha1|2.0-beta1|2.0-beta2|2.0-beta3|2.0-beta4|2.0-beta5|2.0-beta6|2.0-beta7|2.0-beta8|2.0-beta9|2.0-rc1|2.0-rc2|2.0|2.0.1|2.0.2|2.1|2.2|2.3",
+        "fixed_version": "2.3.1"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.13.0|2.13.1|2.13.2|2.13.3|2.14.0|2.14.1|2.15.0|2.15.1|2.16.0",
+        "fixed_version": "2.17.0"
+      },
+      {
+        "package": {
+          "type": "apache",
+          "namespace": "",
+          "name": "log4j-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.4|2.4.1|2.5|2.6|2.6.1|2.6.2|2.7|2.8|2.8.1|2.8.2|2.9.0|2.9.1|2.10.0|2.11.0|2.11.1|2.11.2|2.12.0|2.12.1|2.12.2",
+        "fixed_version": "2.12.3"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2021-45105",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-45105",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2021-45105",
+        "reference_type": "",
+        "url": "https://logging.apache.org/security.html#CVE-2021-45105",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H&version=3.1",
+        "severities": [
+          {
+            "system": "cvssv3",
+            "value": "5.9",
+            "scoring_elements": "AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          }
+        ]
+      }
+    ],
+    "date_published": "2021-12-18T00:00:00+00:00",
+    "weaknesses": [
+      20,
+      674
+    ],
+    "url": "https://logging.apache.org/security.html#CVE-2021-45105"
+  }
+]

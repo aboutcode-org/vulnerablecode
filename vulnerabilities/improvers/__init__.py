@@ -30,6 +30,7 @@ IMPROVERS_REGISTRY = [
     valid_versions.NpmImprover,
     valid_versions.ElixirImprover,
     valid_versions.ApacheTomcatImprover,
+    valid_versions.Log4jImprover,
     valid_versions.ApacheKafkaImprover,
     valid_versions.IstioImprover,
     valid_versions.DebianOvalImprover,

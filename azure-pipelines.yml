@@ -9,6 +9,14 @@ jobs:
 
     - template: etc/ci/azure-posix.yml
       parameters:
+          job_name: run_code_checks
+          image_name: ubuntu-24.04
+          python_versions: ['3.12']
+          test_suites:
+              all: make check
+
+    - template: etc/ci/azure-posix.yml
+      parameters:
           job_name: ubuntu22_cpython
           image_name: ubuntu-22.04
           python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']

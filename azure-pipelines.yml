@@ -26,7 +26,23 @@ jobs:
     - template: etc/ci/azure-posix.yml
       parameters:
           job_name: macos13_cpython
+          image_name: macOS-13-xlarge
+          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          test_suites:
+              all: venv/bin/pytest -n 2 -vvs
+
+    - template: etc/ci/azure-posix.yml
+      parameters:
+          job_name: macos13_cpython_arm64
           image_name: macOS-13
+          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          test_suites:
+              all: venv/bin/pytest -n 2 -vvs
+
+    - template: etc/ci/azure-posix.yml
+      parameters:
+          job_name: macos14_cpython
+          image_name: macOS-14-large
           python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
           test_suites:
               all: venv/bin/pytest -n 2 -vvs
@@ -41,8 +57,16 @@ jobs:
 
     - template: etc/ci/azure-posix.yml
       parameters:
-          job_name: macos14_cpython
-          image_name: macOS-14-large
+          job_name: macos15_cpython
+          image_name: macOS-15
+          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          test_suites:
+              all: venv/bin/pytest -n 2 -vvs
+
+    - template: etc/ci/azure-posix.yml
+      parameters:
+          job_name: macos15_cpython_arm64
+          image_name: macOS-15-large
           python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
           test_suites:
               all: venv/bin/pytest -n 2 -vvs
@@ -59,6 +83,14 @@ jobs:
       parameters:
           job_name: win2022_cpython
           image_name: windows-2022
+          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          test_suites:
+              all: venv\Scripts\pytest -n 2 -vvs
+
+    - template: etc/ci/azure-win.yml
+      parameters:
+          job_name: win2025_cpython
+          image_name: windows-2025
           python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
           test_suites:
               all: venv\Scripts\pytest -n 2 -vvs

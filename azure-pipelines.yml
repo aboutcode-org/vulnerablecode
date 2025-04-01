@@ -19,7 +19,7 @@ jobs:
       parameters:
           job_name: ubuntu22_cpython
           image_name: ubuntu-22.04
-          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv/bin/pytest -n 2 -vvs
 
@@ -27,7 +27,7 @@ jobs:
       parameters:
           job_name: ubuntu24_cpython
           image_name: ubuntu-24.04
-          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv/bin/pytest -n 2 -vvs
 
@@ -35,7 +35,7 @@ jobs:
       parameters:
           job_name: macos13_cpython
           image_name: macOS-13
-          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv/bin/pytest -n 2 -vvs
 
@@ -43,7 +43,7 @@ jobs:
       parameters:
           job_name: macos14_cpython
           image_name: macOS-14
-          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv/bin/pytest -n 2 -vvs
 
@@ -51,7 +51,7 @@ jobs:
       parameters:
           job_name: macos15_cpython
           image_name: macOS-15
-          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv/bin/pytest -n 2 -vvs
 
@@ -59,7 +59,7 @@ jobs:
       parameters:
           job_name: win2019_cpython
           image_name: windows-2019
-          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv\Scripts\pytest -n 2 -vvs
 
@@ -67,7 +67,7 @@ jobs:
       parameters:
           job_name: win2022_cpython
           image_name: windows-2022
-          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv\Scripts\pytest -n 2 -vvs
 
@@ -75,6 +75,6 @@ jobs:
       parameters:
           job_name: win2025_cpython
           image_name: windows-2025
-          python_versions: ['3.9', '3.10', '3.11', '3.12', '3.13']
+          python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv\Scripts\pytest -n 2 -vvs

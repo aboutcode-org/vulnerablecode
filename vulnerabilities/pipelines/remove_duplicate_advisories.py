@@ -49,15 +49,16 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
         )
 
         for advisory in progress.iter(advisories):
-            content_id = compute_content_id(advisory.to_advisory_data())
+            # content_id = compute_content_id(advisory.to_advisory_data())
 
+            content_id = advisory.unique_content_id
             if content_id in content_ids:
                 duplicate_advisory_ids.append(advisory.id)
             else:
                 content_ids.add(content_id)
-                if advisory.unique_content_id != content_id:
-                    advisory.unique_content_id = content_id
-                    advisories_to_update.append(advisory)
+                # if advisory.unique_content_id != content_id:
+                #     advisory.unique_content_id = content_id
+                #     advisories_to_update.append(advisory)
 
             if len(duplicate_advisory_ids) > delete_batch_size:
                 deleted_advisories_count += delete_advisories(

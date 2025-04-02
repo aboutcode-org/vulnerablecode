@@ -47,74 +47,54 @@ class ApacheCamelImporterPipeline(VulnerableCodeBaseImporterPipeline):
 
     def __init__(self):
         super().__init__()
-        self.raw_data = None
 
     @classmethod
     def steps(cls):
         return (
-            cls.fetch_html_response,
             cls.collect_and_store_advisories,
             cls.import_new_advisories,
         )
 
-    # fetch the html content and saves in raw_data
-    def fetch_html_response(self):
-        try:
-            response = fetch_response(self.root_url).content
-            self.raw_data = BeautifulSoup(response, "html.parser")
-        except:
-            logger.error(f"Failed to fetch URL {self.root_url}")
 
-    # num of advisories
     def advisories_count(self) -> int:
-        return fetch_count_advisories(self.raw_data)
+        return fetch_count_advisories(self.root_url)
 
-    # parse the response data
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        adv_data = fetch_advisory_data(self.raw_data)
+        adv_data = fetch_advisory_data(self.root_url)
         for data in adv_data:
             yield to_advisory_data(data)
 
 
-# fetch the html content
-def fetch_html_response(url):
-    try:
-        response = fetch_response(url).content
-        soup = BeautifulSoup(response, "html.parser")
-        return soup
-    except:
-        logger.error(f"Failed to fetch URL {url}")
 
+def fetch_count_advisories(url):
+    """Return the count of advisories"""
 
-def fetch_count_advisories(soup):
-    # soup = fetch_html_response(url)
+    response = fetch_response(url).content
+    soup = BeautifulSoup(response, "html.parser")
     table = soup.find("tbody")
     advisory_len = len(table.find_all("tr"))
+
     return advisory_len
 
 
-# fetch the content from the html data
-def fetch_advisory_data(soup):
-    advisories = []
-    # soup = fetch_html_response(url)
+def fetch_advisory_data(url):
+    """Fetch advisory data from the table and return a list containing all the advisories"""
+    response = fetch_response(url).content
+    soup = BeautifulSoup(response, "html.parser")
 
-    # Find the table containing the security advisories,ignoring the thead
     table = soup.find("tbody")
 
-    # Initialize a list to store the extracted data
     advisories = []
 
-    # Iterate through each row in the table
     for row in table.find_all("tr"):
         columns = row.find_all("td")
-        if len(columns) == 5:  # Ensure it's a row with data (not headers or empty rows)
+        if len(columns) == 5:  #Ensure it's a row with data (not headers or empty rows)
             reference = columns[0].text.strip()
             affected = columns[1].text.strip()
             fixed = columns[2].text.strip()
             score = columns[3].text.strip()
             description = columns[4].text.strip()
 
-            # Append the extracted data to the list
             advisories.append(
                 {
                     "Reference": reference,
@@ -130,10 +110,16 @@ def fetch_advisory_data(soup):
 
 def to_advisory_data(raw_data) -> AdvisoryData:
     """Parses extracted data to Advisory Data"""
-    # alias
+ 
     alias = get_item(raw_data, "Reference")
 
-    # affected packages
+    version_pattern = re.compile(r"\b\d+\.\d+\.\d+\b")
+    fixed_version_out = get_item(raw_data, "Fixed")
+    fixed_versions = []
+    for fixed_version in version_pattern.findall(fixed_version_out):
+        fixed_versions.append(MavenVersion(fixed_version))
+    print(fixed_versions)
+
     affected_packages = []
     affected_package_string = get_item(raw_data, "Affected")
     affected_package = parse_apache_camel_versions(affected_package_string)
@@ -145,18 +131,15 @@ def to_advisory_data(raw_data) -> AdvisoryData:
                 name="camel",
             ),
             affected_version_range=affected_package,
+            fixed_version=fixed_versions
         )
     )
 
-    # fixed versions
-    version_pattern = re.compile(r"\b\d+\.\d+\.\d+\b")
-    fixed_version_out = get_item(raw_data, "Fixed")
-    fixed_versions = version_pattern.findall(fixed_version_out)
 
-    # score
-    score = get_item(raw_data, "Score")  # words not numbers
+    score = get_item(raw_data, "Score")
     severity = VulnerabilitySeverity(system=SCORING_SYSTEMS["generic_textual"], value=score)
-    # Reference
+    
+
     references = []
     references.append(
         Reference(
@@ -166,7 +149,7 @@ def to_advisory_data(raw_data) -> AdvisoryData:
         )
     )
 
-    # description
+
     description = get_item(raw_data, "Description")
 
     return AdvisoryData(
@@ -219,3 +202,8 @@ def parse_apache_camel_versions(version_string):
         )
 
     return MavenVersionRange(constraints=version_ranges)
+
+
+imp = ApacheCamelImporterPipeline()
+adv = imp.collect_advisories()
+print(next(adv))

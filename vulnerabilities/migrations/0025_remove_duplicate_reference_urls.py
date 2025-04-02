@@ -4,9 +4,8 @@ from django.db.models import Max
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('vulnerabilities', '0024_alter_all_models_to_add_ordering'),
+        ("vulnerabilities", "0024_alter_all_models_to_add_ordering"),
     ]
 
     def remove_duplicate_reference_urls(apps, _):
@@ -30,8 +29,7 @@ class Migration(migrations.Migration):
             # exclude the latest one
             # and delete rest of them
             (
-                VulnerabilityReference.objects
-                .filter(url=duplicate["url"])
+                VulnerabilityReference.objects.filter(url=duplicate["url"])
                 .exclude(id=duplicate["max_id"])
                 .delete()
             )

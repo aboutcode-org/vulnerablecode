@@ -50,7 +50,7 @@ Available classes:
     - OvalElement:    the base class for OVAL elements.  Implements a few common methods inherited
     by the subclasses for definition, test, state, object, and variable
 
-    - OvalDefinition:    a type of OVAL element with certain attributes available. 
+    - OvalDefinition:    a type of OVAL element with certain attributes available.
 
     Additional classes used by the OvalDefinition class:
         - OvalMetadata:    the metadata associated with a definition, which includes the definition
@@ -428,7 +428,7 @@ class OvalDocument(object):
         """
         Return an OvalElement of the appropriate class (OvalDefinition, OvalTest, ...)
         or None if there is no ElementTree or if a matching item could not be found
- 
+
         Use the ovalid argument to determine what type of element is being referenced and locate
         that element in the OVAL ElementTree.
 
@@ -923,7 +923,7 @@ class OvalElement(object):
         @type path: string
         @param path: The path to the file to write
         @type with_xml_declaration: boolean
-        
+
         @param with_xml_declaration: True to include the XML declaration at the top of the file (the
         default), or False to exclude it
 
@@ -1102,7 +1102,6 @@ class OvalDefinition(OvalElement):
             return None
 
         return self.xpath("//@*[name()='definition_ref' or name()='test_ref'")
-
 
     def get_last_status_change(self):
         """

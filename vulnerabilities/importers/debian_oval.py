@@ -17,7 +17,6 @@ from vulnerabilities.importer import OvalImporter
 
 
 class DebianOvalImporter(OvalImporter):
-
     spdx_license_expression = "LicenseRef-scancode-other-permissive"
     license_url = "https://www.debian.org/license"
     notice = """

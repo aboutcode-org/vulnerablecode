@@ -68,9 +68,9 @@ class Inference:
             if purl and not purl.version:
                 versionless_purls.append(purl)
 
-        assert (
-            not versionless_purls
-        ), f"Version-less purls are not supported in an Inference: {versionless_purls}"
+        assert not versionless_purls, (
+            f"Version-less purls are not supported in an Inference: {versionless_purls}"
+        )
 
     def to_dict(self):
         """

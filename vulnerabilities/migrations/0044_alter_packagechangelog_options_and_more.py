@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0043_alter_advisory_unique_together_advisory_url_and_more"),
     ]

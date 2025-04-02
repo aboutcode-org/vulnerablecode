@@ -56,14 +56,13 @@ class CollectFixCommitsPipelineTests(TestCase):
             assert is_vcs_url(url) is False
 
     def test_normalize_vcs_url(self):
-
         assert (
             normalize_vcs_url("git@github.com:user/repo.git") == "https://github.com/user/repo.git"
         )
         assert normalize_vcs_url("github:user/repo") == "https://github.com/user/repo"
-        assert normalize_vcs_url(
+        assert normalize_vcs_url("https://github.com/user/repo.git"), (
             "https://github.com/user/repo.git"
-        ), "https://github.com/user/repo.git"
+        )
 
     def test_is_vcs_url_already_processed(self):
         CodeFix.objects.create(

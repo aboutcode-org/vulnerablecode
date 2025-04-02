@@ -106,7 +106,6 @@ class IstioImporter(Importer):
                 )
 
         for cve_id in data.get("cves") or []:
-
             if not cve_id.startswith("CVE"):
                 continue
 

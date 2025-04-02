@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0084_alter_package_options_package_version_rank"),
     ]

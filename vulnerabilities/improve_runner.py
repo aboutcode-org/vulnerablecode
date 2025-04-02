@@ -96,7 +96,6 @@ def process_inferences(
             continue
 
         for ref in inference.references:
-
             reference = VulnerabilityReference.objects.get_or_none(
                 reference_id=ref.reference_id,
                 reference_type=ref.reference_type,

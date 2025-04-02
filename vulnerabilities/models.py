@@ -1100,9 +1100,9 @@ class Package(PackageURLMixin):
                     next_fixed_package_vulns = list(fixed_by_pkg.affected_by)
 
                     fixed_by_package_details["fixed_by_purl"] = fixed_by_purl
-                    fixed_by_package_details[
-                        "fixed_by_purl_vulnerabilities"
-                    ] = next_fixed_package_vulns
+                    fixed_by_package_details["fixed_by_purl_vulnerabilities"] = (
+                        next_fixed_package_vulns
+                    )
                     fixed_by_pkgs.append(fixed_by_package_details)
 
                     vuln_details["fixed_by_package_details"] = fixed_by_pkgs
@@ -1234,7 +1234,6 @@ class FixingPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
 
 
 class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
-
     severities = models.ManyToManyField(
         VulnerabilitySeverity,
         related_name="affected_package_vulnerability_relations",

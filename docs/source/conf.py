@@ -77,4 +77,3 @@ html_css_files = [
 ]
 
 master_doc = "index"
-

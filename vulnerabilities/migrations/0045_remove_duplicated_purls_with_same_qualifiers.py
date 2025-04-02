@@ -7,7 +7,6 @@ from django.db.models import Count
 
 
 class Migration(migrations.Migration):
-
     def remove_dupes(apps, schema_editor):
         """
         Remove duplicated Package with the same purl and the same "serialized"
@@ -20,8 +19,7 @@ class Migration(migrations.Migration):
         Package = apps.get_model("vulnerabilities", "Package")
 
         duplicates = (
-            Package.objects
-            .exclude(qualifiers__in=("", None, {}))
+            Package.objects.exclude(qualifiers__in=("", None, {}))
             .values_list("package_url")
             .order_by("package_url")
             .annotate(count_id=Count("id"))

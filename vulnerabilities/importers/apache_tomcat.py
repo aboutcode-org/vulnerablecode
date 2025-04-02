@@ -115,7 +115,6 @@ corrective_data_mapping = {
 
 
 class ApacheTomcatImporter(Importer):
-
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     importer_name = "Apache Tomcat Importer"
@@ -406,7 +405,6 @@ def to_version_ranges_apache(versions_data, fixed_versions):
             )
 
     for fixed_item in fixed_versions:
-
         if "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
             fixed_item_split = fixed_item.split(" ")
             fixed_constraint_tuple_list.append(VersionConstraintTuple(">=", fixed_item_split[0]))
@@ -497,7 +495,6 @@ def to_version_ranges_maven(versions_data, fixed_versions):
             )
 
     for fixed_item in fixed_versions:
-
         if "-" in fixed_item and not any([i.isalpha() for i in fixed_item]):
             fixed_item_split = fixed_item.split(" ")
 

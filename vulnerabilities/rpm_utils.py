@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 # This code has been vendored from scancode.
 
+
 # https://github.com/nexB/scancode-toolkit/blob/16ae20a343c5332114edac34c7b6fcf2fb6bca74/src/packagedcode/rpm.py#L91
 class EVR(namedtuple("EVR", "epoch version release")):
     """
@@ -60,7 +61,7 @@ def from_name(rpm_string):
     Default epoch, version, release and arch to None if not specified.
     Accepts RPM names with and without extensions
     """
-    parse_nevra = re.compile("^" "(.*)" "-" "([^-]*)" "-" "([^-]*)" "\\." "([^.]*)" "$").match
+    parse_nevra = re.compile("^(.*)-([^-]*)-([^-]*)\\.([^.]*)$").match
     m = parse_nevra(rpm_string)
     if not m:
         return None

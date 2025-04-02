@@ -4,7 +4,6 @@ from django.db.models import Max
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0013_auto_20220503_0941"),
     ]

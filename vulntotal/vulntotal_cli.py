@@ -60,7 +60,6 @@ from vulntotal.vulntotal_utils import get_item
     required=False,
     help="List available datasources.",
 )
-
 # hidden debug options
 @click.option(
     "-e",

@@ -21,7 +21,6 @@ def update_created_by(apps, schema_editor):
     )
 
 
-
 def reverse_update_created_by(apps, schema_editor):
     from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
     from vulnerabilities.pipelines.pypa_importer import PyPaImporterPipeline
@@ -36,7 +35,6 @@ def reverse_update_created_by(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0063_alter_packagechangelog_software_version_and_more"),
     ]

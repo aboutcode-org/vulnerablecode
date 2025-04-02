@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0005_auto_20220329_0938"),
     ]

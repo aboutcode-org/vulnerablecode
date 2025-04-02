@@ -104,7 +104,6 @@ def test_run_export_command(
     vulnerability_reference,
     vulnerability_severity,
 ):
-
     call_command("export", tmp_path, stdout=StringIO())
 
     vcid_file = hashid.get_vcid_yml_file_path(vcid=VCID)

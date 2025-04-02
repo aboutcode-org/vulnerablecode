@@ -7,8 +7,8 @@ from django.db.models import Count
 
 from packageurl import PackageURL
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     def remove_dupes(apps, _):
         """
         Remove duplicated Package with the same purl and different namespace and name fields.
@@ -18,8 +18,7 @@ class Migration(migrations.Migration):
         Package = apps.get_model("vulnerabilities", "Package")
 
         duplicates = (
-            Package.objects
-            .values_list("package_url")
+            Package.objects.values_list("package_url")
             .order_by("package_url")
             .annotate(count_id=Count("id"))
             .filter(count_id__gt=1)

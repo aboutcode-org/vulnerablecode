@@ -5,7 +5,6 @@ from django.db import models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0003_alter_advisory_created_by"),
     ]

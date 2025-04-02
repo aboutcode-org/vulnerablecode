@@ -109,7 +109,6 @@ def low_epss_score():
 def test_exploitability_level(
     exploit, vulnerability_with_exploit_ref, high_epss_score, low_epss_score
 ):
-
     assert get_exploitability_level(exploit, None, None) == 2
 
     assert get_exploitability_level(None, None, high_epss_score) == 2

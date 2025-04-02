@@ -27,7 +27,6 @@ def reverse_update_created_by(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0073_delete_packagerelatedvulnerability"),
     ]

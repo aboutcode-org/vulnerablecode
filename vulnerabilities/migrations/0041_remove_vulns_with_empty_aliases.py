@@ -11,7 +11,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0040_remove_advisory_date_improved_advisory_date_imported"),
     ]
@@ -21,9 +20,7 @@ class Migration(migrations.Migration):
         Package = apps.get_model("vulnerabilities", "Package")
         packages = []
         vulnerabilities = []
-        for vuln in Vulnerability.objects.filter(aliases=None).prefetch_related(
-                "packages"
-        ):
+        for vuln in Vulnerability.objects.filter(aliases=None).prefetch_related("packages"):
             # Delete packages associated with that vulnerability
             for package in vuln.packages.all():
                 packages.append(package.id)
@@ -33,5 +30,7 @@ class Migration(migrations.Migration):
         Package.objects.filter(id__in=packages).delete()
 
     operations = [
-        migrations.RunPython(remove_vulns_with_empty_aliases, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(
+            remove_vulns_with_empty_aliases, reverse_code=migrations.RunPython.noop
+        ),
     ]

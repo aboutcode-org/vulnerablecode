@@ -32,7 +32,6 @@ logger = logging.getLogger(__name__)
 
 
 class DebianImporter(Importer):
-
     spdx_license_expression = "LicenseRef-scancode-other-permissive"
     license_url = "https://www.debian.org/license"
     notice = """
@@ -96,7 +95,6 @@ class DebianImporter(Importer):
             yield from self.parse(pkg_name, records)
 
     def parse(self, pkg_name: str, records: Mapping[str, Any]) -> Iterable[AdvisoryData]:
-
         for cve_id, record in records.items():
             affected_versions = []
             fixed_versions = []

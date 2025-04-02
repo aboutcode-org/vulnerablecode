@@ -77,7 +77,6 @@ class Command(BaseCommand):
     help = "Dump a mapping of CPEs to PURLs grouped by vulnerability."
 
     def add_arguments(self, parser):
-
         parser.add_argument(
             "--limit",
             default=0,

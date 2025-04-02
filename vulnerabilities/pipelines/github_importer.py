@@ -75,7 +75,6 @@ class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
         return advisory_counts
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-
         # TODO: We will try to gather more info from GH API
         # Check https://github.com/nexB/vulnerablecode/issues/1039#issuecomment-1366458885
         # Check https://github.com/nexB/vulnerablecode/issues/645

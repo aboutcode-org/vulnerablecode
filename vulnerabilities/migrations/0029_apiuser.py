@@ -5,25 +5,23 @@ import vulnerabilities.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
-        ('vulnerabilities', '0028_alter_packagerelatedvulnerability_fix'),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("vulnerabilities", "0028_alter_packagerelatedvulnerability_fix"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ApiUser',
-            fields=[
-            ],
+            name="ApiUser",
+            fields=[],
             options={
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
             },
-            bases=('auth.user',),
+            bases=("auth.user",),
             managers=[
-                ('objects', vulnerabilities.models.ApiUserManager()),
+                ("objects", vulnerabilities.models.ApiUserManager()),
             ],
         ),
     ]

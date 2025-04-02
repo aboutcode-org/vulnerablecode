@@ -115,7 +115,7 @@ class PackageDetails(DetailView):
         else:
             cls = self.__class__.__name__
             raise AttributeError(
-                f"Package details view {cls} must be called with a purl, " f"but got: {purl!r}"
+                f"Package details view {cls} must be called with a purl, but got: {purl!r}"
             )
 
         try:

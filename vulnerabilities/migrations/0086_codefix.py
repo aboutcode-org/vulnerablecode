@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0085_alter_package_is_ghost_alter_package_version_rank_and_more"),
     ]

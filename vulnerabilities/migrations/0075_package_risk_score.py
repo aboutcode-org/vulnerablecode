@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0074_update_pysec_advisory_created_by"),
     ]

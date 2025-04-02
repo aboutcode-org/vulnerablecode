@@ -76,7 +76,6 @@ def test_to_advisories_marks_rejected_cve(regen=REGEN):
 
 # TODO: use a JSON fixtures instead
 def get_test_cve_item():
-
     return {
         "cve": {
             "data_type": "CVE",

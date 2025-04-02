@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0050_copy_qualifiers_temp_back_to_qualifiers"),
     ]

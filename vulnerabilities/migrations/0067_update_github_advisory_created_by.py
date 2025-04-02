@@ -17,7 +17,6 @@ def update_created_by(apps, schema_editor):
     )
 
 
-
 def reverse_update_created_by(apps, schema_editor):
     from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 
@@ -28,7 +27,6 @@ def reverse_update_created_by(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0066_update_gitlab_advisory_created_by"),
     ]

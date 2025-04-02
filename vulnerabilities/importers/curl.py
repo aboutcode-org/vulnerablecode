@@ -32,7 +32,6 @@ logger = logging.getLogger(__name__)
 
 
 class CurlImporter(Importer):
-
     spdx_license_expression = "curl"
     license_url = "https://curl.se/docs/copyright.html"
     repo_url = "https://github.com/curl/curl-www/"

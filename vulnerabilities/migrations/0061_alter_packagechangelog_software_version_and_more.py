@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0060_alter_kev_known_ransomware_campaign_use_and_more"),
     ]

@@ -167,7 +167,6 @@ def parse_advisory_data_from_paragraph(vulnerability_info):
         ):
             aliases.append(text)
             if text.startswith("CVE-"):
-
                 # always keep the CVE as a reference too
                 link = f"https://nvd.nist.gov/vuln/detail/{text}"
                 reference = Reference(reference_id=text, url=link)

@@ -2,9 +2,8 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('vulnerabilities', '0019_alter_vulnerabilityreference_options'),
+        ("vulnerabilities", "0019_alter_vulnerabilityreference_options"),
     ]
 
     def delete_reference_with_empty_urls(apps, _):

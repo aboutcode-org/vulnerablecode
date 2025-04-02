@@ -36,7 +36,6 @@ class SUSEBackportsImporter(Importer):
         return self.batch_advisories(advisories)
 
     def _fetch_yaml(self, url):
-
         try:
             resp = requests.get(url)
             resp.raise_for_status()

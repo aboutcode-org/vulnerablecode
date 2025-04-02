@@ -11,8 +11,8 @@ from django.db import migrations
 
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     def remove_advisories(apps, schema_editor):
         Advisory = apps.get_model("vulnerabilities", "Advisory")
         deletables = []
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                     if sev["system"] not in SCORING_SYSTEMS:
                         deletables.append(advisory.pk)
                         break
-        Advisory.objects.filter(pk__in=deletables).delete()            
+        Advisory.objects.filter(pk__in=deletables).delete()
 
     dependencies = [
         ("vulnerabilities", "0037_advisory_weaknesses_weakness"),

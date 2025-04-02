@@ -6,7 +6,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0042_advisory_status_vulnerability_status"),
     ]
@@ -144,9 +143,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "action_type",
-                    models.PositiveSmallIntegerField(
-                        choices=[(1, "Affected by"), (2, "Fixing")]
-                    ),
+                    models.PositiveSmallIntegerField(choices=[(1, "Affected by"), (2, "Fixing")]),
                 ),
                 (
                     "package",

@@ -56,7 +56,6 @@ def bulk_create(model, items, logger):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("vulnerabilities", "0089_alter_advisory_unique_content_id"),
     ]

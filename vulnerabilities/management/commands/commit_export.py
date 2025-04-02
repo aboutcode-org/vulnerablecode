@@ -64,7 +64,7 @@ class Command(BaseCommand):
             missing_vars.append("VULNERABLECODE_GITHUB_SERVICE_EMAIL")
 
         if missing_vars:
-            raise CommandError(f'Missing environment variables: {", ".join(missing_vars)}')
+            raise CommandError(f"Missing environment variables: {', '.join(missing_vars)}")
 
         local_dir = tempfile.mkdtemp()
         current_date = datetime.now().strftime("%Y-%m-%d")

@@ -101,7 +101,7 @@ def test_extract_advisories_from_page():
                     "<a "
                     'href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-30639" '
                     'rel="nofollow">CVE-2021-30639</a></p>',
-                    "<p>An error introduced as part of a change to improve " "error handling.</p>",
+                    "<p>An error introduced as part of a change to improve error handling.</p>",
                     "<o>Applications that do not use non-blocking I/O are "
                     "not exposed to this vulnerability.</o>",
                     "<p>This was fixed with commit\n"

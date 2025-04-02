@@ -2,20 +2,27 @@ from django.db import migrations, models
 import django.db.models.deletion
 from aboutcode.pipeline import LoopProgress
 
+
 def split_packagerelatedvulnerability(apps, schema_editor):
-    PackageRelatedVulnerability = apps.get_model('vulnerabilities', 'PackageRelatedVulnerability')
-    FixingPackageRelatedVulnerability = apps.get_model('vulnerabilities', 'FixingPackageRelatedVulnerability')
-    AffectedByPackageRelatedVulnerability = apps.get_model('vulnerabilities', 'AffectedByPackageRelatedVulnerability')
+    PackageRelatedVulnerability = apps.get_model("vulnerabilities", "PackageRelatedVulnerability")
+    FixingPackageRelatedVulnerability = apps.get_model(
+        "vulnerabilities", "FixingPackageRelatedVulnerability"
+    )
+    AffectedByPackageRelatedVulnerability = apps.get_model(
+        "vulnerabilities", "AffectedByPackageRelatedVulnerability"
+    )
 
     obsolete_package_relation_query = PackageRelatedVulnerability.objects.all()
     obsolete_package_relation_query_count = obsolete_package_relation_query.count()
-    print(f"\nMigrating {obsolete_package_relation_query_count:,d} old package vulnerability relationship.")
+    print(
+        f"\nMigrating {obsolete_package_relation_query_count:,d} old package vulnerability relationship."
+    )
 
     progress = LoopProgress(
         total_iterations=obsolete_package_relation_query_count,
         progress_step=1,
         logger=print,
-        )
+    )
     fixing_packages = []
     affected_packages = []
     for prv in progress.iter(obsolete_package_relation_query.iterator(chunk_size=10000)):
@@ -35,24 +42,31 @@ def split_packagerelatedvulnerability(apps, schema_editor):
                 confidence=prv.confidence,
             )
             affected_packages.append(ap)
-    
+
     FixingPackageRelatedVulnerability.objects.bulk_create(fixing_packages, batch_size=10000)
     AffectedByPackageRelatedVulnerability.objects.bulk_create(affected_packages, batch_size=10000)
 
+
 def reverse_migration(apps, schema_editor):
-    FixingPackageRelatedVulnerability = apps.get_model('vulnerabilities', 'FixingPackageRelatedVulnerability')
-    AffectedByPackageRelatedVulnerability = apps.get_model('vulnerabilities', 'AffectedByPackageRelatedVulnerability')
-    PackageRelatedVulnerability = apps.get_model('vulnerabilities', 'PackageRelatedVulnerability')
+    FixingPackageRelatedVulnerability = apps.get_model(
+        "vulnerabilities", "FixingPackageRelatedVulnerability"
+    )
+    AffectedByPackageRelatedVulnerability = apps.get_model(
+        "vulnerabilities", "AffectedByPackageRelatedVulnerability"
+    )
+    PackageRelatedVulnerability = apps.get_model("vulnerabilities", "PackageRelatedVulnerability")
 
     fixing_package_relation_query = FixingPackageRelatedVulnerability.objects.all()
     fixing_package_relation_query_count = fixing_package_relation_query.count()
-    print(f"\nMigrating {fixing_package_relation_query_count:,d} FixingPackage to old relationship.")
+    print(
+        f"\nMigrating {fixing_package_relation_query_count:,d} FixingPackage to old relationship."
+    )
 
     progress = LoopProgress(
         total_iterations=fixing_package_relation_query_count,
         progress_step=1,
         logger=print,
-        )
+    )
     for fpv in progress.iter(fixing_package_relation_query.iterator(chunk_size=10000)):
         PackageRelatedVulnerability.objects.create(
             package=fpv.package,
@@ -64,13 +78,15 @@ def reverse_migration(apps, schema_editor):
 
     affected_package_relation_query = AffectedByPackageRelatedVulnerability.objects.all()
     affected_package_relation_query_count = affected_package_relation_query.count()
-    print(f"\nMigrating {affected_package_relation_query_count:,d} AffectedPackage to old relationship.")
+    print(
+        f"\nMigrating {affected_package_relation_query_count:,d} AffectedPackage to old relationship."
+    )
 
     progress = LoopProgress(
         total_iterations=affected_package_relation_query_count,
         progress_step=1,
         logger=print,
-        )
+    )
     for apv in progress.iter(affected_package_relation_query.iterator(chunk_size=10000)):
         PackageRelatedVulnerability.objects.create(
             package=apv.package,
@@ -80,8 +96,8 @@ def reverse_migration(apps, schema_editor):
             fix=False,
         )
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
         ("vulnerabilities", "0070_alter_advisory_created_by_and_more"),
     ]

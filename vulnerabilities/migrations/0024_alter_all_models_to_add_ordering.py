@@ -4,34 +4,36 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('vulnerabilities', '0023_vcid_migration'),
+        ("vulnerabilities", "0023_vcid_migration"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='advisory',
-            options={'ordering': ['aliases', 'date_published', 'unique_content_id']},
+            name="advisory",
+            options={"ordering": ["aliases", "date_published", "unique_content_id"]},
         ),
         migrations.AlterModelOptions(
-            name='package',
-            options={'ordering': ['type', 'namespace', 'name', 'version', 'qualifiers', 'subpath']},
+            name="package",
+            options={"ordering": ["type", "namespace", "name", "version", "qualifiers", "subpath"]},
         ),
         migrations.AlterModelOptions(
-            name='packagerelatedvulnerability',
-            options={'ordering': ['package', 'vulnerability'], 'verbose_name_plural': 'PackageRelatedVulnerabilities'},
+            name="packagerelatedvulnerability",
+            options={
+                "ordering": ["package", "vulnerability"],
+                "verbose_name_plural": "PackageRelatedVulnerabilities",
+            },
         ),
         migrations.AlterModelOptions(
-            name='vulnerability',
-            options={'ordering': ['vulnerability_id'], 'verbose_name_plural': 'Vulnerabilities'},
+            name="vulnerability",
+            options={"ordering": ["vulnerability_id"], "verbose_name_plural": "Vulnerabilities"},
         ),
         migrations.AlterModelOptions(
-            name='vulnerabilityrelatedreference',
-            options={'ordering': ['vulnerability', 'reference']},
+            name="vulnerabilityrelatedreference",
+            options={"ordering": ["vulnerability", "reference"]},
         ),
         migrations.AlterModelOptions(
-            name='vulnerabilityseverity',
-            options={'ordering': ['reference', 'scoring_system', 'value']},
+            name="vulnerabilityseverity",
+            options={"ordering": ["reference", "scoring_system", "value"]},
         ),
     ]

@@ -199,8 +199,7 @@ def get_affected_purl(affected_pkg, raw_id):
             purl = PackageURL.from_string(purl)
         except ValueError:
             logger.error(
-                f"Invalid PackageURL: {purl!r} for OSV "
-                f"affected_pkg {affected_pkg} and id: {raw_id}"
+                f"Invalid PackageURL: {purl!r} for OSV affected_pkg {affected_pkg} and id: {raw_id}"
             )
     else:
         ecosys = package.get("ecosystem")

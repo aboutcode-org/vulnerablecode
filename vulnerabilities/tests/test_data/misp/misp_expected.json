@@ -1,0 +1,35 @@
+{
+    "aliases": "CVE-2015-5719",
+    "summary": "app/Controller/TemplatesController.php in Malware Information Sharing Platform (MISP) before 2.3.92 does not properly restrict filenames under the tmp/files/ directory, which has unspecified impact and attack vectors.",
+    "affected_packages": [
+        {
+            "package": {
+                "type": "misp",
+                "namespace": "",
+                "name": "MISP",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": "vers:generic/2.3.92",
+            "fixed_version": null
+        }
+    ],
+    "references": [
+        {
+            "reference_id": "CVE-2015-5719",
+            "reference_type": "",
+            "url": "http://www.securityfocus.com/bid/92740",
+            "severities": [
+                {
+                    "system": "cvssv3",
+                    "value": 9.8,
+                    "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+                }
+            ]
+        }
+    ],
+    "date_published": "2016-09-03T20:59:00.153",
+    "weaknesses": [],
+    "url": "https://cve.circl.lu/vuln/fkie_cve-2015-5719"
+}

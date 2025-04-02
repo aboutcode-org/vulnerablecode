@@ -70,7 +70,7 @@ RANGE_CLASS_BY_SCHEMES["apk"] = AlpineLinuxVersionRange
 class BaseQuerySet(models.QuerySet):
     def get_or_none(self, *args, **kwargs):
         """
-        Returns a single object matching the given keyword arguments, `None` otherwise.
+        Return a single object matching the given keyword arguments, `None` otherwise.
         """
         with suppress(self.model.DoesNotExist, ValidationError):
             return self.get(*args, **kwargs)
@@ -1519,7 +1519,7 @@ class VulnerabilityHistoryManager(models.Manager):
         source_url,
     ):
         """
-        Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+        Create a History entry for a given `obj` on Addition, Change, and Deletion.
         We do not log addition for object that inherit the HistoryFieldsMixin since
         the `created_by` and `created_date` are already set on its model.
         """
@@ -1552,7 +1552,7 @@ class VulnerabilityChangeLog(ChangeLog):
     @classmethod
     def log_import(cls, vulnerability, importer, source_url):
         """
-        Creates History entry on Addition.
+        Create History entry on Addition.
         """
         return cls.objects.log_action(
             vulnerability=vulnerability,
@@ -1564,7 +1564,7 @@ class VulnerabilityChangeLog(ChangeLog):
     @classmethod
     def log_improve(cls, vulnerability, improver, source_url):
         """
-        Creates History entry on Improvement.
+        Create History entry on Improvement.
         """
         return cls.objects.log_action(
             vulnerability=vulnerability,
@@ -1583,7 +1583,7 @@ class PackageHistoryManager(models.Manager):
 
     def log_action(self, package, action_type, actor_name, source_url, related_vulnerability):
         """
-        Creates a History entry for a given `obj` on Addition, Change, and Deletion.
+        Create a History entry for a given `obj` on Addition, Change, and Deletion.
         We do not log addition for object that inherit the HistoryFieldsMixin since
         the `created_by` and `created_date` are already set on its model.
         """
@@ -1623,7 +1623,7 @@ class PackageChangeLog(ChangeLog):
     @classmethod
     def log_affected_by(cls, package, importer, source_url, related_vulnerability):
         """
-        Creates History entry on Vulnerabilitty affects package.
+        Create History entry on Vulnerabilitty affects package.
         """
         return cls.objects.log_action(
             package=package,
@@ -1636,7 +1636,7 @@ class PackageChangeLog(ChangeLog):
     @classmethod
     def log_fixing(cls, package, importer, source_url, related_vulnerability):
         """
-        Creates History entry on Vulnerability is fixed by package.
+        Create History entry on Vulnerability is fixed by package.
         """
         return cls.objects.log_action(
             package=package,

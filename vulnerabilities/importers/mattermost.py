@@ -134,6 +134,8 @@ class MattermostDataSource(Importer):
 
 def split_versions(versions: str) -> List[str]:
     """
+    Split mattermost version in segments
+
     The versions can take the form:
         - v1.2,2.2 and 3.2  -> [1.2,2.2,3.2]
         - v1 and v2 -> [1,2]
@@ -141,7 +143,7 @@ def split_versions(versions: str) -> List[str]:
         - <10 -> [<10]
         - na -> []
         - all -> all (see `affected_version_ranges`)
-    Returns list of versions without leading 'v'
+    Return list of versions without leading 'v'
     """
     versions = versions.lower().strip().replace("and", ",")
     if versions == "na":
@@ -168,7 +170,7 @@ def to_affected_version_ranges(
     Needs to be improved after https://github.com/nexB/vulnerablecode/issues/119
     According to https://forum.mattermost.org/t/all-affected-versions-in-the-mattermost-advisory/11423,
 
-    Returns affected version included_ranges, excluded_ranges
+    Return affected version included_ranges, excluded_ranges
     """
     fixed_versions = split_versions(fixed_col)
     affected_col = affected_col.replace(".x", ".*")  # For 5.20.x

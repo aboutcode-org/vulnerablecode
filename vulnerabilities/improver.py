@@ -29,7 +29,7 @@ MAX_CONFIDENCE = 100
 @dataclasses.dataclass(order=True)
 class Inference:
     """
-    This data class expresses the contract between improvers and the improve runner.
+    Inference data class expresses the contract between improvers and the improve runner.
 
     Only inferences with highest confidence for one vulnerability <-> package
     relationship is to be inserted into the database

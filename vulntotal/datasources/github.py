@@ -29,7 +29,7 @@ class GithubDataSource(DataSource):
 
     def fetch_github(self, graphql_query):
         """
-        Requires GitHub API key in .env file.
+        Return data from GitHub. Require GitHub API key in .env file.
         For example::
 
                 GH_TOKEN="your-github-token"
@@ -92,11 +92,11 @@ def parse_advisory(interesting_edges, purl) -> Iterable[VendorData]:
     """
     Parse the GraphQL response and yield VendorData instances.
 
-    Parameters:
+    Args:
         interesting_edges (list): List of edges containing security advisory.
         purl (PackageURL): PURL to be included in VendorData.
 
-    Yields:
+    Yield:
         VendorData instance containing purl, aliases, affected_versions and fixed_versions.
     """
     for edge in interesting_edges:
@@ -125,11 +125,11 @@ def generate_graphql_payload_from_purl(purl, end_cursor=""):
     """
     Generate a GraphQL payload for querying security vulnerabilities related to a PURL.
 
-    Parameters:
+    Args:
         purl (PackageURL): The PURL to search for vulnerabilities.
         end_cursor (str): An optional end cursor to use for pagination.
 
-    Returns:
+    Return:
         dict: A dictionary containing the GraphQL query string with ecosystem and package.
     """
     GRAPHQL_QUERY_TEMPLATE = """
@@ -200,10 +200,10 @@ def generate_graphql_payload_from_cve(cve: str):
     """
     Generate a GraphQL payload for querying security advisories related to a CVE.
 
-    Parameters:
+    Args:
     - cve (str): CVE identifier string to search for.
 
-    Returns:
+    Return:
     - dict: Dictionary containing the GraphQL query string with the CVE identifier substituted in.
     """
     GRAPHQL_QUERY_TEMPLATE = """
@@ -239,10 +239,10 @@ def get_purl_type(github_ecosystem):
     """
     Return the corresponding purl type for a given GitHub ecosystem string.
 
-    Parameters:
+    Args:
         github_ecosystem (str): The GitHub ecosystem string.
 
-    Returns:
+    Return:
         str or None: The corresponding purl type string, or None if the ecosystem is not supported.
     """
     ecosystems = GithubDataSource.supported_ecosystem()
@@ -256,7 +256,7 @@ def group_advisory_by_package(advisories_dict, cve):
     """
     Extract security advisory information from a dictionary and groups them by package.
 
-    Parameters:
+    Args:
         advisories_dict (dict): Dictionary containing security advisory. The dictionary
             should have the following structure:
             {
@@ -294,7 +294,7 @@ def group_advisory_by_package(advisories_dict, cve):
 
         cve (str): Used for filtering out advisory non maching CVEs.
 
-    Returns:
+    Return:
         list: List of dict containing advisory for package. Each dict
             in the list represents advisory for a package and has the following keys:
 

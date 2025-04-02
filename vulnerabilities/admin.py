@@ -41,7 +41,7 @@ class VulnerabilitySeverityAdmin(admin.ModelAdmin):
 
 class ApiUserCreationForm(forms.ModelForm):
     """
-    This helps have a simplified creation for API-only users in the admin
+    ApiUserCreationForm forms help the simplified creation of API-only users in the admin
     """
 
     class Meta:

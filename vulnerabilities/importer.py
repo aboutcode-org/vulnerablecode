@@ -288,9 +288,10 @@ class AffectedPackage:
 @dataclasses.dataclass(order=True)
 class AdvisoryData:
     """
-    This data class expresses the contract between data sources and the import runner.
+    AdvisoryData data class expresses the contract between data sources and the import runner.
 
     If a vulnerability_id is present then:
+
         summary or affected_packages or references must be present
     otherwise
         either affected_package or references should be present
@@ -427,16 +428,15 @@ class OvalImporter(Importer):
     @staticmethod
     def create_purl(pkg_name: str, pkg_data: Mapping) -> PackageURL:
         """
-        Helper method for creating different purls for subclasses without them reimplementing
-        get_data_from_xml_doc  method
-        Note: pkg_data must include 'type' of package
+        Return a purl. Helper method for creating different purls for subclasses without them
+        reimplementing get_data_from_xml_doc  method Note: pkg_data must include 'type' of package
         """
         return PackageURL(name=pkg_name, **pkg_data)
 
     @staticmethod
     def _collect_pkgs(parsed_oval_data: Mapping) -> Set:
         """
-        Helper method, used for loading the API. It expects data from
+        Collect packages. Helper method, used for loading the API. It expects data from
         OvalParser.get_data().
         """
         all_pkgs = set()
@@ -477,6 +477,7 @@ class OvalImporter(Importer):
         self, xml_doc: ET.ElementTree, pkg_metadata={}
     ) -> Iterable[AdvisoryData]:
         """
+        Return an ietarble of AdvisoryData.
         The orchestration method of the OvalDataSource. This method breaks an
         OVAL xml ElementTree into a list of `Advisory`.
 
@@ -484,7 +485,8 @@ class OvalImporter(Importer):
         "type" key.
 
         Example value of pkg_metadata:
-                {"type":"deb","qualifiers":{"distro":"buster"} }
+
+        {"type":"deb","qualifiers":{"distro":"buster"} }
         """
         oval_parsed_data = OvalParser(self.translations, xml_doc)
         raw_data = oval_parsed_data.get_data()

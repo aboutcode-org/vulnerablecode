@@ -62,7 +62,7 @@ class OvalParser:
 
     def get_tests_of_definition(self, definition: OvalDefinition) -> List[OvalTest]:
         """
-        returns a list of all valid tests of the passed OvalDefinition
+        Return a list of all valid tests of the ``definition`` OvalDefinition
         """
 
         criteria_refs = []
@@ -95,7 +95,7 @@ class OvalParser:
 
     def get_object_state_of_test(self, test: OvalTest) -> Tuple[OvalObject, OvalState]:
         """
-        returns a tuple of (OvalObject,OvalState) of an OvalTest
+        Return a tuple of (OvalObject,OvalState) of an OvalTest
         """
         obj, state = list(test.element)[0].get("object_ref"), list(test.element)[1].get("state_ref")
         obj = self.oval_document.getElementByID(obj)
@@ -104,8 +104,7 @@ class OvalParser:
 
     def get_pkgs_from_obj(self, obj: OvalObject) -> List[str]:
         """
-        returns a list of all related packages nested within
-        an OvalObject
+        Return a list of all related packages nested within an OvalObject
         """
 
         pkg_list = []

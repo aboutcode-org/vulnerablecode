@@ -37,27 +37,30 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-"""Library to simplify working with the OVAL XML structure
+"""
 
+Library to simplify working with the OVAL XML structure
 
 Authors: Gunnar Engelbach <Gunnar.Engelbach@ThreatGuard.com>
 
-
-
 Available classes:
-    - OvalDocument:    operations at the OVAL document level, such as reading in an existing OVAL document from
-file, creating a new one, finding or adding OVAL elements
-    - OvalElement:    the base class for OVAL elements.  Implements a few common methods inherited by the
-subclasses for definition, test, state, object, and variable
-    - OvalDefinition:    a type of OVAL element with certain attributes available.  Additional classes used by the OvalDefinition class:
-        - OvalMetadata:    the metadata associated with a definition, which includes the definition title and description.  Metadata also contains:
+    - OvalDocument:    operations at the OVAL document level, such as reading in an existing OVAL
+    document from file, creating a new one, finding or adding OVAL elements
+
+    - OvalElement:    the base class for OVAL elements.  Implements a few common methods inherited
+    by the subclasses for definition, test, state, object, and variable
+
+    - OvalDefinition:    a type of OVAL element with certain attributes available. 
+
+    Additional classes used by the OvalDefinition class:
+        - OvalMetadata:    the metadata associated with a definition, which includes the definition
+         title and description.  Metadata also contains:
             - OvalAffected:    The family and platforms affected by this definition
             - OvalRepositoryInformation:    Additional information added by the OVAL repository
     - OvalTest:    for working with OVAL test elements
     - OvalObject:    for working with OVAL object elements
     - OvalState:    for working with OVAL state elements
     - OvalVariable:    for working with OVAL variable elements
-
 
 
 Available exceptions:
@@ -93,14 +96,10 @@ Available exceptions:
     >>> tree.write("outfilename.xml", UTF-8", True)
 
 
-
-
-
-TODO:
-    - Add exceptions that give more detail about why a value of None is sometimes returned
-    - Expand use of find() to allow for the possibility that the XML document is not using namespaces
-    - Lots of pydoc to be added
-    - Redo getter/setter for OvalRepository status elements.
+TODO: Add exceptions that give more detail about why a value of None is sometimes returned
+TODO: Expand use of find() to allow that the XML document is not using namespaces
+TODO: Lots of pydoc to be added
+TODO: Redo getter/setter for OvalRepository status elements.
 """
 
 import datetime
@@ -114,8 +113,9 @@ from xml.etree.ElementTree import Element
 
 class OvalDocument(object):
     """
-    For working with OVAL documents.  That interaction will entail the use of the other classes.
-    Can be used to find certain elements within the document, update the document, and save the changes to a file
+    For working with OVAL documents.  That interaction will entail the use of the other classes. Can
+    be used to find certain elements within the document, update the document, and save the changes
+    to a file
     """
 
     # A time format to match what OVAL expects
@@ -152,9 +152,10 @@ class OvalDocument(object):
 
     @staticmethod
     def getOvalTimestamp(timestamp=None):
-        """Renders a datetime to a string formatted according to the OVAL specification.
-        if the timestamp argument is None (which it is by default) or is not of type datetime,
-        this function will return a string using the current datetime.
+        """
+        Render a datetime to a string formatted according to the OVAL specification. if the
+        timestamp argument is None (which it is by default) or is not of type datetime, this
+        function will return a string using the current datetime.
 
         @type timestamp: datetime
         @param timestamp: A datetime to be formatted as an OVAL timestamp, or None to use the current time.
@@ -197,7 +198,7 @@ class OvalDocument(object):
     def parseFromFile(self, filename):
         """
         Load an OVAL document from a filename and parse that into an ElementTree
-        Returns False if the filename is empty or there is an error parsing the XML document
+        Return False if the filename is empty or there is an error parsing the XML document
         @type filename: string
         @param filename: The path to the OVAL XML document to parse
 
@@ -216,8 +217,8 @@ class OvalDocument(object):
 
     def parseFromText(self, xmltext):
         """
-        Initializes the ElementTree by parsing the xmltext as XML
-        Returns False if the string could not be parsed as XML
+        Initialize the ElementTree by parsing the xmltext as XML
+        Return False if the string could not be parsed as XML
 
         @rtype:    boolean
         @return:    True on success, otherwise False
@@ -234,8 +235,8 @@ class OvalDocument(object):
 
     def writeToFile(self, filename):
         """
-        Writes the internal representation of the XmlTree to the given file name
-        Returns False on error
+        Write the internal representation of the XmlTree to the given file name
+        Return False on error
 
         @rtype:    boolean
         @return:    True on success, otherwise False
@@ -264,7 +265,7 @@ class OvalDocument(object):
 
     def getDocumentRoot(self):
         """
-        Returns the root element of the XML tree if one has been loaded.
+        Return the root element of the XML tree if one has been loaded.
         Otherwise, returns None
 
         @rtype:    Element
@@ -277,7 +278,7 @@ class OvalDocument(object):
 
     def getGenerator(self, create=False):
         """
-        Gets the generator for this OVAL document as an OvalGenerator object.
+        Return the generator for this OVAL document as an OvalGenerator object.
         If the generator element does not exist, the default behavior is to
         return none.  However, setting the optional parameter to True will cause
         a default generate element to be created, added to the document, and that will be returned.
@@ -310,8 +311,8 @@ class OvalDocument(object):
 
     def getDefinitions(self):
         """
-        Returns a list of all definitions found in this OvalDocment where each item in the list is of type OvalDefinition
-        Returns None if no definitions could be found
+        Return a list of all definitions found in this OvalDocment where each item in the list is of type OvalDefinition
+        Return None if no definitions could be found
 
         @rtype:    List
         @return:    All definitions in the OVAL document or None if none were found
@@ -333,8 +334,8 @@ class OvalDocument(object):
 
     def getTests(self):
         """
-        Returns a list of all tests in this OvalDocument where each list item is of type OvalTest
-        Returns None if no tests could be found
+        Return a list of all tests in this OvalDocument where each list item is of type OvalTest
+        Return None if no tests could be found
 
         @rtype:    List
         @return:    All tests in the OVAL document or None if none were found
@@ -356,8 +357,8 @@ class OvalDocument(object):
 
     def getObjects(self):
         """
-        Returns a list of all objects in this OvalDocument where each list item is of type OvalObject
-        Returns None if no objects could be found
+        Return a list of all objects in this OvalDocument where each list item is of type OvalObject
+        Return None if no objects could be found
 
         @rtype:    List
         @return:    All objects in the OVAL document or None if none were found
@@ -379,8 +380,8 @@ class OvalDocument(object):
 
     def getStates(self):
         """
-        Returns a list of all states in this OvalDocument where each list item is of type OvalState
-        Returns None if no states could be found
+        Return a list of all states in this OvalDocument where each list item is of type OvalState
+        Return None if no states could be found
 
         @rtype:    List
         @return:    All states in the OVAL document or None if none were found
@@ -402,8 +403,8 @@ class OvalDocument(object):
 
     def getVariables(self):
         """
-        Returns a list of all variables in this OvalDocument where each list item is of type OvalVariable
-        Returns None if no variables could be found
+        Return a list of all variables in this OvalDocument where each list item is of type OvalVariable
+        Return None if no variables could be found
 
         @rtype:    List
         @return:    All variables in the OVAL document or None if none were found
@@ -425,10 +426,11 @@ class OvalDocument(object):
 
     def getElementByID(self, ovalid):
         """
-        Uses the ovalid argument to determine what type of element is being referenced and locate that element
-        in the OVAL ElementTree.
-        Returns an OvalElement of the appropriate class (OvalDefinition, OvalTest, ...)
+        Return an OvalElement of the appropriate class (OvalDefinition, OvalTest, ...)
         or None if there is no ElementTree or if a matching item could not be found
+ 
+        Use the ovalid argument to determine what type of element is being referenced and locate
+        that element in the OVAL ElementTree.
 
         @rtype:    OvalElement
         @return:    The located element as the appropriate OvalElement subclass, or None if no matching element was found.
@@ -460,15 +462,16 @@ class OvalDocument(object):
 
     def addElement(self, element, replace=True):
         """
-        Adds the element to the ElementTree for this OVAL document
-        The element argument must be of type OvalElement
-        This method uses the OVALID of the element to determine what type of element it is
-        and if an existing element with that OVALID already exists.
-        This method will also create the necessary structure (id est, adding <definitions>, <tests>, etc)
-        if the ElementTree does not already contain it.
-        By default this method will replace an existing item with the same OVALID, but this behavior can
-        be overridden by changing the option second argument to a value of "False"
-        Returns True on success, otherwise False
+        Return True on success, otherwise False.
+
+        Add the element to the ElementTree for this OVAL document The element argument must be of
+        type OvalElement. This method uses the OVALID of the element to determine what type of
+        element it is and if an existing element with that OVALID already exists.
+
+        This method will also create the necessary structure (id est, adding <definitions>, <tests>,
+        etc) if the ElementTree does not already contain it. By default this method will replace an
+        existing item with the same OVALID, but this behavior can be overridden by changing the
+        option second argument to a value of "False"
 
         @rtype:    boolean
         @return:    True if the element was added to the document, otherwise False
@@ -560,7 +563,8 @@ class OvalDocument(object):
 
 class OvalGenerator(object):
     """
-    Contains information about this OvalDocument, such as the schema version, the product that produced it, and when it was produced
+    Contain information about this OvalDocument, such as the schema version, the product that
+    produced it, and when it was produced
     """
 
     def __init__(self, element):
@@ -568,7 +572,7 @@ class OvalGenerator(object):
 
     def getProduct(self):
         """
-        Gets the value of the product element
+        Return the value of the product element
         """
         if self.element is None:
             return None
@@ -585,7 +589,8 @@ class OvalGenerator(object):
 
     def setProduct(self, product):
         """
-        Sets a value for the product element.  If a product element does not already exist, one will be created
+        Set a value for the product element.  If a product element does not already exist, one will
+        be created
         """
         if self.element is None:
             return False
@@ -603,7 +608,7 @@ class OvalGenerator(object):
 
     def getSchemaVersion(self):
         """
-        Gets the value of the schema_version element
+        Return the value of the schema_version element
         """
         if self.element is None:
             return None
@@ -616,7 +621,8 @@ class OvalGenerator(object):
 
     def setSchemaVersion(self, version):
         """
-        Sets a value for the schema_version element.  If that element does not exist, one will be created.
+        Set a value for the schema_version element.
+        If that element does not exist, one will be created.
         """
         if self.element is None:
             return False
@@ -634,7 +640,7 @@ class OvalGenerator(object):
 
     def getTimestamp(self):
         """
-        Gets the value of the timestamp element
+        Return the value of the timestamp element
         """
         if self.element is None:
             return None
@@ -647,8 +653,9 @@ class OvalGenerator(object):
 
     def setTimestamp(self, timestamp):
         """
-        Sets a value for the timestamp element.  If that elememtn does not exist, one will be created.
-        If the timestamp argument is set to None, the timestamp will be set to the current time.
+        Set a value for the timestamp element.  If that elememtn does not exist, one will be
+        created. If the timestamp argument is set to None, the timestamp will be set to the current
+        time.
         """
         if self.element is None:
             return False
@@ -667,8 +674,9 @@ class OvalGenerator(object):
 
     def getExtra(self, name, namespace=None):
         """
-        Gets the value of the first child element of the generator where the tag name matches 'name'
-        If the namespace argument is not provided, it will be assumed that the child element does not have a namespace.
+        Return the value of the first child element of the generator where the tag name matches
+        'name'. If the namespace argument is not provided, it will be assumed that the child element
+        does not have a namespace.
         """
         if self.element is None:
             return None
@@ -688,8 +696,9 @@ class OvalGenerator(object):
 
     def setExtra(self, name, value, namespace=None):
         """
-        Sets the value if the first child element with a tag name of 'name' to 'value'.  If the namespace argument is None,
-        it will be assumed that the child element does not have a namespace
+        Set the value if the first child element with a tag name of 'name' to 'value'.  If the
+        namespace argument is None, it will be assumed that the child element does not have a
+        namespace
         """
         if not self.element or not name or not value:
             return None
@@ -712,9 +721,8 @@ class OvalGenerator(object):
 
 class OvalElement(object):
     """
-    The base class for the primary OVAL XML Elements.  Contains a few basic operations common to all
+    Base class for the primary OVAL XML Elements.  Contains a few basic operations common to all
     OVAL Elements.
-    TODO:
     """
 
     DEFINITION = "definition"
@@ -728,7 +736,7 @@ class OvalElement(object):
 
     def getId(self):
         """
-        Returns the OVAL ID for this element, or None if
+        Return the OVAL ID for this element, or None if
          1. This object was instantiated without an Element
          2. The underlying element does not have an "id" attribute
         """
@@ -739,8 +747,8 @@ class OvalElement(object):
 
     def setId(self, ovalid):
         """
-        Sets the OVAL ID for this element
-        Returns False if there is no underlying Xml ELement for this object
+        Set the OVAL ID for this element
+        Return False if there is no underlying Xml ELement for this object
         """
 
         if self.element is None:
@@ -809,8 +817,8 @@ class OvalElement(object):
 
     def getFileName(self):
         """
-        Use my OVAL ID to create a base file name.  That really just means replacing ':' with '_'
-        *NOTE* This does not include the path to the file.
+        Return a file name. Use my OVAL ID to create a base file name.  That really just means
+        replacing ':' with '_' *NOTE* This does not include the path to the file.
         """
         ovalid = self.getId()
         if not ovalid or ovalid is None:
@@ -820,8 +828,8 @@ class OvalElement(object):
 
     def getPredicate(self):
         """
-        The portion of the element name that precedes the "_"
-        So, for "password_test", the predicate would be "password"
+        Return predicate. The portion of the element name that precedes the "_" So, for
+        "password_test", the predicate would be "password"
         """
         localname = self.getLocalName()
         if not localname or localname is None:
@@ -831,14 +839,15 @@ class OvalElement(object):
 
     def getElement(self):
         """
-        Get the raw xml.etree.ElementTree.Element for this node.  Can be used to directly manipulate the
-        XML in ways not currently supported by this library
+        Get the raw xml.etree.ElementTree.Element for this node.  Can be used to directly manipulate
+        the XML in ways not currently supported by this library
         """
         return self.element
 
     def getName(self):
         """
-        Get the tag name (XMl element name) of the underlying XML Element, which includes the schema URI
+        Get the tag name (XMl element name) of the underlying XML Element, which includes the schema
+        URI
         """
         if not self.element or self.element is None:
             return None
@@ -847,7 +856,7 @@ class OvalElement(object):
 
     def getLocalName(self):
         """
-        Just the element name with the schema URI (if any) removed
+        Return just the element name with the schema URI (if any) removed
         """
 
         if not self.element or self.element is None:
@@ -862,7 +871,7 @@ class OvalElement(object):
 
     def getNamespace(self):
         """
-        Returns the URI of the namespace or None if this node does not have a namepsace
+        Return the URI of the namespace or None if this node does not have a namepsace
         """
         if not self.element or self.element is None:
             return None
@@ -887,7 +896,6 @@ class OvalElement(object):
             return None
 
     def getSchemaShortName(self):
-        """"""
         if not self.element or self.element is None:
             return None
 
@@ -909,11 +917,15 @@ class OvalElement(object):
             return None
 
     def writeToFile(self, path, with_xml_declaration=True):
-        """Writes this element as a single standalone XML file
+        """
+        Write this element as a single standalone XML file
+
         @type path: string
         @param path: The path to the file to write
         @type with_xml_declaration: boolean
-        @param with_xml_declaration: True to include the XML declaration at the top of the file (the default), or False to exclude it
+        
+        @param with_xml_declaration: True to include the XML declaration at the top of the file (the
+        default), or False to exclude it
 
         @rtype: boolean
         @return: True on success, otherwise False
@@ -954,12 +966,12 @@ class OvalElement(object):
 
     @staticmethod
     def fromStandaloneFile(path):
-        """For a file that contains a single OVAL XML element as the root element, instantiate the appropriate OvalElement sublcass for that element
-        @type path: string
-        @param path: the path to the file
+        """
+        Return None on error, or an object of the appropriate OvalElement subclass. For a file that
+        contains a single OVAL XML element as the root element, instantiate the appropriate
+        OvalElement sublcass for that element @type path: string @param path: the path to the file
 
         @rtype OvalElement
-        @return None on error, or an object of the appropriate OvalElement subclass
         """
 
         if not path or path is None:
@@ -979,8 +991,6 @@ class OvalElement(object):
 
     @staticmethod
     def getElementTypeFromOvalID(ovalid):
-        """Gets element type from OVAL id."""
-
         if not ovalid or ovalid is None:
             raise ValueError("No OVAL ID given")
 
@@ -1005,8 +1015,8 @@ class OvalElement(object):
     @staticmethod
     def asOvalElement(element):
         """
-        For an XML Element, determines if it fits one of the implemented OvalElement subclasses and,
-        if so, returns an instantiation of that class
+        Retrun an OvalElement. For an XML Element, determines if it fits one of the implemented
+        OvalElement subclasses and, if so, returns an instantiation of that class
         """
 
         if not element or element is None:
@@ -1060,7 +1070,8 @@ class OvalDefinition(OvalElement):
 
     def getMetadata(self):
         """
-        Returns the metadata for this definition as an object of type OvalMetadata, or None if it that element does not exist
+        Return the metadata for this definition as an object of type OvalMetadata, or None if it
+        that element does not exist
         """
         if self.element is None:
             return None
@@ -1092,11 +1103,11 @@ class OvalDefinition(OvalElement):
 
         return self.xpath("//@*[name()='definition_ref' or name()='test_ref'")
 
-    """
-    Collect a dictionary of the metadata's status changes
-    """
 
     def get_last_status_change(self):
+        """
+        Return a dictionary of the metadata's status changes
+        """
         last_status_change = {}
 
         version = self.getVersion()

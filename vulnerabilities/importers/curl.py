@@ -62,7 +62,7 @@ def parse_advisory_data(raw_data) -> AdvisoryData:
     Args:
         raw_data (dict): Raw JSON data containing advisory information.
 
-    Returns:
+    Return:
         AdvisoryData: Parsed advisory data as an AdvisoryData object.
 
     Example:
@@ -148,12 +148,12 @@ def parse_advisory_data(raw_data) -> AdvisoryData:
 
 def get_cwe_from_curl_advisory(raw_data):
     """
-    Extracts CWE IDs from the given raw_data and returns a list of CWE IDs.
+    Extract CWE IDs from the given raw_data and returns a list of CWE IDs.
 
-        >>> get_cwe_from_curl_advisory({"database_specific": {"CWE": {"id": "CWE-333"}}})
-        [333]
-        >>> get_cwe_from_curl_advisory({"database_specific": {"CWE": {"id": ""}}})
-        []
+    >>> get_cwe_from_curl_advisory({"database_specific": {"CWE": {"id": "CWE-333"}}})
+    [333]
+    >>> get_cwe_from_curl_advisory({"database_specific": {"CWE": {"id": ""}}})
+    []
     """
     weaknesses = []
     db = Database()

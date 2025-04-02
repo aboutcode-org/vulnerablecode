@@ -197,7 +197,7 @@ def is_vcs_url(repo_url):
     Args:
         repo_url (str): The repository URL or shortcut to validate.
 
-    Returns:
+    Return:
         bool: True if the string is a valid VCS URL, False otherwise.
 
     Examples:

@@ -30,9 +30,7 @@ class SafetydbDataSource(DataSource):
         """
         Fetch entire JSON advisory from pyupio repository
 
-        Parameters:
-
-        Returns:
+        Return:
             A JSON object containing the advisory information for insecure packages, or None if an error occurs while fetching data from safetydb repo's URL.
         """
 
@@ -68,10 +66,10 @@ def parse_advisory(response, purl: PackageURL) -> Iterable[VendorData]:
     """
     Parse response from safetydb API and yield VendorData
 
-    Parameters:
+    Args:
         response: A JSON object containing the response data from the safetydb datasource.
 
-    Yields:
+    Yield:
         VendorData instance containing the advisory information for the package.
     """
 
@@ -88,10 +86,10 @@ def parse_advisory_for_cve(response, cve: str) -> Iterable[VendorData]:
     """
     Parse response from safetydb API and yield VendorData with specified CVE
 
-    Parameters:
+    Args:
         response: A JSON object containing the response data from the safetydb datasource.
 
-    Yields:
+    Yield:
         VendorData instance containing the advisory information for the package.
     """
 

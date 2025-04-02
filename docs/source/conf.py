@@ -34,7 +34,7 @@ extensions = [
     "sphinx_rtd_dark_mode",
     "sphinx.ext.extlinks",
     "sphinx_copybutton",
-
+]
 # Ensure there are no invalid URLs
 # Use -b linkcheck to check integrity of all external links
 nitpicky = True
@@ -77,3 +77,4 @@ html_css_files = [
 ]
 
 master_doc = "index"
+

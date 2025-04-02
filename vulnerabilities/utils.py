@@ -108,7 +108,7 @@ def contains_alpha(string):
 
 def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     """
-    Returns a requests sessions which retries on 5xx errors with
+    Return a requests sessions which retries on 5xx errors with
     a backoff_factor
     """
     retries = urllib3.Retry(
@@ -262,7 +262,7 @@ def fetch_github_graphql_query(graphql_query: dict):
 
 def _get_gh_response(gh_token, graphql_query):
     """
-    Convenience function to easy mocking in tests
+    Mock a github graphQL api call for tests
     """
     endpoint = "https://api.github.com/graphql"
     headers = {"Authorization": f"bearer {gh_token}"}
@@ -477,6 +477,8 @@ def is_vulnerable_nginx_version(version, affected_version_range, fixed_versions)
 
 def get_severity_range(severity_list):
     """
+    Return a severity range given a ``severity_list`` of severity values.
+
     >>> get_severity_range({'LOW','7.5','5'})
     '0.1 - 7.5'
     >>> get_severity_range({'LOW','Medium'})

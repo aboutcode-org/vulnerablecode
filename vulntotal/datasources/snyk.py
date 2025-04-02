@@ -35,10 +35,10 @@ class SnykDataSource(DataSource):
         """
         Fetch the content of a given URL.
 
-        Parameters:
+        Args:
             url: A string representing the URL to fetch.
 
-        Returns:
+        Return:
             A string of HTML or a dictionary of JSON if the response is successful,
             or None if the response is unsuccessful.
         """
@@ -56,10 +56,10 @@ class SnykDataSource(DataSource):
         """
         Fetch advisories from Snyk for a given package.
 
-        Parameters:
+        Args:
             purl: A PackageURL instance representing the package.
 
-        Yields:
+        Yield:
             VendorData instance containing advisory information.
         """
         package_advisory_url = generate_package_advisory_url(purl)
@@ -79,10 +79,10 @@ class SnykDataSource(DataSource):
         """
         Fetch advisories from Snyk for a given CVE.
 
-        Parameters:
+        Args:
             cve : CVE ID
 
-        Yields:
+        Yield:
             VendorData instance containing advisory information.
         """
         if not cve.upper().startswith("CVE-"):
@@ -131,10 +131,10 @@ def generate_package_advisory_url(purl):
     """
     Generate a URL for fetching advisories from Snyk for a given package.
 
-    Parameters:
+    Args:
         purl: A PackageURL instance representing the package.
 
-    Returns:
+    Return:
         A string containing the URL or None if the package is not supported by Snyk.
     """
     url_package_advisories = "https://security.snyk.io/package/{ecosystem}/{package}"
@@ -173,12 +173,12 @@ def generate_package_advisory_url(purl):
 
 def generate_purl(package_advisory_url):
     """
-    Generates purl from Package advisory url.
+    Generate purl from Package advisory url.
 
-    Parameters:
+    Args:
         package_advisory_url: URL of the package on Snyk.
 
-    Returns:
+    Return:
         A PackageURL instance representing the package
     """
     package_advisory_url = unquote_plus(
@@ -230,10 +230,10 @@ def extract_html_json_advisories(package_advisories):
     """
     Extract vulnerability information from HTML or JSON advisories.
 
-    Parameters:
+    Args:
         package_advisories: A string of HTML or a dictionary of JSON containing advisories for a package.
 
-    Returns:
+    Return:
         A dictionary mapping vulnerability IDs to lists of affected versions for the package.
     """
     vulnerability = {}
@@ -262,13 +262,13 @@ def parse_html_advisory(advisory_html, snyk_id, affected, purl) -> VendorData:
     """
     Parse HTML advisory from Snyk and extract vendor data.
 
-    Parameters:
+    Args:
         advisory_html: A string of HTML containing the advisory details.
         snyk_id: A string representing the Snyk ID of the vulnerability.
         affected: A list of strings representing the affected versions.
         purl: PURL for the advisory.
 
-    Returns:
+    Return:
         A VendorData instance containing aliases, affected versions and fixed versions for the vulnerability.
     """
     aliases = []
@@ -300,10 +300,10 @@ def parse_cve_advisory_html(cve_advisory_html):
     """
     Parse CVE HTML advisory from Snyk and extract list of vulnerabilities and corresponding packages for that CVE.
 
-    Parameters:
+    Args:
         advisory_html: A string of HTML containing the vulnerabilities for given CVE.
 
-    Returns:
+    Return:
         A dictionary with each item representing a vulnerability. Key of each item is the SNYK_ID and value is the package advisory url on snyk website
     """
     cve_advisory_soup = BeautifulSoup(cve_advisory_html, "html.parser")

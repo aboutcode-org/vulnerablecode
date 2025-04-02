@@ -95,7 +95,7 @@ def parse_advisory_data(raw_data, file_name):
 
 def get_summary(cve) -> str:
     """
-    Returns a title of CVE_data_meta
+    Return a title of CVE_data_meta
     >> get_summary    {"CVE_data_meta": {"TITLE": "DoS vulnerability: Invalid Accent Colors"}
     'DoS vulnerability: Invalid Accent Colors'
     """
@@ -153,7 +153,7 @@ def get_description(cve) -> [str]:
 
 def get_references(cve):
     """
-    Returns a list of Reference assigned with url
+    Return a list of Reference assigned with url
     >>> get_references({"references": {
     ...      "reference_data": [{
     ...            "name": "https://kc.mcafee.com/corporate/index?page=content&id=SB10198",
@@ -169,7 +169,7 @@ def get_references(cve):
 
 def get_aliases(cve) -> [str]:
     """
-    Returns a list of aliases
+    Return a list of aliases
     >>> get_aliases({"CVE_data_meta": {"ID": "CVE-2017-4017"},"source": {"advisory": "GHSA-v8x6-59g4-5g3w"}})
     ['CVE-2017-4017', 'GHSA-v8x6-59g4-5g3w']
     """
@@ -189,7 +189,8 @@ def get_aliases(cve) -> [str]:
 
 def get_published_date_nvd_nist_gov(nvd_nist_gov):
     """
-    Returns a published datetime
+    Return a published datetime
+
     >>> get_published_date_nvd_nist_gov({"publishedDate": "2022-06-23T07:15Z"})
     datetime.datetime(2022, 6, 23, 7, 15, tzinfo=<StaticTzInfo 'Z'>)
     """
@@ -199,6 +200,8 @@ def get_published_date_nvd_nist_gov(nvd_nist_gov):
 
 def get_cpe(nodes) -> List:
     """
+    Return a CPE.
+
     >>> get_cpe([{"children": [], "cpe_match": [{
     ...                          "cpe23Uri": "cpe:2.3:a:mutt:mutt:*:*:*:*:*:*:*:*",
     ...                          "cpe_name": [],

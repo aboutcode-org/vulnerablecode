@@ -167,7 +167,7 @@ def get_weaknesses(cve_data):
     Args:
         cve_data (dict): The CVE data in a dictionary format.
 
-    Returns:
+    Return:
         List[int]: A list of unique CWE IDs.
 
     Examples:

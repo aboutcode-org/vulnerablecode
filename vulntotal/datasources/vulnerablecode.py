@@ -31,13 +31,14 @@ class VulnerableCodeDataSource(DataSource):
 
     def fetch_post_json(self, payload):
         """
-        Fetches JSON data from the VulnerableCode API using a POST request with a given payload.
+        Fetch JSON data from the VulnerableCode API using a POST request with a given payload.
 
-        Parameters:
+        Args:
             payload: A dictionary representing the data to send in the request body.
 
-        Returns:
-            A JSON object containing the response data, or None if an error occurs while fetching data from the VulnerableCode API.
+        Return:
+            A JSON object containing the response data, or None if an error occurs while fetching
+            data from the VulnerableCode API.
         """
         url = urljoin(self.global_instance, self.vc_purl_search_api_path)
         response = fetch_vulnerablecode_query(url=url, payload=payload)
@@ -48,13 +49,14 @@ class VulnerableCodeDataSource(DataSource):
 
     def fetch_get_json(self, url):
         """
-        Fetches JSON data from a given URL using the VulnerableCode API.
+        Fetch JSON data from a given URL using the VulnerableCode API.
 
-        Parameters:
+        Args:
             url: A string representing the URL to query.
 
-        Returns:
-            A JSON object containing the response data, or None if an error occurs while fetching data from the URL.
+        Return:
+            A JSON object containing the response data, or None if an error occurs while fetching
+            data from the URL.
         """
         response = fetch_vulnerablecode_query(url=url, payload=None)
         if response.status_code != 200:
@@ -64,12 +66,12 @@ class VulnerableCodeDataSource(DataSource):
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
         """
-        Fetches advisories for a given purl from the VulnerableCode API.
+        Fetch advisories for a given purl from the VulnerableCode API.
 
-        Parameters:
+        Args:
             purl: A PackageURL instance representing the package to query.
 
-        Yields:
+        Yield:
             VendorData instance containing the advisory information for the package.
         """
         if purl.type not in self.supported_ecosystem() or purl.version is None:
@@ -127,7 +129,7 @@ class VCIOTokenError(Exception):
 
 def fetch_vulnerablecode_query(url: str, payload: dict):
     """
-    Requires VCIO API key in .env file
+    Return data from VulnerableCode. Requires VCIO API key in .env file
     For example:
         VCIO_TOKEN='OJ78Os2IPfM80hqVT2ek+1QnrTKvsX1HdOMABq3pmQd'
     """
@@ -135,7 +137,8 @@ def fetch_vulnerablecode_query(url: str, payload: dict):
     load_dotenv()
     vcio_token = os.environ.get("VCIO_TOKEN", None)
     if not vcio_token:
-        msg = "Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment variable."
+        msg = "Cannot call VulnerableCode API without a token set in the VCIO_TOKEN environment "
+        "variable."
         raise VCIOTokenError(msg)
 
     response = (

@@ -6,7 +6,9 @@ register = template.Library()
 
 @register.filter(is_safe=True)
 def cvss_printer(selected_vector, vector_values):
-    """highlight the selected vector value and return a list of paragraphs"""
+    """
+    Highlight the selected vector value and return a list of paragraphs.
+    """
     p_list = []
     selected_vector = selected_vector.lower()
     for vector_value in vector_values.split(","):

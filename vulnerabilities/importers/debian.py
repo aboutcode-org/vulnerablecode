@@ -168,12 +168,12 @@ class DebianImporter(Importer):
 
 def get_cwe_from_debian_advisory(record):
     """
-    Extracts CWE ID strings from the given raw_data and returns a list of CWE IDs.
+    Extract CWE ID strings from the given raw_data and returns a list of CWE IDs.
 
-        >>> get_cwe_from_debian_advisory({"description":"PEAR HTML_QuickForm version 3.2.14 contains an eval injection (CWE-95) vulnerability in HTML_QuickForm's getSubmitValue method, HTML_QuickForm's validate method, HTML_QuickForm_hierselect's _setOptions method, HTML_QuickForm_element's _findValue method, HTML_QuickForm_element's _prepareValue method. that can result in Possible information disclosure, possible impact on data integrity and execution of arbitrary code. This attack appear to be exploitable via A specially crafted query string could be utilised, e.g. http://www.example.com/admin/add_practice_type_id[1]=fubar%27])%20OR%20die(%27OOK!%27);%20//&mode=live. This vulnerability appears to have been fixed in 3.2.15."})
-        [95]
-        >>> get_cwe_from_debian_advisory({"description":"There is no WEAKNESS DATA"})
-        []
+    >>> get_cwe_from_debian_advisory({"description":"PEAR HTML_QuickForm HASB(CWE-95) "})
+    [95]
+    >>> get_cwe_from_debian_advisory({"description":"There is no WEAKNESS DATA"})
+    []
     """
     description = record.get("description") or ""
     pattern = r"CWE-\d+"

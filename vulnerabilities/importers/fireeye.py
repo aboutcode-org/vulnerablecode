@@ -110,7 +110,7 @@ def get_references(references):
 
 def matcher_url(ref) -> str:
     """
-    Returns URL of the reference markup from reference url in Markdown format
+    Return URL of the reference markup from reference url in Markdown format
     """
     markup_regex = "\[([^\[]+)]\(\s*(http[s]?://.+)\s*\)"
     matched_markup = re.findall(markup_regex, ref)
@@ -122,7 +122,7 @@ def matcher_url(ref) -> str:
 
 def get_aliases(database_id, cve_ref) -> List:
     """
-    Returns a List of Aliases from a database_id and a list of CVEs
+    Return a List of Aliases from a database_id and a list of CVEs
     >>> get_aliases("MNDT-2021-0012",["CVE-2021-44207"])
     ['CVE-2021-44207', 'MNDT-2021-0012']
     """
@@ -132,7 +132,8 @@ def get_aliases(database_id, cve_ref) -> List:
 
 def md_list_to_dict(md_list):
     """
-    Returns a dictionary of md_list from a list of a md file splited by \n
+    Return a dictionary of md_list from a list of a md file splited by lines.
+
     >>> md_list_to_dict(["# Header","hello" , "hello again" ,"# Header2"])
     {'# Header': ['hello', 'hello again'], '# Header2': []}
     """

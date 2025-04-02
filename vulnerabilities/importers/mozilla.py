@@ -170,7 +170,7 @@ def get_affected_packages(pkgs: List[str]) -> List[PackageURL]:
 
 def get_yml_references(data: any) -> List[Reference]:
     """
-    Returns a list of references
+    Return a list of references
     Currently only considers the given mfsa as a reference
     """
     # FIXME: Needs improvement

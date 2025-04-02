@@ -30,10 +30,10 @@ class OSVDataSource(DataSource):
         """
         Fetch JSON advisory from OSV API for a given package payload
 
-        Parameters:
+        Args:
             payload: A dictionary representing the package data to query.
 
-        Returns:
+        Return:
             A JSON object containing the advisory information for the package, or None if an error occurs while fetching data from the OSV API.
         """
 
@@ -77,10 +77,10 @@ def parse_advisory(response, purl) -> Iterable[VendorData]:
     """
     Parse response from OSV API and yield VendorData
 
-    Parameters:
+    Args:
         response: A JSON object containing the response data from the OSV API.
 
-    Yields:
+    Yield:
         VendorData instance containing the advisory information for the package.
     """
 
@@ -119,10 +119,10 @@ def generate_payload(purl):
     """
     Generate compatible payload for OSV API from a PURL
 
-    Parameters:
+    Args:
         purl: A PackageURL instance representing the package to query.
 
-    Returns:
+    Return:
         A dictionary containing the package data compatible with the OSV API.
     """
 

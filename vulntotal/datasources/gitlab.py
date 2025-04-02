@@ -32,12 +32,12 @@ class GitlabDataSource(DataSource):
 
     def datasource_advisory(self, purl) -> Iterable[VendorData]:
         """
-        Fetches advisories for a given purl from the GitLab API.
+        Fetch advisories for a given purl from the GitLab API.
 
-        Parameters:
+        Args:
             purl: A PackageURL instance representing the package to query.
 
-        Yields:
+        Yield:
             VendorData instance containing the advisory information for the package.
         """
         package_slug = get_package_slug(purl)
@@ -84,12 +84,12 @@ def fetch_yaml(file_path):
 
 def get_package_slug(purl):
     """
-    Constructs a package slug from a given purl.
+    Construct a package slug from a given purl.
 
-    Parameters:
+    Args:
         purl: A PackageURL instance representing the package to query.
 
-    Returns:
+    Return:
         A string representing the package slug, or None if the purl type is not supported by GitLab.
     """
     supported_ecosystem = GitlabDataSource.supported_ecosystem()
@@ -165,13 +165,13 @@ def get_casesensitive_slug(path, package_slug):
 
 def parse_interesting_advisories(yml_files, purl) -> Iterable[VendorData]:
     """
-    Parses advisories from YAML files in a given location that match a given version.
+    Parse advisories from YAML files in a given location that match a given version.
 
-    Parameters:
+    Args:
         yml_files: An array having the paths of yml files to parse.
         purl: PURL for the advisory.
 
-    Yields:
+    Yield:
         VendorData instance containing the advisory information for the package.
     """
     version = purl.version

@@ -124,7 +124,8 @@ select = [
     "I",  # isort
 #    "C9", # McCabe complexity
 ]
-ignore = ["D1", "D200", "D202", "D203", "D205", "D212", "D400", "D415", "I001"]
+ignore = ["D1", "D200", "D202", "D203", "D205", "D212", "D400", "D415", "I001",
+          "D413", "D417"]
 
 
 [tool.ruff.lint.isort]

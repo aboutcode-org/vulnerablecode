@@ -74,11 +74,11 @@ class TestPackageRelatedVulnerablity(TestCase):
 class TestPackageModel(TestCase):
     def setUp(self):
         """
-        This uses a package/vuln/fix group we know from the DB/UI testing: pkg:pypi/redis@4.1.1.
-        It has 2 non-vuln versions, both the same: 5.0.0b1.  The first of its two vulns is
-        VCID-g2fu-45jw-aaan (aliases: CVE-2023-28858 and GHSA-24wv-mv5m-xv4h), fixed by
-        4.3.6 w/1 vuln of its own.  The second is VCID-rqe1-dkmg-aaad (aliases: CVE-2023-28859
-        and GHSA-8fww-64cx-x8p5), fixed by 5.0.0b1 w/ 0 vulns of its own.
+        Set up tests with a package/vuln/fix group we know from the DB/UI testing:
+        pkg:pypi/redis@4.1.1. It has 2 non-vuln versions, both the same: 5.0.0b1.  The first of its
+        two vulns is VCID-g2fu-45jw-aaan (aliases: CVE-2023-28858 and GHSA-24wv-mv5m-xv4h), fixed by
+        4.3.6 w/1 vuln of its own.  The second is VCID-rqe1-dkmg-aaad (aliases: CVE-2023-28859 and
+        GHSA-8fww-64cx-x8p5), fixed by 5.0.0b1 w/ 0 vulns of its own.
         """
 
         # pkg

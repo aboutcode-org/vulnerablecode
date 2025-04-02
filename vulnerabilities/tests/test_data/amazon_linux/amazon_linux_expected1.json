@@ -1,0 +1,290 @@
+{
+    "aliases": [
+        "ALAS-2024-1943",
+        "CVE-2021-47110"
+    ],
+    "summary": "In the Linux kernel, the following vulnerability has been resolved:. x86/kvm: Disable kvmclock on all CPUs on shutdown (CVE-2021-47110).",
+    "affected_packages": [
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-debuginfo",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-devel",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-tools-devel",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-headers",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "perf-debuginfo",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-debuginfo-common-i686",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-tools",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "perf",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-tools-debuginfo",
+                "version": "",
+                "qualifiers": "arch=i686",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel",
+                "version": "",
+                "qualifiers": "arch=src",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-devel",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-tools-debuginfo",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-headers",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-tools",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-tools-devel",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-debuginfo-common-x86_64",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "perf",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "kernel-debuginfo",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "alas.aws.amazon",
+                "name": "perf-debuginfo",
+                "version": "",
+                "qualifiers": "arch=x86_64",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "4.14.348-187.565.amzn1"
+        }
+    ],
+    "references": [
+        {
+            "reference_id": "CVE-2021-47110",
+            "reference_type": "",
+            "url": "https://alas.aws.amazon.com/cve/html/CVE-2021-47110.html",
+            "severities": [
+                {
+                    "system": "cvssv3",
+                    "value": "7.1",
+                    "scoring_elements": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:H"
+                }
+            ]
+        },
+        {
+            "reference_id": "CVE-2021-47110",
+            "reference_type": "",
+            "url": "https://access.redhat.com/security/cve/CVE-2021-47110",
+            "severities": []
+        },
+        {
+            "reference_id": "CVE-2021-47110",
+            "reference_type": "",
+            "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-47110",
+            "severities": []
+        }
+    ],
+    "date_published": "2024-07-03T21:01:00-07:00",
+    "weaknesses": [],
+    "url": "https://alas.aws.amazon.com/ALAS-2024-1943.html"
+}

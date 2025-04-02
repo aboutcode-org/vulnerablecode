@@ -49,7 +49,7 @@ def detect_and_flag_ghost_packages(logger=None):
     )
 
     grouped_packages = groupby(
-        interesting_packages_qs.paginated(),
+        interesting_packages_qs.iterator(),
         key=lambda pkg: (pkg.type, pkg.namespace, pkg.name),
     )
 

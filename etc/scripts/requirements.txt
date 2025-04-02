@@ -1,0 +1,12 @@
+aboutcode_toolkit
+attrs
+commoncode
+click
+requests
+saneyaml
+pip
+setuptools
+twine
+wheel
+build
+packvers

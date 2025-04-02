@@ -1,50 +1,49 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
+# Python compiled files
 *.py[cod]
-*$py.class
 
-# C extensions
-*.so
-
-# Distribution / packaging
+# virtualenv and other misc bits
+/src/*.egg-info
+*.egg-info
+/dist
+/build
+/bin
+/lib
+/scripts
+/Scripts
+/Lib
+/pip-selfcheck.json
+/tmp
+/venv
 .Python
-build/
-develop-eggs/
-dist/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
+/include
+/Include
+/local
+*/local/*
+/local/
+/share/
+/tcl/
+/.eggs/
 
 # Installer logs
 pip-log.txt
-pip-delete-this-directory.txt
-pip-selfcheck.json
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
+.cache
 .coverage
 .coverage.*
-.cache
-coverage.xml
-*.cover
+nosetests.xml
+htmlcov
 
 # Translations
 *.mo
-*.pot
 
-# Django stuff:
-*.log
-local_settings.py
+# IDEs
+.project
+.pydevproject
+.idea
+org.eclipse.core.resources.prefs
+.vscode
+.vs
 
 # Sphinx
 docs/_build
@@ -55,51 +54,6 @@ docs/Lib
 doc/pyvenv.cfg
 pyvenv.cfg
 
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv and pip
-.python-version
-pyvenv.cfg
-bin/
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-
-
-# mypy
-.mypy_cache/
-
-
-# Database
-*.sqlite3*
-
-# Staticfiles
-staticfiles/
-
-# virtualenv
-bin
-include
-lib64
-share
-Pipfile
-
-# editors
-.vscode
-# PyCharm
-.idea/
-
-# pytest
-.pytest_cache
-
-
 # Various junk and temp files
 .DS_Store
 *~
@@ -108,7 +62,6 @@ Pipfile
 .ve
 *.bak
 /.cache/
-/tmp/
 
 # pyenv
 /.python-version
@@ -119,3 +72,5 @@ tcl
 
 # Ignore Jupyter Notebook related temp files
 .ipynb_checkpoints/
+/.ruff_cache/
+/.env

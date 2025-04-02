@@ -24,6 +24,17 @@ author = "nexB Inc. and others"
 
 # -- General configuration ---------------------------------------------------
 
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+# ones.
+extensions = [
+    "sphinx.ext.intersphinx",
+    "sphinx_reredirects",
+    "sphinx_rtd_theme",
+    "sphinx_rtd_dark_mode",
+    "sphinx.ext.extlinks",
+    "sphinx_copybutton",
+
 # Ensure there are no invalid URLs
 # Use -b linkcheck to check integrity of all external links
 nitpicky = True
@@ -38,10 +49,6 @@ linkcheck_ignore = [
     "https://example.org/api/non-existent-packages",
 ]
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
-extensions = []
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

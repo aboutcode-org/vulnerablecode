@@ -1,0 +1,39 @@
+parameters:
+    job_name: ''
+    image_name: ''
+    python_versions: []
+    test_suites: {}
+    python_architecture: x64
+
+jobs:
+    - job: ${{ parameters.job_name }}
+
+      pool:
+          vmImage: ${{ parameters.image_name }}
+
+      strategy:
+          matrix:
+              ${{ each tsuite in parameters.test_suites }}:
+                 ${{ tsuite.key }}:
+                     test_suite_label: ${{ tsuite.key }}
+                     test_suite: ${{ tsuite.value }}
+
+      steps:
+          - checkout: self
+            fetchDepth: 10
+
+          - ${{ each pyver in parameters.python_versions }}:
+              - task: UsePythonVersion@0
+                inputs:
+                    versionSpec: '${{ pyver }}'
+                    architecture: '${{ parameters.python_architecture }}'
+                displayName: '${{ pyver }} - Install Python'
+
+              - script: |
+                   python --version
+                   echo | set /p=python> PYTHON_EXECUTABLE
+                   configure --clean && configure --dev
+                displayName: '${{ pyver }} - Configure'
+
+              - script: $(test_suite)
+                displayName: '${{ pyver }} - $(test_suite_label) on ${{ parameters.job_name }}'

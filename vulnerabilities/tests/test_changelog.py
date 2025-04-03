@@ -139,4 +139,4 @@ def test_vulnerability_changelog_software_version():
     NpmImporterPipeline().import_advisory(advisory=adv)
     npm_vulnerability_log = models.VulnerabilityChangeLog.objects.first()
 
-    assert ("test-version", npm_vulnerability_log.software_version)
+    assert npm_vulnerability_log.software_version == "test-version"

@@ -1,0 +1,98 @@
+[
+    {
+      "aliases": ["CVE-2024-45449"],
+      "summary": "Permission verification vulnerability\nMay affect service confidentiality",
+      "affected_packages": [
+        {
+          "package": {
+            "type": "huawei",
+            "name": "harmonyos",
+            "version": null,
+            "namespace": null,
+            "qualifiers": {},
+            "subpath": null
+          },
+          "affected_version_range": "vers:generic/=4.2.0",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "huawei",
+            "name": "harmonyos",
+            "version": null,
+            "namespace": null,
+            "qualifiers": {},
+            "subpath": null
+          },
+          "affected_version_range": "vers:generic/=2.0.0",
+          "fixed_version": null
+        }
+      ],
+      "references": [
+        {
+          "reference_id": "CVE-2024-45449",
+          "reference_type": "",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-45449",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "medium",
+              "scoring_elements": "",
+              "published_at": null
+            }
+          ]
+        }
+      ],
+      "date_published": null,
+      "weaknesses": [],
+      "url": "https://consumer.huawei.com/en/support/bulletin/2024/9/"
+    },
+    {
+      "aliases": ["CVE-2024-34740"],
+      "summary": "Third-party vulnerability affecting HarmonyOS4.2.0,HarmonyOS4.0.0",
+      "affected_packages": [
+        {
+          "package": {
+            "type": "huawei",
+            "name": "harmonyos",
+            "version": null,
+            "namespace": null,
+            "qualifiers": {},
+            "subpath": null
+          },
+          "affected_version_range": "vers:generic/=4.2.0",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "huawei",
+            "name": "harmonyos",
+            "version": null,
+            "namespace": null,
+            "qualifiers": {},
+            "subpath": null
+          },
+          "affected_version_range": "vers:generic/=4.0.0",
+          "fixed_version": null
+        }
+      ],
+      "references": [
+        {
+          "reference_id": "CVE-2024-34740",
+          "reference_type": "",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-34740",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "high",
+              "scoring_elements": "",
+              "published_at": null
+            }
+          ]
+        }
+      ],
+      "date_published": null,
+      "weaknesses": [],
+      "url": "https://consumer.huawei.com/en/support/bulletin/2024/9/"
+    }
+  ]

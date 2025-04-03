@@ -49,7 +49,7 @@ norecursedirs = [
    "tests/*/data"
 ]
 
-ython_files = "*.py"
+python_files = "*.py"
 
 python_classes = "Test"
 python_functions = "test"

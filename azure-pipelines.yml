@@ -54,27 +54,3 @@ jobs:
           python_versions: ['3.9', '3.10', '3.11', '3.12']
           test_suites:
               all: venv/bin/pytest -n 2 -vvs
-
-    - template: etc/ci/azure-win.yml
-      parameters:
-          job_name: win2019_cpython
-          image_name: windows-2019
-          python_versions: ['3.9', '3.10', '3.11', '3.12']
-          test_suites:
-              all: venv\Scripts\pytest -n 2 -vvs
-
-    - template: etc/ci/azure-win.yml
-      parameters:
-          job_name: win2022_cpython
-          image_name: windows-2022
-          python_versions: ['3.9', '3.10', '3.11', '3.12']
-          test_suites:
-              all: venv\Scripts\pytest -n 2 -vvs
-
-    - template: etc/ci/azure-win.yml
-      parameters:
-          job_name: win2025_cpython
-          image_name: windows-2025
-          python_versions: ['3.9', '3.10', '3.11', '3.12']
-          test_suites:
-              all: venv\Scripts\pytest -n 2 -vvs

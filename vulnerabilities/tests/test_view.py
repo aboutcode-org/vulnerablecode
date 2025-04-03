@@ -327,6 +327,6 @@ class VulnerabilitySearchTestCaseWithPackages(TestCase):
         with self.assertNumQueries(11):
             start_time = time.time()
             response = self.client.get(f"/vulnerabilities/{self.vuln1.vulnerability_id}")
-            end_time = time.time()
-            assert end_time - start_time < 0.05
-            self.assertEqual(response.status_code, 200)
+            run_time = time.time() - start_time
+            assert response.status_code == 200
+            assert run_time < 0.05

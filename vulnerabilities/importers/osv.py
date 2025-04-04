@@ -220,7 +220,14 @@ def get_affected_purl(affected_pkg, raw_id):
                 f"No PackageURL possible: {purl!r} for affected_pkg {affected_pkg} for OSV id: {raw_id}"
             )
             return
-    return PackageURL.from_string(str(purl))
+    try:
+        package_url = PackageURL.from_string(str(purl))
+        return package_url
+    except:
+        logger.error(
+            f"Invalid PackageURL: {purl!r} for affected_pkg {affected_pkg} for OSV id: {raw_id}"
+        )
+        return None 
 
 
 def get_affected_version_range(affected_pkg, raw_id, supported_ecosystem):

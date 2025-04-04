@@ -227,7 +227,7 @@ def get_affected_purl(affected_pkg, raw_id):
         logger.error(
             f"Invalid PackageURL: {purl!r} for affected_pkg {affected_pkg} for OSV id: {raw_id}"
         )
-        return None 
+        return None
 
 
 def get_affected_version_range(affected_pkg, raw_id, supported_ecosystem):

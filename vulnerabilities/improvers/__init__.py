@@ -18,6 +18,7 @@ from vulnerabilities.pipelines import enhance_with_exploitdb
 from vulnerabilities.pipelines import enhance_with_kev
 from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
+from vulnerabilities.pipelines import populate_vulnerability_summary_pipeline
 from vulnerabilities.pipelines import remove_duplicate_advisories
 
 IMPROVERS_REGISTRY = [
@@ -47,6 +48,7 @@ IMPROVERS_REGISTRY = [
     collect_commits.CollectFixCommitsPipeline,
     add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
     remove_duplicate_advisories.RemoveDuplicateAdvisoriesPipeline,
+    populate_vulnerability_summary_pipeline.PopulateVulnerabilitySummariesPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

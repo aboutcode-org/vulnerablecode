@@ -44,6 +44,13 @@ class RetireDotnetImporter(Importer):
             if self.vcs_response:
                 self.vcs_response.delete()
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     @staticmethod
     def vuln_id_from_desc(desc):
         cve_regex = re.compile(r"CVE-\d+-\d+")

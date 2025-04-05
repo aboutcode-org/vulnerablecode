@@ -38,6 +38,13 @@ class ApacheHTTPDImporter(Importer):
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     importer_name = "Apache HTTPD Importer"
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def advisory_data(self):
         links = fetch_links(self.base_url)
         for link in links:

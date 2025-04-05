@@ -41,6 +41,13 @@ class ElixirSecurityImporter(Importer):
             if self.vcs_response:
                 self.vcs_response.delete()
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def process_file(self, file, base_path):
         relative_path = str(file.relative_to(base_path)).strip("/")
         advisory_url = (

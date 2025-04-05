@@ -44,6 +44,13 @@ class IstioImporter(Importer):
     repo_url = "git+https://github.com/istio/istio.io/"
     importer_name = "Istio Importer"
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def advisory_data(self) -> Set[AdvisoryData]:
         try:
             self.clone(repo_url=self.repo_url)

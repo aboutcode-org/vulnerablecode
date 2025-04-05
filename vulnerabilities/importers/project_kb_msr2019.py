@@ -24,6 +24,13 @@ class ProjectKBMSRImporter(Importer):
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
     importer_name = "ProjectKB MSRImporter"
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def advisory_data(self):
         raw_data = fetch_and_read_from_csv(self.url)
         yield from self.to_advisories(raw_data)

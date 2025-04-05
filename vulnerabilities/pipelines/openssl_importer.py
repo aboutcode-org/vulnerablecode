@@ -46,19 +46,28 @@ class OpenSSLImporterPipeline(VulnerableCodeBaseImporterPipeline):
             cls.import_new_advisories,
         )
 
-    # num of advisories
     def advisories_count(self) -> int:
         return fetch_count_advisories(self.root_url)
 
-    # parse the response data
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         raw_data = fetch_advisory_data(self.root_url)
         for data in raw_data:
             yield to_advisory_data(data)
 
 
-# fetch the html content
 def fetch_html_response(url):
+    """
+    Fetch and parse the HTML content of a given URL.
+
+    This function sends a request to the URL, retrieves the HTML content,
+    and parses it using BeautifulSoup.
+
+    Args:
+        url (str): The URL to fetch the HTML content from.
+
+    Returns:
+        A BeautifulSoup object representing the parsed HTML content.
+    """
     try:
         response = fetch_response(url).content
         soup = BeautifulSoup(response, "html.parser")
@@ -68,16 +77,72 @@ def fetch_html_response(url):
 
 
 def fetch_count_advisories(url):
+    """
+    Gives the number of advisories from the given URL.
+    Advisories are identified by <h3> tags.
+
+    Args:
+        url (str): The URL to fetch the advisories from.
+
+    Returns:
+        int: The number of advisories found on the page.
+
+    Doctests:
+        >>> from unittest.mock import patch
+        >>> from bs4 import BeautifulSoup
+        >>> from vulnerabilities.pipelines.openssl_importer import fetch_count_advisories
+        >>> mock_html = '<html><body><h3>Advisory 1</h3><h3>Advisory 2</h3></body></html>'
+        >>> with patch('vulnerabilities.pipelines.openssl_importer.fetch_html_response') as mock_fetch:
+        ...     mock_fetch.return_value = BeautifulSoup(mock_html, "html.parser")
+        ...     count = fetch_count_advisories("http://example.com")
+        >>> count
+        2
+    """
+
     soup = fetch_html_response(url)
     advisories = soup.find_all("h3")
     return len(advisories)
 
 
-# fetch the content from the html data
 def fetch_advisory_data(url):
+    """
+    Fetch advisory data from the given URL.
+
+    Args:
+        url (str): The URL to fetch the advisory data from.
+
+    Returns:
+        list: A list of dictionaries, where each dictionary contains advisory details.
+
+    Doctests:
+        >>> from unittest.mock import patch
+        >>> from bs4 import BeautifulSoup
+        >>> from vulnerabilities.pipelines.openssl_importer import fetch_advisory_data
+        >>> mock_html = '''
+        ... <html>
+        ... <body>
+        ... <h3 id="CVE-2024-12797">
+        ...     <a href="#CVE-2024-12797">CVE-2024-12797</a>
+        ... </h3>
+        ... <dl>
+        ...     <dt>Published at</dt>
+        ...     <dd>11 February 2025</dd>
+        ... </dl>
+        ... </body>
+        ... </html>
+        ... '''
+        >>> with patch('vulnerabilities.pipelines.openssl_importer.fetch_html_response') as mock_fetch:
+        ...     mock_fetch.return_value = BeautifulSoup(mock_html, "html.parser")
+        ...     advisories = fetch_advisory_data("http://example.com")
+        >>> len(advisories)
+        1
+        >>> advisories[0]["CVE"]
+        'CVE-2024-12797'
+    """
+
     advisories = []
     soup = fetch_html_response(url)
-    # all the CVEs are h3 with id="CVE-.."
+
     for cve_section in soup.find_all("h3"):
         data_output = {
             "date_published": "",
@@ -88,33 +153,24 @@ def fetch_advisory_data(url):
             "severity": "",
         }
 
-        # CVE is in a link
         data_output["CVE"] = cve_section.find("a").text
 
-        # the <dl> tag in this section
         dl = cve_section.find_next_sibling("dl")
-        for dt, dd in zip(
-            dl.find_all("dt"), dl.find_all("dd")
-        ):  # combines both the lists,for better iteration
+        for dt, dd in zip(dl.find_all("dt"), dl.find_all("dd")):
             key = dt.text
             value = dd.text
 
-            # Severity
             if key == "Severity":
                 data_output["severity"] = value
-            # Published Date
             elif key == "Published at":
                 data_output["date_published"] = value
-            # Affected Packages
             elif key == "Affected":
                 affected_list = [li.text.strip() for li in dd.find_all("li")]
                 data_output["affected_packages"] = affected_list
-            # references
             elif key == "References":
                 references = [a["href"] for a in dd.find_all("a")]
                 data_output["references"] = references
 
-        # for summary
         for sibling in dl.find_next_siblings():
             if sibling.name == "h2" or sibling.name == "h3":
                 break
@@ -122,10 +178,8 @@ def fetch_advisory_data(url):
                 if "Issue summary:" in sibling.text:
                     data_output["summary"] = sibling.text.strip("Issue summary:")
 
-        # append all the output  data to the list
         advisories.append(data_output)
 
-    # return the list with all the advisory data
     return advisories
 
 
@@ -145,18 +199,48 @@ def fetch_advisory_data(url):
 """
 
 
-# parse the advisory data
 def to_advisory_data(raw_data) -> AdvisoryData:
-    # alias
+    """
+    Convert raw advisory data into an AdvisoryData object.
+
+    Args:
+        raw_data (dict): A dictionary containing raw advisory data.
+
+    Returns:
+        AdvisoryData: An object containing structured advisory information.
+
+    Doctests:
+        >>> from unittest.mock import patch
+        >>> from datetime import datetime, timezone
+        >>> from vulnerabilities.pipelines.openssl_importer import to_advisory_data
+        >>> raw_data = {
+        ...     "CVE": "CVE-2024-12797",
+        ...     "date_published": "2024-02-11",
+        ...     "affected_packages": ["OpenSSL from 1.0.1 to 1.0.1j"],
+        ...     "references": ["https://www.cve.org/CVERecord?id=CVE-2024-12797"],
+        ...     "summary": "Example summary",
+        ...     "severity": "High"
+        ... }
+        >>> with patch('dateparser.parse') as mock_dateparser:
+        ...     mock_dateparser.return_value = datetime(2024, 2, 11, tzinfo=timezone.utc)
+        ...     advisory = to_advisory_data(raw_data)
+        >>> advisory.aliases
+        ['CVE-2024-12797']
+        >>> advisory.date_published.isoformat()
+        '2024-02-11T00:00:00+00:00'
+        >>> len(advisory.affected_packages)
+        1
+        >>> advisory.references[0].url
+        'https://www.cve.org/CVERecord?id=CVE-2024-12797'
+    """
+
     aliases = [get_item(raw_data, "CVE")]
 
-    # published data
     date_published = get_item(raw_data, "date_published")
     parsed_date_published = dateparser.parse(date_published, yearfirst=True).replace(
         tzinfo=timezone.utc
     )
 
-    # affected packages
     affected_packages = []
     affected_package_out = get_item(raw_data, "affected_packages")
     for affected in affected_package_out:
@@ -172,17 +256,14 @@ def to_advisory_data(raw_data) -> AdvisoryData:
             )
         )
 
-    # Severity
     severity = VulnerabilitySeverity(
         system=SCORING_SYSTEMS["generic_textual"], value=get_item(raw_data, "severity")
     )
 
-    # Reference
     references = []
     for reference in get_item(raw_data, "references"):
         references.append(Reference(severities=[severity], reference_id=aliases[0], url=reference))
 
-    # summary
     summary = get_item(raw_data, "summary")
 
     return AdvisoryData(

@@ -170,7 +170,7 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
         imported_advisory_count = 0
         progress = LoopProgress(total_iterations=new_advisories_count, logger=self.log)
-        for advisory in progress.iter(new_advisories.paginated()):
+        for advisory in progress.iter(new_advisories.iterator()):
             self.import_advisory(advisory=advisory)
             if advisory.date_imported:
                 imported_advisory_count += 1

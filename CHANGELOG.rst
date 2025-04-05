@@ -2,6 +2,27 @@ Release notes
 =============
 
 
+Version v36.0.0
+---------------------
+
+- Add indexes for models https://github.com/aboutcode-org/vulnerablecode/pull/1701
+- Add fixed by package in V2 API https://github.com/aboutcode-org/vulnerablecode/pull/1706
+- Add tests for num queries for views https://github.com/aboutcode-org/vulnerablecode/pull/1730
+- Add postgresql conf in docker-compose https://github.com/aboutcode-org/vulnerablecode/pull/1733
+- Add default postgresql.conf for local docker build https://github.com/aboutcode-org/vulnerablecode/pull/1735
+- Add models for CodeFix https://github.com/aboutcode-org/vulnerablecode/pull/1704
+- Migrate Alpine Linux importer to aboutcode pipeline https://github.com/aboutcode-org/vulnerablecode/pull/1737
+- VCIO-next: Allow CVSS3.1 Severities in NVD https://github.com/aboutcode-org/vulnerablecode/pull/1738
+- Add Pipeline to add missing CVSSV3.1 scores https://github.com/aboutcode-org/vulnerablecode/pull/1740
+- Add description and reference to the latest release on the homepage https://github.com/aboutcode-org/vulnerablecode/pull/1743
+- Use proper apk package type for Alpine https://github.com/aboutcode-org/vulnerablecode/pull/1739
+- Optimize vulnerabilities view https://github.com/aboutcode-org/vulnerablecode/pull/1728
+- Add CWE support in multiple importers https://github.com/aboutcode-org/vulnerablecode/pull/1526
+- Fast content ID migration https://github.com/aboutcode-org/vulnerablecode/pull/1795
+- Add captcha for user signup https://github.com/aboutcode-org/vulnerablecode/pull/1822
+- Move the package search box to the top by @keshav-space in https://github.com/aboutcode-org/vulnerablecode/pull/1832
+
+
 Version v35.1.0
 ---------------------
 

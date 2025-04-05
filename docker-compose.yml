@@ -15,12 +15,13 @@ services:
     command: /bin/sh -c "
         ./manage.py migrate &&
         ./manage.py collectstatic --no-input --verbosity 0 --clear &&
-        gunicorn vulnerablecode.wsgi:application -u nobody -g nogroup --bind :8000 --timeout 600 --workers 8"
+        gunicorn --reload vulnerablecode.wsgi:application -u nobody -g nogroup --bind :8000 --timeout 600 --workers 8"
     env_file:
       - docker.env
     expose:
       - 8000
     volumes:
+      - .:/app 
       - /etc/vulnerablecode/:/etc/vulnerablecode/
       - static:/var/vulnerablecode/static/
     depends_on:

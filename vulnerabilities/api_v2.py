@@ -254,6 +254,10 @@ class PackageV2FilterSet(filters.FilterSet):
     )
     fixing_vulnerability = filters.CharFilter(field_name="fixing_vulnerabilities__vulnerability_id")
     purl = filters.CharFilter(field_name="package_url")
+    is_vulnerable = filters.BooleanFilter(method="filter_is_vulnerable")
+
+    def filter_is_vulnerable(self, queryset, name, value):
+        return queryset.filter(is_vulnerable=value)
 
 
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
@@ -273,6 +277,7 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         package_purls = self.request.query_params.getlist("purl")
         affected_by_vulnerability = self.request.query_params.get("affected_by_vulnerability")
         fixing_vulnerability = self.request.query_params.get("fixing_vulnerability")
+        is_vulnerable = self.request.query_params.get("is_vulnerable")
 
         if package_purls:
             queryset = queryset.filter(package_url__in=package_purls)
@@ -284,6 +289,12 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(
                 fixing_vulnerabilities__vulnerability_id=fixing_vulnerability
             )
+        if is_vulnerable is not None:
+            queryset = queryset.with_is_vulnerable()
+            is_vulnerable = is_vulnerable.lower() == "true"
+            queryset = queryset.filter(is_vulnerable=is_vulnerable)
+
+        queryset = queryset.exclude(version="")
         return queryset.with_is_vulnerable()
 
     def list(self, request, *args, **kwargs):

@@ -104,24 +104,30 @@ class ImportRunner:
         advisories = []
         for data in advisory_datas:
             content_id = compute_content_id(advisory_data=data)
+            advisory = {
+                "summary": data.summary,
+                "affected_packages": [pkg.to_dict() for pkg in data.affected_packages],
+                "references": [ref.to_dict() for ref in data.references],
+                "date_published": data.date_published,
+                "weaknesses": data.weaknesses,
+                "created_by": importer_name,
+                "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
+            }
             try:
                 aliases = get_or_create_aliases(aliases=data.aliases)
                 obj, created = Advisory.objects.get_or_create(
                     unique_content_id=content_id,
                     url=data.url,
-                    defaults={
-                        "summary": data.summary,
-                        "affected_packages": [pkg.to_dict() for pkg in data.affected_packages],
-                        "references": [ref.to_dict() for ref in data.references],
-                        "date_published": data.date_published,
-                        "weaknesses": data.weaknesses,
-                        "created_by": importer_name,
-                        "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
-                    },
+                    defaults=advisory,
                 )
                 obj.aliases.add(*aliases)
                 if not obj.date_imported:
                     advisories.append(obj)
+            except Advisory.MultipleObjectsReturned as mo:
+                logger.error(
+                    f"Multiple Advisories returned: unique_content_id: {content_id}, url: {data.url}, advisory: {advisory!r}"
+                )
+                raise
             except Exception as e:
                 logger.error(
                     f"Error while processing {data!r} with aliases {data.aliases!r}: {e!r} \n {traceback_format_exc()}"

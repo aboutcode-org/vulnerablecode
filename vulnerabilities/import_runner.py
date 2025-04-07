@@ -123,7 +123,7 @@ class ImportRunner:
                 obj.aliases.add(*aliases)
                 if not obj.date_imported:
                     advisories.append(obj)
-            except Advisory.MultipleObjectsReturned as mo:
+            except Advisory.MultipleObjectsReturned:
                 logger.error(
                     f"Multiple Advisories returned: unique_content_id: {content_id}, url: {data.url}, advisory: {advisory!r}"
                 )

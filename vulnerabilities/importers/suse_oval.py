@@ -26,6 +26,13 @@ class SuseOvalImporter(OvalImporter):
         super().__init__(*args, **kwargs)
         self.translations = {"less than": "<", "equals": "=", "greater than or equal": ">="}
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def _fetch(self):
         page = requests.get(self.base_url).text
         soup = BeautifulSoup(page, "lxml")

@@ -67,6 +67,13 @@ class RedhatImporter(Importer):
     license_url = "https://access.redhat.com/documentation/en-us/red_hat_security_data_api/1.0/html/red_hat_security_data_api/legal-notice"
     importer_name = "RedHat Importer"
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def advisory_data(self) -> Iterable[AdvisoryData]:
         for redhat_cves in fetch_cves():
             for redhat_cve in redhat_cves:

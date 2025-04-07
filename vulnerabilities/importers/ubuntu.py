@@ -63,6 +63,13 @@ class UbuntuImporter(OvalImporter):
     """
     importer_name = "Ubuntu OVAL Importer"
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # we could avoid setting translations, and have it

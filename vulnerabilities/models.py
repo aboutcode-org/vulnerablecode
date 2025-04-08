@@ -1321,6 +1321,7 @@ class Advisory(models.Model):
         max_length=64,
         blank=False,
         null=False,
+        unique=True,
         help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
     )
     aliases = models.ManyToManyField(
@@ -1355,14 +1356,14 @@ class Advisory(models.Model):
         "vulnerabilities.pipeline.nginx_importer.NginxImporterPipeline",
     )
     url = models.URLField(
-        blank=True,
+        blank=False,
+        null=False,
         help_text="Link to the advisory on the upstream website",
     )
 
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
-        unique_together = ["unique_content_id", "date_published", "url"]
         ordering = ["date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):

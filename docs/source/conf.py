@@ -36,6 +36,8 @@ linkcheck_ignore = [
     "https://www.softwaretestinghelp.com/how-to-write-good-bug-report/",  # Cloudflare protection
     "https://www.openssl.org/news/vulnerabilities.xml",  # OpenSSL legacy advisory URL, not longer available
     "https://example.org/api/non-existent-packages",
+    "https://github.com/aboutcode-org/vulnerablecode/pull/495/commits",
+    "https://nvd.nist.gov/products/cpe",
 ]
 
 # Add any Sphinx extension module names here, as strings. They can be

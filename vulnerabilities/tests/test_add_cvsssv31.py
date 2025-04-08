@@ -25,6 +25,7 @@ class TestCVEAdvisoryMappingPipeline(TestCase):
         advisory = Advisory.objects.create(
             created_by="nvd_importer",
             unique_content_id="test-unique-content-id",
+            url="https://nvd.nist.gov/vuln/detail/CVE-2024-1234",
             references=[
                 {
                     "severities": [

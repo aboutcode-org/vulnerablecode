@@ -205,6 +205,10 @@ class PackageV2Serializer(serializers.ModelSerializer):
             purl = None
             if fixed_by_package:
                 purl = fixed_by_package.package_url
+            
+            #exposing severities inside the affectedbyvulnerabilities
+            severities = VulnerabilitySeverityV2Serializer(vuln.severities.all(), many=True).data
+
             # Get code fixed for a vulnerability
             code_fixes = CodeFix.objects.filter(
                 affected_package_vulnerability__vulnerability=vuln
@@ -216,6 +220,7 @@ class PackageV2Serializer(serializers.ModelSerializer):
 
             result[vuln.vulnerability_id] = {
                 "vulnerability_id": vuln.vulnerability_id,
+                "severities" : severities,
                 "fixed_by_packages": purl,
                 "code_fixes": code_fix_urls,
             }
@@ -260,7 +265,7 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all().prefetch_related(
         Prefetch(
             "affected_by_vulnerabilities",
-            queryset=Vulnerability.objects.prefetch_related("fixed_by_packages"),
+            queryset=Vulnerability.objects.prefetch_related("fixed_by_packages","severities"),
             to_attr="prefetched_affected_vulnerabilities",
         )
     )

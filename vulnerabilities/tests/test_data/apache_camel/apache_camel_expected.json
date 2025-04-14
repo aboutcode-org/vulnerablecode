@@ -1,7 +1,7 @@
 [
     {
-        "aliases": "CVE-2024-22371",
-        "summary": "Exposure of sensitive data by crafting a malicious EventFactory and providing a custom ExchangeCreatedEvent that exposes sensitive data",
+        "aliases": ["CVE-2025-30177"],
+        "summary": "Camel-Undertow Message Header Injection via Improper Filtering",
         "affected_packages": [
             {
                 "package": {
@@ -12,61 +12,26 @@
                     "qualifiers": "",
                     "subpath": ""
                 },
-                "affected_version_range": "vers:maven/3.0.0|3.21.4|3.22.0|>=3.22.0|<3.22.1|3.22.1|4.0.0|>=4.0.0|<4.0.4|4.0.4|4.1.0|>=4.1.0|<4.4.0|4.4.0",
-                "fixed_version": ["3.21.4", "3.22.1", "4.0.4", "4.4.0"]
+                "affected_version_range": "vers:maven/4.8.0|4.8.6|4.10.0|4.10.3",
+                "fixed_version": null
             }
         ],
         "references": [
             {
-                "reference_id": "CVE-2024-22371",
+                "reference_id": "CVE-2025-30177",
                 "reference_type": "",
-                "url": "https://camel.apache.org/security/CVE-2024-22371.html",
+                "url": "https://camel.apache.org/security/CVE-2025-30177.html",
                 "severities": [
                     {
                         "system": "generic_textual",
-                        "value": "LOW",
+                        "value": "MEDIUM",
                         "scoring_elements": ""
                     }
                 ]
             }
         ],
-        "date_published": null,
+        "date_published": "2025-04-01T11:56:30.484000+00:00",
         "weaknesses": [],
-        "url": "https://camel.apache.org/security/CVE-2024-22371.html"
-    },
-    {
-        "aliases": "CVE-2024-23114",
-        "summary": "Apache Camel: Camel-CassandraQL: Unsafe Deserialization from CassandraAggregationRepository",
-        "affected_packages": [
-            {
-                "package": {
-                    "type": "maven",
-                    "namespace": "org.apache.camel",
-                    "name": "camel",
-                    "version": "",
-                    "qualifiers": "",
-                    "subpath": ""
-                },
-                "affected_version_range": "vers:maven/3.0.0|3.21.4|3.22.0|>=3.22.0|<3.22.1|3.22.1|4.0.0|>=4.0.0|<4.0.4|4.0.4|4.1.0|>=4.1.0|<4.4.0|4.4.0",
-                "fixed_version": ["3.21.4", "3.22.1", "4.0.4", "4.4.0"]
-            }
-        ],
-        "references": [
-            {
-                "reference_id": "CVE-2024-23114",
-                "reference_type": "",
-                "url": "https://camel.apache.org/security/CVE-2024-23114.html",
-                "severities": [
-                    {
-                        "system": "generic_textual",
-                        "value": "HIGH",
-                        "scoring_elements": ""
-                    }
-                ]
-            }
-        ],
-        "date_published": null,
-        "weaknesses": [],
-        "url": "https://camel.apache.org/security/CVE-2024-23114.html"
+        "url": "https://camel.apache.org/security/CVE-2025-30177.html"
     }
 ]

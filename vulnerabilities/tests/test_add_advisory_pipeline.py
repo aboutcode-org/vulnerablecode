@@ -31,3 +31,4 @@ class TestAddAdvisoryPipeline:
             add_advisory_id.AddAdvisoryID().add_advisory_id()
             advisory.refresh_from_db()
             assert advisory.advisory_id == "CVE-2021-1234"
+            assert advisory.aliases.count() == 0

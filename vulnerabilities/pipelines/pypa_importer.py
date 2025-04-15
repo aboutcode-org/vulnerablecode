@@ -42,6 +42,9 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipeline):
         """
         Return the Advisory ID for the given aliases.
         """
+        for alias in aliases:
+            if alias.lower().startswith("pysec-"):
+                return alias
         return cls.get_cve_id(aliases)
 
     def clone(self):

@@ -41,6 +41,9 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
         """
         Return the Advisory ID for the given aliases.
         """
+        for alias in aliases:
+            if alias.startswith("PYSEC-"):
+                return alias
         return cls.get_cve_id(aliases)
 
     def fetch_zip(self):

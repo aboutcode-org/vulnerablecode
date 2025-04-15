@@ -66,12 +66,17 @@ class RedhatImporter(Importer):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://access.redhat.com/documentation/en-us/red_hat_security_data_api/1.0/html/red_hat_security_data_api/legal-notice"
     importer_name = "RedHat Importer"
+    requires_reference_for_advisory_id = True
 
     @classmethod
-    def get_advisory_id(cls, aliases: list[str]) -> str:
+    def get_advisory_id(cls, aliases: list[str], references) -> str:
         """
         Return the Advisory ID for the given aliases.
         """
+        for ref in references:
+            ref_id = ref.get("reference_id")
+            if ref_id and ref_id.lower().startswith("RHSA-"):
+                return ref_id
         return cls.get_cve_id(aliases)
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

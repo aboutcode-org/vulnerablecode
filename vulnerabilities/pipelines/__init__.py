@@ -13,6 +13,7 @@ from datetime import timezone
 from timeit import default_timer as timer
 from traceback import format_exc as traceback_format_exc
 from typing import Iterable
+from typing import Optional
 
 from aboutcode.pipeline import BasePipeline
 from aboutcode.pipeline import LoopProgress
@@ -114,6 +115,7 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     repo_url = None
     importer_name = None
     advisory_confidence = MAX_CONFIDENCE
+    requires_reference_for_advisory_id = False
 
     @classmethod
     def steps(cls):
@@ -129,6 +131,13 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
         Yield AdvisoryData for importer pipeline.
 
         Populate the `self.collected_advisories_count` field and yield AdvisoryData
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str], references: Optional[list[dict]] = None) -> str:
+        """
+        Return the Advisory ID for the given aliases.
         """
         raise NotImplementedError
 

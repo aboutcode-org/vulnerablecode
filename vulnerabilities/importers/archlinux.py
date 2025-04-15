@@ -29,12 +29,16 @@ class ArchlinuxImporter(Importer):
     spdx_license_expression = "MIT"
     license_url = "https://github.com/archlinux/arch-security-tracker/blob/master/LICENSE"
     importer_name = "Arch Linux Importer"
+    requires_reference_for_advisory_id = True
 
     @classmethod
-    def get_advisory_id(cls, aliases: list[str]) -> str:
+    def get_advisory_id(cls, aliases: list[str], references) -> str:
         """
         Return the Advisory ID for the given aliases.
         """
+        for ref in references:
+            if ref.get("reference_id").startswith("AVG-"):
+                return ref.get("reference_id")
         return cls.get_cve_id(aliases)
 
     def fetch(self) -> Iterable[Mapping]:

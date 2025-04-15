@@ -40,6 +40,9 @@ class FireyeImporter(Importer):
         """
         Return the Advisory ID for the given aliases.
         """
+        for alias in aliases:
+            if alias.startswith("MNDT-"):
+                return alias
         return cls.get_cve_id(aliases)
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

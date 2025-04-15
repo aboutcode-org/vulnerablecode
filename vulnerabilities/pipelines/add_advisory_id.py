@@ -39,10 +39,17 @@ class AddAdvisoryID(VulnerableCodePipeline):
         for advisory in progress.iter(advisories.iterator(chunk_size=batch_size)):
             importer_name = advisory.created_by
             aliases = Alias.objects.filter(advisories=advisory).values_list("alias", flat=True)
-            advisory_id = IMPORTERS_REGISTRY[importer_name].get_advisory_id(aliases=aliases)
+            references = advisory.references
+            importer = IMPORTERS_REGISTRY[importer_name]
+            if not importer.requires_reference_for_advisory_id:
+                advisory_id = importer.get_advisory_id(aliases=aliases)
+            else:
+                advisory_id = importer.get_advisory_id(aliases=aliases, references=references)
             if advisory_id is None:
                 continue
             advisory.advisory_id = advisory_id
+            aliases = Alias.objects.filter(advisories=advisory).exclude(alias=advisory_id)
+            advisory.aliases.set(aliases)
             advisories_to_update.append(advisory)
             if len(advisories_to_update) >= batch_size:
                 self.do_bulk_update(advisories_to_update)

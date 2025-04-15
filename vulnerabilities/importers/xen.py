@@ -45,12 +45,16 @@ class XenImporter(Importer):
      -George
     """
     importer_name = "Xen Importer"
+    requires_reference_for_advisory_id = True
 
     @classmethod
-    def get_advisory_id(cls, aliases: list[str]) -> str:
+    def get_advisory_id(cls, aliases: list[str], references: list[dict]) -> str:
         """
         Return the Advisory ID for the given aliases.
         """
+        for ref in references:
+            if ref.get("reference_id").startswith("XSA-"):
+                return ref.get("reference_id")
         return cls.get_cve_id(aliases)
 
     def advisory_data(self):

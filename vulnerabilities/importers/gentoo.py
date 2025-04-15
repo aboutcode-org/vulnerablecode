@@ -32,12 +32,17 @@ class GentooImporter(Importer):
     # under the [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
     license_url = "https://creativecommons.org/licenses/by-sa/4.0/"
     importer_name = "Gentoo Importer"
+    requires_reference_for_advisory_id = True
 
     @classmethod
-    def get_advisory_id(cls, aliases: list[str]) -> str:
+    def get_advisory_id(cls, aliases: list[str], references) -> str:
         """
         Return the Advisory ID for the given aliases.
         """
+        for ref in references:
+            ref_id = ref.get("reference_id")
+            if ref_id and ref_id.startswith("GLSA-"):
+                return ref_id
         return cls.get_cve_id(aliases)
 
     def advisory_data(self) -> Iterable[AdvisoryData]:

@@ -45,7 +45,8 @@ class AddAdvisoryID(VulnerableCodePipeline):
                 advisory_id = importer.get_advisory_id(aliases=aliases)
             else:
                 advisory_id = importer.get_advisory_id(aliases=aliases, references=references)
-            if advisory_id is None:
+            if not advisory_id:
+                self.log(f"Advisory {advisory.id} does not have an advisory ID. Skipping.")
                 continue
             advisory.advisory_id = advisory_id
             aliases = Alias.objects.filter(advisories=advisory).exclude(alias=advisory_id)

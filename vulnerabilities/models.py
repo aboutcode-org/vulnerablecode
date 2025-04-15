@@ -1323,6 +1323,16 @@ class Advisory(models.Model):
         null=False,
         help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
     )
+
+    advisory_id = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="An advisory id, such as CVE-123-345 when available",
+    )
+    url = models.URLField(
+        blank=True,
+        help_text="Link to the advisory on the upstream website",
+    )
     aliases = models.ManyToManyField(
         Alias,
         through="AdvisoryRelatedAlias",
@@ -1353,10 +1363,6 @@ class Advisory(models.Model):
         help_text="Fully qualified name of the importer prefixed with the"
         "module name importing the advisory. Eg:"
         "vulnerabilities.pipeline.nginx_importer.NginxImporterPipeline",
-    )
-    url = models.URLField(
-        blank=True,
-        help_text="Link to the advisory on the upstream website",
     )
 
     objects = AdvisoryQuerySet.as_manager()

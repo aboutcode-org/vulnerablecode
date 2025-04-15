@@ -46,6 +46,13 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipeline):
         self.log(f"Fetch `{self.url}`")
         self.advisory_data = requests.get(self.url).text
 
+    @classmethod
+    def get_advisory_id(cls, aliases: list[str]) -> str:
+        """
+        Return the Advisory ID for the given aliases.
+        """
+        return cls.get_cve_id(aliases)
+
     def advisories_count(self):
         return self.advisory_data.count("<li><p>")
 

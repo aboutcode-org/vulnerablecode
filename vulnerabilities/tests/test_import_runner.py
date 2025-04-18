@@ -163,7 +163,10 @@ def test_process_advisories_can_import_advisories_with_severities_and_no_date():
     }
     ad = AdvisoryData.from_dict(advisory)
     ImportRunner(DummyImporter).process_advisories([ad], "test_importer_date")
-    advisory_aliases = list(models.Advisory.objects.all().values("aliases"))
+    advisory_aliases = [
+        {"aliases": [item.alias for item in adv.aliases.all()]}
+        for adv in models.Advisory.objects.all()
+    ]
     assert advisory_aliases == [{"aliases": ["CVE-2024-31079"]}]
 
 
@@ -174,7 +177,12 @@ def test_advisory_summary_clean_up():
     assert "\x00" not in adv.summary
 
 
-DUMMY_ADVISORY = models.Advisory(summary="dummy", created_by="tests", date_collected=timezone.now())
+DUMMY_ADVISORY = models.Advisory(
+    unique_content_id="test-unique-content-id",
+    summary="dummy",
+    created_by="tests",
+    date_collected=timezone.now(),
+)
 
 
 INFERENCES = [

@@ -75,20 +75,6 @@ class BaseQuerySet(models.QuerySet):
         with suppress(self.model.DoesNotExist, ValidationError):
             return self.get(*args, **kwargs)
 
-    def paginated(self, per_page=5000):
-        """
-        Iterate over a (large) QuerySet by chunks of ``per_page`` items.
-        This technique is essential for preventing memory issues when iterating
-        See these links for inspiration:
-        https://nextlinklabs.com/resources/insights/django-big-data-iteration
-        https://stackoverflow.com/questions/4222176/why-is-iterating-through-a-large-django-queryset-consuming-massive-amounts-of-me/
-        """
-        paginator = Paginator(self, per_page=per_page)
-        for page_number in paginator.page_range:
-            page = paginator.page(page_number)
-            for obj in page.object_list:
-                yield obj
-
 
 class VulnerabilityQuerySet(BaseQuerySet):
     def affecting_vulnerabilities(self):

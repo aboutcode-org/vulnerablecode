@@ -35,6 +35,7 @@ from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import alpine_linux_importer
+from vulnerabilities.pipelines import apache_camel_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
@@ -44,6 +45,7 @@ from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
 
 IMPORTERS_REGISTRY = [
+    apache_camel_importer.ApacheCamelImporterPipeline,
     nvd_importer.NVDImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     gitlab_importer.GitLabImporterPipeline,

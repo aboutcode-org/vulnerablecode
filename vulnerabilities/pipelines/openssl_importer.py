@@ -34,8 +34,8 @@ class OpenSSLImporterPipeline(VulnerableCodeBaseImporterPipeline):
     """Collect Advisories from Openssl"""
 
     pipeline_id = "openssl_importer"
-    spdx_license_expression = "OpenSSL-standalone"
-    license_url = "https://spdx.org/licenses/OpenSSL-standalone.html"
+    spdx_license_expression = "Apache-2.0"
+    license_url = "https://openssl-library.org/source/license/apache-license-2.0.txt"
     root_url = "https://openssl-library.org/news/vulnerabilities/index.html"
     importer_name = "OpenSSL Importer"
 

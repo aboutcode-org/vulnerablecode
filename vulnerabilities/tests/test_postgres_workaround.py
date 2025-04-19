@@ -427,6 +427,7 @@ data = AdvisoryData(
 def test_postgres_workaround_with_many_references_many_affected_packages_and_long_summary():
     adv, _ = Advisory.objects.get_or_create(
         unique_content_id="test-unique-content-id",
+        url="https://test.url/",
         summary=data.summary,
         affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
         references=[ref.to_dict() for ref in data.references],

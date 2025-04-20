@@ -1,14 +1,20 @@
-import unittest
-from unittest.mock import Mock
-from unittest.mock import patch
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 
 from django.test import TestCase
 
 from vulnerabilities.models import Advisory
-from vulnerabilities.models import Alias
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.pipelines.add_cvss31_to_CVEs import CVEAdvisoryMappingPipeline
+from vulnerabilities.pipes.advisory import get_or_create_aliases
 from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.severity_systems import CVSSV31
 
@@ -16,9 +22,10 @@ from vulnerabilities.severity_systems import CVSSV31
 class TestCVEAdvisoryMappingPipeline(TestCase):
     def setUp(self):
         self.pipeline = CVEAdvisoryMappingPipeline()
-        Advisory.objects.create(
+        advisory = Advisory.objects.create(
             created_by="nvd_importer",
-            aliases=["CVE-2024-1234"],
+            unique_content_id="test-unique-content-id",
+            url="https://nvd.nist.gov/vuln/detail/CVE-2024-1234",
             references=[
                 {
                     "severities": [
@@ -29,10 +36,14 @@ class TestCVEAdvisoryMappingPipeline(TestCase):
                         }
                     ],
                     "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-1234",
+                    "reference_id": "CVE-2024-1234",
+                    "reference_type": "cve",
                 }
             ],
             date_collected="2024-09-27T19:38:00Z",
         )
+        advisory.aliases.add(*get_or_create_aliases(["CVE-2024-1234"]))
+
         vuln = Vulnerability.objects.create(vulnerability_id="CVE-2024-1234")
         sev = VulnerabilitySeverity.objects.create(
             scoring_system=CVSSV3.identifier,

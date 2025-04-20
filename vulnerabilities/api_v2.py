@@ -293,8 +293,6 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.with_is_vulnerable()
             is_vulnerable = is_vulnerable.lower() == "true"
             queryset = queryset.filter(is_vulnerable=is_vulnerable)
-
-        queryset = queryset.exclude(version="")
         return queryset.with_is_vulnerable()
 
     def list(self, request, *args, **kwargs):

@@ -49,6 +49,7 @@ class PackageSearch(ListView):
         request_query = self.request.GET
         context["package_search_form"] = PackageSearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["vulnerable_only"] = request_query.get("vulnerable_only", "")
         return context
 
     def get_queryset(self, query=None):
@@ -57,18 +58,22 @@ class PackageSearch(ListView):
         Make a best effort approach to find matching packages either based
         on exact purl, partial purl or just name and namespace.
         """
+        form = PackageSearchForm(self.request.GET)
         query = query or self.request.GET.get("search") or ""
+
         queryset = (
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
             .order_by("package_url")
         )
-        if hasattr(self, "request"):
-            vulnerable_only = self.request.GET.get("vulnerable_only", "").lower()
+
+        if form.is_valid():
+            vulnerable_only = form.cleaned_data.get("vulnerable_only", "")
             if vulnerable_only in ["true", "false"]:
                 queryset = queryset.with_is_vulnerable()
                 queryset = queryset.filter(is_vulnerable=vulnerable_only == "true")
+
         return queryset
 
 

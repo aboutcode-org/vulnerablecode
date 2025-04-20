@@ -18,14 +18,37 @@ VulnerableCode Package Search
                 <div>
                     {{ page_obj.paginator.count|intcomma }} results
                 </div>
-                <form method="get" style="display: inline;">
-                    {% if search %}<input type="hidden" name="search" value="{{ search }}">{% endif %}
-                    <select name="vulnerable_only" class="select" id="vulnerable-select" onchange="this.form.submit()">
-                        <option value="">All Packages</option>
-                        <option value="true" {% if request.GET.vulnerable_only == 'true' %}selected{% endif %}>Vulnerable Only</option>
-                        <option value="false" {% if request.GET.vulnerable_only == 'false' %}selected{% endif %}>Non-Vulnerable Only</option>
-                    </select>
-                </form>
+                <div class="dropdown is-hoverable">
+                    <div class="dropdown-trigger">
+                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                            <span>
+                                {% if request.GET.vulnerable_only == 'true' %}
+                                    Vulnerable Only
+                                {% elif request.GET.vulnerable_only == 'false' %}
+                                    Non-Vulnerable Only
+                                {% else %}
+                                    All Packages
+                                {% endif %}
+                            </span>
+                            <span class="icon is-small">
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                            <a href="?search={{ search }}" class="dropdown-item {% if not request.GET.vulnerable_only %}is-active{% endif %}">
+                                All Packages
+                            </a>
+                            <a href="?search={{ search }}&vulnerable_only=true" class="dropdown-item {% if request.GET.vulnerable_only == 'true' %}is-active{% endif %}">
+                                Vulnerable Only
+                            </a>
+                            <a href="?search={{ search }}&vulnerable_only=false" class="dropdown-item {% if request.GET.vulnerable_only == 'false' %}is-active{% endif %}">
+                                Non-Vulnerable Only
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 {% if is_paginated %}
                     {% include 'includes/pagination.html' with page_obj=page_obj %}
                 {% endif %}

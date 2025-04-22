@@ -15,6 +15,7 @@ from typing import List
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.db.models.query import QuerySet
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
@@ -96,25 +97,37 @@ class ImportRunner:
         Insert advisories into the database
         Return the number of inserted advisories.
         """
+        from vulnerabilities.pipes.advisory import get_or_create_aliases
+        from vulnerabilities.utils import compute_content_id
+
         count = 0
         advisories = []
         for data in advisory_datas:
+            content_id = compute_content_id(advisory_data=data)
+            advisory = {
+                "summary": data.summary,
+                "affected_packages": [pkg.to_dict() for pkg in data.affected_packages],
+                "references": [ref.to_dict() for ref in data.references],
+                "date_published": data.date_published,
+                "weaknesses": data.weaknesses,
+                "created_by": importer_name,
+                "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
+            }
             try:
+                aliases = get_or_create_aliases(aliases=data.aliases)
                 obj, created = Advisory.objects.get_or_create(
-                    aliases=data.aliases,
-                    summary=data.summary,
-                    affected_packages=[pkg.to_dict() for pkg in data.affected_packages],
-                    references=[ref.to_dict() for ref in data.references],
-                    date_published=data.date_published,
-                    weaknesses=data.weaknesses,
-                    defaults={
-                        "created_by": importer_name,
-                        "date_collected": datetime.datetime.now(tz=datetime.timezone.utc),
-                    },
+                    unique_content_id=content_id,
                     url=data.url,
+                    defaults=advisory,
                 )
+                obj.aliases.add(*aliases)
                 if not obj.date_imported:
                     advisories.append(obj)
+            except Advisory.MultipleObjectsReturned:
+                logger.error(
+                    f"Multiple Advisories returned: unique_content_id: {content_id}, url: {data.url}, advisory: {advisory!r}"
+                )
+                raise
             except Exception as e:
                 logger.error(
                     f"Error while processing {data!r} with aliases {data.aliases!r}: {e!r} \n {traceback_format_exc()}"
@@ -148,6 +161,8 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
     erroneous. Also, the atomic transaction for every advisory and its
     inferences makes sure that date_imported of advisory is consistent.
     """
+    from vulnerabilities.pipes.advisory import get_or_create_aliases
+
     inferences_processed_count = 0
 
     if not inferences:
@@ -157,9 +172,10 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
     logger.info(f"Improving advisory id: {advisory.id}")
 
     for inference in inferences:
+        aliases = get_or_create_aliases(inference.aliases)
         vulnerability = get_or_create_vulnerability_and_aliases(
             vulnerability_id=inference.vulnerability_id,
-            aliases=inference.aliases,
+            aliases=aliases,
             summary=inference.summary,
             advisory=advisory,
         )
@@ -265,14 +281,13 @@ def create_valid_vulnerability_reference(url, reference_id=None):
 
 
 def get_or_create_vulnerability_and_aliases(
-    aliases: List[str], vulnerability_id=None, summary=None, advisory=None
+    aliases: QuerySet, vulnerability_id=None, summary=None, advisory=None
 ):
     """
     Get or create vulnerabilitiy and aliases such that all existing and new
     aliases point to the same vulnerability
     """
-    aliases = set(alias.strip() for alias in aliases if alias and alias.strip())
-    new_alias_names, existing_vulns = get_vulns_for_aliases_and_get_new_aliases(aliases)
+    new_aliases, existing_vulns = get_vulns_for_aliases_and_get_new_aliases(aliases)
 
     # All aliases must point to the same vulnerability
     vulnerability = None
@@ -310,11 +325,11 @@ def get_or_create_vulnerability_and_aliases(
         #         f"Inconsistent summary for {vulnerability.vulnerability_id}. "
         #         f"Existing: {vulnerability.summary!r}, provided: {summary!r}"
         #     )
-        associate_vulnerability_with_aliases(vulnerability=vulnerability, aliases=new_alias_names)
+        associate_vulnerability_with_aliases(vulnerability=vulnerability, aliases=new_aliases)
     else:
         try:
             vulnerability = create_vulnerability_and_add_aliases(
-                aliases=new_alias_names, summary=summary
+                aliases=new_aliases, summary=summary
             )
             importer_name = get_importer_name(advisory)
             VulnerabilityChangeLog.log_import(
@@ -324,24 +339,22 @@ def get_or_create_vulnerability_and_aliases(
             )
         except Exception as e:
             logger.error(
-                f"Cannot create vulnerability with summary {summary!r} and {new_alias_names!r} {e!r}.\n{traceback_format_exc()}."
+                f"Cannot create vulnerability with summary {summary!r} and {new_aliases!r} {e!r}.\n{traceback_format_exc()}."
             )
             return
 
     return vulnerability
 
 
-def get_vulns_for_aliases_and_get_new_aliases(aliases):
+def get_vulns_for_aliases_and_get_new_aliases(aliases: QuerySet):
     """
     Return ``new_aliases`` that are not in the database and
     ``existing_vulns`` that point to the given ``aliases``.
     """
-    new_aliases = set(aliases)
-    existing_vulns = set()
-    for alias in Alias.objects.filter(alias__in=aliases):
-        existing_vulns.add(alias.vulnerability)
-        new_aliases.remove(alias.alias)
-    return new_aliases, existing_vulns
+    new_aliases = aliases.filter(vulnerability__isnull=True)
+    existing_vulns = [alias.vulnerability for alias in aliases.filter(vulnerability__isnull=False)]
+
+    return new_aliases, list(set(existing_vulns))
 
 
 @transaction.atomic
@@ -360,7 +373,5 @@ def create_vulnerability_and_add_aliases(aliases, summary):
 
 
 def associate_vulnerability_with_aliases(aliases, vulnerability):
-    for alias_name in aliases:
-        alias = Alias(alias=alias_name, vulnerability=vulnerability)
-        alias.save()
-        logger.info(f"New alias for {vulnerability!r}: {alias_name}")
+    aliases.update(vulnerability=vulnerability)
+    logger.info(f"New alias for {vulnerability!r}: {aliases}")

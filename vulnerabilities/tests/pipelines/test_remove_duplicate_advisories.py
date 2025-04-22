@@ -32,6 +32,7 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
                 )
             ],
             references=[Reference(url="https://example.com/vuln1")],
+            url="https://test.url/",
         )
 
     def test_remove_duplicates_keeps_oldest(self):
@@ -39,6 +40,8 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
         Test that when multiple advisories have the same content,
         only the oldest one is kept.
         """
+        from vulnerabilities.utils import compute_content_id
+
         # Create three advisories with same content but different dates
         dates = [
             datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
@@ -47,16 +50,18 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
         ]
 
         advisories = []
-        for date in dates:
+        for i, date in enumerate(dates):
             advisory = Advisory.objects.create(
+                unique_content_id=f"incorrect-content-id{i}",
+                url=self.advisory_data.url,
                 summary=self.advisory_data.summary,
                 affected_packages=[pkg.to_dict() for pkg in self.advisory_data.affected_packages],
                 references=[ref.to_dict() for ref in self.advisory_data.references],
                 date_imported=date,
                 date_collected=date,
+                created_by="test_pipeline",
             )
             advisories.append(advisory)
-            print(advisory.id)
 
         # Run the pipeline
         pipeline = RemoveDuplicateAdvisoriesPipeline()
@@ -73,19 +78,25 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
         """
         # Create two advisories with different content
         advisory1 = Advisory.objects.create(
+            unique_content_id="test-id1",
+            url="https://test.url/",
             summary="Summary 1",
             affected_packages=[],
             date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
             references=[],
             date_imported=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+            created_by="test_pipeline",
         )
 
         advisory2 = Advisory.objects.create(
+            unique_content_id="test-id2",
+            url="https://test.url/",
             summary="Summary 2",
             affected_packages=[],
             references=[],
             date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
             date_imported=datetime.datetime(2024, 1, 2, tzinfo=pytz.UTC),
+            created_by="test_pipeline",
         )
 
         # Run the pipeline
@@ -99,13 +110,17 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
         """
         Test that advisories without content IDs get them updated.
         """
+        from vulnerabilities.utils import compute_content_id
+
         # Create advisory without content ID
         advisory = Advisory.objects.create(
+            unique_content_id="incorrect-content-id",
+            url=self.advisory_data.url,
             summary=self.advisory_data.summary,
             affected_packages=[pkg.to_dict() for pkg in self.advisory_data.affected_packages],
             references=[ref.to_dict() for ref in self.advisory_data.references],
-            unique_content_id="",
             date_collected=datetime.datetime(2024, 1, 1, tzinfo=pytz.UTC),
+            created_by="test_pipeline",
         )
 
         # Run the pipeline
@@ -114,4 +129,5 @@ class TestRemoveDuplicateAdvisoriesPipeline(TestCase):
 
         # Check that content ID was updated
         advisory.refresh_from_db()
-        self.assertNotEqual(advisory.unique_content_id, "")
+        expected_content_id = compute_content_id(advisory_data=self.advisory_data)
+        self.assertEqual(advisory.unique_content_id, expected_content_id)

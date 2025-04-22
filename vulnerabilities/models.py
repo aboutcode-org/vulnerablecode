@@ -1276,8 +1276,10 @@ class Alias(models.Model):
 
     vulnerability = models.ForeignKey(
         Vulnerability,
-        on_delete=models.CASCADE,
         related_name="aliases",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     objects = AliasQuerySet.as_manager()
@@ -1317,10 +1319,16 @@ class Advisory(models.Model):
 
     unique_content_id = models.CharField(
         max_length=64,
-        blank=True,
+        blank=False,
+        null=False,
+        unique=True,
         help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
     )
-    aliases = models.JSONField(blank=True, default=list, help_text="A list of alias strings")
+    aliases = models.ManyToManyField(
+        Alias,
+        through="AdvisoryRelatedAlias",
+        related_name="advisories",
+    )
     summary = models.TextField(
         blank=True,
     )
@@ -1348,20 +1356,19 @@ class Advisory(models.Model):
         "vulnerabilities.pipeline.nginx_importer.NginxImporterPipeline",
     )
     url = models.URLField(
-        blank=True,
+        blank=False,
+        null=False,
         help_text="Link to the advisory on the upstream website",
     )
 
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
-        unique_together = ["aliases", "unique_content_id", "date_published", "url"]
-        ordering = ["aliases", "date_published", "unique_content_id"]
+        ordering = ["date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
-        advisory_data = self.to_advisory_data()
-        self.unique_content_id = compute_content_id(advisory_data, include_metadata=False)
-        super().save(*args, **kwargs)
+        self.full_clean()
+        return super().save(*args, **kwargs)
 
     def to_advisory_data(self) -> "AdvisoryData":
         from vulnerabilities.importer import AdvisoryData
@@ -1369,7 +1376,7 @@ class Advisory(models.Model):
         from vulnerabilities.importer import Reference
 
         return AdvisoryData(
-            aliases=self.aliases,
+            aliases=[item.alias for item in self.aliases.all()],
             summary=self.summary,
             affected_packages=[
                 AffectedPackage.from_dict(pkg) for pkg in self.affected_packages if pkg
@@ -1379,6 +1386,21 @@ class Advisory(models.Model):
             weaknesses=self.weaknesses,
             url=self.url,
         )
+
+
+class AdvisoryRelatedAlias(models.Model):
+    advisory = models.ForeignKey(
+        Advisory,
+        on_delete=models.CASCADE,
+    )
+
+    alias = models.ForeignKey(
+        Alias,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("advisory", "alias")
 
 
 UserModel = get_user_model()

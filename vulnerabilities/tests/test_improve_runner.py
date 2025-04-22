@@ -12,7 +12,6 @@ from collections import Counter
 import pytest
 from django.utils import timezone
 from packageurl import PackageURL
-from pytest_django.asserts import assertQuerysetEqual
 
 from vulnerabilities.importer import Reference
 from vulnerabilities.improve_runner import create_valid_vulnerability_reference
@@ -21,16 +20,12 @@ from vulnerabilities.improve_runner import get_or_create_vulnerability_and_alias
 from vulnerabilities.improve_runner import get_vulns_for_aliases_and_get_new_aliases
 from vulnerabilities.improve_runner import process_inferences
 from vulnerabilities.improver import MAX_CONFIDENCE
-from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
-from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
-from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
-from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 
 
@@ -227,7 +222,11 @@ def test_process_inferences_with_empty_aliases():
                     summary="",
                 )
             ],
-            advisory=Advisory.objects.create(summary="", date_collected=timezone.now()),
+            advisory=Advisory.objects.create(
+                unique_content_id="test-unique-content-id",
+                summary="",
+                date_collected=timezone.now(),
+            ),
             improver_name="NO_ALIASES_IMPROVER",
         )
 

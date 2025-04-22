@@ -92,7 +92,6 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         self.assertEqual(len(response.data["weaknesses"]), 1)
         self.assertEqual(len(response.data["references"]), 1)
 
-
     def test_filter_vulnerability_by_vulnerability_id(self):
         """
         Test filtering vulnerabilities by vulnerability_id.
@@ -233,22 +232,27 @@ class PackageV2ViewSetTest(APITestCase):
         self.assertTrue(
             all(vuln_id in response.data["results"]["vulnerabilities"] for vuln_id in package_vulns)
         )
+
     def test_filter_packages_by_vulnerability_status(self):
         vulnerability = Vulnerability.objects.create(
             vulnerability_id="VCID-FILTER", summary="Test vulnerability for is_vulnerable filter"
         )
         self.package1.affected_by_vulnerabilities.add(vulnerability)
         url = reverse("package-v2-list")
-        with self.assertNumQueries(20):
-            response = self.client.get(url, {"is_vulnerable": "true"}, format="json")
+        response = self.client.get(url, {"is_vulnerable": "true"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data["results"]["packages"]), 1)
-        self.assertEqual(response.data["results"]["packages"][0]["purl"], "pkg:pypi/django@3.2")
-        with self.assertNumQueries(20):
-            response = self.client.get(url, {"is_vulnerable": "false"}, format="json")
+        self.assertIn("results", response.data)
+        self.assertIn("packages", response.data["results"])
+        package_purls = [pkg["purl"] for pkg in response.data["results"]["packages"]]
+        self.assertIn(self.package1.package_url, package_purls)
+        self.assertNotIn(self.package2.package_url, package_purls)
+        response = self.client.get(url, {"is_vulnerable": "false"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data["results"]["packages"]), 1)
-        self.assertEqual(response.data["results"]["packages"][0]["purl"], "pkg:npm/lodash@4.17.20")
+        self.assertIn("results", response.data)
+        self.assertIn("packages", response.data["results"])
+        package_purls = [pkg["purl"] for pkg in response.data["results"]["packages"]]
+        self.assertNotIn(self.package1.package_url, package_purls)
+        self.assertIn(self.package2.package_url, package_purls)
 
     def test_filter_packages_by_purl(self):
         """

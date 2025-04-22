@@ -21,6 +21,9 @@ VulnerableCode Package Search
                 <div class="dropdown is-hoverable">
                     <div class="dropdown-trigger">
                         <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                            <span class="icon is-small">
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                            </span>
                             <span>
                                 {% if request.GET.vulnerable_only == 'true' %}
                                     Vulnerable Only
@@ -29,9 +32,6 @@ VulnerableCode Package Search
                                 {% else %}
                                     All Packages
                                 {% endif %}
-                            </span>
-                            <span class="icon is-small">
-                                <i class="fa fa-filter" aria-hidden="true"></i>
                             </span>
                         </button>
                     </div>

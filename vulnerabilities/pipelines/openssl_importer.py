@@ -16,6 +16,7 @@ from bs4 import BeautifulSoup
 from dateutil import parser as dateparser
 from packageurl import PackageURL
 from univers.version_range import OpensslVersionRange
+from univers.versions import OpensslVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -253,6 +254,7 @@ def to_advisory_data(raw_data) -> AdvisoryData:
             AffectedPackage(
                 package=PackageURL(type="openssl", name="openssl"),
                 affected_version_range=affected_version_range,
+                fixed_version=OpensslVersion(versions[1]) if len(versions) > 1 else None,
             )
         )
 
@@ -274,3 +276,8 @@ def to_advisory_data(raw_data) -> AdvisoryData:
         date_published=parsed_date_published,
         url="https://openssl-library.org/news/vulnerabilities/index.html" + "#" + aliases[0],
     )
+
+
+imp = OpenSSLImporterPipeline()
+l = imp.collect_advisories()
+print(next(l).to_dict())

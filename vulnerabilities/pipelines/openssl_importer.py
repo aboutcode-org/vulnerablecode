@@ -276,8 +276,3 @@ def to_advisory_data(raw_data) -> AdvisoryData:
         date_published=parsed_date_published,
         url="https://openssl-library.org/news/vulnerabilities/index.html" + "#" + aliases[0],
     )
-
-
-imp = OpenSSLImporterPipeline()
-l = imp.collect_advisories()
-print(next(l).to_dict())

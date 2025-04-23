@@ -172,7 +172,7 @@ class ReferenceV2:
         return {
             "reference_id": self.reference_id,
             "reference_type": self.reference_type,
-            "url": self.url
+            "url": self.url,
         }
 
     @classmethod

@@ -2333,9 +2333,263 @@ class AdvisoryToDo(models.Model):
     class Meta:
         unique_together = ("related_advisories_id", "issue_type")
 
+
+class AdvisorySeverity(models.Model):
+    url = models.URLField(
+        max_length=1024,
+        null=True,
+        help_text="URL to the vulnerability severity",
+        db_index=True,
+    )
+
+    scoring_system_choices = tuple(
+        (system.identifier, system.name) for system in SCORING_SYSTEMS.values()
+    )
+
+    scoring_system = models.CharField(
+        max_length=50,
+        choices=scoring_system_choices,
+        help_text="Identifier for the scoring system used. Available choices are: {} ".format(
+            ",\n".join(f"{sid}: {sname}" for sid, sname in scoring_system_choices)
+        ),
+    )
+
+    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+
+    scoring_elements = models.CharField(
+        max_length=150,
+        null=True,
+        help_text="Supporting scoring elements used to compute the score values. "
+        "For example a CVSS vector string as used to compute a CVSS score.",
+    )
+
+    published_at = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
+    )
+
+    objects = BaseQuerySet.as_manager()
+
+    class Meta:
+        ordering = ["url", "scoring_system", "value"]
+
+
+class AdvisoryWeakness(models.Model):
+    """
+    A weakness is a software weakness that is associated with a vulnerability.
+    """
+
+    cwe_id = models.IntegerField(help_text="CWE id")
+    vulnerabilities = models.ManyToManyField(Vulnerability, related_name="weaknesses")
+
+    cwe_by_id = {}
+
+    def get_cwe(self, cwe_id):
+        if not self.cwe_by_id:
+            db = Database()
+            for weakness in db.get_cwes():
+                self.cwe_by_id[str(weakness.cwe_id)] = weakness
+        return self.cwe_by_id[cwe_id]
+
+    @property
+    def cwe(self):
+        return f"CWE-{self.cwe_id}"
+
+    @property
+    def weakness(self):
+        """
+        Return a queryset of Weakness for this vulnerability.
+        """
+        try:
+            weakness = self.get_cwe(str(self.cwe_id))
+            return weakness
+        except Exception as e:
+            logger.warning(f"Could not find CWE {self.cwe_id}: {e}")
+
+    @property
+    def name(self):
+        """Return the weakness's name."""
+        return self.weakness.name if self.weakness else ""
+
+    @property
+    def description(self):
+        """Return the weakness's description."""
+        return self.weakness.description if self.weakness else ""
+
+    def to_dict(self):
+        return {"cwe_id": self.cwe_id, "name": self.name, "description": self.description}
+
+
+class AdvisoryReference(models.Model):
+    url = models.URLField(
+        max_length=1024,
+        help_text="URL to the vulnerability reference",
+        unique=True,
+    )
+
+    ADVISORY = "advisory"
+    EXPLOIT = "exploit"
+    MAILING_LIST = "mailing_list"
+    BUG = "bug"
+    OTHER = "other"
+
+    REFERENCE_TYPES = [
+        (ADVISORY, "Advisory"),
+        (EXPLOIT, "Exploit"),
+        (MAILING_LIST, "Mailing List"),
+        (BUG, "Bug"),
+        (OTHER, "Other"),
+    ]
+
+    reference_type = models.CharField(max_length=20, choices=REFERENCE_TYPES, blank=True)
+
+    reference_id = models.CharField(
+        max_length=200,
+        help_text="An optional reference ID, such as DSA-4465-1 when available",
+        blank=True,
+        db_index=True,
+    )
+
+    class Meta:
+        ordering = ["reference_id", "url", "reference_type"]
+
+    def __str__(self):
+        reference_id = f" {self.reference_id}" if self.reference_id else ""
+        return f"{self.url}{reference_id}"
+
+    @property
+    def is_cpe(self):
+        """
+        Return True if this is a CPE reference.
+        """
+        return self.reference_id.startswith("cpe")
+
+
+class AdvisoryAlias(models.Model):
+    alias = models.CharField(
+        max_length=50,
+        unique=True,
+        blank=False,
+        null=False,
+        help_text="An alias is a unique vulnerability identifier in some database, "
+        "such as CVE-2020-2233",
+    )
+
+    class Meta:
+        ordering = ["alias"]
+
+    def __str__(self):
+        return self.alias
+
+    @cached_property
+    def url(self):
+        """
+        Create a URL for the alias.
+        """
+        alias: str = self.alias
+        if alias.startswith("CVE"):
+            return f"https://nvd.nist.gov/vuln/detail/{alias}"
+
+        if alias.startswith("GHSA"):
+            return f"https://github.com/advisories/{alias}"
+
+        if alias.startswith("NPM-"):
+            id = alias.lstrip("NPM-")
+            return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
+
+
+class AdvisoryV2(models.Model):
+    """
+    An advisory represents data directly obtained from upstream transformed
+    into structured data
+    """
+
+    advisory_id = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        unique=False,
+        help_text="An advisory is a unique vulnerability identifier in some database, "
+        "such as CVE-2020-2233",
+    )
+
+    unique_content_id = models.CharField(
+        max_length=64,
+        blank=False,
+        null=False,
+        unique=True,
+        help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
+    )
+    summary = models.TextField(
+        blank=True,
+    )
+    aliases = models.ManyToManyField(
+        AdvisoryAlias,
+        related_name="advisories",
+        help_text="A list of serializable Alias objects",
+    )
+    affected_packages = models.JSONField(
+        blank=True, default=list, help_text="A list of serializable AffectedPackage objects"
+    )
+    references = models.ManyToManyField(
+        AdvisoryReference,
+        related_name="advisories",
+        help_text="A list of serializable Reference objects",
+    )
+    severities = models.ManyToManyField(
+        AdvisorySeverity,
+        related_name="advisories",
+        help_text="A list of vulnerability severities associated with this advisory.",
+    )
+    weaknesses = models.ManyToManyField(
+        AdvisoryWeakness,
+        related_name="advisories",
+        help_text="A list of software weaknesses associated with this advisory.",
+    )
+    date_published = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date of publication of the advisory"
+    )
+    date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
+    date_imported = models.DateTimeField(
+        blank=True, null=True, help_text="UTC Date on which the advisory was imported"
+    )
+    created_by = models.CharField(
+        max_length=100,
+        help_text="Fully qualified name of the importer prefixed with the"
+        "module name importing the advisory. Eg:"
+        "vulnerabilities.pipeline.nginx_importer.NginxImporterPipeline",
+    )
+    url = models.URLField(
+        blank=False,
+        null=False,
+        help_text="Link to the advisory on the upstream website",
+    )
+
+    objects = AdvisoryQuerySet.as_manager()
+
+    class Meta:
+        ordering = ["date_published", "unique_content_id"]
+
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
+    
+    def to_advisory_data(self) -> "AdvisoryDataV2":
+        from vulnerabilities.importer import AdvisoryDataV2
+        from vulnerabilities.importer import AffectedPackage
+        from vulnerabilities.importer import ReferenceV2
+
+        return AdvisoryDataV2(
+            aliases=[item.alias for item in self.aliases.all()],
+            summary=self.summary,
+            affected_packages=[
+                AffectedPackage.from_dict(pkg) for pkg in self.affected_packages if pkg
+            ],
+            references=[ReferenceV2.from_dict(ref) for ref in self.references],
+            date_published=self.date_published,
+            weaknesses=self.weaknesses,
+            severities=self.severities,
+            url=self.url,
+        )
 
 
 class ToDoRelatedAdvisory(models.Model):

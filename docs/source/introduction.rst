@@ -24,12 +24,12 @@ fixes those vulnerabilities.**
 
 - With the web UI, you can search by package using Package URLs or search by
   vulnerability, e.g., by CVE. From there you can navigate to the package
-  vulnerabilities and to the vulnerable packages.
+  vulnerabilities and the vulnerable packages.
 
 - With the JSON API, you can perform package queries using Package URLs (`purl
   <https://github.com/package-url/purl-spec>`__) or query
   by vulnerability id ("VCID"). You can also query by CPEs and other vulnerability aliases.
-  The API provides paginated index and detail endpoints and includes indexes
+  The API provides a paginated index and detailed endpoints and includes indexes
   of vulnerable CPEs and vulnerable Package URLs.
 
 You can install VulnerableCode locally or use the provided publicly hosted instance,
@@ -79,7 +79,7 @@ How does it work?
 
 VulnerableCode independently aggregates many software vulnerability data sources
 and supports data re-creation in a decentralized fashion. These data sources
-(see complete list
+(see the complete list
 `here <https://vulnerablecode.readthedocs.io/en/latest/importers_link.html#importers-link>`__)
 include security advisories published by Linux and BSD distributions,
 application software package managers and package repositories, FOSS projects,
@@ -96,9 +96,9 @@ to vulnerability *bar*?" more accurate and easier to interpret.
 
 The primary access to VulnerableCode data is through a REST API, but there
 is also a Web UI for searching and browsing vulnerabilities by package
-or by vulnerability. For the initial releases both access modes are
+or by the vulnerability. For the initial releases both access modes are
 read-only, but our longer-term goal is to enable community curation of
-the data including addition of new packages and vulnerabilities, and
+the data including the addition of new packages and vulnerabilities, and
 reviewing and updating their relationships.
 
 We also plan to mine for vulnerabilities that have not received any

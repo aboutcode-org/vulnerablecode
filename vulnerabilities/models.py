@@ -2379,7 +2379,6 @@ class AdvisoryWeakness(models.Model):
     """
 
     cwe_id = models.IntegerField(help_text="CWE id")
-    vulnerabilities = models.ManyToManyField(Vulnerability, related_name="weaknesses")
 
     cwe_by_id = {}
 

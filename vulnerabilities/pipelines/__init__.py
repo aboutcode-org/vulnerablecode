@@ -21,11 +21,13 @@ from aboutcode.pipeline import PipelineDefinition
 from aboutcode.pipeline import humanize_time
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
+from vulnerabilities.pipes.advisory import insert_advisory_v2
 from vulnerabilities.utils import classproperty
 
 module_logger = logging.getLogger(__name__)
@@ -207,12 +209,20 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
         progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
-            if _obj := insert_advisory(
-                advisory=advisory,
-                pipeline_id=self.pipeline_id,
-                logger=self.log,
-            ):
-                collected_advisory_count += 1
+            if isinstance(advisory, AdvisoryData):
+                if _obj := insert_advisory(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
+            if isinstance(advisory, AdvisoryDataV2):
+                if _obj := insert_advisory_v2(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 

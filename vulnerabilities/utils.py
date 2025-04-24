@@ -39,7 +39,7 @@ from univers.version_range import AlpineLinuxVersionRange
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
-from aboutcode.hashid import build_vcid  # NOQA
+from aboutcode.hashid import build_vcid
 
 logger = logging.getLogger(__name__)
 
@@ -595,6 +595,7 @@ def compute_content_id(advisory_data):
 
     # Normalize fields
     from vulnerabilities.importer import AdvisoryData
+    from vulnerabilities.importer import AdvisoryDataV2
     from vulnerabilities.models import Advisory
 
     if isinstance(advisory_data, Advisory):
@@ -609,7 +610,7 @@ def compute_content_id(advisory_data):
         }
         normalized_data["url"] = advisory_data.url
 
-    elif isinstance(advisory_data, AdvisoryData):
+    elif isinstance(advisory_data, AdvisoryData) or isinstance(advisory_data, AdvisoryDataV2):
         normalized_data = {
             "aliases": normalize_list(advisory_data.aliases),
             "summary": normalize_text(advisory_data.summary),

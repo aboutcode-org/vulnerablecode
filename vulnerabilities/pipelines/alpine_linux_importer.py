@@ -19,6 +19,7 @@ from packageurl import PackageURL
 from univers.versions import AlpineLinuxVersion
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.references import WireSharkReference
@@ -288,3 +289,26 @@ def load_advisories(
                 aliases=aliases,
                 url=url,
             )
+
+            if any(is_cve(alias) for alias in aliases):
+                advisory_id = next((alias for alias in aliases if is_cve(alias)), None)
+                aliases.remove(advisory_id)
+                yield AdvisoryDataV2(
+                    references=references,
+                    affected_packages=affected_packages,
+                    url=url,
+                    advisory_id=advisory_id,
+                    aliases=aliases,
+                )
+
+            else:
+                aliases.sort()
+                advisory_id = aliases[0]
+                aliases = aliases[1:]
+                yield AdvisoryDataV2(
+                    references=references,
+                    affected_packages=affected_packages,
+                    url=url,
+                    advisory_id=advisory_id,
+                    aliases=aliases,
+                )

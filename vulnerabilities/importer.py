@@ -417,6 +417,7 @@ class AdvisoryDataV2:
     date_published must be aware datetime
     """
 
+    advisory_id: str = ""
     aliases: List[str] = dataclasses.field(default_factory=list)
     summary: Optional[str] = ""
     affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)

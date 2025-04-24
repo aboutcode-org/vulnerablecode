@@ -20,8 +20,11 @@ from django.db import transaction
 from django.db.models.query import QuerySet
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import AdvisoryAlias
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
 from vulnerabilities.models import FixingPackageRelatedVulnerability
@@ -36,6 +39,12 @@ def get_or_create_aliases(aliases: List) -> QuerySet:
     for alias in aliases:
         Alias.objects.get_or_create(alias=alias)
     return Alias.objects.filter(alias__in=aliases)
+
+
+def get_or_create_aliases_v2(aliases: List) -> QuerySet:
+    for alias in aliases:
+        AdvisoryAlias.objects.get_or_create(alias=alias)
+    return AdvisoryAlias.objects.filter(alias__in=aliases)
 
 
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):
@@ -56,6 +65,42 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
         }
 
         advisory_obj, _ = Advisory.objects.get_or_create(
+            unique_content_id=content_id,
+            url=advisory.url,
+            defaults=default_data,
+        )
+        advisory_obj.aliases.add(*aliases)
+    except Advisory.MultipleObjectsReturned:
+        logger.error(
+            f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}"
+        )
+        raise
+    except Exception as e:
+        if logger:
+            logger(
+                f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
+                level=logging.ERROR,
+            )
+
+    return advisory_obj
+
+
+def insert_advisory_v2(advisory: AdvisoryDataV2, pipeline_id: str, logger: Callable = None):
+    from vulnerabilities.utils import compute_content_id
+
+    advisory_obj = None
+    aliases = get_or_create_aliases_v2(aliases=advisory.aliases)
+    content_id = compute_content_id(advisory_data=advisory)
+    try:
+        default_data = {
+            "summary": advisory.summary,
+            "date_published": advisory.date_published,
+            "created_by": pipeline_id,
+            "date_collected": datetime.now(timezone.utc),
+            "advisory_id": advisory.advisory_id,
+        }
+
+        advisory_obj, _ = AdvisoryV2.objects.get_or_create(
             unique_content_id=content_id,
             url=advisory.url,
             defaults=default_data,

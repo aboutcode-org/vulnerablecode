@@ -995,10 +995,6 @@ class Package(PackageURLMixin):
         return next_non_vulnerable.version if next_non_vulnerable else None
 
     @property
-    def vulnerabilities(self):
-        return self.affected_by_vulnerabilities.all() | self.fixing_vulnerabilities.all()
-
-    @property
     def latest_non_vulnerable_version(self):
         """
         Return the version string of the latest non-vulnerable package version.

@@ -6,6 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+import itertools
 import logging
 from itertools import groupby
 from pathlib import Path
@@ -126,7 +127,11 @@ class Command(BaseCommand):
                     }
                     package_vulnerabilities.append(package_data)
 
-                    for vuln in pkg_version.vulnerabilities:
+                    vulnerabilities = itertools.chain(
+                        pkg_version.affected_by_vulnerabilities.all(),
+                        pkg_version.fixing_vulnerabilities.all(),
+                    )
+                    for vuln in vulnerabilities:
                         vcid = vuln.vulnerability_id
                         # do not write twice the same file
                         if vcid in seen_vcid:

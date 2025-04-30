@@ -428,9 +428,7 @@ class TestPackageModel(TestCase):
         searched_for_package = self.package_pypi_redis_4_1_1
 
         # Return a queryset of Vulnerabilities that affect this Package.
-        this_package_vulnerabilities = (
-            searched_for_package.vulnerabilities.affecting_vulnerabilities()
-        )
+        this_package_vulnerabilities = searched_for_package.affected_by
 
         assert this_package_vulnerabilities[0] == self.vuln_VCID_g2fu_45jw_aaan
         assert this_package_vulnerabilities[1] == self.vuln_VCID_rqe1_dkmg_aaad

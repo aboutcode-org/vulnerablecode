@@ -620,14 +620,14 @@ def compute_content_id(advisory_data):
             "weaknesses": normalize_list(advisory_data.weaknesses),
         }
         if advisory_data.references_v2:
-            advisory_data["references"]= [
+            advisory_data["references"] = [
                 ref.to_dict() for ref in normalize_list(advisory_data.references_v2) if ref
             ]
             advisory_data["severities"] = [
                 sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev
             ]
         if advisory_data.references:
-            advisory_data["references"]= [
+            advisory_data["references"] = [
                 ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
             ]
 

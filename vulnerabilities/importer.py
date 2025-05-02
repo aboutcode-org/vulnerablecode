@@ -55,6 +55,7 @@ class VulnerabilitySeverity:
     value: str
     scoring_elements: str = ""
     published_at: Optional[datetime.datetime] = None
+    url: Optional[str] = None
 
     def to_dict(self):
         data = {
@@ -350,12 +351,15 @@ class AdvisoryData:
     date_published must be aware datetime
     """
 
+    advisory_id: str = ""
     aliases: List[str] = dataclasses.field(default_factory=list)
     summary: Optional[str] = ""
     affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
+    references_v2: List[ReferenceV2] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
+    severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
     url: Optional[str] = None
 
     def __post_init__(self):
@@ -424,7 +428,6 @@ class AdvisoryDataV2:
     references: List[ReferenceV2] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
-    severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
     url: Optional[str] = None
 
     def __post_init__(self):

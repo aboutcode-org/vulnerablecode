@@ -20,11 +20,13 @@ from django.db import transaction
 from django.db.models.query import QuerySet
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import AdvisoryAlias
+from vulnerabilities.models import AdvisoryReference
+from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import AdvisoryWeakness
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
 from vulnerabilities.models import FixingPackageRelatedVulnerability
@@ -41,10 +43,59 @@ def get_or_create_aliases(aliases: List) -> QuerySet:
     return Alias.objects.filter(alias__in=aliases)
 
 
-def get_or_create_aliases_v2(aliases: List) -> QuerySet:
-    for alias in aliases:
-        AdvisoryAlias.objects.get_or_create(alias=alias)
-    return AdvisoryAlias.objects.filter(alias__in=aliases)
+from django.db.models import Q
+
+
+def get_or_create_advisory_aliases(aliases: List[str]) -> List[AdvisoryAlias]:
+    existing = AdvisoryAlias.objects.filter(alias__in=aliases)
+    existing_aliases = {a.alias for a in existing}
+
+    to_create = [AdvisoryAlias(alias=alias) for alias in aliases if alias not in existing_aliases]
+    AdvisoryAlias.objects.bulk_create(to_create, ignore_conflicts=True)
+
+    return list(AdvisoryAlias.objects.filter(alias__in=aliases))
+
+
+def get_or_create_advisory_references(references: List) -> List[AdvisoryReference]:
+    reference_ids = [ref.reference_id for ref in references]
+    existing = AdvisoryReference.objects.filter(reference_id__in=reference_ids)
+    existing_ids = {r.reference_id for r in existing}
+
+    to_create = [
+        AdvisoryReference(reference_id=ref.reference_id, url=ref.url)
+        for ref in references
+        if ref.reference_id not in existing_ids
+    ]
+    AdvisoryReference.objects.bulk_create(to_create, ignore_conflicts=True)
+
+    return list(AdvisoryReference.objects.filter(reference_id__in=reference_ids))
+
+
+def get_or_create_advisory_severities(severities: List) -> QuerySet:
+    severity_objs = []
+    for severity in severities:
+        published_at = str(severity.published_at) if severity.published_at else None
+        sev, _ = AdvisorySeverity.objects.get_or_create(
+            scoring_system=severity.system.identifier,
+            value=severity.value,
+            scoring_elements=severity.scoring_elements,
+            defaults={
+                "published_at": published_at,
+            },
+            url=severity.url,
+        )
+        severity_objs.append(sev)
+    return AdvisorySeverity.objects.filter(id__in=[severity.id for severity in severity_objs])
+
+
+def get_or_create_advisory_weaknesses(weaknesses: List[str]) -> List[AdvisoryWeakness]:
+    existing = AdvisoryWeakness.objects.filter(cwe_id__in=weaknesses)
+    existing_ids = {w.cwe_id for w in existing}
+
+    to_create = [AdvisoryWeakness(cwe_id=w) for w in weaknesses if w not in existing_ids]
+    AdvisoryWeakness.objects.bulk_create(to_create, ignore_conflicts=True)
+
+    return list(AdvisoryWeakness.objects.filter(cwe_id__in=weaknesses))
 
 
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):
@@ -85,12 +136,21 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
     return advisory_obj
 
 
-def insert_advisory_v2(advisory: AdvisoryDataV2, pipeline_id: str, logger: Callable = None):
+def insert_advisory_v2(
+    advisory: AdvisoryData,
+    pipeline_id: str,
+    get_advisory_packages: Callable,
+    logger: Callable = None,
+):
     from vulnerabilities.utils import compute_content_id
 
     advisory_obj = None
-    aliases = get_or_create_aliases_v2(aliases=advisory.aliases)
+    aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
+    references = get_or_create_advisory_references(references=advisory.references_v2)
+    severities = get_or_create_advisory_severities(severities=advisory.severities)
+    weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
     content_id = compute_content_id(advisory_data=advisory)
+    fixed_by_packages, affecting_packages = get_advisory_packages(advisory_data=advisory)
     try:
         default_data = {
             "summary": advisory.summary,
@@ -105,7 +165,19 @@ def insert_advisory_v2(advisory: AdvisoryDataV2, pipeline_id: str, logger: Calla
             url=advisory.url,
             defaults=default_data,
         )
-        advisory_obj.aliases.add(*aliases)
+        related_fields = {
+            "aliases": aliases,
+            "references": references,
+            "severities": severities,
+            "weaknesses": weaknesses,
+            "fixed_by_packages": fixed_by_packages,
+            "affecting_packages": affecting_packages,
+        }
+
+        for field_name, values in related_fields.items():
+            if values:
+                getattr(advisory_obj, field_name).add(*values)
+
     except Advisory.MultipleObjectsReturned:
         logger.error(
             f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}"

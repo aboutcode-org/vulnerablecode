@@ -2526,9 +2526,6 @@ class AdvisoryV2(models.Model):
         related_name="advisories",
         help_text="A list of serializable Alias objects",
     )
-    affected_packages = models.JSONField(
-        blank=True, default=list, help_text="A list of serializable AffectedPackage objects"
-    )
     references = models.ManyToManyField(
         AdvisoryReference,
         related_name="advisories",
@@ -2561,6 +2558,18 @@ class AdvisoryV2(models.Model):
         blank=False,
         null=False,
         help_text="Link to the advisory on the upstream website",
+    )
+
+    affecting_packages = models.ManyToManyField(
+        "PackageV2",
+        related_name="fixing_advisories",
+        help_text="A list of packages that are affected by this advisory.",
+    )
+
+    fixed_by_packages = models.ManyToManyField(
+        "PackageV2",
+        related_name="affected_by_advisories",
+        help_text="A list of packages that are reported by this advisory.",
     )
 
     objects = AdvisoryQuerySet.as_manager()
@@ -2604,3 +2613,105 @@ class ToDoRelatedAdvisory(models.Model):
 
     class Meta:
         unique_together = ("todo", "advisory")
+class PackageV2(PackageURLMixin):
+    """
+    A software package with related vulnerabilities.
+    """
+
+    package_url = models.CharField(
+        max_length=1000,
+        null=False,
+        help_text="The Package URL for this package.",
+        db_index=True,
+    )
+
+    plain_package_url = models.CharField(
+        max_length=1000,
+        null=False,
+        help_text="The Package URL for this package without qualifiers and subpath.",
+        db_index=True,
+    )
+
+    is_ghost = models.BooleanField(
+        default=False,
+        help_text="True if the package does not exist in the upstream package manager or its repository.",
+        db_index=True,
+    )
+
+    risk_score = models.DecimalField(
+        null=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Risk score between 0.00 and 10.00, where higher values "
+        "indicate greater vulnerability risk for the package.",
+    )
+
+    version_rank = models.IntegerField(
+        help_text="Rank of the version to support ordering by version. Rank "
+        "zero means the rank has not been defined yet",
+        default=0,
+        db_index=True,
+    )
+
+    def __str__(self):
+        return self.package_url
+
+    @property
+    def purl(self):
+        return self.package_url
+
+    def save(self, *args, **kwargs):
+        """
+        Save, normalizing PURL fields.
+        """
+        purl = PackageURL(
+            type=self.type,
+            namespace=self.namespace,
+            name=self.name,
+            version=self.version,
+            qualifiers=self.qualifiers,
+            subpath=self.subpath,
+        )
+
+        # We re-parse the purl to ensure name and namespace
+        # are set correctly
+        normalized = normalize_purl(purl=purl)
+
+        for name, value in purl_to_dict(normalized).items():
+            setattr(self, name, value)
+
+        self.package_url = str(normalized)
+        plain_purl = utils.plain_purl(normalized)
+        self.plain_package_url = str(plain_purl)
+        super().save(*args, **kwargs)
+
+    @property
+    def calculate_version_rank(self):
+        """
+        Calculate and return the `version_rank` for a package that does not have one.
+        If this package already has a `version_rank`, return it.
+
+        The calculated rank will be interpolated between two packages that have
+        `version_rank` values and are closest to this package in terms of version order.
+        """
+
+        group_packages = Package.objects.filter(
+            type=self.type,
+            namespace=self.namespace,
+            name=self.name,
+        )
+
+        if any(p.version_rank == 0 for p in group_packages):
+            sorted_packages = sorted(group_packages, key=lambda p: self.version_class(p.version))
+            for rank, package in enumerate(sorted_packages, start=1):
+                package.version_rank = rank
+            Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
+        return self.version_rank
+
+    def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
+        """
+        Return a new or existing Package given a ``purl`` PackageURL object or PURL string.
+        """
+        package, is_created = Package.objects.get_or_create(**purl_to_dict(purl=purl))
+
+        return package, is_created

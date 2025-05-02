@@ -34,6 +34,7 @@ from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipelines import alpine_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
@@ -42,8 +43,10 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
 
 IMPORTERS_REGISTRY = [
+    nvd_importer_v2.NVDImporterPipeline,
     nvd_importer.NVDImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     gitlab_importer.GitLabImporterPipeline,
@@ -81,6 +84,9 @@ IMPORTERS_REGISTRY = [
 ]
 
 IMPORTERS_REGISTRY = {
-    x.pipeline_id if issubclass(x, VulnerableCodeBaseImporterPipeline) else x.qualified_name: x
+    x.pipeline_id
+    if issubclass(x, VulnerableCodeBaseImporterPipeline)
+    or issubclass(x, VulnerableCodeBaseImporterPipelineV2)
+    else x.qualified_name: x
     for x in IMPORTERS_REGISTRY
 }

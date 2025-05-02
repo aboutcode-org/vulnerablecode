@@ -21,10 +21,10 @@ from aboutcode.pipeline import PipelineDefinition
 from aboutcode.pipeline import humanize_time
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import PipelineRun
+from vulnerabilities.models import PackageV2
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
 from vulnerabilities.pipes.advisory import insert_advisory_v2
@@ -216,13 +216,6 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
                     logger=self.log,
                 ):
                     collected_advisory_count += 1
-            if isinstance(advisory, AdvisoryDataV2):
-                if _obj := insert_advisory_v2(
-                    advisory=advisory,
-                    pipeline_id=self.pipeline_id,
-                    logger=self.log,
-                ):
-                    collected_advisory_count += 1
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 
@@ -258,3 +251,92 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
                 f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
                 level=logging.ERROR,
             )
+
+
+class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
+    """
+    Base importer pipeline for importing advisories.
+
+    Uses:
+        Subclass this Pipeline and implement ``advisories_count`` and ``collect_advisories``
+        method. Also override the ``steps`` and ``advisory_confidence`` as needed.
+    """
+
+    pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.
+    license_url = None
+    spdx_license_expression = None
+    repo_url = None
+    importer_name = None
+    advisory_confidence = MAX_CONFIDENCE
+
+    @classmethod
+    def steps(cls):
+        return (
+            cls.collect_and_store_advisories,
+            cls.import_new_advisories,
+        )
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        """
+        Yield AdvisoryData for importer pipeline.
+
+        Populate the `self.collected_advisories_count` field and yield AdvisoryData
+        """
+        raise NotImplementedError
+
+    def advisories_count(self) -> int:
+        """
+        Return the estimated AdvisoryData to be yielded by ``collect_advisories``.
+
+        Used by ``collect_and_store_advisories`` to log the progress of advisory collection.
+        """
+        raise NotImplementedError
+
+    def collect_and_store_advisories(self):
+        collected_advisory_count = 0
+        estimated_advisory_count = self.advisories_count()
+
+        if estimated_advisory_count > 0:
+            self.log(f"Collecting {estimated_advisory_count:,d} advisories")
+
+        progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
+        for advisory in progress.iter(self.collect_advisories()):
+            if _obj := insert_advisory_v2(
+                advisory=advisory,
+                pipeline_id=self.pipeline_id,
+                get_advisory_packages=self.get_advisory_packages,
+                logger=self.log,
+            ):
+                collected_advisory_count += 1
+
+        self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
+
+    def get_advisory_packages(self, advisory_data: AdvisoryData) -> list:
+        """
+        Return the list of packages for the given advisory.
+
+        Used by ``import_advisory`` to get the list of packages for the advisory.
+        """
+        from vulnerabilities.improvers import default
+
+        affected_purls = []
+        fixed_purls = []
+        for affected_package in advisory_data.affected_packages:
+            package_affected_purls, package_fixed_purls = default.get_exact_purls(
+                affected_package=affected_package
+            )
+            affected_purls.extend(package_affected_purls)
+            fixed_purls.extend(package_fixed_purls)
+
+        vulnerable_packages = []
+        fixed_packages = []
+
+        for affected_purl in affected_purls:
+            vulnerable_package, _ = PackageV2.objects.get_or_create_from_purl(purl=affected_purl)
+            vulnerable_packages.append(vulnerable_package)
+
+        for fixed_purl in fixed_purls:
+            fixed_package, _ = PackageV2.objects.get_or_create_from_purl(purl=fixed_purl)
+            fixed_packages.append(fixed_package)
+
+        return vulnerable_packages, fixed_packages

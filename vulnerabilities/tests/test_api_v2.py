@@ -20,6 +20,7 @@ from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import Weakness
 
@@ -210,13 +211,23 @@ class PackageV2ViewSetTest(APITestCase):
         self.client = APIClient(enforce_csrf_checks=True)
         self.client.credentials(HTTP_AUTHORIZATION=self.auth)
 
+        #create vulnerability severities
+        self.severity = VulnerabilitySeverity.objects.create(
+            scoring_system="CVSSv3",
+            scoring_elements="",
+            url="https://example.com",
+            value="7.5"
+        )
+
+        self.vuln1.severities.add(self.severity)
+
     def test_list_packages(self):
         """
         Test listing packages without filters.
         Should return a list of packages with their details and associated vulnerabilities.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(32):
+        with self.assertNumQueries(33):
             response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -238,7 +249,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by one or more PURLs.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(20):
+        with self.assertNumQueries(21):
             response = self.client.get(url, {"purl": "pkg:pypi/django@3.2"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["packages"]), 1)
@@ -249,7 +260,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by affected_by_vulnerability.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(20):
+        with self.assertNumQueries(21):
             response = self.client.get(
                 url, {"affected_by_vulnerability": "VCID-1234"}, format="json"
             )
@@ -275,13 +286,22 @@ class PackageV2ViewSetTest(APITestCase):
         # Fetch the package
         package = Package.objects.get(package_url="pkg:pypi/django@3.2")
 
+        #retrieving the vulnerability
+        Vulnerability_with_severities = Vulnerability.objects.get(vulnerability_id="VCID-1234")
+        Vulnerability_without_severities = Vulnerability.objects.get(vulnerability_id="VCID-5678")
+
+        severity_created = self.severity
+        Vulnerability_with_severities.severities.add(severity_created)
+        
+        package.affected_by_vulnerabilities.add(Vulnerability_with_severities, Vulnerability_without_severities)
+
         # Ensure prefetched data is available for the serializer
         package = (
             Package.objects.filter(package_url="pkg:pypi/django@3.2")
             .prefetch_related(
                 Prefetch(
                     "affected_by_vulnerabilities",
-                    queryset=Vulnerability.objects.prefetch_related("fixed_by_packages"),
+                    queryset=Vulnerability.objects.prefetch_related("fixed_by_packages","severities"),
                     to_attr="prefetched_affected_vulnerabilities",
                 )
             )
@@ -311,8 +331,22 @@ class PackageV2ViewSetTest(APITestCase):
             "VCID-1234": {
                 "code_fixes": [],
                 "vulnerability_id": "VCID-1234",
+                "severities": [
+                    {
+                       "url":"https://example.com",
+                        "value": "7.5",
+                        "scoring_system": "CVSSv3",
+                        "scoring_elements": "", 
+                    }
+                ],
                 "fixed_by_packages": None,
-            }
+            },
+            "VCID-5678": {
+                "code_fixes": [],
+                "vulnerability_id": "VCID-5678",
+                "severities": [],
+                "fixed_by_packages": "pkg:npm/lodash@4.17.20",
+            },
         }
         self.assertEqual(data["affected_by_vulnerabilities"], expected_affected_by_vulnerabilities)
 
@@ -375,30 +409,61 @@ class PackageV2ViewSetTest(APITestCase):
         """
         Test the get_affected_by_vulnerabilities method in the serializer.
         """
+        serializer = PackageV2Serializer()
+        package = Package.objects.get(package_url="pkg:pypi/django@3.2")
+
+        vulnerability_with_severities, vulnerability_without_severities = list(Vulnerability.objects.filter(vulnerability_id__in=["VCID-1234", "VCID-5678"]
+        ).prefetch_related("fixed_by_packages", "severities"))
+        package.affected_by_vulnerabilities.add(vulnerability_with_severities, vulnerability_without_severities)
+
         package = (
             Package.objects.filter(package_url="pkg:pypi/django@3.2")
             .prefetch_related(
                 Prefetch(
                     "affected_by_vulnerabilities",
-                    queryset=Vulnerability.objects.prefetch_related("fixed_by_packages"),
+                    queryset=Vulnerability.objects.prefetch_related("fixed_by_packages","severities"),
                     to_attr="prefetched_affected_vulnerabilities",
                 )
             )
             .first()
         )
 
-        serializer = PackageV2Serializer()
+        severity_created = self.severity
+        vulnerability_with_severities.severities.add(severity_created)
+
         vulnerabilities = serializer.get_affected_by_vulnerabilities(package)
+
+
+        for vuln_data in vulnerabilities.values():
+            for severity in vuln_data["severities"]:
+                self.assertIn("url", severity)
+                self.assertIn("value", severity)
+                self.assertIn("scoring_system", severity)
+                self.assertIn("scoring_elements", severity)
+        
         self.assertEqual(
             vulnerabilities,
             {
                 "VCID-1234": {
                     "code_fixes": [],
                     "vulnerability_id": "VCID-1234",
+                    "severities": [
+                        {
+                            "url":"https://example.com",
+                            "value": "7.5",
+                            "scoring_system": "CVSSv3",
+                            "scoring_elements": "",  
+                        }
+                    ],
                     "fixed_by_packages": None,
-                }
+                },
+                "VCID-5678": {
+                    "code_fixes": [],
+                    "vulnerability_id": "VCID-5678",
+                    "severities": [], #No severity for this vulnerability
+                    "fixed_by_packages": "pkg:npm/lodash@4.17.20",
             },
-        )
+            },)
 
     def test_get_fixing_vulnerabilities(self):
         """
@@ -601,7 +666,25 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-lookup")
         data = {"purl": "pkg:pypi/django@3.2"}
-        with self.assertNumQueries(13):
+        package = Package.objects.filter(package_url="pkg:pypi/django@3.2").prefetch_related(
+            Prefetch(
+                "affected_by_vulnerabilities",
+                queryset=Vulnerability.objects.prefetch_related(Prefetch("fixed_by_packages",queryset=Package.objects.all()),
+                Prefetch("severities",queryset=VulnerabilitySeverity.objects.all())),
+                to_attr="prefetched_affected_vulnerabilities",
+            )
+        ).first()
+
+        vulnerability_with_severities, vulnerability_without_severities = list(Vulnerability.objects.filter(vulnerability_id__in=["VCID-1234", "VCID-5678"]
+        ).prefetch_related("fixed_by_packages", "severities"))
+
+        severity_created = self.severity
+        vulnerability_with_severities.severities.add(severity_created)
+
+        package.affected_by_vulnerabilities.add(vulnerability_with_severities, vulnerability_without_severities)
+
+        
+        with self.assertNumQueries(15):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(1, len(response.data))
@@ -617,10 +700,24 @@ class PackageV2ViewSetTest(APITestCase):
                 "VCID-1234": {
                     "code_fixes": [],
                     "vulnerability_id": "VCID-1234",
+                    "severities": [
+                        {
+                            "url":"https://example.com",
+                            "value": "7.5",
+                            "scoring_system": "CVSSv3",
+                            "scoring_elements": '', 
+                        }
+                    ],
                     "fixed_by_packages": None,
-                }
-            },
-        )
+                },
+                "VCID-5678": {
+                    "code_fixes": [],
+                    "vulnerability_id": "VCID-5678",
+                    "severities": [],
+                    "fixed_by_packages": "pkg:npm/lodash@4.17.20",
+                },
+            })
+            
         self.assertEqual(response.data[0]["fixing_vulnerabilities"], [])
 
     def test_lookup_with_invalid_purl(self):

@@ -8,8 +8,7 @@
 #
 
 import csv
-import hashlib
-import json
+import datetime
 import logging
 import xml.etree.ElementTree as ET
 from contextlib import suppress
@@ -18,6 +17,9 @@ from itertools import groupby
 from operator import attrgetter
 from typing import Union
 
+import django_rq
+import redis
+from aboutcode.pipeline import humanize_time
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
@@ -46,17 +48,22 @@ from packageurl import PackageURL
 from packageurl.contrib.django.models import PackageURLMixin
 from packageurl.contrib.django.models import PackageURLQuerySet
 from rest_framework.authtoken.models import Token
+from rq.command import send_stop_job_command
+from rq.exceptions import NoSuchJobError
+from rq.job import Job
+from rq.job import JobStatus
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 from univers.versions import Version
 
+import vulnerablecode
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import compute_content_id
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
+from vulnerablecode.settings import VULNERABLECODE_ASYNC
 
 logger = logging.getLogger(__name__)
 
@@ -1811,3 +1818,337 @@ class CodeFix(CodeChange):
         related_name="code_fix",
         help_text="The fixing package version with this code fix",
     )
+
+
+class PipelineRun(models.Model):
+    """The Database representation of a pipeline execution."""
+
+    pipeline = models.ForeignKey(
+        "PipelineSchedule",
+        related_name="pipelineruns",
+        on_delete=models.CASCADE,
+    )
+    run_id = models.CharField(
+        blank=True,
+        null=True,
+        editable=False,
+    )
+    run_start_date = models.DateTimeField(
+        blank=True,
+        null=True,
+        editable=False,
+    )
+    run_end_date = models.DateTimeField(
+        blank=True,
+        null=True,
+        editable=False,
+    )
+    run_exitcode = models.IntegerField(
+        null=True,
+        blank=True,
+        editable=False,
+    )
+    run_output = models.TextField(
+        blank=True,
+        editable=False,
+    )
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+    )
+    vulnerablecode_version = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    vulnerablecode_commit = models.CharField(
+        max_length=300,
+        blank=True,
+        null=True,
+    )
+    log = models.TextField(
+        blank=True,
+        editable=False,
+    )
+
+    class Meta:
+        ordering = ["-created_date"]
+
+    class Status(models.TextChoices):
+        UNKNOWN = "unknown"
+        RUNNING = "running"
+        SUCCESS = "success"
+        FAILURE = "failure"
+        STOPPED = "stopped"
+        STALE = "stale"
+
+    @property
+    def status(self):
+        """Return current execution status."""
+        status = self.Status
+
+        if self.run_succeeded:
+            return status.SUCCESS
+
+        elif self.run_staled:
+            return status.STALE
+
+        elif self.run_stopped:
+            return status.STOPPED
+
+        elif self.run_failed:
+            return status.FAILURE
+
+        elif self.run_start_date:
+            return status.RUNNING
+
+        return status.UNKNOWN
+
+    @property
+    def pipeline_class(self):
+        """Return the pipeline class."""
+        return self.pipeline.pipeline_class
+
+    @property
+    def job(self):
+        with suppress(NoSuchJobError):
+            return Job.fetch(
+                str(self.run_id),
+                connection=django_rq.get_connection(),
+            )
+
+    @property
+    def job_status(self):
+        job = self.job
+        if job:
+            return self.job.get_status()
+
+    @property
+    def run_succeeded(self):
+        """Return True if the execution was successfully executed."""
+        return self.run_exitcode == 0
+
+    @property
+    def run_failed(self):
+        """Return True if the execution failed."""
+        fail_exitcode = self.run_exitcode and self.run_exitcode > 0
+        return fail_exitcode or self.job_status == "failed"
+
+    @property
+    def run_stopped(self):
+        """Return True if the execution was stopped."""
+        return self.run_exitcode == 99
+
+    @property
+    def run_staled(self):
+        """Return True if the execution staled."""
+        return self.run_exitcode == 88
+
+    @property
+    def execution_time(self):
+        """Return the pipeline execution time."""
+        if self.run_end_date and self.run_start_date:
+            execution_time = (self.run_end_date - self.run_start_date).total_seconds()
+            return humanize_time(execution_time)
+
+    def set_vulnerablecode_version_and_commit(self):
+        """Set the current VulnerableCode version and commit."""
+        if self.vulnerablecode_version:
+            msg = f"Field vulnerablecode_version already set to {self.vulnerablecode_version}"
+            raise ValueError(msg)
+
+        self.vulnerablecode_version = VULNERABLECODE_VERSION
+        self.vulnerablecode_commit = vulnerablecode.get_short_commit()
+        self.save(update_fields=["vulnerablecode_version", "vulnerablecode_commit"])
+
+    def set_run_started(self):
+        """Set the `run_start_date` fields before starting the run execution."""
+        self.run_start_date = timezone.now()
+        self.save(update_fields=["run_start_date"])
+
+    def set_run_ended(self, exitcode, output=""):
+        """Set the run-related fields after the run execution."""
+        self.run_exitcode = exitcode
+        self.run_output = output
+        self.run_end_date = timezone.now()
+        self.save(update_fields=["run_exitcode", "run_output", "run_end_date"])
+
+    def set_run_staled(self):
+        """Set the execution as `stale` using a special 88 exitcode value."""
+        self.set_run_ended(exitcode=88)
+
+    def set_run_stopped(self):
+        """Set the execution as `stopped` using a special 99 exitcode value."""
+        self.set_run_ended(exitcode=99)
+
+    def stop_run(self):
+        self.append_to_log("Stop run requested")
+
+        if not VULNERABLECODE_ASYNC:
+            self.set_run_stopped()
+            return
+
+        if not self.job_status:
+            self.set_run_staled()
+            return
+
+        if self.job_status == JobStatus.FAILED:
+            self.set_run_ended(
+                exitcode=1,
+                output=f"Killed from outside, latest_result={self.job.latest_result()}",
+            )
+            return
+
+        send_stop_job_command(
+            connection=django_rq.get_connection(),
+            job_id=str(self.run_id),
+        )
+        self.set_run_stopped()
+
+    def delete_run(self, delete_self=True):
+        if VULNERABLECODE_ASYNC and self.run_id:
+            if job := self.job:
+                job.delete()
+
+        if delete_self:
+            self.delete()
+
+    def delete(self, *args, **kwargs):
+        """
+        Before deletion of the run instance, try to stop the run execution.
+        """
+        with suppress(redis.exceptions.ConnectionError, AttributeError):
+            if self.status == self.Status.RUNNING:
+                self.stop_run()
+
+        return super().delete(*args, **kwargs)
+
+    def append_to_log(self, message, is_multiline=False):
+        """Append ``message`` to log field of run instance."""
+        message = message.strip()
+        if not is_multiline:
+            message = message.replace("\n", "").replace("\r", "")
+
+        self.log = self.log + message + "\n"
+        self.save(update_fields=["log"])
+
+
+class PipelineSchedule(models.Model):
+    """The Database representation of a pipeline schedule."""
+
+    pipeline_id = models.CharField(
+        max_length=600,
+        help_text=("Identify a registered Pipeline class."),
+        unique=True,
+        blank=False,
+        null=False,
+    )
+
+    is_active = models.BooleanField(
+        null=True,
+        db_index=True,
+        default=True,
+        help_text=(
+            "When set to True (Yes), this Pipeline is active. "
+            "When set to False (No), this Pipeline is inactive and not run."
+        ),
+    )
+
+    run_interval = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1, message="Interval must be at least 1 day."),
+            MaxValueValidator(365, message="Interval must be at most 365 days."),
+        ],
+        default=1,
+        help_text=("Number of days to wait between run of this pipeline."),
+    )
+
+    schedule_work_id = models.CharField(
+        max_length=255,
+        unique=True,
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text=("Identifier used to manage the periodic run job."),
+    )
+
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+    )
+
+    class Meta:
+        ordering = ["-created_date"]
+
+    def __str__(self):
+        return f"{self.pipeline_id}"
+
+    def save(self, *args, **kwargs):
+        if self.pk and (existing := PipelineSchedule.objects.get(pk=self.pk)):
+            if existing.is_active != self.is_active or existing.run_interval != self.run_interval:
+                self.schedule_work_id = self.create_new_job()
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    @property
+    def pipeline_class(self):
+        """Return the pipeline class."""
+        from vulnerabilities.importers import IMPORTERS_REGISTRY
+        from vulnerabilities.improvers import IMPROVERS_REGISTRY
+
+        if self.pipeline_id in IMPROVERS_REGISTRY:
+            return IMPROVERS_REGISTRY.get(self.pipeline_id)
+        if self.pipeline_id in IMPORTERS_REGISTRY:
+            return IMPORTERS_REGISTRY.get(self.pipeline_id)
+
+    @property
+    def all_runs(self):
+        """Return all the previous run instances for this pipeline."""
+        return self.pipelineruns.all().order_by("-created_date")
+
+    @property
+    def latest_run(self):
+        return self.pipelineruns.latest("created_date") if self.pipelineruns.exists() else None
+
+    @property
+    def earliest_run(self):
+        return self.pipelineruns.earliest("created_date") if self.pipelineruns.exists() else None
+
+    @property
+    def latest_run_date(self):
+        return self.latest_run.created_date if self.latest_run else None
+
+    @property
+    def next_run_date(self):
+        if not self.is_active:
+            return
+
+        current_date_time = datetime.datetime.now(tz=datetime.timezone.utc)
+        if self.latest_run_date:
+            next_execution = self.latest_run_date + datetime.timedelta(days=self.run_interval)
+            if next_execution > current_date_time:
+                return next_execution
+
+        return current_date_time
+
+    @property
+    def status(self):
+        if not self.is_active:
+            return
+
+        if self.latest_run:
+            return self.latest_run.status
+
+    def create_new_job(self):
+        """
+        Create a new scheduled job. If a previous scheduled job
+        exists remove the existing job from the scheduler.
+        """
+        from vulnerabilities import schedules
+
+        if not schedules.is_redis_running():
+            return
+        if self.schedule_work_id:
+            schedules.clear_job(self.schedule_work_id)
+
+        return schedules.schedule_execution(self) if self.is_active else None

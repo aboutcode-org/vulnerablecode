@@ -14,15 +14,19 @@ from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.utils import extend_schema_view
 from packageurl import PackageURL
+from rest_framework import mixins
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from vulnerabilities.models import CodeFix
 from vulnerabilities.models import Package
+from vulnerabilities.models import PipelineRun
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
@@ -606,3 +610,101 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
                 affected_package_vulnerability__vulnerability__vulnerability_id=vulnerability_id
             )
         return queryset
+
+
+class CreateListRetrieveUpdateViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    A viewset that provides `create`, `list, `retrieve`, and `update` actions.
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+    """
+
+    pass
+
+
+class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
+    status = serializers.SerializerMethodField()
+    execution_time = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PipelineRun
+        fields = [
+            "run_id",
+            "status",
+            "execution_time",
+            "run_start_date",
+            "run_end_date",
+            "run_exitcode",
+            "run_output",
+            "created_date",
+            "vulnerablecode_version",
+            "vulnerablecode_commit",
+            "log",
+        ]
+
+    def get_status(self, obj):
+        return obj.status
+
+    def get_execution_time(self, obj):
+        return obj.execution_time
+
+
+class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="schedule-detail", lookup_field="pipeline_id"
+    )
+    pipelineruns = PipelineRunAPISerializer(many=True, read_only=True)
+    next_run_date = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PipelineSchedule
+        fields = [
+            "url",
+            "pipeline_id",
+            "is_active",
+            "run_interval",
+            "created_date",
+            "schedule_work_id",
+            "next_run_date",
+            "pipelineruns",
+        ]
+
+    def get_next_run_date(self, obj):
+        return obj.next_run_date
+
+
+class PipelineScheduleCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PipelineSchedule
+        fields = ["pipeline_id", "is_active", "run_interval"]
+        extra_kwargs = {
+            field: {"initial": PipelineSchedule._meta.get_field(field).get_default()}
+            for field in ["is_active", "run_interval"]
+        }
+
+
+class PipelineScheduleUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PipelineSchedule
+        fields = ["is_active", "run_interval"]
+
+
+class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
+    queryset = PipelineSchedule.objects.prefetch_related("pipelineruns").all()
+    serializer_class = PipelineScheduleAPISerializer
+    lookup_field = "pipeline_id"
+    lookup_value_regex = r"[\w.]+"
+    # permission_classes = [IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return PipelineScheduleCreateSerializer
+        elif self.action == "update":
+            return PipelineScheduleUpdateSerializer
+        return super().get_serializer_class()

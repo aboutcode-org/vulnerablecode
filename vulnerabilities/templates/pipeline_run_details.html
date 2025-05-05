@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %}
+{% load utils %}
+
+{% block title %}Run Log{% endblock %}
+
+{% block extrahead %}
+<style>
+    pre {
+        background-color: #282a36;
+        color: #f8f8f2;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        max-height: 500px;
+    }
+
+    .column {
+        word-break: break-word;
+    }
+</style>
+
+<style>
+    pre {
+        background-color: #282a36;
+        color: #f8f8f2;
+        padding: 1.5rem 1rem 1rem 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        max-height: 500px;
+        position: relative;
+    }
+
+    .copy-btn {
+        position: absolute;
+        top: 1.0rem;
+        right: 1.5rem;
+        z-index: 1;
+        opacity: 0.5;
+        transition: opacity 0.2s ease;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">{{ pipeline_name }} Run Log</h1>
+        <hr>
+
+        <div class="box p-4">
+            <div class="columns is-multiline is-vcentered is-mobile is-gapless">
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Pipeline ID</p>
+                    <p class="has-text-grey is-size-7 pr-3">{{ run.pipeline.pipeline_id }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Status</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.status == "running" %}
+                        <i class="fa fa-spinner fa-spin has-text-info mr-1"></i>Running
+                        {% elif run.status == "success" %}
+                        <i class="fa fa-check-circle has-text-success mr-1"></i>Success
+                        {% elif run.status == "failure" %}
+                        <i class="fa fa-times-circle has-text-danger mr-1"></i>Failure
+                        {% elif run.status == "scheduled" %}
+                        <i class="fa fa-clock-o has-text-success mr-1"></i>Scheduled
+                        {% else %}
+                        <i class="fa fa-question-circle has-text-warning mr-1"></i>Unknown
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Execution Time</p>
+                    <p class="has-text-grey is-size-7">{{ run.execution_time }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Exit Code</p>
+                    <p class="has-text-grey is-size-7">{{ run.run_exitcode }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Start</p>
+                    <p class="has-text-grey is-size-7">{{ run.run_start_date }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile ">
+                    <p class="is-size-7 has-text-weight-semibold">End</p>
+                    <p class="has-text-grey is-size-7">{{ run.run_end_date }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Created</p>
+                    <p class="has-text-grey is-size-7">{{ run.created_date }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Version</p>
+                    <p class="has-text-grey is-size-7">{{ run.vulnerablecode_version }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Commit</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.vulnerablecode_commit %}
+                        <a href="https://github.com/aboutcode-org/vulnerablecode/tree/{{ run.vulnerablecode_commit }}"
+                            target="_blank">
+                            {{ run.vulnerablecode_commit }}
+                            <i class="fa fa-external-link fa_link_custom"></i>
+                        </a>
+                        {% endif %}
+
+                    </p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Job ID</p>
+                    <p class="has-text-grey is-size-7">{{ run.run_id }}</p>
+                </div>
+            </div>
+        </div>
+
+
+        {% if run.run_output|strip %}
+        <div class="box">
+            <h2 class="subtitle mb-2">Run Error</h2>
+            <div class="log-wrapper" style="position: relative;">
+                <button class="button is-medium is-light  copy-btn" id="copy-error"
+                    onclick="copyCode('log-error', 'copy-error')">
+                    <span class="icon is-medium">
+                        <i class="fa fa-copy"></i>
+                    </span>
+                </button>
+                <pre><code id="log-error" class="language-toml">{{ run.run_output }}</code></pre>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if run.log|strip %}
+        <div class="box">
+            <h2 class="subtitle mb-2">Log Output</h2>
+            <div class="log-wrapper" style="position: relative;">
+                <button class="button is-medium is-light  copy-btn" id="copy-code"
+                    onclick="copyCode('log-code', 'copy-code')">
+                    <span class="icon is-medium">
+                        <i class="fa fa-copy"></i>
+                    </span>
+                </button>
+                <pre><code id="log-code" class="language-toml">{{ run.log }}</code></pre>
+            </div>
+        </div>
+        {% endif %}
+
+
+        <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-link mt-4">← Back to All
+            Runs</a>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block scripts %}
+<link rel="stylesheet" href="{% static 'css/highlight-10.6.0.css' %}" crossorigin="anonymous">
+<script src="{% static 'js/highlight-10.6.0.min.js' %}" crossorigin="anonymous"></script>
+<script>hljs.highlightAll();</script>
+
+<script>
+    function copyCode(target, button) {
+        const code = document.getElementById(target).innerText;
+        navigator.clipboard.writeText(code)
+            .then(() => {
+                const btn = document.getElementById(button);
+                btn.classList.add("is-success");
+                btn.innerHTML = '<span class="icon is-small"><i class="fa fa-check"></i></span>';
+                setTimeout(() => {
+                    btn.classList.remove("is-success");
+                    btn.innerHTML = '<span class="icon is-small"><i class="fa fa-copy"></i></span>';
+                }, 1500);
+            })
+            .catch(err => alert("Copy failed: " + err));
+    }
+</script>
+{% endblock %}

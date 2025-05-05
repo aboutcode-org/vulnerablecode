@@ -8,13 +8,13 @@
 #
 
 
-from urllib.parse import quote
-
 from django import template
 
 register = template.Library()
 
 
-@register.filter(name="url_quote")
-def url_quote_filter(value):
-    return quote(str(value))
+@register.filter
+def strip(value):
+    if isinstance(value, str):
+        return value.strip()
+    return value

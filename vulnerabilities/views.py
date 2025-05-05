@@ -390,3 +390,30 @@ class PipelineRunListView(ListView):
         )
         context["pipeline_name"] = pipeline.pipeline_class.__name__
         return context
+
+
+class PipelineRunDetailView(DetailView):
+    model = PipelineRun
+    template_name = "pipeline_run_details.html"
+    context_object_name = "run"
+
+    def get_object(self):
+        pipeline_id = self.kwargs["pipeline_id"]
+        run_id = self.kwargs["run_id"]
+        return get_object_or_404(
+            PipelineRun,
+            pipeline__pipeline_id=pipeline_id,
+            run_id=run_id,
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pipeline_id = self.kwargs["pipeline_id"]
+        run_id = self.kwargs["run_id"]
+        run = get_object_or_404(
+            PipelineRun,
+            pipeline__pipeline_id=pipeline_id,
+            run_id=run_id,
+        )
+        context["pipeline_name"] = run.pipeline_class.__name__
+        return context

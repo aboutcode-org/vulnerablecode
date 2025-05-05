@@ -365,3 +365,28 @@ class PipelineScheduleListView(ListView, FormMixin):
                 pipeline_id__icontains=form.cleaned_data.get("search")
             )
         return PipelineSchedule.objects.all()
+
+
+class PipelineRunListView(ListView):
+    model = PipelineRun
+    context_object_name = "run_list"
+    template_name = "pipeline_run_list.html"
+    paginate_by = 30
+    slug_url_kwarg = "pipeline_id"
+    slug_field = "pipeline_id"
+
+    def get_queryset(self):
+        pipeline = get_object_or_404(
+            PipelineSchedule,
+            pipeline_id=self.kwargs["pipeline_id"],
+        )
+        return pipeline.all_runs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pipeline = get_object_or_404(
+            PipelineSchedule,
+            pipeline_id=self.kwargs["pipeline_id"],
+        )
+        context["pipeline_name"] = pipeline.pipeline_class.__name__
+        return context

@@ -85,3 +85,16 @@ class ApiUserCreationForm(forms.ModelForm):
 
     def save_m2m(self):
         pass
+
+
+class PipelineSchedulePackageForm(forms.Form):
+    search = forms.CharField(
+        required=True,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search a pipeline...",
+                "class": "input ",
+            },
+        ),
+    )

@@ -84,6 +84,7 @@ INSTALLED_APPS = (
     # required for Django collectstatic discovery
     "drf_spectacular_sidecar",
     "django_recaptcha",
+    "django_rq",
 )
 
 RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY", "")
@@ -362,3 +363,15 @@ if DEBUG:
         "handlers": ["console"],
         "level": "ERROR",
     }
+
+
+VULNERABLECODE_ASYNC = True
+VULNERABLECODE_PIPELINE_TIMEOUT = "24h"
+RQ_QUEUES = {
+    "default": {
+        "HOST": env.str("VULNERABLECODE_REDIS_HOST", default="localhost"),
+        "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
+        "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
+        "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=360),
+    }
+}

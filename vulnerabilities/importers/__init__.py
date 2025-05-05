@@ -42,6 +42,7 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines import samba_importer
 
 IMPORTERS_REGISTRY = [
     nvd_importer.NVDImporterPipeline,
@@ -78,6 +79,20 @@ IMPORTERS_REGISTRY = [
     ubuntu_usn.UbuntuUSNImporter,
     fireeye.FireyeImporter,
     oss_fuzz.OSSFuzzImporter,
+    ruby.RubyImporter,
+    github_osv.GithubOSVImporter,
+    curl.CurlImporter,
+    epss.EPSSImporter,
+    vulnrichment.VulnrichImporter,
+    pypa_importer.PyPaImporterPipeline,
+    npm_importer.NpmImporterPipeline,
+    nginx_importer.NginxImporterPipeline,
+    gitlab_importer.GitLabImporterPipeline,
+    github_importer.GitHubAPIImporterPipeline,
+    nvd_importer.NVDImporterPipeline,
+    pysec_importer.PyPIImporterPipeline,
+    alpine_linux_importer.AlpineLinuxImporterPipeline,
+    samba_importer.SambaImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

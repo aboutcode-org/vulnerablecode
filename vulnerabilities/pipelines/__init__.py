@@ -15,12 +15,17 @@ from timeit import default_timer as timer
 from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 from typing import List
+from typing import Optional
 
 from aboutcode.pipeline import LoopProgress
 from aboutcode.pipeline import PipelineDefinition
 from aboutcode.pipeline import humanize_time
+from fetchcode import package_versions
+from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import PipelineRun
@@ -28,7 +33,11 @@ from vulnerabilities.models import PackageV2
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
 from vulnerabilities.pipes.advisory import insert_advisory_v2
+from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import classproperty
+from vulnerabilities.utils import get_affected_packages_by_patched_package
+from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import resolve_version_range
 
 module_logger = logging.getLogger(__name__)
 
@@ -268,13 +277,12 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     repo_url = None
     importer_name = None
     advisory_confidence = MAX_CONFIDENCE
+    ignorable_versions = []
+    unfurl_version_ranges = False
 
     @classmethod
     def steps(cls):
-        return (
-            cls.collect_and_store_advisories,
-            cls.import_new_advisories,
-        )
+        return (cls.collect_and_store_advisories,)
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         """
@@ -328,6 +336,15 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
             affected_purls.extend(package_affected_purls)
             fixed_purls.extend(package_fixed_purls)
 
+
+        if self.unfurl_version_ranges:
+            vulnerable_pvs, fixed_pvs = self.get_impacted_packages(
+                affected_packages=advisory_data.affected_packages,
+                advisory_date_published=advisory_data.date_published,
+            )
+            affected_purls.extend(vulnerable_pvs)
+            fixed_purls.extend(fixed_pvs)
+
         vulnerable_packages = []
         fixed_packages = []
 
@@ -340,3 +357,143 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
             fixed_packages.append(fixed_package)
 
         return vulnerable_packages, fixed_packages
+
+    def get_published_package_versions(
+        self, package_url: PackageURL, until: Optional[datetime] = None
+    ) -> List[str]:
+        """
+        Return a list of versions published before `until` for the `package_url`
+        """
+        versions = package_versions.versions(str(package_url))
+        versions_before_until = []
+        for version in versions or []:
+            if until and version.release_date and version.release_date > until:
+                continue
+            versions_before_until.append(version.value)
+
+        return versions_before_until
+
+    def get_impacted_packages(self, affected_packages, advisory_date_published):
+        """
+        Return a tuple of lists of affected and fixed PackageURLs
+        """
+        if not affected_packages:
+            return [], []
+
+        mergable = True
+
+        # TODO: We should never had the exception in first place
+        try:
+            purl, affected_version_ranges, fixed_versions = AffectedPackage.merge(affected_packages)
+        except UnMergeablePackageError:
+            self.log(f"Cannot merge with different purls {affected_packages!r}", logging.ERROR)
+            mergable = False
+
+        if not mergable:
+            for affected_package in affected_packages:
+                purl = affected_package.package
+                affected_version_range = affected_package.affected_version_range
+                fixed_version = affected_package.fixed_version
+                pkg_type = purl.type
+                pkg_namespace = purl.namespace
+                pkg_name = purl.name
+                if not affected_version_range and fixed_version:
+                    # FIXME: Handle the receving end to address the concern of looping the data
+                    return [], [
+                        PackageURL(
+                            type=pkg_type,
+                            namespace=pkg_namespace,
+                            name=pkg_name,
+                            version=str(fixed_version),
+                        )
+                    ]
+                else:
+                    # FIXME: Handle the receving end to address the concern of looping the data
+                    valid_versions = self.get_published_package_versions(
+                        package_url=purl, until=advisory_date_published
+                    )
+                    return self.resolve_package_versions(
+                        affected_version_range=affected_version_range,
+                        pkg_type=pkg_type,
+                        pkg_namespace=pkg_namespace,
+                        pkg_name=pkg_name,
+                        valid_versions=valid_versions,
+                    )
+
+        else:
+            pkg_type = purl.type
+            pkg_namespace = purl.namespace
+            pkg_name = purl.name
+            pkg_qualifiers = purl.qualifiers
+            fixed_purls = [
+                PackageURL(
+                    type=pkg_type,
+                    namespace=pkg_namespace,
+                    name=pkg_name,
+                    version=str(version),
+                    qualifiers=pkg_qualifiers,
+                )
+                for version in fixed_versions
+            ]
+            if not affected_version_ranges:
+                return [], fixed_purls
+            else:
+                valid_versions = self.get_published_package_versions(
+                    package_url=purl, until=advisory_date_published
+                )
+                for affected_version_range in affected_version_ranges:
+                    return self.resolve_package_versions(
+                        affected_version_range=affected_version_range,
+                        pkg_type=pkg_type,
+                        pkg_namespace=pkg_namespace,
+                        pkg_name=pkg_name,
+                        valid_versions=valid_versions,
+                    )
+
+    def resolve_package_versions(
+        self,
+        affected_version_range,
+        pkg_type,
+        pkg_namespace,
+        pkg_name,
+        valid_versions,
+    ):
+        """
+        Return a tuple of lists of ``affected_packages`` and ``fixed_packages`` PackageURL for the given `affected_version_range` and `valid_versions`.
+
+        ``valid_versions`` are the valid version listed on the package registry for that package
+        
+        """
+        aff_vers, unaff_vers = resolve_version_range(
+            affected_version_range=affected_version_range,
+            ignorable_versions=self.ignorable_versions,
+            package_versions=valid_versions,
+        )
+
+        affected_purls = list(
+            self.expand_verion_range_to_purls(pkg_type, pkg_namespace, pkg_name, aff_vers)
+        )
+
+        unaffected_purls = list(
+            self.expand_verion_range_to_purls(pkg_type, pkg_namespace, pkg_name, unaff_vers)
+        )
+
+        fixed_packages = []
+        affected_packages = []
+
+        patched_packages = nearest_patched_package(
+                vulnerable_packages=affected_purls, resolved_packages=unaffected_purls
+            )
+
+        for (fixed_package, affected_purls,) in get_affected_packages_by_patched_package(
+            patched_packages
+        ).items():
+            if fixed_package:
+                fixed_packages.append(fixed_package)
+            affected_packages.extend(affected_purls)
+
+        return affected_packages, fixed_packages
+
+    def expand_verion_range_to_purls(self, pkg_type, pkg_namespace, pkg_name, versions):
+        for version in versions:
+            yield PackageURL(type=pkg_type, namespace=pkg_namespace, name=pkg_name, version=version)

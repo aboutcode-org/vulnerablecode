@@ -213,7 +213,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # Django restframework
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "vulnerabilities.token_authentication.ExpiringTokenAuthentication",
+    ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
@@ -362,3 +364,6 @@ if DEBUG:
         "handlers": ["console"],
         "level": "ERROR",
     }
+
+# Set the number of days until the API token expires
+TOKEN_EXPIRY_DAYS = 30

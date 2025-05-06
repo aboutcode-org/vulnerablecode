@@ -150,7 +150,7 @@ def insert_advisory_v2(
     severities = get_or_create_advisory_severities(severities=advisory.severities)
     weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
     content_id = compute_content_id(advisory_data=advisory)
-    fixed_by_packages, affecting_packages = get_advisory_packages(advisory_data=advisory)
+    affecting_packages, fixed_by_packages = get_advisory_packages(advisory_data=advisory)
     try:
         default_data = {
             "summary": advisory.summary,

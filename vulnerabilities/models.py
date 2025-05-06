@@ -172,6 +172,7 @@ class VulnerabilityQuerySet(BaseQuerySet):
         )
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class VulnerabilitySeverity(models.Model):
     url = models.URLField(
         max_length=1024,
@@ -211,6 +212,7 @@ class VulnerabilitySeverity(models.Model):
         ordering = ["url", "scoring_system", "value"]
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class VulnerabilityStatusType(models.IntegerChoices):
     """List of vulnerability statuses."""
 
@@ -219,6 +221,7 @@ class VulnerabilityStatusType(models.IntegerChoices):
     INVALID = 3, "Invalid"
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class Vulnerability(models.Model):
     """
     A software vulnerability with a unique identifier and alternate ``aliases``.
@@ -511,6 +514,7 @@ def get_cwes(self):
 Database.get_cwes = get_cwes
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class Weakness(models.Model):
     """
     A Common Weakness Enumeration model
@@ -557,6 +561,7 @@ class Weakness(models.Model):
         return {"cwe_id": self.cwe_id, "name": self.name, "description": self.description}
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class VulnerabilityReferenceQuerySet(BaseQuerySet):
     def for_cpe(self):
         """
@@ -565,6 +570,7 @@ class VulnerabilityReferenceQuerySet(BaseQuerySet):
         return self.filter(reference_id__startswith="cpe")
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class VulnerabilityReference(models.Model):
     """
     A reference to a vulnerability such as a security advisory from a Linux distribution or language
@@ -622,6 +628,7 @@ class VulnerabilityReference(models.Model):
         return self.reference_id.startswith("cpe")
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class VulnerabilityRelatedReference(models.Model):
     """
     A reference related to a vulnerability.
@@ -642,6 +649,7 @@ class VulnerabilityRelatedReference(models.Model):
         ordering = ["vulnerability", "reference"]
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class PackageQuerySet(BaseQuerySet, PackageURLQuerySet):
     def get_fixed_by_package_versions(self, purl: PackageURL, fix=True):
         """
@@ -808,6 +816,7 @@ def get_purl_query_lookups(purl):
     return purl_to_dict(plain_purl, with_empty=False)
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class Package(PackageURLMixin):
     """
     A software package with related vulnerabilities.
@@ -1136,6 +1145,7 @@ class Package(PackageURLMixin):
         )
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class PackageRelatedVulnerabilityBase(models.Model):
     """
     Abstract base class for package-vulnerability relations.
@@ -1232,11 +1242,13 @@ class PackageRelatedVulnerabilityBase(models.Model):
         )
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class FixingPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
     class Meta(PackageRelatedVulnerabilityBase.Meta):
         verbose_name_plural = "Fixing Package Related Vulnerabilities"
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class AffectedByPackageRelatedVulnerability(PackageRelatedVulnerabilityBase):
 
     severities = models.ManyToManyField(
@@ -1258,6 +1270,7 @@ class AliasQuerySet(BaseQuerySet):
         return self.filter(alias__startswith="CVE")
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class Alias(models.Model):
     """
     An alias is a unique vulnerability identifier in some database, such as
@@ -1315,6 +1328,7 @@ class AdvisoryQuerySet(BaseQuerySet):
     pass
 
 
+# FIXME: Remove when migration from Vulnerability to Advisory is completed
 class Advisory(models.Model):
     """
     An advisory represents data directly obtained from upstream transformed
@@ -2572,6 +2586,8 @@ class AdvisoryV2(models.Model):
         help_text="A list of packages that are reported by this advisory.",
     )
 
+    # TODO: Add Advisory Status
+
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
@@ -2613,6 +2629,18 @@ class ToDoRelatedAdvisory(models.Model):
 
     class Meta:
         unique_together = ("todo", "advisory")
+
+
+class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
+    def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
+        """
+        Return a new or existing Package given a ``purl`` PackageURL object or PURL string.
+        """
+        package, is_created = PackageV2.objects.get_or_create(**purl_to_dict(purl=purl))
+
+        return package, is_created
+
+
 class PackageV2(PackageURLMixin):
     """
     A software package with related vulnerabilities.
@@ -2685,6 +2713,8 @@ class PackageV2(PackageURLMixin):
         self.plain_package_url = str(plain_purl)
         super().save(*args, **kwargs)
 
+    objects = PackageQuerySetV2.as_manager()
+
     @property
     def calculate_version_rank(self):
         """
@@ -2707,11 +2737,3 @@ class PackageV2(PackageURLMixin):
                 package.version_rank = rank
             Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
         return self.version_rank
-
-    def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
-        """
-        Return a new or existing Package given a ``purl`` PackageURL object or PURL string.
-        """
-        package, is_created = Package.objects.get_or_create(**purl_to_dict(purl=purl))
-
-        return package, is_created

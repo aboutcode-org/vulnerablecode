@@ -287,9 +287,10 @@ def get_affected_packages_by_patched_package(
     """
     affected_packages_by_patched_package = defaultdict(list)
     for package in affected_packages:
-        affected_packages_by_patched_package[package.patched_package].append(
-            package.vulnerable_package
-        )
+        if package.vulnerable_package:
+            affected_packages_by_patched_package[package.patched_package].append(
+                package.vulnerable_package
+            )
     return affected_packages_by_patched_package
 
 

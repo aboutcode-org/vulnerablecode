@@ -43,20 +43,27 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
     aliases = get_or_create_aliases(aliases=advisory.aliases)
     content_id = compute_content_id(advisory_data=advisory)
     try:
+        default_data = {
+            "summary": advisory.summary,
+            "affected_packages": [pkg.to_dict() for pkg in advisory.affected_packages],
+            "references": [ref.to_dict() for ref in advisory.references],
+            "date_published": advisory.date_published,
+            "weaknesses": advisory.weaknesses,
+            "created_by": pipeline_id,
+            "date_collected": datetime.now(timezone.utc),
+        }
+
         advisory_obj, _ = Advisory.objects.get_or_create(
             unique_content_id=content_id,
             url=advisory.url,
-            defaults={
-                "summary": advisory.summary,
-                "affected_packages": [pkg.to_dict() for pkg in advisory.affected_packages],
-                "references": [ref.to_dict() for ref in advisory.references],
-                "date_published": advisory.date_published,
-                "weaknesses": advisory.weaknesses,
-                "created_by": pipeline_id,
-                "date_collected": datetime.now(timezone.utc),
-            },
+            defaults=default_data,
         )
         advisory_obj.aliases.add(*aliases)
+    except Advisory.MultipleObjectsReturned:
+        logger.error(
+            f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}"
+        )
+        raise
     except Exception as e:
         if logger:
             logger(
@@ -137,18 +144,17 @@ def import_advisory(
                     },
                 )
                 vulnerability.severities.add(vulnerability_severity)
+                if not created and logger:
+                    logger(
+                        f"Severity updated for reference {ref.url!r} to value: {severity.value!r} "
+                        f"and scoring_elements: {severity.scoring_elements!r}",
+                        level=logging.DEBUG,
+                    )
             except:
                 if logger:
                     logger(
                         f"Failed to create VulnerabilitySeverity for: {severity} with error:\n{traceback_format_exc()}",
                         level=logging.ERROR,
-                    )
-            if not created:
-                if logger:
-                    logger(
-                        f"Severity updated for reference {ref.url!r} to value: {severity.value!r} "
-                        f"and scoring_elements: {severity.scoring_elements!r}",
-                        level=logging.DEBUG,
                     )
 
     for affected_purl in affected_purls or []:

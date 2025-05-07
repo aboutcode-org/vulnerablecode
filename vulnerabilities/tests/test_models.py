@@ -8,17 +8,25 @@
 #
 
 import urllib.parse
+from datetime import datetime
 from unittest import TestCase
 
 import pytest
+from django.core.exceptions import ValidationError
+from django.test import TestCase as DjangoTestCase
 from packageurl import PackageURL
 from univers import versions
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import VersionRange
 
 from vulnerabilities import models
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import Reference
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.utils import compute_content_id
 
 
 class TestVulnerabilityModel(TestCase):
@@ -28,11 +36,9 @@ class TestVulnerabilityModel(TestCase):
         assert models.Vulnerability.objects.filter(vulnerability_id="CVE-2020-7965").count() == 1
 
     @pytest.mark.django_db
-    def test_cwe_not_present_in_weaknesses_db(self):
+    def test_cwe_present_in_weaknesses_db(self):
         w1 = models.Weakness.objects.create(cwe_id=189)
-        assert w1.weakness is None
-        assert w1.name is ""
-        assert w1.description is ""
+        assert w1.name == "Numeric Errors"
 
 
 # FIXME: The fixture code is duplicated. setUpClass is not working with the pytest mark.
@@ -51,7 +57,7 @@ class TestPackageRelatedVulnerablity(TestCase):
         assert p1.fixing_vulnerabilities.count() == 0
 
         assert p2.fixing_vulnerabilities.count() == 1
-        assert p2.fixing_vulnerabilities[0] == v1
+        assert p2.fixing_vulnerabilities.first() == v1
 
     def test_vulnerability_package(self):
         p1 = models.Package.objects.create(type="deb", name="git", version="2.30.1")
@@ -66,8 +72,8 @@ class TestPackageRelatedVulnerablity(TestCase):
         assert v1.vulnerable_packages.count() == 1
         assert v1.fixed_by_packages.count() == 1
 
-        assert v1.vulnerable_packages[0] == p1
-        assert v1.fixed_by_packages[0] == p2
+        assert v1.vulnerable_packages.first() == p1
+        assert v1.fixed_by_packages.first() == p2
 
 
 @pytest.mark.django_db
@@ -208,10 +214,14 @@ class TestPackageModel(TestCase):
         assert len(searched_for_package.affected_by) == 2
 
         assert self.vuln_VCID_g2fu_45jw_aaan in searched_for_package.affected_by
-        assert self.package_pypi_redis_4_3_6 in self.vuln_VCID_g2fu_45jw_aaan.fixed_by_packages
+        assert (
+            self.package_pypi_redis_4_3_6 in self.vuln_VCID_g2fu_45jw_aaan.fixed_by_packages.all()
+        )
 
         assert self.vuln_VCID_rqe1_dkmg_aaad in searched_for_package.affected_by
-        assert self.package_pypi_redis_5_0_0b1 in self.vuln_VCID_rqe1_dkmg_aaad.fixed_by_packages
+        assert (
+            self.package_pypi_redis_5_0_0b1 in self.vuln_VCID_rqe1_dkmg_aaad.fixed_by_packages.all()
+        )
 
         searched_for_package_details = searched_for_package.fixed_package_details
 
@@ -221,19 +231,8 @@ class TestPackageModel(TestCase):
                 name="redis",
                 version="4.1.1",
             ),
-            "next_non_vulnerable": PackageURL(
-                type="pypi",
-                name="redis",
-                version="5.0.0b1",
-            ),
-            "latest_non_vulnerable": PackageURL(
-                type="pypi",
-                namespace=None,
-                name="redis",
-                version="5.0.0b1",
-                qualifiers={},
-                subpath=None,
-            ),
+            "next_non_vulnerable": self.package_pypi_redis_5_0_0b1,
+            "latest_non_vulnerable": self.package_pypi_redis_5_0_0b1,
             "vulnerabilities": [
                 {
                     "vulnerability": self.vuln_VCID_g2fu_45jw_aaan,
@@ -276,13 +275,9 @@ class TestPackageModel(TestCase):
 
         assert searched_for_package_details == package_details
 
-        assert searched_for_package_details.get("latest_non_vulnerable") == PackageURL(
-            type="pypi",
-            namespace=None,
-            name="redis",
-            version="5.0.0b1",
-            qualifiers={},
-            subpath=None,
+        assert (
+            searched_for_package_details.get("latest_non_vulnerable")
+            == self.package_pypi_redis_5_0_0b1
         )
 
         searched_for_package_fixing = searched_for_package.fixing
@@ -433,9 +428,7 @@ class TestPackageModel(TestCase):
         searched_for_package = self.package_pypi_redis_4_1_1
 
         # Return a queryset of Vulnerabilities that affect this Package.
-        this_package_vulnerabilities = (
-            searched_for_package.vulnerabilities.affecting_vulnerabilities()
-        )
+        this_package_vulnerabilities = searched_for_package.affected_by
 
         assert this_package_vulnerabilities[0] == self.vuln_VCID_g2fu_45jw_aaan
         assert this_package_vulnerabilities[1] == self.vuln_VCID_rqe1_dkmg_aaad
@@ -477,15 +470,15 @@ class TestPackageModel(TestCase):
 
         assert all_vulnerabilities_count == 4
 
-    def test_affecting_vulnerabilities_package_property_method(self):
+    def test_affected_by_package_property_method(self):
         """
-        Return a queryset of Vulnerabilities using the Package affecting_vulnerabilities() property
+        Return a queryset of Vulnerabilities using the Package affected_by() property
         method.
         """
         searched_for_package = self.package_pypi_redis_4_1_1
 
         # Return a queryset of Vulnerabilities that affect a specific Package.
-        this_package_vulnerabilities = searched_for_package.affecting_vulnerabilities
+        this_package_vulnerabilities = searched_for_package.affected_by
 
         assert this_package_vulnerabilities[0] == self.vuln_VCID_g2fu_45jw_aaan
         assert this_package_vulnerabilities[1] == self.vuln_VCID_rqe1_dkmg_aaad
@@ -505,7 +498,7 @@ class TestPackageModel(TestCase):
         redis_4_3_6_fixing_vulnerabilities = searched_for_package_redis_4_3_6.fixing_vulnerabilities
 
         assert redis_4_3_6_fixing_vulnerabilities.count() == 1
-        assert redis_4_3_6_fixing_vulnerabilities[0] == self.vuln_VCID_g2fu_45jw_aaan
+        assert redis_4_3_6_fixing_vulnerabilities.first() == self.vuln_VCID_g2fu_45jw_aaan
 
         searched_for_package_redis_5_0_0b1 = self.package_pypi_redis_5_0_0b1
         redis_5_0_0b1_fixing_vulnerabilities = (
@@ -513,7 +506,7 @@ class TestPackageModel(TestCase):
         )
 
         assert redis_5_0_0b1_fixing_vulnerabilities.count() == 1
-        assert redis_5_0_0b1_fixing_vulnerabilities[0] == self.vuln_VCID_rqe1_dkmg_aaad
+        assert redis_5_0_0b1_fixing_vulnerabilities.first() == self.vuln_VCID_rqe1_dkmg_aaad
 
     def test_get_affecting_vulnerabilities_package_method(self):
         """
@@ -598,3 +591,57 @@ class TestPackageModel(TestCase):
         assert all_package_versions[1] == self.package_pypi_redis_4_3_6
         assert all_package_versions[2] == self.package_pypi_redis_5_0_0b1
         assert all_package_versions.count() == 3
+
+
+class TestAdvisoryModel(DjangoTestCase):
+    def setUp(self):
+        self.advisory_data1 = AdvisoryData(
+            summary="vulnerability description here",
+            affected_packages=[
+                AffectedPackage(
+                    package=PackageURL(type="pypi", name="dummy"),
+                    affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+                )
+            ],
+            references=[Reference(url="https://example.com/with/more/info/CVE-2020-13371337")],
+            date_published=datetime.now(),
+            url="https://test.com",
+        )
+
+    def test_advisory_insert_without_content_id(self):
+        with self.assertRaises(ValidationError):
+            date = datetime.now()
+            models.Advisory.objects.create(
+                url=self.advisory_data1.url,
+                summary=self.advisory_data1.summary,
+                affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+                references=[ref.to_dict() for ref in self.advisory_data1.references],
+                date_imported=date,
+                date_collected=date,
+                created_by="test_pipeline",
+            )
+
+    def test_advisory_insert_no_duplicate_content_id(self):
+        date = datetime.now()
+        models.Advisory.objects.create(
+            unique_content_id=compute_content_id(advisory_data=self.advisory_data1),
+            url=self.advisory_data1.url,
+            summary=self.advisory_data1.summary,
+            affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+            references=[ref.to_dict() for ref in self.advisory_data1.references],
+            date_imported=date,
+            date_collected=date,
+            created_by="test_pipeline",
+        )
+
+        with self.assertRaises(ValidationError):
+            models.Advisory.objects.create(
+                unique_content_id=compute_content_id(advisory_data=self.advisory_data1),
+                url=self.advisory_data1.url,
+                summary=self.advisory_data1.summary,
+                affected_packages=[pkg.to_dict() for pkg in self.advisory_data1.affected_packages],
+                references=[ref.to_dict() for ref in self.advisory_data1.references],
+                date_imported=date,
+                date_collected=date,
+                created_by="test_pipeline",
+            )

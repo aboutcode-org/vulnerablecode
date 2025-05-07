@@ -31,7 +31,7 @@ def test_process_record():
     logger = TestLogger()
     expected_advisories = [
         AdvisoryData(
-            aliases=[],
+            aliases=["XSA-248"],
             summary="",
             affected_packages=[
                 AffectedPackage(
@@ -138,7 +138,7 @@ def test_process_record():
             url="https://secdb.alpinelinux.org/v3.11/",
         ),
         AdvisoryData(
-            aliases=["CVE-2018-7540"],
+            aliases=["CVE-2018-7540", "XSA-252"],
             summary="",
             affected_packages=[
                 AffectedPackage(

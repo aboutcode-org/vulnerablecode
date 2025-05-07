@@ -195,7 +195,8 @@ def load_advisories(
                     level=logging.DEBUG,
                 )
             continue
-
+        # fixed_vulns is a list of strings and each string is a space-separated
+        # list of aliases and CVES
         for vuln_ids in fixed_vulns:
             if not isinstance(vuln_ids, str):
                 if logger:
@@ -204,15 +205,16 @@ def load_advisories(
                         level=logging.DEBUG,
                     )
                 continue
-            vuln_ids = vuln_ids.split()
-            aliases = []
-            vuln_id = vuln_ids[0]
-            # check for valid vuln ID, if there is valid vuln ID then iterate over
-            # the remaining elements of the list else iterate over the whole list
-            # and also check if the initial element is a reference or not
-            if is_cve(vuln_id):
-                aliases = [vuln_id]
-                vuln_ids = vuln_ids[1:]
+            vuln_ids = vuln_ids.strip().split()
+            if not vuln_ids:
+                if logger:
+                    logger(
+                        f"{vuln_ids!r} is empty",
+                        level=logging.DEBUG,
+                    )
+                continue
+            aliases = vuln_ids
+
             references = []
             for reference_id in vuln_ids:
 
@@ -224,6 +226,10 @@ def load_advisories(
 
                 elif reference_id.startswith("wnpa-sec"):
                     references.append(WireSharkReference.from_id(wnpa_sec_id=reference_id))
+
+                elif not reference_id.startswith("CVE"):
+                    if logger:
+                        logger(f"Unknown reference id {reference_id!r}", level=logging.DEBUG)
 
             qualifiers = {
                 "distroversion": distroversion,

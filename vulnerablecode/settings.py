@@ -102,6 +102,7 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "vulnerabilities.middleware.ban_user_agent.BanUserAgent",
+    "vulnerabilities.middleware.timezone.UserTimezoneMiddleware",
 )
 
 ROOT_URLCONF = "vulnerablecode.urls"

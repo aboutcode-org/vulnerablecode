@@ -16,6 +16,7 @@ from typing import List
 from typing import Optional
 
 import pytz
+import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from univers.versions import RpmVersion
@@ -25,25 +26,37 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.rpm_utils import rpm_to_purl
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import fetch_response
 from vulnerabilities.utils import is_cve
 
 LOGGER = logging.getLogger(__name__)
-BASE_URL = "https://alas.aws.amazon.com/"
 
 
-class AmazonLinuxImporter(Importer):
+class AmazonLinuxImporterPipeline(VulnerableCodeBaseImporterPipeline):
+    """Imports Amazon Linux security advisories"""
+
+    pipeline_id = "amazon_linux_importer"
+    BASE_URL = "https://alas.aws.amazon.com/"
     spdx_license_expression = "CC BY 4.0"
-    license_url = " "  # TODO
-
+    license_url = "Unknown"
     importer_name = "Amazon Linux Importer"
 
-    def advisory_data(self) -> Iterable[AdvisoryData]:
-        amazon_linux_1_url = BASE_URL + "/index.html"
-        amazon_linux_2_url = BASE_URL + "/alas2.html"
-        amazon_linux_2023_url = BASE_URL + "/alas2023.html"
+    @classmethod
+    def steps(cls):
+        return (
+            cls.fetch,
+            cls.collect_and_store_advisories,
+            cls.import_new_advisories,
+        )
+
+    def fetch(self):
+        self.log(f"Fetch `{self.BASE_URL}`")
+        amazon_linux_1_url = self.BASE_URL + "/index.html"
+        amazon_linux_2_url = self.BASE_URL + "/alas2.html"
+        amazon_linux_2023_url = self.BASE_URL + "/alas2023.html"
         amazonlinux_advisories_pages = [
             amazon_linux_1_url,
             amazon_linux_2_url,
@@ -52,18 +65,40 @@ class AmazonLinuxImporter(Importer):
         alas_dict = {}
         for amazonlinux_advisories_page in amazonlinux_advisories_pages:
             alas_dict.update(fetch_alas_id_and_advisory_links(amazonlinux_advisories_page))
+        self.advisory_data = alas_dict
+        # self.advisory_data = requests.get(self.url).text
 
-        for alas_id, alas_url in alas_dict.items():
+    def advisories_count(self):
+        return len(self.advisory_data)
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        """
+        Yield AdvisoryData from nginx security advisories HTML
+        web page.
+        """
+
+        for alas_id, alas_url in self.advisory_data.items():
             # It iterates through alas_dict to get alas ids and alas url
-            if alas_id and alas_url:
-                alas_advisory_page_content = fetch_response(alas_url).content
-                yield process_advisory_data(alas_id, alas_advisory_page_content, alas_url)
+            if not (alas_id and alas_url):
+                continue
+            try:
+                # Fetch the advisory page content
+                response = fetch_response(alas_url)
+                alas_advisory_page_content = response.content
+
+            except Exception as e:
+                # Log the error and continue to the next item
+                LOGGER.error(f"Failed to fetch advisory {alas_id} from {alas_url}: {str(e)}")
+                continue
+
+            # Process and yield data if successful
+            yield process_advisory_data(alas_id, alas_advisory_page_content, alas_url)
 
 
 def fetch_alas_id_and_advisory_links(page_url: str) -> dict[str, str]:
     """
     Return a dictionary where 'ALAS' entries are the keys and
-    their corresponding advisory page links are the values.
+    their corresponding advisory page link strings are the values.
     """
 
     page_response_content = fetch_response(page_url).content
@@ -253,7 +288,6 @@ def get_date_published(release_date_string):
     # Parse the date and time
     if release_date_string:
         date_part = release_date_string[:16]
-        time_zone = release_date_string[17:]
     else:
         return None
 

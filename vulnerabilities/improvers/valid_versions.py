@@ -24,7 +24,6 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import UnMergeablePackageError
-from vulnerabilities.importers.amazon_linux import AmazonLinuxImporter
 from vulnerabilities.importers.apache_httpd import ApacheHTTPDImporter
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
@@ -42,6 +41,7 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines.amazon_linux_importer import AmazonLinuxImporterPipeline
 from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
@@ -480,8 +480,9 @@ class GithubOSVImprover(ValidVersionImprover):
 
 
 class AmazonLinuxImprover(ValidVersionImprover):
-    importer = AmazonLinuxImporter
+    importer = AmazonLinuxImporterPipeline
     ignorable_versions = []
+
 
 class CurlImprover(ValidVersionImprover):
     importer = CurlImporter

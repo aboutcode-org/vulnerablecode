@@ -6,11 +6,16 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+import itertools
 import logging
 from itertools import groupby
 from pathlib import Path
+from timeit import default_timer as timer
+from traceback import format_exc as traceback_format_exc
 
 import saneyaml
+from aboutcode.pipeline import LoopProgress
+from aboutcode.pipeline import humanize_time
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 from packageurl import PackageURL
@@ -26,7 +31,7 @@ def serialize_severity(sev):
         "score": sev.value,
         "scoring_system": sev.scoring_system,
         "scoring_elements": sev.scoring_elements,
-        "published_at": sev.published_at,
+        "published_at": str(sev.published_at),
         "url": sev.url,
     }
 
@@ -88,8 +93,22 @@ class Command(BaseCommand):
         """
         i = 0
         seen_vcid = set()
+        export_start_time = timer()
 
-        for i, (purl_without_version, package_versions) in enumerate(packages_by_type_ns_name(), 1):
+        distinct_packages_count = (
+            Package.objects.values("type", "namespace", "name")
+            .distinct("type", "namespace", "name")
+            .count()
+        )
+
+        progress = LoopProgress(
+            total_iterations=distinct_packages_count,
+            progress_step=1,
+            logger=self.stdout.write,
+        )
+        for i, (purl_without_version, package_versions) in enumerate(
+            progress.iter(packages_by_type_ns_name()), 1
+        ):
             pkg_version = None
             try:
                 package_urls = []
@@ -108,7 +127,11 @@ class Command(BaseCommand):
                     }
                     package_vulnerabilities.append(package_data)
 
-                    for vuln in pkg_version.vulnerabilities:
+                    vulnerabilities = itertools.chain(
+                        pkg_version.affected_by_vulnerabilities.all(),
+                        pkg_version.fixing_vulnerabilities.all(),
+                    )
+                    for vuln in vulnerabilities:
                         vcid = vuln.vulnerability_id
                         # do not write twice the same file
                         if vcid in seen_vcid:
@@ -131,9 +154,15 @@ class Command(BaseCommand):
                     self.stdout.write(f"Processed {i} package. Last PURL: {purl_without_version}")
 
             except Exception as e:
-                raise Exception(f"Failed to process Package: {pkg_version}") from e
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Failed to process Package {pkg_version}: {e!r} \n {traceback_format_exc()}"
+                    )
+                )
 
         self.stdout.write(f"Exported data for: {i} package and {len(seen_vcid)} vulnerabilities.")
+        export_run_time = timer() - export_start_time
+        self.stdout.write(f"Export completed in {humanize_time(export_run_time)}")
 
 
 def by_purl_type_ns_name(package):
@@ -159,7 +188,7 @@ def packages_by_type_ns_name():
             "fixing_vulnerabilities__weaknesses",
             "fixing_vulnerabilities__severities",
         )
-        .paginated()
+        .iterator()
     )
 
     for tp_ns_name, packages in groupby(qs, key=by_purl_type_ns_name):

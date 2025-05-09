@@ -6,7 +6,7 @@ severities:
   - score: '7.0'
     scoring_system: cvssv3_vector
     scoring_elements: CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H
-    published_at:
+    published_at: None
     url: https://..
 weaknesses:
   - CWE-15

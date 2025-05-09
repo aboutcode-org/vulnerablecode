@@ -6,7 +6,6 @@ docker-compose.yml
 
 
 # Ignore Git directory and files and github directory.
-**/.git
 **/.gitignore
 **/.gitattributes
 **/.gitmodules

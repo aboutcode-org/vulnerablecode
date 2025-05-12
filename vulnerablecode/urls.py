@@ -77,7 +77,7 @@ urlpatterns = [
         name="runs-list",
     ),
     path(
-        "pipelines/<str:pipeline_id>/run/<str:run_id>/",
+        "pipelines/<str:pipeline_id>/run/<uuid:run_id>/",
         PipelineRunDetailView.as_view(),
         name="run-details",
     ),

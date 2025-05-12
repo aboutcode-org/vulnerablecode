@@ -10,6 +10,7 @@
 import csv
 import datetime
 import logging
+import uuid
 import xml.etree.ElementTree as ET
 from contextlib import suppress
 from functools import cached_property
@@ -1828,11 +1829,14 @@ class PipelineRun(models.Model):
         related_name="pipelineruns",
         on_delete=models.CASCADE,
     )
-    run_id = models.CharField(
-        blank=True,
-        null=True,
+
+    run_id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
         editable=False,
+        unique=True,
     )
+
     run_start_date = models.DateTimeField(
         blank=True,
         null=True,
@@ -1880,6 +1884,7 @@ class PipelineRun(models.Model):
         SUCCESS = "success"
         FAILURE = "failure"
         STOPPED = "stopped"
+        QUEUED = "queued"
         STALE = "stale"
 
     @property
@@ -1901,6 +1906,9 @@ class PipelineRun(models.Model):
 
         elif self.run_start_date:
             return status.RUNNING
+
+        elif self.created_date:
+            return status.QUEUED
 
         return status.UNKNOWN
 
@@ -1982,8 +1990,10 @@ class PipelineRun(models.Model):
         self.set_run_ended(exitcode=99)
 
     def stop_run(self):
-        self.append_to_log("Stop run requested")
+        if self.run_succeeded:
+            return
 
+        self.append_to_log("Stop run requested")
         if not VULNERABLECODE_ASYNC:
             self.set_run_stopped()
             return
@@ -2084,7 +2094,9 @@ class PipelineSchedule(models.Model):
         return f"{self.pipeline_id}"
 
     def save(self, *args, **kwargs):
-        if self.pk and (existing := PipelineSchedule.objects.get(pk=self.pk)):
+        if not self.pk:
+            self.schedule_work_id = self.create_new_job(execute_now=True)
+        elif self.pk and (existing := PipelineSchedule.objects.get(pk=self.pk)):
             if existing.is_active != self.is_active or existing.run_interval != self.run_interval:
                 self.schedule_work_id = self.create_new_job()
         self.full_clean()
@@ -2116,7 +2128,7 @@ class PipelineSchedule(models.Model):
 
     @property
     def latest_run_date(self):
-        return self.latest_run.created_date if self.latest_run else None
+        return self.latest_run.run_start_date if self.latest_run else None
 
     @property
     def next_run_date(self):
@@ -2139,7 +2151,7 @@ class PipelineSchedule(models.Model):
         if self.latest_run:
             return self.latest_run.status
 
-    def create_new_job(self):
+    def create_new_job(self, execute_now=False):
         """
         Create a new scheduled job. If a previous scheduled job
         exists remove the existing job from the scheduler.
@@ -2151,4 +2163,4 @@ class PipelineSchedule(models.Model):
         if self.schedule_work_id:
             schedules.clear_job(self.schedule_work_id)
 
-        return schedules.schedule_execution(self) if self.is_active else None
+        return schedules.schedule_execution(self, execute_now) if self.is_active else None

@@ -7,34 +7,37 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import datetime
 import logging
 
 import django_rq
 from redis.exceptions import ConnectionError
 
-from vulnerabilities.tasks import execute_pipeline
+from vulnerabilities.tasks import enqueue_pipeline
 from vulnerablecode.settings import VULNERABLECODE_PIPELINE_TIMEOUT
 
 log = logging.getLogger(__name__)
 scheduler = django_rq.get_scheduler()
 
 
-def schedule_execution(pipeline_schedule):
+def schedule_execution(pipeline_schedule, execute_now=False):
     """
     Takes a `PackageSchedule` object as input and schedule a
     recurring job using `rq_scheduler` to execute the pipeline.
     """
-    first_execution = pipeline_schedule.next_run_date
+    first_execution = datetime.datetime.now(tz=datetime.timezone.utc)
+    if not execute_now:
+        first_execution = pipeline_schedule.next_run_date
+
     interval_in_seconds = pipeline_schedule.run_interval * 24 * 60 * 60
 
     job = scheduler.schedule(
         scheduled_time=first_execution,
-        func=execute_pipeline,
+        func=enqueue_pipeline,
         args=[pipeline_schedule.pipeline_id],
         interval=interval_in_seconds,
-        result_ttl=interval_in_seconds,  # Remove job results after next run
         timeout=VULNERABLECODE_PIPELINE_TIMEOUT,
-        repeat=None,  # None for repeat forever
+        repeat=None,
     )
     return job._id
 
@@ -89,6 +92,6 @@ def update_pipeline_schedule():
     from vulnerabilities.models import PipelineSchedule
 
     pipeline_ids = [*IMPORTERS_REGISTRY.keys(), *IMPROVERS_REGISTRY.keys()]
-    # pipeline_ids = ["nvd_importer", "vulnerabilities.importers.curl.CurlImporter"]
+
     PipelineSchedule.objects.exclude(pipeline_id__in=pipeline_ids).delete()
     [PipelineSchedule.objects.get_or_create(pipeline_id=id) for id in pipeline_ids]

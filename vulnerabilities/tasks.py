@@ -12,28 +12,26 @@ import logging
 from io import StringIO
 from traceback import format_exc as traceback_format_exc
 
-from rq import get_current_job
+import django_rq
 
 from vulnerabilities import models
 from vulnerabilities.importer import Importer
 from vulnerabilities.improver import Improver
+from vulnerablecode.settings import VULNERABLECODE_PIPELINE_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
+queue = django_rq.get_queue("default")
 
-def execute_pipeline(pipeline_id):
+
+def execute_pipeline(pipeline_id, run_id):
     from vulnerabilities.pipelines import VulnerableCodePipeline
 
     logger.info(f"Enter `execute_pipeline` {pipeline_id}")
 
-    pipeline_schedule = models.PipelineSchedule.objects.get(pipeline_id=pipeline_id)
-    job = get_current_job()
-
-    run = models.PipelineRun.objects.create(
-        pipeline=pipeline_schedule,
-        run_id=job.id,
+    run = models.PipelineRun.objects.get(
+        run_id=run_id,
     )
-
     run.set_vulnerablecode_version_and_commit()
     run.set_run_started()
 
@@ -104,3 +102,18 @@ def set_run_failure(job, connection, type, value, traceback):
         return
 
     run.set_run_ended(exitcode=1, output=f"value={value} trace={traceback}")
+
+
+def enqueue_pipeline(pipeline_id):
+    pipeline_schedule = models.PipelineSchedule.objects.get(pipeline_id=pipeline_id)
+    run = models.PipelineRun.objects.create(
+        pipeline=pipeline_schedule,
+    )
+    job = queue.enqueue(
+        execute_pipeline,
+        pipeline_id,
+        run.run_id,
+        job_id=str(run.run_id),
+        on_failure=set_run_failure,
+        job_timeout=VULNERABLECODE_PIPELINE_TIMEOUT,
+    )

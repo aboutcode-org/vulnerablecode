@@ -18,7 +18,9 @@ from vulnerabilities.schedules import update_pipeline_schedule
 
 def init_pipeline_scheduled():
     """Initialize schedule jobs for active PipelineSchedule."""
-    active_pipeline_qs = models.PipelineSchedule.objects.filter(is_active=True)
+    active_pipeline_qs = models.PipelineSchedule.objects.filter(is_active=True).order_by(
+        "created_date"
+    )
     for pipeline_schedule in active_pipeline_qs:
         if scheduled_job_exists(pipeline_schedule.schedule_work_id):
             continue

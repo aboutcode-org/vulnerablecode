@@ -28,3 +28,10 @@ COPY setup.cfg setup.py requirements.txt pyproject.toml /app/
 RUN pip install . -c requirements.txt
 
 COPY . /app
+
+# Store commit hash for docker deployment from local checkout.
+RUN if [ -d ".git" ]; then \
+  GIT_COMMIT=$(git rev-parse --short HEAD) && \
+  echo "VULNERABLECODE_GIT_COMMIT=\"$GIT_COMMIT\"" >> /app/vulnerablecode/settings.py; \
+  rm -rf .git; \
+fi

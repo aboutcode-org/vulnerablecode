@@ -71,42 +71,45 @@ Pipeline Schedule
                             <a href="{% url 'runs-list' pipeline_id=schedule.pipeline_id %}" class="has-text-info">
                                 <div class="columns px-1 is-mobile is-vcentered">
                                     <div class="column is-one-quarter">{{ schedule.pipeline_id }}</div>
-                                    <div class="column is-one-eighth">{{ schedule.is_active|yesno:"Yes,No" }}</div>
-                                    <div class="column is-one-eighth">{{ schedule.run_interval }}day</div>
+                                    <div class="column is-one-eighth has-text-grey">{{ schedule.is_active|yesno:"Yes,No" }}</div>
+                                    <div class="column is-one-eighth has-text-grey">{{ schedule.run_interval }}day</div>
                                     <div class="column is-one-eighth">
                                         <span class="is-flex is-align-items-center">
                                             {% if schedule.status == "running" %}
-                                            <span class="icon has-text-info mr-1"><i
-                                                    class="fa fa-spinner fa-spin"></i></span>
-                                            <span>Running</span>
+                                                <span class="icon has-text-info mr-1"><i
+                                                        class="fa fa-spinner fa-spin"></i></span>
+                                                <span>Running</span>
                                             {% elif schedule.status == "success" %}
-                                            <span class="icon has-text-success mr-1"><i
-                                                    class="fa fa-check-circle"></i></span>
-                                            <span>Success</span>
+                                                <span class="icon has-text-success mr-1"><i
+                                                        class="fa fa-check-circle"></i></span>
+                                                <span>Success</span>
                                             {% elif schedule.status == "failure" %}
-                                            <span class="icon has-text-danger mr-1"><i
-                                                    class="fa fa-times-circle"></i></span>
-                                            <span>Failure</span>
-                                            {% elif schedule.status == "scheduled" %}
-                                            <span class="icon has-text-success mr-1"><i
-                                                    class="fa fa-clock-o"></i></span>
-                                            <span>Scheduled</span>
+                                                <span class="icon has-text-danger mr-1"><i
+                                                        class="fa fa-times-circle"></i></span>
+                                                <span>Failure</span>
+                                            {% elif schedule.status == "queued" %}
+                                                    <span class="icon has-text-grey mr-1"><i
+                                                            class="fa fa-clock-o"></i></span>
+                                                    <span>Queued</span>
                                             {% else %}
-                                            <span class="icon has-text-warning mr-1"><i class="fa fa-question-circle"></i></span>
-                                            <span>Unknown</span>
+                                                <span class="icon has-text-warning mr-1"><i
+                                                    class="fa fa-question-circle"></i></span>
+                                                <span>Unknown</span>
                                             {% endif %}
                                         </span>
                                     </div>
-
-                                    <div class="column is-one-fifth has-text-grey-light"
+                                    <div class="column is-one-fifth has-text-grey"
                                         title="{{ schedule.latest_run_date }}">
-                                        {{ schedule.latest_run_date|date:"Y-m-d H:i" }}
+                                        {% if schedule.latest_run_date %}
+                                            {{ schedule.latest_run_date|date:"Y-m-d H:i" }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
                                     </div>
-                                    <div class="column is-one-fifth has-text-grey-light"
+                                    <div class="column is-one-fifth has-text-grey"
                                         title="{{ schedule.next_run_date }}">
                                         {{ schedule.next_run_date|date:"Y-m-d" }}
                                     </div>
-
                                 </div>
                             </a>
                         </td>

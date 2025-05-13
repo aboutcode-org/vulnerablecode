@@ -6,7 +6,6 @@
 
 {% block extrahead %}
 <style>
-  
   thead th {
     border-bottom: none !important;
   }
@@ -65,31 +64,38 @@
                   <div class="column is-one-eighth">
                     <span class="is-flex is-align-items-center">
                       {% if run.status == "running" %}
-                      <span class="icon has-text-info mr-1"><i class="fa fa-spinner fa-spin"></i></span>
-                      <span>Running</span>
+                        <span class="icon has-text-info mr-1"><i class="fa fa-spinner fa-spin"></i></span>
+                        <span>Running</span>
                       {% elif run.status == "success" %}
-                      <span class="icon has-text-success mr-1"><i class="fa fa-check-circle"></i></span>
-                      <span>Success</span>
+                        <span class="icon has-text-success mr-1"><i class="fa fa-check-circle"></i></span>
+                        <span>Success</span>
                       {% elif run.status == "failure" %}
-                      <span class="icon has-text-danger mr-1"><i class="fa fa-times-circle"></i></span>
-                      <span>Failure</span>
-                      {% elif run.status == "scheduled" %}
-                      <span class="icon has-text-grey mr-1"><i class="fa fa-clock-o"></i></span>
-                      <span>Scheduled</span>
+                        <span class="icon has-text-danger mr-1"><i class="fa fa-times-circle"></i></span>
+                        <span>Failure</span>
+                      {% elif run.status == "queued" %}
+                        <span class="icon has-text-grey mr-1"><i class="fa fa-clock-o"></i></span>
+                        <span>Queued</span>
                       {% else %}
-                      <span class="icon mr-1"><i class="fa fa-question-circle"></i></span>
-                      <span>Unknown</span>
+                        <span class="icon mr-1"><i class="fa fa-question-circle"></i></span>
+                        <span>Unknown</span>
                       {% endif %}
                     </span>
                   </div>
-                  <div class="column is-one-eighth">{{ run.execution_time }}</div>
-                  <div class="column is-one-fifth has-text-grey-light" title="{{ run.latest_run_date }}">
-                        {{ run.run_start_date|date:"Y-m-d H:i" }}
-                      </div>
-                      <div class="column is-one-fifth has-text-grey-light" title="{{ run.next_run_date }}">
-                        {{ run.run_end_date|date:"Y-m-d H:i" }}
-                      </div>
-
+                  <div class="column is-one-eighth has-text-grey">{{ run.execution_time|default_if_none:"N/A" }}</div>
+                  <div class="column is-one-fifth has-text-grey">
+                    {% if run.run_start_date %}
+                      {{ run.run_start_date|date:"Y-m-d H:i" }}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
+                  <div class="column is-one-fifth has-text-grey">
+                    {% if run.run_end_date %}
+                      {{ run.run_end_date|date:"Y-m-d H:i" }}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
                 </div>
               </a>
             </td>

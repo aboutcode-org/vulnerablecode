@@ -1960,11 +1960,19 @@ class PipelineRun(models.Model):
         return self.run_exitcode == 88
 
     @property
+    def run_running(self):
+        """Return True if the execution is running."""
+        return self.status == self.Status.RUNNING
+
+    @property
     def execution_time(self):
         """Return the pipeline execution time."""
-        if self.run_end_date and self.run_start_date:
-            execution_time = (self.run_end_date - self.run_start_date).total_seconds()
-            return humanize_time(execution_time)
+        if not self.run_start_date or (not self.run_end_date and not self.run_running):
+            return
+
+        end_time = self.run_end_date or timezone.now()
+        time_delta = (end_time - self.run_start_date).total_seconds()
+        return humanize_time(time_delta)
 
     @property
     def pipeline_url(self):

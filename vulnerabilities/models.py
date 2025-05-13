@@ -17,6 +17,7 @@ from functools import cached_property
 from itertools import groupby
 from operator import attrgetter
 from typing import Union
+from urllib.parse import urljoin
 
 import django_rq
 import redis
@@ -1842,11 +1843,13 @@ class PipelineRun(models.Model):
         null=True,
         editable=False,
     )
+
     run_end_date = models.DateTimeField(
         blank=True,
         null=True,
         editable=False,
     )
+
     run_exitcode = models.IntegerField(
         null=True,
         blank=True,
@@ -1856,20 +1859,24 @@ class PipelineRun(models.Model):
         blank=True,
         editable=False,
     )
+
     created_date = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
     )
+
     vulnerablecode_version = models.CharField(
         max_length=100,
         blank=True,
         null=True,
     )
+
     vulnerablecode_commit = models.CharField(
         max_length=300,
         blank=True,
         null=True,
     )
+
     log = models.TextField(
         blank=True,
         editable=False,
@@ -1958,6 +1965,18 @@ class PipelineRun(models.Model):
         if self.run_end_date and self.run_start_date:
             execution_time = (self.run_end_date - self.run_start_date).total_seconds()
             return humanize_time(execution_time)
+
+    @property
+    def pipeline_url(self):
+        """Return pipeline URL based on commit and class module path."""
+        if not self.vulnerablecode_commit:
+            return None
+
+        base_url = "https://github.com/aboutcode-org/vulnerablecode/blob/"
+        module_path = self.pipeline_class.__module__.replace(".", "/") + ".py"
+        relative_path = f"{self.vulnerablecode_commit}/{module_path}"
+
+        return urljoin(base_url, relative_path)
 
     def set_vulnerablecode_version_and_commit(self):
         """Set the current VulnerableCode version and commit."""

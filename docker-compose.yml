@@ -10,13 +10,10 @@ services:
       - db_data:/var/lib/postgresql/data/
       - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
 
-  redis:
+  vulnerablecode_redis:
     image: redis
-    # Enable redis data persistence using the "Append Only File" with the
-    # default policy of fsync every second. See https://redis.io/topics/persistence
-    command: redis-server --appendonly yes
     volumes:
-      - redis_data:/data
+      - vulnerablecode_redis_data:/data
     restart: always
 
   vulnerablecode:
@@ -35,7 +32,7 @@ services:
     depends_on:
       - db
 
-  scheduler:
+  vulnerablecode_scheduler:
     build: .
     command: wait-for-it web:8000 -- python ./manage.py run_scheduler
     env_file:
@@ -43,11 +40,11 @@ services:
     volumes:
       - /etc/vulnerablecode/:/etc/vulnerablecode/
     depends_on:
-      - redis
+      - vulnerablecode_redis
       - db
       - vulnerablecode
 
-  rq_worker:
+  vulnerablecode_rqworker:
     build: .
     command: wait-for-it web:8000 -- python ./manage.py rqworker default
     env_file:
@@ -55,7 +52,7 @@ services:
     volumes:
       - /etc/vulnerablecode/:/etc/vulnerablecode/
     depends_on:
-      - redis
+      - vulnerablecode_redis
       - db
       - vulnerablecode
 
@@ -78,5 +75,5 @@ services:
 volumes:
   db_data:
   static:
-  redis_data:
+  vulnerablecode_redis_data:
 

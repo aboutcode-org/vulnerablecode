@@ -631,6 +631,7 @@ class CreateListRetrieveUpdateViewSet(
 class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
     status = serializers.SerializerMethodField()
     execution_time = serializers.SerializerMethodField()
+    log = serializers.SerializerMethodField()
 
     class Meta:
         model = PipelineRun
@@ -653,6 +654,10 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
 
     def get_execution_time(self, run):
         return round(run.execution_time, 2)
+
+    def get_log(self, run):
+        """Return only last 5000 character of log."""
+        return run.log[-5000:]
 
 
 class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):

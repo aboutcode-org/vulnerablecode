@@ -648,18 +648,18 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
             "log",
         ]
 
-    def get_status(self, obj):
-        return obj.status
+    def get_status(self, run):
+        return run.status
 
-    def get_execution_time(self, obj):
-        return round(obj.execution_time, 2)
+    def get_execution_time(self, run):
+        return round(run.execution_time, 2)
 
 
 class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="schedule-detail", lookup_field="pipeline_id"
     )
-    pipelineruns = PipelineRunAPISerializer(many=True, read_only=True)
+    latest_run = serializers.SerializerMethodField()
     next_run_date = serializers.SerializerMethodField()
 
     class Meta:
@@ -672,11 +672,16 @@ class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
             "created_date",
             "schedule_work_id",
             "next_run_date",
-            "pipelineruns",
+            "latest_run",
         ]
 
-    def get_next_run_date(self, obj):
-        return obj.next_run_date
+    def get_next_run_date(self, schedule):
+        return schedule.next_run_date
+
+    def get_latest_run(self, schedule):
+        if latest := schedule.pipelineruns.first():
+            return PipelineRunAPISerializer(latest).data
+        return None
 
 
 class PipelineScheduleCreateSerializer(serializers.ModelSerializer):

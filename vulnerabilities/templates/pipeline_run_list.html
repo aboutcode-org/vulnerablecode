@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load utils %}
+
 
 {% block title %}
 {{ pipeline_name }} Runs
@@ -81,7 +83,13 @@
                       {% endif %}
                     </span>
                   </div>
-                  <div class="column is-one-eighth has-text-grey">{{ run.execution_time|default_if_none:"N/A" }}</div>
+                  <div class="column is-one-eighth has-text-grey">
+                    {% if run.execution_time %}
+                      {{ run.execution_time|humanize_duration }}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
                   <div class="column is-one-fifth has-text-grey">
                     {% if run.run_start_date %}
                       {{ run.run_start_date|date:"Y-m-d H:i" }}

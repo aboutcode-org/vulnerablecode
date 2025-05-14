@@ -8,6 +8,7 @@
 #
 
 
+from aboutcode.pipeline import humanize_time
 from django import template
 
 register = template.Library()
@@ -18,3 +19,8 @@ def strip(value):
     if isinstance(value, str):
         return value.strip()
     return value
+
+
+@register.filter
+def humanize_duration(duration):
+    return humanize_time(seconds=duration)

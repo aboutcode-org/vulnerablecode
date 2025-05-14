@@ -652,7 +652,7 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
         return obj.status
 
     def get_execution_time(self, obj):
-        return obj.execution_time
+        return round(obj.execution_time, 2)
 
 
 class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):

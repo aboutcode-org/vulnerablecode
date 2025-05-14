@@ -73,7 +73,13 @@
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Execution Time</p>
-                    <p class="has-text-grey is-size-7">{{ run.execution_time|default_if_none:"N/A" }}</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.execution_time %}
+                            {{ run.execution_time|humanize_duration }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Exit Code</p>

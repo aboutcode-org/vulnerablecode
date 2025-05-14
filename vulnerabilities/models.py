@@ -1972,7 +1972,7 @@ class PipelineRun(models.Model):
 
         end_time = self.run_end_date or timezone.now()
         time_delta = (end_time - self.run_start_date).total_seconds()
-        return humanize_time(time_delta)
+        return time_delta
 
     @property
     def pipeline_url(self):

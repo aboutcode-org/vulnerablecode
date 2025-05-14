@@ -710,7 +710,6 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
     serializer_class = PipelineScheduleAPISerializer
     lookup_field = "pipeline_id"
     lookup_value_regex = r"[\w.]+"
-    # permission_classes = [IsAdminUser]
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -718,3 +717,9 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
         elif self.action == "update":
             return PipelineScheduleUpdateSerializer
         return super().get_serializer_class()
+
+    def get_permissions(self):
+        """Restrict modifications to admin users."""
+        if self.action not in ["list", "retrieve"]:
+            return [IsAdminUser()]
+        return super().get_permissions()

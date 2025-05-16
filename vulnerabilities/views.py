@@ -355,7 +355,7 @@ class PipelineScheduleListView(ListView, FormMixin):
     model = PipelineSchedule
     context_object_name = "schedule_list"
     template_name = "pipeline_schedule_list.html"
-    paginate_by = 30
+    paginate_by = 20
     form_class = PipelineSchedulePackageForm
 
     def get_queryset(self):
@@ -371,7 +371,7 @@ class PipelineRunListView(ListView):
     model = PipelineRun
     context_object_name = "run_list"
     template_name = "pipeline_run_list.html"
-    paginate_by = 30
+    paginate_by = 20
     slug_url_kwarg = "pipeline_id"
     slug_field = "pipeline_id"
 
@@ -380,7 +380,7 @@ class PipelineRunListView(ListView):
             PipelineSchedule,
             pipeline_id=self.kwargs["pipeline_id"],
         )
-        return pipeline.all_runs
+        return pipeline.pipelineruns.defer("log")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1947,7 +1947,20 @@ class PipelineRun(models.Model):
     def run_failed(self):
         """Return True if the execution failed."""
         fail_exitcode = self.run_exitcode and self.run_exitcode > 0
-        return fail_exitcode or self.job_status == "failed"
+
+        if not fail_exitcode:
+            job = self.job
+            if job.is_failed:
+                # Job was killed externally.
+                end_date = job.ended_at.replace(tzinfo=datetime.timezone.utc)
+                self.set_run_ended(
+                    exitcode=1,
+                    output=f"Killed from outside, exc_info={job.latest_result().exc_string}",
+                    end_date=end_date,
+                )
+                return True
+
+        return fail_exitcode
 
     @property
     def run_stopped(self):
@@ -2001,11 +2014,11 @@ class PipelineRun(models.Model):
         self.run_start_date = timezone.now()
         self.save(update_fields=["run_start_date"])
 
-    def set_run_ended(self, exitcode, output=""):
+    def set_run_ended(self, exitcode, output="", end_date=None):
         """Set the run-related fields after the run execution."""
         self.run_exitcode = exitcode
         self.run_output = output
-        self.run_end_date = timezone.now()
+        self.run_end_date = end_date or timezone.now()
         self.save(update_fields=["run_exitcode", "run_output", "run_end_date"])
 
     def set_run_staled(self):
@@ -2030,9 +2043,12 @@ class PipelineRun(models.Model):
             return
 
         if self.job_status == JobStatus.FAILED:
+            job = self.job
+            end_date = job.ended_at.replace(tzinfo=datetime.timezone.utc)
             self.set_run_ended(
                 exitcode=1,
-                output=f"Killed from outside, latest_result={self.job.latest_result()}",
+                output=f"Killed from outside, exc_info={job.latest_result().exc_string}",
+                end_date=end_date,
             )
             return
 
@@ -2143,11 +2159,11 @@ class PipelineSchedule(models.Model):
     @property
     def all_runs(self):
         """Return all the previous run instances for this pipeline."""
-        return self.pipelineruns.all().order_by("-created_date")
+        return self.pipelineruns.all()
 
     @property
     def latest_run(self):
-        return self.pipelineruns.latest("created_date") if self.pipelineruns.exists() else None
+        return self.pipelineruns.first() if self.pipelineruns.exists() else None
 
     @property
     def earliest_run(self):
@@ -2155,7 +2171,10 @@ class PipelineSchedule(models.Model):
 
     @property
     def latest_run_date(self):
-        return self.latest_run.run_start_date if self.latest_run else None
+        if not self.pipelineruns.exists():
+            return
+        latest_run = self.pipelineruns.values("created_date").first()
+        return latest_run["created_date"]
 
     @property
     def next_run_date(self):
@@ -2175,8 +2194,9 @@ class PipelineSchedule(models.Model):
         if not self.is_active:
             return
 
-        if self.latest_run:
-            return self.latest_run.status
+        if self.pipelineruns.exists():
+            latest = self.pipelineruns.only("pk").first()
+            return latest.status
 
     def create_new_job(self, execute_now=False):
         """

@@ -12,6 +12,9 @@ services:
 
   vulnerablecode_redis:
     image: redis
+    # Enable redis data persistence using the "Append Only File" with the
+    # default policy of fsync every second. See https://redis.io/topics/persistence
+    command: redis-server --appendonly yes
     volumes:
       - vulnerablecode_redis_data:/data
     restart: always

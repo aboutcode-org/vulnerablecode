@@ -70,7 +70,11 @@ urlpatterns = [
         HomePage.as_view(),
         name="home",
     ),
-    path("pipelines/schedule", PipelineScheduleListView.as_view(), name="schedule"),
+    path(
+        "pipelines/schedule/",
+        PipelineScheduleListView.as_view(),
+        name="schedule",
+    ),
     path(
         "pipelines/<str:pipeline_id>/runs/",
         PipelineRunListView.as_view(),
@@ -82,7 +86,7 @@ urlpatterns = [
         name="run-details",
     ),
     path(
-        "packages/search",
+        "packages/search/",
         PackageSearch.as_view(),
         name="package_search",
     ),
@@ -92,7 +96,7 @@ urlpatterns = [
         name="package_details",
     ),
     path(
-        "vulnerabilities/search",
+        "vulnerabilities/search/",
         VulnerabilitySearch.as_view(),
         name="vulnerability_search",
     ),

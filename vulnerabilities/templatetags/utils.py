@@ -24,3 +24,13 @@ def strip(value):
 @register.filter
 def humanize_duration(duration):
     return humanize_time(seconds=duration)
+
+
+@register.simple_tag(takes_context=True)
+def active_item(context, url_name):
+    """Return is-active if navbar item is active."""
+    request = context.get("request")
+    if request and getattr(request, "resolver_match"):
+        if request.resolver_match.url_name == url_name:
+            return "is-active"
+    return ""

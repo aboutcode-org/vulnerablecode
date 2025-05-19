@@ -71,7 +71,7 @@ def legacy_runner(run_class, run):
     loggers = []
     for name in logger_modules:
         logger = logging.getLogger(name)
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
         logger.addHandler(handler)
         loggers.append(logger)
 
@@ -117,3 +117,9 @@ def enqueue_pipeline(pipeline_id):
         on_failure=set_run_failure,
         job_timeout=VULNERABLECODE_PIPELINE_TIMEOUT,
     )
+
+
+def dequeue_job(job_id):
+    """Remove a job from queue if it hasn't been executed yet."""
+    if job_id in queue.jobs:
+        queue.remove(job_id)

@@ -2034,8 +2034,8 @@ class PipelineRun(models.Model):
             return
 
         self.append_to_log("Stop run requested")
-        if not VULNERABLECODE_ASYNC:
-            self.set_run_stopped()
+        if self.status == self.Status.QUEUED:
+            self.dequeue()
             return
 
         if not self.job_status:
@@ -2084,6 +2084,11 @@ class PipelineRun(models.Model):
 
         self.log = self.log + message + "\n"
         self.save(update_fields=["log"])
+
+    def dequeue(self):
+        from vulnerabilities.tasks import dequeue_job
+
+        dequeue_job(self.run_id)
 
 
 class PipelineSchedule(models.Model):

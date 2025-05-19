@@ -58,17 +58,7 @@
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Status</p>
                     <p class="has-text-grey is-size-7">
-                        {% if run.status == "running" %}
-                            <i class="fa fa-spinner fa-spin has-text-info mr-1"></i>Running
-                        {% elif run.status == "success" %}
-                            <i class="fa fa-check-circle has-text-success mr-1"></i>Success
-                        {% elif run.status == "failure" %}
-                            <i class="fa fa-times-circle has-text-danger mr-1"></i>Failure
-                        {% elif run.status == "queued" %}
-                            <i class="fa fa-clock-o has-text-grey mr-1"></i>Queued
-                        {% else %}
-                            <i class="fa fa-question-circle has-text-warning mr-1"></i>Unknown
-                        {% endif %}
+                        {% include "includes/job_status.html" with status=run.status compact=True %}
                     </p>
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">

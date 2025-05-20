@@ -2036,6 +2036,7 @@ class PipelineRun(models.Model):
         self.append_to_log("Stop run requested")
         if self.status == self.Status.QUEUED:
             self.dequeue()
+            self.set_run_stopped()
             return
 
         if not self.job_status:
@@ -2071,8 +2072,7 @@ class PipelineRun(models.Model):
         Before deletion of the run instance, try to stop the run execution.
         """
         with suppress(redis.exceptions.ConnectionError, AttributeError):
-            if self.status == self.Status.RUNNING:
-                self.stop_run()
+            self.stop_run()
 
         return super().delete(*args, **kwargs)
 

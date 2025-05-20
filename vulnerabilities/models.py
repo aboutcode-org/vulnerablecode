@@ -1949,16 +1949,17 @@ class PipelineRun(models.Model):
         fail_exitcode = self.run_exitcode and self.run_exitcode > 0
 
         if not fail_exitcode:
-            job = self.job
-            if job.is_failed:
-                # Job was killed externally.
-                end_date = job.ended_at.replace(tzinfo=datetime.timezone.utc)
-                self.set_run_ended(
-                    exitcode=1,
-                    output=f"Killed from outside, exc_info={job.latest_result().exc_string}",
-                    end_date=end_date,
-                )
-                return True
+            with suppress(redis.exceptions.ConnectionError, AttributeError):
+                job = self.job
+                if job.is_failed:
+                    # Job was killed externally.
+                    end_date = job.ended_at.replace(tzinfo=datetime.timezone.utc)
+                    self.set_run_ended(
+                        exitcode=1,
+                        output=f"Killed from outside, exc_info={job.latest_result().exc_string}",
+                        end_date=end_date,
+                    )
+                    return True
 
         return fail_exitcode
 

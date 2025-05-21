@@ -21,7 +21,7 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline, Vulner
 class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect advisories from PyPI."""
 
-    pipeline_id = "pysec_importer"
+    pipeline_id = "pysec_importer_v2"
 
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     url = "https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip"

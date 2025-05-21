@@ -43,12 +43,18 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines.v2_importers import apache_httpd_pipeline_v2 as apache_httpd_v2
 from vulnerabilities.pipelines.v2_importers import github_importer as github_importer_v2
+from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
+from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 
 IMPORTERS_REGISTRY = [
     nvd_importer_v2.NVDImporterPipeline,
     github_importer_v2.GitHubAPIImporterPipeline,
+    npm_importer_v2.NpmImporterPipeline,
+    vulnrichment_importer_v2.VulnrichImporterPipeline,
+    apache_httpd_v2.ApacheHTTPDImporterPipeline,
     nvd_importer.NVDImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     gitlab_importer.GitLabImporterPipeline,

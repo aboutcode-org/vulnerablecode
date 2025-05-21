@@ -47,6 +47,9 @@ from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apac
 from vulnerabilities.pipelines.v2_importers import github_importer as github_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
+from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
+from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
+from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 
 IMPORTERS_REGISTRY = [
@@ -56,6 +59,9 @@ IMPORTERS_REGISTRY = [
     vulnrichment_importer_v2.VulnrichImporterPipeline,
     apache_httpd_v2.ApacheHTTPDImporterPipeline,
     nvd_importer.NVDImporterPipeline,
+    pypa_importer_v2.PyPaImporterPipeline,
+    gitlab_importer_v2.GitLabImporterPipeline,
+    pysec_importer_v2.PyPIImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     gitlab_importer.GitLabImporterPipeline,
     github_osv.GithubOSVImporter,

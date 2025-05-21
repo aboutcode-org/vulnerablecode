@@ -107,6 +107,74 @@ def parse_advisory_data(
     )
 
 
+def parse_advisory_data_v2(
+    raw_data: dict, supported_ecosystems, advisory_url: str
+) -> Optional[AdvisoryData]:
+    """
+    Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
+    a ``supported_ecosystem`` string.
+    """
+    advisory_id = raw_data.get("id") or ""
+    if not advisory_id:
+        logger.error(f"Missing advisory id in OSV data: {raw_data}")
+        return None
+    summary = raw_data.get("summary") or ""
+    details = raw_data.get("details") or ""
+    summary = build_description(summary=summary, description=details)
+    aliases = raw_data.get("aliases") or []
+
+    date_published = get_published_date(raw_data=raw_data)
+    severities = list(get_severities(raw_data=raw_data))
+    references = get_references_v2(raw_data=raw_data)
+
+    affected_packages = []
+
+    for affected_pkg in raw_data.get("affected") or []:
+        purl = get_affected_purl(affected_pkg=affected_pkg, raw_id=advisory_id)
+
+        if not purl or purl.type not in supported_ecosystems:
+            logger.error(f"Unsupported package type: {affected_pkg!r} in OSV: {advisory_id!r}")
+            continue
+
+        affected_version_range = get_affected_version_range(
+            affected_pkg=affected_pkg,
+            raw_id=advisory_id,
+            supported_ecosystem=purl.type,
+        )
+
+        for fixed_range in affected_pkg.get("ranges") or []:
+            fixed_version = get_fixed_versions(
+                fixed_range=fixed_range, raw_id=advisory_id, supported_ecosystem=purl.type
+            )
+
+            for version in fixed_version:
+                affected_packages.append(
+                    AffectedPackage(
+                        package=purl,
+                        affected_version_range=affected_version_range,
+                        fixed_version=version,
+                    )
+                )
+    database_specific = raw_data.get("database_specific") or {}
+    cwe_ids = database_specific.get("cwe_ids") or []
+    weaknesses = list(map(get_cwe_id, cwe_ids))
+
+    if advisory_id in aliases:
+        aliases.remove(advisory_id)
+
+    return AdvisoryData(
+        advisory_id=advisory_id,
+        aliases=aliases,
+        summary=summary,
+        references_v2=references,
+        severities=severities,
+        affected_packages=affected_packages,
+        date_published=date_published,
+        weaknesses=weaknesses,
+        url=advisory_url,
+    )
+
+
 def extract_fixed_versions(fixed_range) -> Iterable[str]:
     """
     Return a list of fixed version strings given a ``fixed_range`` mapping of
@@ -184,6 +252,23 @@ def get_references(raw_data, severities) -> List[Reference]:
             logger.error(f"Reference without URL : {ref!r} for OSV id: {raw_data['id']!r}")
             continue
         references.append(Reference(url=ref["url"], severities=severities))
+    return references
+
+
+def get_references_v2(raw_data) -> List[Reference]:
+    """
+    Return a list Reference extracted from a mapping of OSV ``raw_data`` given a
+    ``severities`` list of VulnerabilitySeverity.
+    """
+    references = []
+    for ref in raw_data.get("references") or []:
+        if not ref:
+            continue
+        url = ref["url"]
+        if not url:
+            logger.error(f"Reference without URL : {ref!r} for OSV id: {raw_data['id']!r}")
+            continue
+        references.append(Reference(url=ref["url"]))
     return references
 
 

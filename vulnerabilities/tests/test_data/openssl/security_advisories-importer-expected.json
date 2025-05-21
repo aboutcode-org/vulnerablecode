@@ -3614,7 +3614,7 @@
     "weaknesses": []
   },
   {
-    "unique_content_id": "4ee23c143c0a01cd7035e1646adaf2222725ad2c96447ffc524eb79d1ac532dd",
+    "unique_content_id": "c160af01903483f7380e4bbecd41bc2346069c1c931eb2be9cc45643daf51937",
     "summary": "OpenSSL has added support for TLS_FALLBACK_SCSV to allow applications to block the ability for a MITM attacker to force a protocol downgrade. Some client applications (such as browsers) will reconnect using a downgraded protocol to work around interoperability bugs in older servers. This could be exploited by an active man-in-the-middle to downgrade connections to SSL 3.0 even if both sides of the connection support higher protocols. SSL 3.0 contains a number of weaknesses including POODLE (CVE-2014-3566). See also https://tools.ietf.org/html/draft-ietf-tls-downgrade-scsv-00 and https://www.openssl.org/~bodo/ssl-poodle.pdf",
     "affected_packages": [
       {

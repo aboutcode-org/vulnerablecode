@@ -612,25 +612,33 @@ def compute_content_id(advisory_data):
         normalized_data["url"] = advisory_data.url
 
     elif isinstance(advisory_data, AdvisoryData):
-        normalized_data = {
-            "aliases": normalize_list(advisory_data.aliases),
-            "summary": normalize_text(advisory_data.summary),
-            "affected_packages": [
-                pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
-            ],
-            "weaknesses": normalize_list(advisory_data.weaknesses),
-        }
         if advisory_data.references_v2:
-            normalized_data["references"] = [
-                ref.to_dict() for ref in normalize_list(advisory_data.references_v2) if ref
-            ]
-            normalized_data["severities"] = [
-                sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev
-            ]
-        if advisory_data.references:
-            normalized_data["references"] = [
-                ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
-            ]
+            normalized_data = {
+                "aliases": normalize_list(advisory_data.aliases),
+                "summary": normalize_text(advisory_data.summary),
+                "affected_packages": [
+                    pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+                ],
+                "references": [
+                    ref.to_dict() for ref in normalize_list(advisory_data.references_v2) if ref
+                ],
+                "severities": [
+                    sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev
+                ],
+                "weaknesses": normalize_list(advisory_data.weaknesses),
+            }
+        elif advisory_data.references or advisory_data.references == []:
+            normalized_data = {
+                "aliases": normalize_list(advisory_data.aliases),
+                "summary": normalize_text(advisory_data.summary),
+                "affected_packages": [
+                    pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+                ],
+                "references": [
+                    ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
+                ],
+                "weaknesses": normalize_list(advisory_data.weaknesses),
+            }
 
         normalized_data["url"] = advisory_data.url
 

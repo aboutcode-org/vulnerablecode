@@ -972,6 +972,39 @@
     "weaknesses": []
   },
   {
+    "unique_content_id": "8f54462a45ac49635f660b6fb755d5e05cdbc34ebaa565e38ca20c522579ce7f",
+    "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms",
+    "affected_packages": [
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
+        },
+        "fixed_version": "0.8.33",
+        "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.32"
+      },
+      {
+        "package": {
+          "name": "nginx",
+          "type": "nginx",
+          "subpath": "",
+          "version": "",
+          "namespace": "",
+          "qualifiers": "os=windows"
+        },
+        "fixed_version": "0.7.65",
+        "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.32"
+      }
+    ],
+    "references": [],
+    "date_published": null,
+    "weaknesses": []
+  },
+  {
     "unique_content_id": "92ce767b8cea36271d33c119cb6f706f64f5aba7335cca6791eca90a87f48de1",
     "summary": "Vulnerabilities with Windows file default stream",
     "affected_packages": [
@@ -1500,39 +1533,6 @@
         "reference_type": ""
       }
     ],
-    "date_published": null,
-    "weaknesses": []
-  },
-  {
-    "unique_content_id": "cd771d4c853d0a5fd6bbc62866fe638c0b41f21f600889447bbaf3b6cd4bad7b",
-    "summary": "Vulnerabilities with Windows 8.3 filename pseudonyms",
-    "affected_packages": [
-      {
-        "package": {
-          "name": "nginx",
-          "type": "nginx",
-          "subpath": "",
-          "version": "",
-          "namespace": "",
-          "qualifiers": "os=windows"
-        },
-        "fixed_version": "0.8.33",
-        "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.32"
-      },
-      {
-        "package": {
-          "name": "nginx",
-          "type": "nginx",
-          "subpath": "",
-          "version": "",
-          "namespace": "",
-          "qualifiers": "os=windows"
-        },
-        "fixed_version": "0.7.65",
-        "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.32"
-      }
-    ],
-    "references": [],
     "date_published": null,
     "weaknesses": []
   },

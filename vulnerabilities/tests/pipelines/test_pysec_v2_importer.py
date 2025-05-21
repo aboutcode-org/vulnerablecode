@@ -1,15 +1,11 @@
 import json
 from io import BytesIO
-from unittest.mock import MagicMock
 from unittest.mock import patch
-from zipfile import BadZipFile
 from zipfile import ZipFile
 
 import pytest
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
-from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipelines.v2_importers.pysec_importer import (
     PyPIImporterPipeline,  # Path to the PyPI Importer
 )

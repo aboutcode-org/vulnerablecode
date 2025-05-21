@@ -32,8 +32,8 @@ def execute_pipeline(pipeline_id, run_id):
     run = models.PipelineRun.objects.get(
         run_id=run_id,
     )
-    run.set_vulnerablecode_version_and_commit()
     run.set_run_started()
+    run.set_vulnerablecode_version_and_commit()
 
     output = ""
     exitcode = 0

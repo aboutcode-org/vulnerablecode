@@ -1956,7 +1956,7 @@ class PipelineRun(models.Model):
                     end_date = job.ended_at.replace(tzinfo=datetime.timezone.utc)
                     self.set_run_ended(
                         exitcode=1,
-                        output=f"Killed from outside, exc_info={job.latest_result().exc_string}",
+                        output=f"Killed from outside, exc_info={job.exc_info}",
                         end_date=end_date,
                     )
                     return True
@@ -2011,7 +2011,8 @@ class PipelineRun(models.Model):
         self.save(update_fields=["vulnerablecode_version", "vulnerablecode_commit"])
 
     def set_run_started(self):
-        """Set the `run_start_date` fields before starting the run execution."""
+        """Reset the run and set `run_start_date` fields before starting run execution."""
+        self.reset_run()
         self.run_start_date = timezone.now()
         self.save(update_fields=["run_start_date"])
 
@@ -2029,6 +2030,17 @@ class PipelineRun(models.Model):
     def set_run_stopped(self):
         """Set the execution as `stopped` using a special 99 exitcode value."""
         self.set_run_ended(exitcode=99)
+
+    def reset_run(self):
+        """Reset the run-related fields."""
+        self.run_start_date = None
+        self.run_end_date = None
+        self.run_exitcode = None
+        self.vulnerablecode_version = None
+        self.vulnerablecode_commit = None
+        self.run_output = ""
+        self.log = ""
+        self.save()
 
     def stop_run(self):
         if self.run_succeeded:
@@ -2049,7 +2061,7 @@ class PipelineRun(models.Model):
             end_date = job.ended_at.replace(tzinfo=datetime.timezone.utc)
             self.set_run_ended(
                 exitcode=1,
-                output=f"Killed from outside, exc_info={job.latest_result().exc_string}",
+                output=f"Killed from outside, exc_info={job.exc_info}",
                 end_date=end_date,
             )
             return

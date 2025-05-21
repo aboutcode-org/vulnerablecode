@@ -115,7 +115,7 @@ def enqueue_pipeline(pipeline_id):
         run.run_id,
         job_id=str(run.run_id),
         on_failure=set_run_failure,
-        job_timeout=VULNERABLECODE_PIPELINE_TIMEOUT,
+        job_timeout=f"{pipeline_schedule.execution_timeout}h",
     )
 
 

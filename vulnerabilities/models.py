@@ -21,7 +21,6 @@ from urllib.parse import urljoin
 
 import django_rq
 import redis
-from aboutcode.pipeline import humanize_time
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
@@ -65,6 +64,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
+from vulnerablecode.settings import VULNERABLECODE_PIPELINE_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
@@ -2145,6 +2145,15 @@ class PipelineSchedule(models.Model):
         blank=True,
         db_index=True,
         help_text=("Identifier used to manage the periodic run job."),
+    )
+
+    execution_timeout = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(1, message="Pipeline timeout must be at least 1 hour."),
+            MaxValueValidator(72, message="Pipeline timeout must be at most 72 hours."),
+        ],
+        default=VULNERABLECODE_PIPELINE_TIMEOUT,
+        help_text=("Number hours before pipeline execution is forcefully terminated."),
     )
 
     created_date = models.DateTimeField(

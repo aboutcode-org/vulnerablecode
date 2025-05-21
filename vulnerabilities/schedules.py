@@ -36,7 +36,7 @@ def schedule_execution(pipeline_schedule, execute_now=False):
         func=enqueue_pipeline,
         args=[pipeline_schedule.pipeline_id],
         interval=interval_in_seconds,
-        timeout=VULNERABLECODE_PIPELINE_TIMEOUT,
+        result_ttl=f"{VULNERABLECODE_PIPELINE_TIMEOUT}h",
         repeat=None,
     )
     return job._id

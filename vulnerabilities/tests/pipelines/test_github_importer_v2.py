@@ -1,17 +1,17 @@
-from datetime import datetime
-from unittest.mock import MagicMock
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 from unittest.mock import patch
 
 import pytest
 from packageurl import PackageURL
-from univers.version_constraint import VersionConstraint
-from univers.version_range import RANGE_CLASS_BY_SCHEMES
-from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
-from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines.v2_importers.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.v2_importers.github_importer import get_cwes_from_github_advisory
 from vulnerabilities.pipelines.v2_importers.github_importer import get_purl

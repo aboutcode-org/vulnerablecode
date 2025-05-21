@@ -90,7 +90,8 @@ def pipeline(monkeypatch):
     pipe = DummyPipeline()
     # Prevent real HTTP in fetch_links
     monkeypatch.setattr(
-        "vulnerabilities.pipelines.v2_importers.apache_httpd_importer.fetch_links", lambda url: ["u1", "u2"]
+        "vulnerabilities.pipelines.v2_importers.apache_httpd_importer.fetch_links",
+        lambda url: ["u1", "u2"],
     )
     return pipe
 

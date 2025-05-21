@@ -309,6 +309,9 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
 
         progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
+            if advisory is None:
+                self.log("Advisory is None, skipping")
+                continue
             if _obj := insert_advisory_v2(
                 advisory=advisory,
                 pipeline_id=self.pipeline_id,
@@ -335,7 +338,6 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
             )
             affected_purls.extend(package_affected_purls)
             fixed_purls.extend(package_fixed_purls)
-
 
         if self.unfurl_version_ranges:
             vulnerable_pvs, fixed_pvs = self.get_impacted_packages(
@@ -364,7 +366,13 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
         """
         Return a list of versions published before `until` for the `package_url`
         """
-        versions = package_versions.versions(str(package_url))
+        try:
+            versions = package_versions.versions(str(package_url))
+        except Exception as e:
+            self.log(
+                f"Failed to fetch versions for package {str(package_url)} {e!r}",
+                level=logging.ERROR,
+            )
         versions_before_until = []
         for version in versions or []:
             if until and version.release_date and version.release_date > until:
@@ -390,6 +398,8 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
             mergable = False
 
         if not mergable:
+            vulnerable_packages = []
+            fixed_packages = []
             for affected_package in affected_packages:
                 purl = affected_package.package
                 affected_version_range = affected_package.affected_version_range
@@ -398,28 +408,28 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
                 pkg_namespace = purl.namespace
                 pkg_name = purl.name
                 if not affected_version_range and fixed_version:
-                    # FIXME: Handle the receving end to address the concern of looping the data
-                    return [], [
+                    fixed_packages.append(
                         PackageURL(
                             type=pkg_type,
                             namespace=pkg_namespace,
                             name=pkg_name,
                             version=str(fixed_version),
                         )
-                    ]
+                    )
                 else:
-                    # FIXME: Handle the receving end to address the concern of looping the data
                     valid_versions = self.get_published_package_versions(
                         package_url=purl, until=advisory_date_published
                     )
-                    return self.resolve_package_versions(
+                    affected_pvs, fixed_pvs = self.resolve_package_versions(
                         affected_version_range=affected_version_range,
                         pkg_type=pkg_type,
                         pkg_namespace=pkg_namespace,
                         pkg_name=pkg_name,
                         valid_versions=valid_versions,
                     )
-
+                    vulnerable_packages.extend(affected_pvs)
+                    fixed_packages.extend(fixed_pvs)
+            return vulnerable_packages, fixed_packages
         else:
             pkg_type = purl.type
             pkg_namespace = purl.namespace
@@ -441,14 +451,19 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
                 valid_versions = self.get_published_package_versions(
                     package_url=purl, until=advisory_date_published
                 )
+                vulnerable_packages = []
+                fixed_packages = []
                 for affected_version_range in affected_version_ranges:
-                    return self.resolve_package_versions(
+                    vulnerable_pvs, fixed_pvs = self.resolve_package_versions(
                         affected_version_range=affected_version_range,
                         pkg_type=pkg_type,
                         pkg_namespace=pkg_namespace,
                         pkg_name=pkg_name,
                         valid_versions=valid_versions,
                     )
+                    vulnerable_packages.extend(vulnerable_pvs)
+                    fixed_packages.extend(fixed_pvs)
+                return vulnerable_packages, fixed_packages
 
     def resolve_package_versions(
         self,
@@ -462,7 +477,7 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
         Return a tuple of lists of ``affected_packages`` and ``fixed_packages`` PackageURL for the given `affected_version_range` and `valid_versions`.
 
         ``valid_versions`` are the valid version listed on the package registry for that package
-        
+
         """
         aff_vers, unaff_vers = resolve_version_range(
             affected_version_range=affected_version_range,
@@ -482,12 +497,13 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
         affected_packages = []
 
         patched_packages = nearest_patched_package(
-                vulnerable_packages=affected_purls, resolved_packages=unaffected_purls
-            )
+            vulnerable_packages=affected_purls, resolved_packages=unaffected_purls
+        )
 
-        for (fixed_package, affected_purls,) in get_affected_packages_by_patched_package(
-            patched_packages
-        ).items():
+        for (
+            fixed_package,
+            affected_purls,
+        ) in get_affected_packages_by_patched_package(patched_packages).items():
             if fixed_package:
                 fixed_packages.append(fixed_package)
             affected_packages.extend(affected_purls)

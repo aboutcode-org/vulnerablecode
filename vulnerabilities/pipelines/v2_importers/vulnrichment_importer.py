@@ -179,14 +179,6 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     if match:
                         weaknesses.add(int(match.group(1)))
 
-        print(f"cve_id: {cve_id}")
-        print(f"date_published: {date_published}")
-        print(references)
-        print(f"summary: {summary}")
-        print(f"weaknesses: {weaknesses}")
-        print(f"advisory_url: {advisory_url}")
-        print(f"severities: {severities}")
-
         return AdvisoryData(
             advisory_id=cve_id,
             aliases=[],

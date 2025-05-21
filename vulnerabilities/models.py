@@ -2456,7 +2456,7 @@ class AdvisoryReference(models.Model):
     reference_type = models.CharField(max_length=20, choices=REFERENCE_TYPES, blank=True)
 
     reference_id = models.CharField(
-        max_length=200,
+        max_length=500,
         help_text="An optional reference ID, such as DSA-4465-1 when available",
         blank=True,
         db_index=True,
@@ -2586,7 +2586,38 @@ class AdvisoryV2(models.Model):
         help_text="A list of packages that are reported by this advisory.",
     )
 
-    # TODO: Add Advisory Status
+    status = models.IntegerField(
+        choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
+    )
+
+    exploitability = models.DecimalField(
+        null=True,
+        blank=True,
+        max_digits=2,
+        decimal_places=1,
+        help_text="Exploitability indicates the likelihood that a vulnerability in a software package could be used by malicious actors to compromise systems, "
+        "applications, or networks. This metric is determined automatically based on the discovery of known exploits.",
+    )
+
+    weighted_severity = models.DecimalField(
+        null=True,
+        blank=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10.",
+    )
+
+    @property
+    def risk_score(self):
+        """
+        Risk expressed as a number ranging from 0 to 10.
+        Risk is calculated from weighted severity and exploitability values.
+        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
+        Risk = min(weighted severity * exploitability, 10)
+        """
+        if self.exploitability and self.weighted_severity:
+            risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
+            return round(risk_score, 1)
 
     objects = AdvisoryQuerySet.as_manager()
 

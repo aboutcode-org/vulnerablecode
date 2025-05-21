@@ -65,7 +65,6 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
-from vulnerablecode.settings import VULNERABLECODE_ASYNC
 
 logger = logging.getLogger(__name__)
 
@@ -2073,9 +2072,8 @@ class PipelineRun(models.Model):
         self.set_run_stopped()
 
     def delete_run(self, delete_self=True):
-        if VULNERABLECODE_ASYNC and self.run_id:
-            if job := self.job:
-                job.delete()
+        if job := self.job:
+            job.delete()
 
         if delete_self:
             self.delete()
@@ -2102,6 +2100,12 @@ class PipelineRun(models.Model):
         from vulnerabilities.tasks import dequeue_job
 
         dequeue_job(self.run_id)
+
+    def requeue(self):
+        """Reset run and requeue pipeline for execution."""
+        if job := self.job:
+            self.reset_run()
+            return job.requeue()
 
 
 class PipelineSchedule(models.Model):

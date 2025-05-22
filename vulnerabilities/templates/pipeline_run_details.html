@@ -143,20 +143,37 @@
         <div class="box">
             <h2 class="subtitle mb-2">Log Output</h2>
             <div class="log-wrapper" style="position: relative;">
-                <button class="button is-medium is-light  copy-btn" id="copy-code"
+                <button class="button is-medium is-light copy-btn" id="copy-code"
                     onclick="copyCode('log-code', 'copy-code')">
                     <span class="icon is-medium">
                         <i class="fa fa-copy"></i>
                     </span>
                 </button>
-                <pre><code id="log-code" class="language-toml">{{ run.log }}</code></pre>
+
+                <pre><code id="log-code" class="language-toml" style="all: unset; display: flex; justify-content: center;">
+                    <i class="fa fa-spinner fa-spin fa-3x my-5 py-5"></i>
+                </code></pre>
+
+                <div class="has-text-centered mt-3">
+                    <button class="button is-link is-small mr-2" onclick="prevSnippet()">
+                        <i class="fa fa-arrow-left mr-1"></i>
+                        Prev
+                    </button>
+                    <span id="snippet-indicator">Snippet 1</span>
+                    <button class="button is-link is-small ml-2" onclick="nextSnippet()">
+                        Next
+                        <i class="fa fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
             </div>
         </div>
+
         {% endif %}
 
 
-        <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info mt-4"><i class="fa fa-arrow-left mr-2"></i>Back to All
-            Runs</a>
+        <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info mt-4">
+            <i class="fa fa-arrow-left mr-2"></i>Back to AllRuns
+        </a>
     </div>
 </section>
 {% endblock %}
@@ -168,8 +185,43 @@
 <script>hljs.highlightAll();</script>
 
 <script>
+    const logText = `{{ run.log|escapejs }}`;
+    const lines = logText.split('\n');
+    const linesPerSnippet = 500;
+    const maxSnippetCount = Math.ceil(lines.length / linesPerSnippet);
+    let currentSnippet = 0;
+
+    function renderSnippet() {
+        const start = currentSnippet * linesPerSnippet;
+        const end = start + linesPerSnippet;
+        const pageLines = lines.slice(start, end).join('\n');
+        snippetIndicator = `Snippet ${currentSnippet + 1} of ${maxSnippetCount}`;
+        document.getElementById("log-code").removeAttribute("style");
+        document.getElementById('log-code').textContent = pageLines;
+        document.getElementById('snippet-indicator').textContent = snippetIndicator;
+    }
+
+    function nextSnippet() {
+        if ((currentSnippet + 1) < maxSnippetCount) {
+            currentSnippet++;
+            renderSnippet();
+        }
+    }
+
+    function prevSnippet() {
+        if (currentSnippet > 0) {
+            currentSnippet--;
+            renderSnippet();
+        }
+    }
+
+    renderSnippet();
+</script>
+
+
+<script>
     function copyCode(target, button) {
-        const code = document.getElementById(target).innerText;
+        const code = (target === "log-code") ? `{{ run.log|escapejs }}` : `{{ run.run_output|escapejs }}`;
         navigator.clipboard.writeText(code)
             .then(() => {
                 const btn = document.getElementById(button);

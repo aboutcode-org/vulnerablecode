@@ -121,7 +121,7 @@ class BasePipelineRun:
     def log(self, message, level=logging.INFO):
         """Log the given `message` to the current module logger and execution_log."""
         now_local = datetime.now(timezone.utc).astimezone()
-        timestamp = now_local.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+        timestamp = now_local.strftime("%Y-%m-%d %T.%f %Z")
         message = f"{timestamp} {message}"
         module_logger.log(level, message)
         self.append_to_log(message)

@@ -81,7 +81,7 @@ Pipeline Schedule
                                     <div class="column is-one-fifth has-text-grey"
                                         title="{{ schedule.latest_run_date }}">
                                         {% if schedule.latest_run_date %}
-                                            {{ schedule.latest_run_date|date:"Y-m-d H:i" }}
+                                            {{ schedule.latest_run_date|date:"Y-m-d h:i a T" }}
                                         {% else %}
                                             N/A
                                         {% endif %}

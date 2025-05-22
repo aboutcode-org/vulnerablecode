@@ -77,15 +77,27 @@
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Start</p>
-                    <p class="has-text-grey is-size-7">{{ run.run_start_date|default:"N/A" }}</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.run_start_date %}
+                            {{ run.run_start_date|date:"Y-m-d h:i a T" }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile ">
                     <p class="is-size-7 has-text-weight-semibold">End</p>
-                    <p class="has-text-grey is-size-7">{{ run.run_end_date|default_if_none:"N/A" }}</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.run_end_date %}
+                            {{ run.run_end_date|date:"Y-m-d h:i a T" }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Created</p>
-                    <p class="has-text-grey is-size-7">{{ run.created_date }}</p>
+                    <p class="has-text-grey is-size-7">{{ run.created_date|date:"Y-m-d h:i a T" }}</p>
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Version</p>

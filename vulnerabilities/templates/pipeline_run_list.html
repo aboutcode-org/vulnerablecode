@@ -77,14 +77,14 @@
                   </div>
                   <div class="column is-one-fifth has-text-grey">
                     {% if run.run_start_date %}
-                      {{ run.run_start_date|date:"Y-m-d H:i" }}
+                      {{ run.run_start_date|date:"Y-m-d h:i a T" }}
                     {% else %}
                       N/A
                     {% endif %}
                   </div>
                   <div class="column is-one-fifth has-text-grey">
                     {% if run.run_end_date %}
-                      {{ run.run_end_date|date:"Y-m-d H:i" }}
+                      {{ run.run_end_date|date:"Y-m-d h:i a T" }}
                     {% else %}
                       N/A
                     {% endif %}

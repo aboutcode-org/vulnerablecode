@@ -14,7 +14,6 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import ApacheHTTPDImporterPipeline
 from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import fetch_links
 from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import get_weaknesses
-from vulnerabilities.severity_systems import APACHE_HTTPD
 
 
 # Dummy responses

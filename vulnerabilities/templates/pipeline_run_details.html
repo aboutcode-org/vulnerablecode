@@ -5,6 +5,7 @@
 {% block title %}Run Log{% endblock %}
 
 {% block extrahead %}
+
 <style>
     pre {
         background-color: #282a36;
@@ -12,23 +13,12 @@
         padding: 1rem;
         border-radius: 4px;
         overflow-x: auto;
-        max-height: 500px;
+        height: 800px;
+        position: relative;
     }
 
     .column {
         word-break: break-word;
-    }
-</style>
-
-<style>
-    pre {
-        background-color: #282a36;
-        color: #f8f8f2;
-        padding: 1.5rem 1rem 1rem 1rem;
-        border-radius: 4px;
-        overflow-x: auto;
-        max-height: 500px;
-        position: relative;
     }
 
     .copy-btn {
@@ -113,7 +103,6 @@
                             <i class="fa fa-external-link fa_link_custom"></i>
                         </a>
                         {% endif %}
-
                     </p>
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
@@ -122,7 +111,6 @@
                 </div>
             </div>
         </div>
-
 
         {% if run.run_output|strip %}
         <div class="box">
@@ -150,26 +138,25 @@
                     </span>
                 </button>
 
-                <pre><code id="log-code" class="language-toml" style="all: unset; display: flex; justify-content: center;">
-                    <i class="fa fa-spinner fa-spin fa-3x my-5 py-5"></i>
-                </code></pre>
+                <pre style="display: flex; justify-content: center; align-items: center;">
+                    <code id="log-code" class="language-toml"><i class="fa fa-spinner fa-spin fa-4x"></i></code>
+                </pre>
 
-                <div class="has-text-centered mt-3">
-                    <button class="button is-link is-small mr-2" onclick="prevSnippet()">
+                <div id="snippet-paginater" class="has-text-centered mt-3">
+                    <button id="prev-button" class="button is-link is-small mr-2" onclick="prevSnippet()">
                         <i class="fa fa-arrow-left mr-1"></i>
                         Prev
                     </button>
                     <span id="snippet-indicator">Snippet 1</span>
-                    <button class="button is-link is-small ml-2" onclick="nextSnippet()">
+                    <button id="next-button" class="button is-link is-small ml-2" onclick="nextSnippet()">
                         Next
                         <i class="fa fa-arrow-right ml-1"></i>
                     </button>
                 </div>
+
             </div>
         </div>
-
         {% endif %}
-
 
         <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info mt-4">
             <i class="fa fa-arrow-left mr-2"></i>Back to AllRuns
@@ -182,7 +169,6 @@
 {% block scripts %}
 <link rel="stylesheet" href="{% static 'css/highlight-10.6.0.css' %}" crossorigin="anonymous">
 <script src="{% static 'js/highlight-10.6.0.min.js' %}" crossorigin="anonymous"></script>
-<script>hljs.highlightAll();</script>
 
 <script>
     const logText = `{{ run.log|escapejs }}`;
@@ -195,10 +181,26 @@
         const start = currentSnippet * linesPerSnippet;
         const end = start + linesPerSnippet;
         const pageLines = lines.slice(start, end).join('\n');
+
         snippetIndicator = `Snippet ${currentSnippet + 1} of ${maxSnippetCount}`;
-        document.getElementById("log-code").removeAttribute("style");
+        document.getElementById("log-code").parentElement.removeAttribute("style");
         document.getElementById('log-code').textContent = pageLines;
-        document.getElementById('snippet-indicator').textContent = snippetIndicator;
+        hljs.highlightAll();
+
+        if (maxSnippetCount > 1) {
+            const snippetIndicatorEl = document.getElementById('snippet-indicator');
+            const nextButton = document.getElementById('next-button');
+            const prevButton = document.getElementById('prev-button');
+
+            snippetIndicatorEl.textContent = snippetIndicator;
+
+            nextButton.disabled = (currentSnippet + 2 > maxSnippetCount);
+            prevButton.disabled = (currentSnippet - 1 < 0);
+        } else {
+            const paginator = document.getElementById('snippet-paginater');
+            paginator.innerHTML = '';
+        }
+
     }
 
     function nextSnippet() {

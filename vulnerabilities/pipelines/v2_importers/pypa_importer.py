@@ -14,7 +14,6 @@ import saneyaml
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importers.osv import parse_advisory_data_v2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_advisory_url
 
@@ -46,7 +45,7 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return sum(1 for _ in vulns_directory.rglob("*.yaml"))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        from vulnerabilities.importers.osv import parse_advisory_data
+        from vulnerabilities.importers.osv import parse_advisory_data_v2
 
         base_directory = Path(self.vcs_response.dest_dir)
         vulns_directory = base_directory / "vulns"

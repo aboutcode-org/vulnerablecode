@@ -58,9 +58,14 @@ class BasePipelineRun:
         self.current_step = ""
 
     def append_to_log(self, message):
-        if self.run:
+        if self.run and self.run.pipeline.live_logging:
             self.run.append_to_log(message)
         self.execution_log.append(message)
+
+    def update_final_run_log(self):
+        if self.run and not self.run.pipeline.live_logging:
+            final_log = "\n".join(self.execution_log)
+            self.run.append_to_log(final_log, is_multiline=True)
 
     def set_current_step(self, message):
         self.current_step = message
@@ -106,6 +111,7 @@ class BasePipelineRun:
                 self.on_failure()
                 on_failure_run_time = timer() - on_failure_start_time
                 self.log(f"Completed [on_failure] tasks in {humanize_time(on_failure_run_time)}")
+                self.update_final_run_log()
 
                 return 1, self.output_from_exception(exception)
 
@@ -115,6 +121,7 @@ class BasePipelineRun:
         self.set_current_step("")  # Reset the `current_step` field on completion
         pipeline_run_time = timer() - pipeline_start_time
         self.log(f"Pipeline completed in {humanize_time(pipeline_run_time)}")
+        self.update_final_run_log()
 
         return 0, ""
 

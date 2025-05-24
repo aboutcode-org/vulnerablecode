@@ -112,6 +112,16 @@
             </div>
         </div>
 
+        {% if not run.run_end_date and not run.pipeline.live_logging %}
+            <div class="notification is-info is-light has-text-centered">
+                <p class="is-size-6 has-text-grey-dark">
+                    <i class="fa fa-exclamation-triangle mr-1"></i>
+                    Live logging is disabled for this pipeline.
+                    Logs will be available after the pipeline has finished running.
+                </p>
+            </div>
+        {% endif %}
+
         {% if run.run_output|strip %}
         <div class="box">
             <h2 class="subtitle mb-2">Run Error</h2>
@@ -159,7 +169,7 @@
         {% endif %}
 
         <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info mt-4">
-            <i class="fa fa-arrow-left mr-2"></i>Back to AllRuns
+            <i class="fa fa-arrow-left mr-2"></i>Back to All Runs
         </a>
     </div>
 </section>

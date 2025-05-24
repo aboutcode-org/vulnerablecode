@@ -2129,6 +2129,16 @@ class PipelineSchedule(models.Model):
         ),
     )
 
+    live_logging = models.BooleanField(
+        null=False,
+        db_index=True,
+        default=False,
+        help_text=(
+            "When enabled logs will be streamed live during pipeline execution. "
+            "For legacy importers and improvers, logs are always made available only after execution completes."
+        ),
+    )
+
     run_interval = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(1, message="Interval must be at least 1 day."),

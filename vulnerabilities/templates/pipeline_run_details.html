@@ -39,11 +39,18 @@
         <h1 class="title">{{ pipeline_name }} Run Log</h1>
         <hr>
 
-        <div class="box p-4">
+        <div class="box has-background-info-light is-light p-4">
             <div class="columns is-multiline is-vcentered is-mobile is-gapless">
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Pipeline ID</p>
-                    <p class="has-text-grey is-size-7 pr-3">{{ run.pipeline.pipeline_id }}</p>
+                    <p class="has-text-grey is-size-7">
+                        {{ run.pipeline.pipeline_id }}
+                        <i class="fa fa-copy has-text-grey"
+                            id="copy-pipeline-id"
+                            style="font-size: 0.60rem; cursor: pointer;"
+                            onclick="copyToClipboard('copy-pipeline-id', '{{ run.pipeline.pipeline_id }}')">
+                        </i>
+                    </p>
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Status</p>
@@ -107,17 +114,24 @@
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Job ID</p>
-                    <p class="has-text-grey is-size-7">{{ run.run_id }}</p>
+                    <p class="has-text-grey is-size-7">
+                        {{ run.run_id }}
+                        <i class="fa fa-copy has-text-grey"
+                            id="copy-job-id"
+                            style="font-size: 0.60rem; cursor: pointer;"
+                            onclick="copyToClipboard('copy-job-id', '{{ run.run_id }}')">
+                        </i>
+                    </p>
                 </div>
             </div>
         </div>
 
         {% if not run.run_end_date and not run.pipeline.live_logging %}
-            <div class="notification is-info is-light has-text-centered">
+            <div class="notification  has-text-centered" style="background-color: #f8edb2;">
                 <p class="is-size-6 has-text-grey-dark">
                     <i class="fa fa-exclamation-triangle mr-1"></i>
-                    Live logging is disabled for this pipeline.
-                    Logs will be available after the pipeline has finished running.
+                    Live streaming of log is disabled for this pipeline.
+                    Log will be available once this pipeline has finished running.
                 </p>
             </div>
         {% endif %}
@@ -244,7 +258,22 @@
                     btn.innerHTML = '<span class="icon is-small"><i class="fa fa-copy"></i></span>';
                 }, 1500);
             })
-            .catch(err => alert("Copy failed: " + err));
+            .catch(err => alert("Failed to copy log."));
     }
+
+    function copyToClipboard(button, text) {
+        navigator.clipboard.writeText(text)
+        .then(() => {
+            const btn = document.getElementById(button);
+            btn.classList.remove("fa-copy", "has-text-grey");
+            btn.classList.add("has-text-success", "fa-check");
+            setTimeout(() => {
+                btn.classList.remove("fa-check", "has-text-success");
+                btn.classList.add("has-text-grey", "fa-copy");
+            }, 1500);
+        })
+        .catch(err => alert("Copy to clipboard failed."));
+    }
+
 </script>
 {% endblock %}

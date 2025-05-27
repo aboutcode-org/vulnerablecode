@@ -2198,6 +2198,12 @@ class PipelineSchedule(models.Model):
             return IMPORTERS_REGISTRY.get(self.pipeline_id)
 
     @property
+    def description(self):
+        """Return the pipeline class."""
+        if self.pipeline_class:
+            return self.pipeline_class.__doc__
+
+    @property
     def all_runs(self):
         """Return all the previous run instances for this pipeline."""
         return self.pipelineruns.all()
@@ -2208,14 +2214,14 @@ class PipelineSchedule(models.Model):
 
     @property
     def earliest_run(self):
-        return self.pipelineruns.earliest("created_date") if self.pipelineruns.exists() else None
+        return self.pipelineruns.earliest("run_start_date") if self.pipelineruns.exists() else None
 
     @property
     def latest_run_date(self):
         if not self.pipelineruns.exists():
             return
-        latest_run = self.pipelineruns.values("created_date").first()
-        return latest_run["created_date"]
+        latest_run = self.pipelineruns.values("run_start_date").first()
+        return latest_run["run_start_date"]
 
     @property
     def next_run_date(self):

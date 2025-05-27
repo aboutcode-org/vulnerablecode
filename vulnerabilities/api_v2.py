@@ -18,8 +18,9 @@ from rest_framework import mixins
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
@@ -628,6 +629,17 @@ class CreateListRetrieveUpdateViewSet(
     pass
 
 
+class IsAdminWithSessionAuth(BasePermission):
+    """Permit only staff users authenticated via session (not token)."""
+
+    def has_permission(self, request, view):
+        is_authenticated = request.user and request.user.is_authenticated
+        is_staff = request.user and request.user.is_staff
+        is_session_auth = isinstance(request.successful_authenticator, SessionAuthentication)
+
+        return is_authenticated and is_staff and is_session_auth
+
+
 class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
     status = serializers.SerializerMethodField()
     execution_time = serializers.SerializerMethodField()
@@ -653,7 +665,8 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
         return run.status
 
     def get_execution_time(self, run):
-        return round(run.execution_time, 2)
+        if run.execution_time:
+            return round(run.execution_time, 2)
 
     def get_log(self, run):
         """Return only last 5000 character of log."""
@@ -719,7 +732,7 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
         return super().get_serializer_class()
 
     def get_permissions(self):
-        """Restrict modifications to admin users."""
+        """Restrict addition and modifications to staff users authenticated via session."""
         if self.action not in ["list", "retrieve"]:
-            return [IsAdminUser()]
+            return [IsAdminWithSessionAuth()]
         return super().get_permissions()

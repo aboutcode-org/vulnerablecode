@@ -7,9 +7,11 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from unittest.mock import patch
+
+from django.contrib.auth.models import User
 from django.db.models import Prefetch
 from django.urls import reverse
-from packageurl import PackageURL
 from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
@@ -19,6 +21,8 @@ from vulnerabilities.api_v2 import VulnerabilityListSerializer
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import Package
+from vulnerabilities.models import PipelineRun
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import Weakness
@@ -662,3 +666,116 @@ class PackageV2ViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # No packages or vulnerabilities should be returned
         self.assertEqual(len(response.data), 0)
+
+
+class PipelineScheduleV2ViewSetTest(APITestCase):
+    def setUp(self):
+        patcher = patch.object(PipelineSchedule, "create_new_job")
+        self.mock_create_new_job = patcher.start()
+        self.addCleanup(patcher.stop)
+
+        self.mock_create_new_job.return_value = "work-id"
+
+        self.schedule1 = PipelineSchedule.objects.create(
+            pipeline_id="test_pipeline",
+        )
+        self.run1 = PipelineRun.objects.create(
+            pipeline=self.schedule1,
+        )
+
+        self.admin_user = User.objects.create_superuser(
+            username="admin_with_session",
+            password="adminpassword",
+            email="admin@test.com",
+        )
+
+        self.admin_token_only_user = ApiUser.objects.create_api_user(
+            username="staff_with_token",
+            is_staff=True,
+        )
+        self.admin_token_auth = f"Token {self.admin_token_only_user.auth_token.key}"
+
+    def test_schedule_list_anon_user_permitted(self):
+        response = self.client.get("/api/v2/schedule/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_schedule_retrieve_anon_user_permitted(self):
+        response = self.client.get("/api/v2/schedule/test_pipeline/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
+    def test_create_schedule_anon_user_not_permitted(self, mock_create_new_job):
+        mock_create_new_job.return_value = "work-id2"
+
+        data = {"pipeline_id": "test_pipeline2"}
+        response = self.client.post("/api/v2/schedule/", data, format="json")
+
+        self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(PipelineSchedule.objects.count(), 1)
+
+    @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
+    def test_create_schedule_with_staff_token_not_permitted(self, mock_create_new_job):
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.admin_token_auth)
+
+        mock_create_new_job.return_value = "work-id3"
+
+        data = {"pipeline_id": "test_pipeline3"}
+        response = self.client.post("/api/v2/schedule/", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(PipelineSchedule.objects.count(), 1)
+
+    @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
+    def test_create_schedule_with_staff_session_permitted(self, mock_create_new_job):
+        mock_create_new_job.return_value = "work-id4"
+        self.client.login(username="admin_with_session", password="adminpassword")
+
+        data = {"pipeline_id": "test_pipeline3"}
+        response = self.client.post("/api/v2/schedule/", data, format="json")
+
+        self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(PipelineSchedule.objects.count(), 2)
+
+    @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
+    def test_schedule_update_anon_user_not_permitted(self, mock_create_new_job):
+        mock_create_new_job.return_value = "work-id5"
+
+        data = {"run_interval": 2}
+        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        self.schedule1.refresh_from_db()
+
+        self.assertNotEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(self.schedule1.run_interval, 1)
+
+    @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
+    def test_schedule_update_with_staff_token_not_permitted(self, mock_create_new_job):
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.admin_token_auth)
+
+        mock_create_new_job.return_value = "work-id6"
+
+        data = {"run_interval": 2}
+        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        self.schedule1.refresh_from_db()
+
+        self.assertNotEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(self.schedule1.run_interval, 1)
+
+    @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
+    def test_schedule_update_with_staff_session_permitted(self, mock_create_new_job):
+        mock_create_new_job.return_value = "work-id7"
+        self.client.login(username="admin_with_session", password="adminpassword")
+
+        data = {"run_interval": 2}
+        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        self.schedule1.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(self.schedule1.run_interval, 2)

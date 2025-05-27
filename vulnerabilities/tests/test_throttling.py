@@ -9,6 +9,7 @@
 
 import json
 
+from django.core.cache import cache
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 
@@ -17,6 +18,11 @@ from vulnerabilities.models import ApiUser
 
 class ThrottleApiTests(APITestCase):
     def setUp(self):
+        # Reset the api throttling to properly test the rate limit on anon users.
+        # DRF stores throttling state in cache, clear cache to reset throttling.
+        # See https://www.django-rest-framework.org/api-guide/throttling/#setting-up-the-cache
+        cache.clear()
+
         # create a basic user
         self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"

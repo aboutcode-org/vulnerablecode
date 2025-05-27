@@ -10,6 +10,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db.models import Prefetch
 from django.urls import reverse
 from rest_framework import status
@@ -670,6 +671,12 @@ class PackageV2ViewSetTest(APITestCase):
 
 class PipelineScheduleV2ViewSetTest(APITestCase):
     def setUp(self):
+        # Reset the api throttling for anon user to properly test the
+        # access on schedule endpoint.
+        # DRF stores throttling state in cache, clear cache to reset throttling.
+        # See https://www.django-rest-framework.org/api-guide/throttling/#setting-up-the-cache
+        cache.clear()
+
         patcher = patch.object(PipelineSchedule, "create_new_job")
         self.mock_create_new_job = patcher.start()
         self.addCleanup(patcher.stop)

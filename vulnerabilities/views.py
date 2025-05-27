@@ -12,6 +12,7 @@ from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Prefetch
@@ -27,6 +28,7 @@ from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
 
 from vulnerabilities import models
+from vulnerabilities.forms import AdminLoginForm
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
@@ -418,3 +420,8 @@ class PipelineRunDetailView(DetailView):
         )
         context["pipeline_name"] = run.pipeline_class.__name__
         return context
+
+
+class AdminLoginView(LoginView):
+    template_name = "admin_login.html"
+    authentication_form = AdminLoginForm

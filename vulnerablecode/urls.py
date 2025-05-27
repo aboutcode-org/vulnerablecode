@@ -24,6 +24,7 @@ from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
+from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails
@@ -60,6 +61,7 @@ api_v2_router.register("schedule", PipelineScheduleV2ViewSet, basename="schedule
 
 
 urlpatterns = [
+    path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
     path("api/v2/", include(api_v2_router.urls)),
     path(
         "robots.txt",

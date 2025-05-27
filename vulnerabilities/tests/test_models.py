@@ -689,7 +689,8 @@ class TestPipelineScheduleModel(DjangoTestCase):
         self.assertEqual(self.schedule1.status, "running")
 
     def test_pipelineschedule_latest_run_date(self):
-        self.assertEqual(self.schedule1.latest_run_date, self.run2.created_date)
+        self.run2.set_run_started()
+        self.assertEqual(self.schedule1.latest_run_date, self.run2.run_start_date)
 
     def test_pipelineschedule_all_runs(self):
         self.assertEqual(self.schedule1.all_runs.count(), 2)

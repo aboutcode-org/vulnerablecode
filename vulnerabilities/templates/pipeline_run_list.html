@@ -38,6 +38,15 @@
       <h1>{{ pipeline_name }} Runs</h1>
       <hr />
     </div>
+
+    {% if pipeline_description %}
+      <div class="notification is-info is-light">
+        <p class="is-size-5 has-text-grey-dark has-text-centered">
+          {{ pipeline_description }}
+        </p>
+      </div>
+    {% endif %}
+
     <div class="box">
       <table class="table is-striped  is-hoverable is-fullwidth">
         <thead>

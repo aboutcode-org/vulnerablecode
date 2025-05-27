@@ -686,7 +686,9 @@ class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "pipeline_id",
             "is_active",
+            "live_logging",
             "run_interval",
+            "execution_timeout",
             "created_date",
             "schedule_work_id",
             "next_run_date",
@@ -705,17 +707,33 @@ class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
 class PipelineScheduleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PipelineSchedule
-        fields = ["pipeline_id", "is_active", "run_interval"]
+        fields = [
+            "pipeline_id",
+            "is_active",
+            "run_interval",
+            "live_logging",
+            "execution_timeout",
+        ]
         extra_kwargs = {
             field: {"initial": PipelineSchedule._meta.get_field(field).get_default()}
-            for field in ["is_active", "run_interval"]
+            for field in [
+                "is_active",
+                "run_interval",
+                "live_logging",
+                "execution_timeout",
+            ]
         }
 
 
 class PipelineScheduleUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PipelineSchedule
-        fields = ["is_active", "run_interval"]
+        fields = [
+            "is_active",
+            "run_interval",
+            "live_logging",
+            "execution_timeout",
+        ]
 
 
 class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):

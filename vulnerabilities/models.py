@@ -2124,8 +2124,8 @@ class PipelineSchedule(models.Model):
         db_index=True,
         default=True,
         help_text=(
-            "When set to True (Yes), this Pipeline is active. "
-            "When set to False (No), this Pipeline is inactive and not run."
+            "When set to True, this Pipeline is active. "
+            "When set to False, this Pipeline is inactive and not run."
         ),
     )
 

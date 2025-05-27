@@ -389,6 +389,7 @@ class PipelineRunListView(ListView):
             pipeline_id=self.kwargs["pipeline_id"],
         )
         context["pipeline_name"] = pipeline.pipeline_class.__name__
+        context["pipeline_description"] = pipeline.description
         return context
 
 

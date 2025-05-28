@@ -14,7 +14,7 @@ from pathlib import Path
 
 import git
 
-__version__ = "36.0.0"
+__version__ = "36.1.0"
 
 
 PROJECT_DIR = Path(__file__).resolve().parent

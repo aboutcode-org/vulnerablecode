@@ -106,6 +106,22 @@ def compute_package_risk(package):
     and determining the associated risk.
     """
     result = []
+    for relation in package.affectedbypackagerelatedvulnerability_set.all():
+        if risk := relation.vulnerability.risk_score:
+            result.append(float(risk))
+
+    if not result:
+        return
+
+    return round(max(result), 1)
+
+
+def compute_package_risk_v2(package):
+    """
+    Calculate the risk for a package by iterating over all vulnerabilities that affects this package
+    and determining the associated risk.
+    """
+    result = []
     for advisory in package.affected_by_advisories.all():
         if risk := advisory.risk_score:
             result.append(float(risk))

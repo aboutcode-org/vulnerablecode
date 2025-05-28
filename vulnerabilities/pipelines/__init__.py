@@ -28,8 +28,8 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
-from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PackageV2
+from vulnerabilities.models import PipelineRun
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
 from vulnerabilities.pipes.advisory import insert_advisory_v2

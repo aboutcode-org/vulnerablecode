@@ -1324,7 +1324,6 @@ class Alias(models.Model):
 
 
 class AdvisoryQuerySet(BaseQuerySet):
-
     def search(query):
         """
         This function will take a string as an input, the string could be an alias or an advisory ID or
@@ -2632,7 +2631,6 @@ class AdvisoryV2(models.Model):
 
     objects = AdvisoryQuerySet.as_manager()
 
-
     class Meta:
         ordering = ["date_published", "unique_content_id"]
 
@@ -2684,7 +2682,6 @@ class ToDoRelatedAdvisory(models.Model):
 
 
 class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
-
     def search(self, query: str = None):
         """
         Return a Package queryset searching for the ``query``.

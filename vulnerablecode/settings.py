@@ -84,11 +84,17 @@ INSTALLED_APPS = (
     # required for Django collectstatic discovery
     "drf_spectacular_sidecar",
     "django_recaptcha",
+    "django_rq",
 )
 
-RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY", "")
-RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY", "")
-SILENCED_SYSTEM_CHECKS = ["captcha.recaptcha_test_key_error"]
+if env.str("RECAPTCHA_PUBLIC_KEY", None):
+    RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY")
+
+if env.str("RECAPTCHA_PRIVATE_KEY", None):
+    RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")
+
+SILENCED_SYSTEM_CHECKS = ["django_recaptcha.recaptcha_test_key_error"]
+SILENCED_SYSTEM_CHECKS = ["django_recaptcha.recaptcha_test_key_error"]
 RECAPTCHA_DOMAIN = env.str("RECAPTCHA_DOMAIN", "www.recaptcha.net")
 
 
@@ -101,6 +107,7 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "vulnerabilities.middleware.ban_user_agent.BanUserAgent",
+    "vulnerabilities.middleware.timezone.UserTimezoneMiddleware",
 )
 
 ROOT_URLCONF = "vulnerablecode.urls"
@@ -213,7 +220,10 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # Django restframework
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
@@ -362,3 +372,14 @@ if DEBUG:
         "handlers": ["console"],
         "level": "ERROR",
     }
+
+
+VULNERABLECODE_PIPELINE_TIMEOUT = env.int("VULNERABLECODE_PIPELINE_TIMEOUT", default=24)
+RQ_QUEUES = {
+    "default": {
+        "HOST": env.str("VULNERABLECODE_REDIS_HOST", default="localhost"),
+        "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
+        "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
+        "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
+    }
+}

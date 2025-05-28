@@ -22,14 +22,20 @@ from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
+from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
+from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
+from vulnerabilities.views import PipelineRunDetailView
+from vulnerabilities.views import PipelineRunListView
+from vulnerabilities.views import PipelineScheduleListView
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilityPackagesDetails
 from vulnerabilities.views import VulnerabilitySearch
+from vulnerablecode.settings import DEBUG
 from vulnerablecode.settings import DEBUG_TOOLBAR
 
 
@@ -51,9 +57,11 @@ api_v2_router = OptionalSlashRouter()
 api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
+api_v2_router.register("schedule", PipelineScheduleV2ViewSet, basename="schedule")
 
 
 urlpatterns = [
+    path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
     path("api/v2/", include(api_v2_router.urls)),
     path(
         "robots.txt",
@@ -65,7 +73,22 @@ urlpatterns = [
         name="home",
     ),
     path(
-        "packages/search",
+        "pipelines/schedule/",
+        PipelineScheduleListView.as_view(),
+        name="schedule",
+    ),
+    path(
+        "pipelines/<str:pipeline_id>/runs/",
+        PipelineRunListView.as_view(),
+        name="runs-list",
+    ),
+    path(
+        "pipelines/<str:pipeline_id>/run/<uuid:run_id>/",
+        PipelineRunDetailView.as_view(),
+        name="run-details",
+    ),
+    path(
+        "packages/search/",
         PackageSearch.as_view(),
         name="package_search",
     ),
@@ -75,7 +98,7 @@ urlpatterns = [
         name="package_details",
     ),
     path(
-        "vulnerabilities/search",
+        "vulnerabilities/search/",
         VulnerabilitySearch.as_view(),
         name="vulnerability_search",
     ),
@@ -119,6 +142,9 @@ urlpatterns = [
     #     admin.site.urls,
     # ),
 ]
+
+if DEBUG:
+    urlpatterns += [path("django-rq/", include("django_rq.urls"))]
 
 if DEBUG_TOOLBAR:
     urlpatterns += [

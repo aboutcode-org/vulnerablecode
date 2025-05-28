@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+{% load static %}
+{% load utils %}
+
+{% block title %}Run Log{% endblock %}
+
+{% block extrahead %}
+
+<style>
+    pre {
+        background-color: #282a36;
+        color: #f8f8f2;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        height: 800px;
+        position: relative;
+    }
+
+    .column {
+        word-break: break-word;
+    }
+
+    .copy-btn {
+        position: absolute;
+        top: 1.0rem;
+        right: 1.5rem;
+        z-index: 1;
+        opacity: 0.5;
+        transition: opacity 0.2s ease;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">{{ pipeline_name }} Run Log</h1>
+        <hr>
+
+        <div class="box has-background-info-light is-light p-4">
+            <div class="columns is-multiline is-vcentered is-mobile is-gapless">
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Pipeline ID</p>
+                    <p class="has-text-grey is-size-7">
+                        {{ run.pipeline.pipeline_id }}
+                        <i class="fa fa-copy has-text-grey"
+                            id="copy-pipeline-id"
+                            style="font-size: 0.60rem; cursor: pointer;"
+                            onclick="copyToClipboard('copy-pipeline-id', '{{ run.pipeline.pipeline_id }}')">
+                        </i>
+                    </p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Status</p>
+                    <p class="has-text-grey is-size-7">
+                        {% include "includes/job_status.html" with status=run.status compact=True %}
+                    </p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Execution Time</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.execution_time %}
+                            {{ run.execution_time|humanize_duration }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Exit Code</p>
+                    <p class="has-text-grey is-size-7">{{ run.run_exitcode|default_if_none:"N/A" }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Start</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.run_start_date %}
+                            {{ run.run_start_date|date:"Y-m-d h:i a T" }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile ">
+                    <p class="is-size-7 has-text-weight-semibold">End</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.run_end_date %}
+                            {{ run.run_end_date|date:"Y-m-d h:i a T" }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Created</p>
+                    <p class="has-text-grey is-size-7">{{ run.created_date|date:"Y-m-d h:i a T" }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Version</p>
+                    <p class="has-text-grey is-size-7">{{ run.vulnerablecode_version }}</p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Commit</p>
+                    <p class="has-text-grey is-size-7">
+                        {% if run.vulnerablecode_commit %}
+                        <a href="{{ run.pipeline_url }}"
+                            target="_blank">
+                            {{ run.vulnerablecode_commit }}
+                            <i class="fa fa-external-link fa_link_custom"></i>
+                        </a>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
+                    <p class="is-size-7 has-text-weight-semibold">Job ID</p>
+                    <p class="has-text-grey is-size-7">
+                        {{ run.run_id }}
+                        <i class="fa fa-copy has-text-grey"
+                            id="copy-job-id"
+                            style="font-size: 0.60rem; cursor: pointer;"
+                            onclick="copyToClipboard('copy-job-id', '{{ run.run_id }}')">
+                        </i>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {% if not run.run_end_date and not run.pipeline.live_logging %}
+            <div class="notification  has-text-centered" style="background-color: #f8edb2;">
+                <p class="is-size-6 has-text-grey-dark">
+                    <i class="fa fa-exclamation-triangle mr-1"></i>
+                    Live streaming of log is disabled for this pipeline.
+                    Log will be available once this pipeline has finished running.
+                </p>
+            </div>
+        {% endif %}
+
+        {% if run.run_output|strip %}
+        <div class="box">
+            <h2 class="subtitle mb-2">Run Error</h2>
+            <div class="log-wrapper" style="position: relative;">
+                <button class="button is-medium is-light  copy-btn" id="copy-error"
+                    onclick="copyCode('log-error', 'copy-error')">
+                    <span class="icon is-medium">
+                        <i class="fa fa-copy"></i>
+                    </span>
+                </button>
+                <pre><code id="log-error" class="language-toml">{{ run.run_output }}</code></pre>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if run.log|strip %}
+        <div class="box">
+            <h2 class="subtitle mb-2">Log Output</h2>
+            <div class="log-wrapper" style="position: relative;">
+                <button class="button is-medium is-light copy-btn" id="copy-code"
+                    onclick="copyCode('log-code', 'copy-code')">
+                    <span class="icon is-medium">
+                        <i class="fa fa-copy"></i>
+                    </span>
+                </button>
+
+                <pre style="display: flex; justify-content: center; align-items: center;">
+                    <code id="log-code" class="language-toml"><i class="fa fa-spinner fa-spin fa-4x"></i></code>
+                </pre>
+
+                <div id="snippet-paginater" class="has-text-centered mt-3">
+                    <button id="prev-button" class="button is-link is-small mr-2" onclick="prevSnippet()">
+                        <i class="fa fa-arrow-left mr-1"></i>
+                        Prev
+                    </button>
+                    <span id="snippet-indicator">Snippet 1</span>
+                    <button id="next-button" class="button is-link is-small ml-2" onclick="nextSnippet()">
+                        Next
+                        <i class="fa fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+
+        <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info mt-4">
+            <i class="fa fa-arrow-left mr-2"></i>Back to All Runs
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block scripts %}
+<link rel="stylesheet" href="{% static 'css/highlight-10.6.0.css' %}" crossorigin="anonymous">
+<script src="{% static 'js/highlight-10.6.0.min.js' %}" crossorigin="anonymous"></script>
+
+<script>
+    const logText = `{{ run.log|escapejs }}`;
+    const lines = logText.split('\n');
+    const linesPerSnippet = 500;
+    const maxSnippetCount = Math.ceil(lines.length / linesPerSnippet);
+    let currentSnippet = 0;
+
+    function renderSnippet() {
+        const start = currentSnippet * linesPerSnippet;
+        const end = start + linesPerSnippet;
+        const pageLines = lines.slice(start, end).join('\n');
+
+        snippetIndicator = `Snippet ${currentSnippet + 1} of ${maxSnippetCount}`;
+        document.getElementById("log-code").parentElement.removeAttribute("style");
+        document.getElementById('log-code').textContent = pageLines;
+        hljs.highlightAll();
+
+        if (maxSnippetCount > 1) {
+            const snippetIndicatorEl = document.getElementById('snippet-indicator');
+            const nextButton = document.getElementById('next-button');
+            const prevButton = document.getElementById('prev-button');
+
+            snippetIndicatorEl.textContent = snippetIndicator;
+
+            nextButton.disabled = (currentSnippet + 2 > maxSnippetCount);
+            prevButton.disabled = (currentSnippet - 1 < 0);
+        } else {
+            const paginator = document.getElementById('snippet-paginater');
+            paginator.innerHTML = '';
+        }
+
+    }
+
+    function nextSnippet() {
+        if ((currentSnippet + 1) < maxSnippetCount) {
+            currentSnippet++;
+            renderSnippet();
+        }
+    }
+
+    function prevSnippet() {
+        if (currentSnippet > 0) {
+            currentSnippet--;
+            renderSnippet();
+        }
+    }
+
+    renderSnippet();
+</script>
+
+
+<script>
+    function copyCode(target, button) {
+        const code = (target === "log-code") ? `{{ run.log|escapejs }}` : `{{ run.run_output|escapejs }}`;
+        navigator.clipboard.writeText(code)
+            .then(() => {
+                const btn = document.getElementById(button);
+                btn.classList.add("is-success");
+                btn.innerHTML = '<span class="icon is-small"><i class="fa fa-check"></i></span>';
+                setTimeout(() => {
+                    btn.classList.remove("is-success");
+                    btn.innerHTML = '<span class="icon is-small"><i class="fa fa-copy"></i></span>';
+                }, 1500);
+            })
+            .catch(err => alert("Failed to copy log."));
+    }
+
+    function copyToClipboard(button, text) {
+        navigator.clipboard.writeText(text)
+        .then(() => {
+            const btn = document.getElementById(button);
+            btn.classList.remove("fa-copy", "has-text-grey");
+            btn.classList.add("has-text-success", "fa-check");
+            setTimeout(() => {
+                btn.classList.remove("fa-check", "has-text-success");
+                btn.classList.add("has-text-grey", "fa-copy");
+            }, 1500);
+        })
+        .catch(err => alert("Copy to clipboard failed."));
+    }
+
+</script>
+{% endblock %}

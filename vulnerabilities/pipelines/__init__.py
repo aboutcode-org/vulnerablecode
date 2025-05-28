@@ -366,20 +366,21 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
         """
         Return a list of versions published before `until` for the `package_url`
         """
+        versions_before_until = []
         try:
             versions = package_versions.versions(str(package_url))
+            for version in versions or []:
+                if until and version.release_date and version.release_date > until:
+                    continue
+                versions_before_until.append(version.value)
+
+            return versions_before_until
         except Exception as e:
             self.log(
                 f"Failed to fetch versions for package {str(package_url)} {e!r}",
                 level=logging.ERROR,
             )
-        versions_before_until = []
-        for version in versions or []:
-            if until and version.release_date and version.release_date > until:
-                continue
-            versions_before_until.append(version.value)
-
-        return versions_before_until
+            return []
 
     def get_impacted_packages(self, affected_packages, advisory_date_published):
         """

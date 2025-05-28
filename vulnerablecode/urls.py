@@ -32,6 +32,11 @@ from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import PipelineRunDetailView
 from vulnerabilities.views import PipelineRunListView
 from vulnerabilities.views import PipelineScheduleListView
+from vulnerabilities.views import ApiUserCreateView, HomePageV2, PackageSearchV2
+from vulnerabilities.views import HomePage
+from vulnerabilities.views import PackageDetails
+from vulnerabilities.views import PackageSearch
+from vulnerabilities.views import PackageV2Details
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilityPackagesDetails
 from vulnerabilities.views import VulnerabilitySearch
@@ -88,14 +93,29 @@ urlpatterns = [
         name="run-details",
     ),
     path(
-        "packages/search/",
+        "v2",
+        HomePageV2.as_view(),
+        name="home",
+    ),
+    path(
+        "packages/search",
         PackageSearch.as_view(),
         name="package_search",
+    ),
+    path(
+        "packages/v2/search",
+        PackageSearchV2.as_view(),
+        name="package_search_v2",
     ),
     re_path(
         r"^packages/(?P<purl>pkg:.+)$",
         PackageDetails.as_view(),
         name="package_details",
+    ),
+    re_path(
+        r"^packages/v2/(?P<purl>pkg:.+)$",
+        PackageV2Details.as_view(),
+        name="package_details_v2",
     ),
     path(
         "vulnerabilities/search/",

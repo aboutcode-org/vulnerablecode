@@ -29,8 +29,8 @@ from django.views.generic.list import ListView
 
 from vulnerabilities import models
 from vulnerabilities.forms import AdminLoginForm
-from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import AdvisorySearchForm
+from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
@@ -100,7 +100,6 @@ class PackageSearchV2(ListView):
         )
 
 
-
 class VulnerabilitySearch(ListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
@@ -110,7 +109,7 @@ class VulnerabilitySearch(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
-        context["advisory_search_form"] = AdvisorySearchForm(request_query)
+        context["vulnerability_search_form"] = VulnerabilitySearchForm(request_query)
         context["search"] = request_query.get("search")
         return context
 

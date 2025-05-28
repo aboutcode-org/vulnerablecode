@@ -30,6 +30,7 @@ from django.views.generic.list import ListView
 from vulnerabilities import models
 from vulnerabilities.forms import AdminLoginForm
 from vulnerabilities.forms import ApiUserCreationForm
+from vulnerabilities.forms import AdvisorySearchForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
@@ -71,6 +72,35 @@ class PackageSearch(ListView):
         )
 
 
+class PackageSearchV2(ListView):
+    model = models.PackageV2
+    template_name = "packages_v2.html"
+    ordering = ["type", "namespace", "name", "version"]
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["package_search_form"] = PackageSearchForm(request_query)
+        context["search"] = request_query.get("search")
+        return context
+
+    def get_queryset(self, query=None):
+        """
+        Return a Package queryset for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
+        query = query or self.request.GET.get("search") or ""
+        return (
+            self.model.objects.search(query)
+            .with_vulnerability_counts()
+            .prefetch_related()
+            .order_by("package_url")
+        )
+
+
+
 class VulnerabilitySearch(ListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
@@ -80,7 +110,25 @@ class VulnerabilitySearch(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
-        context["vulnerability_search_form"] = VulnerabilitySearchForm(request_query)
+        context["advisory_search_form"] = AdvisorySearchForm(request_query)
+        context["search"] = request_query.get("search")
+        return context
+
+    def get_queryset(self, query=None):
+        query = query or self.request.GET.get("search") or ""
+        return self.model.objects.search(query=query).with_package_counts()
+
+
+class AdvisorySearch(ListView):
+    model = models.AdvisoryV2
+    template_name = "vulnerabilities.html"
+    ordering = ["advisory_id"]
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["advisory_search_form"] = VulnerabilitySearchForm(request_query)
         context["search"] = request_query.get("search")
         return context
 
@@ -108,6 +156,47 @@ class PackageDetails(DetailView):
         context["fixed_package_details"] = package.fixed_package_details
 
         context["history"] = list(package.history)
+        return context
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        purl = self.kwargs.get(self.slug_url_kwarg)
+        if purl:
+            queryset = queryset.for_purl(purl)
+        else:
+            cls = self.__class__.__name__
+            raise AttributeError(
+                f"Package details view {cls} must be called with a purl, " f"but got: {purl!r}"
+            )
+
+        try:
+            package = queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404(f"No Package found for purl: {purl}")
+        return package
+
+
+class PackageV2Details(DetailView):
+    model = models.PackageV2
+    template_name = "package_details_v2.html"
+    slug_url_kwarg = "purl"
+    slug_field = "purl"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        package = self.object
+        context["package"] = package
+        context["affected_by_advisories"] = package.affected_by_advisories.order_by("advisory_id")
+        # Ghost package should not fix any vulnerability.
+        context["fixing_advisories"] = (
+            None if package.is_ghost else package.fixing_advisories.order_by("advisory_id")
+        )
+        context["package_search_form"] = PackageSearchForm(self.request.GET)
+        context["fixed_package_details"] = package.fixed_package_details
+
+        # context["history"] = list(package.history)
         return context
 
     def get_object(self, queryset=None):
@@ -239,6 +328,19 @@ class HomePage(View):
         request_query = request.GET
         context = {
             "vulnerability_search_form": VulnerabilitySearchForm(request_query),
+            "package_search_form": PackageSearchForm(request_query),
+            "release_url": f"https://github.com/aboutcode-org/vulnerablecode/releases/tag/v{VULNERABLECODE_VERSION}",
+        }
+        return render(request=request, template_name=self.template_name, context=context)
+
+
+class HomePageV2(View):
+    template_name = "index_v2.html"
+
+    def get(self, request):
+        request_query = request.GET
+        context = {
+            "vulnerability_search_form": AdvisorySearchForm(request_query),
             "package_search_form": PackageSearchForm(request_query),
             "release_url": f"https://github.com/aboutcode-org/vulnerablecode/releases/tag/v{VULNERABLECODE_VERSION}",
         }

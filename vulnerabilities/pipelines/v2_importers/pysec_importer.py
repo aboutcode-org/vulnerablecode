@@ -15,7 +15,6 @@ from zipfile import ZipFile
 import requests
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 
@@ -28,6 +27,8 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     url = "https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip"
     spdx_license_expression = "CC-BY-4.0"
     importer_name = "PyPI Importer"
+
+    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):

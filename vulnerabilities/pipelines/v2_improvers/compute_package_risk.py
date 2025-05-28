@@ -11,7 +11,7 @@ from aboutcode.pipeline import LoopProgress
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.risk import compute_package_risk
+from vulnerabilities.risk import compute_package_risk_v2
 from vulnerabilities.risk import compute_vulnerability_risk_factors
 
 

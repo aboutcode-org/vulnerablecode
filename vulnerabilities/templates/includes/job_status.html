@@ -1,0 +1,50 @@
+{% if status == "running" %}
+    {% if compact %}
+        <i class="fa fa-spinner fa-spin has-text-info mr-1"></i>Running
+    {% else %}
+        <span class="icon has-text-info mr-1"><i class="fa fa-spinner fa-spin"></i></span>
+        <span>Running</span>
+    {% endif %}
+{% elif status == "success" %}
+    {% if compact %}
+        <i class="fa fa-check-circle has-text-success mr-1"></i>Success
+    {% else %}
+        <span class="icon has-text-success mr-1"><i class="fa fa-check-circle"></i></span>
+        <span>Success</span>
+    {% endif %}
+{% elif status == "failure" %}
+    {% if compact %}
+        <i class="fa fa-times-circle has-text-danger mr-1"></i>Failure
+    {% else %}
+        <span class="icon has-text-danger mr-1"><i class="fa fa-times-circle"></i></span>
+        <span>Failure</span>
+    {% endif %}
+{% elif status == "queued" %}
+    {% if compact %}
+        <i class="fa fa-clock-o has-text-grey mr-1"></i>Queued
+    {% else %}
+        <span class="icon has-text-grey mr-1"><i class="fa fa-clock-o"></i></span>
+        <span>Queued</span>
+    {% endif %}
+{% elif status == "stopped" %}
+    {% if compact %}
+        <i class="fa fa-stop-circle has-text-danger mr-1"></i>Stopped
+    {% else %}
+        <span class="icon has-text-danger mr-1"><i class="fa fa-stop-circle"></i></span>
+        <span>Stopped</span>
+    {% endif %}
+{% elif status == "stale" %}
+    {% if compact %}
+        <i class="fa fa-ban has-text-grey mr-1"></i>Stale
+    {% else %}
+        <span class="icon has-text-grey mr-1"><i class="fa fa-ban"></i></span>
+        <span>Stale</span>
+    {% endif %}
+{% else %}
+    {% if compact %}
+        <i class="fa fa-question-circle has-text-warning mr-1"></i>Unknown
+    {% else %}
+        <span class="icon has-text-warning mr-1"><i class="fa fa-question-circle"></i></span>
+        <span>Unknown</span>
+    {% endif %}
+{% endif %}

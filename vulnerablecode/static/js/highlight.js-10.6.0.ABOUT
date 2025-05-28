@@ -1,0 +1,12 @@
+about_resource: highlight-10.6.0.min.js
+name: highlight.js
+version: 10.6.0
+download_url: https://github.com/highlightjs/highlight.js/archive/10.6.0.zip
+description: Syntax highlighting with language autodetection.
+homepage_url: https://highlightjs.org/
+license_expression: bsd-new
+package_url: pkg:npm/highlight.js@10.6.0
+licenses:
+  - key: bsd-new
+    name: BSD-3-Clause
+    file: bsd-new.LICENSE

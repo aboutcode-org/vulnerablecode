@@ -14,15 +14,20 @@ from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.utils import extend_schema_view
 from packageurl import PackageURL
+from rest_framework import mixins
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
+from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from vulnerabilities.models import CodeFix
 from vulnerabilities.models import Package
+from vulnerabilities.models import PipelineRun
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
@@ -606,3 +611,146 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
                 affected_package_vulnerability__vulnerability__vulnerability_id=vulnerability_id
             )
         return queryset
+
+
+class CreateListRetrieveUpdateViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    A viewset that provides `create`, `list, `retrieve`, and `update` actions.
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+    """
+
+    pass
+
+
+class IsAdminWithSessionAuth(BasePermission):
+    """Permit only staff users authenticated via session (not token)."""
+
+    def has_permission(self, request, view):
+        is_authenticated = request.user and request.user.is_authenticated
+        is_staff = request.user and request.user.is_staff
+        is_session_auth = isinstance(request.successful_authenticator, SessionAuthentication)
+
+        return is_authenticated and is_staff and is_session_auth
+
+
+class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
+    status = serializers.SerializerMethodField()
+    execution_time = serializers.SerializerMethodField()
+    log = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PipelineRun
+        fields = [
+            "run_id",
+            "status",
+            "execution_time",
+            "run_start_date",
+            "run_end_date",
+            "run_exitcode",
+            "run_output",
+            "created_date",
+            "vulnerablecode_version",
+            "vulnerablecode_commit",
+            "log",
+        ]
+
+    def get_status(self, run):
+        return run.status
+
+    def get_execution_time(self, run):
+        if run.execution_time:
+            return round(run.execution_time, 2)
+
+    def get_log(self, run):
+        """Return only last 5000 character of log."""
+        return run.log[-5000:]
+
+
+class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="schedule-detail", lookup_field="pipeline_id"
+    )
+    latest_run = serializers.SerializerMethodField()
+    next_run_date = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PipelineSchedule
+        fields = [
+            "url",
+            "pipeline_id",
+            "is_active",
+            "live_logging",
+            "run_interval",
+            "execution_timeout",
+            "created_date",
+            "schedule_work_id",
+            "next_run_date",
+            "latest_run",
+        ]
+
+    def get_next_run_date(self, schedule):
+        return schedule.next_run_date
+
+    def get_latest_run(self, schedule):
+        if latest := schedule.pipelineruns.first():
+            return PipelineRunAPISerializer(latest).data
+        return None
+
+
+class PipelineScheduleCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PipelineSchedule
+        fields = [
+            "pipeline_id",
+            "is_active",
+            "run_interval",
+            "live_logging",
+            "execution_timeout",
+        ]
+        extra_kwargs = {
+            field: {"initial": PipelineSchedule._meta.get_field(field).get_default()}
+            for field in [
+                "is_active",
+                "run_interval",
+                "live_logging",
+                "execution_timeout",
+            ]
+        }
+
+
+class PipelineScheduleUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PipelineSchedule
+        fields = [
+            "is_active",
+            "run_interval",
+            "live_logging",
+            "execution_timeout",
+        ]
+
+
+class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
+    queryset = PipelineSchedule.objects.prefetch_related("pipelineruns").all()
+    serializer_class = PipelineScheduleAPISerializer
+    lookup_field = "pipeline_id"
+    lookup_value_regex = r"[\w.]+"
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return PipelineScheduleCreateSerializer
+        elif self.action == "update":
+            return PipelineScheduleUpdateSerializer
+        return super().get_serializer_class()
+
+    def get_permissions(self):
+        """Restrict addition and modifications to staff users authenticated via session."""
+        if self.action not in ["list", "retrieve"]:
+            return [IsAdminWithSessionAuth()]
+        return super().get_permissions()

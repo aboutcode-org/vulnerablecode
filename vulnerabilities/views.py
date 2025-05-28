@@ -12,24 +12,29 @@ from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Prefetch
 from django.http.response import Http404
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views import generic
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
-from univers.version_range import RANGE_CLASS_BY_SCHEMES
-from univers.version_range import AlpineLinuxVersionRange
 
 from vulnerabilities import models
+from vulnerabilities.forms import AdminLoginForm
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
+from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerabilities.models import PipelineRun
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
@@ -346,3 +351,77 @@ class VulnerabilityPackagesDetails(DetailView):
             }
         )
         return context
+
+
+class PipelineScheduleListView(ListView, FormMixin):
+    model = PipelineSchedule
+    context_object_name = "schedule_list"
+    template_name = "pipeline_schedule_list.html"
+    paginate_by = 20
+    form_class = PipelineSchedulePackageForm
+
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            return PipelineSchedule.objects.filter(
+                pipeline_id__icontains=form.cleaned_data.get("search")
+            )
+        return PipelineSchedule.objects.all()
+
+
+class PipelineRunListView(ListView):
+    model = PipelineRun
+    context_object_name = "run_list"
+    template_name = "pipeline_run_list.html"
+    paginate_by = 20
+    slug_url_kwarg = "pipeline_id"
+    slug_field = "pipeline_id"
+
+    def get_queryset(self):
+        pipeline = get_object_or_404(
+            PipelineSchedule,
+            pipeline_id=self.kwargs["pipeline_id"],
+        )
+        return pipeline.pipelineruns.defer("log")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pipeline = get_object_or_404(
+            PipelineSchedule,
+            pipeline_id=self.kwargs["pipeline_id"],
+        )
+        context["pipeline_name"] = pipeline.pipeline_class.__name__
+        context["pipeline_description"] = pipeline.description
+        return context
+
+
+class PipelineRunDetailView(DetailView):
+    model = PipelineRun
+    template_name = "pipeline_run_details.html"
+    context_object_name = "run"
+
+    def get_object(self):
+        pipeline_id = self.kwargs["pipeline_id"]
+        run_id = self.kwargs["run_id"]
+        return get_object_or_404(
+            PipelineRun,
+            pipeline__pipeline_id=pipeline_id,
+            run_id=run_id,
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pipeline_id = self.kwargs["pipeline_id"]
+        run_id = self.kwargs["run_id"]
+        run = get_object_or_404(
+            PipelineRun,
+            pipeline__pipeline_id=pipeline_id,
+            run_id=run_id,
+        )
+        context["pipeline_name"] = run.pipeline_class.__name__
+        return context
+
+
+class AdminLoginView(LoginView):
+    template_name = "admin_login.html"
+    authentication_form = AdminLoginForm

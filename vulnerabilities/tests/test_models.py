@@ -645,3 +645,52 @@ class TestAdvisoryModel(DjangoTestCase):
                 date_collected=date,
                 created_by="test_pipeline",
             )
+
+
+from unittest.mock import patch
+
+
+class TestPipelineRunModel(DjangoTestCase):
+    def setUp(self):
+        self.schedule1 = models.PipelineSchedule.objects.create(pipeline_id="test_pipeline")
+        self.run1 = models.PipelineRun.objects.create(pipeline=self.schedule1)
+
+    def test_pipelinerun_set_run_failed(self):
+        self.run1.set_run_ended(exitcode=1, output="some failure")
+        self.assertTrue(self.run1.run_failed)
+
+    def test_pipelinerun_set_run_queued(self):
+        self.assertEqual(self.run1.status, self.run1.Status.QUEUED)
+
+    def test_pipelinerun_set_running(self):
+        self.run1.set_run_started()
+        self.assertEqual(self.run1.status, self.run1.Status.RUNNING)
+
+    @patch("vulnerabilities.tasks.dequeue_job", return_value="")
+    def test_pipelinerun_stopped(self, mock_dequeue):
+        self.run1.stop_run()
+        self.assertEqual(self.run1.status, self.run1.Status.STOPPED)
+
+    def test_pipelinerun_success(self):
+        self.run1.set_run_ended(exitcode=0)
+        self.assertEqual(self.run1.status, self.run1.Status.SUCCESS)
+
+
+class TestPipelineScheduleModel(DjangoTestCase):
+    def setUp(self):
+        self.schedule1 = models.PipelineSchedule.objects.create(pipeline_id="test_pipeline")
+        self.run1 = models.PipelineRun.objects.create(pipeline=self.schedule1)
+        self.run1.set_run_started()
+        self.run1.set_run_ended(exitcode=0)
+        self.run2 = models.PipelineRun.objects.create(pipeline=self.schedule1)
+        self.run2.set_run_started()
+
+    def test_pipelineschedule_status(self):
+        self.assertEqual(self.schedule1.status, "running")
+
+    def test_pipelineschedule_latest_run_date(self):
+        self.run2.set_run_started()
+        self.assertEqual(self.schedule1.latest_run_date, self.run2.run_start_date)
+
+    def test_pipelineschedule_all_runs(self):
+        self.assertEqual(self.schedule1.all_runs.count(), 2)

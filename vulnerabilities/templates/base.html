@@ -22,7 +22,13 @@
         {% block content %}{% endblock %}
         {% include "footer.html" %}
     </div>
-
+    <script>
+        // Since django can not determine the client’s time zone automatically.
+        // Store client's timezone in cookies to enable localization.
+        // https://docs.djangoproject.com/en/5.1/topics/i18n/timezones/#selecting-the-current-time-zone
+        const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        document.cookie = "user_timezone=" + currentTimeZone;
+    </script>
     {% block scripts %}
     {% endblock %}
 </body>

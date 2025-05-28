@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}
+Pipeline Schedule
+{% endblock %}
+
+{% block extrahead %}
+<style>
+    thead th {
+        border-bottom: none !important;
+    }
+
+    tbody tr:hover {
+        background-color: #e0e0e0 !important;
+        cursor: pointer;
+    }
+
+    tbody tr:nth-child(even):hover {
+        background-color: #d3d3d3 !important;
+    }
+
+    .column {
+        word-break: break-word;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="columns">
+    <div class="column">
+    </div>
+
+    <div class="column is-four-fifths">
+        <div class="content is-normal">
+            <h1>Pipeline Schedule</h1>
+            <hr />
+        </div>
+        <form method="get" class="box px-6 mx-0" action="">
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    {{ form.search }}
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-info"><i class="fa fa-search mx-1"></i></button>
+                </div>
+            </div>
+        </form>
+        <div class="box">
+            <table class="table is-striped  is-hoverable is-fullwidth">
+                <thead>
+                    <tr>
+                        <th colspan="6">
+                            <div class="box is-small">
+                                <div class="columns is-mobile is-vcentered">
+                                    <div class="column is-one-quarter">Pipeline ID</div>
+                                    <div class="column is-one-eighth">Active</div>
+                                    <div class="column is-one-eighth">Interval</div>
+                                    <div class="column is-one-eighth">Status</div>
+                                    <div class="column is-one-fifth">Latest Run</div>
+                                    <div class="column is-one-fifth">Next Run</div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedule_list %}
+                    <tr>
+                        <td colspan="6">
+                            <a href="{% url 'runs-list' pipeline_id=schedule.pipeline_id %}" class="has-text-info">
+                                <div class="columns px-1 is-mobile is-vcentered">
+                                    <div class="column is-one-quarter">{{ schedule.pipeline_id }}</div>
+                                    <div class="column is-one-eighth has-text-grey">{{ schedule.is_active|yesno:"Yes,No" }}</div>
+                                    <div class="column is-one-eighth has-text-grey">{{ schedule.run_interval }}day</div>
+                                    <div class="column is-one-eighth">
+                                        <span class="is-flex is-align-items-center">
+                                            {% include "includes/job_status.html" with status=schedule.status %}
+                                        </span>
+                                    </div>
+                                    <div class="column is-one-fifth has-text-grey"
+                                        title="{{ schedule.latest_run_date }}">
+                                        {% if schedule.latest_run_date %}
+                                            {{ schedule.latest_run_date|date:"Y-m-d h:i a T" }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </div>
+                                    <div class="column is-one-fifth has-text-grey"
+                                        title="{{ schedule.next_run_date }}">
+                                        {{ schedule.next_run_date|date:"Y-m-d" }}
+                                    </div>
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="has-text-centered">No pipeline found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+        {% if is_paginated %}
+        <nav class="pagination is-centered px-5" role="navigation" aria-label="pagination">
+            {% if page_obj.has_previous %}
+            <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+            <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+            {% endif %}
+            <ul class="pagination-list">
+                <li><a class="pagination-link" aria-label="Goto page 1" href="?page=1">1</a></li>
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+                <li><a class="pagination-link" aria-label="Goto page {{ page_obj.number }}"
+                        href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    <div class="column"></div>
+</div>
+{% endblock %}

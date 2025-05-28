@@ -8,6 +8,7 @@
 #
 
 from django import forms
+from django.contrib.admin.forms import AdminAuthenticationForm
 from django.core.validators import validate_email
 from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV2Checkbox
@@ -85,3 +86,25 @@ class ApiUserCreationForm(forms.ModelForm):
 
     def save_m2m(self):
         pass
+
+
+class PipelineSchedulePackageForm(forms.Form):
+    search = forms.CharField(
+        required=True,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search a pipeline...",
+                "class": "input ",
+            },
+        ),
+    )
+
+
+class AdminLoginForm(AdminAuthenticationForm):
+    captcha = ReCaptchaField(
+        error_messages={
+            "required": ("Captcha is required"),
+        },
+        widget=ReCaptchaV2Checkbox(),
+    )

@@ -114,10 +114,10 @@ urlpatterns = [
         TemplateView.as_view(template_name="tos.html"),
         name="api_tos",
     ),
-    path(
-        "admin/",
-        admin.site.urls,
-    ),
+    # path(
+    #     "admin/",
+    #     admin.site.urls,
+    # ),
 ]
 
 if DEBUG_TOOLBAR:

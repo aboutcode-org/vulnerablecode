@@ -27,16 +27,14 @@ from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
+from vulnerabilities.views import HomePageV2
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
+from vulnerabilities.views import PackageSearchV2
+from vulnerabilities.views import PackageV2Details
 from vulnerabilities.views import PipelineRunDetailView
 from vulnerabilities.views import PipelineRunListView
 from vulnerabilities.views import PipelineScheduleListView
-from vulnerabilities.views import ApiUserCreateView, HomePageV2, PackageSearchV2
-from vulnerabilities.views import HomePage
-from vulnerabilities.views import PackageDetails
-from vulnerabilities.views import PackageSearch
-from vulnerabilities.views import PackageV2Details
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilityPackagesDetails
 from vulnerabilities.views import VulnerabilitySearch
@@ -98,12 +96,12 @@ urlpatterns = [
         name="home",
     ),
     path(
-        "packages/search",
+        "packages/search/",
         PackageSearch.as_view(),
         name="package_search",
     ),
     path(
-        "packages/v2/search",
+        "packages/v2/search/",
         PackageSearchV2.as_view(),
         name="package_search_v2",
     ),

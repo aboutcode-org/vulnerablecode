@@ -39,6 +39,8 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     repo_url = "git+https://github.com/nodejs/security-wg"
     importer_name = "Npm Importer"
 
+    unfurl_version_ranges = True
+
     @classmethod
     def steps(cls):
         return (

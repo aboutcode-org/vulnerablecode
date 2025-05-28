@@ -249,6 +249,11 @@ def fetch_github_graphql_query(graphql_query: dict):
 
     response = _get_gh_response(gh_token=gh_token, graphql_query=graphql_query)
 
+    if not response:
+        msg = "No response received from GitHub API."
+        logger.error(msg)
+        raise GraphQLError(msg)
+
     message = response.get("message")
     if message and message == "Bad credentials":
         raise GitHubTokenError(f"Invalid GitHub token: {message}")
@@ -266,7 +271,10 @@ def _get_gh_response(gh_token, graphql_query):
     """
     endpoint = "https://api.github.com/graphql"
     headers = {"Authorization": f"bearer {gh_token}"}
-    return requests.post(endpoint, headers=headers, json=graphql_query).json()
+    try:
+        return requests.post(endpoint, headers=headers, json=graphql_query).json()
+    except Exception as e:
+        logger.error(f"Failed to fetch data from GitHub GraphQL API: {e}")
 
 
 def dedupe(original: List) -> List:

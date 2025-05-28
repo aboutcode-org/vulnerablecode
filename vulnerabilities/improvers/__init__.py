@@ -21,6 +21,16 @@ from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
 from vulnerabilities.pipelines import populate_vulnerability_summary_pipeline
 from vulnerabilities.pipelines import remove_duplicate_advisories
+from vulnerabilities.pipelines.v2_improvers import compute_package_risk as compute_package_risk_v2
+from vulnerabilities.pipelines.v2_improvers import (
+    computer_package_version_rank as compute_version_rank_v2,
+)
+from vulnerabilities.pipelines.v2_improvers import enhance_with_exploitdb as exploitdb_v2
+from vulnerabilities.pipelines.v2_improvers import enhance_with_kev as enhance_with_kev_v2
+from vulnerabilities.pipelines.v2_improvers import (
+    enhance_with_metasploit as enhance_with_metasploit_v2,
+)
+from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
 
 IMPROVERS_REGISTRY = [
     valid_versions.GitHubBasicImprover,
@@ -50,7 +60,12 @@ IMPROVERS_REGISTRY = [
     add_cvss31_to_CVEs.CVEAdvisoryMappingPipeline,
     remove_duplicate_advisories.RemoveDuplicateAdvisoriesPipeline,
     populate_vulnerability_summary_pipeline.PopulateVulnerabilitySummariesPipeline,
-    compute_advisory_todo.ComputeToDo,
+    exploitdb_v2.ExploitDBImproverPipeline,
+    enhance_with_kev_v2.VulnerabilityKevPipeline,
+    flag_ghost_packages_v2.FlagGhostPackagePipeline,
+    enhance_with_metasploit_v2.MetasploitImproverPipeline,
+    compute_package_risk_v2.ComputePackageRiskPipeline,
+    compute_version_rank_v2.ComputeVersionRankPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

@@ -36,6 +36,8 @@ def get_weighted_severity(severities):
 
     score_list = []
     for severity in severities:
+        if not severity.url:
+            continue
         parsed_url = urlparse(severity.url)
         severity_source = parsed_url.netloc.replace("www.", "", 1)
         weight = WEIGHT_CONFIG.get(severity_source, DEFAULT_WEIGHT)
@@ -104,8 +106,8 @@ def compute_package_risk(package):
     and determining the associated risk.
     """
     result = []
-    for relation in package.affectedbypackagerelatedvulnerability_set.all():
-        if risk := relation.vulnerability.risk_score:
+    for advisory in package.affected_by_advisories.all():
+        if risk := advisory.risk_score:
             result.append(float(risk))
 
     if not result:

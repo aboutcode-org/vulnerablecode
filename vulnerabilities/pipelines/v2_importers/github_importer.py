@@ -36,7 +36,7 @@ class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect GitHub advisories."""
 
     pipeline_id = "github_importer_v2"
-
+    label = "GitHub"
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
     importer_name = "GHSA Importer"
@@ -117,8 +117,8 @@ class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         # "COMPOSER": "composer",
         # "PIP": "pypi",
         # "RUBYGEMS": "gem",
-        # "NPM": "npm",
-        "RUST": "cargo",
+        "NPM": "npm",
+        # "RUST": "cargo",
         # "GO": "golang",
     }
 

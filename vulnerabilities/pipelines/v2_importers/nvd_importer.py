@@ -31,7 +31,7 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect advisories from NVD."""
 
     pipeline_id = "nvd_importer_v2"
-
+    label = "NVD"
     # See https://github.com/nexB/vulnerablecode/issues/665 for follow up
     spdx_license_expression = (
         "LicenseRef-scancode-us-govt-public-domain  AND LicenseRef-scancode-cve-tou"

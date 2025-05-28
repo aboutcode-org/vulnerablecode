@@ -28,6 +28,8 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     repo_url = "git+https://github.com/pypa/advisory-database"
     importer_name = "Pypa Importer"
 
+    unfurl_version_ranges = True
+
     @classmethod
     def steps(cls):
         return (

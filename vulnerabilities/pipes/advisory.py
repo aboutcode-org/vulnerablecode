@@ -155,7 +155,7 @@ def insert_advisory_v2(
         default_data = {
             "summary": advisory.summary,
             "date_published": advisory.date_published,
-            "created_by": pipeline_id,
+            "datasource_ID": pipeline_id,
             "date_collected": datetime.now(timezone.utc),
             "advisory_id": advisory.advisory_id,
         }

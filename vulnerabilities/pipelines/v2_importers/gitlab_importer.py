@@ -37,11 +37,13 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect advisory from GitLab Advisory Database (Open Source Edition)."""
 
     pipeline_id = "gitlab_importer_v2"
-
+    label = "GitLab"
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     importer_name = "GitLab Importer"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
+
+    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
@@ -52,15 +54,15 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         )
 
     purl_type_by_gitlab_scheme = {
-        "conan": "conan",
-        "gem": "gem",
+        # "conan": "conan",
+        # "gem": "gem",
         # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
         # "go": "golang",
-        "maven": "maven",
+        # "maven": "maven",
         "npm": "npm",
-        "nuget": "nuget",
-        "packagist": "composer",
-        "pypi": "pypi",
+        # "nuget": "nuget",
+        # "packagist": "composer",
+        # "pypi": "pypi",
     }
 
     gitlab_scheme_by_purl_type = {v: k for k, v in purl_type_by_gitlab_scheme.items()}

@@ -1127,7 +1127,6 @@ class Package(PackageURLMixin):
         """
         Return a queryset of Vulnerabilities that are fixed by this package.
         """
-        print("A")
         return self.fixed_by_vulnerabilities.all()
 
     @property
@@ -1325,7 +1324,18 @@ class Alias(models.Model):
 
 
 class AdvisoryQuerySet(BaseQuerySet):
-    pass
+
+    def search(query):
+        """
+        This function will take a string as an input, the string could be an alias or an advisory ID or
+        something in the advisory description.
+        """
+        return AdvisoryV2.objects.filter(
+            Q(advisory_id__icontains=query)
+            | Q(aliases__alias__icontains=query)
+            | Q(summary__icontains=query)
+            | Q(references__url__icontains=query)
+        ).distinct()
 
 
 # FIXME: Remove when migration from Vulnerability to Advisory is completed
@@ -2522,7 +2532,7 @@ class AdvisoryV2(models.Model):
         null=False,
         unique=False,
         help_text="An advisory is a unique vulnerability identifier in some database, "
-        "such as CVE-2020-2233",
+        "such as PYSEC-2020-2233",
     )
 
     unique_content_id = models.CharField(
@@ -2562,11 +2572,12 @@ class AdvisoryV2(models.Model):
     date_imported = models.DateTimeField(
         blank=True, null=True, help_text="UTC Date on which the advisory was imported"
     )
-    created_by = models.CharField(
+    # TODO: Rename to datasource ID
+    datasource_ID = models.CharField(
         max_length=100,
         help_text="Fully qualified name of the importer prefixed with the"
         "module name importing the advisory. Eg:"
-        "vulnerabilities.pipeline.nginx_importer.NginxImporterPipeline",
+        "nginx_importer_v2",
     )
     url = models.URLField(
         blank=False,
@@ -2576,13 +2587,13 @@ class AdvisoryV2(models.Model):
 
     affecting_packages = models.ManyToManyField(
         "PackageV2",
-        related_name="fixing_advisories",
+        related_name="affected_by_advisories",
         help_text="A list of packages that are affected by this advisory.",
     )
 
     fixed_by_packages = models.ManyToManyField(
         "PackageV2",
-        related_name="affected_by_advisories",
+        related_name="fixing_advisories",
         help_text="A list of packages that are reported by this advisory.",
     )
 
@@ -2621,6 +2632,7 @@ class AdvisoryV2(models.Model):
 
     objects = AdvisoryQuerySet.as_manager()
 
+
     class Meta:
         ordering = ["date_published", "unique_content_id"]
 
@@ -2646,6 +2658,15 @@ class AdvisoryV2(models.Model):
             url=self.url,
         )
 
+    @property
+    def get_aliases(self):
+        """
+        Return a queryset of all Aliases for this vulnerability.
+        """
+        return self.aliases.all()
+
+    alias = get_aliases
+
 
 class ToDoRelatedAdvisory(models.Model):
     todo = models.ForeignKey(
@@ -2663,6 +2684,56 @@ class ToDoRelatedAdvisory(models.Model):
 
 
 class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
+
+    def search(self, query: str = None):
+        """
+        Return a Package queryset searching for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
+        query = query and query.strip()
+        if not query:
+            return self.none()
+        qs = self
+
+        try:
+            # if it's a valid purl, try to parse it and use it as is
+            purl = str(utils.plain_purl(query))
+            qs = qs.filter(package_url__istartswith=purl)
+        except ValueError:
+            # otherwise use query as a plain string
+            qs = qs.filter(package_url__icontains=query)
+        return qs.order_by("package_url")
+
+    def with_vulnerability_counts(self):
+        return self.annotate(
+            vulnerability_count=Count(
+                "affected_by_advisories",
+            ),
+            patched_vulnerability_count=Count(
+                "fixing_advisories",
+            ),
+        )
+
+    def get_fixed_by_package_versions(self, purl: PackageURL, fix=True):
+        """
+        Return a queryset of all the package versions of this `package` that fix any vulnerability.
+        If `fix` is False, return all package versions whether or not they fix a vulnerability.
+        """
+        filter_dict = {
+            "name": purl.name,
+            "namespace": purl.namespace,
+            "type": purl.type,
+            "qualifiers": purl.qualifiers,
+            "subpath": purl.subpath,
+        }
+
+        if fix:
+            filter_dict["fixing_advisories__isnull"] = False
+
+        # TODO: why do we need distinct
+        return PackageV2.objects.filter(**filter_dict).distinct()
+
     def get_or_create_from_purl(self, purl: Union[PackageURL, str]):
         """
         Return a new or existing Package given a ``purl`` PackageURL object or PURL string.
@@ -2670,6 +2741,38 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         package, is_created = PackageV2.objects.get_or_create(**purl_to_dict(purl=purl))
 
         return package, is_created
+
+    def only_vulnerable(self):
+        return self._vulnerable(True)
+
+    def only_non_vulnerable(self):
+        return self._vulnerable(False).filter(is_ghost=False)
+
+    def for_purl(self, purl):
+        """
+        Return a queryset matching the ``purl`` Package URL.
+        """
+        return self.filter(package_url=purl)
+
+    def for_purls(self, purls=()):
+        """
+        Return a queryset of Packages matching a list of PURLs.
+        """
+        return self.filter(package_url__in=purls).distinct()
+
+    def _vulnerable(self, vulnerable=True):
+        """
+        Filter to select only vulnerable or non-vulnearble packages.
+        """
+        return self.with_is_vulnerable().filter(is_vulnerable=vulnerable)
+
+    def with_is_vulnerable(self):
+        """
+        Annotate Package with ``is_vulnerable`` boolean attribute.
+        """
+        return self.annotate(
+            is_vulnerable=Exists(AdvisoryV2.objects.filter(affecting_packages__pk=OuterRef("pk")))
+        )
 
 
 class PackageV2(PackageURLMixin):
@@ -2756,7 +2859,7 @@ class PackageV2(PackageURLMixin):
         `version_rank` values and are closest to this package in terms of version order.
         """
 
-        group_packages = Package.objects.filter(
+        group_packages = PackageV2.objects.filter(
             type=self.type,
             namespace=self.namespace,
             name=self.name,
@@ -2766,5 +2869,212 @@ class PackageV2(PackageURLMixin):
             sorted_packages = sorted(group_packages, key=lambda p: self.version_class(p.version))
             for rank, package in enumerate(sorted_packages, start=1):
                 package.version_rank = rank
-            Package.objects.bulk_update(sorted_packages, fields=["version_rank"])
+            PackageV2.objects.bulk_update(sorted_packages, fields=["version_rank"])
         return self.version_rank
+
+    @property
+    def fixed_package_details(self):
+        """
+        Return a mapping of vulnerabilities that affect this package and the next and
+        latest non-vulnerable versions.
+        """
+        package_details = {}
+        package_details["purl"] = PackageURL.from_string(self.purl)
+
+        next_non_vulnerable, latest_non_vulnerable = self.get_non_vulnerable_versions()
+        package_details["next_non_vulnerable"] = next_non_vulnerable
+        package_details["latest_non_vulnerable"] = latest_non_vulnerable
+
+        package_details["advisories"] = self.get_affecting_vulnerabilities()
+
+        return package_details
+
+    def get_non_vulnerable_versions(self):
+        """
+        Return a tuple of the next and latest non-vulnerable versions as Package instance.
+        Return a tuple of (None, None) if there is no non-vulnerable version.
+        """
+        if self.version_rank == 0:
+            self.calculate_version_rank
+        non_vulnerable_versions = PackageV2.objects.get_fixed_by_package_versions(
+            self, fix=False
+        ).only_non_vulnerable()
+
+        later_non_vulnerable_versions = non_vulnerable_versions.filter(
+            version_rank__gt=self.version_rank
+        )
+
+        later_non_vulnerable_versions = list(later_non_vulnerable_versions)
+
+        if later_non_vulnerable_versions:
+            sorted_versions = later_non_vulnerable_versions
+            next_non_vulnerable = sorted_versions[0]
+            latest_non_vulnerable = sorted_versions[-1]
+            return next_non_vulnerable, latest_non_vulnerable
+
+        return None, None
+
+    @cached_property
+    def version_class(self):
+        range_class = RANGE_CLASS_BY_SCHEMES.get(self.type)
+        return range_class.version_class if range_class else Version
+
+    def get_absolute_url(self):
+        """
+        Return this Vulnerability details absolute URL.
+        """
+        return reverse("package_details_v2", args=[self.purl])
+
+    @cached_property
+    def current_version(self):
+        return self.version_class(self.version)
+
+    def get_affecting_vulnerabilities(self):
+        """
+        Return a list of vulnerabilities that affect this package together with information regarding
+        the versions that fix the vulnerabilities.
+        """
+        if self.version_rank == 0:
+            self.calculate_version_rank
+        package_details_advs = []
+
+        fixed_by_packages = PackageV2.objects.get_fixed_by_package_versions(self, fix=True)
+
+        package_advisories = self.affected_by_advisories.prefetch_related(
+            Prefetch(
+                "fixed_by_packages",
+                queryset=fixed_by_packages,
+                to_attr="fixed_packages",
+            )
+        )
+
+        for adv in package_advisories:
+            package_details_advs.append({"advisory": adv})
+            later_fixed_packages = []
+
+            for fixed_pkg in adv.fixed_by_packages.all():
+                if fixed_pkg not in fixed_by_packages:
+                    continue
+                fixed_version = self.version_class(fixed_pkg.version)
+                if fixed_version > self.current_version:
+                    later_fixed_packages.append(fixed_pkg)
+
+            next_fixed_package_vulns = []
+
+            sort_fixed_by_packages_by_version = []
+            if later_fixed_packages:
+                sort_fixed_by_packages_by_version = sorted(
+                    later_fixed_packages, key=lambda p: p.version_rank
+                )
+
+            fixed_by_pkgs = []
+
+            for vuln_details in package_details_advs:
+                if vuln_details["advisory"] != adv:
+                    continue
+                vuln_details["fixed_by_purl"] = []
+                vuln_details["fixed_by_purl_advisories"] = []
+
+                for fixed_by_pkg in sort_fixed_by_packages_by_version:
+                    fixed_by_package_details = {}
+                    fixed_by_purl = PackageURL.from_string(fixed_by_pkg.purl)
+                    next_fixed_package_vulns = list(fixed_by_pkg.affected_by_advisories.all())
+
+                    fixed_by_package_details["fixed_by_purl"] = fixed_by_purl
+                    fixed_by_package_details["fixed_by_purl_advisories"] = next_fixed_package_vulns
+                    fixed_by_pkgs.append(fixed_by_package_details)
+
+                    vuln_details["fixed_by_package_details"] = fixed_by_pkgs
+
+        return package_details_advs
+
+
+class AdvisoryExploit(models.Model):
+    """
+    A vulnerability exploit is code used to
+    take advantage of a security flaw for unauthorized access or malicious activity.
+    """
+
+    advisory = models.ForeignKey(
+        AdvisoryV2,
+        related_name="exploits",
+        on_delete=models.CASCADE,
+    )
+
+    date_added = models.DateField(
+        null=True,
+        blank=True,
+        help_text="The date the vulnerability was added to an exploit catalog.",
+    )
+
+    description = models.TextField(
+        null=True,
+        blank=True,
+        help_text="Description of the vulnerability in an exploit catalog, often a refinement of the original CVE description",
+    )
+
+    required_action = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The required action to address the vulnerability, typically to "
+        "apply vendor updates or apply vendor mitigations or to discontinue use.",
+    )
+
+    due_date = models.DateField(
+        null=True,
+        blank=True,
+        help_text="The date the required action is due, which applies"
+        " to all USA federal civilian executive branch (FCEB) agencies, "
+        "but all organizations are strongly encouraged to execute the required action",
+    )
+
+    notes = models.TextField(
+        null=True,
+        blank=True,
+        help_text="Additional notes and resources about the vulnerability,"
+        " often a URL to vendor instructions.",
+    )
+
+    known_ransomware_campaign_use = models.BooleanField(
+        default=False,
+        help_text="""Known' if this vulnerability is known to have been leveraged as part of a ransomware campaign; 
+        or 'Unknown' if there is no confirmation that the vulnerability has been utilized for ransomware.""",
+    )
+
+    source_date_published = models.DateField(
+        null=True, blank=True, help_text="The date that the exploit was published or disclosed."
+    )
+
+    exploit_type = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The type of the exploit as provided by the original upstream data source.",
+    )
+
+    platform = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The platform associated with the exploit as provided by the original upstream data source.",
+    )
+
+    source_date_updated = models.DateField(
+        null=True,
+        blank=True,
+        help_text="The date the exploit was updated in the original upstream data source.",
+    )
+
+    data_source = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The source of the exploit information, such as CISA KEV, exploitdb, metaspoit, or others.",
+    )
+
+    source_url = models.URLField(
+        null=True,
+        blank=True,
+        help_text="The URL to the exploit as provided in the original upstream data source.",
+    )
+
+    @property
+    def get_known_ransomware_campaign_use_type(self):
+        return "Known" if self.known_ransomware_campaign_use else "Unknown"

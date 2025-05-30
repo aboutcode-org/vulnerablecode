@@ -9,6 +9,7 @@
 
 import json
 
+from django.contrib.auth.models import Group
 from django.core.cache import cache
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
@@ -23,11 +24,19 @@ class ThrottleApiTests(APITestCase):
         # See https://www.django-rest-framework.org/api-guide/throttling/#setting-up-the-cache
         cache.clear()
 
-        # create a basic user
+        # create a basic user (silver)
         self.user = ApiUser.objects.create_api_user(username="e@mail.com")
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
+
+        # create user (gold)
+        self.gold_user = ApiUser.objects.create_api_user(username="g@mail.com")
+        gold, _ = Group.objects.get_or_create(name="gold")
+        self.gold_user.groups.add(gold)
+        self.gold_auth = f"Token {self.gold_user.auth_token.key}"
+        self.gold_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.gold_csrf_client.credentials(HTTP_AUTHORIZATION=self.gold_auth)
 
         # create a staff user
         self.staff_user = ApiUser.objects.create_api_user(username="staff@mail.com", is_staff=True)
@@ -43,6 +52,12 @@ class ThrottleApiTests(APITestCase):
             response = self.csrf_client.get("/api/packages")
             self.assertEqual(response.status_code, 200)
             response = self.staff_csrf_client.get("/api/packages")
+            self.assertEqual(response.status_code, 200)
+
+        for i in range(0, 25):
+            response = self.gold_csrf_client.get("/api/packages")
+            self.assertEqual(response.status_code, 200)
+            response = self.csrf_client.get("/api/packages")
             self.assertEqual(response.status_code, 200)
 
         response = self.csrf_client.get("/api/packages")

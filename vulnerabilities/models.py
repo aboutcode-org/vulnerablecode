@@ -2005,7 +2005,7 @@ class PipelineRun(models.Model):
             msg = f"Field vulnerablecode_version already set to {self.vulnerablecode_version}"
             raise ValueError(msg)
 
-        self.vulnerablecode_version = VULNERABLECODE_VERSION
+        self.vulnerablecode_version = vulnerablecode.get_git_tag()
         self.vulnerablecode_commit = vulnerablecode.get_short_commit()
         self.save(update_fields=["vulnerablecode_version", "vulnerablecode_commit"])
 

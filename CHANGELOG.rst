@@ -2,6 +2,18 @@ Release notes
 =============
 
 
+Version v36.1.2
+---------------------
+
+- Get tag from VERSION manifest #1895
+
+
+Version v36.1.1
+---------------------
+
+- Update is_active help text in pipeline migration #1887
+
+
 Version v36.1.0
 ---------------------
 

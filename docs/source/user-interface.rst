@@ -15,11 +15,11 @@ package URL or purl prefix fragment such as
 
 The search by packages is available at the following URL:
 
-    `https://public.vulnerablecode.io/packages/search <https://public.vulnerablecode.io/packages/search>`_
+    `https://public.vulnerablecode.io/packages/search/ <https://public.vulnerablecode.io/packages/search/>`_
 
 How to search by packages:
 
-    1. Go to the URL: `https://public.vulnerablecode.io/packages/search <https://public.vulnerablecode.io/packages/search>`_
+    1. Go to the URL: `https://public.vulnerablecode.io/packages/search/ <https://public.vulnerablecode.io/packages/search/>`_
     2. Enter the package URL or purl prefix fragment such as ``pkg:pypi``
        or by package name in the search box.
     3. Click on the search button.
@@ -46,11 +46,11 @@ fragment of these identifiers like ``CVE-2021``.
 
 The search by vulnerabilities is available at the following URL:
 
-    `https://public.vulnerablecode.io/vulnerabilities/search <https://public.vulnerablecode.io/vulnerabilities/search>`_
+    `https://public.vulnerablecode.io/vulnerabilities/search/ <https://public.vulnerablecode.io/vulnerabilities/search/>`_
 
 How to search by vulnerabilities:
 
-    1. Go to the URL: `https://public.vulnerablecode.io/vulnerabilities/search <https://public.vulnerablecode.io/vulnerabilities/search>`_
+    1. Go to the URL: `https://public.vulnerablecode.io/vulnerabilities/search/ <https://public.vulnerablecode.io/vulnerabilities/search/>`_
     2. Enter the VCID, CVE, GHSA, CPEs etc. in the search box.
     3. Click on the search button.
 

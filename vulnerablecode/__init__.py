@@ -14,7 +14,7 @@ from pathlib import Path
 
 import git
 
-__version__ = "36.1.0"
+__version__ = "36.1.2"
 
 
 PROJECT_DIR = Path(__file__).resolve().parent
@@ -47,6 +47,29 @@ def get_git_commit_from_version_file():
         return commit_line.replace("commit=", "")
     except (UnicodeDecodeError):
         return
+
+
+def get_git_tag_from_version_file():
+    """Return the tag from the ".VERSION" file."""
+    version_file = ROOT_DIR / ".VERSION"
+    if not version_file.exists():
+        return
+
+    try:
+        lines = version_file.read_text().splitlines()
+        ref_line = lines[0]
+        if "tag:" in ref_line:
+            if vcio_tag := ref_line.split("tag:")[-1].strip():
+                return vcio_tag
+    except (UnicodeDecodeError):
+        return
+
+
+def get_git_tag():
+    """Return the tag from the ".VERSION" file or __version__."""
+    if vcio_tag := get_git_tag_from_version_file():
+        return vcio_tag
+    return __version__
 
 
 def get_short_commit():

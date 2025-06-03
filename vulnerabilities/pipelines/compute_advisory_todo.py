@@ -31,7 +31,7 @@ class ComputeToDo(VulnerableCodePipeline):
         )
 
     def compute_individual_advisory_todo(self):
-        advisories = Advisory.objects.all().paginated()
+        advisories = Advisory.objects.all().iterator(chunk_size=2000)
         advisories_count = Advisory.objects.all().count()
 
         self.log(
@@ -62,10 +62,14 @@ class ComputeToDo(VulnerableCodePipeline):
 
         self.log(f"Cross validating advisory affected and fixed package for {aliases_count} CVEs")
 
-        progress = LoopProgress(total_iterations=aliases_count, logger=self.log)
-        for alias in progress.iter(aliases.paginated()):
+        progress = LoopProgress(
+            total_iterations=aliases_count,
+            logger=self.log,
+            progress_step=1,
+        )
+        for alias in progress.iter(aliases.iterator(chunk_size=2000)):
             advisories = (
-                Advisory.objects.filter(aliases__contains=alias.alias)
+                Advisory.objects.filter(aliases__in=aliases)
                 .exclude(advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES")
                 .distinct()
             )
@@ -87,9 +91,8 @@ class ComputeToDo(VulnerableCodePipeline):
 def check_missing_summary(advisory, todo_id, logger=None):
     if not advisory.summary:
         todo, created = AdvisoryToDo.objects.get_or_create(
-            unique_todo_id=todo_id,
+            related_advisories_id=todo_id,
             issue_type="MISSING_SUMMARY",
-            issue_detail="",
         )
         if created:
             todo.advisories.add(advisory)
@@ -107,6 +110,9 @@ def check_missing_affected_and_fixed_by_packages(advisory, todo_id, logger=None)
     has_affected_package = False
     has_fixed_package = False
     for affected in advisory.to_advisory_data().affected_packages or []:
+        if not affected:
+            continue
+
         if has_affected_package and has_fixed_package:
             break
         if not has_affected_package and affected.affected_version_range:
@@ -121,12 +127,11 @@ def check_missing_affected_and_fixed_by_packages(advisory, todo_id, logger=None)
         issue_type = "MISSING_AFFECTED_AND_FIXED_BY_PACKAGES"
     elif not has_affected_package:
         issue_type = "MISSING_AFFECTED_PACKAGE"
-    elif has_fixed_package:
+    elif not has_fixed_package:
         issue_type = "MISSING_FIXED_BY_PACKAGE"
     todo, created = AdvisoryToDo.objects.get_or_create(
-        unique_todo_id=todo_id,
+        related_advisories_id=todo_id,
         issue_type=issue_type,
-        issue_detail="",
     )
     if created:
         todo.advisories.add(advisory)
@@ -246,9 +251,11 @@ def check_conflicting_affected_and_fixed_by_packages(
 
     todo_id = advisories_checksum(advisories)
     todo, created = AdvisoryToDo.objects.get_or_create(
-        unique_todo_id=todo_id,
+        related_advisories_id=todo_id,
         issue_type=issue_type,
-        issue_detail="\n".join(messages),
+        defaults={
+            "issue_details": "\n".join(messages),
+        },
     )
     if created:
         todo.advisories.add(*advisories)

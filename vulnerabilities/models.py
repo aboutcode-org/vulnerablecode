@@ -2301,6 +2301,7 @@ class AdvisoryToDo(models.Model):
     )
 
     issue_detail = models.TextField(
+        blank=True,
         help_text="Additional details about the issue.",
     )
 
@@ -2322,12 +2323,19 @@ class AdvisoryToDo(models.Model):
     )
 
     resolved_at = models.DateTimeField(
+        null=True,
+        blank=True,
         help_text="Timestamp indicating when this TODO was resolved.",
     )
 
     resolution_detail = models.TextField(
+        blank=True,
         help_text="Additional detail on how this TODO was resolved.",
     )
 
     class Meta:
         unique_together = ("related_advisories_id", "issue_type")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)

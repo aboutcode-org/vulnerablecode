@@ -281,7 +281,11 @@ class VulnerabilityDetails(DetailView):
 
         for severity in valid_severities:
             try:
-                vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
+                vector_values_system = SCORING_SYSTEMS[severity.scoring_system]
+                if not vector_values_system:
+                    logging.error(f"Unknown scoring system: {severity.scoring_system}")
+                    continue
+                vector_values = vector_values_system.get(
                     severity.scoring_elements
                 )
                 if vector_values:
@@ -314,6 +318,114 @@ class VulnerabilityDetails(DetailView):
                 "weaknesses": weaknesses_present_in_db,
                 "status": vulnerability.get_status_label,
                 "history": vulnerability.history,
+                "epss_data": epss_data,
+            }
+        )
+        return context
+
+
+class AdvisoryDetails(DetailView):
+    model = models.AdvisoryV2
+    template_name = "advisory_detail.html"
+    slug_url_kwarg = "id"
+    slug_field = "id"
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related()
+            .prefetch_related(
+                Prefetch(
+                    "references",
+                    queryset=models.AdvisoryReference.objects.only(
+                        "reference_id", "reference_type", "url"
+                    ),
+                ),
+                Prefetch(
+                    "aliases",
+                    queryset=models.AdvisoryAlias.objects.only("alias"),
+                ),
+                Prefetch(
+                    "weaknesses",
+                    queryset=models.AdvisoryWeakness.objects.only("cwe_id"),
+                ),
+                Prefetch(
+                    "severities",
+                    queryset=models.AdvisorySeverity.objects.only(
+                        "scoring_system", "value", "url", "scoring_elements", "published_at"
+                    ),
+                ),
+                Prefetch(
+                    "exploits",
+                    queryset=models.AdvisoryExploit.objects.only(
+                        "data_source", "description", "required_action", "due_date", "notes"
+                    ),
+                ),
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        """
+        Build context with preloaded QuerySets and minimize redundant queries.
+        """
+        context = super().get_context_data(**kwargs)
+        advisory = self.object
+
+        # Pre-fetch and process data in Python instead of the template
+        weaknesses_present_in_db = [
+            weakness_object
+            for weakness_object in advisory.weaknesses.all()
+            if weakness_object.weakness
+        ]
+
+        valid_severities = self.object.severities.exclude(scoring_system=EPSS.identifier).filter(
+            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
+        )
+
+        severity_vectors = []
+
+        for severity in valid_severities:
+            try:
+                vector_values_system = SCORING_SYSTEMS.get(severity.scoring_system)
+                if not vector_values_system:
+                    logging.error(f"Unknown scoring system: {severity.scoring_system}")
+                    continue
+                if vector_values_system.identifier in ["cvssv3.1_qr"]:
+                    continue
+                vector_values = vector_values_system.get(
+                    severity.scoring_elements
+                )
+                if vector_values:
+                    severity_vectors.append({"vector": vector_values, "origin": severity.url})
+                    logging.error(f"Error processing scoring elements: {severity.scoring_elements}")
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ):
+                logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
+
+        epss_severity = advisory.severities.filter(scoring_system="epss").first()
+        epss_data = None
+        if epss_severity:
+            epss_data = {
+                "percentile": epss_severity.scoring_elements,
+                "score": epss_severity.value,
+                "published_at": epss_severity.published_at,
+            }
+        print(severity_vectors)
+        context.update(
+            {
+                "advisory": advisory,
+                "severities": list(advisory.severities.all()),
+                "severity_vectors": severity_vectors,
+                "references": list(advisory.references.all()),
+                "aliases": list(advisory.aliases.all()),
+                "weaknesses": weaknesses_present_in_db,
+                "status": advisory.get_status_label,
+                # "history": advisory.history,
                 "epss_data": epss_data,
             }
         )
@@ -449,6 +561,58 @@ class VulnerabilityPackagesDetails(DetailView):
                 "affected_packages": sorted_affected_packages,
                 "fixed_by_packages": sorted_fixed_by_packages,
                 "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
+            }
+        )
+        return context
+
+
+class AdvisoryPackagesDetails(DetailView):
+    """
+    View to display all packages affected by or fixing a specific vulnerability.
+    URL: /advisories/{id}/packages
+    """
+
+    model = models.AdvisoryV2
+    template_name = "advisory_package_details.html"
+    slug_url_kwarg = "id"
+    slug_field = "id"
+
+    def get_queryset(self):
+        """
+        Prefetch and optimize related data to minimize database hits.
+        """
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "affecting_packages",
+                    queryset=models.PackageV2.objects.only("type", "namespace", "name", "version"),
+                ),
+                Prefetch(
+                    "fixed_by_packages",
+                    queryset=models.PackageV2.objects.only("type", "namespace", "name", "version"),
+                ),
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        """
+        Build context with preloaded QuerySets and minimize redundant queries.
+        """
+        context = super().get_context_data(**kwargs)
+        advisory = self.object
+        (
+            sorted_fixed_by_packages,
+            sorted_affected_packages,
+            all_affected_fixed_by_matches,
+        ) = advisory.aggregate_fixed_and_affected_packages()
+        context.update(
+            {
+                "affected_packages": sorted_affected_packages,
+                "fixed_by_packages": sorted_fixed_by_packages,
+                "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
+                "advisory": advisory,
             }
         )
         return context

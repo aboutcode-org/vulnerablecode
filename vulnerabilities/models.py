@@ -2260,23 +2260,22 @@ class PipelineSchedule(models.Model):
         return schedules.schedule_execution(self, execute_now) if self.is_active else None
 
 
-class AdvisoryTODO(models.Model):
-    ISSUE_TYPE_CHOICES = [
-        ("MISSING_AFFECTED_PACKAGE", "Advisory is missing affected package"),
-        ("MISSING_FIXED_BY_PACKAGE", "Advisory is missing fixed-by package"),
-        (
-            "MISSING_AFFECTED_AND_FIXED_BY_PACKAGES",
-            "Advisory is missing both affected and fixed-by packages",
-        ),
-        ("MISSING_SUMMARY", "Advisory is missing summary"),
-        ("CONFLICTING_FIXED_BY_PACKAGES", "Advisories have conflicting fixed-by packages"),
-        ("CONFLICTING_AFFECTED_PACKAGES", "Advisories have conflicting affected packages"),
-        (
-            "CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES",
-            "Advisories have conflicting affected and fixed-by packages",
-        ),
-        ("CONFLICTING_SEVERITY_SCORES", "Advisories have conflicting severity scores"),
-    ]
+ISSUE_TYPE_CHOICES = [
+    ("MISSING_AFFECTED_PACKAGE", "Advisory is missing affected package"),
+    ("MISSING_FIXED_BY_PACKAGE", "Advisory is missing fixed-by package"),
+    (
+        "MISSING_AFFECTED_AND_FIXED_BY_PACKAGES",
+        "Advisory is missing both affected and fixed-by packages",
+    ),
+    ("MISSING_SUMMARY", "Advisory is missing summary"),
+    ("CONFLICTING_FIXED_BY_PACKAGES", "Advisories have conflicting fixed-by packages"),
+    ("CONFLICTING_AFFECTED_PACKAGES", "Advisories have conflicting affected packages"),
+    (
+        "CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES",
+        "Advisories have conflicting affected and fixed-by packages",
+    ),
+    ("CONFLICTING_SEVERITY_SCORES", "Advisories have conflicting severity scores"),
+]
 
 
 class AdvisoryToDo(models.Model):

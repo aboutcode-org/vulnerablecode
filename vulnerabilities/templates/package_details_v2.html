@@ -92,7 +92,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                     </td>
                                     <td class="two-col-right">
                                         {% if fixed_package_details.next_non_vulnerable.version %}
-                                        <a href="/packages/{{ fixed_package_details.next_non_vulnerable|url_quote }}?search={{ fixed_package_details.next_non_vulnerable }}"
+                                        <a href="/packages/v2/{{ fixed_package_details.next_non_vulnerable|url_quote }}?search={{ fixed_package_details.next_non_vulnerable }}"
                                             target="_self">{{ fixed_package_details.next_non_vulnerable.version }}</a>
                                         {% else %}
                                         <span class="emphasis-vulnerable">None.</span>
@@ -105,24 +105,10 @@ VulnerableCode Package Details - {{ package.purl }}
                                     </td>
                                     <td class="two-col-right">
                                         {% if fixed_package_details.latest_non_vulnerable.version %}
-                                        <a href="/packages/{{ fixed_package_details.latest_non_vulnerable|url_quote }}?search={{ fixed_package_details.latest_non_vulnerable }}"
+                                        <a href="/packages/v2/{{ fixed_package_details.latest_non_vulnerable|url_quote }}?search={{ fixed_package_details.latest_non_vulnerable }}"
                                             target="_self">{{ fixed_package_details.latest_non_vulnerable.version }}</a>
                                         {% else %}
                                         <span class="emphasis-vulnerable">None.</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="two-col-left">
-                                      <span
-                                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                            data-tooltip="Risk is expressed as a number ranging from 0 to 10. It is calculated based on weighted severity and exploitability values. The risk score is the maximum value of either the weighted severity multiplied by its exploitability or 10.">
-                                            Risk
-                                        </span>
-                                    </td>
-                                    <td class="two-col-right">
-                                        {% if package.risk_score %}
-                                        <a target="_self">{{ package.risk_score }}</a>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -134,15 +120,17 @@ VulnerableCode Package Details - {{ package.purl }}
 
                     <div class="content ml-3 mr-3 pb-1">
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
-                            Advisories affecting this package ({{ affected_by_advisories|length }})
+                            Vulnerabilities affecting this package ({{ affected_by_advisories|length }})
                         </div>
 
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                             <thead>
                                 <tr>
                                     <th style="width: 200px;">Advisory</th>
+                                    <th style="width: 310px;">Source</th>
+                                    <th style="width: 200px;">Date Published</th>
                                     <th>Summary</th>
-                                    <th style="width: 310px;">Fixed by</th>
+                                    <th style="width: 310px;">Fixed in package version</th>
                                 </tr>
                             </thead>
 
@@ -150,9 +138,13 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% for advisory in affected_by_advisories %}
                                 <tr>
                                     <td>
-                                        {{advisory.advisory_id }}
+                                        <a href="/advisories/{{advisory.id}}">
+                                            {{advisory.advisory_id }}
+                                        </a>
                                         <br />
+                                        {% if advisory.alias|length != 0 %}
                                         Aliases:
+                                        {% endif %}
                                         <br />
                                         {% for alias in advisory.alias %}
                                         {% if alias.url %}
@@ -164,6 +156,12 @@ VulnerableCode Package Details - {{ package.purl }}
                                         <br />
                                         {% endif %}
                                         {% endfor %}
+                                    </td>
+                                    <td style="word-wrap: break-word; word-break: break-word;">
+                                        <a href={{advisory.url}} target="_blank">{{advisory.url}}</a>
+                                    </td>
+                                    <td style="word-wrap: break-word; word-break: break-word;">
+                                        {{advisory.date_published}}
                                     </td>
                                     <td style="word-wrap: break-word; word-break: break-word;">
                                         {{ advisory.summary }}
@@ -183,17 +181,17 @@ VulnerableCode Package Details - {{ package.purl }}
                                                 <a href="/packages/v2/{{ fixed_pkg.fixed_by_purl|url_quote }}?search={{ fixed_pkg.fixed_by_purl }}"
                                                     target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
                                                 <br />
-                                                <span class="emphasis-not-vulnerable">Affected by 0 other advisories.</span>
+                                                <span class="emphasis-not-vulnerable">Subject of 0 other advisories.</span>
                                                 {% else %}
                                                 <a href="/packages/v2/{{ fixed_pkg.fixed_by_purl|url_quote }}?search={{ fixed_pkg.fixed_by_purl }}"
                                                     target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
                                                 {% if fixed_pkg.fixed_by_purl_advisories|length != 1 %}
                                                 <br />
-                                                <span class="emphasis-vulnerable">Affected by {{ fixed_pkg.fixed_by_purl_advisories|length }} other
+                                                <span class="emphasis-vulnerable">Subject of {{ fixed_pkg.fixed_by_purl_advisories|length }} other
                                                     advisory.</span>
                                                 {% else %}
                                                 <br />
-                                                <span class="emphasis-vulnerable">Affected by {{ fixed_pkg.fixed_by_purl_advisories|length }} other
+                                                <span class="emphasis-vulnerable">Subject of {{ fixed_pkg.fixed_by_purl_advisories|length }} other
                                                     advisory.</span>
                                                 {% endif %}
 
@@ -207,7 +205,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                                         <div class="dropdown-content dropdown-instructions-box-shadow">
                                                             <div class="dropdown-item">
                                                                 <div style="max-height: 200px; overflow-y: auto;">
-                                                                    This version is affected by these other advisories:
+                                                                    This version is subject of other advisories:
                                                                     <div style="padding-top: 5px;">
                                                                         {% for fixed_by_vuln in fixed_pkg.fixed_by_purl_advisories %}
                                                                         <div>
@@ -234,7 +232,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% empty %}
                                 <tr>
                                     <td colspan="3">
-                                        <span class="emphasis-not-vulnerable">This package is not known to be affected by advisories.</span>
+                                        <span class="emphasis-not-vulnerable">This package is not known to be subject of any advisories.</span>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -244,13 +242,15 @@ VulnerableCode Package Details - {{ package.purl }}
 
                     <div class="content ml-3 mr-3 pb-0 mb-0">
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
-                            Advisories fixed by this package ({{ fixing_advisories|length }})
+                            Vulnerabilities fixed by this package ({{ fixing_advisories|length }})
                         </div>
 
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                             <thead>
                                 <tr>
                                     <th style="width: 200px;">Advisory</th>
+                                    <th style="width: 225px;">Source</th>
+                                    <th style="width: 225px;">Date Published</th>
                                     <th>Summary</th>
                                     <th style="width: 225px;">Aliases</th>
                                 </tr>
@@ -259,7 +259,15 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% for advisory in fixing_advisories %}
                                 <tr>
                                     <td>
-                                        {{ advisory.advisory_id }}
+                                        <a href="/advisories/{{advisory.id}}">
+                                            {{advisory.advisory_id }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href={{advisory.url}} target="_blank">{{advisory.url}}</a>
+                                    </td>
+                                    <td>
+                                        {{advisory.date_published}}
                                     </td>
                                     <td>
                                         {{ advisory.summary }}

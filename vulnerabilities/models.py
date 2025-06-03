@@ -2638,6 +2638,17 @@ class AdvisoryV2(models.Model):
         self.full_clean()
         return super().save(*args, **kwargs)
     
+    @property
+    def get_status_label(self):
+        label_by_status = {choice[0]: choice[1] for choice in VulnerabilityStatusType.choices}
+        return label_by_status.get(self.status) or VulnerabilityStatusType.PUBLISHED.label
+    
+    def get_absolute_url(self):
+        """
+        Return this Vulnerability details absolute URL.
+        """
+        return reverse("advisory_details", args=[self.id])
+
     def to_advisory_data(self) -> "AdvisoryDataV2":
         from vulnerabilities.importer import AdvisoryDataV2
         from vulnerabilities.importer import AffectedPackage
@@ -2662,6 +2673,65 @@ class AdvisoryV2(models.Model):
         Return a queryset of all Aliases for this vulnerability.
         """
         return self.aliases.all()
+    
+    def aggregate_fixed_and_affected_packages(self):
+        from vulnerabilities.utils import get_purl_version_class
+
+        sorted_fixed_by_packages = self.fixed_by_packages.filter(is_ghost=False).order_by(
+            "type", "namespace", "name", "qualifiers", "subpath"
+        )
+
+        if sorted_fixed_by_packages:
+            sorted_fixed_by_packages.first().calculate_version_rank
+
+        sorted_affected_packages = self.affecting_packages.all()
+
+        if sorted_affected_packages:
+            sorted_affected_packages.first().calculate_version_rank
+
+        grouped_fixed_by_packages = {
+            key: list(group)
+            for key, group in groupby(
+                sorted_fixed_by_packages,
+                key=attrgetter("type", "namespace", "name", "qualifiers", "subpath"),
+            )
+        }
+
+        all_affected_fixed_by_matches = []
+
+        for sorted_affected_package in sorted_affected_packages:
+            affected_fixed_by_matches = {
+                "affected_package": sorted_affected_package,
+                "matched_fixed_by_packages": [],
+            }
+
+            # Build the key to find matching group
+            key = (
+                sorted_affected_package.type,
+                sorted_affected_package.namespace,
+                sorted_affected_package.name,
+                sorted_affected_package.qualifiers,
+                sorted_affected_package.subpath,
+            )
+
+            # Get matching group from pre-grouped fixed_by_packages
+            matching_fixed_packages = grouped_fixed_by_packages.get(key, [])
+
+            # Get version classes for comparison
+            affected_version_class = get_purl_version_class(sorted_affected_package)
+            affected_version = affected_version_class(sorted_affected_package.version)
+
+            # Compare versions and filter valid matches
+            matched_fixed_by_packages = [
+                fixed_by_package.purl
+                for fixed_by_package in matching_fixed_packages
+                if get_purl_version_class(fixed_by_package)(fixed_by_package.version)
+                > affected_version
+            ]
+
+            affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
+            all_affected_fixed_by_matches.append(affected_fixed_by_matches)
+        return sorted_fixed_by_packages, sorted_affected_packages, all_affected_fixed_by_matches
 
     alias = get_aliases
 

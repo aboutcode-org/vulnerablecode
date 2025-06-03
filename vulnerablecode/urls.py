@@ -24,7 +24,7 @@ from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
-from vulnerabilities.views import AdminLoginView
+from vulnerabilities.views import AdminLoginView, AdvisoryDetails, AdvisoryPackagesDetails
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2
@@ -96,6 +96,11 @@ urlpatterns = [
         name="home",
     ),
     path(
+        "advisories/<int:id>",
+        AdvisoryDetails.as_view(),
+        name="advisory_details",
+    ),
+    path(
         "packages/search/",
         PackageSearch.as_view(),
         name="package_search",
@@ -129,6 +134,11 @@ urlpatterns = [
         "vulnerabilities/<str:vulnerability_id>/packages",
         VulnerabilityPackagesDetails.as_view(),
         name="vulnerability_package_details",
+    ),
+    path(
+        "advisories/<int:id>/packages",
+        AdvisoryPackagesDetails.as_view(),
+        name="advisory_package_details",
     ),
     path(
         "api/",

@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load utils %}
+
+
+{% block title %}
+{{ pipeline_name }} Runs
+{% endblock %}
+
+{% block extrahead %}
+<style>
+  thead th {
+    border-bottom: none !important;
+  }
+
+  tbody tr:hover {
+    background-color: #e0e0e0 !important;
+    cursor: pointer;
+  }
+
+  tbody tr:nth-child(even):hover {
+    background-color: #d3d3d3 !important;
+  }
+
+  .column {
+    word-break: break-word;
+  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="columns">
+  <div class="column">
+  </div>
+
+  <div class="column is-four-fifths">
+    <div class="content is-normal">
+      <h1>{{ pipeline_name }} Runs</h1>
+      <hr />
+    </div>
+
+    {% if pipeline_description %}
+      <div class="notification is-info is-light">
+        <p class="is-size-5 has-text-grey-dark has-text-centered">
+          {{ pipeline_description }}
+        </p>
+      </div>
+    {% endif %}
+
+    <div class="box">
+      <table class="table is-striped  is-hoverable is-fullwidth">
+        <thead>
+          <tr>
+            <th colspan="6">
+              <div class="box is-small">
+                <div class="columns is-mobile is-vcentered">
+                  <div class="column is-one-quarter">Job ID</div>
+                  <div class="column is-one-eighth">Status</div>
+                  <div class="column is-one-eighth">Execution Time</div>
+                  <div class="column is-one-fifth">Start Time</div>
+                  <div class="column is-one-fifth">End Time</div>
+                </div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for run in run_list %}
+          <tr>
+            <td colspan="6">
+              <a href="{% url 'run-details' pipeline_id=run.pipeline.pipeline_id run_id=run.run_id %}"
+                class="has-text-info">
+                <div class="columns px-1 is-mobile is-vcentered">
+                  <div class="column is-one-quarter">{{ run.run_id }}</div>
+                  <div class="column is-one-eighth">
+                    <span class="is-flex is-align-items-center">
+                      {% include "includes/job_status.html" with status=run.status %}
+                    </span>
+                  </div>
+                  <div class="column is-one-eighth has-text-grey">
+                    {% if run.execution_time %}
+                      {{ run.execution_time|humanize_duration }}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
+                  <div class="column is-one-fifth has-text-grey">
+                    {% if run.run_start_date %}
+                      {{ run.run_start_date|date:"Y-m-d h:i a T" }}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
+                  <div class="column is-one-fifth has-text-grey">
+                    {% if run.run_end_date %}
+                      {{ run.run_end_date|date:"Y-m-d h:i a T" }}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="has-text-centered">No run found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <a href="{% url 'schedule' %}" class="button is-info mt-4"><i class="fa fa-arrow-left mr-2"></i>Back to Schedules</a>
+    </div>
+    {% if is_paginated %}
+    <nav class="pagination is-centered px-5" role="navigation" aria-label="pagination">
+      {% if page_obj.has_previous %}
+      <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% if page_obj.has_next %}
+      <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+      {% endif %}
+      <ul class="pagination-list">
+        <li><a class="pagination-link" aria-label="Goto page 1" href="?page=1">1</a></li>
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        <li><a class="pagination-link" aria-label="Goto page {{ page_obj.number }}"
+            href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+  <div class="column"></div>
+</div>
+{% endblock %}

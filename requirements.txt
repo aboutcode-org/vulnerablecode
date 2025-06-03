@@ -27,7 +27,7 @@ dateparser==1.1.1
 decorator==5.1.1
 defusedxml==0.7.1
 distro==1.7.0
-Django==4.2.20
+Django==4.2.21
 django-crispy-forms==2.3
 django-environ==0.11.2
 django-filter==24.3
@@ -92,8 +92,10 @@ python-dateutil==2.8.2
 python-dotenv==0.20.0
 pytz==2022.1
 PyYAML==6.0.1
+redis==5.0.1
 requests==2.32.0
 restructuredtext-lint==1.4.0
+rq==1.15.1
 saneyaml==0.6.0
 semantic-version==2.9.0
 six==1.16.0

@@ -20,7 +20,7 @@ from vulnerabilities.pipelines import VulnerableCodePipeline
 
 class VulnerabilityKevPipeline(VulnerableCodePipeline):
     """
-    Known Exploited Vulnerabilities Pipeline: Retrieve KEV data, iterate through it to identify vulnerabilities
+    Retrieve KEV data, iterate through it to identify vulnerabilities
     by their associated aliases, and create or update the corresponding Exploit instances.
     """
 

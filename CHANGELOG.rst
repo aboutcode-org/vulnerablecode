@@ -2,6 +2,29 @@ Release notes
 =============
 
 
+Version v36.1.2
+---------------------
+
+- Get tag from VERSION manifest #1895
+
+
+Version v36.1.1
+---------------------
+
+- Update is_active help text in pipeline migration #1887
+
+
+Version v36.1.0
+---------------------
+
+- Remove admin panel #1885
+- Support running pipelines in scheduled task queue #1871
+- Optimize export management command #1868
+- Fix alpine linux importer #1861
+- Stop github OSV importer crashes #1854
+- Make advisory content_id a unique field #1864
+
+
 Version v36.0.0
 ---------------------
 

@@ -22,7 +22,7 @@ from vulnerabilities.pipelines import VulnerableCodePipeline
 
 class MetasploitImproverPipeline(VulnerableCodePipeline):
     """
-    Metasploit Exploits Pipeline: Retrieve Metasploit data, iterate through it to identify vulnerabilities
+    Retrieve Metasploit data, iterate through it to identify vulnerabilities
     by their associated aliases, and create or update the corresponding Exploit instances.
     """
 

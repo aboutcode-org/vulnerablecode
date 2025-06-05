@@ -1,0 +1,312 @@
+[
+    {
+      "aliases": ["CVE-2024-12797"],
+      "summary": "Clients using RFC7250 Raw Public Keys (RPKs) to authenticate a server may fail to notice that the server was not authenticated, because handshakes don’t abort as expected when the SSL_VERIFY_PEER verification mode is set.",
+      "affected_packages": [
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/3.4.0|3.4.1",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/3.3.0|3.3.3",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/3.2.0|3.2.4",
+          "fixed_version": null
+        }
+      ],
+      "references": [
+        {
+          "reference_id": "CVE-2024-12797",
+          "reference_type": "",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-12797",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "High",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-12797",
+          "reference_type": "",
+          "url": "https://openssl-library.org/news/secadv/20250211.txt",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "High",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-12797",
+          "reference_type": "",
+          "url": "https://github.com/openssl/openssl/commit/738d4f9fdeaad57660dcba50a619fafced3fd5e9",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "High",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-12797",
+          "reference_type": "",
+          "url": "https://github.com/openssl/openssl/commit/87ebd203feffcf92ad5889df92f90bb0ee10a699",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "High",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-12797",
+          "reference_type": "",
+          "url": "https://github.com/openssl/openssl/commit/798779d43494549b611233f92652f0da5328fbe7",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "High",
+              "scoring_elements": ""
+            }
+          ]
+        }
+      ],
+      "date_published": "2025-02-11T00:00:00+00:00",
+      "weaknesses": [],
+      "url": "https://openssl-library.org/news/vulnerabilities/index.html#CVE-2024-12797"
+    },
+    {
+      "aliases": ["CVE-2024-13176"],
+      "summary": "A timing side-channel which could potentially allow recovering the private key exists in the ECDSA signature computation.",
+      "affected_packages": [
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/3.4.0|3.4.1",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/3.3.0|3.3.3",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/3.2.0|3.2.4",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/3.1.0|3.1.8",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/3.0.0|3.0.16",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/1.1.1|1.1.1zb",
+          "fixed_version": null
+        },
+        {
+          "package": {
+            "type": "openssl",
+            "namespace": "",
+            "name": "openssl",
+            "version": "",
+            "qualifiers": "",
+            "subpath": ""
+          },
+          "affected_version_range": "vers:openssl/1.0.2|1.0.2zl",
+          "fixed_version": null
+        }
+      ],
+      "references": [
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-13176",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://openssl-library.org/news/secadv/20250120.txt",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://github.com/openssl/openssl/commit/77c608f4c8857e63e98e66444e2e761c9627916f",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://github.com/openssl/openssl/commit/392dcb336405a0c94486aa6655057f59fd3a0902",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://github.com/openssl/openssl/commit/4b1cb94a734a7d4ec363ac0a215a25c181e11f65",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://github.com/openssl/openssl/commit/2af62e74fb59bc469506bc37eb2990ea408d9467",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://github.com/openssl/openssl/commit/07272b05b04836a762b4baa874958af51d513844",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://github.openssl.org/openssl/extended-releases/commit/a2639000db19878d5d89586ae7b725080592ae86",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        },
+        {
+          "reference_id": "CVE-2024-13176",
+          "reference_type": "",
+          "url": "https://github.openssl.org/openssl/extended-releases/commit/0d5fd1ab987f7571e2c955d8d8b638fc0fb54ded",
+          "severities": [
+            {
+              "system": "generic_textual",
+              "value": "Low",
+              "scoring_elements": ""
+            }
+          ]
+        }
+      ],
+      "date_published": "2025-01-20T00:00:00+00:00",
+      "weaknesses": [],
+      "url": "https://openssl-library.org/news/vulnerabilities/index.html#CVE-2024-13176"
+    }
+]

@@ -2637,12 +2637,12 @@ class AdvisoryV2(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
-    
+
     @property
     def get_status_label(self):
         label_by_status = {choice[0]: choice[1] for choice in VulnerabilityStatusType.choices}
         return label_by_status.get(self.status) or VulnerabilityStatusType.PUBLISHED.label
-    
+
     def get_absolute_url(self):
         """
         Return this Vulnerability details absolute URL.
@@ -2673,7 +2673,7 @@ class AdvisoryV2(models.Model):
         Return a queryset of all Aliases for this vulnerability.
         """
         return self.aliases.all()
-    
+
     def aggregate_fixed_and_affected_packages(self):
         from vulnerabilities.utils import get_purl_version_class
 

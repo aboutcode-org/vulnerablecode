@@ -285,9 +285,7 @@ class VulnerabilityDetails(DetailView):
                 if not vector_values_system:
                     logging.error(f"Unknown scoring system: {severity.scoring_system}")
                     continue
-                vector_values = vector_values_system.get(
-                    severity.scoring_elements
-                )
+                vector_values = vector_values_system.get(severity.scoring_elements)
                 if vector_values:
                     severity_vectors.append({"vector": vector_values, "origin": severity.url})
             except (
@@ -393,9 +391,7 @@ class AdvisoryDetails(DetailView):
                     continue
                 if vector_values_system.identifier in ["cvssv3.1_qr"]:
                     continue
-                vector_values = vector_values_system.get(
-                    severity.scoring_elements
-                )
+                vector_values = vector_values_system.get(severity.scoring_elements)
                 if vector_values:
                     severity_vectors.append({"vector": vector_values, "origin": severity.url})
                     logging.error(f"Error processing scoring elements: {severity.scoring_elements}")

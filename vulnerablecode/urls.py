@@ -24,7 +24,9 @@ from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
-from vulnerabilities.views import AdminLoginView, AdvisoryDetails, AdvisoryPackagesDetails
+from vulnerabilities.views import AdminLoginView
+from vulnerabilities.views import AdvisoryDetails
+from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2

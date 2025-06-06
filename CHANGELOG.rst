@@ -1,6 +1,11 @@
 Release notes
 =============
 
+Version v36.1.3
+---------------------
+
+- Increase docker shared memory size #1896
+
 
 Version v36.1.2
 ---------------------

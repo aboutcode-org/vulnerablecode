@@ -8,18 +8,19 @@
 #
 
 
+import json
+
 from aboutcode.pipeline import LoopProgress
 
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import AdvisoryToDo
 from vulnerabilities.models import Alias
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.pipes import fetchcode_utils
 from vulnerabilities.pipes.advisory import advisories_checksum
 
 
 class ComputeToDo(VulnerableCodePipeline):
-    """Compute advisory AdvisoryToDo."""
+    """Compute ToDos for Advisory."""
 
     pipeline_id = "compute_advisory_todo"
 
@@ -56,7 +57,6 @@ class ComputeToDo(VulnerableCodePipeline):
             )
 
     def detect_conflicting_advisories(self):
-        PACKAGE_VERSIONS = {}
         aliases = Alias.objects.filter(alias__istartswith="cve")
         aliases_count = aliases.count()
 
@@ -68,21 +68,12 @@ class ComputeToDo(VulnerableCodePipeline):
             progress_step=1,
         )
         for alias in progress.iter(aliases.iterator(chunk_size=2000)):
-            advisories = (
-                Advisory.objects.filter(aliases__in=aliases)
-                .exclude(advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES")
-                .distinct()
-            )
-            purls = get_advisories_purls(advisories=advisories)
-            get_package_versions(
-                purls=purls,
-                package_versions=PACKAGE_VERSIONS,
-                logger=self.log,
-            )
+            advisories = alias.advisories.exclude(
+                advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES"
+            ).distinct()
+
             check_conflicting_affected_and_fixed_by_packages(
                 advisories=advisories,
-                package_versions=PACKAGE_VERSIONS,
-                purls=purls,
                 cve=alias,
                 logger=self.log,
             )
@@ -137,30 +128,12 @@ def check_missing_affected_and_fixed_by_packages(advisory, todo_id, logger=None)
         todo.advisories.add(advisory)
 
 
-def get_package_versions(purls, package_versions, logger=None):
-    for purl in purls:
-        if purl in package_versions:
-            continue
-        versions = fetchcode_utils.versions(purl=purl, logger=logger)
-        package_versions[purl] = versions
-
-
-def get_advisories_purls(advisories):
-    purls = set()
-    for advisory in advisories:
-        advisory_obj = advisory.to_advisory_data()
-        purls.update([str(i.package) for i in advisory_obj.affected_packages])
-    return purls
-
-
-def check_conflicting_affected_and_fixed_by_packages(
-    advisories, package_versions, purls, cve, logger=None
-):
+def check_conflicting_affected_and_fixed_by_packages(advisories, cve, logger=None):
     """
     Add appropriate AdvisoryToDo for conflicting affected/fixed packages.
 
     Compute the comparison matrix for the given set of advisories. Iterate through each advisory
-    and compute and store fixed versions and normalized affected versions for each advisory,
+    and compute and store fixed versions and affected versionrange for each advisory,
     keyed by purl.
 
     Use the matrix to determine conflicts in affected/fixed versions for each purl. If for any purl
@@ -171,7 +144,7 @@ def check_conflicting_affected_and_fixed_by_packages(
         {
             "pkg:npm/foo/bar": {
                 "affected": {
-                    Advisory1: frozenset(NormalizedVersionRange1, NormalizedVersionRange2),
+                    Advisory1: frozenset(VersionRange1, VersionRange2),
                     Advisory2: frozenset(...),
                 },
                 "fixed": {
@@ -195,11 +168,11 @@ def check_conflicting_affected_and_fixed_by_packages(
     matrix = {}
     for advisory in advisories:
         advisory_obj = advisory.to_advisory_data()
+        advisory_id = advisory.unique_content_id
         for affected in advisory_obj.affected_packages or []:
-            affected_purl = str(affected.package)
-
-            if affected_purl not in purls or not purls[affected_purl]:
+            if not affected:
                 continue
+            affected_purl = str(affected.package)
 
             initialize_sub_matrix(
                 matrix=matrix,
@@ -208,13 +181,12 @@ def check_conflicting_affected_and_fixed_by_packages(
             )
 
             if fixed_version := affected.fixed_version:
-                matrix[affected_purl]["fixed"][advisory].add(fixed_version)
+                matrix[affected_purl]["fixed"][advisory_id].add(str(fixed_version))
 
             if affected.affected_version_range:
-                normalized_vers = affected.affected_version_range.normalize(
-                    known_versions=package_versions[affected_purl],
+                matrix[affected_purl]["affected"][advisory_id].add(
+                    str(affected.affected_version_range)
                 )
-                matrix[affected_purl]["affected"][advisory].add(normalized_vers)
 
     has_conflicting_affected_packages = False
     has_conflicting_fixed_package = False
@@ -223,22 +195,19 @@ def check_conflicting_affected_and_fixed_by_packages(
         fixed = board.get("fixed", {}).values()
         affected = board.get("affected", {}).values()
 
-        # Compare affected_vers set across different advisories.
         unique_set_of_affected_vers = {frozenset(vers) for vers in affected}
-
-        # Compare fixed_version set across different advisories.
         unique_set_of_fixed_versions = {frozenset(versions) for versions in fixed}
 
         if len(unique_set_of_affected_vers) > 1:
             has_conflicting_affected_packages = True
+            conflicting_affected = json.dumps(unique_set_of_affected_vers, default=list)
             messages.append(
-                f"{cve}: {purl} with conflicting affected versions {unique_set_of_affected_vers}"
+                f"{cve}: {purl} with conflicting affected versions {conflicting_affected}"
             )
         if len(unique_set_of_fixed_versions) > 1:
             has_conflicting_fixed_package = True
-            messages.append(
-                f"{cve}: {purl} with conflicting fixed version {unique_set_of_fixed_versions}"
-            )
+            conflicting_fixed = json.dumps(unique_set_of_fixed_versions, default=list)
+            messages.append(f"{cve}: {purl} with conflicting fixed version {conflicting_fixed}")
 
     if not has_conflicting_affected_packages and not has_conflicting_fixed_package:
         return
@@ -249,12 +218,14 @@ def check_conflicting_affected_and_fixed_by_packages(
     elif not has_conflicting_affected_packages:
         issue_type = "CONFLICTING_FIXED_BY_PACKAGES"
 
+    messages.append("Comparison matrix:")
+    messages.append(json.dumps(matrix, indent=2, default=list))
     todo_id = advisories_checksum(advisories)
     todo, created = AdvisoryToDo.objects.get_or_create(
         related_advisories_id=todo_id,
         issue_type=issue_type,
         defaults={
-            "issue_details": "\n".join(messages),
+            "issue_detail": "\n".join(messages),
         },
     )
     if created:
@@ -262,17 +233,18 @@ def check_conflicting_affected_and_fixed_by_packages(
 
 
 def initialize_sub_matrix(matrix, affected_purl, advisory):
+    advisory_id = advisory.unique_content_id
     if affected_purl not in matrix:
         matrix[affected_purl] = {
             "affected": {
-                advisory: set(),
+                advisory_id: set(),
             },
             "fixed": {
-                advisory: set(),
+                advisory_id: set(),
             },
         }
     else:
         if advisory not in matrix[affected_purl]["affected"]:
-            matrix[affected_purl]["affected"] = set()
+            matrix[affected_purl]["affected"][advisory_id] = set()
         if advisory not in matrix[affected_purl]["fixed"]:
-            matrix[affected_purl]["fixed"] = set()
+            matrix[affected_purl]["fixed"][advisory_id] = set()

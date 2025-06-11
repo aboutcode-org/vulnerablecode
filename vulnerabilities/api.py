@@ -34,7 +34,7 @@ from vulnerabilities.models import Weakness
 from vulnerabilities.models import get_purl_query_lookups
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.throttling import StaffUserRateThrottle
+from vulnerabilities.throttling import GroupUserRateThrottle
 from vulnerabilities.utils import get_severity_range
 
 
@@ -471,7 +471,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PackageSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+    throttle_classes = [AnonRateThrottle, GroupUserRateThrottle]
 
     def get_queryset(self):
         return super().get_queryset().with_is_vulnerable()
@@ -688,7 +688,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+    throttle_classes = [AnonRateThrottle, GroupUserRateThrottle]
 
 
 class CPEFilterSet(filters.FilterSet):

@@ -6,18 +6,31 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+
 from rest_framework.exceptions import Throttled
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import exception_handler
 
 
-class StaffUserRateThrottle(UserRateThrottle):
+class GroupUserRateThrottle(UserRateThrottle):
+    scope = "bronze"
+
     def allow_request(self, request, view):
-        """
-        Do not apply throttling for superusers and admins.
-        """
-        if request.user.is_superuser or request.user.is_staff:
-            return True
+        user = request.user
+
+        if user and user.is_authenticated:
+            if user.is_superuser or user.is_staff:
+                return True
+
+            user_groups = user.groups.all()
+            if any([group.name == "gold" for group in user_groups]):
+                return True
+
+            if any([group.name == "silver" for group in user_groups]):
+                self.scope = "silver"
+
+        self.rate = self.THROTTLE_RATES.get(self.scope)
+        self.num_requests, self.duration = self.parse_rate(self.rate)
 
         return super().allow_request(request, view)
 

@@ -61,7 +61,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         )
         self.reference2.vulnerabilities.add(self.vuln2)
 
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com", is_staff=True)
         self.auth = f"Token {self.user.auth_token.key}"
         self.client = APIClient(enforce_csrf_checks=True)
         self.client.credentials(HTTP_AUTHORIZATION=self.auth)
@@ -210,7 +210,7 @@ class PackageV2ViewSetTest(APITestCase):
         self.package1.affected_by_vulnerabilities.add(self.vuln1)
         self.package2.fixing_vulnerabilities.add(self.vuln2)
 
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com", is_staff=True)
         self.auth = f"Token {self.user.auth_token.key}"
         self.client = APIClient(enforce_csrf_checks=True)
         self.client.credentials(HTTP_AUTHORIZATION=self.auth)

@@ -452,7 +452,7 @@ def add_aliases(vuln, aliases):
 
 class APIPerformanceTest(TestCase):
     def setUp(self):
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com", is_staff=True)
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
@@ -572,7 +572,7 @@ class APIPerformanceTest(TestCase):
 
 class APITestCasePackage(TestCase):
     def setUp(self):
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com", is_staff=True)
         self.auth = f"Token {self.user.auth_token.key}"
         self.csrf_client = APIClient(enforce_csrf_checks=True)
         self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)

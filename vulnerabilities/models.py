@@ -28,6 +28,7 @@ from cwe2.database import Database
 from cwe2.mappings import xml_database_path
 from cwe2.weakness import Weakness as DBWeakness
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
 from django.core.exceptions import ValidationError
@@ -1471,6 +1472,10 @@ class ApiUserManager(UserManager):
         # this ensure that this is not a valid password
         user.set_unusable_password()
         user.save()
+
+        # Assign the default basic group
+        default_group, _ = Group.objects.get_or_create(name="silver")
+        user.groups.add(default_group)
 
         Token._default_manager.get_or_create(user=user)
 

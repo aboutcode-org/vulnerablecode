@@ -7,12 +7,14 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import hashlib
 import logging
 from datetime import datetime
 from datetime import timezone
 from traceback import format_exc as traceback_format_exc
 from typing import Callable
 from typing import List
+from typing import Union
 
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -183,3 +185,14 @@ def import_advisory(
 
     advisory.date_imported = datetime.now(timezone.utc)
     advisory.save()
+
+
+def advisories_checksum(advisories: Union[Advisory, List[Advisory]]) -> str:
+    if isinstance(advisories, Advisory):
+        advisories = [advisories]
+
+    contents = sorted([advisory.unique_content_id for advisory in advisories])
+    combined_contents = "".join(contents)
+
+    checksum = hashlib.sha1(combined_contents.encode())
+    return checksum.hexdigest()

@@ -32,7 +32,7 @@ class ComputeToDo(VulnerableCodePipeline):
         )
 
     def compute_individual_advisory_todo(self):
-        advisories = Advisory.objects.all().iterator(chunk_size=2000)
+        advisories = Advisory.objects.all().iterator(chunk_size=5000)
         advisories_count = Advisory.objects.all().count()
 
         self.log(
@@ -50,6 +50,7 @@ class ComputeToDo(VulnerableCodePipeline):
                 todo_id=advisory_todo_id,
                 logger=self.log,
             )
+
             check_missing_affected_and_fixed_by_packages(
                 advisory=advisory,
                 todo_id=advisory_todo_id,
@@ -100,15 +101,15 @@ def check_missing_affected_and_fixed_by_packages(advisory, todo_id, logger=None)
     """
     has_affected_package = False
     has_fixed_package = False
-    for affected in advisory.to_advisory_data().affected_packages or []:
+    for affected in advisory.affected_packages or []:
         if not affected:
             continue
 
         if has_affected_package and has_fixed_package:
             break
-        if not has_affected_package and affected.affected_version_range:
+        if not has_affected_package and affected["affected_version_range"]:
             has_affected_package = True
-        if not has_fixed_package and affected.fixed_version:
+        if not has_fixed_package and affected["fixed_version"]:
             has_fixed_package = True
 
     if has_affected_package and has_fixed_package:
@@ -236,12 +237,8 @@ def initialize_sub_matrix(matrix, affected_purl, advisory):
     advisory_id = advisory.unique_content_id
     if affected_purl not in matrix:
         matrix[affected_purl] = {
-            "affected": {
-                advisory_id: set(),
-            },
-            "fixed": {
-                advisory_id: set(),
-            },
+            "affected": {advisory_id: set()},
+            "fixed": {advisory_id: set()},
         }
     else:
         if advisory not in matrix[affected_purl]["affected"]:

@@ -9,94 +9,141 @@
 
 import json
 
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Permission
 from django.core.cache import cache
+from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
+from rest_framework.throttling import AnonRateThrottle
 
+from vulnerabilities.api import PermissionBasedUserRateThrottle
 from vulnerabilities.models import ApiUser
 
 
-class GroupUserRateThrottleApiTests(APITestCase):
+def simulate_throttle_usage(
+    url,
+    client,
+    mock_use_count,
+    throttle_cls=PermissionBasedUserRateThrottle,
+):
+    throttle = throttle_cls()
+    request = client.get(url).wsgi_request
+
+    if cache_key := throttle.get_cache_key(request, view=None):
+        now = throttle.timer()
+        cache.set(cache_key, [now] * mock_use_count)
+
+
+class PermissionBasedRateThrottleApiTests(APITestCase):
     def setUp(self):
         # Reset the api throttling to properly test the rate limit on anon users.
         # DRF stores throttling state in cache, clear cache to reset throttling.
         # See https://www.django-rest-framework.org/api-guide/throttling/#setting-up-the-cache
         cache.clear()
 
-        # User in bronze group
-        self.bronze_user = ApiUser.objects.create_api_user(username="bronze@mail.com")
-        bronze, _ = Group.objects.get_or_create(name="bronze")
-        self.bronze_user.groups.clear()
-        self.bronze_user.groups.add(bronze)
-        self.bronze_auth = f"Token {self.bronze_user.auth_token.key}"
-        self.bronze_user_csrf_client = APIClient(enforce_csrf_checks=True)
-        self.bronze_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.bronze_auth)
+        permission_14400 = Permission.objects.get(codename="throttle_14400_hour")
+        permission_18000 = Permission.objects.get(codename="throttle_18000_hour")
+        permission_unrestricted = Permission.objects.get(codename="throttle_unrestricted")
 
-        # User in silver group (default group for api user)
-        self.silver_user = ApiUser.objects.create_api_user(username="silver@mail.com")
-        self.silver_auth = f"Token {self.silver_user.auth_token.key}"
-        self.silver_user_csrf_client = APIClient(enforce_csrf_checks=True)
-        self.silver_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.silver_auth)
+        # basic user without any special throttling perm
+        self.basic_user = ApiUser.objects.create_api_user(username="a@mail.com")
+        self.basic_user_auth = f"Token {self.basic_user.auth_token.key}"
+        self.basic_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.basic_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.basic_user_auth)
 
-        # User in gold group
-        self.gold_user = ApiUser.objects.create_api_user(username="gold@mail.com")
-        gold, _ = Group.objects.get_or_create(name="gold")
-        self.gold_user.groups.add(gold)
-        self.gold_auth = f"Token {self.gold_user.auth_token.key}"
-        self.gold_user_csrf_client = APIClient(enforce_csrf_checks=True)
-        self.gold_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.gold_auth)
+        # 14400/hour permission
+        self.th_14400_user = ApiUser.objects.create_api_user(username="b@mail.com")
+        self.th_14400_user.user_permissions.add(permission_14400)
+        self.th_14400_user_auth = f"Token {self.th_14400_user.auth_token.key}"
+        self.th_14400_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.th_14400_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_14400_user_auth)
 
-        # create a staff user
-        self.staff_user = ApiUser.objects.create_api_user(username="staff@mail.com", is_staff=True)
-        self.staff_auth = f"Token {self.staff_user.auth_token.key}"
-        self.staff_csrf_client = APIClient(enforce_csrf_checks=True)
-        self.staff_csrf_client.credentials(HTTP_AUTHORIZATION=self.staff_auth)
+        # 18000/hour permission
+        self.th_18000_user = ApiUser.objects.create_api_user(username="c@mail.com")
+        self.th_18000_user.user_permissions.add(permission_18000)
+        self.th_18000_user_auth = f"Token {self.th_18000_user.auth_token.key}"
+        self.th_18000_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.th_18000_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_18000_user_auth)
+
+        # unrestricted throttling perm
+        self.th_unrestricted_user = ApiUser.objects.create_api_user(username="d@mail.com")
+        self.th_unrestricted_user.user_permissions.add(permission_unrestricted)
+        self.th_unrestricted_user_auth = f"Token {self.th_unrestricted_user.auth_token.key}"
+        self.th_unrestricted_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.th_unrestricted_user_csrf_client.credentials(
+            HTTP_AUTHORIZATION=self.th_unrestricted_user_auth
+        )
 
         self.csrf_client_anon = APIClient(enforce_csrf_checks=True)
         self.csrf_client_anon_1 = APIClient(enforce_csrf_checks=True)
 
-    def test_package_endpoint_throttling(self):
-        for i in range(0, 15):
-            response = self.bronze_user_csrf_client.get("/api/packages")
-            self.assertEqual(response.status_code, 200)
+    def test_basic_user_throttling(self):
+        simulate_throttle_usage(
+            url="/api/packages",
+            client=self.basic_user_csrf_client,
+            mock_use_count=10799,
+        )
 
-        response = self.bronze_user_csrf_client.get("/api/packages")
-        # 429 - too many requests for bronze user
-        self.assertEqual(response.status_code, 429)
+        response = self.basic_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        for i in range(0, 20):
-            response = self.silver_user_csrf_client.get("/api/packages")
-            self.assertEqual(response.status_code, 200)
+        # exhausted 10800/hr allowed requests for basic user.
+        response = self.basic_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
 
-        response = self.silver_user_csrf_client.get("/api/packages")
-        # 429 - too many requests for silver user
-        self.assertEqual(response.status_code, 429)
+    def test_user_with_14400_perm_throttling(self):
+        simulate_throttle_usage(
+            url="/api/packages",
+            client=self.th_14400_user_csrf_client,
+            mock_use_count=14399,
+        )
 
-        for i in range(0, 30):
-            response = self.gold_user_csrf_client.get("/api/packages")
-            self.assertEqual(response.status_code, 200)
+        response = self.th_14400_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = self.gold_user_csrf_client.get("/api/packages", format="json")
-        # 200 - gold user can access API unlimited times
-        self.assertEqual(response.status_code, 200)
+        # exhausted 14400/hr allowed requests for user with 14400 perm.
+        response = self.th_14400_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
 
-        for i in range(0, 30):
-            response = self.staff_csrf_client.get("/api/packages")
-            self.assertEqual(response.status_code, 200)
+    def test_user_with_18000_perm_throttling(self):
+        simulate_throttle_usage(
+            url="/api/packages",
+            client=self.th_18000_user_csrf_client,
+            mock_use_count=17999,
+        )
 
-        response = self.staff_csrf_client.get("/api/packages", format="json")
-        # 200 - staff user can access API unlimited times
-        self.assertEqual(response.status_code, 200)
+        response = self.th_18000_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # A anonymous user can only access /packages endpoint 10 times a day
-        for _i in range(0, 10):
-            response = self.csrf_client_anon.get("/api/packages")
-            self.assertEqual(response.status_code, 200)
+        # exhausted 18000/hr allowed requests for user with 18000 perm.
+        response = self.th_18000_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+
+    def test_user_with_unrestricted_perm_throttling(self):
+        simulate_throttle_usage(
+            url="/api/packages",
+            client=self.th_unrestricted_user_csrf_client,
+            mock_use_count=20000,
+        )
+
+        # no throttling for user with unrestricted perm.
+        response = self.th_unrestricted_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_anon_throttling(self):
+        simulate_throttle_usage(
+            throttle_cls=AnonRateThrottle,
+            url="/api/packages",
+            client=self.csrf_client_anon,
+            mock_use_count=3599,
+        )
 
         response = self.csrf_client_anon.get("/api/packages")
-        # 429 - too many requests for anon user
-        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # exhausted 3600/hr allowed requests for anon.
+        response = self.csrf_client_anon.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
         self.assertEqual(
             response.data.get("message"),
             "Your request has been throttled. Please contact support@nexb.com",
@@ -104,7 +151,7 @@ class GroupUserRateThrottleApiTests(APITestCase):
 
         response = self.csrf_client_anon.get("/api/vulnerabilities")
         # 429 - too many requests for anon user
-        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
         self.assertEqual(
             response.data.get("message"),
             "Your request has been throttled. Please contact support@nexb.com",
@@ -116,7 +163,7 @@ class GroupUserRateThrottleApiTests(APITestCase):
             "/api/packages/bulk_search", data=data, content_type="application/json"
         )
         # 429 - too many requests for anon user
-        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
         self.assertEqual(
             response.data.get("message"),
             "Your request has been throttled. Please contact support@nexb.com",

@@ -12,25 +12,19 @@ from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import exception_handler
 
 
-class GroupUserRateThrottle(UserRateThrottle):
-    scope = "bronze"
-
+class PermissionBasedUserRateThrottle(UserRateThrottle):
     def allow_request(self, request, view):
         user = request.user
 
         if user and user.is_authenticated:
-            if user.is_superuser or user.is_staff:
+            if user.has_perm("vulnerabilities.throttle_unrestricted"):
                 return True
+            elif user.has_perm("vulnerabilities.throttle_18000_hour"):
+                self.rate = "18000/hour"
+            elif user.has_perm("vulnerabilities.throttle_14400_hour"):
+                self.rate = "14400/hour"
 
-            user_groups = user.groups.all()
-            if any([group.name == "gold" for group in user_groups]):
-                return True
-
-            if any([group.name == "silver" for group in user_groups]):
-                self.scope = "silver"
-
-        self.rate = self.THROTTLE_RATES.get(self.scope)
-        self.num_requests, self.duration = self.parse_rate(self.rate)
+            self.num_requests, self.duration = self.parse_rate(self.rate)
 
         return super().allow_request(request, view)
 

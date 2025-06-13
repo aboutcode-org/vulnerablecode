@@ -1473,10 +1473,6 @@ class ApiUserManager(UserManager):
         user.set_unusable_password()
         user.save()
 
-        # Assign the default basic group
-        default_group, _ = Group.objects.get_or_create(name="silver")
-        user.groups.add(default_group)
-
         Token._default_manager.get_or_create(user=user)
 
         return user
@@ -1494,14 +1490,17 @@ class ApiUserManager(UserManager):
 
 
 class ApiUser(UserModel):
-    """
-    A User proxy model to facilitate simplified admin API user creation.
-    """
+    """A User proxy model to facilitate simplified admin API user creation."""
 
     objects = ApiUserManager()
 
     class Meta:
         proxy = True
+        permissions = [
+            ("throttle_unrestricted", "Exempt from API throttling limits"),
+            ("throttle_18000_hour", "Can make 18000 API requests per hour"),
+            ("throttle_14400_hour", "Can make 14400 API requests per hour"),
+        ]
 
 
 class ChangeLog(models.Model):

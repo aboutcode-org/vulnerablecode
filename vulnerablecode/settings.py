@@ -190,20 +190,11 @@ VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
-    # No throttling for users in gold group.
-    "silver": "10800/hour",
-    "bronze": "7200/hour",
-    "anon": "3600/hour",
-}
+REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {"anon": "3600/hour", "user": "10800/hour"}
+
 
 if IS_TESTS:
     VULNERABLECODEIO_REQUIRE_AUTHENTICATION = False
-    REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
-        "silver": "20/day",
-        "bronze": "15/day",
-        "anon": "10/day",
-    }
 
 USE_L10N = True
 
@@ -243,7 +234,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ),
     "DEFAULT_THROTTLE_CLASSES": [
-        "vulnerabilities.throttling.GroupUserRateThrottle",
+        "vulnerabilities.throttling.PermissionBasedUserRateThrottle",
         "rest_framework.throttling.AnonRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": REST_FRAMEWORK_DEFAULT_THROTTLE_RATES,

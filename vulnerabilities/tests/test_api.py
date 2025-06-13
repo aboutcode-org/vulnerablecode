@@ -11,6 +11,7 @@ import json
 import os
 from urllib.parse import quote
 
+from django.core.cache import cache
 from django.test import TestCase
 from django.test import TransactionTestCase
 from django.test.client import RequestFactory
@@ -452,10 +453,8 @@ def add_aliases(vuln, aliases):
 
 class APIPerformanceTest(TestCase):
     def setUp(self):
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com", is_staff=True)
-        self.auth = f"Token {self.user.auth_token.key}"
+        cache.clear()
         self.csrf_client = APIClient(enforce_csrf_checks=True)
-        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
 
         # This setup creates the following data:
         # vulnerabilities: vul1, vul2, vul3
@@ -503,7 +502,7 @@ class APIPerformanceTest(TestCase):
         set_as_fixing(package=self.pkg_2_13_2, vulnerability=self.vul1)
 
     def test_api_packages_all_num_queries(self):
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             # There are 4 queries:
             # 1. SAVEPOINT
             # 2. Authenticating user
@@ -519,22 +518,22 @@ class APIPerformanceTest(TestCase):
             ]
 
     def test_api_packages_single_num_queries(self):
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(7):
             self.csrf_client.get(f"/api/packages/{self.pkg_2_14_0_rc1.id}", format="json")
 
     def test_api_packages_single_with_purl_in_query_num_queries(self):
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(8):
             self.csrf_client.get(f"/api/packages/?purl={self.pkg_2_14_0_rc1.purl}", format="json")
 
     def test_api_packages_single_with_purl_no_version_in_query_num_queries(self):
-        with self.assertNumQueries(64):
+        with self.assertNumQueries(63):
             self.csrf_client.get(
                 f"/api/packages/?purl=pkg:maven/com.fasterxml.jackson.core/jackson-databind",
                 format="json",
             )
 
     def test_api_packages_bulk_search(self):
-        with self.assertNumQueries(45):
+        with self.assertNumQueries(44):
             packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
@@ -547,7 +546,7 @@ class APIPerformanceTest(TestCase):
             ).json()
 
     def test_api_packages_with_lookup(self):
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(13):
             data = {"purl": self.pkg_2_12_6.purl}
 
             resp = self.csrf_client.post(
@@ -557,7 +556,7 @@ class APIPerformanceTest(TestCase):
             ).json()
 
     def test_api_packages_bulk_lookup(self):
-        with self.assertNumQueries(45):
+        with self.assertNumQueries(44):
             packages = [self.pkg_2_12_6, self.pkg_2_12_6_1, self.pkg_2_13_1]
             purls = [p.purl for p in packages]
 
@@ -572,10 +571,8 @@ class APIPerformanceTest(TestCase):
 
 class APITestCasePackage(TestCase):
     def setUp(self):
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com", is_staff=True)
-        self.auth = f"Token {self.user.auth_token.key}"
+        cache.clear()
         self.csrf_client = APIClient(enforce_csrf_checks=True)
-        self.csrf_client.credentials(HTTP_AUTHORIZATION=self.auth)
 
         # This setup creates the following data:
         # vulnerabilities: vul1, vul2, vul3
@@ -766,7 +763,7 @@ class APITestCasePackage(TestCase):
         self.assertEqual(response["count"], 0)
 
     def test_api_with_all_vulnerable_packages(self):
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             # There are 4 queries:
             # 1. SAVEPOINT
             # 2. Authenticating user

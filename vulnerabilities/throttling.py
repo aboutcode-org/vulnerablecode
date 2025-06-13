@@ -13,6 +13,12 @@ from rest_framework.views import exception_handler
 
 
 class PermissionBasedUserRateThrottle(UserRateThrottle):
+    """
+    Throttle authenticated users based on their assigned permissions.
+    If no throttling permission is assigned, default to rate for `user`
+    scope provided via `DEFAULT_THROTTLE_RATES` in settings.py.
+    """
+
     def allow_request(self, request, view):
         user = request.user
 
@@ -23,6 +29,8 @@ class PermissionBasedUserRateThrottle(UserRateThrottle):
                 self.rate = "18000/hour"
             elif user.has_perm("vulnerabilities.throttle_14400_hour"):
                 self.rate = "14400/hour"
+            elif user.has_perm("vulnerabilities.throttle_3600_hour"):
+                self.rate = "3600/hour"
 
             self.num_requests, self.duration = self.parse_rate(self.rate)
 

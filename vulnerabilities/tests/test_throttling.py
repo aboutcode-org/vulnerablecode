@@ -41,9 +41,17 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
         # See https://www.django-rest-framework.org/api-guide/throttling/#setting-up-the-cache
         cache.clear()
 
+        permission_3600 = Permission.objects.get(codename="throttle_3600_hour")
         permission_14400 = Permission.objects.get(codename="throttle_14400_hour")
         permission_18000 = Permission.objects.get(codename="throttle_18000_hour")
         permission_unrestricted = Permission.objects.get(codename="throttle_unrestricted")
+
+        # user with 3600/hour permission
+        self.th_3600_user = ApiUser.objects.create_api_user(username="z@mail.com")
+        self.th_3600_user.user_permissions.add(permission_3600)
+        self.th_3600_user_auth = f"Token {self.th_3600_user.auth_token.key}"
+        self.th_3600_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.th_3600_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_3600_user_auth)
 
         # basic user without any special throttling perm
         self.basic_user = ApiUser.objects.create_api_user(username="a@mail.com")
@@ -77,6 +85,20 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
         self.csrf_client_anon = APIClient(enforce_csrf_checks=True)
         self.csrf_client_anon_1 = APIClient(enforce_csrf_checks=True)
 
+    def test_user_with_3600_perm_throttling(self):
+        simulate_throttle_usage(
+            url="/api/packages",
+            client=self.th_3600_user_csrf_client,
+            mock_use_count=3599,
+        )
+
+        response = self.th_3600_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # exhausted 3600/hr allowed requests.
+        response = self.th_3600_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+
     def test_basic_user_throttling(self):
         simulate_throttle_usage(
             url="/api/packages",
@@ -87,7 +109,7 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
         response = self.basic_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # exhausted 10800/hr allowed requests for basic user.
+        # exhausted 10800/hr allowed requests.
         response = self.basic_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
 

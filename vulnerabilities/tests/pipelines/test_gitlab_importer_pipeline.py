@@ -12,6 +12,8 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+import saneyaml
+from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improvers.default import DefaultImprover
@@ -76,3 +78,28 @@ def test_gitlab_improver(mock_response, pkg_type):
         inference = [data.to_dict() for data in improver.get_inferences(advisory)]
         result.extend(inference)
     util_tests.check_results_against_json(result, expected_file)
+
+
+@mock.patch("vulnerabilities.pipelines.gitlab_importer.fetch_gitlab_advisories_for_purl")
+def test_gitlab_importer_package_first_mode_found_with_version(mock_fetch):
+    pkg_type = "pypi"
+    response_file = TEST_DATA / f"{pkg_type}.yaml"
+    expected_file = TEST_DATA / f"{pkg_type}-single-mode-expected.json"
+
+    with open(response_file) as f:
+        advisory_dict = saneyaml.load(f)
+
+    mock_fetch.return_value = [advisory_dict]
+    purl = PackageURL(type="pypi", name="flask", version="0.9")
+    pipeline = gitlab_importer.GitLabImporterPipeline(purl=purl)
+    advisories = list(pipeline.collect_advisories())
+    util_tests.check_results_against_json(advisories[0].to_dict(), expected_file)
+
+
+@mock.patch("vulnerabilities.pipelines.gitlab_importer.fetch_gitlab_advisories_for_purl")
+def test_gitlab_importer_package_first_mode_none_found(mock_fetch):
+    mock_fetch.return_value = []
+    purl = PackageURL(type="pypi", name="flask", version="1.2")
+    pipeline = gitlab_importer.GitLabImporterPipeline(purl=purl)
+    advisories = list(pipeline.collect_advisories())
+    assert advisories == []

@@ -19,6 +19,8 @@ import saneyaml
 from fetchcode import fetch
 from packageurl import PackageURL
 
+from vulntotal.datasources.gitlab_api import fetch_gitlab_advisories_for_purl
+from vulntotal.datasources.gitlab_api import fetch_yaml
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
 from vulntotal.vulntotal_utils import gitlab_constraints_satisfied
@@ -40,18 +42,12 @@ class GitlabDataSource(DataSource):
         Yields:
             VendorData instance containing the advisory information for the package.
         """
-        package_slug = get_package_slug(purl)
-        directory_files = fetch_directory_contents(package_slug)
-        if not directory_files:
-            path = self.supported_ecosystem()[purl.type]
-            casesensitive_package_slug = get_casesensitive_slug(path, package_slug)
-            directory_files = fetch_directory_contents(casesensitive_package_slug)
+        advisories = fetch_gitlab_advisories_for_purl(
+            purl, self.supported_ecosystem(), get_casesensitive_slug
+        )
 
-        if directory_files:
-            yml_files = [file for file in directory_files if file["name"].endswith(".yml")]
-
-            interesting_advisories = parse_interesting_advisories(yml_files, purl)
-            return interesting_advisories
+        if advisories:
+            return parse_interesting_advisories(advisories, purl)
 
     @classmethod
     def supported_ecosystem(cls):
@@ -65,21 +61,6 @@ class GitlabDataSource(DataSource):
             "nuget": "nuget",
             "pypi": "pypi",
         }
-
-
-def fetch_directory_contents(package_slug):
-    url = f"https://gitlab.com/api/v4/projects/12006272/repository/tree?path={package_slug}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-
-
-def fetch_yaml(file_path):
-    response = requests.get(
-        f"https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/raw/master/{file_path}"
-    )
-    if response.status_code == 200:
-        return response.text
 
 
 def get_package_slug(purl):
@@ -163,12 +144,12 @@ def get_casesensitive_slug(path, package_slug):
         has_next = paginated_tree["pageInfo"]["hasNextPage"]
 
 
-def parse_interesting_advisories(yml_files, purl) -> Iterable[VendorData]:
+def parse_interesting_advisories(advisories, purl) -> Iterable[VendorData]:
     """
     Parses advisories from YAML files in a given location that match a given version.
 
     Parameters:
-        yml_files: An array having the paths of yml files to parse.
+        advisories: A list of advisory dictionaries fetched from the GitLab API.
         purl: PURL for the advisory.
 
     Yields:
@@ -176,14 +157,12 @@ def parse_interesting_advisories(yml_files, purl) -> Iterable[VendorData]:
     """
     version = purl.version
 
-    for file in yml_files:
-        yml_data = fetch_yaml(file["path"])
-        gitlab_advisory = saneyaml.load(yml_data)
-        affected_range = gitlab_advisory["affected_range"]
+    for advisory in advisories:
+        affected_range = advisory.get("affected_range")
         if gitlab_constraints_satisfied(affected_range, version):
             yield VendorData(
                 purl=PackageURL(purl.type, purl.namespace, purl.name),
-                aliases=gitlab_advisory["identifiers"],
+                aliases=advisory.get("identifiers", []),
                 affected_versions=[affected_range],
-                fixed_versions=gitlab_advisory["fixed_versions"],
+                fixed_versions=advisory.get("fixed_versions", []),
             )

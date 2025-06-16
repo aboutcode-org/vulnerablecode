@@ -34,6 +34,7 @@ from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipelines import alpine_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
@@ -42,8 +43,24 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
+from vulnerabilities.pipelines.v2_importers import github_importer as github_importer_v2
+from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
+from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
+from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
+from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
+from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
+from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 
 IMPORTERS_REGISTRY = [
+    nvd_importer_v2.NVDImporterPipeline,
+    github_importer_v2.GitHubAPIImporterPipeline,
+    npm_importer_v2.NpmImporterPipeline,
+    vulnrichment_importer_v2.VulnrichImporterPipeline,
+    apache_httpd_v2.ApacheHTTPDImporterPipeline,
+    pypa_importer_v2.PyPaImporterPipeline,
+    gitlab_importer_v2.GitLabImporterPipeline,
+    pysec_importer_v2.PyPIImporterPipeline,
     nvd_importer.NVDImporterPipeline,
     github_importer.GitHubAPIImporterPipeline,
     gitlab_importer.GitLabImporterPipeline,
@@ -81,6 +98,9 @@ IMPORTERS_REGISTRY = [
 ]
 
 IMPORTERS_REGISTRY = {
-    x.pipeline_id if issubclass(x, VulnerableCodeBaseImporterPipeline) else x.qualified_name: x
+    x.pipeline_id
+    if issubclass(x, VulnerableCodeBaseImporterPipeline)
+    or issubclass(x, VulnerableCodeBaseImporterPipelineV2)
+    else x.qualified_name: x
     for x in IMPORTERS_REGISTRY
 }

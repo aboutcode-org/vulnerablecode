@@ -34,6 +34,18 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipeline):
     url = "https://nginx.org/en/security_advisories.html"
     importer_name = "Nginx Importer"
 
+    is_batch_run = True
+
+    def __init__(self, *args, purl=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.purl = purl
+        if self.purl:
+            NginxImporterPipeline.is_batch_run = False
+            if self.purl.type != "nginx":
+                print(
+                    f"Warning: PURL type {self.purl.type} is not 'nginx', may not match any advisories"
+                )
+
     @classmethod
     def steps(cls):
         return (
@@ -57,8 +69,46 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipeline):
         soup = BeautifulSoup(self.advisory_data, features="lxml")
         vulnerability_list = soup.select("li p")
         for vulnerability_info in vulnerability_list:
-            ngnix_advisory = parse_advisory_data_from_paragraph(vulnerability_info)
-            yield to_advisory_data(ngnix_advisory)
+            nginx_advisory = parse_advisory_data_from_paragraph(vulnerability_info)
+            advisory_data = to_advisory_data(nginx_advisory)
+
+            if self.purl and not self._is_advisory_affecting_purl(advisory_data):
+                continue
+
+            yield advisory_data
+
+    def _is_advisory_affecting_purl(self, advisory_data):
+        if not self.purl:
+            return True
+
+        if self.purl.type != "nginx":
+            return False
+
+        for affected_package in advisory_data.affected_packages:
+            if affected_package.package.type != self.purl.type:
+                continue
+
+            if affected_package.package.name != self.purl.name:
+                continue
+
+            if self.purl.qualifiers and "os" in self.purl.qualifiers:
+                if (
+                    not affected_package.package.qualifiers
+                    or "os" not in affected_package.package.qualifiers
+                    or affected_package.package.qualifiers["os"] != self.purl.qualifiers["os"]
+                ):
+                    continue
+
+            if self.purl.version:
+                purl_version = NginxVersion(self.purl.version)
+
+                affected_range = affected_package.affected_version_range
+                if affected_range and purl_version not in affected_range:
+                    continue
+
+            return True
+
+        return False
 
 
 class NginxAdvisory(NamedTuple):

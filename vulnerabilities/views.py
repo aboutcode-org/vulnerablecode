@@ -617,7 +617,7 @@ class AdvisoryPackagesDetails(DetailView):
 class PipelineScheduleListView(ListView, FormMixin):
     model = PipelineSchedule
     context_object_name = "schedule_list"
-    template_name = "pipeline_schedule_list.html"
+    template_name = "pipeline_dashboard.html"
     paginate_by = 20
     form_class = PipelineSchedulePackageForm
 

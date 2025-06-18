@@ -82,9 +82,9 @@ urlpatterns = [
         name="home",
     ),
     path(
-        "pipelines/schedule/",
+        "pipelines/dashboard/",
         PipelineScheduleListView.as_view(),
-        name="schedule",
+        name="dashboard",
     ),
     path(
         "pipelines/<str:pipeline_id>/runs/",

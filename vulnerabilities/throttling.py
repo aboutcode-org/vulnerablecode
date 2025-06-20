@@ -6,18 +6,33 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+
 from rest_framework.exceptions import Throttled
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import exception_handler
 
 
-class StaffUserRateThrottle(UserRateThrottle):
+class PermissionBasedUserRateThrottle(UserRateThrottle):
+    """
+    Throttle authenticated users based on their assigned permissions.
+    If no throttling permission is assigned, default to rate for `user`
+    scope provided via `DEFAULT_THROTTLE_RATES` in settings.py.
+    """
+
     def allow_request(self, request, view):
-        """
-        Do not apply throttling for superusers and admins.
-        """
-        if request.user.is_superuser or request.user.is_staff:
-            return True
+        user = request.user
+
+        if user and user.is_authenticated:
+            if user.has_perm("vulnerabilities.throttle_unrestricted"):
+                return True
+            elif user.has_perm("vulnerabilities.throttle_18000_hour"):
+                self.rate = "18000/hour"
+            elif user.has_perm("vulnerabilities.throttle_14400_hour"):
+                self.rate = "14400/hour"
+            elif user.has_perm("vulnerabilities.throttle_3600_hour"):
+                self.rate = "3600/hour"
+
+            self.num_requests, self.duration = self.parse_rate(self.rate)
 
         return super().allow_request(request, view)
 

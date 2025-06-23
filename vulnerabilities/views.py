@@ -686,3 +686,9 @@ class PipelineRunDetailView(DetailView):
 class AdminLoginView(LoginView):
     template_name = "admin_login.html"
     authentication_form = AdminLoginForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["site_title"] = "VulnerableCode site admin"
+        context["site_header"] = "VulnerableCode Administration"
+        return context

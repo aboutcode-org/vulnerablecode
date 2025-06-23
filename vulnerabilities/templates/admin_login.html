@@ -3,6 +3,38 @@
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
 {{ form.media }}
+
+<style>
+    /* Altcha theme correction for dark mode */
+
+    html[data-theme="dark"] altcha-widget {
+        --altcha-color-base: #1e1e1e;
+        --altcha-color-text: #ffffff;
+        --altcha-color-border: #444;
+        --altcha-border-radius: 8px;
+        --altcha-border-width: 2px;
+        --altcha-color-footer-bg: #2a2a2a;
+    }
+
+    html[data-theme="light"] altcha-widget {
+        --altcha-color-base: #ffffff;
+        --altcha-color-text: #000000;
+        --altcha-color-border: #ccc;
+        --altcha-border-radius: 8px;
+        --altcha-color-footer-bg: #f9f9f9;
+    }
+
+    @media (prefers-color-scheme: dark) {
+    altcha-widget {
+      --altcha-color-base: #1e1e1e;
+      --altcha-color-text: #ffffff;
+      --altcha-color-border: #444;
+      --altcha-border-radius: 8px;
+      --altcha-border-width: 2px;
+      --altcha-color-footer-bg: #2a2a2a;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} login{% endblock %}

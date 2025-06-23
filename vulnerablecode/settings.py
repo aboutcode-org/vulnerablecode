@@ -85,6 +85,7 @@ INSTALLED_APPS = (
     "drf_spectacular_sidecar",
     "django_recaptcha",
     "django_rq",
+    "django_altcha",
 )
 
 if env.str("RECAPTCHA_PUBLIC_KEY", None):

@@ -10,6 +10,7 @@
 from django import forms
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.core.validators import validate_email
+from django_altcha import AltchaField
 from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV2Checkbox
 
@@ -110,9 +111,6 @@ class PipelineSchedulePackageForm(forms.Form):
 
 
 class AdminLoginForm(AdminAuthenticationForm):
-    captcha = ReCaptchaField(
-        error_messages={
-            "required": ("Captcha is required"),
-        },
-        widget=ReCaptchaV2Checkbox(),
+    captcha = AltchaField(
+        floating=True,
     )

@@ -83,20 +83,9 @@ INSTALLED_APPS = (
     "drf_spectacular",
     # required for Django collectstatic discovery
     "drf_spectacular_sidecar",
-    "django_recaptcha",
     "django_rq",
     "django_altcha",
 )
-
-if env.str("RECAPTCHA_PUBLIC_KEY", None):
-    RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY")
-
-if env.str("RECAPTCHA_PRIVATE_KEY", None):
-    RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")
-
-SILENCED_SYSTEM_CHECKS = ["django_recaptcha.recaptcha_test_key_error"]
-SILENCED_SYSTEM_CHECKS = ["django_recaptcha.recaptcha_test_key_error"]
-RECAPTCHA_DOMAIN = env.str("RECAPTCHA_DOMAIN", "www.recaptcha.net")
 
 
 MIDDLEWARE = (

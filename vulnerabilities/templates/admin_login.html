@@ -89,10 +89,8 @@
             <a href="{{ password_reset_url }}">{% translate 'Forgotten your password or username?' %}</a>
         </div>
         {% endif %}
-        <div class="field" style="padding-top: 1rem; text-align: center;">
-            <div class="control" style="display: inline-block;">
-                {{ form.captcha }}
-            </div>
+        <div class="field" style="padding-top: 0.5rem;">
+            {{ form.captcha }}
         </div>
         <div class="submit-row">
             <input type="submit" value="{% translate 'Log in' %}">

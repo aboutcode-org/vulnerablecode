@@ -9,6 +9,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data/
       - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+    shm_size: 1gb
 
   vulnerablecode_redis:
     image: redis

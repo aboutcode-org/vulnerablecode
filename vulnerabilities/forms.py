@@ -46,7 +46,11 @@ class AdvisorySearchForm(forms.Form):
 class ApiUserCreationForm(forms.ModelForm):
     """Support a simplified creation for API-only users directly from the UI."""
 
-    captcha = AltchaField(floating=True)
+    captcha = AltchaField(
+        floating=True,
+        hidefooter=True,
+        hidelogo=True,
+    )
 
     class Meta:
         model = ApiUser
@@ -105,4 +109,8 @@ class PipelineSchedulePackageForm(forms.Form):
 
 
 class AdminLoginForm(AdminAuthenticationForm):
-    captcha = AltchaField(floating=True)
+    captcha = AltchaField(
+        floating=True,
+        hidefooter=True,
+        hidelogo=True,
+    )

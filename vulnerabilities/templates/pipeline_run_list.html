@@ -34,6 +34,7 @@
   </div>
 
   <div class="column is-four-fifths">
+    <a href="{% url 'dashboard' %}" class="button is-info mb-4"><i class="fa fa-arrow-left mr-2"></i>Back to Dashboard</a>
     <div class="content is-normal">
       <h1>{{ pipeline_name }} Runs</h1>
       <hr />
@@ -109,7 +110,9 @@
           {% endfor %}
         </tbody>
       </table>
-      <a href="{% url 'dashboard' %}" class="button is-info mt-4"><i class="fa fa-arrow-left mr-2"></i>Back to Dashboard</a>
+      {% if run_list|length > 10 %}
+        <a href="{% url 'dashboard' %}" class="button is-info mt-4"><i class="fa fa-arrow-left mr-2"></i>Back to Dashboard</a>
+      {% endif %}
     </div>
     {% if is_paginated %}
     <nav class="pagination is-centered px-5" role="navigation" aria-label="pagination">

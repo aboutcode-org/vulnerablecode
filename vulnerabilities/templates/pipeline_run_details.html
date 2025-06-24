@@ -34,8 +34,10 @@
 {% endblock %}
 
 {% block content %}
-<section class="section">
     <div class="container">
+        <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info my-4">
+            <i class="fa fa-arrow-left mr-2"></i>Back to All Runs
+        </a>
         <h1 class="title">{{ pipeline_name }} Run Log</h1>
         <hr>
 
@@ -181,12 +183,12 @@
             </div>
         </div>
         {% endif %}
-
-        <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info mt-4">
-            <i class="fa fa-arrow-left mr-2"></i>Back to All Runs
-        </a>
+        {% if run.run_output or run.log %}
+            <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info my-4">
+                <i class="fa fa-arrow-left mr-2"></i>Back to All Runs
+            </a>
+         {% endif %}
     </div>
-</section>
 {% endblock %}
 
 

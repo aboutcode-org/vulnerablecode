@@ -72,7 +72,9 @@ Pipeline Dashboard
                                 <div class="columns px-1 is-mobile is-vcentered">
                                     <div class="column is-one-quarter">{{ schedule.pipeline_id }}</div>
                                     <div class="column is-one-eighth has-text-grey">{{ schedule.is_active|yesno:"Yes,No" }}</div>
-                                    <div class="column is-one-eighth has-text-grey">{{ schedule.run_interval }}day</div>
+                                    <div class="column is-one-eighth has-text-grey">
+                                        {{ schedule.run_interval }} hour{{ schedule.run_interval|pluralize }}
+                                    </div>
                                     <div class="column is-one-eighth">
                                         <span class="is-flex is-align-items-center">
                                             {% include "includes/job_status.html" with status=schedule.status %}

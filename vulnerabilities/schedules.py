@@ -28,7 +28,7 @@ def schedule_execution(pipeline_schedule, execute_now=False):
     if not execute_now:
         first_execution = pipeline_schedule.next_run_date
 
-    interval_in_seconds = pipeline_schedule.run_interval * 24 * 60 * 60
+    interval_in_seconds = pipeline_schedule.run_interval * 60 * 60
 
     job = scheduler.schedule(
         scheduled_time=first_execution,

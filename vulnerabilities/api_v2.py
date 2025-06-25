@@ -771,6 +771,7 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
     status = serializers.SerializerMethodField()
     execution_time = serializers.SerializerMethodField()
     log = serializers.SerializerMethodField()
+    execution_time = serializers.SerializerMethodField()
 
     class Meta:
         model = PipelineRun
@@ -793,7 +794,7 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
 
     def get_execution_time(self, run):
         if run.execution_time:
-            return round(run.execution_time, 2)
+            return f"{round(run.execution_time, 2)}s"
 
     def get_log(self, run):
         """Return only last 5000 character of log."""
@@ -802,7 +803,8 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
 
 class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name="schedule-detail", lookup_field="pipeline_id"
+        view_name="schedule-detail",
+        lookup_field="pipeline_id",
     )
     latest_run = serializers.SerializerMethodField()
     next_run_date = serializers.SerializerMethodField()
@@ -829,6 +831,12 @@ class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
         if latest := schedule.pipelineruns.first():
             return PipelineRunAPISerializer(latest).data
         return None
+
+    def to_representation(self, schedule):
+        representation = super().to_representation(schedule)
+        representation["run_interval"] = f"{schedule.run_interval}hr"
+        representation["execution_timeout"] = f"{schedule.execution_timeout}hr"
+        return representation
 
 
 class PipelineScheduleCreateSerializer(serializers.ModelSerializer):

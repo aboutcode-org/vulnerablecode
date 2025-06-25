@@ -73,9 +73,9 @@ urlpatterns = [
         name="home",
     ),
     path(
-        "pipelines/schedule/",
+        "pipelines/dashboard/",
         PipelineScheduleListView.as_view(),
-        name="schedule",
+        name="dashboard",
     ),
     path(
         "pipelines/<str:pipeline_id>/runs/",
@@ -137,10 +137,10 @@ urlpatterns = [
         TemplateView.as_view(template_name="tos.html"),
         name="api_tos",
     ),
-    # path(
-    #     "admin/",
-    #     admin.site.urls,
-    # ),
+    path(
+        "admin/",
+        admin.site.urls,
+    ),
 ]
 
 if DEBUG:

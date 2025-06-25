@@ -243,6 +243,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
     # for API docs
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%SZ",
 }
 
 api_doc_intro = """

@@ -1,0 +1,37 @@
+[
+    {
+        "aliases": ["CVE-2025-30177"],
+        "summary": "Camel-Undertow Message Header Injection via Improper Filtering",
+        "affected_packages": [
+            {
+                "package": {
+                    "type": "maven",
+                    "namespace": "org.apache.camel",
+                    "name": "camel",
+                    "version": "",
+                    "qualifiers": "",
+                    "subpath": ""
+                },
+                "affected_version_range": "vers:maven/4.8.0|4.8.6|4.10.0|4.10.3",
+                "fixed_version": null
+            }
+        ],
+        "references": [
+            {
+                "reference_id": "CVE-2025-30177",
+                "reference_type": "",
+                "url": "https://camel.apache.org/security/CVE-2025-30177.html",
+                "severities": [
+                    {
+                        "system": "generic_textual",
+                        "value": "MEDIUM",
+                        "scoring_elements": ""
+                    }
+                ]
+            }
+        ],
+        "date_published": "2025-04-01T11:56:30.484000+00:00",
+        "weaknesses": [],
+        "url": "https://camel.apache.org/security/CVE-2025-30177.html"
+    }
+]

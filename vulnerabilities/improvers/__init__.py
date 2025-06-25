@@ -40,6 +40,7 @@ IMPROVERS_REGISTRY = [
     vulnerability_status.VulnerabilityStatusImprover,
     valid_versions.CurlImprover,
     flag_ghost_packages.FlagGhostPackagePipeline,
+    valid_versions.AmazonLinuxImprover,
     enhance_with_kev.VulnerabilityKevPipeline,
     enhance_with_metasploit.MetasploitImproverPipeline,
     enhance_with_exploitdb.ExploitDBImproverPipeline,

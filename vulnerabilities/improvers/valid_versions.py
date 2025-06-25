@@ -41,6 +41,7 @@ from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines.amazon_linux_importer import AmazonLinuxImporterPipeline
 from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
 from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
@@ -475,6 +476,11 @@ class RubyImprover(ValidVersionImprover):
 
 class GithubOSVImprover(ValidVersionImprover):
     importer = GithubOSVImporter
+    ignorable_versions = []
+
+
+class AmazonLinuxImprover(ValidVersionImprover):
+    importer = AmazonLinuxImporterPipeline
     ignorable_versions = []
 
 

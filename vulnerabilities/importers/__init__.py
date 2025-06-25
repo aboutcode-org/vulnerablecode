@@ -35,6 +35,7 @@ from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import alpine_linux_importer
+from vulnerabilities.pipelines import amazon_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
@@ -78,6 +79,20 @@ IMPORTERS_REGISTRY = [
     ubuntu_usn.UbuntuUSNImporter,
     fireeye.FireyeImporter,
     oss_fuzz.OSSFuzzImporter,
+    ruby.RubyImporter,
+    github_osv.GithubOSVImporter,
+    curl.CurlImporter,
+    epss.EPSSImporter,
+    vulnrichment.VulnrichImporter,
+    amazon_linux_importer.AmazonLinuxImporterPipeline,
+    pypa_importer.PyPaImporterPipeline,
+    npm_importer.NpmImporterPipeline,
+    nginx_importer.NginxImporterPipeline,
+    gitlab_importer.GitLabImporterPipeline,
+    github_importer.GitHubAPIImporterPipeline,
+    nvd_importer.NVDImporterPipeline,
+    pysec_importer.PyPIImporterPipeline,
+    alpine_linux_importer.AlpineLinuxImporterPipeline,
 ]
 
 IMPORTERS_REGISTRY = {

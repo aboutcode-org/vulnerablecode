@@ -9,6 +9,7 @@
 
 import json
 
+from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.core.cache import cache
 from rest_framework import status
@@ -76,6 +77,16 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
         self.th_unrestricted_user_csrf_client.credentials(
             HTTP_AUTHORIZATION=self.th_unrestricted_user_auth
         )
+
+        # unrestricted throttling for group user
+        group, _ = Group.objects.get_or_create(name="Test Unrestricted")
+        group.permissions.add(permission_unrestricted)
+
+        self.th_group_user = ApiUser.objects.create_api_user(username="g@mail.com")
+        self.th_group_user.groups.add(group)
+        self.th_group_user_auth = f"Token {self.th_group_user.auth_token.key}"
+        self.th_group_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.th_group_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_group_user_auth)
 
         self.csrf_client_anon = APIClient(enforce_csrf_checks=True)
         self.csrf_client_anon_1 = APIClient(enforce_csrf_checks=True)
@@ -145,6 +156,17 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
 
         # no throttling for user with unrestricted perm.
         response = self.th_unrestricted_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_in_group_with_unrestricted_perm_throttling(self):
+        simulate_throttle_usage(
+            url="/api/packages",
+            client=self.th_group_user_csrf_client,
+            mock_use_count=20000,
+        )
+
+        # no throttling for user in group with unrestricted perm.
+        response = self.th_group_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_anon_throttling(self):

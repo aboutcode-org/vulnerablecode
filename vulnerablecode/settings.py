@@ -190,12 +190,21 @@ VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {"anon": "3600/hour", "user": "10800/hour"}
+THROTTLE_RATE_ANON = env.str("THROTTLE_RATE_ANON", default="3600/hour")
+THROTTLE_RATE_USER_HIGH = env.str("THROTTLE_RATE_USER_HIGH", default="18000/hour")
+THROTTLE_RATE_USER_MEDIUM = env.str("THROTTLE_RATE_USER_MEDIUM", default="14400/hour")
+THROTTLE_RATE_USER_LOW = env.str("THROTTLE_RATE_USER_LOW", default="10800/hour")
+
+REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
+    "anon": THROTTLE_RATE_ANON,
+    "low": THROTTLE_RATE_USER_LOW,
+    "medium": THROTTLE_RATE_USER_MEDIUM,
+    "high": THROTTLE_RATE_USER_HIGH,
+}
+
 
 if IS_TESTS:
     VULNERABLECODEIO_REQUIRE_AUTHENTICATION = False
-    REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {"anon": "10/day", "user": "20/day"}
-
 
 USE_L10N = True
 
@@ -235,9 +244,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ),
     "DEFAULT_THROTTLE_CLASSES": [
-        "vulnerabilities.throttling.StaffUserRateThrottle",
-        "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle",
+        "vulnerabilities.throttling.PermissionBasedUserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": REST_FRAMEWORK_DEFAULT_THROTTLE_RATES,
     "EXCEPTION_HANDLER": "vulnerabilities.throttling.throttled_exception_handler",

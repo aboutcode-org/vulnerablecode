@@ -23,6 +23,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.throttling import AnonRateThrottle
 
 from vulnerabilities.models import CodeFix
 from vulnerabilities.models import Package
@@ -32,6 +33,7 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.throttling import PermissionBasedUserRateThrottle
 
 
 class WeaknessV2Serializer(serializers.ModelSerializer):
@@ -134,6 +136,7 @@ class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Vulnerability.objects.all()
     serializer_class = VulnerabilityV2Serializer
     lookup_field = "vulnerability_id"
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -272,6 +275,7 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PackageV2Serializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageV2FilterSet
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -599,6 +603,7 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = CodeFix.objects.all()
     serializer_class = CodeFixSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
     def get_queryset(self):
         """
@@ -741,6 +746,7 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
     serializer_class = PipelineScheduleAPISerializer
     lookup_field = "pipeline_id"
     lookup_value_regex = r"[\w.]+"
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
     def get_serializer_class(self):
         if self.action == "create":

@@ -112,6 +112,14 @@ VulnerableCode Package Details - {{ package.purl }}
                                         {% endif %}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="two-col-left">
+                                        Risk score
+                                    </td>
+                                    <td class="two-col-right">
+                                        {{package.risk_score}}
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -139,7 +147,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 <tr>
                                     <td>
                                         <a href="/advisories/{{advisory.id}}">
-                                            {{advisory.advisory_id }}
+                                            {{advisory.avid }}
                                         </a>
                                         <br />
                                         {% if advisory.alias|length != 0 %}
@@ -260,7 +268,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 <tr>
                                     <td>
                                         <a href="/advisories/{{advisory.id}}">
-                                            {{advisory.advisory_id }}
+                                            {{advisory.avid }}
                                         </a>
                                     </td>
                                     <td>

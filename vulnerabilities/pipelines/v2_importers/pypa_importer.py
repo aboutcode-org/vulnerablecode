@@ -22,7 +22,7 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect advisories from PyPA GitHub repository."""
 
     pipeline_id = "pypa_importer_v2"
-
+    label = "Pypa"
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     repo_url = "git+https://github.com/pypa/advisory-database"

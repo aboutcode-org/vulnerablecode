@@ -32,12 +32,11 @@ from vulnerabilities.utils import load_json
 class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect advisories from nodejs GitHub repository."""
 
-    pipeline_id = "npm_importer_v2"
-
+    pipeline_id = "nodejs_security_wg"
     spdx_license_expression = "MIT"
     license_url = "https://github.com/nodejs/security-wg/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/nodejs/security-wg"
-    importer_name = "Npm Importer"
+    importer_name = "npm Importer"
 
     unfurl_version_ranges = True
 
@@ -84,6 +83,7 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 VulnerabilitySeverity(
                     system=CVSSV3,
                     value=cvss_score,
+                    url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
                 )
             )
         if cvss_vector and cvss_vector.startswith("CVSS:2.0/"):
@@ -91,6 +91,7 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 VulnerabilitySeverity(
                     system=CVSSV2,
                     value=cvss_score,
+                    url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
                 )
             )
         if not id:
@@ -106,7 +107,6 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             references.append(
                 Reference(
                     url=ref,
-                    severities=severities,
                 )
             )
 

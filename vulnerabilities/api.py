@@ -22,7 +22,6 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.throttling import AnonRateThrottle
 
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Exploit
@@ -471,7 +470,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PackageSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
-    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    throttle_classes = [PermissionBasedUserRateThrottle]
 
     def get_queryset(self):
         return super().get_queryset().with_is_vulnerable()
@@ -688,7 +687,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VulnerabilityFilterSet
-    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    throttle_classes = [PermissionBasedUserRateThrottle]
 
 
 class CPEFilterSet(filters.FilterSet):

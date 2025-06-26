@@ -54,15 +54,15 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         )
 
     purl_type_by_gitlab_scheme = {
-        # "conan": "conan",
-        # "gem": "gem",
+        "conan": "conan",
+        "gem": "gem",
         # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
         # "go": "golang",
-        # "maven": "maven",
-        # "npm": "npm",
-        # "nuget": "nuget",
+        "maven": "maven",
+        "npm": "npm",
+        "nuget": "nuget",
         "packagist": "composer",
-        # "pypi": "pypi",
+        "pypi": "pypi",
     }
 
     gitlab_scheme_by_purl_type = {v: k for k, v in purl_type_by_gitlab_scheme.items()}
@@ -94,13 +94,22 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 )
                 continue
 
-            yield parse_gitlab_advisory(
+            advisory = parse_gitlab_advisory(
                 file=file_path,
                 base_path=base_path,
                 gitlab_scheme_by_purl_type=self.gitlab_scheme_by_purl_type,
                 purl_type_by_gitlab_scheme=self.purl_type_by_gitlab_scheme,
                 logger=self.log,
             )
+
+            if not advisory:
+                self.log(
+                    f"Failed to parse advisory from {file_path!r}",
+                    level=logging.ERROR,
+                )
+                continue
+
+            yield advisory
 
     def clean_downloads(self):
         if self.vcs_response:

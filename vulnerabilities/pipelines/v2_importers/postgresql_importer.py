@@ -69,7 +69,12 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def to_advisories(self, data):
         advisories = []
         soup = BeautifulSoup(data, features="lxml")
-        table = soup.select("table")[0]
+        tables = soup.select("table")
+
+        if not tables:
+            return advisories
+
+        table = tables[0]
 
         for row in table.select("tbody tr"):
             ref_col, affected_col, fixed_col, severity_score_col, desc_col = row.select("td")

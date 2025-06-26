@@ -21,6 +21,7 @@ from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
 from vulnerabilities.pipelines import populate_vulnerability_summary_pipeline
 from vulnerabilities.pipelines import remove_duplicate_advisories
+from vulnerabilities.pipelines.v2_improvers import collect_commits as collect_commits_v2
 from vulnerabilities.pipelines.v2_improvers import compute_package_risk as compute_package_risk_v2
 from vulnerabilities.pipelines.v2_improvers import (
     computer_package_version_rank as compute_version_rank_v2,
@@ -66,6 +67,7 @@ IMPROVERS_REGISTRY = [
     enhance_with_metasploit_v2.MetasploitImproverPipeline,
     compute_package_risk_v2.ComputePackageRiskPipeline,
     compute_version_rank_v2.ComputeVersionRankPipeline,
+    collect_commits_v2.CollectFixCommitsPipeline,
 ]
 
 IMPROVERS_REGISTRY = {

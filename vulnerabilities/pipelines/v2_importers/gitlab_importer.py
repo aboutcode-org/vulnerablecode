@@ -59,9 +59,9 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
         # "go": "golang",
         # "maven": "maven",
-        "npm": "npm",
+        # "npm": "npm",
         # "nuget": "nuget",
-        # "packagist": "composer",
+        "packagist": "composer",
         # "pypi": "pypi",
     }
 
@@ -88,10 +88,10 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             )
 
             if gitlab_type not in self.purl_type_by_gitlab_scheme:
-                # self.log(
-                #     f"Unknown package type {gitlab_type!r} in {file_path!r}",
-                #     level=logging.ERROR,
-                # )
+                self.log(
+                    f"Unknown package type {gitlab_type!r} in {file_path!r}",
+                    level=logging.ERROR,
+                )
                 continue
 
             yield parse_gitlab_advisory(
@@ -228,6 +228,8 @@ def parse_gitlab_advisory(
     summary = build_description(gitlab_advisory.get("title"), gitlab_advisory.get("description"))
     urls = gitlab_advisory.get("urls")
     references = [Reference.from_url(u) for u in urls]
+
+    print(references)
 
     cwe_ids = gitlab_advisory.get("cwe_ids") or []
     cwe_list = list(map(get_cwe_id, cwe_ids))

@@ -1323,13 +1323,27 @@ class Alias(models.Model):
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
-class AdvisoryQuerySet(BaseQuerySet):
+class AdvisoryV2QuerySet(BaseQuerySet):
     def search(query):
         """
         This function will take a string as an input, the string could be an alias or an advisory ID or
         something in the advisory description.
         """
         return AdvisoryV2.objects.filter(
+            Q(advisory_id__icontains=query)
+            | Q(aliases__alias__icontains=query)
+            | Q(summary__icontains=query)
+            | Q(references__url__icontains=query)
+        ).distinct()
+
+
+class AdvisoryQuerySet(BaseQuerySet):
+    def search(query):
+        """
+        This function will take a string as an input, the string could be an alias or an advisory ID or
+        something in the advisory description.
+        """
+        return Advisory.objects.filter(
             Q(advisory_id__icontains=query)
             | Q(aliases__alias__icontains=query)
             | Q(summary__icontains=query)
@@ -1820,6 +1834,60 @@ class CodeChange(models.Model):
         abstract = True
 
 
+class CodeChangeV2(models.Model):
+    """
+    Abstract base model representing a change in code, either introducing or fixing a vulnerability.
+    This includes details about commits, patches, and related metadata.
+
+    We are tracking commits, pulls and downloads as references to the code change. The goal is to
+    keep track and store the actual code patch in the ``patch`` field. When not available the patch
+    will be inferred from these references using improvers.
+    """
+
+    commits = models.JSONField(
+        blank=True,
+        default=list,
+        help_text="List of commit identifiers using VCS URLs associated with the code change.",
+    )
+    pulls = models.JSONField(
+        blank=True,
+        default=list,
+        help_text="List of pull request URLs associated with the code change.",
+    )
+    downloads = models.JSONField(
+        blank=True, default=list, help_text="List of download URLs for the patched code."
+    )
+    patch = models.TextField(
+        blank=True, null=True, help_text="The code change as a patch in unified diff format."
+    )
+    base_package_version = models.ForeignKey(
+        "PackageV2",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="codechanges_v2",
+        help_text="The base package version to which this code change applies.",
+    )
+    notes = models.TextField(
+        blank=True, null=True, help_text="Notes or instructions about this code change."
+    )
+    references = models.JSONField(
+        blank=True, default=list, help_text="URL references related to this code change."
+    )
+    is_reviewed = models.BooleanField(
+        default=False, help_text="Indicates if this code change has been reviewed."
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True, help_text="Timestamp indicating when this code change was created."
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True, help_text="Timestamp indicating when this code change was last updated."
+    )
+
+    class Meta:
+        abstract = True
+
+
 class CodeFix(CodeChange):
     """
     A code fix is a code change that addresses a vulnerability and is associated:
@@ -1840,6 +1908,35 @@ class CodeFix(CodeChange):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="code_fix",
+        help_text="The fixing package version with this code fix",
+    )
+
+
+class CodeFixV2(CodeChangeV2):
+    """
+    A code fix is a code change that addresses a vulnerability and is associated:
+    - with a specific advisory
+    - package that has been affected
+    - optionally with a specific fixing package version when it is known
+    """
+
+    advisory = models.ForeignKey(
+        "AdvisoryV2",
+        on_delete=models.CASCADE,
+        related_name="code_fix_v2",
+        help_text="The affected package version to which this code fix applies.",
+    )
+
+    affected_package = models.ForeignKey(
+        "PackageV2", on_delete=models.CASCADE, related_name="code_fix_v2_affected"
+    )
+
+    fixed_package = models.ForeignKey(
+        "PackageV2",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="code_fix_v2_fixed",
         help_text="The fixing package version with this code fix",
     )
 
@@ -2525,6 +2622,23 @@ class AdvisoryV2(models.Model):
     into structured data
     """
 
+    # This is similar to a type or a namespace
+    datasource_id = models.CharField(
+        max_length=100,
+        blank=False,
+        null=False,
+        help_text="Unique ID for the datasource used for this advisory ." "e.g.: nginx_importer_v2",
+    )
+
+    avid = models.CharField(
+        max_length=500,
+        blank=False,
+        null=False,
+        help_text="Unique ID for the datasource used for this advisory ."
+        "e.g.: pysec_importer_v2/PYSEC-2020-2233",
+    )
+
+    # This is similar to a name
     advisory_id = models.CharField(
         max_length=50,
         blank=False,
@@ -2534,6 +2648,7 @@ class AdvisoryV2(models.Model):
         "such as PYSEC-2020-2233",
     )
 
+    # This is similar to a version
     unique_content_id = models.CharField(
         max_length=64,
         blank=False,
@@ -2541,6 +2656,19 @@ class AdvisoryV2(models.Model):
         unique=True,
         help_text="A 64 character unique identifier for the content of the advisory since we use sha256 as hex",
     )
+    url = models.URLField(
+        blank=False,
+        null=False,
+        help_text="Link to the advisory on the upstream website",
+    )
+
+    # TODO: Have a mapping that gives datasource class by datasource ID
+    # Get label from datasource class
+    # Remove this from model
+    # In the UI - Use label
+    # In the API - Use datasource_id
+    # Have an API endpoint for all info for datasources - show license, label
+
     summary = models.TextField(
         blank=True,
     )
@@ -2570,18 +2698,6 @@ class AdvisoryV2(models.Model):
     date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
     date_imported = models.DateTimeField(
         blank=True, null=True, help_text="UTC Date on which the advisory was imported"
-    )
-    # TODO: Rename to datasource ID
-    datasource_ID = models.CharField(
-        max_length=100,
-        help_text="Fully qualified name of the importer prefixed with the"
-        "module name importing the advisory. Eg:"
-        "nginx_importer_v2",
-    )
-    url = models.URLField(
-        blank=False,
-        null=False,
-        help_text="Link to the advisory on the upstream website",
     )
 
     affecting_packages = models.ManyToManyField(
@@ -2632,7 +2748,8 @@ class AdvisoryV2(models.Model):
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
-        ordering = ["date_published", "unique_content_id"]
+        unique_together = ["datasource_id", "advisory_id", "unique_content_id"]
+        ordering = ["datasource_id", "advisory_id", "date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
         self.full_clean()

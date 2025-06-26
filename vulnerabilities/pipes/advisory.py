@@ -57,18 +57,18 @@ def get_or_create_advisory_aliases(aliases: List[str]) -> List[AdvisoryAlias]:
 
 
 def get_or_create_advisory_references(references: List) -> List[AdvisoryReference]:
-    reference_ids = [ref.reference_id for ref in references]
-    existing = AdvisoryReference.objects.filter(reference_id__in=reference_ids)
-    existing_ids = {r.reference_id for r in existing}
+    reference_urls = [ref.url for ref in references]
+    existing = AdvisoryReference.objects.filter(url__in=reference_urls)
+    existing_urls = {r.url for r in existing}
 
     to_create = [
         AdvisoryReference(reference_id=ref.reference_id, url=ref.url)
         for ref in references
-        if ref.reference_id not in existing_ids
+        if ref.url not in existing_urls
     ]
     AdvisoryReference.objects.bulk_create(to_create, ignore_conflicts=True)
 
-    return list(AdvisoryReference.objects.filter(reference_id__in=reference_ids))
+    return list(AdvisoryReference.objects.filter(url__in=reference_urls))
 
 
 def get_or_create_advisory_severities(severities: List) -> QuerySet:
@@ -155,9 +155,10 @@ def insert_advisory_v2(
         default_data = {
             "summary": advisory.summary,
             "date_published": advisory.date_published,
-            "datasource_ID": pipeline_id,
+            "datasource_id": pipeline_id,
             "date_collected": datetime.now(timezone.utc),
             "advisory_id": advisory.advisory_id,
+            "avid": f"{pipeline_id}/{advisory.advisory_id}",
         }
 
         advisory_obj, _ = AdvisoryV2.objects.get_or_create(

@@ -18,7 +18,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
             <div class="panel-heading py-2 is-size-6">
                 Advisory details:
                 <span class="tag is-white custom">
-                    {{ advisory.advisory_id }}
+                    {{advisory.datasource_id}} / {{ advisory.advisory_id }}
                 </span>
             </div>
         </article>
@@ -86,17 +86,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         <tbody>
                             <tr>
                                 <td class="two-col-left">Advisory ID</td>
-                                <td class="two-col-right">{{ advisory.advisory_id }}</td>
-                            </tr>
-                            <tr>
-                                <td class="two-col-left"
-                                    data-tooltip="Risk expressed as a number ranging from 0 to 10. It is calculated by multiplying
-                                    the weighted severity and exploitability values, capped at a maximum of 10.
-                                    "
-                                >URL</td>
-                                <td class="two-col-right wrap-strings">
-                                    <a href="{{ advisory.url }}" target="_blank"> {{advisory.url}} </a>
-                                </td>
+                                <td class="two-col-right wrap-strings"> <a href="{{ advisory.url }}" target="_blank">{{ advisory.datasource_id }}/{{ advisory.advisory_id }}<i class="fa fa-external-link fa_link_custom" /> </a></td>
                             </tr>
                             <tr>
                                 <td class="two-col-left">Aliases</td>

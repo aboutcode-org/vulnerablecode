@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "vulnrichment_importer_v2"
+    label = "Vulnrichment"
     spdx_license_expression = "CC0-1.0"
     license_url = "https://github.com/cisagov/vulnrichment/blob/develop/LICENSE"
     repo_url = "git+https://github.com/cisagov/vulnrichment.git"

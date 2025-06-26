@@ -273,6 +273,7 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
 
     pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.
     license_url = None
+    label = None
     spdx_license_expression = None
     repo_url = None
     importer_name = None

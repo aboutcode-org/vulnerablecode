@@ -1497,10 +1497,22 @@ class ApiUser(UserModel):
     class Meta:
         proxy = True
         permissions = [
-            ("throttle_unrestricted", "Can make api requests without throttling limits"),
-            ("throttle_18000_hour", "Can make 18000 api requests per hour"),
-            ("throttle_14400_hour", "Can make 14400 api requests per hour"),
-            ("throttle_3600_hour", "Can make 3600 api requests per hour"),
+            (
+                "throttle_3_unrestricted",
+                "Can make unlimited API requests without any throttling limits",
+            ),
+            (
+                "throttle_2_high",
+                "Can make high number of API requests with minimal throttling",
+            ),
+            (
+                "throttle_1_medium",
+                "Can make medium number of API requests with standard throttling",
+            ),
+            (
+                "throttle_0_low",
+                "Can make low number of API requests with strict throttling",
+            ),
         ]
 
 

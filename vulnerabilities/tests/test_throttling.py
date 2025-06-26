@@ -14,22 +14,17 @@ from django.core.cache import cache
 from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
-from rest_framework.throttling import AnonRateThrottle
 
 from vulnerabilities.api import PermissionBasedUserRateThrottle
 from vulnerabilities.models import ApiUser
 
 
-def simulate_throttle_usage(
-    url,
-    client,
-    mock_use_count,
-    throttle_cls=PermissionBasedUserRateThrottle,
-):
-    throttle = throttle_cls()
+def simulate_throttle_usage(url, client, mock_use_count):
+    throttle = PermissionBasedUserRateThrottle()
     request = client.get(url).wsgi_request
 
     if cache_key := throttle.get_cache_key(request, view=None):
+        print(cache_key)
         now = throttle.timer()
         cache.set(cache_key, [now] * mock_use_count)
 
@@ -41,17 +36,17 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
         # See https://www.django-rest-framework.org/api-guide/throttling/#setting-up-the-cache
         cache.clear()
 
-        permission_3600 = Permission.objects.get(codename="throttle_3600_hour")
-        permission_14400 = Permission.objects.get(codename="throttle_14400_hour")
-        permission_18000 = Permission.objects.get(codename="throttle_18000_hour")
-        permission_unrestricted = Permission.objects.get(codename="throttle_unrestricted")
+        permission_low = Permission.objects.get(codename="throttle_0_low")
+        permission_medium = Permission.objects.get(codename="throttle_1_medium")
+        permission_high = Permission.objects.get(codename="throttle_2_high")
+        permission_unrestricted = Permission.objects.get(codename="throttle_3_unrestricted")
 
-        # user with 3600/hour permission
-        self.th_3600_user = ApiUser.objects.create_api_user(username="z@mail.com")
-        self.th_3600_user.user_permissions.add(permission_3600)
-        self.th_3600_user_auth = f"Token {self.th_3600_user.auth_token.key}"
-        self.th_3600_user_csrf_client = APIClient(enforce_csrf_checks=True)
-        self.th_3600_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_3600_user_auth)
+        # user with low permission
+        self.th_low_user = ApiUser.objects.create_api_user(username="z@mail.com")
+        self.th_low_user.user_permissions.add(permission_low)
+        self.th_low_user_auth = f"Token {self.th_low_user.auth_token.key}"
+        self.th_low_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.th_low_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_low_user_auth)
 
         # basic user without any special throttling perm
         self.basic_user = ApiUser.objects.create_api_user(username="a@mail.com")
@@ -59,19 +54,19 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
         self.basic_user_csrf_client = APIClient(enforce_csrf_checks=True)
         self.basic_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.basic_user_auth)
 
-        # 14400/hour permission
-        self.th_14400_user = ApiUser.objects.create_api_user(username="b@mail.com")
-        self.th_14400_user.user_permissions.add(permission_14400)
-        self.th_14400_user_auth = f"Token {self.th_14400_user.auth_token.key}"
-        self.th_14400_user_csrf_client = APIClient(enforce_csrf_checks=True)
-        self.th_14400_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_14400_user_auth)
+        # medium permission
+        self.th_medium_user = ApiUser.objects.create_api_user(username="b@mail.com")
+        self.th_medium_user.user_permissions.add(permission_medium)
+        self.th_medium_user_auth = f"Token {self.th_medium_user.auth_token.key}"
+        self.th_medium_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.th_medium_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_medium_user_auth)
 
-        # 18000/hour permission
-        self.th_18000_user = ApiUser.objects.create_api_user(username="c@mail.com")
-        self.th_18000_user.user_permissions.add(permission_18000)
-        self.th_18000_user_auth = f"Token {self.th_18000_user.auth_token.key}"
-        self.th_18000_user_csrf_client = APIClient(enforce_csrf_checks=True)
-        self.th_18000_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_18000_user_auth)
+        # high permission
+        self.th_high_user = ApiUser.objects.create_api_user(username="c@mail.com")
+        self.th_high_user.user_permissions.add(permission_high)
+        self.th_high_user_auth = f"Token {self.th_high_user.auth_token.key}"
+        self.th_high_user_csrf_client = APIClient(enforce_csrf_checks=True)
+        self.th_high_user_csrf_client.credentials(HTTP_AUTHORIZATION=self.th_high_user_auth)
 
         # unrestricted throttling perm
         self.th_unrestricted_user = ApiUser.objects.create_api_user(username="d@mail.com")
@@ -85,60 +80,60 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
         self.csrf_client_anon = APIClient(enforce_csrf_checks=True)
         self.csrf_client_anon_1 = APIClient(enforce_csrf_checks=True)
 
-    def test_user_with_3600_perm_throttling(self):
+    def test_user_with_low_perm_throttling(self):
         simulate_throttle_usage(
             url="/api/packages",
-            client=self.th_3600_user_csrf_client,
-            mock_use_count=3599,
+            client=self.th_low_user_csrf_client,
+            mock_use_count=10799,
         )
 
-        response = self.th_3600_user_csrf_client.get("/api/packages")
+        response = self.th_low_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # exhausted 3600/hr allowed requests.
-        response = self.th_3600_user_csrf_client.get("/api/packages")
+        # exhausted 10800/hr allowed requests.
+        response = self.th_low_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
 
     def test_basic_user_throttling(self):
         simulate_throttle_usage(
             url="/api/packages",
             client=self.basic_user_csrf_client,
-            mock_use_count=10799,
-        )
-
-        response = self.basic_user_csrf_client.get("/api/packages")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # exhausted 10800/hr allowed requests.
-        response = self.basic_user_csrf_client.get("/api/packages")
-        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
-
-    def test_user_with_14400_perm_throttling(self):
-        simulate_throttle_usage(
-            url="/api/packages",
-            client=self.th_14400_user_csrf_client,
             mock_use_count=14399,
         )
 
-        response = self.th_14400_user_csrf_client.get("/api/packages")
+        response = self.basic_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # exhausted 14400/hr allowed requests.
+        response = self.basic_user_csrf_client.get("/api/packages")
+        self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+
+    def test_user_with_medium_perm_throttling(self):
+        simulate_throttle_usage(
+            url="/api/packages",
+            client=self.th_medium_user_csrf_client,
+            mock_use_count=14399,
+        )
+
+        response = self.th_medium_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # exhausted 14400/hr allowed requests for user with 14400 perm.
-        response = self.th_14400_user_csrf_client.get("/api/packages")
+        response = self.th_medium_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
 
-    def test_user_with_18000_perm_throttling(self):
+    def test_user_with_high_perm_throttling(self):
         simulate_throttle_usage(
             url="/api/packages",
-            client=self.th_18000_user_csrf_client,
+            client=self.th_high_user_csrf_client,
             mock_use_count=17999,
         )
 
-        response = self.th_18000_user_csrf_client.get("/api/packages")
+        response = self.th_high_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # exhausted 18000/hr allowed requests for user with 18000 perm.
-        response = self.th_18000_user_csrf_client.get("/api/packages")
+        response = self.th_high_user_csrf_client.get("/api/packages")
         self.assertEqual(response.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
 
     def test_user_with_unrestricted_perm_throttling(self):
@@ -154,7 +149,6 @@ class PermissionBasedRateThrottleApiTests(APITestCase):
 
     def test_anon_throttling(self):
         simulate_throttle_usage(
-            throttle_cls=AnonRateThrottle,
             url="/api/packages",
             client=self.csrf_client_anon,
             mock_use_count=3599,

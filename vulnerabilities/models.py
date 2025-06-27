@@ -2258,3 +2258,96 @@ class PipelineSchedule(models.Model):
             schedules.clear_job(self.schedule_work_id)
 
         return schedules.schedule_execution(self, execute_now) if self.is_active else None
+
+
+ISSUE_TYPE_CHOICES = [
+    ("MISSING_AFFECTED_PACKAGE", "Advisory is missing affected package"),
+    ("MISSING_FIXED_BY_PACKAGE", "Advisory is missing fixed-by package"),
+    (
+        "MISSING_AFFECTED_AND_FIXED_BY_PACKAGES",
+        "Advisory is missing both affected and fixed-by packages",
+    ),
+    ("MISSING_SUMMARY", "Advisory is missing summary"),
+    ("CONFLICTING_FIXED_BY_PACKAGES", "Advisories have conflicting fixed-by packages"),
+    ("CONFLICTING_AFFECTED_PACKAGES", "Advisories have conflicting affected packages"),
+    (
+        "CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES",
+        "Advisories have conflicting affected and fixed-by packages",
+    ),
+    ("CONFLICTING_SEVERITY_SCORES", "Advisories have conflicting severity scores"),
+]
+
+
+class AdvisoryToDo(models.Model):
+    """Track the TODOs for advisory/ies that need to be addressed."""
+
+    # Since we can not make advisories field (M2M field) unique
+    # (see https://code.djangoproject.com/ticket/702), we use related_advisories_id
+    # to avoid creating duplicate issue for same set of advisories,
+    related_advisories_id = models.CharField(
+        max_length=40,
+        help_text="SHA1 digest of the unique_content_id field of the applicable advisories.",
+    )
+
+    advisories = models.ManyToManyField(
+        Advisory,
+        through="ToDoRelatedAdvisory",
+        related_name="advisory_todos",
+        help_text="Advisory/ies where this TODO is applicable.",
+    )
+
+    issue_type = models.CharField(
+        max_length=50,
+        choices=ISSUE_TYPE_CHOICES,
+        db_index=True,
+        help_text="Select the issue that needs to be addressed from the available options.",
+    )
+
+    issue_detail = models.TextField(
+        blank=True,
+        help_text="Additional details about the issue.",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Timestamp indicating when this TODO was created.",
+    )
+
+    is_resolved = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text="This TODO is resolved or not.",
+    )
+
+    resolved_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Timestamp indicating when this TODO was resolved.",
+    )
+
+    resolution_detail = models.TextField(
+        blank=True,
+        help_text="Additional detail on how this TODO was resolved.",
+    )
+
+    class Meta:
+        unique_together = ("related_advisories_id", "issue_type")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+
+class ToDoRelatedAdvisory(models.Model):
+    todo = models.ForeignKey(
+        AdvisoryToDo,
+        on_delete=models.CASCADE,
+    )
+
+    advisory = models.ForeignKey(
+        Advisory,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("todo", "advisory")

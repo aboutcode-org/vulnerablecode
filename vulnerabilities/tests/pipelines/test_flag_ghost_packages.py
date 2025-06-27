@@ -23,7 +23,7 @@ from vulnerabilities.tests.pipelines import TestLogger
 class FlagGhostPackagePipelineTest(TestCase):
     data = Path(__file__).parent.parent / "test_data"
 
-    @mock.patch("vulnerabilities.pipelines.flag_ghost_packages.versions")
+    @mock.patch("vulnerabilities.pipes.fetchcode_utils.versions")
     def test_flag_ghost_package(self, mock_fetchcode_versions):
         Package.objects.create(type="pypi", name="foo", version="2.3.0")
         Package.objects.create(type="pypi", name="foo", version="3.0.0")
@@ -43,7 +43,7 @@ class FlagGhostPackagePipelineTest(TestCase):
         self.assertEqual(1, flagged_package_count)
         self.assertEqual(1, Package.objects.filter(is_ghost=True).count())
 
-    @mock.patch("vulnerabilities.pipelines.flag_ghost_packages.versions")
+    @mock.patch("vulnerabilities.pipes.fetchcode_utils.versions")
     def test_detect_and_flag_ghost_packages(self, mock_fetchcode_versions):
         Package.objects.create(type="pypi", name="foo", version="2.3.0")
         Package.objects.create(type="pypi", name="foo", version="3.0.0")

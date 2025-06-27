@@ -268,9 +268,13 @@ class AffectedPackage:
                 return
 
         fixed_version = affected_pkg["fixed_version"]
-        if fixed_version and affected_version_range:
-            # TODO: revisit after https://github.com/nexB/univers/issues/10
-            fixed_version = affected_version_range.version_class(fixed_version)
+        if fixed_version:
+            if affected_version_range:
+                # TODO: revisit after https://github.com/nexB/univers/issues/10
+                fixed_version = affected_version_range.version_class(fixed_version)
+            elif package.type in RANGE_CLASS_BY_SCHEMES:
+                vrc = RANGE_CLASS_BY_SCHEMES[package.type]
+                fixed_version = vrc.version_class(fixed_version)
 
         if not fixed_version and not affected_version_range:
             logger.error(

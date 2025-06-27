@@ -88,9 +88,10 @@ class TestComputeToDo(TestCase):
         pipeline = ComputeToDo()
         pipeline.execute()
 
-        todos = AdvisoryToDo.objects.first()
+        todo = AdvisoryToDo.objects.first()
         self.assertEqual(1, AdvisoryToDo.objects.count())
-        self.assertEqual("MISSING_SUMMARY", todos.issue_type)
+        self.assertEqual("MISSING_SUMMARY", todo.issue_type)
+        self.assertEqual(1, todo.advisories.count())
 
     def test_advisory_todo_missing_fixed(self):
         date = datetime.now()
@@ -107,9 +108,10 @@ class TestComputeToDo(TestCase):
         pipeline = ComputeToDo()
         pipeline.execute()
 
-        todos = AdvisoryToDo.objects.first()
+        todo = AdvisoryToDo.objects.first()
         self.assertEqual(1, AdvisoryToDo.objects.count())
-        self.assertEqual("MISSING_FIXED_BY_PACKAGE", todos.issue_type)
+        self.assertEqual("MISSING_FIXED_BY_PACKAGE", todo.issue_type)
+        self.assertEqual(1, todo.advisories.count())
 
     def test_advisory_todo_missing_affected(self):
         date = datetime.now()
@@ -126,9 +128,10 @@ class TestComputeToDo(TestCase):
         pipeline = ComputeToDo()
         pipeline.execute()
 
-        todos = AdvisoryToDo.objects.first()
+        todo = AdvisoryToDo.objects.first()
         self.assertEqual(1, AdvisoryToDo.objects.count())
-        self.assertEqual("MISSING_AFFECTED_PACKAGE", todos.issue_type)
+        self.assertEqual("MISSING_AFFECTED_PACKAGE", todo.issue_type)
+        self.assertEqual(1, todo.advisories.count())
 
     def test_advisory_todo_conflicting_fixed_affected(self):
         alias = Alias.objects.create(alias="CVE-0000-0000")
@@ -156,12 +159,15 @@ class TestComputeToDo(TestCase):
         )
         adv2.aliases.add(alias)
 
+        self.assertEqual(0, AdvisoryToDo.objects.count())
         pipeline = ComputeToDo()
         pipeline.execute()
 
-        todos = AdvisoryToDo.objects.first()
+        todo = AdvisoryToDo.objects.first()
         self.assertEqual(1, AdvisoryToDo.objects.count())
-        self.assertEqual("CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES", todos.issue_type)
+        self.assertEqual("CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES", todo.issue_type)
         self.assertIn(
-            "CVE-0000-0000: pkg:npm/package1 with conflicting fixed version", todos.issue_detail
+            "CVE-0000-0000: pkg:npm/package1 with conflicting fixed version", todo.issue_detail
         )
+        self.assertEqual(2, todo.advisories.count())
+        self.assertEqual(todo, adv2.advisory_todos.first())

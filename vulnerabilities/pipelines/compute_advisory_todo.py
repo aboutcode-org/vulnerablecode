@@ -11,10 +11,12 @@
 import json
 
 from aboutcode.pipeline import LoopProgress
+from django.utils import timezone
 
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import AdvisoryToDo
 from vulnerabilities.models import Alias
+from vulnerabilities.models import ToDoRelatedAdvisory
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes.advisory import advisories_checksum
 
@@ -32,8 +34,14 @@ class ComputeToDo(VulnerableCodePipeline):
         )
 
     def compute_individual_advisory_todo(self):
-        advisories = Advisory.objects.all().iterator(chunk_size=5000)
-        advisories_count = Advisory.objects.all().count()
+        """Create ToDos for missing summary, affected and fixed packages."""
+
+        advisories = Advisory.objects.all()
+        advisories_count = advisories.count()
+        advisory_relation_to_create = {}
+        todo_to_create = []
+        new_todos_count = 0
+        batch_size = 5000
 
         self.log(
             f"Checking missing summary, affected and fixed packages in {advisories_count} Advisories"
@@ -43,23 +51,48 @@ class ComputeToDo(VulnerableCodePipeline):
             logger=self.log,
             progress_step=1,
         )
-        for advisory in progress.iter(advisories):
+        for advisory in progress.iter(advisories.iterator(chunk_size=5000)):
             advisory_todo_id = advisories_checksum(advisories=advisory)
             check_missing_summary(
                 advisory=advisory,
                 todo_id=advisory_todo_id,
-                logger=self.log,
+                todo_to_create=todo_to_create,
+                advisory_relation_to_create=advisory_relation_to_create,
             )
 
             check_missing_affected_and_fixed_by_packages(
                 advisory=advisory,
                 todo_id=advisory_todo_id,
-                logger=self.log,
+                todo_to_create=todo_to_create,
+                advisory_relation_to_create=advisory_relation_to_create,
             )
 
+            if len(todo_to_create) > batch_size:
+                new_todos_count += bulk_create_with_m2m(
+                    todos=todo_to_create,
+                    advisories=advisory_relation_to_create,
+                    logger=self.log,
+                )
+                advisory_relation_to_create.clear()
+                todo_to_create.clear()
+
+        new_todos_count += bulk_create_with_m2m(
+            todos=todo_to_create,
+            advisories=advisory_relation_to_create,
+            logger=self.log,
+        )
+
     def detect_conflicting_advisories(self):
+        """
+        Create ToDos for advisories with conflicting opinions on fixed and affected
+        package versions for a vulnerability.
+        """
         aliases = Alias.objects.filter(alias__istartswith="cve")
         aliases_count = aliases.count()
+        advisory_relation_to_create = {}
+        todo_to_create = []
+        new_todos_count = 0
+        batch_size = 5000
 
         self.log(f"Cross validating advisory affected and fixed package for {aliases_count} CVEs")
 
@@ -73,24 +106,50 @@ class ComputeToDo(VulnerableCodePipeline):
                 advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES"
             ).distinct()
 
-            check_conflicting_affected_and_fixed_by_packages(
+            check_conflicting_affected_and_fixed_by_packages_for_alias(
                 advisories=advisories,
                 cve=alias,
-                logger=self.log,
+                todo_to_create=todo_to_create,
+                advisory_relation_to_create=advisory_relation_to_create,
             )
 
+            if len(todo_to_create) > batch_size:
+                new_todos_count += bulk_create_with_m2m(
+                    todos=todo_to_create,
+                    advisories=advisory_relation_to_create,
+                    logger=self.log,
+                )
+                advisory_relation_to_create.clear()
+                todo_to_create.clear()
 
-def check_missing_summary(advisory, todo_id, logger=None):
+        new_todos_count += bulk_create_with_m2m(
+            todos=todo_to_create,
+            advisories=advisory_relation_to_create,
+            logger=self.log,
+        )
+
+
+def check_missing_summary(
+    advisory,
+    todo_id,
+    todo_to_create,
+    advisory_relation_to_create,
+):
     if not advisory.summary:
-        todo, created = AdvisoryToDo.objects.get_or_create(
+        todo = AdvisoryToDo(
             related_advisories_id=todo_id,
             issue_type="MISSING_SUMMARY",
         )
-        if created:
-            todo.advisories.add(advisory)
+        advisory_relation_to_create[todo_id] = [advisory]
+        todo_to_create.append(todo)
 
 
-def check_missing_affected_and_fixed_by_packages(advisory, todo_id, logger=None):
+def check_missing_affected_and_fixed_by_packages(
+    advisory,
+    todo_id,
+    todo_to_create,
+    advisory_relation_to_create,
+):
     """
     Check for missing affected or fixed-by packages in the advisory
     and create appropriate AdvisoryToDo.
@@ -121,15 +180,21 @@ def check_missing_affected_and_fixed_by_packages(advisory, todo_id, logger=None)
         issue_type = "MISSING_AFFECTED_PACKAGE"
     elif not has_fixed_package:
         issue_type = "MISSING_FIXED_BY_PACKAGE"
-    todo, created = AdvisoryToDo.objects.get_or_create(
+
+    todo = AdvisoryToDo(
         related_advisories_id=todo_id,
         issue_type=issue_type,
     )
-    if created:
-        todo.advisories.add(advisory)
+    todo_to_create.append(todo)
+    advisory_relation_to_create[todo_id] = [advisory]
 
 
-def check_conflicting_affected_and_fixed_by_packages(advisories, cve, logger=None):
+def check_conflicting_affected_and_fixed_by_packages_for_alias(
+    advisories,
+    cve,
+    todo_to_create,
+    advisory_relation_to_create,
+):
     """
     Add appropriate AdvisoryToDo for conflicting affected/fixed packages.
 
@@ -222,15 +287,13 @@ def check_conflicting_affected_and_fixed_by_packages(advisories, cve, logger=Non
     messages.append("Comparison matrix:")
     messages.append(json.dumps(matrix, indent=2, default=list))
     todo_id = advisories_checksum(advisories)
-    todo, created = AdvisoryToDo.objects.get_or_create(
+    todo = AdvisoryToDo(
         related_advisories_id=todo_id,
         issue_type=issue_type,
-        defaults={
-            "issue_detail": "\n".join(messages),
-        },
+        issue_detail="\n".join(messages),
     )
-    if created:
-        todo.advisories.add(*advisories)
+    todo_to_create.append(todo)
+    advisory_relation_to_create[todo_id] = list(advisories)
 
 
 def initialize_sub_matrix(matrix, affected_purl, advisory):
@@ -245,3 +308,30 @@ def initialize_sub_matrix(matrix, affected_purl, advisory):
             matrix[affected_purl]["affected"][advisory_id] = set()
         if advisory not in matrix[affected_purl]["fixed"]:
             matrix[affected_purl]["fixed"][advisory_id] = set()
+
+
+def bulk_create_with_m2m(todos, advisories, logger):
+    """Bulk create ToDos and also bulk create M2M ToDo Advisory relationships."""
+    if not todos:
+        return 0
+
+    start_time = timezone.now()
+    try:
+        AdvisoryToDo.objects.bulk_create(objs=todos, ignore_conflicts=True)
+    except Exception as e:
+        logger(f"Error creating AdvisoryToDo: {e}")
+
+    new_todos = AdvisoryToDo.objects.filter(created_at__gte=start_time)
+
+    relations = [
+        ToDoRelatedAdvisory(todo=todo, advisory=advisory)
+        for todo in new_todos
+        for advisory in advisories[todo.related_advisories_id]
+    ]
+
+    try:
+        ToDoRelatedAdvisory.objects.bulk_create(relations)
+    except Exception as e:
+        logger(f"Error creating Advisory ToDo relations: {e}")
+
+    return new_todos.count()

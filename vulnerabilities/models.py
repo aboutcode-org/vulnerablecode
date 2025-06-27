@@ -2286,16 +2286,19 @@ class AdvisoryToDo(models.Model):
     # to avoid creating duplicate issue for same set of advisories,
     related_advisories_id = models.CharField(
         max_length=40,
-        blank=False,
-        null=False,
         help_text="SHA1 digest of the unique_content_id field of the applicable advisories.",
+    )
+
+    advisories = models.ManyToManyField(
+        Advisory,
+        through="ToDoRelatedAdvisory",
+        related_name="advisory_todos",
+        help_text="Advisory/ies where this TODO is applicable.",
     )
 
     issue_type = models.CharField(
         max_length=50,
         choices=ISSUE_TYPE_CHOICES,
-        blank=False,
-        null=False,
         db_index=True,
         help_text="Select the issue that needs to be addressed from the available options.",
     )
@@ -2303,12 +2306,6 @@ class AdvisoryToDo(models.Model):
     issue_detail = models.TextField(
         blank=True,
         help_text="Additional details about the issue.",
-    )
-
-    advisories = models.ManyToManyField(
-        Advisory,
-        related_name="advisory_todos",
-        help_text="Advisory/ies where this TODO is applicable.",
     )
 
     created_at = models.DateTimeField(
@@ -2339,3 +2336,18 @@ class AdvisoryToDo(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
+
+
+class ToDoRelatedAdvisory(models.Model):
+    todo = models.ForeignKey(
+        AdvisoryToDo,
+        on_delete=models.CASCADE,
+    )
+
+    advisory = models.ForeignKey(
+        Advisory,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("todo", "advisory")

@@ -119,7 +119,7 @@ class MinimalPackageSerializer(BaseResourceSerializer):
     """
 
     affected_by_vulnerabilities = VulnVulnIDSerializer(source="affecting_vulns", many=True)
-
+    url = serializers.SerializerMethodField()
     purl = serializers.CharField(source="package_url")
 
     is_vulnerable = serializers.BooleanField()
@@ -128,6 +128,16 @@ class MinimalPackageSerializer(BaseResourceSerializer):
         model = Package
         fields = ["url", "purl", "is_vulnerable", "affected_by_vulnerabilities"]
 
+    def get_url(self, package):
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(
+                reverse("package-detail", kwargs={'package_url': package.package_url})
+            )
+        return None
+    
+    def get_qualifiers(self, package):
+        return normalize_qualifiers(package.qualifiers, encode=False)
 
 class MinimalVulnerabilitySerializer(BaseResourceSerializer):
     """
@@ -153,7 +163,16 @@ class VulnSerializerRefsAndSummary(BaseResourceSerializer):
     """
     Lookup vulnerabilities references by aliases (such as a CVE).
     """
-
+    url = serializers.SerializerMethodField()
+    
+    def get_url(self, vulnerability):
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(
+                reverse("vulnerability-detail", kwargs={'vulnerability_id': vulnerability.vulnerability_id})
+            )
+        return None
+    
     fixed_packages = MinimalPackageSerializer(
         many=True, source="filtered_fixed_packages", read_only=True
     )
@@ -241,11 +260,16 @@ class VulnerabilitySerializer(BaseResourceSerializer):
     exploits = ExploitSerializer(many=True, read_only=True)
     weaknesses = WeaknessSerializer(many=True)
     severity_range_score = serializers.SerializerMethodField()
-    url = serializers.HyperlinkedIdentityField(
-        view_name="vulnerability-detail",
-        lookup_field="vulnerability_id"
-    )
+    url = serializers.SerializerMethodField()
 
+    def get_url(self, vulnerability):
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(
+                reverse("vulnerability-detail", kwargs={'vulnerability_id': vulnerability.vulnerability_id})
+            )
+        return None
+    
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
@@ -331,7 +355,7 @@ class PackageSerializer(BaseResourceSerializer):
 
     def get_url(self, package):
         request = self.context.get("request")
-        return reverse("package_details", kwargs={'purl': package.purl}, request=request)
+        return reverse("package-detail", kwargs={'package_url': package.package_url}, request=request)
 
     def get_qualifiers(self, package):
         return normalize_qualifiers(package.qualifiers, encode=False)
@@ -388,24 +412,33 @@ class PackageSerializer(BaseResourceSerializer):
 
         return self.get_vulnerabilities_for_a_package(package=package, fix=True)
 
-    def get_affected_vulnerabilities(self, package) -> dict:
+    def get_affected_vulnerabilities(self, package) -> list:
         """
-        Return a mapping of vulnerabilities that affect the given `package` (including packages that
-        fix each vulnerability and whose version is greater than the `package` version).
+        Return vulnerabilities that affect the given `package`.
         """
         excluded_purls = []
         package_vulnerabilities = self.get_vulnerabilities_for_a_package(package=package, fix=False)
-
+        
+        request = self.context.get("request")
+        
+        # Process vulnerabilities and add the URL manually
         for vuln in package_vulnerabilities:
-            for pkg in vuln["fixed_packages"]:
+            if request and "vulnerability_id" in vuln:
+                vuln_id = vuln["vulnerability_id"]
+                vuln["url"] = request.build_absolute_uri(
+                    reverse("vulnerability-detail", kwargs={"vulnerability_id": vuln_id})
+                )
+            
+            # Process fixed packages as before
+            for pkg in vuln.get("fixed_packages", []):
                 real_purl = PackageURL.from_string(pkg["purl"])
                 if package.version_class(real_purl.version) <= package.current_version:
                     excluded_purls.append(pkg)
-
+                    
             vuln["fixed_packages"] = [
                 pkg for pkg in vuln["fixed_packages"] if pkg not in excluded_purls
             ]
-
+            
         return package_vulnerabilities
 
     class Meta:

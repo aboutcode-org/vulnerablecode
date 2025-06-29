@@ -39,6 +39,15 @@ class CurlImporter(Importer):
     importer_name = "Curl Importer"
     api_url = "https://curl.se/docs/vuln.json"
 
+    def __init__(self, purl=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.purl = purl
+        if self.purl:
+            if self.purl.type != "generic" or self.purl.name != "curl":
+                print(
+                    f"Warning: This importer handles curl package vulnerabilities. Current PURL: {self.purl!s}"
+                )
+
     def fetch(self) -> Iterable[Mapping]:
         response = fetch_response(self.api_url)
         return response.json()
@@ -48,11 +57,42 @@ class CurlImporter(Importer):
         for data in raw_data:
             cve_id = data.get("aliases") or []
             cve_id = cve_id[0] if len(cve_id) > 0 else None
-            if not cve_id.startswith("CVE"):
-                package = data.get("database_specific").get("package")
+            if not cve_id or not cve_id.startswith("CVE"):
+                package = data.get("database_specific", {}).get("package", "")
                 logger.error(f"Invalid CVE ID: {cve_id} in package {package}")
                 continue
-            yield parse_advisory_data(data)
+
+            advisory = parse_advisory_data(data)
+
+            if self.purl and not self._advisory_affects_purl(advisory):
+                continue
+
+            yield advisory
+
+    def _advisory_affects_purl(self, advisory: AdvisoryData) -> bool:
+        if not self.purl:
+            return True
+
+        if self.purl.type != "generic" or self.purl.name != "curl":
+            return False
+
+        for affected_package in advisory.affected_packages:
+            if affected_package.package.name != "curl":
+                continue
+
+            if self.purl.version and affected_package.affected_version_range:
+                try:
+                    purl_version = SemverVersion(self.purl.version)
+
+                    if purl_version not in affected_package.affected_version_range:
+                        continue
+                except Exception as e:
+                    logger.error(f"Error checking version {self.purl.version}: {e}")
+                    continue
+
+            return True
+
+        return False
 
 
 def parse_advisory_data(raw_data) -> AdvisoryData:

@@ -82,6 +82,10 @@ class ComputeToDo(VulnerableCodePipeline):
             logger=self.log,
         )
 
+        self.log(
+            f"Successfully created {new_todos_count} ToDos for missing summary, affected and fixed packages"
+        )
+
     def detect_conflicting_advisories(self):
         """
         Create ToDos for advisories with conflicting opinions on fixed and affected
@@ -126,6 +130,10 @@ class ComputeToDo(VulnerableCodePipeline):
             todos=todo_to_create,
             advisories=advisory_relation_to_create,
             logger=self.log,
+        )
+
+        self.log(
+            f"Successfully created {new_todos_count} ToDos for conflicting affected and fixed packages"
         )
 
 
@@ -266,14 +274,14 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
 
         if len(unique_set_of_affected_vers) > 1:
             has_conflicting_affected_packages = True
-            conflicting_affected = json.dumps(unique_set_of_affected_vers, default=list)
             messages.append(
-                f"{cve}: {purl} with conflicting affected versions {conflicting_affected}"
+                f"{cve}: {purl} with conflicting affected versions {unique_set_of_affected_vers}"
             )
         if len(unique_set_of_fixed_versions) > 1:
             has_conflicting_fixed_package = True
-            conflicting_fixed = json.dumps(unique_set_of_fixed_versions, default=list)
-            messages.append(f"{cve}: {purl} with conflicting fixed version {conflicting_fixed}")
+            messages.append(
+                f"{cve}: {purl} with conflicting fixed version {unique_set_of_fixed_versions}"
+            )
 
     if not has_conflicting_affected_packages and not has_conflicting_fixed_package:
         return
@@ -284,13 +292,16 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
     elif not has_conflicting_affected_packages:
         issue_type = "CONFLICTING_FIXED_BY_PACKAGES"
 
-    messages.append("Comparison matrix:")
-    messages.append(json.dumps(matrix, indent=2, default=list))
+    issue_detail = {
+        "Conflict summary": messages,
+        "Conflict matrix": matrix,
+    }
+
     todo_id = advisories_checksum(advisories)
     todo = AdvisoryToDo(
         related_advisories_id=todo_id,
         issue_type=issue_type,
-        issue_detail="\n".join(messages),
+        issue_detail=json.dumps(issue_detail, default=list),
     )
     todo_to_create.append(todo)
     advisory_relation_to_create[todo_id] = list(advisories)

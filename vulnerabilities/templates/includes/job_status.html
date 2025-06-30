@@ -40,6 +40,13 @@
         <span class="icon has-text-grey mr-1"><i class="fa fa-ban"></i></span>
         <span>Stale</span>
     {% endif %}
+{% elif status == "disabled" %}
+    {% if compact %}
+        <i class="fa fa-pause has-text-grey mr-1"></i>Disabled
+    {% else %}
+        <span class="icon has-text-grey mr-1"><i class="fa fa-pause"></i></span>
+        <span>Disabled</span>
+    {% endif %}
 {% else %}
     {% if compact %}
         <i class="fa fa-question-circle has-text-warning mr-1"></i>Unknown

@@ -2023,6 +2023,7 @@ class PipelineRun(models.Model):
 
     class Status(models.TextChoices):
         UNKNOWN = "unknown"
+        DISABLED = "disabled"
         RUNNING = "running"
         SUCCESS = "success"
         FAILURE = "failure"
@@ -2376,7 +2377,7 @@ class PipelineSchedule(models.Model):
     @property
     def status(self):
         if not self.is_active:
-            return
+            return PipelineRun.Status.DISABLED
 
         if self.pipelineruns.exists():
             latest = self.pipelineruns.only("pk").first()

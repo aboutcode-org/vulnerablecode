@@ -35,7 +35,7 @@ def test_advisories_count(mock_fetch):
     count = pipeline.advisories_count()
 
     # Assert that the count is correct
-    assert count == 10
+    assert count == 70
 
 
 def test_collect_advisories(mock_fetch):

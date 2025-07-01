@@ -15,18 +15,29 @@ from timeit import default_timer as timer
 from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 from typing import List
+from typing import Optional
 
 from aboutcode.pipeline import LoopProgress
 from aboutcode.pipeline import PipelineDefinition
 from aboutcode.pipeline import humanize_time
+from fetchcode import package_versions
+from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import UnMergeablePackageError
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import PackageV2
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
+from vulnerabilities.pipes.advisory import insert_advisory_v2
+from vulnerabilities.utils import AffectedPackage as LegacyAffectedPackage
 from vulnerabilities.utils import classproperty
+from vulnerabilities.utils import get_affected_packages_by_patched_package
+from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import resolve_version_range
 
 module_logger = logging.getLogger(__name__)
 
@@ -148,14 +159,6 @@ class VulnerableCodePipeline(PipelineDefinition, BasePipelineRun):
         """
         pass
 
-    @classproperty
-    def pipeline_id(cls):
-        """Return unique pipeline_id set in cls.pipeline_id"""
-
-        if cls.pipeline_id is None or cls.pipeline_id == "":
-            raise NotImplementedError("pipeline_id is not defined or is empty")
-        return cls.pipeline_id
-
 
 class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     """
@@ -207,12 +210,13 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
         progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
-            if _obj := insert_advisory(
-                advisory=advisory,
-                pipeline_id=self.pipeline_id,
-                logger=self.log,
-            ):
-                collected_advisory_count += 1
+            if isinstance(advisory, AdvisoryData):
+                if _obj := insert_advisory(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 
@@ -248,3 +252,256 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
                 f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
                 level=logging.ERROR,
             )
+
+
+class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
+    """
+    Base importer pipeline for importing advisories.
+
+    Uses:
+        Subclass this Pipeline and implement ``advisories_count`` and ``collect_advisories``
+        method. Also override the ``steps`` and ``advisory_confidence`` as needed.
+    """
+
+    pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.
+    license_url = None
+    spdx_license_expression = None
+    repo_url = None
+    advisory_confidence = MAX_CONFIDENCE
+    ignorable_versions = []
+    unfurl_version_ranges = False
+
+    @classmethod
+    def steps(cls):
+        return (cls.collect_and_store_advisories,)
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        """
+        Yield AdvisoryData for importer pipeline.
+
+        Populate the `self.collected_advisories_count` field and yield AdvisoryData
+        """
+        raise NotImplementedError
+
+    def advisories_count(self) -> int:
+        """
+        Return the estimated AdvisoryData to be yielded by ``collect_advisories``.
+
+        Used by ``collect_and_store_advisories`` to log the progress of advisory collection.
+        """
+        raise NotImplementedError
+
+    def collect_and_store_advisories(self):
+        collected_advisory_count = 0
+        estimated_advisory_count = self.advisories_count()
+
+        if estimated_advisory_count > 0:
+            self.log(f"Collecting {estimated_advisory_count:,d} advisories")
+
+        progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
+        for advisory in progress.iter(self.collect_advisories()):
+            if advisory is None:
+                self.log("Advisory is None, skipping")
+                continue
+            if _obj := insert_advisory_v2(
+                advisory=advisory,
+                pipeline_id=self.pipeline_id,
+                get_advisory_packages=self.get_advisory_packages,
+                logger=self.log,
+            ):
+                collected_advisory_count += 1
+
+        self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
+
+    def get_advisory_packages(self, advisory_data: AdvisoryData) -> list:
+        """
+        Return the list of packages for the given advisory.
+
+        Used by ``import_advisory`` to get the list of packages for the advisory.
+        """
+        from vulnerabilities.improvers import default
+
+        affected_purls = []
+        fixed_purls = []
+        for affected_package in advisory_data.affected_packages:
+            package_affected_purls, package_fixed_purls = default.get_exact_purls(
+                affected_package=affected_package
+            )
+            affected_purls.extend(package_affected_purls)
+            fixed_purls.extend(package_fixed_purls)
+
+        if self.unfurl_version_ranges:
+            vulnerable_pvs, fixed_pvs = self.get_impacted_packages(
+                affected_packages=advisory_data.affected_packages,
+                advisory_date_published=advisory_data.date_published,
+            )
+            affected_purls.extend(vulnerable_pvs)
+            fixed_purls.extend(fixed_pvs)
+
+        vulnerable_packages = []
+        fixed_packages = []
+
+        for affected_purl in affected_purls:
+            vulnerable_package, _ = PackageV2.objects.get_or_create_from_purl(purl=affected_purl)
+            vulnerable_packages.append(vulnerable_package)
+
+        for fixed_purl in fixed_purls:
+            fixed_package, _ = PackageV2.objects.get_or_create_from_purl(purl=fixed_purl)
+            fixed_packages.append(fixed_package)
+
+        return vulnerable_packages, fixed_packages
+
+    def get_published_package_versions(
+        self, package_url: PackageURL, until: Optional[datetime] = None
+    ) -> List[str]:
+        """
+        Return a list of versions published before `until` for the `package_url`
+        """
+        versions_before_until = []
+        try:
+            versions = package_versions.versions(str(package_url))
+            for version in versions or []:
+                if until and version.release_date and version.release_date > until:
+                    continue
+                versions_before_until.append(version.value)
+
+            return versions_before_until
+        except Exception as e:
+            self.log(
+                f"Failed to fetch versions for package {str(package_url)} {e!r}",
+                level=logging.ERROR,
+            )
+            return []
+
+    def get_impacted_packages(self, affected_packages, advisory_date_published):
+        """
+        Return a tuple of lists of affected and fixed PackageURLs
+        """
+        if not affected_packages:
+            return [], []
+
+        mergable = True
+
+        # TODO: We should never had the exception in first place
+        try:
+            purl, affected_version_ranges, fixed_versions = AffectedPackage.merge(affected_packages)
+        except UnMergeablePackageError:
+            self.log(f"Cannot merge with different purls {affected_packages!r}", logging.ERROR)
+            mergable = False
+
+        if not mergable:
+            vulnerable_packages = []
+            fixed_packages = []
+            for affected_package in affected_packages:
+                purl = affected_package.package
+                affected_version_range = affected_package.affected_version_range
+                fixed_version = affected_package.fixed_version
+                pkg_type = purl.type
+                pkg_namespace = purl.namespace
+                pkg_name = purl.name
+                if not affected_version_range and fixed_version:
+                    fixed_packages.append(
+                        PackageURL(
+                            type=pkg_type,
+                            namespace=pkg_namespace,
+                            name=pkg_name,
+                            version=str(fixed_version),
+                        )
+                    )
+                else:
+                    valid_versions = self.get_published_package_versions(
+                        package_url=purl, until=advisory_date_published
+                    )
+                    affected_pvs, fixed_pvs = self.resolve_package_versions(
+                        affected_version_range=affected_version_range,
+                        pkg_type=pkg_type,
+                        pkg_namespace=pkg_namespace,
+                        pkg_name=pkg_name,
+                        valid_versions=valid_versions,
+                    )
+                    vulnerable_packages.extend(affected_pvs)
+                    fixed_packages.extend(fixed_pvs)
+            return vulnerable_packages, fixed_packages
+        else:
+            pkg_type = purl.type
+            pkg_namespace = purl.namespace
+            pkg_name = purl.name
+            pkg_qualifiers = purl.qualifiers
+            fixed_purls = [
+                PackageURL(
+                    type=pkg_type,
+                    namespace=pkg_namespace,
+                    name=pkg_name,
+                    version=str(version),
+                    qualifiers=pkg_qualifiers,
+                )
+                for version in fixed_versions
+            ]
+            if not affected_version_ranges:
+                return [], fixed_purls
+            else:
+                valid_versions = self.get_published_package_versions(
+                    package_url=purl, until=advisory_date_published
+                )
+                vulnerable_packages = []
+                fixed_packages = []
+                for affected_version_range in affected_version_ranges:
+                    vulnerable_pvs, fixed_pvs = self.resolve_package_versions(
+                        affected_version_range=affected_version_range,
+                        pkg_type=pkg_type,
+                        pkg_namespace=pkg_namespace,
+                        pkg_name=pkg_name,
+                        valid_versions=valid_versions,
+                    )
+                    vulnerable_packages.extend(vulnerable_pvs)
+                    fixed_packages.extend(fixed_pvs)
+                return vulnerable_packages, fixed_packages
+
+    def resolve_package_versions(
+        self,
+        affected_version_range,
+        pkg_type,
+        pkg_namespace,
+        pkg_name,
+        valid_versions,
+    ):
+        """
+        Return a tuple of lists of ``affected_packages`` and ``fixed_packages`` PackageURL for the given `affected_version_range` and `valid_versions`.
+
+        ``valid_versions`` are the valid version listed on the package registry for that package
+
+        """
+        aff_vers, unaff_vers = resolve_version_range(
+            affected_version_range=affected_version_range,
+            ignorable_versions=self.ignorable_versions,
+            package_versions=valid_versions,
+        )
+
+        affected_purls = list(
+            self.expand_verion_range_to_purls(pkg_type, pkg_namespace, pkg_name, aff_vers)
+        )
+
+        unaffected_purls = list(
+            self.expand_verion_range_to_purls(pkg_type, pkg_namespace, pkg_name, unaff_vers)
+        )
+
+        fixed_packages = []
+        affected_packages = []
+
+        patched_packages = nearest_patched_package(
+            vulnerable_packages=affected_purls, resolved_packages=unaffected_purls
+        )
+
+        for (
+            fixed_package,
+            affected_purls,
+        ) in get_affected_packages_by_patched_package(patched_packages).items():
+            if fixed_package:
+                fixed_packages.append(fixed_package)
+            affected_packages.extend(affected_purls)
+
+        return affected_packages, fixed_packages
+
+    def expand_verion_range_to_purls(self, pkg_type, pkg_namespace, pkg_name, versions):
+        for version in versions:
+            yield PackageURL(type=pkg_type, namespace=pkg_namespace, name=pkg_name, version=version)

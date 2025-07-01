@@ -654,3 +654,28 @@ def compute_content_id(advisory_data):
     content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
 
     return content_id
+
+
+def create_registry(pipelines):
+    """
+    Return a mapping of {pipeline ID: pipeline class} for a list of pipelines.
+    """
+    from vulnerabilities.pipelines import VulnerableCodePipeline
+
+    registry = {}
+    for pipeline in pipelines:
+        if issubclass(pipeline, VulnerableCodePipeline):
+            key = pipeline.pipeline_id
+        else:
+            # For everything legacy use qualified_name
+            key = pipeline.qualified_name
+
+        if not key:
+            raise Exception(f"Pipeline ID can not be empty: {pipeline!r}")
+
+        if key in registry:
+            raise Exception(f"Duplicate pipeline found: {key}")
+
+        registry[key] = pipeline
+
+    return registry

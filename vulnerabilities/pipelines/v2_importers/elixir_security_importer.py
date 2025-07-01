@@ -25,13 +25,17 @@ from vulnerabilities.utils import load_yaml
 
 
 class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
+    """
+    Elixir Security Advisiories Importer Pipeline
+
+    This pipeline imports security advisories for elixir.
+    """
 
     pipeline_id = "elixir_security_importer_v2"
-    label = "Elixir Security"
-    repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
-    license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
     spdx_license_expression = "CC0-1.0"
-    importer_name = "Elixir Security Importer"
+    license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
+    repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
+    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):

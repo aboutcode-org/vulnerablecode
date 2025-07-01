@@ -30,14 +30,16 @@ from vulnerabilities.utils import load_json
 
 
 class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """Collect advisories from nodejs GitHub repository."""
+    """
+    Node.js Security Working Group importer pipeline
+
+    Import advisories from nodejs security working group including node proper advisories and npm advisories.
+    """
 
     pipeline_id = "nodejs_security_wg"
     spdx_license_expression = "MIT"
     license_url = "https://github.com/nodejs/security-wg/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/nodejs/security-wg"
-    importer_name = "npm Importer"
-
     unfurl_version_ranges = True
 
     @classmethod
@@ -120,7 +122,7 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         advsisory_aliases = data.get("cves") or []
 
         return AdvisoryData(
-            advisory_id=f"NODESEC-NPM-{id}",
+            advisory_id=f"npm-{id}",
             aliases=advsisory_aliases,
             summary=build_description(summary=summary, description=description),
             date_published=date_published,

@@ -33,15 +33,17 @@ from vulnerabilities.utils import get_item
 
 
 class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """Collect GitHub advisories."""
+    """
+    GitHub Importer Pipeline
+
+    This pipeline imports security advisories from GitHub Security Advisories.
+    """
 
     pipeline_id = "github_importer_v2"
-    label = "GitHub"
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
-    importer_name = "GHSA Importer"
-
     unfurl_version_ranges = True
+
     ignorable_versions = frozenset(
         [
             "0.1-bulbasaur",

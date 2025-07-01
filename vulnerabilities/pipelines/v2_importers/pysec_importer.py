@@ -19,15 +19,15 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 
 class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """Collect advisories from PyPI."""
+    """
+    PyPI Importer Pipeline
+
+    Collect advisories from PyPI."""
 
     pipeline_id = "pysec_importer_v2"
-    label = "Pypi"
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     url = "https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip"
     spdx_license_expression = "CC-BY-4.0"
-    importer_name = "PyPI Importer"
-
     unfurl_version_ranges = True
 
     @classmethod

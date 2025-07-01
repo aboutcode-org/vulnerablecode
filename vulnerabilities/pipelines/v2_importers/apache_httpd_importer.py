@@ -139,11 +139,15 @@ def get_weaknesses(cve_data):
 
 
 class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
+    """
+    Apache HTTPD Importer Pipeline
+
+    This pipeline imports security advisories from the Apache HTTPD project.
+    """
+
     pipeline_id = "apache_httpd_importer_v2"
-    label = "Apache-Httpd"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
-    importer_name = "Apache HTTPD Importer"
     base_url = "https://httpd.apache.org/security/json/"
     unfurl_version_ranges = True
 

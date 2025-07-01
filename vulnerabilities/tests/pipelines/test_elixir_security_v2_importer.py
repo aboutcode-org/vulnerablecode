@@ -105,4 +105,4 @@ def test_collect_advisories_skips_invalid_cve(mock_fetch_via_vcs, tmp_path):
         importer = ElixirSecurityImporterPipeline()
         importer.clone()
         advisories = list(importer.collect_advisories())
-        assert len(advisories) == 0  # Confirm it skipped the invalid CVE
+        assert len(advisories) == 0

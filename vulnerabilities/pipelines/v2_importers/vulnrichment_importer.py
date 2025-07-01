@@ -21,12 +21,16 @@ logger = logging.getLogger(__name__)
 
 
 class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
+    """
+    Vulnrichment Importer Pipeline
+
+    This pipeline imports security advisories from Vulnrichment project.
+    """
+
     pipeline_id = "vulnrichment_importer_v2"
-    label = "Vulnrichment"
     spdx_license_expression = "CC0-1.0"
     license_url = "https://github.com/cisagov/vulnrichment/blob/develop/LICENSE"
     repo_url = "git+https://github.com/cisagov/vulnrichment.git"
-    importer_name = "Vulnrichment"
 
     @classmethod
     def steps(cls):

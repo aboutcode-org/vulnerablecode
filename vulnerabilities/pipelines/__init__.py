@@ -159,14 +159,6 @@ class VulnerableCodePipeline(PipelineDefinition, BasePipelineRun):
         """
         pass
 
-    @classproperty
-    def pipeline_id(cls):
-        """Return unique pipeline_id set in cls.pipeline_id"""
-
-        if cls.pipeline_id is None or cls.pipeline_id == "":
-            raise NotImplementedError("pipeline_id is not defined or is empty")
-        return cls.pipeline_id
-
 
 class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     """
@@ -273,10 +265,8 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
 
     pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.
     license_url = None
-    label = None
     spdx_license_expression = None
     repo_url = None
-    importer_name = None
     advisory_confidence = MAX_CONFIDENCE
     ignorable_versions = []
     unfurl_version_ranges = False

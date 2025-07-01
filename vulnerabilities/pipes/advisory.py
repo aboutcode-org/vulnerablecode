@@ -153,12 +153,12 @@ def insert_advisory_v2(
     affecting_packages, fixed_by_packages = get_advisory_packages(advisory_data=advisory)
     try:
         default_data = {
-            "summary": advisory.summary,
-            "date_published": advisory.date_published,
             "datasource_id": pipeline_id,
-            "date_collected": datetime.now(timezone.utc),
             "advisory_id": advisory.advisory_id,
             "avid": f"{pipeline_id}/{advisory.advisory_id}",
+            "summary": advisory.summary,
+            "date_published": advisory.date_published,
+            "date_collected": datetime.now(timezone.utc),
         }
 
         advisory_obj, _ = AdvisoryV2.objects.get_or_create(

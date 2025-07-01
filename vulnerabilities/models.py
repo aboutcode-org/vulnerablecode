@@ -2630,6 +2630,15 @@ class AdvisoryV2(models.Model):
         help_text="Unique ID for the datasource used for this advisory ." "e.g.: nginx_importer_v2",
     )
 
+    advisory_id = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        unique=False,
+        help_text="An advisory is a unique vulnerability identifier in some database, "
+        "such as PYSEC-2020-2233",
+    )
+
     avid = models.CharField(
         max_length=500,
         blank=False,
@@ -2639,14 +2648,6 @@ class AdvisoryV2(models.Model):
     )
 
     # This is similar to a name
-    advisory_id = models.CharField(
-        max_length=50,
-        blank=False,
-        null=False,
-        unique=False,
-        help_text="An advisory is a unique vulnerability identifier in some database, "
-        "such as PYSEC-2020-2233",
-    )
 
     # This is similar to a version
     unique_content_id = models.CharField(

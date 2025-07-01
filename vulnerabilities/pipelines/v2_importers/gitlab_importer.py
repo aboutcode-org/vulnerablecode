@@ -34,15 +34,16 @@ from vulnerabilities.utils import get_cwe_id
 
 
 class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """Collect advisory from GitLab Advisory Database (Open Source Edition)."""
+    """
+    GitLab Importer Pipeline
+
+    Collect advisory from GitLab Advisory Database (Open Source Edition).
+    """
 
     pipeline_id = "gitlab_importer_v2"
-    label = "GitLab"
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
-    importer_name = "GitLab Importer"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
-
     unfurl_version_ranges = True
 
     @classmethod

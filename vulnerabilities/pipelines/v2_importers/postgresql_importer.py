@@ -25,12 +25,15 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 
 class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
+    """
+    PostgreSQL Importer Pipeline
+
+    This pipeline imports security advisories from the PostgreSQL project.
+    """
 
     pipeline_id = "postgresql_importer_v2"
-    label = "PostgreSQL"
     license_url = "https://www.postgresql.org/about/licence/"
     spdx_license_expression = "PostgreSQL"
-    importer_name = "PostgreSQL Importer"
     base_url = "https://www.postgresql.org/support/security/"
 
     links = set()

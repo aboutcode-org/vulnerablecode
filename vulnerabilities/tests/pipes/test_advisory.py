@@ -9,6 +9,7 @@
 
 from datetime import datetime
 
+import pytest
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
@@ -19,6 +20,14 @@ from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
+from vulnerabilities.models import AdvisoryAlias
+from vulnerabilities.models import AdvisoryReference
+from vulnerabilities.models import AdvisorySeverity
+from vulnerabilities.models import AdvisoryWeakness
+from vulnerabilities.pipes.advisory import get_or_create_advisory_aliases
+from vulnerabilities.pipes.advisory import get_or_create_advisory_references
+from vulnerabilities.pipes.advisory import get_or_create_advisory_severities
+from vulnerabilities.pipes.advisory import get_or_create_advisory_weaknesses
 from vulnerabilities.pipes.advisory import get_or_create_aliases
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.utils import compute_content_id
@@ -134,3 +143,85 @@ class TestPipeAdvisory(TestCase):
                 date_collected=date,
                 created_by="test_pipeline",
             )
+
+
+@pytest.fixture
+def advisory_aliases():
+    return ["CVE-2021-12345", "GHSA-xyz"]
+
+
+@pytest.fixture
+def advisory_references():
+    return [
+        Reference(reference_id="REF-1", url="https://example.com/advisory/1"),
+        Reference(reference_id="REF-2", url="https://example.com/advisory/2"),
+        Reference(reference_id="", url="https://example.com/advisory/3"),
+        Reference(url="https://example.com/advisory/4"),
+    ]
+
+
+@pytest.fixture
+def advisory_severities():
+    class Severity:
+        def __init__(self, system, value, scoring_elements, published_at=None, url=None):
+            self.system = system
+            self.value = value
+            self.scoring_elements = scoring_elements
+            self.published_at = published_at
+            self.url = url
+
+    class System:
+        def __init__(self, identifier):
+            self.identifier = identifier
+
+    return [
+        Severity(
+            System("CVSSv3"),
+            "7.5",
+            "AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+            timezone.now(),
+            "https://cvss.example.com",
+        ),
+    ]
+
+
+@pytest.fixture
+def advisory_weaknesses():
+    return [79, 89]
+
+
+@pytest.mark.django_db
+def test_get_or_create_advisory_aliases(advisory_aliases):
+    aliases = get_or_create_advisory_aliases(advisory_aliases)
+    assert len(aliases) == len(advisory_aliases)
+    for alias_obj in aliases:
+        assert isinstance(alias_obj, AdvisoryAlias)
+        assert alias_obj.alias in advisory_aliases
+
+
+@pytest.mark.django_db
+def test_get_or_create_advisory_references(advisory_references):
+    refs = get_or_create_advisory_references(advisory_references)
+    assert len(refs) == len(advisory_references)
+    for ref in refs:
+        assert isinstance(ref, AdvisoryReference)
+        assert ref.url in [r.url for r in advisory_references]
+
+
+@pytest.mark.django_db
+def test_get_or_create_advisory_severities(advisory_severities):
+    sevs = get_or_create_advisory_severities(advisory_severities)
+    assert len(sevs) == len(advisory_severities)
+    for sev in sevs:
+        assert isinstance(sev, AdvisorySeverity)
+        assert sev.scoring_system == advisory_severities[0].system.identifier
+        assert sev.value == advisory_severities[0].value
+
+
+@pytest.mark.django_db
+def test_get_or_create_advisory_weaknesses(advisory_weaknesses):
+    weaknesses = get_or_create_advisory_weaknesses(advisory_weaknesses)
+    assert len(weaknesses) == len(advisory_weaknesses)
+    for w in weaknesses:
+        assert isinstance(w, AdvisoryWeakness)
+        assert w.cwe_id in advisory_weaknesses

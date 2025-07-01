@@ -7,10 +7,16 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import os
 from unittest import TestCase
 from unittest.mock import patch
 
+import pytest
+from packageurl import PackageURL
+from univers.versions import SemverVersion
+
+from vulnerabilities.importers.curl import CurlImporter
 from vulnerabilities.importers.curl import get_cwe_from_curl_advisory
 from vulnerabilities.importers.curl import parse_advisory_data
 from vulnerabilities.tests import util_tests
@@ -71,3 +77,52 @@ class TestCurlImporter(TestCase):
         for advisory in mock_advisory:
             mock_cwe_list.extend(get_cwe_from_curl_advisory(advisory))
         assert mock_cwe_list == [311]
+
+
+@pytest.fixture
+def mock_curl_api(monkeypatch):
+    test_files = [
+        "curl_advisory_mock1.json",
+        "curl_advisory_mock2.json",
+        "curl_advisory_mock3.json",
+    ]
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    TEST_DATA = os.path.join(BASE_DIR, "test_data/curl")
+    data = []
+    for fname in test_files:
+        with open(os.path.join(TEST_DATA, fname)) as f:
+            data.append(json.load(f))
+
+    def mock_fetch(self):
+        return data
+
+    monkeypatch.setattr(CurlImporter, "fetch", mock_fetch)
+
+
+def test_curl_importer_package_first(monkeypatch, mock_curl_api):
+    purl = PackageURL(type="generic", namespace="curl.se", name="curl")
+    importer = CurlImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert len(advisories) == 3
+    for adv in advisories:
+        assert any(ap.package.name == "curl" for ap in adv.affected_packages)
+
+
+def test_curl_importer_package_first_version(monkeypatch, mock_curl_api):
+    purl = PackageURL(type="generic", namespace="curl.se", name="curl", version="8.6.0")
+    importer = CurlImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+
+    assert len(advisories) == 1
+    assert advisories[0].aliases[0] == "CVE-2024-2379"
+
+    for ap in advisories[0].affected_packages:
+        assert ap.affected_version_range.contains(SemverVersion("8.6.0"))
+
+
+def test_curl_importer_package_first_version_not_affected(monkeypatch, mock_curl_api):
+    purl = PackageURL(type="generic", namespace="curl.se", name="curl", version="9.9.9")
+    importer = CurlImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert advisories == []

@@ -2630,6 +2630,7 @@ class AdvisoryV2(models.Model):
         help_text="Unique ID for the datasource used for this advisory ." "e.g.: nginx_importer_v2",
     )
 
+    # This is similar to a name
     advisory_id = models.CharField(
         max_length=50,
         blank=False,
@@ -2647,7 +2648,6 @@ class AdvisoryV2(models.Model):
         "e.g.: pysec_importer_v2/PYSEC-2020-2233",
     )
 
-    # This is similar to a name
 
     # This is similar to a version
     unique_content_id = models.CharField(

@@ -28,6 +28,7 @@ from cwe2.database import Database
 from cwe2.mappings import xml_database_path
 from cwe2.weakness import Weakness as DBWeakness
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
 from django.core.exceptions import ValidationError
@@ -1489,14 +1490,30 @@ class ApiUserManager(UserManager):
 
 
 class ApiUser(UserModel):
-    """
-    A User proxy model to facilitate simplified admin API user creation.
-    """
+    """A User proxy model to facilitate simplified admin API user creation."""
 
     objects = ApiUserManager()
 
     class Meta:
         proxy = True
+        permissions = [
+            (
+                "throttle_3_unrestricted",
+                "Can make unlimited API requests without any throttling limits",
+            ),
+            (
+                "throttle_2_high",
+                "Can make high number of API requests with minimal throttling",
+            ),
+            (
+                "throttle_1_medium",
+                "Can make medium number of API requests with standard throttling",
+            ),
+            (
+                "throttle_0_low",
+                "Can make low number of API requests with strict throttling",
+            ),
+        ]
 
 
 class ChangeLog(models.Model):

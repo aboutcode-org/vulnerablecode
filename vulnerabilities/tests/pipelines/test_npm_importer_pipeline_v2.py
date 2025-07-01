@@ -63,7 +63,7 @@ def test_advisories_count_and_collect(tmp_path):
     # Should yield None for index.json and one AdvisoryData
     real = [a for a in advisories if isinstance(a, AdvisoryData)]
     assert len(real) == 1
-    assert real[0].advisory_id == "NODESEC-NPM-001"
+    assert real[0].advisory_id == "npm-001"
 
 
 def test_to_advisory_data_skips_index(tmp_path):
@@ -92,7 +92,7 @@ def test_to_advisory_data_full(tmp_path):
     p = NpmImporterPipeline()
     adv = p.to_advisory_data(file)
     assert isinstance(adv, AdvisoryData)
-    assert adv.advisory_id == "NODESEC-NPM-123"
+    assert adv.advisory_id == "npm-123"
     assert "ti" in adv.summary and "desc" in adv.summary
     assert adv.date_published.tzinfo == pytz.UTC
     assert len(adv.severities) == 1 and adv.severities[0].system == CVSSV3

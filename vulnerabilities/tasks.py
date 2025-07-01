@@ -106,6 +106,18 @@ def set_run_failure(job, connection, type, value, traceback):
 
 def enqueue_pipeline(pipeline_id):
     pipeline_schedule = models.PipelineSchedule.objects.get(pipeline_id=pipeline_id)
+    if pipeline_schedule.status in [
+        models.PipelineRun.Status.RUNNING,
+        models.PipelineRun.Status.QUEUED,
+    ]:
+        logger.warning(
+            (
+                f"Cannot enqueue a new execution for {pipeline_id} "
+                "until the previous one has finished."
+            )
+        )
+        return
+
     run = models.PipelineRun.objects.create(
         pipeline=pipeline_schedule,
     )

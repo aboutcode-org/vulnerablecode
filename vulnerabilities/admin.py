@@ -129,6 +129,7 @@ class GroupWithUsersForm(forms.ModelForm):
 
     def save(self, commit=True):
         group = super().save(commit=commit)
+        group.save()
         self.save_m2m()
         group.user_set.set(self.cleaned_data["users"])
         return group

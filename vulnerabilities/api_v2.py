@@ -803,7 +803,7 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
 
 class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name="schedule-detail",
+        view_name="pipelines-detail",
         lookup_field="pipeline_id",
     )
     latest_run = serializers.SerializerMethodField()
@@ -890,6 +890,11 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
         if self.action not in ["list", "retrieve"]:
             return [IsAdminWithSessionAuth()]
         return super().get_permissions()
+
+    def get_view_name(self):
+        if self.detail:
+            return "Pipeline Instance"
+        return "Pipeline Jobs"
 
 
 class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):

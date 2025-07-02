@@ -66,7 +66,7 @@ api_v2_router.register(
 )
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
-api_v2_router.register("schedule", PipelineScheduleV2ViewSet, basename="schedule")
+api_v2_router.register("pipelines", PipelineScheduleV2ViewSet, basename="pipelines")
 
 
 urlpatterns = [

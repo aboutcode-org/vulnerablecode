@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             pipeline.save()
 
     dependencies = [
-        ("vulnerabilities", "0092_pipelineschedule_pipelinerun"),
+        ("vulnerabilities", "0095_alter_apiuser_options"),
     ]
 
     operations = [

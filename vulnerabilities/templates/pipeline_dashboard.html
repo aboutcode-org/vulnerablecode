@@ -46,7 +46,14 @@ Pipeline Dashboard
                 </div>
             </div>
         </form>
+
         <div class="box">
+            <div class="column has-text-right">
+                <p class="has-text-weight-semibold">
+                    {{ active_pipeline_count|default:0 }} active pipeline{{ active_pipeline_count|default:0|pluralize }},
+                    {{ disabled_pipeline_count|default:0 }} disabled pipeline{{ disabled_pipeline_count|default:0|pluralize }}
+                </p>
+            </div>
             <table class="table is-striped  is-hoverable is-fullwidth">
                 <thead>
                     <tr>

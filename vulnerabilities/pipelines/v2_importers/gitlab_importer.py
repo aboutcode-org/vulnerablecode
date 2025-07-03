@@ -245,6 +245,7 @@ def parse_gitlab_advisory(
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
     date_published = date_published.replace(tzinfo=pytz.UTC)
     package_slug = gitlab_advisory.get("package_slug")
+    advisory_id = f"{package_slug}/{advisory_id}" if package_slug else advisory_id
     advisory_url = get_advisory_url(
         file=file,
         base_path=base_path,

@@ -2368,7 +2368,7 @@ class PipelineSchedule(models.Model):
 
         current_date_time = datetime.datetime.now(tz=datetime.timezone.utc)
         if self.latest_run_date:
-            next_execution = self.latest_run_date + datetime.timedelta(days=self.run_interval)
+            next_execution = self.latest_run_date + datetime.timedelta(hours=self.run_interval)
             if next_execution > current_date_time:
                 return next_execution
 

@@ -222,6 +222,14 @@ class VulnerabilityStatusType(models.IntegerChoices):
     INVALID = 3, "Invalid"
 
 
+class AdvisoryStatusType(models.IntegerChoices):
+    """List of vulnerability statuses."""
+
+    PUBLISHED = 1, "Published"
+    DISPUTED = 2, "Disputed"
+    INVALID = 3, "Invalid"
+
+
 # FIXME: Remove when migration from Vulnerability to Advisory is completed
 class Vulnerability(models.Model):
     """
@@ -2738,7 +2746,7 @@ class AdvisoryV2(models.Model):
     )
 
     status = models.IntegerField(
-        choices=VulnerabilityStatusType.choices, default=VulnerabilityStatusType.PUBLISHED
+        choices=AdvisoryStatusType.choices, default=AdvisoryStatusType.PUBLISHED
     )
 
     exploitability = models.DecimalField(
@@ -2789,7 +2797,7 @@ class AdvisoryV2(models.Model):
         """
         Return this Vulnerability details absolute URL.
         """
-        return reverse("advisory_details", args=[self.id])
+        return reverse("advisory_details", args=[self.avid])
 
     def to_advisory_data(self) -> "AdvisoryDataV2":
         from vulnerabilities.importer import AdvisoryDataV2
@@ -2975,6 +2983,12 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         """
         return self.with_is_vulnerable().filter(is_vulnerable=vulnerable)
 
+    def vulnerable(self):
+        """
+        Return only packages that are vulnerable.
+        """
+        return self.filter(affected_by_advisories__isnull=False)
+
     def with_is_vulnerable(self):
         """
         Annotate Package with ``is_vulnerable`` boolean attribute.
@@ -2982,6 +2996,12 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         return self.annotate(
             is_vulnerable=Exists(AdvisoryV2.objects.filter(affecting_packages__pk=OuterRef("pk")))
         )
+
+    def from_purl(self, purl: Union[PackageURL, str]):
+        """
+        Return a new Package given a ``purl`` PackageURL object or PURL string.
+        """
+        return PackageV2.objects.create(**purl_to_dict(purl=purl))
 
 
 class PackageV2(PackageURLMixin):

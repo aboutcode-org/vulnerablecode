@@ -19,9 +19,12 @@ from rest_framework.test import APITestCase
 
 from vulnerabilities.api_v2 import PackageV2Serializer
 from vulnerabilities.api_v2 import VulnerabilityListSerializer
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
+from vulnerabilities.models import CodeFixV2
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageV2
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
@@ -782,3 +785,123 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(self.schedule1.run_interval, 2)
+
+
+class CodeFixV2APITest(APITestCase):
+    def setUp(self):
+        self.advisory = AdvisoryV2.objects.create(
+            datasource_id="test_source",
+            advisory_id="TEST-2025-001",
+            avid="test_source/TEST-2025-001",
+            unique_content_id="a" * 64,
+            url="https://example.com/advisory",
+            date_collected="2025-07-01T00:00:00Z",
+        )
+
+        self.affected_package = PackageV2.objects.from_purl(purl="pkg:pypi/affected_package@1.0.0")
+        self.fixed_package = PackageV2.objects.from_purl(purl="pkg:pypi/fixed_package@1.0.1")
+
+        self.codefix = CodeFixV2.objects.create(
+            advisory=self.advisory,
+            affected_package=self.affected_package,
+            fixed_package=self.fixed_package,
+            notes="Security patch",
+            is_reviewed=True,
+        )
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
+
+        self.url = reverse("advisory-codefix-list")
+
+    def test_list_all_codefixes(self):
+        with self.assertNumQueries(10):
+            response = self.client.get(self.url)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["count"] == 1
+        assert response.data["results"][0]["affected_advisory_id"] == self.advisory.avid
+
+    def test_filter_codefix_by_advisory_id_success(self):
+        with self.assertNumQueries(10):
+            response = self.client.get(self.url, {"advisory_id": self.advisory.avid})
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["count"] == 1
+        assert response.data["results"][0]["affected_advisory_id"] == self.advisory.avid
+
+    def test_filter_codefix_by_advisory_id_not_found(self):
+        with self.assertNumQueries(6):
+            response = self.client.get(self.url, {"advisory_id": "nonexistent/ADVISORY-ID"})
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["count"] == 0
+
+
+class AdvisoriesPackageV2Tests(APITestCase):
+    def setUp(self):
+        self.advisory = AdvisoryV2.objects.create(
+            datasource_id="ghsa",
+            advisory_id="GHSA-1234",
+            avid="ghsa/GHSA-1234",
+            unique_content_id="f" * 64,
+            url="https://example.com/advisory",
+            date_collected="2025-07-01T00:00:00Z",
+        )
+
+        self.package = PackageV2.objects.from_purl(purl="pkg:pypi/sample@1.0.0")
+
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
+
+        self.package.affected_by_advisories.add(self.advisory)
+        self.package.save()
+
+    def test_list_with_purl_filter(self):
+        url = reverse("advisories-package-v2-list")
+        with self.assertNumQueries(18):
+            response = self.client.get(url, {"purl": "pkg:pypi/sample@1.0.0"})
+        assert response.status_code == 200
+        assert "packages" in response.data["results"]
+        assert "advisories" in response.data["results"]
+        assert self.advisory.avid in response.data["results"]["advisories"]
+
+    def test_bulk_lookup(self):
+        url = reverse("advisories-package-v2-bulk-lookup")
+        with self.assertNumQueries(13):
+            response = self.client.post(url, {"purls": ["pkg:pypi/sample@1.0.0"]}, format="json")
+        assert response.status_code == 200
+        assert "packages" in response.data
+        assert "advisories" in response.data
+        assert self.advisory.avid in response.data["advisories"]
+
+    def test_bulk_search_plain(self):
+        url = reverse("advisories-package-v2-bulk-search")
+        payload = {"purls": ["pkg:pypi/sample@1.0.0"], "plain_purl": True, "purl_only": False}
+        with self.assertNumQueries(13):
+            response = self.client.post(url, payload, format="json")
+        assert response.status_code == 200
+        assert "packages" in response.data
+        assert "advisories" in response.data
+
+    def test_bulk_search_purl_only(self):
+        url = reverse("advisories-package-v2-bulk-search")
+        payload = {"purls": ["pkg:pypi/sample@1.0.0"], "plain_purl": False, "purl_only": True}
+        with self.assertNumQueries(13):
+            response = self.client.post(url, payload, format="json")
+        assert response.status_code == 200
+        assert "pkg:pypi/sample@1.0.0" in response.data
+
+    def test_lookup_single_package(self):
+        url = reverse("advisories-package-v2-lookup")
+        with self.assertNumQueries(11):
+            response = self.client.post(url, {"purl": "pkg:pypi/sample@1.0.0"}, format="json")
+        assert response.status_code == 200
+        assert any(pkg["purl"] == "pkg:pypi/sample@1.0.0" for pkg in response.data)
+
+    def test_get_all_vulnerable_purls(self):
+        url = reverse("advisories-package-v2-all")
+        with self.assertNumQueries(6):
+            response = self.client.get(url)
+        assert response.status_code == 200
+        assert "pkg:pypi/sample@1.0.0" in response.data

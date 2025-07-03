@@ -334,7 +334,7 @@ class AdvisoryPackageV2Serializer(serializers.ModelSerializer):
             # Get code fixed for a vulnerability
             code_fixes = CodeFixV2.objects.filter(advisory=adv).distinct()
             code_fix_urls = [
-                reverse("codefix-detail", args=[code_fix.id], request=request)
+                reverse("advisory-codefix-detail", args=[code_fix.id], request=request)
                 for code_fix in code_fixes
             ]
 
@@ -718,6 +718,58 @@ class CodeFixSerializer(serializers.ModelSerializer):
         read_only_fields = ["created_at", "updated_at"]
 
 
+class CodeFixV2Serializer(serializers.ModelSerializer):
+    """
+    Serializer for the CodeFix model.
+    Provides detailed information about a code fix.
+    """
+
+    affected_advisory_id = serializers.CharField(
+        source="advisory.avid",
+        read_only=True,
+        help_text="ID of the advisory affecting the package.",
+    )
+    affected_package_purl = serializers.CharField(
+        source="affected_package.package_url",
+        read_only=True,
+        help_text="PURL of the affected package.",
+    )
+    fixed_package_purl = serializers.CharField(
+        source="fixed_package.package_url",
+        read_only=True,
+        help_text="PURL of the fixing package (if available).",
+    )
+    created_at = serializers.DateTimeField(
+        format="%Y-%m-%dT%H:%M:%SZ",
+        read_only=True,
+        help_text="Timestamp when the code fix was created.",
+    )
+    updated_at = serializers.DateTimeField(
+        format="%Y-%m-%dT%H:%M:%SZ",
+        read_only=True,
+        help_text="Timestamp when the code fix was last updated.",
+    )
+
+    class Meta:
+        model = CodeFixV2
+        fields = [
+            "id",
+            "commits",
+            "pulls",
+            "downloads",
+            "patch",
+            "affected_advisory_id",
+            "affected_package_purl",
+            "fixed_package_purl",
+            "notes",
+            "references",
+            "is_reviewed",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["created_at", "updated_at"]
+
+
 class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows viewing CodeFix entries.
@@ -737,6 +789,25 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(
                 affected_package_vulnerability__vulnerability__vulnerability_id=vulnerability_id
             )
+        return queryset
+
+
+class CodeFixV2ViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows viewing CodeFix entries.
+    """
+
+    queryset = CodeFixV2.objects.all()
+    serializer_class = CodeFixV2Serializer
+
+    def get_queryset(self):
+        """
+        Optionally filter by vulnerability ID.
+        """
+        queryset = super().get_queryset()
+        advisory_id = self.request.query_params.get("advisory_id")
+        if advisory_id:
+            queryset = queryset.filter(advisory__avid=advisory_id)
         return queryset
 
 
@@ -1061,10 +1132,10 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             # Collect vulnerabilities associated with these packages
             advisories = set()
             for package in packages:
-                advisories.update(package.affected_by_vulnerabilities.all())
-                advisories.update(package.fixing_vulnerabilities.all())
+                advisories.update(package.affected_by_advisories.all())
+                advisories.update(package.fixing_advisories.all())
 
-            advisory_data = {adv.avid: VulnerabilityV2Serializer(adv).data for adv in advisories}
+            advisory_data = {adv.avid: AdvisoryV2Serializer(adv).data for adv in advisories}
 
             if not purl_only:
                 package_data = AdvisoryPackageV2Serializer(
@@ -1089,8 +1160,8 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         # Collect vulnerabilities associated with these packages
         advisories = set()
         for package in packages:
-            advisories.update(package.affected_by_vulnerabilities.all())
-            advisories.update(package.fixing_vulnerabilities.all())
+            advisories.update(package.affected_by_advisories.all())
+            advisories.update(package.fixing_advisories.all())
 
         advisory_data = {adv.advisory_id: AdvisoryV2Serializer(adv).data for adv in advisories}
 

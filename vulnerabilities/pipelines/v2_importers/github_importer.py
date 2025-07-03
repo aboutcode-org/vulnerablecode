@@ -24,7 +24,7 @@ from vulnerabilities import severity_systems
 from vulnerabilities import utils
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import dedupe
@@ -271,7 +271,7 @@ def process_response(
         references = get_item(advisory, "references") or []
         if references:
             urls = (ref["url"] for ref in references)
-            references = [Reference.from_url(u) for u in urls]
+            references = [ReferenceV2.from_url(u) for u in urls]
 
         date_published = get_item(advisory, "publishedAt")
         if date_published:

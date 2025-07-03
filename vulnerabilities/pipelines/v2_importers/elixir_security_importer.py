@@ -18,7 +18,7 @@ from univers.version_range import HexVersionRange
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import load_yaml
@@ -83,7 +83,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         references = []
         link = yaml_file.get("link") or ""
         if link:
-            references.append(Reference(url=link))
+            references.append(ReferenceV2(url=link))
 
         constraints = []
         vrc = HexVersionRange.version_class

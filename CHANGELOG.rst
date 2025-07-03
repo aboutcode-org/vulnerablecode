@@ -1,6 +1,15 @@
 Release notes
 =============
 
+Version v37.0.0
+---------------------
+
+- This is a major version, this version introduces Advisory level details.
+- We have added new models AdvisoryV2, AdvisoryAlias, AdvisoryReference, AdvisorySeverity, AdvisoryWeakness, PackageV2 and CodeFixV2.
+- We are using ``avid`` as an internal advisory ID for uniquely identifying advisories.
+- We have a new route ``/v2`` which only support package search which has information on packages that are reported to be affected or fixing by advisories.
+- This version introduces ``/api/v2/advisories-packages`` which has information on packages that are reported to be affected or fixing by advisories.
+
 Version v36.1.3
 ---------------------
 

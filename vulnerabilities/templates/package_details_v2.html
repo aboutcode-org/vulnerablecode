@@ -146,7 +146,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% for advisory in affected_by_advisories %}
                                 <tr>
                                     <td>
-                                        <a href="/advisories/{{advisory.id}}">
+                                        <a href="{{advisory.get_absolute_url}}">
                                             {{advisory.avid }}
                                         </a>
                                         <br />
@@ -267,7 +267,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% for advisory in fixing_advisories %}
                                 <tr>
                                     <td>
-                                        <a href="/advisories/{{advisory.id}}">
+                                        <a href="{{advisory.get_absolute_url}}">
                                             {{advisory.avid }}
                                         </a>
                                     </td>

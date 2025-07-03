@@ -21,6 +21,7 @@ from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api_v2 import AdvisoriesPackageV2ViewSet
+from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
@@ -67,6 +68,7 @@ api_v2_router.register(
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
 api_v2_router.register("pipelines", PipelineScheduleV2ViewSet, basename="pipelines")
+api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisory-codefix")
 
 
 urlpatterns = [
@@ -102,7 +104,7 @@ urlpatterns = [
         name="home",
     ),
     path(
-        "advisories/<int:id>",
+        "advisories/<path:avid>",
         AdvisoryDetails.as_view(),
         name="advisory_details",
     ),

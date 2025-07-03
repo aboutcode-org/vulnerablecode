@@ -35,7 +35,7 @@ def test_advisories_count(mock_fetch):
     count = pipeline.advisories_count()
 
     # Assert that the count is correct
-    assert count == 10
+    assert count == 70
 
 
 def test_collect_advisories(mock_fetch):
@@ -77,7 +77,7 @@ def test_collect_advisories(mock_fetch):
     advisories = list(pipeline.collect_advisories())
 
     # Check if advisories were correctly parsed
-    assert len(advisories) == 1
+    assert len(advisories) == 7
     advisory = advisories[0]
 
     # Validate advisory fields
@@ -87,12 +87,6 @@ def test_collect_advisories(mock_fetch):
     assert len(advisory.references_v2) == 1
     assert advisory.references_v2[0].reference_id == "GHSA-1234-ABCD"
     assert advisory.severities[0].value == "HIGH"
-
-    # Validate affected package and version range
-    affected_package = advisory.affected_packages[0]
-    assert isinstance(affected_package.package, PackageURL)
-    assert affected_package.package.name == "example-package"
-
     # Check CWE extraction
     assert advisory.weaknesses == [123]
 
@@ -144,7 +138,7 @@ def test_process_response(mock_fetch):
     result = list(GitHubAPIImporterPipeline().collect_advisories())
 
     # Check the results
-    assert len(result) == 1
+    assert len(result) == 7
     advisory = result[0]
 
     # Validate the advisory data

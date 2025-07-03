@@ -114,13 +114,13 @@ class GitHubAPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return (cls.collect_and_store_advisories,)
 
     package_type_by_github_ecosystem = {
-        # "MAVEN": "maven",
-        # "NUGET": "nuget",
-        # "COMPOSER": "composer",
-        # "PIP": "pypi",
-        # "RUBYGEMS": "gem",
+        "MAVEN": "maven",
+        "NUGET": "nuget",
+        "COMPOSER": "composer",
+        "PIP": "pypi",
+        "RUBYGEMS": "gem",
         "NPM": "npm",
-        # "RUST": "cargo",
+        "RUST": "cargo",
         # "GO": "golang",
     }
 

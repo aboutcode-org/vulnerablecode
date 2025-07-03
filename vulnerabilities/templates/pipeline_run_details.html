@@ -34,8 +34,10 @@
 {% endblock %}
 
 {% block content %}
-<section class="section">
     <div class="container">
+        <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info my-4">
+            <i class="fa fa-arrow-left mr-2"></i>Back to All Runs
+        </a>
         <h1 class="title">{{ pipeline_name }} Run Log</h1>
         <hr>
 
@@ -43,7 +45,7 @@
             <div class="columns is-multiline is-vcentered is-mobile is-gapless">
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Pipeline ID</p>
-                    <p class="has-text-grey is-size-7">
+                    <p class="has-text-grey is-size-7 mr-2">
                         {{ run.pipeline.pipeline_id }}
                         <i class="fa fa-copy has-text-grey"
                             id="copy-pipeline-id"
@@ -59,10 +61,10 @@
                     </p>
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
-                    <p class="is-size-7 has-text-weight-semibold">Execution Time</p>
+                    <p class="is-size-7 has-text-weight-semibold">Runtime</p>
                     <p class="has-text-grey is-size-7">
-                        {% if run.execution_time %}
-                            {{ run.execution_time|humanize_duration }}
+                        {% if run.runtime %}
+                            {{ run.runtime|humanize_duration }}
                         {% else %}
                             N/A
                         {% endif %}
@@ -114,7 +116,7 @@
                 </div>
                 <div class="column is-one-fifth-desktop is-one-quarter-tablet is-half-mobile">
                     <p class="is-size-7 has-text-weight-semibold">Job ID</p>
-                    <p class="has-text-grey is-size-7">
+                    <p class="has-text-grey is-size-7 mr-2">
                         {{ run.run_id }}
                         <i class="fa fa-copy has-text-grey"
                             id="copy-job-id"
@@ -181,12 +183,12 @@
             </div>
         </div>
         {% endif %}
-
-        <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info mt-4">
-            <i class="fa fa-arrow-left mr-2"></i>Back to All Runs
-        </a>
+        {% if run.run_output or run.log %}
+            <a href="{% url 'runs-list' pipeline_id=run.pipeline.pipeline_id %}" class="button is-info my-4">
+                <i class="fa fa-arrow-left mr-2"></i>Back to All Runs
+            </a>
+         {% endif %}
     </div>
-</section>
 {% endblock %}
 
 

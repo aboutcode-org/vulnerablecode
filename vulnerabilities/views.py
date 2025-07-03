@@ -617,7 +617,7 @@ class AdvisoryPackagesDetails(DetailView):
 class PipelineScheduleListView(ListView, FormMixin):
     model = PipelineSchedule
     context_object_name = "schedule_list"
-    template_name = "pipeline_schedule_list.html"
+    template_name = "pipeline_dashboard.html"
     paginate_by = 20
     form_class = PipelineSchedulePackageForm
 
@@ -628,6 +628,14 @@ class PipelineScheduleListView(ListView, FormMixin):
                 pipeline_id__icontains=form.cleaned_data.get("search")
             )
         return PipelineSchedule.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["active_pipeline_count"] = PipelineSchedule.objects.filter(is_active=True).count()
+        context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
+            is_active=False
+        ).count()
+        return context
 
 
 class PipelineRunListView(ListView):
@@ -686,3 +694,9 @@ class PipelineRunDetailView(DetailView):
 class AdminLoginView(LoginView):
     template_name = "admin_login.html"
     authentication_form = AdminLoginForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["site_title"] = "VulnerableCode site admin"
+        context["site_header"] = "VulnerableCode Administration"
+        return context

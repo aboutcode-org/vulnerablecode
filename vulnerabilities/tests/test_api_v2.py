@@ -699,11 +699,11 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         self.admin_token_auth = f"Token {self.admin_token_only_user.auth_token.key}"
 
     def test_schedule_list_anon_user_permitted(self):
-        response = self.client.get("/api/v2/schedule/")
+        response = self.client.get("/api/v2/pipelines/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_schedule_retrieve_anon_user_permitted(self):
-        response = self.client.get("/api/v2/schedule/test_pipeline/")
+        response = self.client.get("/api/v2/pipelines/test_pipeline/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
@@ -711,7 +711,7 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         mock_create_new_job.return_value = "work-id2"
 
         data = {"pipeline_id": "test_pipeline2"}
-        response = self.client.post("/api/v2/schedule/", data, format="json")
+        response = self.client.post("/api/v2/pipelines/", data, format="json")
 
         self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -725,7 +725,7 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         mock_create_new_job.return_value = "work-id3"
 
         data = {"pipeline_id": "test_pipeline3"}
-        response = self.client.post("/api/v2/schedule/", data, format="json")
+        response = self.client.post("/api/v2/pipelines/", data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
@@ -737,7 +737,7 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         self.client.login(username="admin_with_session", password="adminpassword")
 
         data = {"pipeline_id": "test_pipeline3"}
-        response = self.client.post("/api/v2/schedule/", data, format="json")
+        response = self.client.post("/api/v2/pipelines/", data, format="json")
 
         self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -748,12 +748,12 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         mock_create_new_job.return_value = "work-id5"
 
         data = {"run_interval": 2}
-        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        response = self.client.patch("/api/v2/pipelines/test_pipeline/", data, format="json")
         self.schedule1.refresh_from_db()
 
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(self.schedule1.run_interval, 1)
+        self.assertEqual(self.schedule1.run_interval, 24)
 
     @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
     def test_schedule_update_with_staff_token_not_permitted(self, mock_create_new_job):
@@ -763,12 +763,12 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         mock_create_new_job.return_value = "work-id6"
 
         data = {"run_interval": 2}
-        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        response = self.client.patch("/api/v2/pipelines/test_pipeline/", data, format="json")
         self.schedule1.refresh_from_db()
 
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(self.schedule1.run_interval, 1)
+        self.assertEqual(self.schedule1.run_interval, 24)
 
     @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
     def test_schedule_update_with_staff_session_permitted(self, mock_create_new_job):
@@ -776,7 +776,7 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         self.client.login(username="admin_with_session", password="adminpassword")
 
         data = {"run_interval": 2}
-        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        response = self.client.patch("/api/v2/pipelines/test_pipeline/", data, format="json")
         self.schedule1.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

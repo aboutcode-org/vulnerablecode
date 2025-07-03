@@ -769,7 +769,7 @@ class IsAdminWithSessionAuth(BasePermission):
 
 class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
     status = serializers.SerializerMethodField()
-    execution_time = serializers.SerializerMethodField()
+    runtime = serializers.SerializerMethodField()
     log = serializers.SerializerMethodField()
 
     class Meta:
@@ -777,7 +777,7 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
         fields = [
             "run_id",
             "status",
-            "execution_time",
+            "runtime",
             "run_start_date",
             "run_end_date",
             "run_exitcode",
@@ -791,9 +791,9 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
     def get_status(self, run):
         return run.status
 
-    def get_execution_time(self, run):
-        if run.execution_time:
-            return round(run.execution_time, 2)
+    def get_runtime(self, run):
+        if run.runtime:
+            return f"{round(run.runtime, 2)}s"
 
     def get_log(self, run):
         """Return only last 5000 character of log."""
@@ -802,7 +802,8 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
 
 class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name="schedule-detail", lookup_field="pipeline_id"
+        view_name="pipelines-detail",
+        lookup_field="pipeline_id",
     )
     latest_run = serializers.SerializerMethodField()
     next_run_date = serializers.SerializerMethodField()
@@ -829,6 +830,12 @@ class PipelineScheduleAPISerializer(serializers.HyperlinkedModelSerializer):
         if latest := schedule.pipelineruns.first():
             return PipelineRunAPISerializer(latest).data
         return None
+
+    def to_representation(self, schedule):
+        representation = super().to_representation(schedule)
+        representation["run_interval"] = f"{schedule.run_interval}hr"
+        representation["execution_timeout"] = f"{schedule.execution_timeout}hr"
+        return representation
 
 
 class PipelineScheduleCreateSerializer(serializers.ModelSerializer):
@@ -882,6 +889,11 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
         if self.action not in ["list", "retrieve"]:
             return [IsAdminWithSessionAuth()]
         return super().get_permissions()
+
+    def get_view_name(self):
+        if self.detail:
+            return "Pipeline Instance"
+        return "Pipeline Jobs"
 
 
 class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):

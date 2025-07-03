@@ -2023,6 +2023,7 @@ class PipelineRun(models.Model):
 
     class Status(models.TextChoices):
         UNKNOWN = "unknown"
+        DISABLED = "disabled"
         RUNNING = "running"
         SUCCESS = "success"
         FAILURE = "failure"
@@ -2115,7 +2116,7 @@ class PipelineRun(models.Model):
         return self.status == self.Status.RUNNING
 
     @property
-    def execution_time(self):
+    def runtime(self):
         """Return the pipeline execution time."""
         if not self.run_start_date or (not self.run_end_date and not self.run_running):
             return
@@ -2278,11 +2279,11 @@ class PipelineSchedule(models.Model):
 
     run_interval = models.PositiveSmallIntegerField(
         validators=[
-            MinValueValidator(1, message="Interval must be at least 1 day."),
-            MaxValueValidator(365, message="Interval must be at most 365 days."),
+            MinValueValidator(1, message="Interval must be at least 1 hour."),
+            MaxValueValidator(8760, message="Interval must be at most 8760 hours."),
         ],
-        default=1,
-        help_text=("Number of days to wait between run of this pipeline."),
+        default=24,
+        help_text=("Number of hours to wait between run of this pipeline."),
     )
 
     schedule_work_id = models.CharField(
@@ -2361,13 +2362,20 @@ class PipelineSchedule(models.Model):
         return latest_run["run_start_date"]
 
     @property
+    def latest_run_end_date(self):
+        if not self.pipelineruns.exists():
+            return
+        latest_run = self.pipelineruns.values("run_end_date").first()
+        return latest_run["run_end_date"]
+
+    @property
     def next_run_date(self):
         if not self.is_active:
             return
 
         current_date_time = datetime.datetime.now(tz=datetime.timezone.utc)
         if self.latest_run_date:
-            next_execution = self.latest_run_date + datetime.timedelta(days=self.run_interval)
+            next_execution = self.latest_run_date + datetime.timedelta(hours=self.run_interval)
             if next_execution > current_date_time:
                 return next_execution
 
@@ -2376,7 +2384,7 @@ class PipelineSchedule(models.Model):
     @property
     def status(self):
         if not self.is_active:
-            return
+            return PipelineRun.Status.DISABLED
 
         if self.pipelineruns.exists():
             latest = self.pipelineruns.only("pk").first()

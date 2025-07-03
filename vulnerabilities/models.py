@@ -2657,7 +2657,7 @@ class AdvisoryV2(models.Model):
 
     # This is similar to a type or a namespace
     datasource_id = models.CharField(
-        max_length=100,
+        max_length=200,
         blank=False,
         null=False,
         help_text="Unique ID for the datasource used for this advisory ." "e.g.: nginx_importer_v2",
@@ -2665,7 +2665,7 @@ class AdvisoryV2(models.Model):
 
     # This is similar to a name
     advisory_id = models.CharField(
-        max_length=50,
+        max_length=500,
         blank=False,
         null=False,
         unique=False,

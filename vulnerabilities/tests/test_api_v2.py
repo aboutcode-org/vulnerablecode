@@ -816,19 +816,22 @@ class CodeFixV2APITest(APITestCase):
         self.url = reverse("advisory-codefix-list")
 
     def test_list_all_codefixes(self):
-        response = self.client.get(self.url)
+        with self.assertNumQueries(10):
+            response = self.client.get(self.url)
         assert response.status_code == status.HTTP_200_OK
         assert response.data["count"] == 1
         assert response.data["results"][0]["affected_advisory_id"] == self.advisory.avid
 
     def test_filter_codefix_by_advisory_id_success(self):
-        response = self.client.get(self.url, {"advisory_id": self.advisory.avid})
+        with self.assertNumQueries(10):
+            response = self.client.get(self.url, {"advisory_id": self.advisory.avid})
         assert response.status_code == status.HTTP_200_OK
         assert response.data["count"] == 1
         assert response.data["results"][0]["affected_advisory_id"] == self.advisory.avid
 
     def test_filter_codefix_by_advisory_id_not_found(self):
-        response = self.client.get(self.url, {"advisory_id": "nonexistent/ADVISORY-ID"})
+        with self.assertNumQueries(6):
+            response = self.client.get(self.url, {"advisory_id": "nonexistent/ADVISORY-ID"})
         assert response.status_code == status.HTTP_200_OK
         assert response.data["count"] == 0
 

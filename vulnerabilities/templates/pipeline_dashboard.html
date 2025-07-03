@@ -64,8 +64,8 @@ Pipeline Dashboard
                                     <div class="column is-one-eighth">Active</div>
                                     <div class="column is-one-eighth">Interval</div>
                                     <div class="column is-one-eighth">Status</div>
-                                    <div class="column is-one-fifth">Latest Run</div>
-                                    <div class="column is-one-fifth">Next Run</div>
+                                    <div class="column is-one-fifth">Last Run End Time</div>
+                                    <div class="column is-one-fifth">Next Run Start</div>
                                 </div>
                             </div>
                         </th>
@@ -87,16 +87,14 @@ Pipeline Dashboard
                                             {% include "includes/job_status.html" with status=schedule.status %}
                                         </span>
                                     </div>
-                                    <div class="column is-one-fifth has-text-grey"
-                                        title="{{ schedule.latest_run_date }}">
-                                        {% if schedule.latest_run_date %}
-                                            {{ schedule.latest_run_date|date:"Y-m-d h:i a T" }}
+                                    <div class="column is-one-fifth has-text-grey">
+                                        {% if schedule.latest_run_end_date %}
+                                            {{ schedule.latest_run_end_date|date:"Y-m-d h:i a T" }}
                                         {% else %}
                                             N/A
                                         {% endif %}
                                     </div>
-                                    <div class="column is-one-fifth has-text-grey"
-                                        title="{{ schedule.next_run_date }}">
+                                    <div class="column is-one-fifth has-text-grey">
                                         {{ schedule.next_run_date|date:"Y-m-d" }}
                                     </div>
                                 </div>

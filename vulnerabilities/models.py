@@ -2362,6 +2362,13 @@ class PipelineSchedule(models.Model):
         return latest_run["run_start_date"]
 
     @property
+    def latest_run_end_date(self):
+        if not self.pipelineruns.exists():
+            return
+        latest_run = self.pipelineruns.values("run_end_date").first()
+        return latest_run["run_end_date"]
+
+    @property
     def next_run_date(self):
         if not self.is_active:
             return

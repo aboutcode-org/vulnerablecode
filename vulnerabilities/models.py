@@ -2116,7 +2116,7 @@ class PipelineRun(models.Model):
         return self.status == self.Status.RUNNING
 
     @property
-    def execution_time(self):
+    def runtime(self):
         """Return the pipeline execution time."""
         if not self.run_start_date or (not self.run_end_date and not self.run_running):
             return

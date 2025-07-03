@@ -769,16 +769,15 @@ class IsAdminWithSessionAuth(BasePermission):
 
 class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
     status = serializers.SerializerMethodField()
-    execution_time = serializers.SerializerMethodField()
+    runtime = serializers.SerializerMethodField()
     log = serializers.SerializerMethodField()
-    execution_time = serializers.SerializerMethodField()
 
     class Meta:
         model = PipelineRun
         fields = [
             "run_id",
             "status",
-            "execution_time",
+            "runtime",
             "run_start_date",
             "run_end_date",
             "run_exitcode",
@@ -792,9 +791,9 @@ class PipelineRunAPISerializer(serializers.HyperlinkedModelSerializer):
     def get_status(self, run):
         return run.status
 
-    def get_execution_time(self, run):
-        if run.execution_time:
-            return f"{round(run.execution_time, 2)}s"
+    def get_runtime(self, run):
+        if run.runtime:
+            return f"{round(run.runtime, 2)}s"
 
     def get_log(self, run):
         """Return only last 5000 character of log."""

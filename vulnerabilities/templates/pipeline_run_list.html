@@ -57,7 +57,7 @@
                 <div class="columns is-mobile is-vcentered">
                   <div class="column is-one-quarter">Job ID</div>
                   <div class="column is-one-eighth">Status</div>
-                  <div class="column is-one-eighth">Execution Time</div>
+                  <div class="column is-one-eighth">Runtime</div>
                   <div class="column is-one-fifth">Start Time</div>
                   <div class="column is-one-fifth">End Time</div>
                 </div>
@@ -79,8 +79,8 @@
                     </span>
                   </div>
                   <div class="column is-one-eighth has-text-grey">
-                    {% if run.execution_time %}
-                      {{ run.execution_time|humanize_duration }}
+                    {% if run.runtime %}
+                      {{ run.runtime|humanize_duration }}
                     {% else %}
                       N/A
                     {% endif %}

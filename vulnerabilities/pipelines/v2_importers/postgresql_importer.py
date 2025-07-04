@@ -19,7 +19,7 @@ from univers.versions import GenericVersion
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
@@ -122,12 +122,12 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 pass
 
             references = []
+            severities = []
             vector_link_tag = severity_score_col.find("a")
             for a_tag in ref_col.select("a"):
                 link = a_tag.attrs["href"]
                 if link.startswith("/"):
                     link = urlparse.urljoin("https://www.postgresql.org/", link)
-                severities = []
                 if "support/security/CVE" in link and vector_link_tag:
                     parsed_link = urlparse.urlparse(vector_link_tag["href"])
                     cvss3_vector = urlparse.parse_qs(parsed_link.query).get("vector", [""])[0]
@@ -139,7 +139,7 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                             scoring_elements=cvss3_vector,
                         )
                     )
-                references.append(Reference(url=link, severities=severities))
+                references.append(ReferenceV2(url=link))
 
             if cve_id:
                 advisories.append(
@@ -148,6 +148,7 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         aliases=[],
                         summary=summary,
                         references_v2=references,
+                        severities=severities,
                         affected_packages=affected_packages,
                         url=f"https://www.postgresql.org/support/security/{cve_id}",
                     )

@@ -20,7 +20,7 @@ from univers.version_range import NpmVersionRange
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import CVSSV2
@@ -100,14 +100,14 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             self.log(f"Advisory ID not found in {file}")
             return
 
-        advisory_reference = Reference(
+        advisory_reference = ReferenceV2(
             url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
             reference_id=id,
         )
 
         for ref in data.get("references") or []:
             references.append(
-                Reference(
+                ReferenceV2(
                     url=ref,
                 )
             )

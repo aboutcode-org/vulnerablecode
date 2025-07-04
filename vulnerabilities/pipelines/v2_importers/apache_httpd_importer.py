@@ -21,7 +21,7 @@ from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import APACHE_HTTPD
@@ -260,7 +260,7 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                 )
                 break
-        reference = Reference(
+        reference = ReferenceV2(
             reference_id=alias,
             url=urllib.parse.urljoin(self.base_url, f"{alias}.json"),
         )

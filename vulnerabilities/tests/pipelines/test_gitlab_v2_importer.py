@@ -92,7 +92,7 @@ def test_collect_advisories(mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_
     advisory = advisories[0]
 
     assert isinstance(advisory, AdvisoryData)
-    assert advisory.advisory_id == "CVE-2022-0001"
+    assert advisory.advisory_id == "pypi/package_name/CVE-2022-0001"
     assert advisory.summary == "Example vulnerability\nExample description"
     assert advisory.references_v2[0].url == "https://example.com/advisory"
     assert advisory.affected_packages[0].package.name == "package-name"

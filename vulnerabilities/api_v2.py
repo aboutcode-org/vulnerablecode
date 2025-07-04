@@ -349,7 +349,7 @@ class AdvisoryPackageV2Serializer(serializers.ModelSerializer):
         # Ghost package should not fix any vulnerability.
         if obj.is_ghost:
             return []
-        return [adv.advisory_id for adv in obj.fixing_advisories.all()]
+        return [adv.avid for adv in obj.fixing_advisories.all()]
 
 
 class PackageurlListSerializer(serializers.Serializer):

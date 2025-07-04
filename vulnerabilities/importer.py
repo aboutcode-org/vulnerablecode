@@ -160,7 +160,7 @@ class ReferenceV2:
             self.reference_id = str(self.reference_id)
 
     def __lt__(self, other):
-        if not isinstance(other, Reference):
+        if not isinstance(other, ReferenceV2):
             return NotImplemented
         return self._cmp_key() < other._cmp_key()
 

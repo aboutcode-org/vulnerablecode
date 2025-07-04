@@ -8,7 +8,7 @@ import dateparser
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -151,7 +151,7 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     ref_type = vul_ref_types.get(tag_type)
 
             url = ref.get("url")
-            reference = Reference(
+            reference = ReferenceV2(
                 reference_id=get_reference_id(url),
                 url=url,
                 reference_type=ref_type,
@@ -160,7 +160,7 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             references.append(reference)
 
         cpes_ref = [
-            Reference(
+            ReferenceV2(
                 reference_id=cpe,
                 reference_type=VulnerabilityReference.OTHER,
                 url=f"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query={cpe}",

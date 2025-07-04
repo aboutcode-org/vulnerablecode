@@ -26,7 +26,7 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import get_advisory_url
@@ -237,9 +237,7 @@ def parse_gitlab_advisory(
         aliases.remove(advisory_id)
     summary = build_description(gitlab_advisory.get("title"), gitlab_advisory.get("description"))
     urls = gitlab_advisory.get("urls")
-    references = [Reference.from_url(u) for u in urls]
-
-    print(references)
+    references = [ReferenceV2.from_url(u) for u in urls]
 
     cwe_ids = gitlab_advisory.get("cwe_ids") or []
     cwe_list = list(map(get_cwe_id, cwe_ids))
@@ -247,6 +245,7 @@ def parse_gitlab_advisory(
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
     date_published = date_published.replace(tzinfo=pytz.UTC)
     package_slug = gitlab_advisory.get("package_slug")
+    advisory_id = f"{package_slug}/{advisory_id}" if package_slug else advisory_id
     advisory_url = get_advisory_url(
         file=file,
         base_path=base_path,
@@ -264,7 +263,7 @@ def parse_gitlab_advisory(
         return AdvisoryData(
             aliases=aliases,
             summary=summary,
-            references=references,
+            references_v2=references,
             date_published=date_published,
             url=advisory_url,
         )

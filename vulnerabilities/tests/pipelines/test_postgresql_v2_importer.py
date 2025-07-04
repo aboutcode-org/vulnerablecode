@@ -148,7 +148,7 @@ def test_cvss_parsing(mock_get, importer):
     assert len(advisories) == 1
     reference = advisories[0].references_v2[0]
 
-    severity = reference.severities[0]
+    severity = advisories[0].severities[0]
     assert severity.system.identifier == "cvssv3"
     assert severity.value == "9.8"
     assert "AV:N/AC:L/PR:N/UI:N" in severity.scoring_elements

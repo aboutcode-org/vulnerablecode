@@ -23,6 +23,7 @@ from univers.versions import Version
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_description
@@ -268,7 +269,7 @@ def get_references_v2(raw_data) -> List[Reference]:
         if not url:
             logger.error(f"Reference without URL : {ref!r} for OSV id: {raw_data['id']!r}")
             continue
-        references.append(Reference(url=ref["url"]))
+        references.append(ReferenceV2(url=ref["url"]))
     return references
 
 

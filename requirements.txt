@@ -1,6 +1,7 @@
 aboutcode.pipeline==0.1.0
 aiosignal==1.2.0
 alabaster==0.7.12
+altcha==0.2.0
 asgiref==3.8.1
 asttokens==2.0.5
 async-timeout==4.0.2

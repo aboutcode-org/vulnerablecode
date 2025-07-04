@@ -49,7 +49,6 @@ class ApiUserCreationForm(forms.ModelForm):
     captcha = AltchaField(
         floating=True,
         hidefooter=True,
-        hidelogo=True,
     )
 
     class Meta:
@@ -112,5 +111,4 @@ class AdminLoginForm(AdminAuthenticationForm):
     captcha = AltchaField(
         floating=True,
         hidefooter=True,
-        hidelogo=True,
     )

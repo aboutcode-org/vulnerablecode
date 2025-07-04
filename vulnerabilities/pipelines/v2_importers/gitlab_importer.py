@@ -31,6 +31,9 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import get_advisory_url
 from vulnerabilities.utils import get_cwe_id
+from vulntotal.datasources.gitlab import get_casesensitive_slug
+from vulntotal.datasources.gitlab_api import fetch_gitlab_advisories_for_purl
+from vulntotal.datasources.gitlab_api import get_estimated_advisories_count
 
 
 class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -45,9 +48,22 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
     unfurl_version_ranges = True
+    is_batch_run = True
+
+    def __init__(self, *args, purl=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.purl = purl
+        # If a purl is provided, we are running in package-first mode
+        if self.purl:
+            GitlabImporterPipeline.is_batch_run = False
 
     @classmethod
     def steps(cls):
+        if not cls.is_batch_run:
+            return (
+                cls.collect_and_store_advisories,
+                cls.clean_downloads,
+            )
         return (
             cls.clone,
             cls.collect_and_store_advisories,
@@ -69,14 +85,50 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     gitlab_scheme_by_purl_type = {v: k for k, v in purl_type_by_gitlab_scheme.items()}
 
     def clone(self):
-        self.log(f"Cloning `{self.repo_url}`")
-        self.vcs_response = fetch_via_vcs(self.repo_url)
+        if self.is_batch_run:
+            self.log(f"Cloning `{self.repo_url}`")
+            self.vcs_response = fetch_via_vcs(self.repo_url)
 
     def advisories_count(self):
-        root = Path(self.vcs_response.dest_dir)
-        return sum(1 for _ in root.rglob("*.yml"))
+        if self.is_batch_run:
+            root = Path(self.vcs_response.dest_dir)
+            return sum(1 for _ in root.rglob("*.yml"))
+        else:
+            return get_estimated_advisories_count(
+                self.purl, self.supported_ecosystem(), get_casesensitive_slug
+            )
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
+        if not self.is_batch_run:
+            advisories = fetch_gitlab_advisories_for_purl(
+                self.purl, self.supported_ecosystem(), get_casesensitive_slug
+            )
+
+            input_version = self.purl.version
+            vrc = RANGE_CLASS_BY_SCHEMES[self.purl.type]
+            version_obj = vrc.version_class(input_version) if input_version else None
+
+            for advisory in advisories:
+                advisory_data = self._advisory_dict_to_advisory_data(advisory)
+                # If purl has version, we need to check if advisory affects the version
+                if input_version:
+                    affected = False
+                    for affected_package in advisory_data.affected_packages:
+                        vrange = affected_package.affected_version_range
+                        fixed_version = affected_package.fixed_version
+                        if vrange and version_obj in vrange:
+                            if fixed_version:
+                                fixed_version_obj = vrc.version_class(str(fixed_version))
+                                if version_obj >= fixed_version_obj:
+                                    continue
+                            affected = True
+                            break
+                    if affected:
+                        yield advisory_data
+                else:
+                    yield advisory_data
+            return
+
         base_path = Path(self.vcs_response.dest_dir)
 
         for file_path in base_path.rglob("*.yml"):
@@ -113,12 +165,21 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             yield advisory
 
     def clean_downloads(self):
-        if self.vcs_response:
+        if self.is_batch_run and hasattr(self, "vcs_response") and self.vcs_response:
             self.log(f"Removing cloned repository")
             self.vcs_response.delete()
 
     def on_failure(self):
         self.clean_downloads()
+
+    def _advisory_dict_to_advisory_data(self, advisory):
+        return advisory_dict_to_advisory_data(
+            advisory=advisory,
+            purl_type_by_gitlab_scheme=self.purl_type_by_gitlab_scheme,
+            gitlab_scheme_by_purl_type=self.gitlab_scheme_by_purl_type,
+            logger=self.log,
+            purl=self.purl,
+        )
 
 
 def parse_advisory_path(base_path: Path, file_path: Path) -> Tuple[str, str, str]:
@@ -318,6 +379,112 @@ def parse_gitlab_advisory(
             ]
     return AdvisoryData(
         advisory_id=advisory_id,
+        aliases=aliases,
+        summary=summary,
+        references_v2=references,
+        date_published=date_published,
+        affected_packages=affected_packages,
+        weaknesses=cwe_list,
+        url=advisory_url,
+    )
+
+
+def advisory_dict_to_advisory_data(
+    advisory: dict,
+    purl_type_by_gitlab_scheme,
+    gitlab_scheme_by_purl_type,
+    logger,
+    purl=None,
+    advisory_url=None,
+):
+    """
+    Convert a GitLab advisory dict to AdvisoryData.
+    """
+    aliases = advisory.get("identifiers", [])
+    identifier = advisory.get("identifier", "")
+    summary = build_description(advisory.get("title"), advisory.get("description"))
+    urls = advisory.get("urls", [])
+    references = [ReferenceV2.from_url(u) for u in urls]
+
+    cwe_ids = advisory.get("cwe_ids") or []
+    cwe_list = list(map(get_cwe_id, cwe_ids))
+
+    date_published = dateparser.parse(advisory.get("pubdate"))
+    date_published = date_published.replace(tzinfo=pytz.UTC)
+
+    package_slug = advisory.get("package_slug")
+
+    # Determine purl if not provided
+    if not purl:
+        purl = get_purl(
+            package_slug=package_slug,
+            purl_type_by_gitlab_scheme=purl_type_by_gitlab_scheme,
+            logger=logger,
+        )
+
+    if not purl:
+        logger(
+            f"advisory_dict_to_advisory_data: purl is not valid: {package_slug!r}",
+            level=logging.ERROR,
+        )
+        return AdvisoryData(
+            aliases=aliases,
+            summary=summary,
+            references_v2=references,
+            date_published=date_published,
+            url=advisory_url,
+        )
+
+    affected_version_range = None
+    fixed_versions = advisory.get("fixed_versions") or []
+    affected_range = advisory.get("affected_range")
+    gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist", "conan"])
+    vrc: VersionRange = RANGE_CLASS_BY_SCHEMES[purl.type]
+    gitlab_scheme = gitlab_scheme_by_purl_type[purl.type]
+    try:
+        if affected_range:
+            if gitlab_scheme in gitlab_native_schemes:
+                affected_version_range = from_gitlab_native(
+                    gitlab_scheme=gitlab_scheme, string=affected_range
+                )
+            else:
+                affected_version_range = vrc.from_native(affected_range)
+    except Exception as e:
+        logger(
+            f"advisory_dict_to_advisory_data: affected_range is not parsable: {affected_range!r} for: {purl!s} error: {e!r}\n {traceback.format_exc()}",
+            level=logging.ERROR,
+        )
+
+    parsed_fixed_versions = []
+    for fixed_version in fixed_versions:
+        try:
+            fixed_version = vrc.version_class(fixed_version)
+            parsed_fixed_versions.append(fixed_version)
+        except Exception as e:
+            logger(
+                f"advisory_dict_to_advisory_data: fixed_version is not parsable`: {fixed_version!r} error: {e!r}\n {traceback.format_exc()}",
+                level=logging.ERROR,
+            )
+
+    if parsed_fixed_versions:
+        affected_packages = list(
+            extract_affected_packages(
+                affected_version_range=affected_version_range,
+                fixed_versions=parsed_fixed_versions,
+                purl=purl,
+            )
+        )
+    else:
+        if not affected_version_range:
+            affected_packages = []
+        else:
+            affected_packages = [
+                AffectedPackage(
+                    package=purl,
+                    affected_version_range=affected_version_range,
+                )
+            ]
+    return AdvisoryData(
         aliases=aliases,
         summary=summary,
         references_v2=references,

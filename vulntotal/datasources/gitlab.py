@@ -20,7 +20,6 @@ from fetchcode import fetch
 from packageurl import PackageURL
 
 from vulntotal.datasources.gitlab_api import fetch_gitlab_advisories_for_purl
-from vulntotal.datasources.gitlab_api import fetch_yaml
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
 from vulntotal.vulntotal_utils import gitlab_constraints_satisfied
@@ -61,30 +60,6 @@ class GitlabDataSource(DataSource):
             "nuget": "nuget",
             "pypi": "pypi",
         }
-
-
-def get_package_slug(purl):
-    """
-    Constructs a package slug from a given purl.
-
-    Parameters:
-        purl: A PackageURL instance representing the package to query.
-
-    Returns:
-        A string representing the package slug, or None if the purl type is not supported by GitLab.
-    """
-    supported_ecosystem = GitlabDataSource.supported_ecosystem()
-
-    if purl.type not in supported_ecosystem:
-        return
-
-    ecosystem = supported_ecosystem[purl.type]
-    package_name = purl.name
-
-    if purl.type in ("maven", "composer", "golang"):
-        package_name = f"{purl.namespace}/{purl.name}"
-
-    return f"{ecosystem}/{package_name}"
 
 
 def get_casesensitive_slug(path, package_slug):

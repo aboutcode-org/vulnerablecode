@@ -19,9 +19,12 @@ from rest_framework.test import APITestCase
 
 from vulnerabilities.api_v2 import PackageV2Serializer
 from vulnerabilities.api_v2 import VulnerabilityListSerializer
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
+from vulnerabilities.models import CodeFixV2
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageV2
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
@@ -61,10 +64,8 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         )
         self.reference2.vulnerabilities.add(self.vuln2)
 
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
-        self.auth = f"Token {self.user.auth_token.key}"
+        cache.clear()
         self.client = APIClient(enforce_csrf_checks=True)
-        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
 
     def test_list_vulnerabilities(self):
         """
@@ -73,7 +74,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         """
         url = reverse("vulnerability-v2-list")
         response = self.client.get(url, format="json")
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -88,7 +89,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         Test retrieving vulnerability details by vulnerability_id.
         """
         url = reverse("vulnerability-v2-detail", kwargs={"vulnerability_id": "VCID-1234"})
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(7):
             response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["vulnerability_id"], "VCID-1234")
@@ -102,7 +103,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         Test filtering vulnerabilities by vulnerability_id.
         """
         url = reverse("vulnerability-v2-list")
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             response = self.client.get(url, {"vulnerability_id": "VCID-1234"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["vulnerability_id"], "VCID-1234")
@@ -112,7 +113,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         Test filtering vulnerabilities by alias.
         """
         url = reverse("vulnerability-v2-list")
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             response = self.client.get(url, {"alias": "CVE-2021-5678"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -127,7 +128,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         Test filtering vulnerabilities by multiple vulnerability_ids.
         """
         url = reverse("vulnerability-v2-list")
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             response = self.client.get(
                 url, {"vulnerability_id": ["VCID-1234", "VCID-5678"]}, format="json"
             )
@@ -139,7 +140,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         Test filtering vulnerabilities by multiple aliases.
         """
         url = reverse("vulnerability-v2-list")
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             response = self.client.get(
                 url, {"alias": ["CVE-2021-1234", "CVE-2021-5678"]}, format="json"
             )
@@ -152,7 +153,7 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         Should return 404 Not Found.
         """
         url = reverse("vulnerability-v2-detail", kwargs={"vulnerability_id": "VCID-9999"})
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -210,10 +211,8 @@ class PackageV2ViewSetTest(APITestCase):
         self.package1.affected_by_vulnerabilities.add(self.vuln1)
         self.package2.fixing_vulnerabilities.add(self.vuln2)
 
-        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
-        self.auth = f"Token {self.user.auth_token.key}"
+        cache.clear()
         self.client = APIClient(enforce_csrf_checks=True)
-        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
 
     def test_list_packages(self):
         """
@@ -221,7 +220,7 @@ class PackageV2ViewSetTest(APITestCase):
         Should return a list of packages with their details and associated vulnerabilities.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(32):
+        with self.assertNumQueries(31):
             response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -243,7 +242,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by one or more PURLs.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(20):
+        with self.assertNumQueries(19):
             response = self.client.get(url, {"purl": "pkg:pypi/django@3.2"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["packages"]), 1)
@@ -254,7 +253,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by affected_by_vulnerability.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(20):
+        with self.assertNumQueries(19):
             response = self.client.get(
                 url, {"affected_by_vulnerability": "VCID-1234"}, format="json"
             )
@@ -267,7 +266,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test filtering packages by fixing_vulnerability.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(18):
+        with self.assertNumQueries(17):
             response = self.client.get(url, {"fixing_vulnerability": "VCID-5678"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]["packages"]), 1)
@@ -356,7 +355,7 @@ class PackageV2ViewSetTest(APITestCase):
         Should return an empty list.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             response = self.client.get(
                 url, {"affected_by_vulnerability": "VCID-9999"}, format="json"
             )
@@ -369,7 +368,7 @@ class PackageV2ViewSetTest(APITestCase):
         Should return an empty list.
         """
         url = reverse("package-v2-list")
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             response = self.client.get(
                 url, {"purl": "pkg:nonexistent/package@1.0.0"}, format="json"
             )
@@ -421,7 +420,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-bulk-lookup")
         data = {"purls": ["pkg:pypi/django@3.2", "pkg:npm/lodash@4.17.20"]}
-        with self.assertNumQueries(28):
+        with self.assertNumQueries(27):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("packages", response.data)
@@ -446,7 +445,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-bulk-lookup")
         data = {"purls": ["pkg:pypi/nonexistent@1.0.0", "pkg:npm/unknown@0.0.1"]}
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Since the packages don't exist, the response should be empty
@@ -460,7 +459,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-bulk-lookup")
         data = {"purls": []}
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(2):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("error", response.data)
@@ -474,7 +473,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-bulk-search")
         data = {"purls": ["pkg:pypi/django@3.2", "pkg:npm/lodash@4.17.20"]}
-        with self.assertNumQueries(28):
+        with self.assertNumQueries(27):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("packages", response.data)
@@ -502,7 +501,7 @@ class PackageV2ViewSetTest(APITestCase):
             "purls": ["pkg:pypi/django@3.2", "pkg:npm/lodash@4.17.20"],
             "purl_only": True,
         }
-        with self.assertNumQueries(17):
+        with self.assertNumQueries(16):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Since purl_only=True, response should be a list of PURLs
@@ -529,7 +528,7 @@ class PackageV2ViewSetTest(APITestCase):
             "purls": ["pkg:pypi/django@3.2", "pkg:pypi/django@3.2?extension=tar.gz"],
             "plain_purl": True,
         }
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(15):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("packages", response.data)
@@ -550,7 +549,7 @@ class PackageV2ViewSetTest(APITestCase):
             "purl_only": True,
             "plain_purl": True,
         }
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(10):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Response should be a list of plain PURLs
@@ -566,7 +565,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-bulk-search")
         data = {"purls": ["pkg:pypi/nonexistent@1.0.0", "pkg:npm/unknown@0.0.1"]}
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Since the packages don't exist, the response should be empty
@@ -580,7 +579,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-bulk-search")
         data = {"purls": []}
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(2):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("error", response.data)
@@ -592,7 +591,7 @@ class PackageV2ViewSetTest(APITestCase):
         Test the 'all' endpoint that returns all vulnerable package URLs.
         """
         url = reverse("package-v2-all")
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Since package1 is vulnerable, it should be returned
@@ -606,7 +605,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-lookup")
         data = {"purl": "pkg:pypi/django@3.2"}
-        with self.assertNumQueries(13):
+        with self.assertNumQueries(12):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(1, len(response.data))
@@ -635,7 +634,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-lookup")
         data = {"purl": "pkg:pypi/nonexistent@1.0.0"}
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # No packages or vulnerabilities should be returned
@@ -648,7 +647,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-lookup")
         data = {}
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(2):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("error", response.data)
@@ -662,7 +661,7 @@ class PackageV2ViewSetTest(APITestCase):
         """
         url = reverse("package-v2-lookup")
         data = {"purl": "invalid_purl_format"}
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(3):
             response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # No packages or vulnerabilities should be returned
@@ -703,11 +702,11 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         self.admin_token_auth = f"Token {self.admin_token_only_user.auth_token.key}"
 
     def test_schedule_list_anon_user_permitted(self):
-        response = self.client.get("/api/v2/schedule/")
+        response = self.client.get("/api/v2/pipelines/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_schedule_retrieve_anon_user_permitted(self):
-        response = self.client.get("/api/v2/schedule/test_pipeline/")
+        response = self.client.get("/api/v2/pipelines/test_pipeline/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
@@ -715,7 +714,7 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         mock_create_new_job.return_value = "work-id2"
 
         data = {"pipeline_id": "test_pipeline2"}
-        response = self.client.post("/api/v2/schedule/", data, format="json")
+        response = self.client.post("/api/v2/pipelines/", data, format="json")
 
         self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -729,7 +728,7 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         mock_create_new_job.return_value = "work-id3"
 
         data = {"pipeline_id": "test_pipeline3"}
-        response = self.client.post("/api/v2/schedule/", data, format="json")
+        response = self.client.post("/api/v2/pipelines/", data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertNotEqual(response.status_code, status.HTTP_201_CREATED)
@@ -741,7 +740,7 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         self.client.login(username="admin_with_session", password="adminpassword")
 
         data = {"pipeline_id": "test_pipeline3"}
-        response = self.client.post("/api/v2/schedule/", data, format="json")
+        response = self.client.post("/api/v2/pipelines/", data, format="json")
 
         self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -752,12 +751,12 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         mock_create_new_job.return_value = "work-id5"
 
         data = {"run_interval": 2}
-        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        response = self.client.patch("/api/v2/pipelines/test_pipeline/", data, format="json")
         self.schedule1.refresh_from_db()
 
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(self.schedule1.run_interval, 1)
+        self.assertEqual(self.schedule1.run_interval, 24)
 
     @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
     def test_schedule_update_with_staff_token_not_permitted(self, mock_create_new_job):
@@ -767,12 +766,12 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         mock_create_new_job.return_value = "work-id6"
 
         data = {"run_interval": 2}
-        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        response = self.client.patch("/api/v2/pipelines/test_pipeline/", data, format="json")
         self.schedule1.refresh_from_db()
 
         self.assertNotEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(self.schedule1.run_interval, 1)
+        self.assertEqual(self.schedule1.run_interval, 24)
 
     @patch("vulnerabilities.models.PipelineSchedule.create_new_job")
     def test_schedule_update_with_staff_session_permitted(self, mock_create_new_job):
@@ -780,9 +779,129 @@ class PipelineScheduleV2ViewSetTest(APITestCase):
         self.client.login(username="admin_with_session", password="adminpassword")
 
         data = {"run_interval": 2}
-        response = self.client.patch("/api/v2/schedule/test_pipeline/", data, format="json")
+        response = self.client.patch("/api/v2/pipelines/test_pipeline/", data, format="json")
         self.schedule1.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(self.schedule1.run_interval, 2)
+
+
+class CodeFixV2APITest(APITestCase):
+    def setUp(self):
+        self.advisory = AdvisoryV2.objects.create(
+            datasource_id="test_source",
+            advisory_id="TEST-2025-001",
+            avid="test_source/TEST-2025-001",
+            unique_content_id="a" * 64,
+            url="https://example.com/advisory",
+            date_collected="2025-07-01T00:00:00Z",
+        )
+
+        self.affected_package = PackageV2.objects.from_purl(purl="pkg:pypi/affected_package@1.0.0")
+        self.fixed_package = PackageV2.objects.from_purl(purl="pkg:pypi/fixed_package@1.0.1")
+
+        self.codefix = CodeFixV2.objects.create(
+            advisory=self.advisory,
+            affected_package=self.affected_package,
+            fixed_package=self.fixed_package,
+            notes="Security patch",
+            is_reviewed=True,
+        )
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
+
+        self.url = reverse("advisory-codefix-list")
+
+    def test_list_all_codefixes(self):
+        with self.assertNumQueries(10):
+            response = self.client.get(self.url)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["count"] == 1
+        assert response.data["results"][0]["affected_advisory_id"] == self.advisory.avid
+
+    def test_filter_codefix_by_advisory_id_success(self):
+        with self.assertNumQueries(10):
+            response = self.client.get(self.url, {"advisory_id": self.advisory.avid})
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["count"] == 1
+        assert response.data["results"][0]["affected_advisory_id"] == self.advisory.avid
+
+    def test_filter_codefix_by_advisory_id_not_found(self):
+        with self.assertNumQueries(6):
+            response = self.client.get(self.url, {"advisory_id": "nonexistent/ADVISORY-ID"})
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["count"] == 0
+
+
+class AdvisoriesPackageV2Tests(APITestCase):
+    def setUp(self):
+        self.advisory = AdvisoryV2.objects.create(
+            datasource_id="ghsa",
+            advisory_id="GHSA-1234",
+            avid="ghsa/GHSA-1234",
+            unique_content_id="f" * 64,
+            url="https://example.com/advisory",
+            date_collected="2025-07-01T00:00:00Z",
+        )
+
+        self.package = PackageV2.objects.from_purl(purl="pkg:pypi/sample@1.0.0")
+
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
+
+        self.package.affected_by_advisories.add(self.advisory)
+        self.package.save()
+
+    def test_list_with_purl_filter(self):
+        url = reverse("advisories-package-v2-list")
+        with self.assertNumQueries(18):
+            response = self.client.get(url, {"purl": "pkg:pypi/sample@1.0.0"})
+        assert response.status_code == 200
+        assert "packages" in response.data["results"]
+        assert "advisories" in response.data["results"]
+        assert self.advisory.avid in response.data["results"]["advisories"]
+
+    def test_bulk_lookup(self):
+        url = reverse("advisories-package-v2-bulk-lookup")
+        with self.assertNumQueries(13):
+            response = self.client.post(url, {"purls": ["pkg:pypi/sample@1.0.0"]}, format="json")
+        assert response.status_code == 200
+        assert "packages" in response.data
+        assert "advisories" in response.data
+        assert self.advisory.avid in response.data["advisories"]
+
+    def test_bulk_search_plain(self):
+        url = reverse("advisories-package-v2-bulk-search")
+        payload = {"purls": ["pkg:pypi/sample@1.0.0"], "plain_purl": True, "purl_only": False}
+        with self.assertNumQueries(13):
+            response = self.client.post(url, payload, format="json")
+        assert response.status_code == 200
+        assert "packages" in response.data
+        assert "advisories" in response.data
+
+    def test_bulk_search_purl_only(self):
+        url = reverse("advisories-package-v2-bulk-search")
+        payload = {"purls": ["pkg:pypi/sample@1.0.0"], "plain_purl": False, "purl_only": True}
+        with self.assertNumQueries(13):
+            response = self.client.post(url, payload, format="json")
+        assert response.status_code == 200
+        assert "pkg:pypi/sample@1.0.0" in response.data
+
+    def test_lookup_single_package(self):
+        url = reverse("advisories-package-v2-lookup")
+        with self.assertNumQueries(11):
+            response = self.client.post(url, {"purl": "pkg:pypi/sample@1.0.0"}, format="json")
+        assert response.status_code == 200
+        assert any(pkg["purl"] == "pkg:pypi/sample@1.0.0" for pkg in response.data)
+
+    def test_get_all_vulnerable_purls(self):
+        url = reverse("advisories-package-v2-all")
+        with self.assertNumQueries(6):
+            response = self.client.get(url)
+        assert response.status_code == 200
+        assert "pkg:pypi/sample@1.0.0" in response.data

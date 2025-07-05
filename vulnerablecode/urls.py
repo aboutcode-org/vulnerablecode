@@ -104,6 +104,11 @@ urlpatterns = [
         name="home",
     ),
     path(
+        "advisories/packages/<path:avid>",
+        AdvisoryPackagesDetails.as_view(),
+        name="advisory_package_details",
+    ),
+    path(
         "advisories/<path:avid>",
         AdvisoryDetails.as_view(),
         name="advisory_details",
@@ -142,11 +147,6 @@ urlpatterns = [
         "vulnerabilities/<str:vulnerability_id>/packages",
         VulnerabilityPackagesDetails.as_view(),
         name="vulnerability_package_details",
-    ),
-    path(
-        "advisories/<int:id>/packages",
-        AdvisoryPackagesDetails.as_view(),
-        name="advisory_package_details",
     ),
     path(
         "api/",

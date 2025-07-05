@@ -361,6 +361,13 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
         try:
             versions = package_versions.versions(str(package_url))
             for version in versions or []:
+                if (
+                    version.release_date
+                    and version.release_date.tzinfo
+                    and until
+                    and until.tzinfo is None
+                ):
+                    until = until.replace(tzinfo=timezone.utc)
                 if until and version.release_date and version.release_date > until:
                     continue
                 versions_before_until.append(version.value)

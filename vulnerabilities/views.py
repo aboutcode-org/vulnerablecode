@@ -570,8 +570,8 @@ class AdvisoryPackagesDetails(DetailView):
 
     model = models.AdvisoryV2
     template_name = "advisory_package_details.html"
-    slug_url_kwarg = "id"
-    slug_field = "id"
+    slug_url_kwarg = "avid"
+    slug_field = "avid"
 
     def get_queryset(self):
         """

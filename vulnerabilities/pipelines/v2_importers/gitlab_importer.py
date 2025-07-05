@@ -233,6 +233,8 @@ def parse_gitlab_advisory(
     # refer to schema here https://gitlab.com/gitlab-org/advisories-community/-/blob/main/ci/schema/schema.json
     aliases = gitlab_advisory.get("identifiers")
     advisory_id = gitlab_advisory.get("identifier")
+    package_slug = gitlab_advisory.get("package_slug")
+    advisory_id = f"{package_slug}/{advisory_id}" if package_slug else advisory_id
     if advisory_id in aliases:
         aliases.remove(advisory_id)
     summary = build_description(gitlab_advisory.get("title"), gitlab_advisory.get("description"))
@@ -244,8 +246,6 @@ def parse_gitlab_advisory(
 
     date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
     date_published = date_published.replace(tzinfo=pytz.UTC)
-    package_slug = gitlab_advisory.get("package_slug")
-    advisory_id = f"{package_slug}/{advisory_id}" if package_slug else advisory_id
     advisory_url = get_advisory_url(
         file=file,
         base_path=base_path,

@@ -41,10 +41,13 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
     unfurl_version_ranges = True
 
-    def __init__(self, *args, **kwargs):
+    is_batch_run = True
+
+    def __init__(self, *args, purl=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.purl = kwargs.get("purl")
+        self.purl = purl
         if self.purl:
+            ElixirSecurityImporterPipeline.is_batch_run = False
             if self.purl.type != "hex":
                 self.log(
                     f"Warning: PURL type {self.purl.type} is not 'hex', may not match any advisories"
@@ -52,19 +55,22 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     @classmethod
     def steps(cls):
+        if not cls.is_batch_run:
+            return (cls.collect_and_store_advisories,)
         return (cls.clone, cls.collect_and_store_advisories, cls.clean_downloads)
 
     def clean_downloads(self):
-        if self.vcs_response:
+        if self.is_batch_run and self.vcs_response:
             self.log(f"Removing cloned repository")
             self.vcs_response.delete()
 
     def clone(self):
-        self.log(f"Cloning `{self.repo_url}`")
-        self.vcs_response = fetch_via_vcs(self.repo_url)
+        if self.is_batch_run:
+            self.log(f"Cloning `{self.repo_url}`")
+            self.vcs_response = fetch_via_vcs(self.repo_url)
 
     def advisories_count(self) -> int:
-        if self.purl:
+        if not self.is_batch_run:
             return self._count_package_advisories()
 
         base_path = Path(self.vcs_response.dest_dir)
@@ -88,7 +94,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             return 0
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        if self.purl:
+        if not self.is_batch_run:
             return self._collect_package_advisories()
 
         return self._collect_batch_advisories()

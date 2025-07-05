@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Iterable
 from typing import List
 from typing import Tuple
+from urllib.parse import urljoin
 
 import pytz
 import saneyaml
@@ -55,15 +56,12 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.purl = purl
         # If a purl is provided, we are running in package-first mode
         if self.purl:
-            GitlabImporterPipeline.is_batch_run = False
+            GitLabImporterPipeline.is_batch_run = False
 
     @classmethod
     def steps(cls):
         if not cls.is_batch_run:
-            return (
-                cls.collect_and_store_advisories,
-                cls.clean_downloads,
-            )
+            return (cls.collect_and_store_advisories,)
         return (
             cls.clone,
             cls.collect_and_store_advisories,
@@ -95,13 +93,13 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             return sum(1 for _ in root.rglob("*.yml"))
         else:
             return get_estimated_advisories_count(
-                self.purl, self.supported_ecosystem(), get_casesensitive_slug
+                self.purl, self.purl_type_by_gitlab_scheme, get_casesensitive_slug
             )
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         if not self.is_batch_run:
             advisories = fetch_gitlab_advisories_for_purl(
-                self.purl, self.supported_ecosystem(), get_casesensitive_slug
+                self.purl, self.purl_type_by_gitlab_scheme, get_casesensitive_slug
             )
 
             input_version = self.purl.version
@@ -402,6 +400,12 @@ def advisory_dict_to_advisory_data(
     """
     aliases = advisory.get("identifiers", [])
     identifier = advisory.get("identifier", "")
+    package_slug = advisory.get("package_slug")
+
+    advisory_id = f"{package_slug}/{identifier}" if package_slug else identifier
+    if advisory_id in aliases:
+        aliases.remove(advisory_id)
+
     summary = build_description(advisory.get("title"), advisory.get("description"))
     urls = advisory.get("urls", [])
     references = [ReferenceV2.from_url(u) for u in urls]
@@ -411,8 +415,6 @@ def advisory_dict_to_advisory_data(
 
     date_published = dateparser.parse(advisory.get("pubdate"))
     date_published = date_published.replace(tzinfo=pytz.UTC)
-
-    package_slug = advisory.get("package_slug")
 
     # Determine purl if not provided
     if not purl:
@@ -428,6 +430,7 @@ def advisory_dict_to_advisory_data(
             level=logging.ERROR,
         )
         return AdvisoryData(
+            advisory_id=advisory_id,
             aliases=aliases,
             summary=summary,
             references_v2=references,
@@ -466,12 +469,18 @@ def advisory_dict_to_advisory_data(
                 level=logging.ERROR,
             )
 
+    purl_without_version = get_purl(
+        package_slug=package_slug,
+        purl_type_by_gitlab_scheme=purl_type_by_gitlab_scheme,
+        logger=logger,
+    )
+
     if parsed_fixed_versions:
         affected_packages = list(
             extract_affected_packages(
                 affected_version_range=affected_version_range,
                 fixed_versions=parsed_fixed_versions,
-                purl=purl,
+                purl=purl_without_version,
             )
         )
     else:
@@ -480,11 +489,19 @@ def advisory_dict_to_advisory_data(
         else:
             affected_packages = [
                 AffectedPackage(
-                    package=purl,
+                    package=purl_without_version,
                     affected_version_range=affected_version_range,
                 )
             ]
+
+    if not advisory_url and package_slug and identifier:
+        advisory_url = urljoin(
+            "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/",
+            package_slug + "/" + identifier + ".yml",
+        )
+
     return AdvisoryData(
+        advisory_id=advisory_id,
         aliases=aliases,
         summary=summary,
         references_v2=references,

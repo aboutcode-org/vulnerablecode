@@ -39,7 +39,12 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     @classmethod
     def steps(cls):
-        return (cls.collect_and_store_advisories,)
+        return (cls.clone, cls.collect_and_store_advisories, cls.clean_downloads)
+
+    def clean_downloads(self):
+        if self.vcs_response:
+            self.log(f"Removing cloned repository")
+            self.vcs_response.delete()
 
     def clone(self):
         self.log(f"Cloning `{self.repo_url}`")
@@ -62,6 +67,9 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def process_file(self, file, base_path) -> Iterable[AdvisoryData]:
         relative_path = str(file.relative_to(base_path)).strip("/")
+        path_segments = str(file).split("/")
+        # use the last two segments as the advisory ID
+        advisory_id = "/".join(path_segments[-2:]).replace(".yml", "")
         advisory_url = (
             f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
         )
@@ -114,8 +122,8 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             date_published = dateparser.parse(yaml_file.get("disclosure_date"))
 
         yield AdvisoryData(
-            advisory_id=cve_id,
-            aliases=[],
+            advisory_id=advisory_id,
+            aliases=[cve_id],
             summary=summary,
             references_v2=references,
             affected_packages=affected_packages,

@@ -9,14 +9,19 @@
 
 # Author: Navonil Das (@NavonilDas)
 
+import json
+import os
+import tempfile
 from pathlib import Path
 from typing import Iterable
 
 import pytz
+import requests
 from dateutil.parser import parse
 from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from univers.version_range import NpmVersionRange
+from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -39,28 +44,88 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipeline):
     repo_url = "git+https://github.com/nodejs/security-wg"
     importer_name = "Npm Importer"
 
+    is_batch_run = True
+
+    def __init__(self, *args, purl=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.purl = purl
+        if self.purl:
+            NpmImporterPipeline.is_batch_run = False
+            if self.purl.type != "npm":
+                print(f"Warning: This importer handles NPM packages. Current PURL: {self.purl!s}")
+
     @classmethod
     def steps(cls):
-        return (
+        if not cls.is_batch_run:
+            return [
+                cls.fetch_package_advisories,
+                cls.collect_and_store_advisories,
+                cls.import_new_advisories,
+            ]
+
+        return [
             cls.clone,
             cls.collect_and_store_advisories,
             cls.import_new_advisories,
             cls.clean_downloads,
-        )
+        ]
 
     def clone(self):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
+    def fetch_package_advisories(self):
+        if not self.purl or self.purl.type != "npm":
+            return
+
+        self.log(f"Fetching advisories for package {self.purl.name}")
+
+        package_name = self.purl.name
+
+        self.temp_dir = tempfile.mkdtemp()
+        self.package_advisories = []
+
+        api_url = "https://api.github.com/repos/nodejs/security-wg/contents/vuln/npm"
+        response = requests.get(api_url)
+
+        if response.status_code != 200:
+            self.log(f"Failed to fetch advisories directory: {response.status_code}")
+            return
+
+        for item in response.json():
+            if item["type"] == "file" and item["name"].endswith(".json"):
+                file_url = item["download_url"]
+                try:
+                    file_content = requests.get(file_url).json()
+
+                    if file_content.get("module_name") == package_name:
+                        file_path = os.path.join(self.temp_dir, item["name"])
+                        with open(file_path, "w") as f:
+                            json.dump(file_content, f)
+                        self.package_advisories.append(file_path)
+                except Exception as e:
+                    self.log(f"Error processing advisory file {item['name']}: {str(e)}")
+
+        self.log(f"Found {len(self.package_advisories)} advisories for package {package_name}")
+
     def advisories_count(self):
-        vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
-        return sum(1 for _ in vuln_directory.glob("*.json"))
+        if NpmImporterPipeline.is_batch_run:
+            vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
+            return sum(1 for _ in vuln_directory.glob("*.json"))
+        else:
+            return len(getattr(self, "package_advisories", []))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
+        if NpmImporterPipeline.is_batch_run:
+            vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
+            for advisory in vuln_directory.glob("*.json"):
+                yield from self.to_advisory_data(advisory)
+        else:
+            if not hasattr(self, "package_advisories"):
+                return
 
-        for advisory in vuln_directory.glob("*.json"):
-            yield from self.to_advisory_data(advisory)
+            for advisory_path in self.package_advisories:
+                yield from self.to_advisory_data(Path(advisory_path))
 
     def to_advisory_data(self, file: Path) -> Iterable[AdvisoryData]:
         data = load_json(file)
@@ -112,6 +177,11 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipeline):
             affected_packages.append(self.get_affected_package(data, package_name))
         advsisory_aliases = data.get("cves") or []
 
+        if self.purl and self.purl.version:
+            affected_package = affected_packages[0] if affected_packages else None
+            if affected_package and not self._version_is_affected(affected_package):
+                return
+
         for alias in advsisory_aliases:
             yield AdvisoryData(
                 summary=build_description(summary=summary, description=description),
@@ -121,6 +191,13 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipeline):
                 aliases=[alias],
                 url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
             )
+
+    def _version_is_affected(self, affected_package):
+        if not self.purl.version or not affected_package.affected_version_range:
+            return True
+
+        purl_version = SemverVersion(self.purl.version)
+        return purl_version in affected_package.affected_version_range
 
     def get_affected_package(self, data, package_name):
         affected_version_range = None
@@ -163,6 +240,12 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipeline):
         if self.vcs_response:
             self.log(f"Removing cloned repository")
             self.vcs_response.delete()
+
+        if hasattr(self, "temp_dir") and os.path.exists(self.temp_dir):
+            import shutil
+
+            self.log(f"Removing temporary directory")
+            shutil.rmtree(self.temp_dir)
 
     def on_failure(self):
         self.clean_downloads()

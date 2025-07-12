@@ -66,8 +66,8 @@ def test_advisories_count_and_collect(tmp_path):
     (vuln_dir / "001.json").write_text(json.dumps({"id": "001"}))
     p = NpmImporterPipeline()
     p.vcs_response = SimpleNamespace(dest_dir=str(base), delete=lambda: None)
-    assert p.advisories_count() == 2
     advisories = list(p.collect_advisories())
+    assert p.advisories_count() == 2
     # Should yield None for index.json and one AdvisoryData
     real = [a for a in advisories if isinstance(a, AdvisoryData)]
     assert len(real) == 1
@@ -136,31 +136,23 @@ def test_get_affected_package_special_and_standard():
     assert pkg2.fixed_version == SemverVersion("2.0.1")
 
 
-@patch("requests.get")
-def test_package_first_mode_valid_npm_package(mock_get):
-    mock_dir_response = MagicMock()
-    mock_dir_response.status_code = 200
-    mock_dir_response.json.return_value = [
-        {
-            "type": "file",
-            "name": "152.json",
-            "download_url": "https://raw.githubusercontent.com/nodejs/security-wg/main/vuln/npm/152.json",
-        }
-    ]
+def test_package_first_mode_valid_npm_package(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
 
     npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
     with open(npm_sample_file) as f:
         sample_data = json.load(f)
 
-    mock_file_response = MagicMock()
-    mock_file_response.json.return_value = sample_data
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
 
-    mock_get.side_effect = [mock_dir_response, mock_file_response]
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
 
     purl = PackageURL(type="npm", name="npm", version="1.2.0")
     pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
 
-    pipeline.fetch_package_advisories()
     advisories = list(pipeline.collect_advisories())
 
     assert len(advisories) == 1
@@ -169,59 +161,46 @@ def test_package_first_mode_valid_npm_package(mock_get):
     assert advisories[0].affected_packages[0].package.name == "npm"
 
 
-@patch("requests.get")
-def test_package_first_mode_unaffected_version(mock_get):
-    mock_dir_response = MagicMock()
-    mock_dir_response.status_code = 200
-    mock_dir_response.json.return_value = [
-        {
-            "type": "file",
-            "name": "152.json",
-            "download_url": "https://raw.githubusercontent.com/nodejs/security-wg/main/vuln/npm/152.json",
-        }
-    ]
+def test_package_first_mode_unaffected_version(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
 
     npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
     with open(npm_sample_file) as f:
         sample_data = json.load(f)
 
-    mock_file_response = MagicMock()
-    mock_file_response.json.return_value = sample_data
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
 
-    mock_get.side_effect = [mock_dir_response, mock_file_response]
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
 
     purl = PackageURL(type="npm", name="npm", version="1.4.0")
     pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
 
-    pipeline.fetch_package_advisories()
     advisories = list(pipeline.collect_advisories())
 
     assert len(advisories) == 0
 
 
-@patch("requests.get")
-def test_package_first_mode_invalid_package_type(mock_get):
+def test_package_first_mode_invalid_package_type(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
     purl = PackageURL(type="pypi", name="django", version="3.0.0")
     pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
 
-    pipeline.fetch_package_advisories()
     advisories = list(pipeline.collect_advisories())
 
     assert len(advisories) == 0
-    mock_get.assert_not_called()
 
 
-@patch("requests.get")
-def test_package_first_mode_package_not_found(mock_get):
-    mock_dir_response = MagicMock()
-    mock_dir_response.status_code = 200
-    mock_dir_response.json.return_value = [
-        {
-            "type": "file",
-            "name": "152.json",
-            "download_url": "https://raw.githubusercontent.com/nodejs/security-wg/main/vuln/npm/152.json",
-        }
-    ]
+def test_package_first_mode_package_not_found(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
 
     npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
     with open(npm_sample_file) as f:
@@ -229,31 +208,15 @@ def test_package_first_mode_package_not_found(mock_get):
 
     sample_data["module_name"] = "some-other-package"
 
-    mock_file_response = MagicMock()
-    mock_file_response.json.return_value = sample_data
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
 
-    mock_get.side_effect = [mock_dir_response, mock_file_response]
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
 
     purl = PackageURL(type="npm", name="nonexistent-package", version="1.0.0")
     pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
 
-    pipeline.fetch_package_advisories()
-    advisories = list(pipeline.collect_advisories())
-
-    assert len(advisories) == 0
-
-
-@patch("requests.get")
-def test_package_first_mode_api_error(mock_get):
-    mock_error_response = MagicMock()
-    mock_error_response.status_code = 404
-
-    mock_get.return_value = mock_error_response
-
-    purl = PackageURL(type="npm", name="npm", version="1.0.0")
-    pipeline = NpmImporterPipeline(purl=purl)
-
-    pipeline.fetch_package_advisories()
     advisories = list(pipeline.collect_advisories())
 
     assert len(advisories) == 0

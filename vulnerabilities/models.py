@@ -210,6 +210,7 @@ class VulnerabilitySeverity(models.Model):
     objects = BaseQuerySet.as_manager()
 
     class Meta:
+        verbose_name_plural = "Vulnerability severities"
         ordering = ["url", "scoring_system", "value"]
 
 
@@ -533,6 +534,9 @@ class Weakness(models.Model):
     vulnerabilities = models.ManyToManyField(Vulnerability, related_name="weaknesses")
 
     cwe_by_id = {}
+
+    class Meta:
+        verbose_name_plural = "Weaknesses"
 
     def get_cwe(self, cwe_id):
         if not self.cwe_by_id:
@@ -1310,6 +1314,7 @@ class Alias(models.Model):
     objects = AliasQuerySet.as_manager()
 
     class Meta:
+        verbose_name_plural = "Aliases"
         ordering = ["alias"]
 
     def __str__(self):
@@ -1414,6 +1419,7 @@ class Advisory(models.Model):
     objects = AdvisoryQuerySet.as_manager()
 
     class Meta:
+        verbose_name_plural = "Advisories"
         ordering = ["date_published", "unique_content_id"]
 
     def save(self, *args, **kwargs):
@@ -2523,6 +2529,7 @@ class AdvisorySeverity(models.Model):
     objects = BaseQuerySet.as_manager()
 
     class Meta:
+        verbose_name_plural = "Advisory severities"
         ordering = ["url", "scoring_system", "value"]
 
 
@@ -2534,6 +2541,9 @@ class AdvisoryWeakness(models.Model):
     cwe_id = models.IntegerField(help_text="CWE id")
 
     cwe_by_id = {}
+
+    class Meta:
+        verbose_name_plural = "Advisory weaknesses"
 
     def get_cwe(self, cwe_id):
         if not self.cwe_by_id:
@@ -2627,6 +2637,7 @@ class AdvisoryAlias(models.Model):
     )
 
     class Meta:
+        verbose_name_plural = "Advisory aliases"
         ordering = ["alias"]
 
     def __str__(self):

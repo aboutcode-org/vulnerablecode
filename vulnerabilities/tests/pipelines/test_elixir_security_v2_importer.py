@@ -13,6 +13,7 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import pytest
+from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines.v2_importers.elixir_security_importer import (
@@ -106,3 +107,108 @@ def test_collect_advisories_skips_invalid_cve(mock_fetch_via_vcs, tmp_path):
         importer.clone()
         advisories = list(importer.collect_advisories())
         assert len(advisories) == 0
+
+
+@pytest.fixture
+def test_data_dir():
+    return Path(__file__).parent.parent / "test_data" / "elixir_security"
+
+
+@patch("requests.get")
+def test_package_first_mode_success(mock_get, test_data_dir):
+    directory_response = MagicMock()
+    directory_response.status_code = 200
+    directory_response.json.return_value = [
+        {"name": "test_file.yml", "path": "packages/coherence/test_file.yml"}
+    ]
+
+    advisory_file_path = test_data_dir / "test_file.yml"
+    advisory_content = advisory_file_path.read_text()
+
+    content_response = MagicMock()
+    content_response.status_code = 200
+    content_response.text = advisory_content
+
+    mock_get.side_effect = [directory_response, content_response]
+
+    purl = PackageURL(type="hex", name="coherence")
+    importer = ElixirSecurityImporterPipeline(purl=purl)
+    advisories = list(importer.collect_advisories())
+
+    assert len(advisories) == 1
+    advisory = advisories[0]
+    assert "CVE-2018-20301" in advisory.aliases
+    assert advisory.summary == 'The Coherence library has "Mass Assignment"-like vulnerabilities.'
+    assert len(advisory.affected_packages) == 1
+    assert advisory.affected_packages[0].package.name == "coherence"
+
+
+@patch("requests.get")
+def test_package_first_mode_with_version_filter(mock_get, test_data_dir):
+    directory_response = MagicMock()
+    directory_response.status_code = 200
+    directory_response.json.return_value = [
+        {"name": "test_file.yml", "path": "packages/coherence/test_file.yml"}
+    ]
+
+    advisory_file_path = test_data_dir / "test_file.yml"
+    advisory_content = advisory_file_path.read_text()
+
+    content_response = MagicMock()
+    content_response.status_code = 200
+    content_response.text = advisory_content
+
+    mock_get.side_effect = [directory_response, content_response]
+
+    # Version affected
+    purl = PackageURL(type="hex", name="coherence", version="0.5.1")
+    importer = ElixirSecurityImporterPipeline(purl=purl)
+    advisories = list(importer.collect_advisories())
+    assert len(advisories) == 1
+
+    # Version not affected
+    mock_get.side_effect = [directory_response, content_response]
+    purl = PackageURL(type="hex", name="coherence", version="0.5.2")
+    importer = ElixirSecurityImporterPipeline(purl=purl)
+    advisories = list(importer.collect_advisories())
+    assert len(advisories) == 0
+
+
+@patch("requests.get")
+def test_package_first_mode_no_advisories(mock_get):
+    mock_response = MagicMock()
+    mock_response.status_code = 404
+    mock_get.return_value = mock_response
+
+    purl = PackageURL(type="hex", name="nonexistent-package")
+    importer = ElixirSecurityImporterPipeline(purl=purl)
+    advisories = list(importer.collect_advisories())
+    assert len(advisories) == 0
+
+
+@patch("requests.get")
+def test_package_first_mode_api_error(mock_get):
+    directory_response = MagicMock()
+    directory_response.status_code = 200
+    directory_response.json.return_value = [
+        {"name": "test_file.yml", "path": "packages/coherence/test_file.yml"}
+    ]
+
+    content_response = MagicMock()
+    content_response.status_code = 500
+
+    mock_get.side_effect = [directory_response, content_response]
+
+    purl = PackageURL(type="hex", name="coherence")
+    importer = ElixirSecurityImporterPipeline(purl=purl)
+    advisories = list(importer.collect_advisories())
+    assert len(advisories) == 0
+
+
+def test_package_first_mode_non_hex_purl():
+    purl = PackageURL(type="npm", name="some-package")
+    importer = ElixirSecurityImporterPipeline(purl=purl)
+    advisories = list(importer.collect_advisories())
+    assert len(advisories) == 0
+    advisories = list(importer.collect_advisories())
+    assert len(advisories) == 0

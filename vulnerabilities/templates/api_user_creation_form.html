@@ -4,6 +4,8 @@
 VulnerableCode API key request
 {% endblock %}
 
+
+
 {% block content %}
     <section class="section pt-0">
         {% for message in messages %}
@@ -26,11 +28,13 @@ VulnerableCode API key request
         </div>
         {% endif %}
       </div>
-    <h2 class="subtitle mb-0 pt-2 mb-2">
-      <b>VulnerableCode API key request</b>
-    </h2>
 
-    <section class="ml-2 mt-3 pr-4 pt-4 pl-4 pb-4 has-background-light has-border-radius">
+    <div class="content is-normal">
+      <h1 class="title is-4">VulnerableCode API Key Request</h1>
+      <hr />
+    </div>
+
+    <section class="mt-3 mx-6 px-4 py-4 has-background-light has-border-radius">
       <p class="pb-2">You need an <b>API key</b> to access the 
       <a href="{% url 'api-root' %}">VulnerableCode JSON REST API</a>.
       Please check the live <a href="{% url 'api_docs' %}"> OpenAPI documentation </a> 
@@ -41,17 +45,18 @@ VulnerableCode API key request
     </section>
 
     <br/>
-        <form action = "" method = "post">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="field mt-2">
-                    <label class="label" for="{{ form.name.id_for_label }}">{{ field.label }}</label>
-                    <div class="control">
-                        {{ field }}
-                    </div>
-                </div>
-            {% endfor %}
-            <input class="button is-link mt-5" type="submit" value="Request my API Key">
-        </form>
+      <div class="columns is-centered">
+        <div class="column is-one-third">
+          <form method = "post">
+              {% csrf_token %}
+                  {% for field in form %}
+                      <p class="mb-4">
+                          {{ field }}
+                      </p>
+                  {% endfor %}
+              <input class="button is-link mt-2" type="submit" value="Request my API Key">
+          </form>
+        </div>
+      </div>
     </section>
 {% endblock %}

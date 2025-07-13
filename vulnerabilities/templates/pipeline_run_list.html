@@ -34,6 +34,7 @@
   </div>
 
   <div class="column is-four-fifths">
+    <a href="{% url 'dashboard' %}" class="button is-info mb-4"><i class="fa fa-arrow-left mr-2"></i>Back to Dashboard</a>
     <div class="content is-normal">
       <h1>{{ pipeline_name }} Runs</h1>
       <hr />
@@ -56,7 +57,7 @@
                 <div class="columns is-mobile is-vcentered">
                   <div class="column is-one-quarter">Job ID</div>
                   <div class="column is-one-eighth">Status</div>
-                  <div class="column is-one-eighth">Execution Time</div>
+                  <div class="column is-one-eighth">Runtime</div>
                   <div class="column is-one-fifth">Start Time</div>
                   <div class="column is-one-fifth">End Time</div>
                 </div>
@@ -78,8 +79,8 @@
                     </span>
                   </div>
                   <div class="column is-one-eighth has-text-grey">
-                    {% if run.execution_time %}
-                      {{ run.execution_time|humanize_duration }}
+                    {% if run.runtime %}
+                      {{ run.runtime|humanize_duration }}
                     {% else %}
                       N/A
                     {% endif %}
@@ -109,7 +110,9 @@
           {% endfor %}
         </tbody>
       </table>
-      <a href="{% url 'schedule' %}" class="button is-info mt-4"><i class="fa fa-arrow-left mr-2"></i>Back to Schedules</a>
+      {% if run_list|length > 10 %}
+        <a href="{% url 'dashboard' %}" class="button is-info mt-4"><i class="fa fa-arrow-left mr-2"></i>Back to Dashboard</a>
+      {% endif %}
     </div>
     {% if is_paginated %}
     <nav class="pagination is-centered px-5" role="navigation" aria-label="pagination">

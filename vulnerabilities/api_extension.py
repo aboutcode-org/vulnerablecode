@@ -23,7 +23,6 @@ from rest_framework.serializers import HyperlinkedModelSerializer
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import Serializer
 from rest_framework.serializers import ValidationError
-from rest_framework.throttling import AnonRateThrottle
 
 from vulnerabilities.api import BaseResourceSerializer
 from vulnerabilities.models import Exploit
@@ -33,7 +32,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.models import get_purl_query_lookups
-from vulnerabilities.throttling import StaffUserRateThrottle
+from vulnerabilities.throttling import PermissionBasedUserRateThrottle
 
 
 class SerializerExcludeFieldsMixin:
@@ -259,7 +258,7 @@ class V2PackageViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "purl"
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = V2PackageFilterSet
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+    throttle_classes = [PermissionBasedUserRateThrottle]
 
     def get_queryset(self):
         return super().get_queryset().with_is_vulnerable().prefetch_related("vulnerabilities")
@@ -345,7 +344,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "vulnerability_id"
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = V2VulnerabilityFilterSet
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+    throttle_classes = [PermissionBasedUserRateThrottle]
 
     def get_queryset(self):
         """
@@ -381,7 +380,7 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
     ).distinct()
     serializer_class = V2VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+    throttle_classes = [PermissionBasedUserRateThrottle]
     filterset_class = CPEFilterSet
 
     @action(detail=False, methods=["post"])
@@ -420,4 +419,4 @@ class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = V2VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet
-    throttle_classes = [StaffUserRateThrottle, AnonRateThrottle]
+    throttle_classes = [PermissionBasedUserRateThrottle]

@@ -14,6 +14,7 @@ from django.core.management.base import CommandError
 from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importers import IMPORTERS_REGISTRY
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 
 class Command(BaseCommand):
@@ -57,7 +58,9 @@ class Command(BaseCommand):
         failed_importers = []
 
         for importer in importers:
-            if issubclass(importer, VulnerableCodeBaseImporterPipeline):
+            if issubclass(importer, VulnerableCodeBaseImporterPipeline) or issubclass(
+                importer, VulnerableCodeBaseImporterPipelineV2
+            ):
                 self.stdout.write(f"Importing data using {importer.pipeline_id}")
                 status, error = importer().execute()
                 if status != 0:

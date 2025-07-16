@@ -47,6 +47,7 @@ from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
+from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
@@ -69,6 +70,7 @@ IMPORTERS_REGISTRY = create_registry(
         xen_importer_v2.XenImporterPipeline,
         curl_importer_v2.CurlImporterPipeline,
         oss_fuzz_v2.OSSFuzzImporterPipeline,
+        istio_importer_v2.IstioImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

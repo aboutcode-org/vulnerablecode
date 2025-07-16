@@ -37,6 +37,7 @@ class CurlImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://curl.se/docs/copyright.html"
     repo_url = "https://github.com/curl/curl-www/"
     url = "https://curl.se/docs/vuln.json"
+    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):

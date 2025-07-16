@@ -53,6 +53,7 @@ from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importe
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
+from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
 from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
@@ -67,6 +68,7 @@ IMPORTERS_REGISTRY = create_registry(
         pysec_importer_v2.PyPIImporterPipeline,
         xen_importer_v2.XenImporterPipeline,
         curl_importer_v2.CurlImporterPipeline,
+        oss_fuzz_v2.OSSFuzzImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

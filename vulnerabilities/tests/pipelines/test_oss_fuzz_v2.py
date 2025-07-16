@@ -6,12 +6,13 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-import pytest
 from unittest import mock
 
+import pytest
 import yaml
-from vulnerabilities.pipelines.v2_importers.oss_fuzz import OSSFuzzImporterPipeline
+
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.pipelines.v2_importers.oss_fuzz import OSSFuzzImporterPipeline
 
 
 @pytest.mark.django_db
@@ -23,12 +24,7 @@ def test_collect_advisories_parses_yaml_correctly(tmp_path):
     advisory_dict = {
         "id": "CVE-2024-1234",
         "summary": "Some summary here",
-        "affected": [
-            {
-                "package": {"name": "some-lib"},
-                "versions": ["1.0.0"]
-            }
-        ]
+        "affected": [{"package": {"name": "some-lib"}, "versions": ["1.0.0"]}],
     }
     yaml_file.write_text(yaml.dump(advisory_dict), encoding="utf-8")
 

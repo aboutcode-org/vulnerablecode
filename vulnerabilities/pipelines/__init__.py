@@ -56,6 +56,7 @@ class BasePipelineRun:
         run_instance: PipelineRun = None,
         selected_groups: List = None,
         selected_steps: List = None,
+        **kwargs,
     ):
         """Load the Pipeline class."""
         self.run = run_instance
@@ -67,6 +68,9 @@ class BasePipelineRun:
 
         self.execution_log = []
         self.current_step = ""
+
+        # Optional args used as input in downstream pipeline steps
+        self.inputs = kwargs
 
     def append_to_log(self, message):
         if self.run and self.run.pipeline.live_logging:

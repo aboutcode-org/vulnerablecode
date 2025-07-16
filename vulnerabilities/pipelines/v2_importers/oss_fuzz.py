@@ -11,11 +11,11 @@ from pathlib import Path
 from typing import Iterable
 
 import saneyaml
+from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_advisory_url
-from fetchcode.vcs import fetch_via_vcs
 
 logger = logging.getLogger(__name__)
 
@@ -37,8 +37,8 @@ class OSSFuzzImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def clone(self):
         self.log(f"Cloning `{self.repo_url}`")
-        self.vcs_response = fetch_via_vcs(self.repo_url)    
-    
+        self.vcs_response = fetch_via_vcs(self.repo_url)
+
     def advisories_count(self):
         vulns_directory = Path(self.vcs_response.dest_dir) / "vulns"
         return sum(1 for _ in vulns_directory.rglob("*.yaml"))
@@ -62,7 +62,7 @@ class OSSFuzzImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 supported_ecosystems=["generic"],
                 advisory_url=advisory_url,
                 advisory_text=advisory_text,
-            ) 
+            )
 
     def clean_downloads(self):
         if self.vcs_response:

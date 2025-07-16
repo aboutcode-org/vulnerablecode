@@ -47,13 +47,13 @@ def pipeline():
     return CurlImporterPipeline()
 
 
-@patch("vulnerabilities.importers.curl_importer.fetch_response")
+@patch("vulnerabilities.pipelines.v2_importers.curl_importer.fetch_response")
 def test_advisories_count(mock_fetch, pipeline):
     mock_fetch.return_value.json.return_value = [SAMPLE_CURL_ADVISORY]
     assert pipeline.advisories_count() == 1
 
 
-@patch("vulnerabilities.importers.curl_importer.fetch_response")
+@patch("vulnerabilities.pipelines.v2_importers.curl_importer.fetch_response")
 def test_collect_advisories(mock_fetch, pipeline):
     mock_fetch.return_value.json.return_value = [SAMPLE_CURL_ADVISORY]
     advisories = list(pipeline.collect_advisories())

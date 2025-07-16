@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
 import traceback
 from pathlib import Path
@@ -325,4 +326,5 @@ def parse_gitlab_advisory(
         affected_packages=affected_packages,
         weaknesses=cwe_list,
         url=advisory_url,
+        original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
     )

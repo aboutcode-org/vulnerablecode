@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
 import re
 import urllib.parse
@@ -14,6 +15,7 @@ from typing import Iterable
 
 import requests
 from bs4 import BeautifulSoup
+from dateutil import parser as date_parser
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
@@ -272,8 +274,11 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     versions_data.append(version_data)
 
         fixed_versions = []
+        date_published = None
         for timeline_object in data.get("timeline") or []:
             timeline_value = timeline_object.get("value")
+            if timeline_value == "public":
+                date_published = timeline_object.get("time")
             if "release" in timeline_value:
                 split_timeline_value = timeline_value.split(" ")
                 if "never" in timeline_value:
@@ -307,6 +312,8 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             weaknesses=weaknesses,
             url=reference.url,
             severities=severities,
+            original_advisory_text=json.dumps(data, indent=2, ensure_ascii=False),
+            date_published=date_parser.parse(date_published) if date_published else None,
         )
 
     def to_version_ranges(self, versions_data, fixed_versions):

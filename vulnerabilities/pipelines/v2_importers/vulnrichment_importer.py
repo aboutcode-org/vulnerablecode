@@ -193,6 +193,7 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             weaknesses=sorted(weaknesses),
             url=advisory_url,
             severities=severities,
+            original_advisory_text=json.dumps(raw_data, indent=2, ensure_ascii=False),
         )
 
     def clean_downloads(self):

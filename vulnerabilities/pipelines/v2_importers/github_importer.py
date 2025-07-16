@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
 from traceback import format_exc as traceback_format_exc
 from typing import Callable
@@ -368,6 +369,7 @@ def process_response(
             date_published=date_published,
             weaknesses=weaknesses,
             url=f"https://github.com/advisories/{ghsa_id}",
+            original_advisory_text=json.dumps(github_advisory, indent=2, ensure_ascii=False),
         )
 
 

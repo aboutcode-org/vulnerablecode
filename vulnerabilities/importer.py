@@ -22,6 +22,7 @@ from typing import Mapping
 from typing import Optional
 from typing import Set
 from typing import Tuple
+from typing import Union
 
 import pytz
 from dateutil import parser as dateparser
@@ -361,6 +362,7 @@ class AdvisoryData:
     weaknesses: List[int] = dataclasses.field(default_factory=list)
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
     url: Optional[str] = None
+    original_advisory_text: Optional[str] = None
 
     def __post_init__(self):
         if self.date_published and not self.date_published.tzinfo:

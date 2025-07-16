@@ -326,6 +326,7 @@ class CveItem:
             weaknesses=self.weaknesses,
             severities=self.severities,
             url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
+            raw_data=json.dumps(self.cve_item, indent=2, ensure_ascii=False),
         )
 
 

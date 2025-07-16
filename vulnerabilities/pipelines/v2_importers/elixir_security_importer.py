@@ -73,6 +73,10 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         advisory_url = (
             f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
         )
+        advisory_text = None
+        with open(str(file)) as f:
+            advisory_text = f.read()
+
         yaml_file = load_yaml(str(file))
 
         summary = yaml_file.get("description") or ""
@@ -129,4 +133,5 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages=affected_packages,
             url=advisory_url,
             date_published=date_published,
+            original_advisory_text=advisory_text or str(yaml_file),
         )

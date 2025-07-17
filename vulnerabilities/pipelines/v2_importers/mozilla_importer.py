@@ -215,7 +215,7 @@ def get_reference_and_severity(mfsa_id: str, impact: str) -> ReferenceV2:
     )
 
 
-def mfsa_id_from_filename(filename: str) -> str | None:
+def mfsa_id_from_filename(filename: str):
     match = MFSA_FILENAME_RE.search(filename)
     return f"mfsa{match.group(1)}" if match else None
 

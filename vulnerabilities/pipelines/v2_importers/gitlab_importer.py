@@ -262,11 +262,13 @@ def parse_gitlab_advisory(
             f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}", level=logging.ERROR
         )
         return AdvisoryData(
+            advisory_id=advisory_id,
             aliases=aliases,
             summary=summary,
             references_v2=references,
             date_published=date_published,
             url=advisory_url,
+            original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
         )
     affected_version_range = None
     fixed_versions = gitlab_advisory.get("fixed_versions") or []

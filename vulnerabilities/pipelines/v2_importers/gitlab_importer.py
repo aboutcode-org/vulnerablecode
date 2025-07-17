@@ -156,7 +156,9 @@ def get_purl(package_slug, purl_type_by_gitlab_scheme, logger):
     """
     parts = [p for p in package_slug.strip("/").split("/") if p]
     gitlab_scheme = parts[0]
-    purl_type = purl_type_by_gitlab_scheme[gitlab_scheme]
+    purl_type = purl_type_by_gitlab_scheme.get(gitlab_scheme)
+    if not purl_type:
+        return
     if gitlab_scheme == "go":
         name = "/".join(parts[1:])
         return PackageURL(type=purl_type, namespace=None, name=name)

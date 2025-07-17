@@ -65,6 +65,9 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             if self.vcs_response:
                 self.vcs_response.delete()
 
+    def on_failure(self):
+        self.clean_downloads()
+
     def process_file(self, file, base_path) -> Iterable[AdvisoryData]:
         relative_path = str(file.relative_to(base_path)).strip("/")
         path_segments = str(file).split("/")

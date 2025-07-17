@@ -50,11 +50,20 @@ class MozillaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return (
             cls.clone,
             cls.collect_and_store_advisories,
+            cls.clean_downloads,
         )
 
     def clone(self):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
+
+    def clean_downloads(self):
+        if self.vcs_response:
+            self.log(f"Removing cloned repository")
+            self.vcs_response.delete()
+
+    def on_failure(self):
+        self.clean_downloads()
 
     def advisories_count(self) -> int:
         base_path = Path(self.vcs_response.dest_dir)

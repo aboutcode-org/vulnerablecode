@@ -6,12 +6,19 @@
 #
 
 from pathlib import Path
+from unittest import mock
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import pytest
+import saneyaml
+from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
+from vulnerabilities.tests import util_tests
+
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "gitlab"
 
 
 @pytest.fixture
@@ -57,8 +64,6 @@ def mock_gitlab_yaml(tmp_path):
 
 
 def test_clone(mock_fetch_via_vcs, mock_vcs_response):
-    from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
-
     pipeline = GitLabImporterPipeline()
     pipeline.clone()
 
@@ -67,8 +72,6 @@ def test_clone(mock_fetch_via_vcs, mock_vcs_response):
 
 
 def test_advisories_count(mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_vcs):
-    from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
-
     mock_vcs_response.dest_dir = str(mock_gitlab_yaml)
 
     pipeline = GitLabImporterPipeline()
@@ -80,8 +83,6 @@ def test_advisories_count(mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_vc
 
 
 def test_collect_advisories(mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_vcs):
-    from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
-
     mock_vcs_response.dest_dir = str(mock_gitlab_yaml)
 
     pipeline = GitLabImporterPipeline()
@@ -101,8 +102,6 @@ def test_collect_advisories(mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_
 
 
 def test_clean_downloads(mock_vcs_response):
-    from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
-
     pipeline = GitLabImporterPipeline()
     pipeline.vcs_response = mock_vcs_response
 
@@ -111,8 +110,6 @@ def test_clean_downloads(mock_vcs_response):
 
 
 def test_on_failure(mock_vcs_response):
-    from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
-
     pipeline = GitLabImporterPipeline()
     pipeline.vcs_response = mock_vcs_response
 
@@ -124,8 +121,6 @@ def test_on_failure(mock_vcs_response):
 def test_collect_advisories_with_invalid_yaml(
     mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_vcs
 ):
-    from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
-
     # Add an invalid YAML file
     invalid_file = Path(mock_gitlab_yaml) / "pypi" / "package_name" / "invalid.yml"
     invalid_file.write_text(":::invalid_yaml")
@@ -141,8 +136,6 @@ def test_collect_advisories_with_invalid_yaml(
 
 
 def test_advisories_count_empty(mock_vcs_response, mock_fetch_via_vcs, tmp_path):
-    from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
-
     mock_vcs_response.dest_dir = str(tmp_path)
 
     pipeline = GitLabImporterPipeline()
@@ -151,3 +144,32 @@ def test_advisories_count_empty(mock_vcs_response, mock_fetch_via_vcs, tmp_path)
 
     count = pipeline.advisories_count()
     assert count == 0
+
+
+@mock.patch(
+    "vulnerabilities.pipelines.v2_importers.gitlab_importer.fetch_gitlab_advisories_for_purl"
+)
+def test_gitlab_importer_package_first_mode_found_with_version(mock_fetch):
+    pkg_type = "pypi"
+    response_file = TEST_DATA / f"{pkg_type}.yaml"
+    expected_file = TEST_DATA / f"{pkg_type}-single-mode-expected-v2.json"
+
+    with open(response_file) as f:
+        advisory_dict = saneyaml.load(f)
+
+    mock_fetch.return_value = [advisory_dict]
+    purl = PackageURL(type="pypi", name="flask", version="0.9")
+    pipeline = GitLabImporterPipeline(purl=purl)
+    advisories = list(pipeline.collect_advisories())
+    util_tests.check_results_against_json(advisories[0].to_dict(), expected_file)
+
+
+@mock.patch(
+    "vulnerabilities.pipelines.v2_importers.gitlab_importer.fetch_gitlab_advisories_for_purl"
+)
+def test_gitlab_importer_package_first_mode_none_found(mock_fetch):
+    mock_fetch.return_value = []
+    purl = PackageURL(type="pypi", name="flask", version="1.2")
+    pipeline = GitLabImporterPipeline(purl=purl)
+    advisories = list(pipeline.collect_advisories())
+    assert advisories == []

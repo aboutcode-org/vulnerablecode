@@ -12,6 +12,7 @@
 import json
 import os
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from packageurl import PackageURL
@@ -77,3 +78,134 @@ def test_npm_improver(mock_response):
             result.extend(inference)
     expected_file = os.path.join(TEST_DATA, f"npm-improver-expected.json")
     util_tests.check_results_against_json(result, expected_file)
+
+
+def test_package_first_mode_valid_npm_package(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
+    with open(npm_sample_file) as f:
+        sample_data = json.load(f)
+
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="npm", name="npm", version="1.2.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 1
+    assert advisories[0].aliases == ["CVE-2013-4116"]
+    assert len(advisories[0].affected_packages) == 1
+    assert advisories[0].affected_packages[0].package.name == "npm"
+
+
+def test_package_first_mode_unaffected_version(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
+    with open(npm_sample_file) as f:
+        sample_data = json.load(f)
+
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="npm", name="npm", version="1.4.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 0
+
+
+def test_package_first_mode_invalid_package_type(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="pypi", name="django", version="3.0.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 0
+
+
+def test_package_first_mode_package_not_found(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
+    with open(npm_sample_file) as f:
+        sample_data = json.load(f)
+
+    sample_data["module_name"] = "some-other-package"
+
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="npm", name="nonexistent-package", version="1.0.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 0
+
+
+def test_package_first_mode_missing_vuln_directory(tmp_path):
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="npm", name="npm", version="1.0.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 0
+
+
+def test_version_is_affected():
+    purl = PackageURL(type="npm", name="npm", version="1.2.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+
+    affected_package = AffectedPackage(
+        package=PackageURL(type="npm", name="npm"),
+        affected_version_range=NpmVersionRange(
+            constraints=(VersionConstraint(comparator="<", version=SemverVersion(string="1.3.3")),)
+        ),
+    )
+
+    assert pipeline._version_is_affected(affected_package) == True
+
+    pipeline.purl = PackageURL(type="npm", name="npm", version="1.4.0")
+    assert pipeline._version_is_affected(affected_package) == False
+
+    pipeline.purl = PackageURL(type="npm", name="npm")
+    assert pipeline._version_is_affected(affected_package) == True
+
+    affected_package_no_range = AffectedPackage(
+        package=PackageURL(type="npm", name="npm"),
+        affected_version_range=None,
+        fixed_version=SemverVersion(string="1.3.3"),
+    )
+    assert pipeline._version_is_affected(affected_package_no_range) == True
+    affected_package_no_range = AffectedPackage(
+        package=PackageURL(type="npm", name="npm"),
+        affected_version_range=None,
+        fixed_version=SemverVersion(string="1.3.3"),
+    )
+    assert pipeline._version_is_affected(affected_package_no_range) == True

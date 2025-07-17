@@ -8,17 +8,25 @@
 #
 
 import json
+import os
+from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytz
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
 from univers.version_range import NpmVersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.pipelines.v2_importers.npm_importer import NpmImporterPipeline
 from vulnerabilities.severity_systems import CVSSV2
 from vulnerabilities.severity_systems import CVSSV3
+
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "npm"
 
 
 def test_clone(monkeypatch):
@@ -58,8 +66,8 @@ def test_advisories_count_and_collect(tmp_path):
     (vuln_dir / "001.json").write_text(json.dumps({"id": "001"}))
     p = NpmImporterPipeline()
     p.vcs_response = SimpleNamespace(dest_dir=str(base), delete=lambda: None)
-    assert p.advisories_count() == 2
     advisories = list(p.collect_advisories())
+    assert p.advisories_count() == 2
     # Should yield None for index.json and one AdvisoryData
     real = [a for a in advisories if isinstance(a, AdvisoryData)]
     assert len(real) == 1
@@ -126,3 +134,116 @@ def test_get_affected_package_special_and_standard():
     pkg2 = p.get_affected_package(data2, "pkg2")
     assert isinstance(pkg2.affected_version_range, NpmVersionRange)
     assert pkg2.fixed_version == SemverVersion("2.0.1")
+
+
+def test_package_first_mode_valid_npm_package(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
+    with open(npm_sample_file) as f:
+        sample_data = json.load(f)
+
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="npm", name="npm", version="1.2.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 1
+    assert advisories[0].aliases == ["CVE-2013-4116"]
+    assert len(advisories[0].affected_packages) == 1
+    assert advisories[0].affected_packages[0].package.name == "npm"
+
+
+def test_package_first_mode_unaffected_version(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
+    with open(npm_sample_file) as f:
+        sample_data = json.load(f)
+
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="npm", name="npm", version="1.4.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 0
+
+
+def test_package_first_mode_invalid_package_type(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="pypi", name="django", version="3.0.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 0
+
+
+def test_package_first_mode_package_not_found(tmp_path):
+    vuln_dir = tmp_path / "vuln" / "npm"
+    vuln_dir.mkdir(parents=True)
+
+    npm_sample_file = os.path.join(TEST_DATA, "npm_sample.json")
+    with open(npm_sample_file) as f:
+        sample_data = json.load(f)
+
+    sample_data["module_name"] = "some-other-package"
+
+    advisory_file = vuln_dir / "152.json"
+    advisory_file.write_text(json.dumps(sample_data))
+
+    mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    purl = PackageURL(type="npm", name="nonexistent-package", version="1.0.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+    pipeline.vcs_response = mock_vcs_response
+
+    advisories = list(pipeline.collect_advisories())
+
+    assert len(advisories) == 0
+
+
+def test_version_is_affected():
+    purl = PackageURL(type="npm", name="npm", version="1.2.0")
+    pipeline = NpmImporterPipeline(purl=purl)
+
+    affected_package = AffectedPackage(
+        package=PackageURL(type="npm", name="npm"),
+        affected_version_range=NpmVersionRange(
+            constraints=(VersionConstraint(comparator="<", version=SemverVersion(string="1.3.3")),)
+        ),
+    )
+
+    assert pipeline._version_is_affected(affected_package) == True
+
+    pipeline.purl = PackageURL(type="npm", name="npm", version="1.4.0")
+    assert pipeline._version_is_affected(affected_package) == False
+
+    pipeline.purl = PackageURL(type="npm", name="npm")
+    assert pipeline._version_is_affected(affected_package) == True
+
+    affected_package_no_range = AffectedPackage(
+        package=PackageURL(type="npm", name="npm"),
+        affected_version_range=None,
+        fixed_version=SemverVersion(string="1.3.3"),
+    )
+    assert pipeline._version_is_affected(affected_package_no_range) == True

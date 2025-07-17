@@ -2744,6 +2744,12 @@ class AdvisoryV2(models.Model):
         blank=True, null=True, help_text="UTC Date on which the advisory was imported"
     )
 
+    original_advisory_text = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Raw advisory data as collected from the upstream datasource.",
+    )
+
     affecting_packages = models.ManyToManyField(
         "PackageV2",
         related_name="affected_by_advisories",

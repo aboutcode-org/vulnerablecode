@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
 from typing import Iterable
 from typing import List
@@ -109,7 +110,7 @@ def parse_advisory_data(
 
 
 def parse_advisory_data_v2(
-    raw_data: dict, supported_ecosystems, advisory_url: str
+    raw_data: dict, supported_ecosystems, advisory_url: str, advisory_text: str
 ) -> Optional[AdvisoryData]:
     """
     Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
@@ -173,6 +174,7 @@ def parse_advisory_data_v2(
         date_published=date_published,
         weaknesses=weaknesses,
         url=advisory_url,
+        original_advisory_text=advisory_text or json.dumps(raw_data, indent=2, ensure_ascii=False),
     )
 
 

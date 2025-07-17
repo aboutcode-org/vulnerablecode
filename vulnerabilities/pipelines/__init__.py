@@ -307,13 +307,20 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
             if advisory is None:
                 self.log("Advisory is None, skipping")
                 continue
-            if _obj := insert_advisory_v2(
-                advisory=advisory,
-                pipeline_id=self.pipeline_id,
-                get_advisory_packages=self.get_advisory_packages,
-                logger=self.log,
-            ):
-                collected_advisory_count += 1
+            try:
+                if _obj := insert_advisory_v2(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    get_advisory_packages=self.get_advisory_packages,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
+            except Exception as e:
+                self.log(
+                    f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
+                    level=logging.ERROR,
+                )
+                continue
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 

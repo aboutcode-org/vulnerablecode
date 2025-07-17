@@ -159,6 +159,7 @@ def insert_advisory_v2(
             "summary": advisory.summary,
             "date_published": advisory.date_published,
             "date_collected": datetime.now(timezone.utc),
+            "original_advisory_text": advisory.original_advisory_text,
         }
 
         advisory_obj, _ = AdvisoryV2.objects.get_or_create(

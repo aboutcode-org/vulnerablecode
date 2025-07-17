@@ -9,6 +9,7 @@
 
 # Author: Navonil Das (@NavonilDas)
 
+import json
 from pathlib import Path
 from typing import Iterable
 
@@ -69,6 +70,9 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             self.log(f"Skipping {file.name} file")
             return
         data = load_json(file)
+        advisory_text = None
+        with open(file) as f:
+            advisory_text = f.read()
         id = data.get("id")
         description = data.get("overview") or ""
         summary = data.get("title") or ""
@@ -130,6 +134,7 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             references_v2=references,
             severities=severities,
             url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
+            original_advisory_text=advisory_text or json.dumps(data, indent=2, ensure_ascii=False),
         )
 
     def get_affected_package(self, data, package_name):

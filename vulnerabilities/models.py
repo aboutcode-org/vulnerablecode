@@ -2873,11 +2873,11 @@ class ImpactedPackage(models.Model):
         help_text="Packages vulnerable to this impact.",
     )
 
-    class Meta:
-        indexes = [
-            models.Index(fields=["affecting_vers"]),
-            models.Index(fields=["fixed_vers"]),
-        ]
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        help_text="Timestamp indicating when this impact was added.",
+    )
 
     def to_affected_package(self):
         """Return `AffectedPackageV2` data from the impact."""

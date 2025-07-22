@@ -3112,23 +3112,6 @@ class PackageV2(PackageURLMixin):
             PackageV2.objects.bulk_update(sorted_packages, fields=["version_rank"])
         return self.version_rank
 
-    @property
-    def fixed_package_details(self):
-        """
-        Return a mapping of vulnerabilities that affect this package and the next and
-        latest non-vulnerable versions.
-        """
-        package_details = {}
-        package_details["purl"] = PackageURL.from_string(self.purl)
-
-        next_non_vulnerable, latest_non_vulnerable = self.get_non_vulnerable_versions()
-        package_details["next_non_vulnerable"] = next_non_vulnerable
-        package_details["latest_non_vulnerable"] = latest_non_vulnerable
-
-        package_details["advisories"] = self.get_affecting_vulnerabilities()
-
-        return package_details
-
     def get_non_vulnerable_versions(self):
         """
         Return a tuple of the next and latest non-vulnerable versions as Package instance.

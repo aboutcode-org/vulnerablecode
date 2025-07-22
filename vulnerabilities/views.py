@@ -34,6 +34,7 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.severity_systems import EPSS
@@ -186,17 +187,50 @@ class PackageV2Details(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         package = self.object
+        next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions()
+        fixed_pkg_details = {}
+        for impact in package.affected_in_impacts.all():
+            if impact.advisory.id not in fixed_pkg_details:
+                fixed_pkg_details[impact.advisory.id] = []
+            fixed_pkg_details[impact.advisory.id].extend(
+                [
+                    {"pkg": pkg, "affected_count": pkg.affected_in_impacts.count()}
+                    for pkg in impact.fixed_by_packages.all()
+                ]
+            )
         context["package"] = package
-        context["affected_by_advisories"] = package.affected_by_advisories.order_by("advisory_id")
+        context["next_non_vulnerable"] = next_non_vulnerable
+        context["latest_non_vulnerable"] = latest_non_vulnerable
+        context["affected_by_advisories"] = {
+            impact.advisory for impact in package.affected_in_impacts.all()
+        }
         # Ghost package should not fix any vulnerability.
-        context["fixing_advisories"] = (
-            None if package.is_ghost else package.fixing_advisories.order_by("advisory_id")
-        )
+        if not package.is_ghost:
+            context["fixing_advisories"] = {
+                impact.advisory for impact in package.fixed_in_impacts.all()
+            }
+
         context["package_search_form"] = PackageSearchForm(self.request.GET)
-        context["fixed_package_details"] = package.fixed_package_details
+        context["fixed_package_details"] = fixed_pkg_details
 
         # context["history"] = list(package.history)
         return context
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "affected_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory"),
+                ),
+                Prefetch(
+                    "fixed_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory"),
+                ),
+            )
+        )
 
     def get_object(self, queryset=None):
         if queryset is None:

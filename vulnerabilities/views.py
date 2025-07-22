@@ -616,36 +616,24 @@ class AdvisoryPackagesDetails(DetailView):
             .get_queryset()
             .prefetch_related(
                 Prefetch(
-                    "affecting_packages",
-                    queryset=models.PackageV2.objects.only("type", "namespace", "name", "version"),
-                ),
-                Prefetch(
-                    "fixed_by_packages",
-                    queryset=models.PackageV2.objects.only("type", "namespace", "name", "version"),
-                ),
+                    "impacted_packages",
+                    queryset=models.ImpactedPackage.objects.prefetch_related(
+                        Prefetch(
+                            "affecting_packages",
+                            queryset=models.PackageV2.objects.only(
+                                "type", "namespace", "name", "version"
+                            ),
+                        ),
+                        Prefetch(
+                            "fixed_by_packages",
+                            queryset=models.PackageV2.objects.only(
+                                "type", "namespace", "name", "version"
+                            ),
+                        ),
+                    ),
+                )
             )
         )
-
-    def get_context_data(self, **kwargs):
-        """
-        Build context with preloaded QuerySets and minimize redundant queries.
-        """
-        context = super().get_context_data(**kwargs)
-        advisory = self.object
-        (
-            sorted_fixed_by_packages,
-            sorted_affected_packages,
-            all_affected_fixed_by_matches,
-        ) = advisory.aggregate_fixed_and_affected_packages()
-        context.update(
-            {
-                "affected_packages": sorted_affected_packages,
-                "fixed_by_packages": sorted_fixed_by_packages,
-                "all_affected_fixed_by_matches": all_affected_fixed_by_matches,
-                "advisory": advisory,
-            }
-        )
-        return context
 
 
 class PipelineScheduleListView(ListView, FormMixin):

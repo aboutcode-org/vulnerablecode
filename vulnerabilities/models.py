@@ -3152,65 +3152,6 @@ class PackageV2(PackageURLMixin):
     def current_version(self):
         return self.version_class(self.version)
 
-    def get_affecting_vulnerabilities(self):
-        """
-        Return a list of vulnerabilities that affect this package together with information regarding
-        the versions that fix the vulnerabilities.
-        """
-        if self.version_rank == 0:
-            self.calculate_version_rank
-        package_details_advs = []
-
-        fixed_by_packages = PackageV2.objects.get_fixed_by_package_versions(self, fix=True)
-
-        package_advisories = self.affected_by_advisories.prefetch_related(
-            Prefetch(
-                "fixed_by_packages",
-                queryset=fixed_by_packages,
-                to_attr="fixed_packages",
-            )
-        )
-
-        for adv in package_advisories:
-            package_details_advs.append({"advisory": adv})
-            later_fixed_packages = []
-
-            for fixed_pkg in adv.fixed_by_packages.all():
-                if fixed_pkg not in fixed_by_packages:
-                    continue
-                fixed_version = self.version_class(fixed_pkg.version)
-                if fixed_version > self.current_version:
-                    later_fixed_packages.append(fixed_pkg)
-
-            next_fixed_package_vulns = []
-
-            sort_fixed_by_packages_by_version = []
-            if later_fixed_packages:
-                sort_fixed_by_packages_by_version = sorted(
-                    later_fixed_packages, key=lambda p: p.version_rank
-                )
-
-            fixed_by_pkgs = []
-
-            for vuln_details in package_details_advs:
-                if vuln_details["advisory"] != adv:
-                    continue
-                vuln_details["fixed_by_purl"] = []
-                vuln_details["fixed_by_purl_advisories"] = []
-
-                for fixed_by_pkg in sort_fixed_by_packages_by_version:
-                    fixed_by_package_details = {}
-                    fixed_by_purl = PackageURL.from_string(fixed_by_pkg.purl)
-                    next_fixed_package_vulns = list(fixed_by_pkg.affected_by_advisories.all())
-
-                    fixed_by_package_details["fixed_by_purl"] = fixed_by_purl
-                    fixed_by_package_details["fixed_by_purl_advisories"] = next_fixed_package_vulns
-                    fixed_by_pkgs.append(fixed_by_package_details)
-
-                    vuln_details["fixed_by_package_details"] = fixed_by_pkgs
-
-        return package_details_advs
-
 
 class AdvisoryExploit(models.Model):
     """

@@ -2932,10 +2932,12 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
     def with_vulnerability_counts(self):
         return self.annotate(
             vulnerability_count=Count(
-                "affected_by_advisories",
+                "affected_in_impacts__advisory",
+                distinct=True,
             ),
             patched_vulnerability_count=Count(
-                "fixing_advisories",
+                "fixed_in_impacts__advisory",
+                distinct=True,
             ),
         )
 
@@ -2953,7 +2955,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         }
 
         if fix:
-            filter_dict["fixing_advisories__isnull"] = False
+            filter_dict["fixed_in_impacts__isnull"] = False
 
         # TODO: why do we need distinct
         return PackageV2.objects.filter(**filter_dict).distinct()
@@ -2986,7 +2988,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
 
     def _vulnerable(self, vulnerable=True):
         """
-        Filter to select only vulnerable or non-vulnearble packages.
+        Filter to select only vulnerable or non-vulnerable packages.
         """
         return self.with_is_vulnerable().filter(is_vulnerable=vulnerable)
 
@@ -2994,14 +2996,16 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages that are vulnerable.
         """
-        return self.filter(affected_by_advisories__isnull=False)
+        return self.filter(affected_in_impacts__isnull=False)
 
     def with_is_vulnerable(self):
         """
         Annotate Package with ``is_vulnerable`` boolean attribute.
         """
         return self.annotate(
-            is_vulnerable=Exists(AdvisoryV2.objects.filter(affecting_packages__pk=OuterRef("pk")))
+            is_vulnerable=Exists(
+                ImpactedPackage.objects.filter(affecting_packages__pk=OuterRef("pk"))
+            )
         )
 
     def from_purl(self, purl: Union[PackageURL, str]):

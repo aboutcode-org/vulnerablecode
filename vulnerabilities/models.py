@@ -2493,6 +2493,62 @@ class AdvisoryToDo(models.Model):
         unique_together = ("related_advisories_id", "issue_type")
 
 
+class AdvisoryToDoV2(models.Model):
+    """Track the TODOs for advisory/ies that need to be addressed."""
+
+    # Since we can not make advisories field (M2M field) unique
+    # (see https://code.djangoproject.com/ticket/702), we use related_advisories_id
+    # to avoid creating duplicate issue for same set of advisories,
+    related_advisories_id = models.CharField(
+        max_length=40,
+        help_text="SHA1 digest of the unique_content_id field of the applicable advisories.",
+    )
+
+    advisories = models.ManyToManyField(
+        "AdvisoryV2",
+        through="ToDoRelatedAdvisoryV2",
+        related_name="advisory_todos",
+        help_text="Advisory/ies where this TODO is applicable.",
+    )
+
+    issue_type = models.CharField(
+        max_length=50,
+        choices=ISSUE_TYPE_CHOICES,
+        db_index=True,
+        help_text="Select the issue that needs to be addressed from the available options.",
+    )
+
+    issue_detail = models.TextField(
+        blank=True,
+        help_text="Additional details about the issue.",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Timestamp indicating when this TODO was created.",
+    )
+
+    is_resolved = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text="This TODO is resolved or not.",
+    )
+
+    resolved_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Timestamp indicating when this TODO was resolved.",
+    )
+
+    resolution_detail = models.TextField(
+        blank=True,
+        help_text="Additional detail on how this TODO was resolved.",
+    )
+
+    class Meta:
+        unique_together = ("related_advisories_id", "issue_type")
+
+
 class AdvisorySeverity(models.Model):
     url = models.URLField(
         max_length=1024,
@@ -2901,6 +2957,21 @@ class ToDoRelatedAdvisory(models.Model):
 
     advisory = models.ForeignKey(
         Advisory,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("todo", "advisory")
+
+
+class ToDoRelatedAdvisoryV2(models.Model):
+    todo = models.ForeignKey(
+        AdvisoryToDoV2,
+        on_delete=models.CASCADE,
+    )
+
+    advisory = models.ForeignKey(
+        AdvisoryV2,
         on_delete=models.CASCADE,
     )
 

@@ -29,6 +29,7 @@ from vulnerabilities.pipelines.v2_improvers import (
     enhance_with_metasploit as enhance_with_metasploit_v2,
 )
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
+from vulnerabilities.pipelines.v2_improvers import compute_advisory_todo as compute_advisory_todo_v2
 from vulnerabilities.utils import create_registry
 
 IMPROVERS_REGISTRY = create_registry(
@@ -65,6 +66,7 @@ IMPROVERS_REGISTRY = create_registry(
         enhance_with_metasploit_v2.MetasploitImproverPipeline,
         compute_package_risk_v2.ComputePackageRiskPipeline,
         compute_version_rank_v2.ComputeVersionRankPipeline,
+        compute_advisory_todo_v2.ComputeToDo,
         compute_advisory_todo.ComputeToDo,
     ]
 )

@@ -25,7 +25,7 @@ from vulnerabilities.pipes.advisory import advisories_checksum_v2
 class ComputeToDo(VulnerableCodePipeline):
     """Compute ToDos for Advisory."""
 
-    pipeline_id = "compute_advisory_todo"
+    pipeline_id = "compute_advisory_todo_v2"
 
     @classmethod
     def steps(cls):

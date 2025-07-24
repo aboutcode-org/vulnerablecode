@@ -174,11 +174,6 @@ def check_missing_affected_and_fixed_by_packages(
         if not impacted:
             continue
 
-        assert isinstance(impacted, ImpactedPackage)
-        print(f"Checking impacted package: {impacted.base_purl}")
-        print(f"Affected version range: {impacted.affecting_vers}")
-        print(f"Fixed version range: {impacted.fixed_vers}")
-
         if has_affected_package and has_fixed_package:
             break
         if not has_affected_package and impacted.affecting_vers:

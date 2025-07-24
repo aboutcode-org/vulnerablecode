@@ -3123,17 +3123,12 @@ class PackageV2(PackageURLMixin):
             self, fix=False
         ).only_non_vulnerable()
 
-        later_non_vulnerable_versions = non_vulnerable_versions.filter(
-            version_rank__gt=self.version_rank
-        )
+        later_non_vulnerable = non_vulnerable_versions.filter(
+            version_rank__gte=self.version_rank
+        ).order_by("version_rank")
 
-        later_non_vulnerable_versions = list(later_non_vulnerable_versions)
-
-        if later_non_vulnerable_versions:
-            sorted_versions = later_non_vulnerable_versions
-            next_non_vulnerable = sorted_versions[0]
-            latest_non_vulnerable = sorted_versions[-1]
-            return next_non_vulnerable, latest_non_vulnerable
+        if later_non_vulnerable.exists():
+            return later_non_vulnerable.first(), later_non_vulnerable.last()
 
         return None, None
 

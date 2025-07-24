@@ -311,8 +311,8 @@ class AdvisoryPackageV2Serializer(serializers.ModelSerializer):
     risk_score = serializers.FloatField(read_only=True)
     affected_by_vulnerabilities = serializers.SerializerMethodField()
     fixing_vulnerabilities = serializers.SerializerMethodField()
-    next_non_vulnerable_version = serializers.CharField(read_only=True)
-    latest_non_vulnerable_version = serializers.CharField(read_only=True)
+    next_non_vulnerable_version = serializers.SerializerMethodField()
+    latest_non_vulnerable_version = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
@@ -347,6 +347,14 @@ class AdvisoryPackageV2Serializer(serializers.ModelSerializer):
 
     def get_fixing_vulnerabilities(self, package):
         return [impact.advisory.avid for impact in package.fixed_in_impacts.all()]
+
+    def get_next_non_vulnerable_version(self, package):
+        if next_non_vulnerable := package.get_non_vulnerable_versions()[0]:
+            return next_non_vulnerable.version
+
+    def get_latest_non_vulnerable_version(self, package):
+        if latest_non_vulnerable := package.get_non_vulnerable_versions()[-1]:
+            return latest_non_vulnerable.version
 
 
 class PackageurlListSerializer(serializers.Serializer):
@@ -1164,6 +1172,7 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
                     ),
                 )
                 .with_is_vulnerable()
+                .order_by("package_url")
             )
 
             packages = query

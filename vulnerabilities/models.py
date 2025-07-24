@@ -2493,6 +2493,62 @@ class AdvisoryToDo(models.Model):
         unique_together = ("related_advisories_id", "issue_type")
 
 
+class AdvisoryToDoV2(models.Model):
+    """Track the TODOs for advisory/ies that need to be addressed."""
+
+    # Since we can not make advisories field (M2M field) unique
+    # (see https://code.djangoproject.com/ticket/702), we use related_advisories_id
+    # to avoid creating duplicate issue for same set of advisories,
+    related_advisories_id = models.CharField(
+        max_length=40,
+        help_text="SHA1 digest of the unique_content_id field of the applicable advisories.",
+    )
+
+    advisories = models.ManyToManyField(
+        "AdvisoryV2",
+        through="ToDoRelatedAdvisoryV2",
+        related_name="advisory_todos",
+        help_text="Advisory/ies where this TODO is applicable.",
+    )
+
+    issue_type = models.CharField(
+        max_length=50,
+        choices=ISSUE_TYPE_CHOICES,
+        db_index=True,
+        help_text="Select the issue that needs to be addressed from the available options.",
+    )
+
+    issue_detail = models.TextField(
+        blank=True,
+        help_text="Additional details about the issue.",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Timestamp indicating when this TODO was created.",
+    )
+
+    is_resolved = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text="This TODO is resolved or not.",
+    )
+
+    resolved_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Timestamp indicating when this TODO was resolved.",
+    )
+
+    resolution_detail = models.TextField(
+        blank=True,
+        help_text="Additional detail on how this TODO was resolved.",
+    )
+
+    class Meta:
+        unique_together = ("related_advisories_id", "issue_type")
+
+
 class AdvisorySeverity(models.Model):
     url = models.URLField(
         max_length=1024,
@@ -2750,18 +2806,6 @@ class AdvisoryV2(models.Model):
         help_text="Raw advisory data as collected from the upstream datasource.",
     )
 
-    affecting_packages = models.ManyToManyField(
-        "PackageV2",
-        related_name="affected_by_advisories",
-        help_text="A list of packages that are affected by this advisory.",
-    )
-
-    fixed_by_packages = models.ManyToManyField(
-        "PackageV2",
-        related_name="fixing_advisories",
-        help_text="A list of packages that are reported by this advisory.",
-    )
-
     status = models.IntegerField(
         choices=AdvisoryStatusType.choices, default=AdvisoryStatusType.PUBLISHED
     )
@@ -2816,18 +2860,17 @@ class AdvisoryV2(models.Model):
         """
         return reverse("advisory_details", args=[self.avid])
 
-    def to_advisory_data(self) -> "AdvisoryDataV2":
-        from vulnerabilities.importer import AdvisoryDataV2
-        from vulnerabilities.importer import AffectedPackage
+    def to_advisory_data(self) -> "AdvisoryData":
+        from vulnerabilities.importer import AdvisoryData
         from vulnerabilities.importer import ReferenceV2
 
-        return AdvisoryDataV2(
+        return AdvisoryData(
             aliases=[item.alias for item in self.aliases.all()],
             summary=self.summary,
             affected_packages=[
-                AffectedPackage.from_dict(pkg) for pkg in self.affected_packages if pkg
+                impacted.to_affected_package() for impacted in self.impacted_packages.all()
             ],
-            references=[ReferenceV2.from_dict(ref) for ref in self.references],
+            references_v2=[ReferenceV2.from_dict(ref) for ref in self.references],
             date_published=self.date_published,
             weaknesses=self.weaknesses,
             severities=self.severities,
@@ -2841,66 +2884,69 @@ class AdvisoryV2(models.Model):
         """
         return self.aliases.all()
 
-    def aggregate_fixed_and_affected_packages(self):
-        from vulnerabilities.utils import get_purl_version_class
-
-        sorted_fixed_by_packages = self.fixed_by_packages.filter(is_ghost=False).order_by(
-            "type", "namespace", "name", "qualifiers", "subpath"
-        )
-
-        if sorted_fixed_by_packages:
-            sorted_fixed_by_packages.first().calculate_version_rank
-
-        sorted_affected_packages = self.affecting_packages.all()
-
-        if sorted_affected_packages:
-            sorted_affected_packages.first().calculate_version_rank
-
-        grouped_fixed_by_packages = {
-            key: list(group)
-            for key, group in groupby(
-                sorted_fixed_by_packages,
-                key=attrgetter("type", "namespace", "name", "qualifiers", "subpath"),
-            )
-        }
-
-        all_affected_fixed_by_matches = []
-
-        for sorted_affected_package in sorted_affected_packages:
-            affected_fixed_by_matches = {
-                "affected_package": sorted_affected_package,
-                "matched_fixed_by_packages": [],
-            }
-
-            # Build the key to find matching group
-            key = (
-                sorted_affected_package.type,
-                sorted_affected_package.namespace,
-                sorted_affected_package.name,
-                sorted_affected_package.qualifiers,
-                sorted_affected_package.subpath,
-            )
-
-            # Get matching group from pre-grouped fixed_by_packages
-            matching_fixed_packages = grouped_fixed_by_packages.get(key, [])
-
-            # Get version classes for comparison
-            affected_version_class = get_purl_version_class(sorted_affected_package)
-            affected_version = affected_version_class(sorted_affected_package.version)
-
-            # Compare versions and filter valid matches
-            matched_fixed_by_packages = [
-                fixed_by_package.purl
-                for fixed_by_package in matching_fixed_packages
-                if get_purl_version_class(fixed_by_package)(fixed_by_package.version)
-                > affected_version
-            ]
-
-            affected_fixed_by_matches["matched_fixed_by_packages"] = matched_fixed_by_packages
-            all_affected_fixed_by_matches.append(affected_fixed_by_matches)
-        return sorted_fixed_by_packages, sorted_affected_packages, all_affected_fixed_by_matches
-
     alias = get_aliases
+
+
+class ImpactedPackage(models.Model):
+    """
+    Represents a single impact for an advisory, including affected range and fixed version and
+    associated package relations.
+    """
+
+    advisory = models.ForeignKey(
+        AdvisoryV2,
+        related_name="impacted_packages",
+        on_delete=models.CASCADE,
+    )
+
+    base_purl = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Version less PURL related to impacted range.",
+    )
+
+    affecting_vers = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="VersionRange expression for package vulnerable to this impact.",
+    )
+
+    fixed_vers = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="VersionRange expression for packages fixing the vulnerable package in this impact.",
+    )
+
+    affecting_packages = models.ManyToManyField(
+        "PackageV2",
+        related_name="affected_in_impacts",
+        help_text="Packages vulnerable to this impact.",
+    )
+
+    fixed_by_packages = models.ManyToManyField(
+        "PackageV2",
+        related_name="fixed_in_impacts",
+        help_text="Packages vulnerable to this impact.",
+    )
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["affecting_vers"]),
+            models.Index(fields=["fixed_vers"]),
+        ]
+
+    def to_affected_package(self):
+        """Return `AffectedPackageV2` data from the impact."""
+        from vulnerabilities.importer import AffectedPackageV2
+        from vulnerabilities.utils import purl_to_dict
+
+        return AffectedPackageV2.from_dict(
+            affected_pkg={
+                "package": purl_to_dict(self.base_purl),
+                "affected_version_range": self.affecting_vers,
+                "fixed_version_range": self.fixed_vers,
+            }
+        )
 
 
 class ToDoRelatedAdvisory(models.Model):
@@ -2911,6 +2957,21 @@ class ToDoRelatedAdvisory(models.Model):
 
     advisory = models.ForeignKey(
         Advisory,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("todo", "advisory")
+
+
+class ToDoRelatedAdvisoryV2(models.Model):
+    todo = models.ForeignKey(
+        AdvisoryToDoV2,
+        on_delete=models.CASCADE,
+    )
+
+    advisory = models.ForeignKey(
+        AdvisoryV2,
         on_delete=models.CASCADE,
     )
 

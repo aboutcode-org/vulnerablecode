@@ -43,6 +43,10 @@ from vulnerabilities.models import Weakness
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
 
 
+class CharInFilter(filters.BaseInFilter, filters.CharFilter):
+    pass
+
+
 class WeaknessV2Serializer(serializers.ModelSerializer):
     cwe_id = serializers.CharField()
     name = serializers.CharField()
@@ -374,9 +378,24 @@ class PackageV2FilterSet(filters.FilterSet):
 
 
 class AdvisoryPackageV2FilterSet(filters.FilterSet):
-    affected_by_vulnerability = filters.CharFilter(field_name="affected_by_advisory__advisory_id")
-    fixing_vulnerability = filters.CharFilter(field_name="fixing_advisories__advisory_id")
-    purl = filters.CharFilter(field_name="package_url")
+    affected_by_advisory = filters.CharFilter(
+        field_name="affected_in_impacts__advisory__avid",
+        label="Affected By Advisory ID",
+        help_text="Filter packages affected by a specific Advisory ID.",
+    )
+
+    fixing_advisory = filters.CharFilter(
+        field_name="fixed_in_impacts__advisory__avid",
+        label="Fixed By Advisory ID",
+        help_text="Filter packages fixed by a specific Advisory ID.",
+    )
+
+    purls = CharInFilter(
+        field_name="package_url",
+        lookup_expr="in",
+        label="Package URL",
+        help_text="Filter by one or more Package URLs. Multi-value supported (comma-separated).",
+    )
 
 
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
@@ -961,42 +980,33 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
 
 
 class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = (
-        PackageV2.objects.all()
-        .prefetch_related(
-            Prefetch(
-                "affected_in_impacts",
-                queryset=ImpactedPackage.objects.select_related("advisory").prefetch_related(
-                    "fixed_by_packages",
-                ),
-            ),
-            Prefetch(
-                "fixed_in_impacts",
-                queryset=ImpactedPackage.objects.select_related("advisory"),
-            ),
-        )
-        .with_is_vulnerable()
-    )
+    queryset = PackageV2.objects.all()
     serializer_class = AdvisoryPackageV2Serializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = [filters.DjangoFilterBackend]
     filterset_class = AdvisoryPackageV2FilterSet
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        package_purls = self.request.query_params.getlist("purl")
-        affected_by_advisory = self.request.query_params.get("affected_by_advisory")
-        fixing_advisory = self.request.query_params.get("fixing_advisory")
-        if package_purls:
-            queryset = queryset.filter(package_url__in=package_purls)
-        if affected_by_advisory:
-            queryset = queryset.filter(affected_by_advisories__advisory_id=affected_by_advisory)
-        if fixing_advisory:
-            queryset = queryset.filter(fixing_advisories__advisory=fixing_advisory)
-        return queryset.with_is_vulnerable()
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "affected_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory").prefetch_related(
+                        "fixed_by_packages",
+                    ),
+                ),
+                Prefetch(
+                    "fixed_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory"),
+                ),
+            )
+            .with_is_vulnerable()
+        )
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        page = self.paginate_queryset(queryset)
+        filtered_queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(filtered_queryset)
 
         advisories = set()
         if page is not None:

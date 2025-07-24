@@ -16,7 +16,6 @@ from django.utils import timezone
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryToDoV2
 from vulnerabilities.models import AdvisoryV2
-from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import ToDoRelatedAdvisoryV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes.advisory import advisories_checksum_v2

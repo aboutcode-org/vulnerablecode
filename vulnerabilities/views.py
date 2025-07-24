@@ -204,11 +204,9 @@ class PackageV2Details(DetailView):
         context["affected_by_advisories"] = {
             impact.advisory for impact in package.affected_in_impacts.all()
         }
-        # Ghost package should not fix any vulnerability.
-        if not package.is_ghost:
-            context["fixing_advisories"] = {
-                impact.advisory for impact in package.fixed_in_impacts.all()
-            }
+        context["fixing_advisories"] = {
+            impact.advisory for impact in package.fixed_in_impacts.all()
+        }
 
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = fixed_pkg_details

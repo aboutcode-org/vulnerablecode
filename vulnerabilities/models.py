@@ -2532,6 +2532,20 @@ class AdvisorySeverity(models.Model):
         verbose_name_plural = "Advisory severities"
         ordering = ["url", "scoring_system", "value"]
 
+    def to_dict(self):
+        return {
+            "system": self.scoring_system,
+            "value": self.value,
+            "scoring_elements": self.scoring_elements,
+            "published_at": self.published_at,
+            "url": self.url,
+        }
+
+    def to_vulnerability_severity_data(self):
+        from vulnerabilities.importer import VulnerabilitySeverity
+
+        return VulnerabilitySeverity.from_dict(self.to_dict())
+
 
 class AdvisoryWeakness(models.Model):
     """
@@ -2624,6 +2638,18 @@ class AdvisoryReference(models.Model):
         Return True if this is a CPE reference.
         """
         return self.reference_id.startswith("cpe")
+
+    def to_dict(self):
+        return {
+            "reference_id": self.reference_id,
+            "reference_type": self.reference_type,
+            "url": self.url,
+        }
+
+    def to_reference_v2_data(self):
+        from vulnerabilities.importer import ReferenceV2
+
+        return ReferenceV2.from_dict(self.to_dict())
 
 
 class AdvisoryAlias(models.Model):
@@ -2806,18 +2832,17 @@ class AdvisoryV2(models.Model):
 
     def to_advisory_data(self) -> "AdvisoryData":
         from vulnerabilities.importer import AdvisoryData
-        from vulnerabilities.importer import ReferenceV2
 
         return AdvisoryData(
             aliases=[item.alias for item in self.aliases.all()],
             summary=self.summary,
             affected_packages=[
-                impacted.to_affected_package() for impacted in self.impacted_packages.all()
+                impacted.to_affected_package_data() for impacted in self.impacted_packages.all()
             ],
-            references_v2=[ReferenceV2.from_dict(ref) for ref in self.references],
+            references_v2=[ref.to_reference_v2_data() for ref in self.references.all()],
             date_published=self.date_published,
-            weaknesses=self.weaknesses,
-            severities=self.severities,
+            weaknesses=[weak.cwe_id for weak in self.weaknesses.all()],
+            severities=[sev.to_vulnerability_severity_data() for sev in self.severities.all()],
             url=self.url,
         )
 
@@ -2849,14 +2874,12 @@ class ImpactedPackage(models.Model):
         help_text="Version less PURL related to impacted range.",
     )
 
-    affecting_vers = models.CharField(
-        max_length=500,
+    affecting_vers = models.TextField(
         blank=True,
         help_text="VersionRange expression for package vulnerable to this impact.",
     )
 
-    fixed_vers = models.CharField(
-        max_length=500,
+    fixed_vers = models.TextField(
         blank=True,
         help_text="VersionRange expression for packages fixing the vulnerable package in this impact.",
     )
@@ -2879,18 +2902,20 @@ class ImpactedPackage(models.Model):
         help_text="Timestamp indicating when this impact was added.",
     )
 
-    def to_affected_package(self):
-        """Return `AffectedPackageV2` data from the impact."""
-        from vulnerabilities.importer import AffectedPackageV2
+    def to_dict(self):
         from vulnerabilities.utils import purl_to_dict
 
-        return AffectedPackageV2.from_dict(
-            affected_pkg={
-                "package": purl_to_dict(self.base_purl),
-                "affected_version_range": self.affecting_vers,
-                "fixed_version_range": self.fixed_vers,
-            }
-        )
+        return {
+            "package": purl_to_dict(self.base_purl),
+            "affected_version_range": self.affecting_vers,
+            "fixed_version_range": self.fixed_vers,
+        }
+
+    def to_affected_package_data(self):
+        """Return `AffectedPackageV2` data from the impact."""
+        from vulnerabilities.importer import AffectedPackageV2
+
+        return AffectedPackageV2.from_dict(self.to_dict())
 
 
 class ToDoRelatedAdvisory(models.Model):

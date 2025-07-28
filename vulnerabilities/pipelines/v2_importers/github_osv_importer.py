@@ -29,7 +29,6 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/github/advisory-database/"
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):

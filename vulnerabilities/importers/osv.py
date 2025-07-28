@@ -23,6 +23,7 @@ from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -144,19 +145,27 @@ def parse_advisory_data_v2(
             supported_ecosystem=purl.type,
         )
 
+        fixed_versions = []
+        fixed_version_range = None
         for fixed_range in affected_pkg.get("ranges") or []:
             fixed_version = get_fixed_versions(
                 fixed_range=fixed_range, raw_id=advisory_id, supported_ecosystem=purl.type
             )
+            fixed_versions.extend([v.string for v in fixed_version])
 
-            for version in fixed_version:
-                affected_packages.append(
-                    AffectedPackage(
-                        package=purl,
-                        affected_version_range=affected_version_range,
-                        fixed_version=version,
-                    )
+        fixed_version_range = (
+            get_fixed_version_range(fixed_versions, purl.type) if fixed_versions else None
+        )
+
+        if fixed_version_range or affected_version_range:
+            affected_packages.append(
+                AffectedPackageV2(
+                    package=purl,
+                    affected_version_range=affected_version_range,
+                    fixed_version_range=fixed_version_range,
                 )
+            )
+
     database_specific = raw_data.get("database_specific") or {}
     cwe_ids = database_specific.get("cwe_ids") or []
     weaknesses = list(map(get_cwe_id, cwe_ids))
@@ -332,6 +341,13 @@ def get_affected_version_range(affected_pkg, raw_id, supported_ecosystem):
                 f"Invalid VersionRange  for affected_pkg: {affected_pkg} "
                 f"for OSV id: {raw_id!r}: error:{e!r}"
             )
+
+
+def get_fixed_version_range(versions, ecosystem):
+    try:
+        return RANGE_CLASS_BY_SCHEMES[ecosystem].from_versions(versions)
+    except Exception as e:
+        logger.error(f"Failed to create VersionRange from: {versions}: error:{e!r}")
 
 
 def get_fixed_versions(fixed_range, raw_id, supported_ecosystem) -> List[Version]:

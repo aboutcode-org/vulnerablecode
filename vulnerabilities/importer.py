@@ -360,7 +360,7 @@ class AffectedPackageV2:
             )
 
     def __lt__(self, other):
-        if not isinstance(other, AffectedPackage):
+        if not isinstance(other, AffectedPackageV2):
             return NotImplemented
         return self._cmp_key() < other._cmp_key()
 
@@ -446,8 +446,6 @@ class AdvisoryData:
     original_advisory_text: Optional[str] = None
 
     def __post_init__(self):
-        if self.date_published and not self.date_published.tzinfo:
-            logger.warning(f"AdvisoryData with no tzinfo: {self!r}")
         if self.summary:
             self.summary = self.clean_summary(self.summary)
 

@@ -111,7 +111,7 @@ def fetch(url, logger=None):
     return json.loads(data)
 
 
-def fetch_cve_data_1_1(starting_year=2002, logger=None):
+def fetch_cve_data_1_1(starting_year=2025, logger=None):
     """
     Yield tuples of (year, lists of CVE mappings) from the NVD, one for each
     year since ``starting_year`` defaulting to 2002.
@@ -326,7 +326,7 @@ class CveItem:
             weaknesses=self.weaknesses,
             severities=self.severities,
             url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
-            raw_data=json.dumps(self.cve_item, indent=2, ensure_ascii=False),
+            original_advisory_text=json.dumps(self.cve_item, indent=2, ensure_ascii=False),
         )
 
 

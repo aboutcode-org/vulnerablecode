@@ -34,17 +34,13 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
     def compute_and_store_vulnerability_risk_score(self):
         affected_advisories = (
-            AdvisoryV2.objects.filter(affecting_packages__isnull=False)
-            .prefetch_related(
-                "references",
-                "severities",
-                "exploits",
-            )
+            AdvisoryV2.objects.filter(impacted_packages__affecting_packages__isnull=False)
+            .prefetch_related("references", "severities", "exploits")
             .distinct()
         )
 
         self.log(
-            f"Calculating risk for {affected_advisories.count():,d} vulnerability with a affected packages records"
+            f"Calculating risk for {affected_advisories.count():,d} advisory with a affected packages records"
         )
 
         progress = LoopProgress(total_iterations=affected_advisories.count(), logger=self.log)
@@ -53,7 +49,7 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         updated_vulnerability_count = 0
         batch_size = 5000
 
-        for advisory in progress.iter(affected_advisories.paginated(per_page=batch_size)):
+        for advisory in progress.iter(affected_advisories.iterator(chunk_size=batch_size)):
             severities = advisory.severities.all()
             references = advisory.references.all()
             exploits = advisory.exploits.all()
@@ -65,9 +61,6 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
             )
             advisory.weighted_severity = weighted_severity
             advisory.exploitability = exploitability
-            print(
-                f"Computed risk for {advisory.advisory_id} with weighted_severity={weighted_severity} and exploitability={exploitability}"
-            )
             updatables.append(advisory)
 
             if len(updatables) >= batch_size:
@@ -90,9 +83,7 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         )
 
     def compute_and_store_package_risk_score(self):
-        affected_packages = (
-            PackageV2.objects.filter(affected_by_advisories__isnull=False)
-        ).distinct()
+        affected_packages = (PackageV2.objects.filter(affected_in_impacts__isnull=False)).distinct()
 
         self.log(f"Calculating risk for {affected_packages.count():,d} affected package records")
 
@@ -106,7 +97,7 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         updated_package_count = 0
         batch_size = 10000
 
-        for package in progress.iter(affected_packages.paginated(per_page=batch_size)):
+        for package in progress.iter(affected_packages.iterator(chunk_size=batch_size)):
             risk_score = compute_package_risk_v2(package)
 
             if not risk_score:

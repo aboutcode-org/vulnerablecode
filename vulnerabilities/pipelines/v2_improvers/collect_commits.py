@@ -61,9 +61,6 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
 
                 # Skip if already processed
                 if is_vcs_url_already_processed(commit_id=vcs_url):
-                    self.log(
-                        f"Skipping already processed reference: {reference.url} with VCS URL {vcs_url}"
-                    )
                     continue
                 # check if vcs_url has commit
                 for impact in adv.impacted_packages.all():

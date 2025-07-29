@@ -1172,7 +1172,6 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
                     ),
                 )
                 .with_is_vulnerable()
-                .order_by("package_url")
             )
 
             packages = query
@@ -1206,7 +1205,8 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
         query = (
             PackageV2.objects.filter(package_url__in=purls)
-            .distinct()
+            .order_by("plain_package_url")
+            .distinct("plain_package_url")
             .prefetch_related(
                 Prefetch(
                     "affected_in_impacts",

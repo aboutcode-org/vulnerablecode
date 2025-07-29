@@ -56,6 +56,7 @@ class BasePipelineRun:
         run_instance: PipelineRun = None,
         selected_groups: List = None,
         selected_steps: List = None,
+        **kwargs,
     ):
         """Load the Pipeline class."""
         self.run = run_instance
@@ -67,6 +68,9 @@ class BasePipelineRun:
 
         self.execution_log = []
         self.current_step = ""
+
+        # Optional args used as input in downstream pipeline steps
+        self.inputs = kwargs
 
     def append_to_log(self, message):
         if self.run and self.run.pipeline.live_logging:
@@ -303,13 +307,20 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
             if advisory is None:
                 self.log("Advisory is None, skipping")
                 continue
-            if _obj := insert_advisory_v2(
-                advisory=advisory,
-                pipeline_id=self.pipeline_id,
-                get_advisory_packages=self.get_advisory_packages,
-                logger=self.log,
-            ):
-                collected_advisory_count += 1
+            try:
+                if _obj := insert_advisory_v2(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    get_advisory_packages=self.get_advisory_packages,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
+            except Exception as e:
+                self.log(
+                    f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
+                    level=logging.ERROR,
+                )
+                continue
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 

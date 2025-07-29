@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
 import traceback
 from pathlib import Path
@@ -155,7 +156,9 @@ def get_purl(package_slug, purl_type_by_gitlab_scheme, logger):
     """
     parts = [p for p in package_slug.strip("/").split("/") if p]
     gitlab_scheme = parts[0]
-    purl_type = purl_type_by_gitlab_scheme[gitlab_scheme]
+    purl_type = purl_type_by_gitlab_scheme.get(gitlab_scheme)
+    if not purl_type:
+        return
     if gitlab_scheme == "go":
         name = "/".join(parts[1:])
         return PackageURL(type=purl_type, namespace=None, name=name)
@@ -261,11 +264,13 @@ def parse_gitlab_advisory(
             f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}", level=logging.ERROR
         )
         return AdvisoryData(
+            advisory_id=advisory_id,
             aliases=aliases,
             summary=summary,
             references_v2=references,
             date_published=date_published,
             url=advisory_url,
+            original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
         )
     affected_version_range = None
     fixed_versions = gitlab_advisory.get("fixed_versions") or []
@@ -325,4 +330,5 @@ def parse_gitlab_advisory(
         affected_packages=affected_packages,
         weaknesses=cwe_list,
         url=advisory_url,
+        original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
     )

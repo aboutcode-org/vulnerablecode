@@ -7,10 +7,10 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 from pathlib import Path
 from typing import Iterable
 
-import saneyaml
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
@@ -18,16 +18,17 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_advisory_url
 
 
-class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
+class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
-    Pypa Importer Pipeline
+    GithubOSV Importer Pipeline
 
-    Collect advisories from PyPA GitHub repository."""
+    Collect advisories from the GitHub Advisory Database repository.
+    """
 
-    pipeline_id = "pypa_importer_v2"
+    pipeline_id = "github_osv_importer_v2"
     spdx_license_expression = "CC-BY-4.0"
-    license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
-    repo_url = "git+https://github.com/pypa/advisory-database"
+    license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
+    repo_url = "git+https://github.com/github/advisory-database/"
     unfurl_version_ranges = True
 
     @classmethod
@@ -43,33 +44,45 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
     def advisories_count(self):
-        vulns_directory = Path(self.vcs_response.dest_dir) / "vulns"
-        return sum(1 for _ in vulns_directory.rglob("*.yaml"))
+        advisory_dir = Path(self.vcs_response.dest_dir) / "advisories/github-reviewed"
+        return sum(1 for _ in advisory_dir.rglob("*.json"))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         from vulnerabilities.importers.osv import parse_advisory_data_v2
 
-        base_directory = Path(self.vcs_response.dest_dir)
-        vulns_directory = base_directory / "vulns"
+        supported_ecosystems = [
+            "pypi",
+            "npm",
+            "maven",
+            # "golang",
+            "composer",
+            "hex",
+            "gem",
+            "nuget",
+            "cargo",
+        ]
+        base_path = Path(self.vcs_response.dest_dir)
+        advisory_dir = base_path / "advisories/github-reviewed"
 
-        for advisory in vulns_directory.rglob("*.yaml"):
+        for file in advisory_dir.rglob("*.json"):
             advisory_url = get_advisory_url(
-                file=advisory,
-                base_path=base_directory,
-                url="https://github.com/pypa/advisory-database/blob/main/",
+                file=file,
+                base_path=base_path,
+                url="https://github.com/github/advisory-database/blob/main/",
             )
-            advisory_text = advisory.read_text()
-            advisory_dict = saneyaml.load(advisory_text)
+            with open(file) as f:
+                raw_data = json.load(f)
+            advisory_text = file.read_text()
             yield parse_advisory_data_v2(
-                raw_data=advisory_dict,
-                supported_ecosystems=["pypi"],
+                raw_data=raw_data,
+                supported_ecosystems=supported_ecosystems,
                 advisory_url=advisory_url,
                 advisory_text=advisory_text,
             )
 
     def clean_downloads(self):
         if self.vcs_response:
-            self.log(f"Removing cloned repository")
+            self.log("Removing cloned repository")
             self.vcs_response.delete()
 
     def on_failure(self):

@@ -6,7 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
+import logging
 from pathlib import Path
 from typing import Iterable
 
@@ -17,17 +17,14 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_advisory_url
 
+logger = logging.getLogger(__name__)
 
-class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """
-    Pypa Importer Pipeline
 
-    Collect advisories from PyPA GitHub repository."""
-
-    pipeline_id = "pypa_importer_v2"
+class OSSFuzzImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
+    pipeline_id = "oss_fuzz_importer_v2"
     spdx_license_expression = "CC-BY-4.0"
-    license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
-    repo_url = "git+https://github.com/pypa/advisory-database"
+    license_url = "https://github.com/google/oss-fuzz-vulns/blob/main/LICENSE"
+    repo_url = "git+https://github.com/google/oss-fuzz-vulns"
     unfurl_version_ranges = True
 
     @classmethod
@@ -56,13 +53,13 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             advisory_url = get_advisory_url(
                 file=advisory,
                 base_path=base_directory,
-                url="https://github.com/pypa/advisory-database/blob/main/",
+                url="https://github.com/google/oss-fuzz-vulns/blob/main/",
             )
             advisory_text = advisory.read_text()
             advisory_dict = saneyaml.load(advisory_text)
             yield parse_advisory_data_v2(
                 raw_data=advisory_dict,
-                supported_ecosystems=["pypi"],
+                supported_ecosystems=["generic"],
                 advisory_url=advisory_url,
                 advisory_text=advisory_text,
             )

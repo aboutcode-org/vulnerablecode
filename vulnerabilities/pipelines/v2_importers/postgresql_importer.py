@@ -43,17 +43,13 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return (cls.collect_and_store_advisories,)
 
     def advisories_count(self) -> int:
-        if not self.links:
-            self.collect_links()
-        return len(self.links)
+        return 30
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        if not self.links:
-            self.collect_links()
+        url = "https://www.postgresql.org/support/security/"
 
-        for url in self.links:
-            data = requests.get(url).content
-            yield from self.to_advisories(data)
+        data = requests.get(url).content
+        yield from self.to_advisories(data, url)
 
     def collect_links(self):
         known_urls = {self.base_url}
@@ -69,7 +65,7 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 break
         self.links = known_urls
 
-    def to_advisories(self, data):
+    def to_advisories(self, data, url):
         advisories = []
         soup = BeautifulSoup(data, features="lxml")
         tables = soup.select("table")
@@ -150,7 +146,8 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         references_v2=references,
                         severities=severities,
                         affected_packages=affected_packages,
-                        url=f"https://www.postgresql.org/support/security/{cve_id}",
+                        url=url,
+                        original_advisory_text=str(row),
                     )
                 )
 

@@ -60,8 +60,10 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     continue
                 with zip_file.open(file_name) as f:
                     vul_info = json.load(f)
+                    advisory_text = f.read()
                     yield parse_advisory_data_v2(
                         raw_data=vul_info,
                         supported_ecosystems=["pypi"],
                         advisory_url=self.url,
+                        advisory_text=advisory_text.decode("utf-8"),
                     )

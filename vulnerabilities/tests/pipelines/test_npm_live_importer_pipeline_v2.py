@@ -9,6 +9,7 @@
 
 import json
 import os
+import pytest
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -39,6 +40,7 @@ def test_package_first_mode_valid_npm_package(tmp_path):
     pipeline = NpmLiveImporterPipeline(purl=purl)
     pipeline.vcs_response = mock_vcs_response
 
+    pipeline.get_purl_inputs()
     advisories = list(pipeline.collect_advisories())
 
     assert len(advisories) == 1
@@ -64,6 +66,7 @@ def test_package_first_mode_unaffected_version(tmp_path):
     pipeline = NpmLiveImporterPipeline(purl=purl)
     pipeline.vcs_response = mock_vcs_response
 
+    pipeline.get_purl_inputs()
     advisories = list(pipeline.collect_advisories())
 
     assert len(advisories) == 0
@@ -79,9 +82,8 @@ def test_package_first_mode_invalid_package_type(tmp_path):
     pipeline = NpmLiveImporterPipeline(purl=purl)
     pipeline.vcs_response = mock_vcs_response
 
-    advisories = list(pipeline.collect_advisories())
-
-    assert len(advisories) == 0
+    with pytest.raises(ValueError):
+        pipeline.get_purl_inputs()
 
 
 def test_package_first_mode_package_not_found(tmp_path):
@@ -103,6 +105,7 @@ def test_package_first_mode_package_not_found(tmp_path):
     pipeline = NpmLiveImporterPipeline(purl=purl)
     pipeline.vcs_response = mock_vcs_response
 
+    pipeline.get_purl_inputs()
     advisories = list(pipeline.collect_advisories())
 
     assert len(advisories) == 0
@@ -111,6 +114,7 @@ def test_package_first_mode_package_not_found(tmp_path):
 def test_version_is_affected():
     purl = PackageURL(type="npm", name="npm", version="1.2.0")
     pipeline = NpmLiveImporterPipeline(purl=purl)
+    pipeline.get_purl_inputs()
 
     affected_package = AffectedPackage(
         package=PackageURL(type="npm", name="npm"),

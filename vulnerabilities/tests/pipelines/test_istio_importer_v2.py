@@ -12,14 +12,8 @@ from pathlib import Path
 from textwrap import dedent
 
 import pytest
-from packageurl import PackageURL
-from univers.version_constraint import VersionConstraint
-from univers.version_range import GitHubVersionRange
-from univers.version_range import GolangVersionRange
-from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines.v2_importers.istio_importer import IstioImporterPipeline
 
@@ -77,24 +71,11 @@ def test_istio_advisory_parsing():
             url="https://istio.io/latest/news/security/ISTIO-SECURITY-2019-002/",
         )
 
-        expected_versions = [
-            VersionConstraint(version=SemverVersion("1.0"), comparator=">="),
-            VersionConstraint(version=SemverVersion("1.0.8"), comparator="<="),
-            VersionConstraint(version=SemverVersion("1.1"), comparator=">="),
-            VersionConstraint(version=SemverVersion("1.1.9"), comparator="<="),
-            VersionConstraint(version=SemverVersion("1.2"), comparator=">="),
-            VersionConstraint(version=SemverVersion("1.2.1"), comparator="<="),
-        ]
-
-        expected_packages = [
-            AffectedPackage(
-                package=PackageURL(type="golang", namespace="istio.io", name="istio"),
-                affected_version_range=GolangVersionRange(constraints=expected_versions),
-            ),
-            AffectedPackage(
-                package=PackageURL(type="github", namespace="istio", name="istio"),
-                affected_version_range=GitHubVersionRange(constraints=expected_versions),
-            ),
-        ]
-
-        assert advisory.affected_packages == expected_packages
+        assert (
+            str(advisory.affected_packages[0].affected_version_range)
+            == "vers:github/>=1.0.0|<=1.0.8|>=1.1.0|<=1.1.9|>=1.2.0|<=1.2.1"
+        )
+        assert (
+            str(advisory.affected_packages[1].affected_version_range)
+            == "vers:golang/>=1.0.0|<=1.0.8|>=1.1.0|<=1.1.9|>=1.2.0|<=1.2.1"
+        )

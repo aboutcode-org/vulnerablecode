@@ -99,7 +99,7 @@ def test_collect_advisories(mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_
     assert advisory.summary == "Example vulnerability\nExample description"
     assert advisory.references_v2[0].url == "https://example.com/advisory"
     assert advisory.affected_packages[0].package.name == "package-name"
-    assert advisory.affected_packages[0].fixed_version
+    assert str(advisory.affected_packages[0].fixed_version_range) == "vers:pypi/2.0.0"
     assert advisory.weaknesses[0] == 79
 
 

@@ -1,11 +1,19 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+
 from datetime import datetime
-from unittest.mock import patch
 
 import pytest
 
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import CodeFixV2
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines.v2_improvers.collect_commits import CollectFixCommitsPipeline
 from vulnerabilities.pipelines.v2_improvers.collect_commits import is_vcs_url
@@ -59,8 +67,8 @@ def test_is_vcs_url_already_processed_true():
         name="foo",
         version="1.0",
     )
-    advisory.affecting_packages.add(package)
-    advisory.save()
+    impact = ImpactedPackage.objects.create(advisory=advisory)
+    impact.affecting_packages.add(package)
     CodeFixV2.objects.create(
         commits=["https://github.com/user/repo/commit/abc123"],
         advisory=advisory,
@@ -87,9 +95,9 @@ def test_collect_fix_commits_pipeline_creates_entry():
     reference = AdvisoryReference.objects.create(
         url="https://github.com/test/testpkg/commit/abc123"
     )
-    advisory.affecting_packages.add(package)
+    impact = ImpactedPackage.objects.create(advisory=advisory)
+    impact.affecting_packages.add(package)
     advisory.references.add(reference)
-    advisory.save()
 
     pipeline = CollectFixCommitsPipeline()
     pipeline.collect_and_store_fix_commits()
@@ -117,13 +125,11 @@ def test_collect_fix_commits_pipeline_skips_non_commit_urls():
         name="otherpkg",
         version="2.0",
     )
-
-    advisory.affecting_packages.add(package)
+    impact = ImpactedPackage.objects.create(advisory=advisory)
+    impact.affecting_packages.add(package)
 
     reference = AdvisoryReference.objects.create(url="https://github.com/test/testpkg/issues/12")
-
     advisory.references.add(reference)
-    advisory.save()
 
     pipeline = CollectFixCommitsPipeline()
     pipeline.collect_and_store_fix_commits()

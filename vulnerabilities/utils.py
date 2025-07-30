@@ -604,7 +604,6 @@ def compute_content_id(advisory_data):
 
     # Normalize fields
     from vulnerabilities.importer import AdvisoryData
-    from vulnerabilities.importer import AdvisoryDataV2
     from vulnerabilities.models import Advisory
 
     if isinstance(advisory_data, Advisory):

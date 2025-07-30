@@ -14,7 +14,6 @@ from vulnerabilities.pipelines.v2_importers.mozilla_importer import extract_desc
 from vulnerabilities.pipelines.v2_importers.mozilla_importer import get_severity_from_impact
 from vulnerabilities.pipelines.v2_importers.mozilla_importer import mfsa_id_from_filename
 from vulnerabilities.pipelines.v2_importers.mozilla_importer import parse_affected_packages
-from vulnerabilities.pipelines.v2_importers.mozilla_importer import parse_md_advisory
 from vulnerabilities.pipelines.v2_importers.mozilla_importer import parse_yml_advisory
 
 
@@ -57,7 +56,7 @@ def test_parse_affected_packages_valid():
     result = list(parse_affected_packages(packages))
     assert len(result) == 2
     assert result[0].package.name == "firefox"
-    assert str(result[0].fixed_version) == "89.0.0"
+    assert str(result[0].fixed_version_range) == "vers:generic/89.0.0"
 
 
 def test_parse_affected_packages_invalid():

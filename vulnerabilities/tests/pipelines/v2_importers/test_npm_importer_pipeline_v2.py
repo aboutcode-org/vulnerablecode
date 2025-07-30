@@ -102,7 +102,7 @@ def test_to_advisory_data_full(tmp_path):
     pkg = adv.affected_packages[0]
     assert pkg.package == PackageURL(type="npm", name="mypkg")
     assert isinstance(pkg.affected_version_range, NpmVersionRange)
-    assert pkg.fixed_version == SemverVersion("1.2.4")
+    assert str(pkg.fixed_version_range) == "vers:npm/>=1.2.4"
     assert set(adv.aliases) == {"CVE-123", "CVE-124"}
 
 
@@ -121,8 +121,8 @@ def test_get_affected_package_special_and_standard():
         {"vulnerable_versions": "<=99.999.99999", "patched_versions": "<0.0.0"}, "pkg"
     )
     assert isinstance(pkg.affected_version_range, NpmVersionRange)
-    assert pkg.fixed_version is None
+    assert pkg.fixed_version_range is None
     data2 = {"vulnerable_versions": "<=2.0.0", "patched_versions": ">=2.0.1"}
     pkg2 = p.get_affected_package(data2, "pkg2")
     assert isinstance(pkg2.affected_version_range, NpmVersionRange)
-    assert pkg2.fixed_version == SemverVersion("2.0.1")
+    assert str(pkg2.fixed_version_range) == "vers:npm/>=2.0.1"

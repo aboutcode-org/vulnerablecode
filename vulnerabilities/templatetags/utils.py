@@ -34,3 +34,8 @@ def active_item(context, url_name):
         if request.resolver_match.url_name == url_name:
             return "is-active"
     return ""
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

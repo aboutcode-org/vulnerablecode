@@ -87,20 +87,20 @@ def test_collect_advisories(mock_get, importer):
     assert "Description of the issue" in advisory.summary
     assert len(advisory.references_v2) > 0
     assert advisory.affected_packages[0].package.name == "postgresql"
-    assert str(advisory.affected_packages[0].fixed_version) == "10.2"
+    assert str(advisory.affected_packages[0].fixed_version_range) == "vers:generic/10.2.0"
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("10.0.0"))
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("10.1.0"))
 
 
 @patch("vulnerabilities.pipelines.v2_importers.postgresql_importer.requests.get")
-def test_collect_advisories_with_no_fixed_version(mock_get, importer):
+def test_collect_advisories_with_no_fixed_version_range(mock_get, importer):
     mock_get.return_value.content = HTML_NO_FIX_ADVISORY.encode("utf-8")
     advisories = list(importer.collect_advisories())
 
     assert len(advisories) == 1
     advisory = advisories[0]
     assert advisory.advisory_id == "CVE-2023-5678"
-    assert advisory.affected_packages[0].fixed_version is None
+    assert advisory.affected_packages[0].fixed_version_range is None
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("9.5"))
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("9.6"))
 

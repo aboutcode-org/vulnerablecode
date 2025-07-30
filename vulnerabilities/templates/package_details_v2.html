@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 {% load static %}
 {% load url_filters %}
+{% load utils %}
 
 {% block title %}
 VulnerableCode Package Details - {{ package.purl }}
@@ -60,7 +61,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                         </span>
                                     </td>
                                     <td class="two-col-right">
-                                        {{ fixed_package_details.purl.to_string }}
+                                        {{ package.purl }}
                                     </td>
                                 </tr>
                                 {% if package.is_ghost %}
@@ -91,9 +92,9 @@ VulnerableCode Package Details - {{ package.purl }}
                                         Next non-vulnerable version
                                     </td>
                                     <td class="two-col-right">
-                                        {% if fixed_package_details.next_non_vulnerable.version %}
-                                        <a href="/packages/v2/{{ fixed_package_details.next_non_vulnerable|url_quote }}?search={{ fixed_package_details.next_non_vulnerable }}"
-                                            target="_self">{{ fixed_package_details.next_non_vulnerable.version }}</a>
+                                        {% if next_non_vulnerable.version %}
+                                        <a href="/packages/v2/{{ next_non_vulnerable|url_quote }}?search={{ next_non_vulnerable }}"
+                                            target="_self">{{ next_non_vulnerable.version }}</a>
                                         {% else %}
                                         <span class="emphasis-vulnerable">None.</span>
                                         {% endif %}
@@ -104,9 +105,9 @@ VulnerableCode Package Details - {{ package.purl }}
                                         Latest non-vulnerable version
                                     </td>
                                     <td class="two-col-right">
-                                        {% if fixed_package_details.latest_non_vulnerable.version %}
-                                        <a href="/packages/v2/{{ fixed_package_details.latest_non_vulnerable|url_quote }}?search={{ fixed_package_details.latest_non_vulnerable }}"
-                                            target="_self">{{ fixed_package_details.latest_non_vulnerable.version }}</a>
+                                        {% if latest_non_vulnerable.version %}
+                                        <a href="/packages/v2/{{ latest_non_vulnerable|url_quote }}?search={{ latest_non_vulnerable }}"
+                                            target="_self">{{ latest_non_vulnerable.version }}</a>
                                         {% else %}
                                         <span class="emphasis-vulnerable">None.</span>
                                         {% endif %}
@@ -175,66 +176,22 @@ VulnerableCode Package Details - {{ package.purl }}
                                         {{ advisory.summary }}
                                     </td>
                                     <td style="word-wrap: break-word; word-break: break-all;">
-                                        {% if package.purl == fixed_package_details.purl.to_string %}
-                                        {% for key, value in fixed_package_details.items %}
-                                        {% if key == "advisories" %}
-                                        {% for vuln in value %}
-                                        {% if vuln.advisory.advisory_id == advisory.advisory_id %}
-                                        {% if vuln.fixed_by_package_details is None %}
-                                        <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
-                                        {% else %}
-                                        {% for fixed_pkg in vuln.fixed_by_package_details %}
-                                            <section>
-                                                {% if fixed_pkg.fixed_by_purl_advisories|length == 0 %}
-                                                <a href="/packages/v2/{{ fixed_pkg.fixed_by_purl|url_quote }}?search={{ fixed_pkg.fixed_by_purl }}"
-                                                    target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
-                                                <br />
-                                                <span class="emphasis-not-vulnerable">Subject of 0 other advisories.</span>
-                                                {% else %}
-                                                <a href="/packages/v2/{{ fixed_pkg.fixed_by_purl|url_quote }}?search={{ fixed_pkg.fixed_by_purl }}"
-                                                    target="_self">{{ fixed_pkg.fixed_by_purl.version }}</a>
-                                                {% if fixed_pkg.fixed_by_purl_advisories|length != 1 %}
-                                                <br />
-                                                <span class="emphasis-vulnerable">Subject of {{ fixed_pkg.fixed_by_purl_advisories|length }} other
-                                                    advisory.</span>
-                                                {% else %}
-                                                <br />
-                                                <span class="emphasis-vulnerable">Subject of {{ fixed_pkg.fixed_by_purl_advisories|length }} other
-                                                    advisory.</span>
-                                                {% endif %}
-
-                                                <div class="dropdown is-hoverable has-text-weight-normal is-right">
-                                                    <div class="dropdown-trigger">
-                                                        <i
-                                                            class="fa fa-question-circle ml-0 fa-sm has-background-white has-text-link"></i>
-                                                    </div>
-                                                    <div class="dropdown-menu dropdown-vuln-list-width" id="dropdown-menu4"
-                                                        role="menu">
-                                                        <div class="dropdown-content dropdown-instructions-box-shadow">
-                                                            <div class="dropdown-item">
-                                                                <div style="max-height: 200px; overflow-y: auto;">
-                                                                    This version is subject of other advisories:
-                                                                    <div style="padding-top: 5px;">
-                                                                        {% for fixed_by_vuln in fixed_pkg.fixed_by_purl_advisories %}
-                                                                        <div>
-                                                                            {{fixed_by_vuln.advisory_id }}
-                                                                        </div>
-                                                                        {% endfor %}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                            </section>
-                                        {% endfor %}
-                                        {% endif %}
-                                        {% endif %}
-                                        {% endfor %}
-                                        {% endif %}
-                                        {% endfor %}
-                                        {% endif %}
+                                        {% with fixed=fixed_package_details|get_item:advisory.id %}
+                                            {% if fixed %}
+                                                {% for item in fixed %}
+                                                <section>
+                                                    <a href="/packages/v2/{{ item.pkg.purl|url_quote }}?search={{ item.pkg.purl }}"
+                                                        target="_self">{{ item.pkg.version }}</a>
+                                                    <br/>
+                                                    <span class="{{ item.affected_count|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Subject of {{ item.affected_count }} other advisories.
+                                                    </span>
+                                                </section>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
+                                            {% endif %}
+                                        {% endwith %}
                                     </td>
                                 </tr>
                                 {% empty %}

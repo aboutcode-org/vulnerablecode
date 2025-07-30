@@ -18,7 +18,7 @@ from univers.versions import GenericVersion
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -83,31 +83,25 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages = []
             affected_version_list = [v.strip() for v in affected_col.text.split(",") if v.strip()]
             fixed_version_list = [v.strip() for v in fixed_col.text.split(",") if v.strip()]
+            fixed_version_range = (
+                GenericVersionRange.from_versions(fixed_version_list)
+                if fixed_version_list
+                else None
+            )
+            affected_version_range = (
+                GenericVersionRange.from_versions(affected_version_list)
+                if affected_version_list
+                else None
+            )
 
-            if fixed_version_list:
-                for fixed_version in fixed_version_list:
-                    affected_packages.append(
-                        AffectedPackage(
-                            package=PackageURL(
-                                name="postgresql", type="generic", qualifiers=pkg_qualifiers
-                            ),
-                            affected_version_range=GenericVersionRange.from_versions(
-                                affected_version_list
-                            )
-                            if affected_version_list
-                            else None,
-                            fixed_version=GenericVersion(fixed_version),
-                        )
-                    )
-            elif affected_version_list:
+            if affected_version_range or fixed_version_range:
                 affected_packages.append(
-                    AffectedPackage(
+                    AffectedPackageV2(
                         package=PackageURL(
                             name="postgresql", type="generic", qualifiers=pkg_qualifiers
                         ),
-                        affected_version_range=GenericVersionRange.from_versions(
-                            affected_version_list
-                        ),
+                        affected_version_range=affected_version_range,
+                        fixed_version_range=fixed_version_range,
                     )
                 )
 

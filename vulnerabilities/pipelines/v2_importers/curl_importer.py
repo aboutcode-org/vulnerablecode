@@ -12,10 +12,9 @@ from typing import Iterable
 from cwe2.database import Database
 from packageurl import PackageURL
 from univers.version_range import GenericVersionRange
-from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -37,7 +36,6 @@ class CurlImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://curl.se/docs/copyright.html"
     repo_url = "https://github.com/curl/curl-www/"
     url = "https://curl.se/docs/vuln.json"
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
@@ -77,16 +75,16 @@ def parse_curl_advisory(raw_data) -> AdvisoryData:
     version_type = get_item(ranges, "type") if get_item(ranges, "type") else ""
     fixed_version = events.get("fixed")
     if version_type == "SEMVER" and fixed_version:
-        fixed_version = SemverVersion(fixed_version)
+        fixed_version_range = GenericVersionRange.from_versions([fixed_version])
 
     purl = PackageURL(type="generic", namespace="curl.se", name="curl")
     versions = affected.get("versions") or []
     affected_version_range = GenericVersionRange.from_versions(versions)
 
-    affected_package = AffectedPackage(
+    affected_package = AffectedPackageV2(
         package=purl,
         affected_version_range=affected_version_range,
-        fixed_version=fixed_version,
+        fixed_version_range=fixed_version_range,
     )
 
     database_specific = raw_data.get("database_specific") or {}

@@ -2588,6 +2588,20 @@ class AdvisorySeverity(models.Model):
         verbose_name_plural = "Advisory severities"
         ordering = ["url", "scoring_system", "value"]
 
+    def to_dict(self):
+        return {
+            "system": self.scoring_system,
+            "value": self.value,
+            "scoring_elements": self.scoring_elements,
+            "published_at": self.published_at,
+            "url": self.url,
+        }
+
+    def to_vulnerability_severity_data(self):
+        from vulnerabilities.importer import VulnerabilitySeverity
+
+        return VulnerabilitySeverity.from_dict(self.to_dict())
+
 
 class AdvisoryWeakness(models.Model):
     """
@@ -2680,6 +2694,18 @@ class AdvisoryReference(models.Model):
         Return True if this is a CPE reference.
         """
         return self.reference_id.startswith("cpe")
+
+    def to_dict(self):
+        return {
+            "reference_id": self.reference_id,
+            "reference_type": self.reference_type,
+            "url": self.url,
+        }
+
+    def to_reference_v2_data(self):
+        from vulnerabilities.importer import ReferenceV2
+
+        return ReferenceV2.from_dict(self.to_dict())
 
 
 class AdvisoryAlias(models.Model):
@@ -2862,18 +2888,17 @@ class AdvisoryV2(models.Model):
 
     def to_advisory_data(self) -> "AdvisoryData":
         from vulnerabilities.importer import AdvisoryData
-        from vulnerabilities.importer import ReferenceV2
 
         return AdvisoryData(
             aliases=[item.alias for item in self.aliases.all()],
             summary=self.summary,
             affected_packages=[
-                impacted.to_affected_package() for impacted in self.impacted_packages.all()
+                impacted.to_affected_package_data() for impacted in self.impacted_packages.all()
             ],
-            references_v2=[ReferenceV2.from_dict(ref) for ref in self.references],
+            references_v2=[ref.to_reference_v2_data() for ref in self.references.all()],
             date_published=self.date_published,
-            weaknesses=self.weaknesses,
-            severities=self.severities,
+            weaknesses=[weak.cwe_id for weak in self.weaknesses.all()],
+            severities=[sev.to_vulnerability_severity_data() for sev in self.severities.all()],
             url=self.url,
         )
 
@@ -2905,14 +2930,12 @@ class ImpactedPackage(models.Model):
         help_text="Version less PURL related to impacted range.",
     )
 
-    affecting_vers = models.CharField(
-        max_length=500,
+    affecting_vers = models.TextField(
         blank=True,
         help_text="VersionRange expression for package vulnerable to this impact.",
     )
 
-    fixed_vers = models.CharField(
-        max_length=500,
+    fixed_vers = models.TextField(
         blank=True,
         help_text="VersionRange expression for packages fixing the vulnerable package in this impact.",
     )
@@ -2929,24 +2952,26 @@ class ImpactedPackage(models.Model):
         help_text="Packages vulnerable to this impact.",
     )
 
-    class Meta:
-        indexes = [
-            models.Index(fields=["affecting_vers"]),
-            models.Index(fields=["fixed_vers"]),
-        ]
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        help_text="Timestamp indicating when this impact was added.",
+    )
 
-    def to_affected_package(self):
-        """Return `AffectedPackageV2` data from the impact."""
-        from vulnerabilities.importer import AffectedPackageV2
+    def to_dict(self):
         from vulnerabilities.utils import purl_to_dict
 
-        return AffectedPackageV2.from_dict(
-            affected_pkg={
-                "package": purl_to_dict(self.base_purl),
-                "affected_version_range": self.affecting_vers,
-                "fixed_version_range": self.fixed_vers,
-            }
-        )
+        return {
+            "package": purl_to_dict(self.base_purl),
+            "affected_version_range": self.affecting_vers,
+            "fixed_version_range": self.fixed_vers,
+        }
+
+    def to_affected_package_data(self):
+        """Return `AffectedPackageV2` data from the impact."""
+        from vulnerabilities.importer import AffectedPackageV2
+
+        return AffectedPackageV2.from_dict(self.to_dict())
 
 
 class ToDoRelatedAdvisory(models.Model):
@@ -3003,10 +3028,12 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
     def with_vulnerability_counts(self):
         return self.annotate(
             vulnerability_count=Count(
-                "affected_by_advisories",
+                "affected_in_impacts__advisory",
+                distinct=True,
             ),
             patched_vulnerability_count=Count(
-                "fixing_advisories",
+                "fixed_in_impacts__advisory",
+                distinct=True,
             ),
         )
 
@@ -3024,7 +3051,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         }
 
         if fix:
-            filter_dict["fixing_advisories__isnull"] = False
+            filter_dict["fixed_in_impacts__isnull"] = False
 
         # TODO: why do we need distinct
         return PackageV2.objects.filter(**filter_dict).distinct()
@@ -3057,7 +3084,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
 
     def _vulnerable(self, vulnerable=True):
         """
-        Filter to select only vulnerable or non-vulnearble packages.
+        Filter to select only vulnerable or non-vulnerable packages.
         """
         return self.with_is_vulnerable().filter(is_vulnerable=vulnerable)
 
@@ -3065,14 +3092,16 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages that are vulnerable.
         """
-        return self.filter(affected_by_advisories__isnull=False)
+        return self.filter(affected_in_impacts__isnull=False)
 
     def with_is_vulnerable(self):
         """
         Annotate Package with ``is_vulnerable`` boolean attribute.
         """
         return self.annotate(
-            is_vulnerable=Exists(AdvisoryV2.objects.filter(affecting_packages__pk=OuterRef("pk")))
+            is_vulnerable=Exists(
+                ImpactedPackage.objects.filter(affecting_packages__pk=OuterRef("pk"))
+            )
         )
 
     def from_purl(self, purl: Union[PackageURL, str]):
@@ -3179,23 +3208,6 @@ class PackageV2(PackageURLMixin):
             PackageV2.objects.bulk_update(sorted_packages, fields=["version_rank"])
         return self.version_rank
 
-    @property
-    def fixed_package_details(self):
-        """
-        Return a mapping of vulnerabilities that affect this package and the next and
-        latest non-vulnerable versions.
-        """
-        package_details = {}
-        package_details["purl"] = PackageURL.from_string(self.purl)
-
-        next_non_vulnerable, latest_non_vulnerable = self.get_non_vulnerable_versions()
-        package_details["next_non_vulnerable"] = next_non_vulnerable
-        package_details["latest_non_vulnerable"] = latest_non_vulnerable
-
-        package_details["advisories"] = self.get_affecting_vulnerabilities()
-
-        return package_details
-
     def get_non_vulnerable_versions(self):
         """
         Return a tuple of the next and latest non-vulnerable versions as Package instance.
@@ -3207,17 +3219,12 @@ class PackageV2(PackageURLMixin):
             self, fix=False
         ).only_non_vulnerable()
 
-        later_non_vulnerable_versions = non_vulnerable_versions.filter(
-            version_rank__gt=self.version_rank
-        )
+        later_non_vulnerable = non_vulnerable_versions.filter(
+            version_rank__gte=self.version_rank
+        ).order_by("version_rank")
 
-        later_non_vulnerable_versions = list(later_non_vulnerable_versions)
-
-        if later_non_vulnerable_versions:
-            sorted_versions = later_non_vulnerable_versions
-            next_non_vulnerable = sorted_versions[0]
-            latest_non_vulnerable = sorted_versions[-1]
-            return next_non_vulnerable, latest_non_vulnerable
+        if later_non_vulnerable.exists():
+            return later_non_vulnerable.first(), later_non_vulnerable.last()
 
         return None, None
 
@@ -3235,65 +3242,6 @@ class PackageV2(PackageURLMixin):
     @cached_property
     def current_version(self):
         return self.version_class(self.version)
-
-    def get_affecting_vulnerabilities(self):
-        """
-        Return a list of vulnerabilities that affect this package together with information regarding
-        the versions that fix the vulnerabilities.
-        """
-        if self.version_rank == 0:
-            self.calculate_version_rank
-        package_details_advs = []
-
-        fixed_by_packages = PackageV2.objects.get_fixed_by_package_versions(self, fix=True)
-
-        package_advisories = self.affected_by_advisories.prefetch_related(
-            Prefetch(
-                "fixed_by_packages",
-                queryset=fixed_by_packages,
-                to_attr="fixed_packages",
-            )
-        )
-
-        for adv in package_advisories:
-            package_details_advs.append({"advisory": adv})
-            later_fixed_packages = []
-
-            for fixed_pkg in adv.fixed_by_packages.all():
-                if fixed_pkg not in fixed_by_packages:
-                    continue
-                fixed_version = self.version_class(fixed_pkg.version)
-                if fixed_version > self.current_version:
-                    later_fixed_packages.append(fixed_pkg)
-
-            next_fixed_package_vulns = []
-
-            sort_fixed_by_packages_by_version = []
-            if later_fixed_packages:
-                sort_fixed_by_packages_by_version = sorted(
-                    later_fixed_packages, key=lambda p: p.version_rank
-                )
-
-            fixed_by_pkgs = []
-
-            for vuln_details in package_details_advs:
-                if vuln_details["advisory"] != adv:
-                    continue
-                vuln_details["fixed_by_purl"] = []
-                vuln_details["fixed_by_purl_advisories"] = []
-
-                for fixed_by_pkg in sort_fixed_by_packages_by_version:
-                    fixed_by_package_details = {}
-                    fixed_by_purl = PackageURL.from_string(fixed_by_pkg.purl)
-                    next_fixed_package_vulns = list(fixed_by_pkg.affected_by_advisories.all())
-
-                    fixed_by_package_details["fixed_by_purl"] = fixed_by_purl
-                    fixed_by_package_details["fixed_by_purl_advisories"] = next_fixed_package_vulns
-                    fixed_by_pkgs.append(fixed_by_package_details)
-
-                    vuln_details["fixed_by_package_details"] = fixed_by_pkgs
-
-        return package_details_advs
 
 
 class AdvisoryExploit(models.Model):

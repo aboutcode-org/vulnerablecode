@@ -16,7 +16,7 @@ from packageurl import PackageURL
 from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.pipelines.v2_importers.curl_importer import CurlImporterPipeline
 from vulnerabilities.pipelines.v2_importers.curl_importer import get_cwe_from_curl_advisory
 from vulnerabilities.pipelines.v2_importers.curl_importer import parse_curl_advisory
@@ -74,9 +74,9 @@ def test_collect_advisories(mock_fetch, pipeline):
 
     # Affected package check
     pkg = advisory.affected_packages[0]
-    assert isinstance(pkg, AffectedPackage)
+    assert isinstance(pkg, AffectedPackageV2)
     assert pkg.package == PackageURL(type="generic", namespace="curl.se", name="curl")
-    assert pkg.fixed_version == SemverVersion("8.7.0")
+    assert str(pkg.fixed_version_range) == "vers:generic/8.7.0"
     assert "8.6.0" in str(pkg.affected_version_range)
 
     # References

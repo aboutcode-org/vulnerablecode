@@ -35,15 +35,13 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.pipes.univers_utils import get_exact_purls_v2
 
 
 def get_or_create_aliases(aliases: List) -> QuerySet:
     for alias in aliases:
         Alias.objects.get_or_create(alias=alias)
     return Alias.objects.filter(alias__in=aliases)
-
-
-from django.db.models import Q
 
 
 def get_or_create_advisory_aliases(aliases: List[str]) -> List[AdvisoryAlias]:
@@ -136,12 +134,14 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
     return advisory_obj
 
 
+@transaction.atomic
 def insert_advisory_v2(
     advisory: AdvisoryData,
     pipeline_id: str,
-    get_advisory_packages: Callable,
     logger: Callable = None,
 ):
+    from vulnerabilities.models import ImpactedPackage
+    from vulnerabilities.models import PackageV2
     from vulnerabilities.utils import compute_content_id
 
     advisory_obj = None
@@ -150,7 +150,6 @@ def insert_advisory_v2(
     severities = get_or_create_advisory_severities(severities=advisory.severities)
     weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
     content_id = compute_content_id(advisory_data=advisory)
-    affecting_packages, fixed_by_packages = get_advisory_packages(advisory_data=advisory)
     try:
         default_data = {
             "datasource_id": pipeline_id,
@@ -162,7 +161,7 @@ def insert_advisory_v2(
             "original_advisory_text": advisory.original_advisory_text,
         }
 
-        advisory_obj, _ = AdvisoryV2.objects.get_or_create(
+        advisory_obj, created = AdvisoryV2.objects.get_or_create(
             unique_content_id=content_id,
             url=advisory.url,
             defaults=default_data,
@@ -172,8 +171,6 @@ def insert_advisory_v2(
             "references": references,
             "severities": severities,
             "weaknesses": weaknesses,
-            "fixed_by_packages": fixed_by_packages,
-            "affecting_packages": affecting_packages,
         }
 
         for field_name, values in related_fields.items():
@@ -191,6 +188,29 @@ def insert_advisory_v2(
                 f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
                 level=logging.ERROR,
             )
+
+    if created:
+        for affected_pkg in advisory.affected_packages:
+            impact = ImpactedPackage.objects.create(
+                advisory=advisory_obj,
+                base_purl=str(affected_pkg.package),
+                affecting_vers=str(affected_pkg.affected_version_range),
+                fixed_vers=str(affected_pkg.fixed_version_range),
+            )
+            package_affected_purls, package_fixed_purls = get_exact_purls_v2(
+                affected_package=affected_pkg,
+                logger=logger,
+            )
+            affected_packages_v2 = [
+                PackageV2.objects.get_or_create_from_purl(purl=purl)[0]
+                for purl in package_affected_purls
+            ]
+            fixed_packages_v2 = [
+                PackageV2.objects.get_or_create_from_purl(purl=purl)[0]
+                for purl in package_fixed_purls
+            ]
+            impact.affecting_packages.add(*affected_packages_v2)
+            impact.fixed_by_packages.add(*fixed_packages_v2)
 
     return advisory_obj
 

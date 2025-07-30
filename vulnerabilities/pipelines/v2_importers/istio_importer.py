@@ -20,10 +20,11 @@ from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import GitHubVersionRange
 from univers.version_range import GolangVersionRange
+from univers.versions import GolangVersion
 from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_advisory_url
@@ -41,7 +42,6 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/istio/istio.io/blob/master/LICENSE"
     repo_url = "git+https://github.com/istio/istio.io"
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
@@ -80,23 +80,27 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             release_date = (
                 parser.parse(published_date).replace(tzinfo=pytz.UTC) if published_date else None
             )
-            constraints = self.get_version_constraints(data.get("releases", []))
-
+            semver_constraints = self.get_version_constraints(data.get("releases", []))
+            golang_constraints = self.get_version_constraints(
+                data.get("releases", []), GolangVersion
+            )
             cves = data.get("cves", [])
 
             affected_packages = []
-            if constraints:
-                affected_packages.extend(
-                    [
-                        AffectedPackage(
-                            package=PackageURL(type="golang", namespace="istio.io", name="istio"),
-                            affected_version_range=GolangVersionRange(constraints=constraints),
-                        ),
-                        AffectedPackage(
-                            package=PackageURL(type="github", namespace="istio", name="istio"),
-                            affected_version_range=GitHubVersionRange(constraints=constraints),
-                        ),
-                    ]
+            if semver_constraints:
+                affected_packages.append(
+                    AffectedPackageV2(
+                        package=PackageURL(type="github", namespace="istio", name="istio"),
+                        affected_version_range=GitHubVersionRange(constraints=semver_constraints),
+                    ),
+                )
+
+            if golang_constraints:
+                affected_packages.append(
+                    AffectedPackageV2(
+                        package=PackageURL(type="golang", namespace="istio.io", name="istio"),
+                        affected_version_range=GolangVersionRange(constraints=golang_constraints),
+                    ),
                 )
 
             title = data.get("title") or ""
@@ -127,37 +131,37 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         front_matter, _ = split_markdown_front_matter(text)
         return saneyaml.load(front_matter)
 
-    def get_version_constraints(self, releases: List[str]) -> List[VersionConstraint]:
+    def get_version_constraints(
+        self,
+        releases: List[str],
+        version_cls=SemverVersion,
+    ) -> List[VersionConstraint]:
         constraints = []
         for release in releases:
             release = release.strip()
 
             if "All releases prior" in release:
                 _, _, version = release.rpartition(" ")
-                constraints.append(
-                    VersionConstraint(version=SemverVersion(version), comparator="<")
-                )
+                constraints.append(VersionConstraint(version=version_cls(version), comparator="<"))
 
             elif "All releases" in release and "and later" in release:
                 version = release.replace("All releases", "").replace("and later", "").strip()
                 if is_release(version):
                     constraints.append(
-                        VersionConstraint(version=SemverVersion(version), comparator=">=")
+                        VersionConstraint(version=version_cls(version), comparator=">=")
                     )
 
             elif "to" in release:
                 lower, _, upper = release.partition("to")
                 constraints.append(
-                    VersionConstraint(version=SemverVersion(lower.strip()), comparator=">=")
+                    VersionConstraint(version=version_cls(lower.strip()), comparator=">=")
                 )
                 constraints.append(
-                    VersionConstraint(version=SemverVersion(upper.strip()), comparator="<=")
+                    VersionConstraint(version=version_cls(upper.strip()), comparator="<=")
                 )
 
             elif is_release(release):
-                constraints.append(
-                    VersionConstraint(version=SemverVersion(release), comparator="=")
-                )
+                constraints.append(VersionConstraint(version=version_cls(release), comparator="="))
 
         return constraints
 

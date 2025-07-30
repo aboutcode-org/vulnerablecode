@@ -12,7 +12,6 @@ import logging
 import traceback
 from pathlib import Path
 from typing import Iterable
-from typing import List
 from typing import Tuple
 
 import pytz
@@ -21,12 +20,10 @@ from dateutil import parser as dateparser
 from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
-from univers.version_range import VersionRange
 from univers.version_range import from_gitlab_native
-from univers.versions import Version
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import build_description
@@ -45,7 +42,6 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
@@ -177,27 +173,6 @@ def get_purl(package_slug, purl_type_by_gitlab_scheme, logger):
     return
 
 
-def extract_affected_packages(
-    affected_version_range: VersionRange,
-    fixed_versions: List[Version],
-    purl: PackageURL,
-) -> Iterable[AffectedPackage]:
-    """
-    Yield AffectedPackage objects, one for each fixed_version
-
-    In case of gitlab advisory data we get a list of fixed_versions and a affected_version_range.
-    Since we can not determine which package fixes which range.
-    We store the all the fixed_versions with the same affected_version_range in the advisory.
-    Later the advisory data is used to be inferred in the GitLabBasicImprover.
-    """
-    for fixed_version in fixed_versions:
-        yield AffectedPackage(
-            package=purl,
-            fixed_version=fixed_version,
-            affected_version_range=affected_version_range,
-        )
-
-
 def parse_gitlab_advisory(
     file, base_path, gitlab_scheme_by_purl_type, purl_type_by_gitlab_scheme, logger
 ):
@@ -276,7 +251,7 @@ def parse_gitlab_advisory(
     fixed_versions = gitlab_advisory.get("fixed_versions") or []
     affected_range = gitlab_advisory.get("affected_range")
     gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist", "conan"])
-    vrc: VersionRange = RANGE_CLASS_BY_SCHEMES[purl.type]
+    vrc = RANGE_CLASS_BY_SCHEMES[purl.type]
     gitlab_scheme = gitlab_scheme_by_purl_type[purl.type]
     try:
         if affected_range:
@@ -296,38 +271,33 @@ def parse_gitlab_advisory(
     for fixed_version in fixed_versions:
         try:
             fixed_version = vrc.version_class(fixed_version)
-            parsed_fixed_versions.append(fixed_version)
+            parsed_fixed_versions.append(fixed_version.string)
         except Exception as e:
             logger(
                 f"parse_yaml_file: fixed_version is not parsable`: {fixed_version!r} error: {e!r}\n {traceback.format_exc()}",
                 level=logging.ERROR,
             )
 
-    if parsed_fixed_versions:
-        affected_packages = list(
-            extract_affected_packages(
-                affected_version_range=affected_version_range,
-                fixed_versions=parsed_fixed_versions,
-                purl=purl,
-            )
-        )
-    else:
-        if not affected_version_range:
-            affected_packages = []
-        else:
-            affected_packages = [
-                AffectedPackage(
-                    package=purl,
-                    affected_version_range=affected_version_range,
-                )
-            ]
+    if affected_version_range:
+        vrc = affected_version_range.__class__
+
+    fixed_version_range = vrc.from_versions(parsed_fixed_versions)
+    if not fixed_version_range and not affected_version_range:
+        return
+
+    affected_package = AffectedPackageV2(
+        package=purl,
+        affected_version_range=affected_version_range,
+        fixed_version_range=fixed_version_range,
+    )
+
     return AdvisoryData(
         advisory_id=advisory_id,
         aliases=aliases,
         summary=summary,
         references_v2=references,
         date_published=date_published,
-        affected_packages=affected_packages,
+        affected_packages=[affected_package],
         weaknesses=cwe_list,
         url=advisory_url,
         original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),

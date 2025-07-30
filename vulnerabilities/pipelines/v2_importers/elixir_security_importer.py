@@ -17,7 +17,7 @@ from univers.version_constraint import VersionConstraint
 from univers.version_range import HexVersionRange
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import is_cve
@@ -26,7 +26,7 @@ from vulnerabilities.utils import load_yaml
 
 class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
-    Elixir Security Advisiories Importer Pipeline
+    Elixir Security Advisories Importer Pipeline
 
     This pipeline imports security advisories for elixir.
     """
@@ -35,7 +35,6 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC0-1.0"
     license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
     repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
@@ -118,7 +117,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         affected_packages = []
         if pkg_name:
             affected_packages.append(
-                AffectedPackage(
+                AffectedPackageV2(
                     package=PackageURL(type="hex", name=pkg_name),
                     affected_version_range=HexVersionRange(constraints=constraints),
                 )

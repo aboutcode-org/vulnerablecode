@@ -6,83 +6,62 @@
 {% load url_filters %}
 
 {% block title %}
-VulnerableCode Advisory Package Details - {{ advisory.advisory_id }}
+VulnerableCode Advisory Package Details - {{ advisoryv2.advisory_id }}
 {% endblock %}
 
 {% block content %}
 
-{% if advisory %}
-<section class="section pt-0">
-    <div class="details-container">
-        <article class="panel is-info panel-header-only">
-            <div class="panel-heading py-2 is-size-6">
-                Vulnerable and Fixing Package details for Advisory:
-                <span class="tag is-white custom">
-                    {{ advisory.advisory_id }}
-                </span>
-            </div>
-        </article>
-            <div id="tab-content">
-                <table class="table vcio-table width-100-pct mt-2">
-                    <thead>
-                        <tr>
-                            <th style="width: 50%;">Affected</th>
-                            <th>Fixed by</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for package in affected_packages %}
-                        <tr>
-                            <td>
-                                <a href="{{ package.get_absolute_url }}?search={{ package.purl }}" target="_self">{{ package.purl }}</a>
-                            </td>
-                            <td>
-
-                                {% for match in all_affected_fixed_by_matches %}
-                                    {% if match.affected_package == package %}
-                                        {% if match.matched_fixed_by_packages|length > 0 %}
-                                            {% for pkg in match.matched_fixed_by_packages %}
-                                                <a href="/packages/{{ pkg }}?search={{ pkg }}" target="_self">{{ pkg }}</a>
-                                                <br />
-                                            {% endfor %}
-                                        {% else %}
+{% if advisoryv2 %}
+    <section class="section pt-0">
+        <div class="details-container">
+            <article class="panel is-info panel-header-only">
+                <div class="panel-heading py-2 is-size-6">
+                    Vulnerable and Fixing Package details for Advisory:
+                    <span class="tag is-white custom">
+                        {{ advisoryv2.advisory_id }}
+                    </span>
+                </div>
+            </article>
+                <div id="tab-content">
+                    <table class="table vcio-table width-100-pct mt-2">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Affected</th>
+                                <th>Fixed by</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for impact in advisoryv2.impacted_packages.all %}
+                                <tr>
+                                    <td>
+                                        {% for package in impact.affecting_packages.all %}
+                                            <a href="{{ package.get_absolute_url }}?search={{ package.purl }}" target="_self">{{ package.purl }}</a>
+                                            <br />
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for package in impact.fixed_by_packages.all %}
+                                            <a href="{{ package.get_absolute_url }}?search={{ package.purl }}" target="_self">{{ package.purl }}</a>
+                                            <br />
+                                        {% empty %}
                                             <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="2">
-                                This vulnerability is not known to affect any packages.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-    </div>
-</section>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="2">
+                                        This vulnerability is not known to affect any packages.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </section>
 {% endif %}
 
 <script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
-
-<script>
-    function goToTab(tabName) {
-        const activeLink = document.querySelector('div.tabs.is-boxed li.is-active');
-        const activeTabContent = document.querySelector('div.tab-div.is-active');
-
-        activeLink.classList.remove('is-active');
-        activeTabContent.classList.remove('is-active');
-
-        const target_id = document.querySelector(`[data-tab='${tabName}']`);
-        const targetTabContent = document.querySelector(`[data-content='${tabName}']`);
-
-        target_id.classList.add('is-active');
-        targetTabContent.classList.add('is-active');
-    }
-</script>
 
 {% endblock %}

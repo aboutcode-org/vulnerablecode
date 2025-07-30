@@ -69,7 +69,14 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         date_published = cve_metadata.get("datePublished")
         if date_published:
-            date_published = dateparser.parse(date_published)
+            date_published = dateparser.parse(
+                date_published,
+                settings={
+                    "TIMEZONE": "UTC",
+                    "RETURN_AS_TIMEZONE_AWARE": True,
+                    "TO_TIMEZONE": "UTC",
+                },
+            )
 
         # Extract containers
         containers = raw_data.get("containers", {})

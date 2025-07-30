@@ -37,8 +37,8 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
 
     def collect_and_store_fix_commits(self):
         affected_advisories = (
-            AdvisoryV2.objects.filter(affecting_packages__isnull=False)
-            .prefetch_related("affecting_packages")
+            AdvisoryV2.objects.filter(impacted_packages__affecting_packages__isnull=False)
+            .prefetch_related("impacted_packages__affecting_packages", "references")
             .distinct()
         )
 
@@ -61,23 +61,18 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
 
                 # Skip if already processed
                 if is_vcs_url_already_processed(commit_id=vcs_url):
-                    self.log(
-                        f"Skipping already processed reference: {reference.url} with VCS URL {vcs_url}"
-                    )
                     continue
                 # check if vcs_url has commit
-                for package in adv.affecting_packages.all():
-                    code_fix, created = CodeFixV2.objects.get_or_create(
-                        commits=[vcs_url],
-                        advisory=adv,
-                        affected_package=package,
-                    )
-
-                    if created:
-                        created_fix_count += 1
-                        self.log(
-                            f"Created CodeFix entry for reference: {reference.url} with VCS URL {vcs_url}"
+                for impact in adv.impacted_packages.all():
+                    for package in impact.affecting_packages.all():
+                        code_fix, created = CodeFixV2.objects.get_or_create(
+                            commits=[vcs_url],
+                            advisory=adv,
+                            affected_package=package,
                         )
+
+                        if created:
+                            created_fix_count += 1
 
         self.log(f"Successfully created {created_fix_count:,d} CodeFix entries.")
 

@@ -28,7 +28,6 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     url = "https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip"
     spdx_license_expression = "CC-BY-4.0"
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):

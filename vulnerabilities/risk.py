@@ -122,8 +122,8 @@ def compute_package_risk_v2(package):
     and determining the associated risk.
     """
     result = []
-    for advisory in package.affected_by_advisories.all():
-        if risk := advisory.risk_score:
+    for impact in package.affected_in_impacts.all():
+        if risk := impact.advisory.risk_score:
             result.append(float(risk))
 
     if not result:

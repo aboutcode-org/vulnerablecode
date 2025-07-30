@@ -14,6 +14,7 @@ import pytest
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines.v2_improvers.compute_package_risk import ComputePackageRiskPipeline
 from vulnerabilities.severity_systems import CVSSV3
@@ -54,8 +55,8 @@ def test_simple_risk_pipeline():
     weaknesses = AdvisoryWeakness.objects.create(cwe_id=119)
     adv.weaknesses.add(weaknesses)
 
-    adv.affecting_packages.add(pkg)
-    adv.save()
+    impact = ImpactedPackage.objects.create(advisory=adv)
+    impact.affecting_packages.add(pkg)
 
     improver = ComputePackageRiskPipeline()
     improver.execute()

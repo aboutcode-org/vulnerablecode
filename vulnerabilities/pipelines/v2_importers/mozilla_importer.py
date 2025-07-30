@@ -18,10 +18,10 @@ from dateutil import parser as date_parser
 from fetchcode.vcs import fetch_via_vcs
 from markdown import markdown
 from packageurl import PackageURL
-from univers.versions import SemverVersion
+from univers.version_range import GenericVersionRange
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -189,7 +189,7 @@ def extract_description_from_html(md_text: str) -> str:
     return "\n".join(description_parts).strip()
 
 
-def parse_affected_packages(pkgs: list) -> Iterable[AffectedPackage]:
+def parse_affected_packages(pkgs: list) -> Iterable[AffectedPackageV2]:
     for pkg in pkgs:
         if not pkg:
             continue
@@ -198,14 +198,14 @@ def parse_affected_packages(pkgs: list) -> Iterable[AffectedPackage]:
         if version.count(".") == 3:
             continue  # invalid SemVer
         try:
-            fixed_version = SemverVersion(version)
+            fixed_version_range = GenericVersionRange.from_versions([version])
         except Exception:
             logger.debug(f"Invalid version '{version}' for package '{name}'")
             continue
 
-        yield AffectedPackage(
+        yield AffectedPackageV2(
             package=PackageURL(type="mozilla", name=name),
-            fixed_version=fixed_version,
+            fixed_version_range=fixed_version_range,
         )
 
 

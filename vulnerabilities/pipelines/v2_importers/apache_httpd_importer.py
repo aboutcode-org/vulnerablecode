@@ -22,7 +22,7 @@ from univers.version_range import ApacheVersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -151,7 +151,6 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     base_url = "https://httpd.apache.org/security/json/"
-    unfurl_version_ranges = True
 
     links = []
 
@@ -219,7 +218,6 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             "pre_ajp_proxy",
         ]
     )
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
@@ -292,7 +290,7 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         affected_version_range = self.to_version_ranges(versions_data, fixed_versions)
         if affected_version_range:
             affected_packages.append(
-                AffectedPackage(
+                AffectedPackageV2(
                     package=PackageURL(
                         type="apache",
                         name="httpd",

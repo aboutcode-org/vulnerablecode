@@ -8,6 +8,9 @@
 #
 
 
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import as_completed
+
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
@@ -25,6 +28,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 
+from vulnerabilities.importers import LIVE_IMPORTERS_REGISTRY
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
@@ -1225,3 +1229,83 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(
             AdvisoryPackageV2Serializer(qs, many=True, context={"request": request}).data
         )
+
+
+class LiveEvaluationSerializer(serializers.Serializer):
+    purl_string = serializers.CharField(help_text="PackageURL to evaluate")
+    no_threading = serializers.BooleanField(required=False, default=False)
+
+
+class LiveEvaluationViewSet(viewsets.GenericViewSet):
+    serializer_class = LiveEvaluationSerializer
+
+    @extend_schema(
+        request=LiveEvaluationSerializer,
+        responses={
+            202: {"description": "Live evaluation done successfully"},
+            400: {"description": "Invalid request"},
+            500: {"description": "Internal server error"},
+        },
+    )
+    @action(detail=False, methods=["post"])
+    def evaluate(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        purl_string = serializer.validated_data.get("purl_string")
+        no_threading = serializer.validated_data.get("no_threading", False)
+
+        try:
+            purl = PackageURL.from_string(purl_string) if purl_string else None
+            if not purl:
+                return Response({"error": "Invalid PackageURL"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(
+                {"error": f"Invalid PackageURL: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        importers = [
+            importer
+            for importer in LIVE_IMPORTERS_REGISTRY.values()
+            if hasattr(importer, "supported_types")
+            and purl.type in getattr(importer, "supported_types", [])
+        ]
+
+        if not importers:
+            return Response(
+                {"error": f"No live importers found for purl type '{purl.type}'"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        results = []
+
+        def run_importer(importer):
+            importer_name = getattr(importer, "pipeline_id", importer.__name__)
+            response_data = {"importer": importer_name, "purl": purl_string, "steps_completed": []}
+            try:
+                pipeline_instance = importer(purl=purl)
+                status_code, error = pipeline_instance.execute()
+                if status_code != 0:
+                    response_data["error"] = f"Importer {importer_name} failed: {error}"
+                else:
+                    response_data["steps_completed"].append("import")
+            except Exception as e:
+                response_data["error"] = f"Error running importer {importer_name}: {str(e)}"
+            return response_data
+
+        if not no_threading and len(importers) > 1:
+            with ThreadPoolExecutor(max_workers=len(importers)) as executor:
+                future_to_importer = {
+                    executor.submit(run_importer, importer): importer for importer in importers
+                }
+                for future in as_completed(future_to_importer):
+                    results.append(future.result())
+        else:
+            for importer in importers:
+                results.append(run_importer(importer))
+
+        return Response(results, status=status.HTTP_202_ACCEPTED)

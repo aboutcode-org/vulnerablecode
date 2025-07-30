@@ -905,3 +905,68 @@ class AdvisoriesPackageV2Tests(APITestCase):
             response = self.client.get(url)
         assert response.status_code == 200
         assert "pkg:pypi/sample@1.0.0" in response.data
+
+
+class LiveEvaluationAPITest(APITestCase):
+    def setUp(self):
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.url = "/api/v2/live-evaluation/evaluate"
+
+    @patch("vulnerabilities.api_v2.LIVE_IMPORTERS_REGISTRY")
+    def test_evaluate_success(self, mock_registry):
+        class MockImporter:
+            pipeline_id = "dummy"
+            supported_types = ["pypi"]
+
+            def __init__(self, purl=None):
+                pass
+
+            def execute(self):
+                return 0, None
+
+        mock_registry.values.return_value = [MockImporter]
+        data = {"purl_string": "pkg:pypi/django@3.2"}
+        response = self.client.post(self.url, data, format="json")
+        assert response.status_code == 202
+        assert isinstance(response.data, list)
+        assert response.data[0]["importer"] == "dummy"
+        assert response.data[0]["purl"] == "pkg:pypi/django@3.2"
+        assert "steps_completed" in response.data[0]
+        assert "import" in response.data[0]["steps_completed"]
+
+    @patch("vulnerabilities.api_v2.LIVE_IMPORTERS_REGISTRY")
+    def test_evaluate_no_importer_found(self, mock_registry):
+        class MockImporter:
+            pipeline_id = "dummy"
+            supported_types = ["npm"]
+
+        mock_registry.values.return_value = [MockImporter]
+        data = {"purl_string": "pkg:pypi/django@3.2"}
+        response = self.client.post(self.url, data, format="json")
+        assert response.status_code == 400
+        assert "No live importers found" in response.data["error"]
+
+    def test_evaluate_invalid_purl(self):
+        data = {"purl_string": "not_a_valid_purl"}
+        response = self.client.post(self.url, data, format="json")
+        assert response.status_code == 400
+        assert "Invalid PackageURL" in response.data["error"]
+
+    @patch("vulnerabilities.api_v2.LIVE_IMPORTERS_REGISTRY")
+    def test_evaluate_no_threading(self, mock_registry):
+        class MockImporter:
+            pipeline_id = "dummy"
+            supported_types = ["pypi"]
+
+            def __init__(self, purl=None):
+                pass
+
+            def execute(self):
+                return 0, None
+
+        mock_registry.values.return_value = [MockImporter]
+        data = {"purl_string": "pkg:pypi/django@3.2", "no_threading": True}
+        response = self.client.post(self.url, data, format="json")
+        assert response.status_code == 202
+        assert isinstance(response.data, list)
+        assert response.data[0]["importer"] == "dummy"

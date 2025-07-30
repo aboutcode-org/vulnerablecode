@@ -134,6 +134,7 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
     return advisory_obj
 
 
+@transaction.atomic
 def insert_advisory_v2(
     advisory: AdvisoryData,
     pipeline_id: str,

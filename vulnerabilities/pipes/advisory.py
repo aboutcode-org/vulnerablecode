@@ -327,7 +327,7 @@ def import_advisory(
 
 
 def advisories_checksum(advisories: Union[Advisory, List[Advisory]]) -> str:
-    if isinstance(advisories, Advisory):
+    if isinstance(advisories, Advisory) or isinstance(advisories, AdvisoryV2):
         advisories = [advisories]
 
     contents = sorted([advisory.unique_content_id for advisory in advisories])

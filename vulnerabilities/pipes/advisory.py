@@ -327,18 +327,7 @@ def import_advisory(
 
 
 def advisories_checksum(advisories: Union[Advisory, List[Advisory]]) -> str:
-    if isinstance(advisories, Advisory):
-        advisories = [advisories]
-
-    contents = sorted([advisory.unique_content_id for advisory in advisories])
-    combined_contents = "".join(contents)
-
-    checksum = hashlib.sha1(combined_contents.encode())
-    return checksum.hexdigest()
-
-
-def advisories_checksum_v2(advisories: Union[AdvisoryV2, List[AdvisoryV2]]) -> str:
-    if isinstance(advisories, AdvisoryV2):
+    if isinstance(advisories, Advisory) or isinstance(advisories, AdvisoryV2):
         advisories = [advisories]
 
     contents = sorted([advisory.unique_content_id for advisory in advisories])

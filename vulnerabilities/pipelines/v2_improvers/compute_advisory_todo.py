@@ -18,7 +18,7 @@ from vulnerabilities.models import AdvisoryToDoV2
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ToDoRelatedAdvisoryV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.pipes.advisory import advisories_checksum_v2
+from vulnerabilities.pipes.advisory import advisories_checksum
 
 
 class ComputeToDo(VulnerableCodePipeline):
@@ -36,7 +36,9 @@ class ComputeToDo(VulnerableCodePipeline):
     def compute_individual_advisory_todo(self):
         """Create ToDos for missing summary, affected and fixed packages."""
 
-        advisories = AdvisoryV2.objects.all()
+        advisories = AdvisoryV2.objects.all().prefetch_related(
+            "impacted_packages",
+        )
         advisories_count = advisories.count()
         advisory_relation_to_create = {}
         todo_to_create = []
@@ -52,7 +54,7 @@ class ComputeToDo(VulnerableCodePipeline):
             progress_step=1,
         )
         for advisory in progress.iter(advisories.iterator(chunk_size=5000)):
-            advisory_todo_id = advisories_checksum_v2(advisories=advisory)
+            advisory_todo_id = advisories_checksum(advisories=advisory)
             check_missing_summary(
                 advisory=advisory,
                 todo_id=advisory_todo_id,
@@ -106,9 +108,15 @@ class ComputeToDo(VulnerableCodePipeline):
             progress_step=1,
         )
         for alias in progress.iter(aliases.iterator(chunk_size=2000)):
-            advisories = alias.advisories.exclude(
-                advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES"
-            ).distinct()
+            advisories = (
+                alias.advisories.exclude(
+                    advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES"
+                )
+                .distinct()
+                .prefetch_related(
+                    "impacted_packages",
+                )
+            )
 
             check_conflicting_affected_and_fixed_by_packages_for_alias(
                 advisories=advisories,
@@ -209,11 +217,11 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
     Add appropriate AdvisoryToDo for conflicting affected/fixed packages.
 
     Compute the comparison matrix for the given set of advisories. Iterate through each advisory
-    and compute and store fixed versions and affected versionrange for each advisory,
+    and compute and store fixed versionsrange and affected versionrange for each advisory,
     keyed by purl.
 
     Use the matrix to determine conflicts in affected/fixed versions for each purl. If for any purl
-    there is more than one set of fixed versions or more than one set of affected versions,
+    there is more than one set of fixed versionrange or more than one set of affected versionrange,
     it means the advisories have conflicting opinions on the fixed or affected packages.
 
     Example of comparison matrix:
@@ -224,7 +232,7 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
                     Advisory2: frozenset(...),
                 },
                 "fixed": {
-                    Advisory1: frozenset(Version1, Version2),
+                    Advisory1: frozenset(VersionRange1, VersionRange2),
                     Advisory2: frozenset(...),
                 },
             },
@@ -245,9 +253,7 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
     for advisory in advisories:
         advisory_id = advisory.unique_content_id
         for impacted in advisory.impacted_packages.all() or []:
-            if not impacted:
-                continue
-            affected_purl = str(impacted.base_purl)
+            affected_purl = impacted.base_purl
 
             initialize_sub_matrix(
                 matrix=matrix,
@@ -255,11 +261,11 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
                 advisory=advisory,
             )
 
-            if fixed_version := impacted.fixed_vers:
-                matrix[affected_purl]["fixed"][advisory_id].add(str(fixed_version))
+            if fixed_version_range := impacted.fixed_vers:
+                matrix[affected_purl]["fixed"][advisory_id].add(fixed_version_range)
 
-            if impacted.affecting_vers:
-                matrix[affected_purl]["affected"][advisory_id].add(str(impacted.affecting_vers))
+            if affecting_version_range := impacted.affecting_vers:
+                matrix[affected_purl]["affected"][advisory_id].add(affecting_version_range)
 
     has_conflicting_affected_packages = False
     has_conflicting_fixed_package = False
@@ -269,17 +275,17 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
         impacted = board.get("affected", {}).values()
 
         unique_set_of_affected_vers = {frozenset(vers) for vers in impacted}
-        unique_set_of_fixed_versions = {frozenset(versions) for versions in fixed}
+        unique_set_of_fixed_vers = {frozenset(vers) for vers in fixed}
 
         if len(unique_set_of_affected_vers) > 1:
             has_conflicting_affected_packages = True
             messages.append(
                 f"{cve}: {purl} with conflicting affected versions {unique_set_of_affected_vers}"
             )
-        if len(unique_set_of_fixed_versions) > 1:
+        if len(unique_set_of_fixed_vers) > 1:
             has_conflicting_fixed_package = True
             messages.append(
-                f"{cve}: {purl} with conflicting fixed version {unique_set_of_fixed_versions}"
+                f"{cve}: {purl} with conflicting fixed version {unique_set_of_fixed_vers}"
             )
 
     if not has_conflicting_affected_packages and not has_conflicting_fixed_package:
@@ -296,7 +302,7 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
         "Conflict matrix": matrix,
     }
 
-    todo_id = advisories_checksum_v2(advisories)
+    todo_id = advisories_checksum(advisories)
     todo = AdvisoryToDoV2(
         related_advisories_id=todo_id,
         issue_type=issue_type,

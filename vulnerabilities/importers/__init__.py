@@ -63,6 +63,7 @@ from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
     [
+        archlinux_importer_v2.ArchLinuxImporterPipeline,
         nvd_importer_v2.NVDImporterPipeline,
         elixir_security_importer_v2.ElixirSecurityImporterPipeline,
         npm_importer_v2.NpmImporterPipeline,
@@ -112,6 +113,5 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
-        archlinux_importer_v2.ArchLinuxImporterPipeline,
     ]
 )

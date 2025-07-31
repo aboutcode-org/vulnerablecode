@@ -12,10 +12,9 @@ from typing import Mapping
 
 from packageurl import PackageURL
 from univers.version_range import ArchLinuxVersionRange
-from univers.versions import ArchLinuxVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import fetch_response
@@ -64,15 +63,15 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_version_range = (
                 ArchLinuxVersionRange.from_versions([affected]) if affected else None
             )
-            fixed_version = ArchLinuxVersion(fixed) if fixed else None
-            affected_package = AffectedPackage(
+            fixed_version_range = ArchLinuxVersionRange.from_versions([fixed]) if fixed else None
+            affected_package = AffectedPackageV2(
                 package=PackageURL(
                     name=name,
                     type="alpm",
                     namespace="archlinux",
                 ),
                 affected_version_range=affected_version_range,
-                fixed_version=fixed_version,
+                fixed_version_range=fixed_version_range,
             )
             affected_packages.append(affected_package)
 
@@ -91,7 +90,7 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             )
 
         return AdvisoryData(
-            advisory_id=f"alpm/{avg_name}",
+            advisory_id=avg_name,
             aliases=aliases,
             summary=summary,
             references_v2=references,

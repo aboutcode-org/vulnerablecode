@@ -19,7 +19,7 @@ TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "archlinux"
 
 
 class TestArchLinuxImporterPipeline(TestCase):
-    def test_to_advisories_with_summary(self):
+    def test_to_archlinux_advisories_v2(self):
         archlinux_advisory_path = TEST_DATA / "archlinux-multi.json"
 
         data = json.loads(archlinux_advisory_path.read_text(encoding="utf-8"))

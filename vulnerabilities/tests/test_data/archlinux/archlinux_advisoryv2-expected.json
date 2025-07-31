@@ -15,7 +15,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:alpm/2.3.0-1",
-        "fixed_version": "2.4.0-1"
+        "fixed_version_range": "vers:alpm/2.4.0-1"
       }
     ],
     "references": [],
@@ -41,7 +41,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:alpm/2.36.3-1",
-        "fixed_version": "2.36.4-1"
+        "fixed_version_range": "vers:alpm/2.36.4-1"
       }
     ],
     "references": [],
@@ -66,7 +66,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:alpm/1.0.6-5",
-        "fixed_version": "1.0.6-6"
+        "fixed_version_range": "vers:alpm/1.0.6-6"
       }
     ],
     "references": [],

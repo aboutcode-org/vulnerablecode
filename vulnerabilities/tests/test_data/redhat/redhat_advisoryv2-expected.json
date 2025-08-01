@@ -1,5 +1,6 @@
 [
   {
+    "advisory_id": "RHBA-2024:11505",
     "aliases": [
       "CVE-2023-2295",
       "CVE-2023-23009",
@@ -193,6 +194,7 @@
     "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2025/rhba-2024_11505.json"
   },
   {
+    "advisory_id": "RHBA-2025:0409",
     "aliases": [
       "CVE-2024-45338",
       "CVE-2024-52798",
@@ -272,6 +274,7 @@
     "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2025/rhba-2025_0409.json"
   },
   {
+    "advisory_id": "RHBA-2025:1079",
     "aliases": [
       "CVE-2020-11023"
     ],
@@ -306,6 +309,7 @@
     "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2025/rhba-2025_1079.json"
   },
   {
+    "advisory_id": "RHEA-2025:2418",
     "aliases": [
       "CVE-2023-34440",
       "CVE-2023-43758",
@@ -364,6 +368,7 @@
     "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2025/rhea-2025_2418.json"
   },
   {
+    "advisory_id": "RHSA-2010:0002",
     "aliases": [
       "CVE-2009-3720"
     ],
@@ -692,6 +697,7 @@
     "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2010/rhsa-2010_0002.json"
   },
   {
+    "advisory_id": "RHSA-2025:0002",
     "aliases": [
       "CVE-2024-53899"
     ],

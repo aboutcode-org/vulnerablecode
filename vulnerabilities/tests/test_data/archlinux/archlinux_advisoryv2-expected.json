@@ -1,5 +1,6 @@
 [
   {
+    "advisory_id": "AVG-2781",
     "aliases": [
       "CVE-2022-29217"
     ],
@@ -31,6 +32,7 @@
     "url": "https://security.archlinux.org/AVG-2781.json"
   },
   {
+    "advisory_id": "AVG-2780",
     "aliases": [
       "CVE-2022-26710",
       "CVE-2022-22677",
@@ -64,6 +66,7 @@
     "url": "https://security.archlinux.org/AVG-2780.json"
   },
   {
+    "advisory_id": "AVG-4",
     "aliases": [
       "CVE-2016-3189",
       "ASA-201702-19"

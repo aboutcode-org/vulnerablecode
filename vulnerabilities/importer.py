@@ -461,12 +461,14 @@ class AdvisoryData:
 
     def to_dict(self):
         is_adv_v2 = (
-            self.severities
+            self.advisory_id
+            or self.severities
             or self.references_v2
             or (self.affected_packages and isinstance(self.affected_packages[0], AffectedPackageV2))
         )
         if is_adv_v2:
             return {
+                "advisory_id": self.advisory_id,
                 "aliases": self.aliases,
                 "summary": self.summary,
                 "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],

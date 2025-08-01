@@ -187,6 +187,8 @@ class ReferenceV2:
         reference_id = get_reference_id(url)
         if "GHSA-" in reference_id.upper():
             return cls(reference_id=reference_id, url=url)
+        if reference_id.startswith(("RHSA-", "RHEA-", "RHBA-")):
+            return cls(reference_id=reference_id, url=url)
         if is_cve(reference_id):
             return cls(url=url, reference_id=reference_id.upper())
         return cls(url=url)

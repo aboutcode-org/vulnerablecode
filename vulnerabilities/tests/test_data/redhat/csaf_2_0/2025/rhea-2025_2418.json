@@ -1,0 +1,734 @@
+{
+  "document": {
+    "aggregate_severity": {
+      "namespace": "https://access.redhat.com/security/updates/classification/",
+      "text": "Important"
+    },
+    "category": "csaf_security_advisory",
+    "csaf_version": "2.0",
+    "distribution": {
+      "text": "Copyright © Red Hat, Inc. All rights reserved.",
+      "tlp": {
+        "label": "WHITE",
+        "url": "https://www.first.org/tlp/"
+      }
+    },
+    "lang": "en",
+    "notes": [
+      {
+        "category": "summary",
+        "text": "An update for microcode_ctl is now available for Red Hat Enterprise Linux 9.4 Extended Update Support.",
+        "title": "Topic"
+      },
+      {
+        "category": "general",
+        "text": "The microcode_ctl packages provide microcode updates for Intel and AMD processors.\n\nBug Fix(es) and Enhancement(s):\n\n* microcode_ctl: Improper input validation in UEFI firmware [rhel-9.4.z] (JIRA:RHEL-79231)\n\n* microcode_ctl: Improper input validation in UEFI firmware CseVariableStorageSmm [rhel-9.4.z] (JIRA:RHEL-79233)\n\n* microcode_ctl: Improper input validation in UEFI firmware [rhel-9.4.z] (JIRA:RHEL-79236)\n\n* microcode_ctl: Improper input validation in UEFI firmware [rhel-9.4.z] (JIRA:RHEL-79247)\n\n* microcode_ctl: Improper input validation in XmlCli feature for UEFI firmware [rhel-9.4.z] (JIRA:RHEL-79248)",
+        "title": "Details"
+      },
+      {
+        "category": "legal_disclaimer",
+        "text": "This content is licensed under the Creative Commons Attribution 4.0 International License (https://creativecommons.org/licenses/by/4.0/). If you distribute this content, or a modified version of it, you must provide attribution to Red Hat Inc. and provide a link to the original.",
+        "title": "Terms of Use"
+      }
+    ],
+    "publisher": {
+      "category": "vendor",
+      "contact_details": "https://access.redhat.com/security/team/contact/",
+      "issuing_authority": "Red Hat Product Security is responsible for vulnerability handling across all Red Hat products and services.",
+      "name": "Red Hat Product Security",
+      "namespace": "https://www.redhat.com"
+    },
+    "references": [
+      {
+        "category": "self",
+        "summary": "https://access.redhat.com/errata/RHEA-2025:2418",
+        "url": "https://access.redhat.com/errata/RHEA-2025:2418"
+      },
+      {
+        "category": "self",
+        "summary": "Canonical URL",
+        "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2025/rhea-2025_2418.json"
+      }
+    ],
+    "title": "Red Hat Enhancement Advisory: microcode_ctl bug fix and enhancement update",
+    "tracking": {
+      "current_release_date": "2025-07-05T07:51:48+00:00",
+      "generator": {
+        "date": "2025-07-05T07:51:48+00:00",
+        "engine": {
+          "name": "Red Hat SDEngine",
+          "version": "4.6.3"
+        }
+      },
+      "id": "RHEA-2025:2418",
+      "initial_release_date": "2025-03-06T00:26:51+00:00",
+      "revision_history": [
+        {
+          "date": "2025-03-06T00:26:51+00:00",
+          "number": "1",
+          "summary": "Initial version"
+        },
+        {
+          "date": "2025-03-06T00:26:51+00:00",
+          "number": "2",
+          "summary": "Last updated version"
+        },
+        {
+          "date": "2025-07-05T07:51:48+00:00",
+          "number": "3",
+          "summary": "Last generated version"
+        }
+      ],
+      "status": "final",
+      "version": "3"
+    }
+  },
+  "product_tree": {
+    "branches": [
+      {
+        "branches": [
+          {
+            "branches": [
+              {
+                "category": "product_name",
+                "name": "Red Hat Enterprise Linux BaseOS EUS (v.9.4)",
+                "product": {
+                  "name": "Red Hat Enterprise Linux BaseOS EUS (v.9.4)",
+                  "product_id": "BaseOS-9.4.0.Z.EUS",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/o:redhat:rhel_eus:9.4::baseos"
+                  }
+                }
+              }
+            ],
+            "category": "product_family",
+            "name": "Red Hat Enterprise Linux"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "microcode_ctl-4:20230808-2.20250211.1.el9_4.src",
+                "product": {
+                  "name": "microcode_ctl-4:20230808-2.20250211.1.el9_4.src",
+                  "product_id": "microcode_ctl-4:20230808-2.20250211.1.el9_4.src",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/microcode_ctl@20230808-2.20250211.1.el9_4?arch=src&epoch=4"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "src"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+                "product": {
+                  "name": "microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+                  "product_id": "microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/microcode_ctl@20230808-2.20250211.1.el9_4?arch=noarch&epoch=4"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "noarch"
+          }
+        ],
+        "category": "vendor",
+        "name": "Red Hat"
+      }
+    ],
+    "relationships": [
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch as a component of Red Hat Enterprise Linux BaseOS EUS (v.9.4)",
+          "product_id": "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch"
+        },
+        "product_reference": "microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+        "relates_to_product_reference": "BaseOS-9.4.0.Z.EUS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "microcode_ctl-4:20230808-2.20250211.1.el9_4.src as a component of Red Hat Enterprise Linux BaseOS EUS (v.9.4)",
+          "product_id": "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+        },
+        "product_reference": "microcode_ctl-4:20230808-2.20250211.1.el9_4.src",
+        "relates_to_product_reference": "BaseOS-9.4.0.Z.EUS"
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "cve": "CVE-2023-34440",
+      "cwe": {
+        "id": "CWE-20",
+        "name": "Improper Input Validation"
+      },
+      "discovery_date": "2025-02-12T22:03:06.770916+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2345401"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "An improper input validation flaw was found in UEFI firmware. Some Intel(R) processors may allow a privileged user to enable privilege escalation via local access.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "microcode_ctl: Improper input validation in UEFI firmware",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "Red Hat has given this vulnerability the impact rating of Important due to the potential of escalating privileges locally.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2023-34440"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2345401",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2345401"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2023-34440",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2023-34440"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2023-34440",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-34440"
+        },
+        {
+          "category": "external",
+          "summary": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html",
+          "url": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html"
+        }
+      ],
+      "release_date": "2025-02-12T21:19:25.772000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-03-06T00:26:51+00:00",
+          "details": "For details on how to apply this update, which includes the changes described in this advisory, refer to:\n\nhttps://access.redhat.com/articles/11258",
+          "product_ids": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHEA-2025:2418"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "HIGH",
+            "attackVector": "LOCAL",
+            "availabilityImpact": "HIGH",
+            "baseScore": 7.5,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "HIGH",
+            "scope": "CHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "microcode_ctl: Improper input validation in UEFI firmware"
+    },
+    {
+      "cve": "CVE-2023-43758",
+      "cwe": {
+        "id": "CWE-20",
+        "name": "Improper Input Validation"
+      },
+      "discovery_date": "2025-02-12T22:03:47.880987+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2345416"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "An improper input validation flaw was found in UEFI firmware. Some Intel(R) processors may allow a privileged user to enable privilege escalation via local access.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "microcode_ctl: Improper input validation in UEFI firmware",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "Red Hat has given this vulnerability the impact rating of Important due to the potential of escalating privileges locally.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2023-43758"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2345416",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2345416"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2023-43758",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2023-43758"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2023-43758",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-43758"
+        },
+        {
+          "category": "external",
+          "summary": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html",
+          "url": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html"
+        }
+      ],
+      "release_date": "2025-02-12T21:19:24.119000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-03-06T00:26:51+00:00",
+          "details": "For details on how to apply this update, which includes the changes described in this advisory, refer to:\n\nhttps://access.redhat.com/articles/11258",
+          "product_ids": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHEA-2025:2418"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "LOCAL",
+            "availabilityImpact": "HIGH",
+            "baseScore": 8.2,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "HIGH",
+            "scope": "CHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:C/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "microcode_ctl: Improper input validation in UEFI firmware"
+    },
+    {
+      "cve": "CVE-2024-24582",
+      "cwe": {
+        "id": "CWE-20",
+        "name": "Improper Input Validation"
+      },
+      "discovery_date": "2025-02-12T22:01:54.615445+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2345376"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "An improper input validation flaw was found in the XmlCli feature for UEFI firmware. Some Intel(R) processors may allow a privileged user to enable privilege escalation via local access.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "microcode_ctl: Improper input validation in XmlCli feature for UEFI firmware",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "Red Hat has given this vulnerability the impact rating of Important due to the potential of escalating privileges locally.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-24582"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2345376",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2345376"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-24582",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-24582"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-24582",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-24582"
+        },
+        {
+          "category": "external",
+          "summary": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html",
+          "url": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html"
+        }
+      ],
+      "release_date": "2025-02-12T21:19:27.722000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-03-06T00:26:51+00:00",
+          "details": "For details on how to apply this update, which includes the changes described in this advisory, refer to:\n\nhttps://access.redhat.com/articles/11258",
+          "product_ids": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHEA-2025:2418"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "HIGH",
+            "attackVector": "LOCAL",
+            "availabilityImpact": "HIGH",
+            "baseScore": 7.5,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "HIGH",
+            "scope": "CHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "microcode_ctl: Improper input validation in XmlCli feature for UEFI firmware"
+    },
+    {
+      "cve": "CVE-2024-28127",
+      "cwe": {
+        "id": "CWE-20",
+        "name": "Improper Input Validation"
+      },
+      "discovery_date": "2025-02-12T22:01:41.690847+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2345370"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "An improper input validation flaw was found in UEFI firmware. Some Intel(R) Processors may allow a privileged user to enable privilege escalation via local access.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "microcode_ctl: Improper input validation in UEFI firmware",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "Red Hat has given this vulnerability the impact rating of Important due to the potential of escalating privileges locally.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-28127"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2345370",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2345370"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-28127",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-28127"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-28127",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-28127"
+        },
+        {
+          "category": "external",
+          "summary": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html",
+          "url": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html"
+        }
+      ],
+      "release_date": "2025-02-12T21:19:31.374000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-03-06T00:26:51+00:00",
+          "details": "For details on how to apply this update, which includes the changes described in this advisory, refer to:\n\nhttps://access.redhat.com/articles/11258",
+          "product_ids": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHEA-2025:2418"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "HIGH",
+            "attackVector": "LOCAL",
+            "availabilityImpact": "HIGH",
+            "baseScore": 7.5,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "HIGH",
+            "scope": "CHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "microcode_ctl: Improper input validation in UEFI firmware"
+    },
+    {
+      "cve": "CVE-2024-29214",
+      "cwe": {
+        "id": "CWE-20",
+        "name": "Improper Input Validation"
+      },
+      "discovery_date": "2025-02-12T22:01:27.296420+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2345365"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "Improper input validation in UEFI firmware CseVariableStorageSmm for some Intel(R) Processors may allow a privileged user to potentially enable escalation of privilege via local access.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "microcode_ctl: Improper input validation in UEFI firmware CseVariableStorageSmm",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+          "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-29214"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2345365",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2345365"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-29214",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-29214"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-29214",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-29214"
+        },
+        {
+          "category": "external",
+          "summary": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html",
+          "url": "https://intel.com/content/www/us/en/security-center/advisory/intel-sa-01139.html"
+        }
+      ],
+      "release_date": "2025-02-12T21:19:29.642000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-03-06T00:26:51+00:00",
+          "details": "For details on how to apply this update, which includes the changes described in this advisory, refer to:\n\nhttps://access.redhat.com/articles/11258",
+          "product_ids": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHEA-2025:2418"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "HIGH",
+            "attackVector": "LOCAL",
+            "availabilityImpact": "HIGH",
+            "baseScore": 7.5,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "HIGH",
+            "scope": "CHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.noarch",
+            "BaseOS-9.4.0.Z.EUS:microcode_ctl-4:20230808-2.20250211.1.el9_4.src"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "microcode_ctl: Improper input validation in UEFI firmware CseVariableStorageSmm"
+    }
+  ]
+}

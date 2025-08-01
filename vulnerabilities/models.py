@@ -2890,6 +2890,7 @@ class AdvisoryV2(models.Model):
         from vulnerabilities.importer import AdvisoryData
 
         return AdvisoryData(
+            advisory_id=self.advisory_id,
             aliases=[item.alias for item in self.aliases.all()],
             summary=self.summary,
             affected_packages=[

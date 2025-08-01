@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 from typing import Iterable
 from typing import Mapping
 
@@ -97,4 +98,5 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages=affected_packages,
             weaknesses=[],
             url=f"https://security.archlinux.org/{avg_name}.json",
+            original_advisory_text=json.dumps(record),
         )

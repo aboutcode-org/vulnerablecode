@@ -18,7 +18,14 @@
         "fixed_version_range": "vers:alpm/2.4.0-1"
       }
     ],
-    "references": [],
+    "references_v2": [
+      {
+        "reference_id": "AVG-2781",
+        "reference_type": "",
+        "url": "https://security.archlinux.org/AVG-2781"
+      }
+    ],
+    "severities": [],
     "date_published": null,
     "weaknesses": [],
     "url": "https://security.archlinux.org/AVG-2781.json"
@@ -44,7 +51,14 @@
         "fixed_version_range": "vers:alpm/2.36.4-1"
       }
     ],
-    "references": [],
+    "references_v2": [
+      {
+        "reference_id": "AVG-2780",
+        "reference_type": "",
+        "url": "https://security.archlinux.org/AVG-2780"
+      }
+    ],
+    "severities": [],
     "date_published": null,
     "weaknesses": [],
     "url": "https://security.archlinux.org/AVG-2780.json"
@@ -69,7 +83,19 @@
         "fixed_version_range": "vers:alpm/1.0.6-6"
       }
     ],
-    "references": [],
+    "references_v2": [
+      {
+        "reference_id": "AVG-4",
+        "reference_type": "",
+        "url": "https://security.archlinux.org/AVG-4"
+      },
+      {
+        "reference_id": "ASA-201702-19",
+        "reference_type": "",
+        "url": "https://security.archlinux.org/ASA-201702-19"
+      }
+    ],
+    "severities": [],
     "date_published": null,
     "weaknesses": [],
     "url": "https://security.archlinux.org/AVG-4.json"

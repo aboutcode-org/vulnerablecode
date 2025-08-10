@@ -1,0 +1,1467 @@
+{
+  "document": {
+    "aggregate_severity": {
+      "namespace": "https://access.redhat.com/security/updates/classification/",
+      "text": "Moderate"
+    },
+    "category": "csaf_security_advisory",
+    "csaf_version": "2.0",
+    "distribution": {
+      "text": "Copyright © Red Hat, Inc. All rights reserved.",
+      "tlp": {
+        "label": "WHITE",
+        "url": "https://www.first.org/tlp/"
+      }
+    },
+    "lang": "en",
+    "notes": [
+      {
+        "category": "summary",
+        "text": "An updated PyXML package that fixes one security issue is now available for\nRed Hat Enterprise Linux 4 and 5.\n\nThis update has been rated as having moderate security impact by the Red\nHat Security Response Team.",
+        "title": "Topic"
+      },
+      {
+        "category": "general",
+        "text": "PyXML provides XML libraries for Python. The distribution contains a\nvalidating XML parser, an implementation of the SAX and DOM programming\ninterfaces, and an interface to the Expat parser.\n\nA buffer over-read flaw was found in the way PyXML's Expat parser handled\nmalformed UTF-8 sequences when processing XML files. A specially-crafted\nXML file could cause Python applications using PyXML's Expat parser to\ncrash while parsing the file. (CVE-2009-3720)\n\nThis update makes PyXML use the system Expat library rather than its own\ninternal copy; therefore, users must install the RHSA-2009:1625 expat\nupdate together with this PyXML update to resolve the CVE-2009-3720 issue.\n\nAll PyXML users should upgrade to this updated package, which changes PyXML\nto use the system Expat library. After installing this update along with\nRHSA-2009:1625, applications using the PyXML library must be restarted for\nthe update to take effect.",
+        "title": "Details"
+      },
+      {
+        "category": "legal_disclaimer",
+        "text": "This content is licensed under the Creative Commons Attribution 4.0 International License (https://creativecommons.org/licenses/by/4.0/). If you distribute this content, or a modified version of it, you must provide attribution to Red Hat Inc. and provide a link to the original.",
+        "title": "Terms of Use"
+      }
+    ],
+    "publisher": {
+      "category": "vendor",
+      "contact_details": "https://access.redhat.com/security/team/contact/",
+      "issuing_authority": "Red Hat Product Security is responsible for vulnerability handling across all Red Hat products and services.",
+      "name": "Red Hat Product Security",
+      "namespace": "https://www.redhat.com"
+    },
+    "references": [
+      {
+        "category": "self",
+        "summary": "https://access.redhat.com/errata/RHSA-2010:0002",
+        "url": "https://access.redhat.com/errata/RHSA-2010:0002"
+      },
+      {
+        "category": "external",
+        "summary": "https://access.redhat.com/security/updates/classification/#moderate",
+        "url": "https://access.redhat.com/security/updates/classification/#moderate"
+      },
+      {
+        "category": "external",
+        "summary": "531697",
+        "url": "https://bugzilla.redhat.com/show_bug.cgi?id=531697"
+      },
+      {
+        "category": "self",
+        "summary": "Canonical URL",
+        "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2010/rhsa-2010_0002.json"
+      }
+    ],
+    "title": "Red Hat Security Advisory: PyXML security update",
+    "tracking": {
+      "current_release_date": "2024-11-22T03:06:43+00:00",
+      "generator": {
+        "date": "2024-11-22T03:06:43+00:00",
+        "engine": {
+          "name": "Red Hat SDEngine",
+          "version": "4.2.1"
+        }
+      },
+      "id": "RHSA-2010:0002",
+      "initial_release_date": "2010-01-04T17:58:00+00:00",
+      "revision_history": [
+        {
+          "date": "2010-01-04T17:58:00+00:00",
+          "number": "1",
+          "summary": "Initial version"
+        },
+        {
+          "date": "2010-01-04T13:02:56+00:00",
+          "number": "2",
+          "summary": "Last updated version"
+        },
+        {
+          "date": "2024-11-22T03:06:43+00:00",
+          "number": "3",
+          "summary": "Last generated version"
+        }
+      ],
+      "status": "final",
+      "version": "3"
+    }
+  },
+  "product_tree": {
+    "branches": [
+      {
+        "branches": [
+          {
+            "branches": [
+              {
+                "category": "product_name",
+                "name": "Red Hat Enterprise Linux AS version 4",
+                "product": {
+                  "name": "Red Hat Enterprise Linux AS version 4",
+                  "product_id": "4AS",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/o:redhat:enterprise_linux:4::as"
+                  }
+                }
+              },
+              {
+                "category": "product_name",
+                "name": "Red Hat Enterprise Linux Desktop version 4",
+                "product": {
+                  "name": "Red Hat Enterprise Linux Desktop version 4",
+                  "product_id": "4Desktop",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/o:redhat:enterprise_linux:4::desktop"
+                  }
+                }
+              },
+              {
+                "category": "product_name",
+                "name": "Red Hat Enterprise Linux ES version 4",
+                "product": {
+                  "name": "Red Hat Enterprise Linux ES version 4",
+                  "product_id": "4ES",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/o:redhat:enterprise_linux:4::es"
+                  }
+                }
+              },
+              {
+                "category": "product_name",
+                "name": "Red Hat Enterprise Linux WS version 4",
+                "product": {
+                  "name": "Red Hat Enterprise Linux WS version 4",
+                  "product_id": "4WS",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/o:redhat:enterprise_linux:4::ws"
+                  }
+                }
+              },
+              {
+                "category": "product_name",
+                "name": "Red Hat Enterprise Linux Desktop (v. 5 client)",
+                "product": {
+                  "name": "Red Hat Enterprise Linux Desktop (v. 5 client)",
+                  "product_id": "5Client",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/o:redhat:enterprise_linux:5::client"
+                  }
+                }
+              },
+              {
+                "category": "product_name",
+                "name": "Red Hat Enterprise Linux (v. 5 server)",
+                "product": {
+                  "name": "Red Hat Enterprise Linux (v. 5 server)",
+                  "product_id": "5Server",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/o:redhat:enterprise_linux:5::server"
+                  }
+                }
+              }
+            ],
+            "category": "product_family",
+            "name": "Red Hat Enterprise Linux"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+                  "product_id": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.3-6.el4_8.2?arch=ia64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.3-6.el4_8.2.ia64",
+                "product": {
+                  "name": "PyXML-0:0.8.3-6.el4_8.2.ia64",
+                  "product_id": "PyXML-0:0.8.3-6.el4_8.2.ia64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.3-6.el4_8.2?arch=ia64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.4-4.el5_4.2.ia64",
+                "product": {
+                  "name": "PyXML-0:0.8.4-4.el5_4.2.ia64",
+                  "product_id": "PyXML-0:0.8.4-4.el5_4.2.ia64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.4-4.el5_4.2?arch=ia64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+                  "product_id": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.4-4.el5_4.2?arch=ia64"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "ia64"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+                  "product_id": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.3-6.el4_8.2?arch=x86_64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.3-6.el4_8.2.x86_64",
+                "product": {
+                  "name": "PyXML-0:0.8.3-6.el4_8.2.x86_64",
+                  "product_id": "PyXML-0:0.8.3-6.el4_8.2.x86_64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.3-6.el4_8.2?arch=x86_64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.4-4.el5_4.2.x86_64",
+                "product": {
+                  "name": "PyXML-0:0.8.4-4.el5_4.2.x86_64",
+                  "product_id": "PyXML-0:0.8.4-4.el5_4.2.x86_64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.4-4.el5_4.2?arch=x86_64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64",
+                  "product_id": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.4-4.el5_4.2?arch=x86_64"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "x86_64"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+                  "product_id": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.3-6.el4_8.2?arch=i386"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.3-6.el4_8.2.i386",
+                "product": {
+                  "name": "PyXML-0:0.8.3-6.el4_8.2.i386",
+                  "product_id": "PyXML-0:0.8.3-6.el4_8.2.i386",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.3-6.el4_8.2?arch=i386"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.4-4.el5_4.2.i386",
+                "product": {
+                  "name": "PyXML-0:0.8.4-4.el5_4.2.i386",
+                  "product_id": "PyXML-0:0.8.4-4.el5_4.2.i386",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.4-4.el5_4.2?arch=i386"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+                  "product_id": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.4-4.el5_4.2?arch=i386"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "i386"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.3-6.el4_8.2.src",
+                "product": {
+                  "name": "PyXML-0:0.8.3-6.el4_8.2.src",
+                  "product_id": "PyXML-0:0.8.3-6.el4_8.2.src",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.3-6.el4_8.2?arch=src"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.4-4.el5_4.2.src",
+                "product": {
+                  "name": "PyXML-0:0.8.4-4.el5_4.2.src",
+                  "product_id": "PyXML-0:0.8.4-4.el5_4.2.src",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.4-4.el5_4.2?arch=src"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "src"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+                  "product_id": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.3-6.el4_8.2?arch=ppc"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.3-6.el4_8.2.ppc",
+                "product": {
+                  "name": "PyXML-0:0.8.3-6.el4_8.2.ppc",
+                  "product_id": "PyXML-0:0.8.3-6.el4_8.2.ppc",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.3-6.el4_8.2?arch=ppc"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.4-4.el5_4.2.ppc",
+                "product": {
+                  "name": "PyXML-0:0.8.4-4.el5_4.2.ppc",
+                  "product_id": "PyXML-0:0.8.4-4.el5_4.2.ppc",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.4-4.el5_4.2?arch=ppc"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+                  "product_id": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.4-4.el5_4.2?arch=ppc"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "ppc"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+                  "product_id": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.3-6.el4_8.2?arch=s390x"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.3-6.el4_8.2.s390x",
+                "product": {
+                  "name": "PyXML-0:0.8.3-6.el4_8.2.s390x",
+                  "product_id": "PyXML-0:0.8.3-6.el4_8.2.s390x",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.3-6.el4_8.2?arch=s390x"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.4-4.el5_4.2.s390x",
+                "product": {
+                  "name": "PyXML-0:0.8.4-4.el5_4.2.s390x",
+                  "product_id": "PyXML-0:0.8.4-4.el5_4.2.s390x",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.4-4.el5_4.2?arch=s390x"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+                  "product_id": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.4-4.el5_4.2?arch=s390x"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "s390x"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+                "product": {
+                  "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+                  "product_id": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML-debuginfo@0.8.3-6.el4_8.2?arch=s390"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "PyXML-0:0.8.3-6.el4_8.2.s390",
+                "product": {
+                  "name": "PyXML-0:0.8.3-6.el4_8.2.s390",
+                  "product_id": "PyXML-0:0.8.3-6.el4_8.2.s390",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/PyXML@0.8.3-6.el4_8.2?arch=s390"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "s390"
+          }
+        ],
+        "category": "vendor",
+        "name": "Red Hat"
+      }
+    ],
+    "relationships": [
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.i386 as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-0:0.8.3-6.el4_8.2.i386"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.i386",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.ia64 as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-0:0.8.3-6.el4_8.2.ia64"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.ia64",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.ppc as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-0:0.8.3-6.el4_8.2.ppc"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.ppc",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.s390 as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-0:0.8.3-6.el4_8.2.s390"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.s390",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.s390x as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-0:0.8.3-6.el4_8.2.s390x"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.s390x",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.src as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-0:0.8.3-6.el4_8.2.src"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.src",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.x86_64 as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-0:0.8.3-6.el4_8.2.x86_64"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.x86_64",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386 as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64 as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390 as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64 as a component of Red Hat Enterprise Linux AS version 4",
+          "product_id": "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+        "relates_to_product_reference": "4AS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.i386 as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-0:0.8.3-6.el4_8.2.i386"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.i386",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.ia64 as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-0:0.8.3-6.el4_8.2.ia64"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.ia64",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.ppc as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-0:0.8.3-6.el4_8.2.ppc"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.ppc",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.s390 as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-0:0.8.3-6.el4_8.2.s390"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.s390",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.s390x as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-0:0.8.3-6.el4_8.2.s390x"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.s390x",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.src as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-0:0.8.3-6.el4_8.2.src"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.src",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.x86_64 as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-0:0.8.3-6.el4_8.2.x86_64"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.x86_64",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386 as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64 as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390 as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64 as a component of Red Hat Enterprise Linux Desktop version 4",
+          "product_id": "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+        "relates_to_product_reference": "4Desktop"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.i386 as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-0:0.8.3-6.el4_8.2.i386"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.i386",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.ia64 as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-0:0.8.3-6.el4_8.2.ia64"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.ia64",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.ppc as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-0:0.8.3-6.el4_8.2.ppc"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.ppc",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.s390 as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-0:0.8.3-6.el4_8.2.s390"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.s390",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.s390x as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-0:0.8.3-6.el4_8.2.s390x"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.s390x",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.src as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-0:0.8.3-6.el4_8.2.src"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.src",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.x86_64 as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-0:0.8.3-6.el4_8.2.x86_64"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.x86_64",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386 as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64 as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390 as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64 as a component of Red Hat Enterprise Linux ES version 4",
+          "product_id": "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+        "relates_to_product_reference": "4ES"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.i386 as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-0:0.8.3-6.el4_8.2.i386"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.i386",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.ia64 as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-0:0.8.3-6.el4_8.2.ia64"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.ia64",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.ppc as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-0:0.8.3-6.el4_8.2.ppc"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.ppc",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.s390 as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-0:0.8.3-6.el4_8.2.s390"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.s390",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.s390x as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-0:0.8.3-6.el4_8.2.s390x"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.s390x",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.src as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-0:0.8.3-6.el4_8.2.src"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.src",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.3-6.el4_8.2.x86_64 as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-0:0.8.3-6.el4_8.2.x86_64"
+        },
+        "product_reference": "PyXML-0:0.8.3-6.el4_8.2.x86_64",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386 as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64 as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390 as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64 as a component of Red Hat Enterprise Linux WS version 4",
+          "product_id": "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+        "relates_to_product_reference": "4WS"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.i386 as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-0:0.8.4-4.el5_4.2.i386"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.i386",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.ia64 as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-0:0.8.4-4.el5_4.2.ia64"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.ia64",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.ppc as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-0:0.8.4-4.el5_4.2.ppc"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.ppc",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.s390x as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-0:0.8.4-4.el5_4.2.s390x"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.s390x",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.src as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-0:0.8.4-4.el5_4.2.src"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.src",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.x86_64 as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-0:0.8.4-4.el5_4.2.x86_64"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.x86_64",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386 as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64 as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64 as a component of Red Hat Enterprise Linux Desktop (v. 5 client)",
+          "product_id": "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64",
+        "relates_to_product_reference": "5Client"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.i386 as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-0:0.8.4-4.el5_4.2.i386"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.i386",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.ia64 as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-0:0.8.4-4.el5_4.2.ia64"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.ia64",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.ppc as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-0:0.8.4-4.el5_4.2.ppc"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.ppc",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.s390x as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-0:0.8.4-4.el5_4.2.s390x"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.s390x",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.src as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-0:0.8.4-4.el5_4.2.src"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.src",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-0:0.8.4-4.el5_4.2.x86_64 as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-0:0.8.4-4.el5_4.2.x86_64"
+        },
+        "product_reference": "PyXML-0:0.8.4-4.el5_4.2.x86_64",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386 as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64 as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+        "relates_to_product_reference": "5Server"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64 as a component of Red Hat Enterprise Linux (v. 5 server)",
+          "product_id": "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64"
+        },
+        "product_reference": "PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64",
+        "relates_to_product_reference": "5Server"
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "cve": "CVE-2009-3720",
+      "discovery_date": "2009-08-21T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "531697"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "The updatePosition function in lib/xmltok_impl.c in libexpat in Expat 2.0.1, as used in Python, PyXML, w3c-libwww, and other software, allows context-dependent attackers to cause a denial of service (application crash) via an XML document with crafted UTF-8 sequences that trigger a buffer over-read, a different vulnerability than CVE-2009-2625.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "expat: buffer over-read and crash on XML with malformed UTF-8 sequences",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "4AS:PyXML-0:0.8.3-6.el4_8.2.i386",
+          "4AS:PyXML-0:0.8.3-6.el4_8.2.ia64",
+          "4AS:PyXML-0:0.8.3-6.el4_8.2.ppc",
+          "4AS:PyXML-0:0.8.3-6.el4_8.2.s390",
+          "4AS:PyXML-0:0.8.3-6.el4_8.2.s390x",
+          "4AS:PyXML-0:0.8.3-6.el4_8.2.src",
+          "4AS:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+          "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+          "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+          "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+          "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+          "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+          "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+          "4Desktop:PyXML-0:0.8.3-6.el4_8.2.i386",
+          "4Desktop:PyXML-0:0.8.3-6.el4_8.2.ia64",
+          "4Desktop:PyXML-0:0.8.3-6.el4_8.2.ppc",
+          "4Desktop:PyXML-0:0.8.3-6.el4_8.2.s390",
+          "4Desktop:PyXML-0:0.8.3-6.el4_8.2.s390x",
+          "4Desktop:PyXML-0:0.8.3-6.el4_8.2.src",
+          "4Desktop:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+          "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+          "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+          "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+          "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+          "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+          "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+          "4ES:PyXML-0:0.8.3-6.el4_8.2.i386",
+          "4ES:PyXML-0:0.8.3-6.el4_8.2.ia64",
+          "4ES:PyXML-0:0.8.3-6.el4_8.2.ppc",
+          "4ES:PyXML-0:0.8.3-6.el4_8.2.s390",
+          "4ES:PyXML-0:0.8.3-6.el4_8.2.s390x",
+          "4ES:PyXML-0:0.8.3-6.el4_8.2.src",
+          "4ES:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+          "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+          "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+          "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+          "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+          "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+          "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+          "4WS:PyXML-0:0.8.3-6.el4_8.2.i386",
+          "4WS:PyXML-0:0.8.3-6.el4_8.2.ia64",
+          "4WS:PyXML-0:0.8.3-6.el4_8.2.ppc",
+          "4WS:PyXML-0:0.8.3-6.el4_8.2.s390",
+          "4WS:PyXML-0:0.8.3-6.el4_8.2.s390x",
+          "4WS:PyXML-0:0.8.3-6.el4_8.2.src",
+          "4WS:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+          "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+          "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+          "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+          "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+          "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+          "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+          "5Client:PyXML-0:0.8.4-4.el5_4.2.i386",
+          "5Client:PyXML-0:0.8.4-4.el5_4.2.ia64",
+          "5Client:PyXML-0:0.8.4-4.el5_4.2.ppc",
+          "5Client:PyXML-0:0.8.4-4.el5_4.2.s390x",
+          "5Client:PyXML-0:0.8.4-4.el5_4.2.src",
+          "5Client:PyXML-0:0.8.4-4.el5_4.2.x86_64",
+          "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+          "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+          "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+          "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+          "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64",
+          "5Server:PyXML-0:0.8.4-4.el5_4.2.i386",
+          "5Server:PyXML-0:0.8.4-4.el5_4.2.ia64",
+          "5Server:PyXML-0:0.8.4-4.el5_4.2.ppc",
+          "5Server:PyXML-0:0.8.4-4.el5_4.2.s390x",
+          "5Server:PyXML-0:0.8.4-4.el5_4.2.src",
+          "5Server:PyXML-0:0.8.4-4.el5_4.2.x86_64",
+          "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+          "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+          "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+          "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+          "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2009-3720"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#531697",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=531697"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2009-3720",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2009-3720"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2009-3720",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-3720"
+        }
+      ],
+      "release_date": "2009-01-17T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2010-01-04T17:58:00+00:00",
+          "details": "Before applying this update, make sure that all previously-released\nerrata relevant to your system have been applied.\n\nThis update is available via Red Hat Network.  Details on how to use\nthe Red Hat Network to apply this update are available at\nhttp://kbase.redhat.com/faq/docs/DOC-11259",
+          "product_ids": [
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.i386",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.ia64",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.ppc",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.s390",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.s390x",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.src",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.i386",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.ia64",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.ppc",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.s390",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.s390x",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.src",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.i386",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.ia64",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.ppc",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.s390",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.s390x",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.src",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.i386",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.ia64",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.ppc",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.s390",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.s390x",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.src",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.i386",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.ia64",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.ppc",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.s390x",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.src",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.x86_64",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.i386",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.ia64",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.ppc",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.s390x",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.src",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.x86_64",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHSA-2010:0002"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v2": {
+            "accessComplexity": "LOW",
+            "accessVector": "NETWORK",
+            "authentication": "NONE",
+            "availabilityImpact": "PARTIAL",
+            "baseScore": 5.0,
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "vectorString": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+            "version": "2.0"
+          },
+          "products": [
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.i386",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.ia64",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.ppc",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.s390",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.s390x",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.src",
+            "4AS:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+            "4AS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.i386",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.ia64",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.ppc",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.s390",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.s390x",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.src",
+            "4Desktop:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+            "4Desktop:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.i386",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.ia64",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.ppc",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.s390",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.s390x",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.src",
+            "4ES:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+            "4ES:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.i386",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.ia64",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.ppc",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.s390",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.s390x",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.src",
+            "4WS:PyXML-0:0.8.3-6.el4_8.2.x86_64",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.i386",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ia64",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.ppc",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.s390x",
+            "4WS:PyXML-debuginfo-0:0.8.3-6.el4_8.2.x86_64",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.i386",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.ia64",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.ppc",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.s390x",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.src",
+            "5Client:PyXML-0:0.8.4-4.el5_4.2.x86_64",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+            "5Client:PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.i386",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.ia64",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.ppc",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.s390x",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.src",
+            "5Server:PyXML-0:0.8.4-4.el5_4.2.x86_64",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.i386",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ia64",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.ppc",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.s390x",
+            "5Server:PyXML-debuginfo-0:0.8.4-4.el5_4.2.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "expat: buffer over-read and crash on XML with malformed UTF-8 sequences"
+    }
+  ]
+}

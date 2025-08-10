@@ -42,6 +42,7 @@ from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
+from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
@@ -57,12 +58,14 @@ from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgr
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pypa_live_importer as pypa_live_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
+from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
     [
+        archlinux_importer_v2.ArchLinuxImporterPipeline,
         nvd_importer_v2.NVDImporterPipeline,
         elixir_security_importer_v2.ElixirSecurityImporterPipeline,
         npm_importer_v2.NpmImporterPipeline,
@@ -78,6 +81,7 @@ IMPORTERS_REGISTRY = create_registry(
         postgresql_importer_v2.PostgreSQLImporterPipeline,
         mozilla_importer_v2.MozillaImporterPipeline,
         github_osv_importer_v2.GithubOSVImporterPipeline,
+        redhat_importer_v2.RedHatImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

@@ -187,6 +187,8 @@ class ReferenceV2:
         reference_id = get_reference_id(url)
         if "GHSA-" in reference_id.upper():
             return cls(reference_id=reference_id, url=url)
+        if reference_id.startswith(("RHSA-", "RHEA-", "RHBA-")):
+            return cls(reference_id=reference_id, url=url)
         if is_cve(reference_id):
             return cls(url=url, reference_id=reference_id.upper())
         return cls(url=url)
@@ -458,6 +460,24 @@ class AdvisoryData:
         return summary
 
     def to_dict(self):
+        is_adv_v2 = (
+            self.advisory_id
+            or self.severities
+            or self.references_v2
+            or (self.affected_packages and isinstance(self.affected_packages[0], AffectedPackageV2))
+        )
+        if is_adv_v2:
+            return {
+                "advisory_id": self.advisory_id,
+                "aliases": self.aliases,
+                "summary": self.summary,
+                "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
+                "references_v2": [ref.to_dict() for ref in self.references_v2],
+                "severities": [sev.to_dict() for sev in self.severities],
+                "date_published": self.date_published.isoformat() if self.date_published else None,
+                "weaknesses": self.weaknesses,
+                "url": self.url if self.url else "",
+            }
         return {
             "aliases": self.aliases,
             "summary": self.summary,

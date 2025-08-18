@@ -1,5 +1,6 @@
 import json
 from typing import Iterable
+from typing import Optional
 
 import requests
 from packageurl import PackageURL
@@ -126,7 +127,7 @@ REPO_DIR_BY_PURL_TYPE = {
 }
 
 
-def build_github_repo_advisory_url(adv: dict, adv_id: str | None) -> str:
+def build_github_repo_advisory_url(adv: dict, adv_id: Optional[str]) -> str:
     """
     Return the advisory JSON URL in the GitHub advisory-database repo, using the GHSA path:
     advisories/github-reviewed/YYYY/MM/GHSA-ID/GHSA-ID.json

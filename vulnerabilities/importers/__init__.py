@@ -55,6 +55,9 @@ from vulnerabilities.pipelines.v2_importers import epss_importer_v2
 from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
+from vulnerabilities.pipelines.v2_importers import (
+    github_osv_live_importer as github_osv_live_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
 from vulnerabilities.pipelines.v2_importers import mattermost_importer as mattermost_importer_v2
@@ -116,6 +119,7 @@ IMPORTERS_REGISTRY = create_registry(
         retiredotnet_importer_v2.RetireDotnetImporterPipeline,
         ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
         alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
+        nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,
         github_osv.GithubOSVImporter,
@@ -187,5 +191,11 @@ IMPORTERS_REGISTRY = create_registry(
         collect_fix_commits_v2.CollectGitFixCommitsPipeline,
         collect_fix_commits_v2.CollectJenkinsFixCommitsPipeline,
         collect_fix_commits_v2.CollectGitlabFixCommitsPipeline,
+    ]
+)
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        github_osv_live_importer_v2.GithubOSVLiveImporterPipeline,
     ]
 )

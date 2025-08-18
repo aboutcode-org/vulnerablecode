@@ -13,8 +13,9 @@ from unittest.mock import patch
 
 import pytest
 from packageurl import PackageURL
+from univers.version_range import GenericVersionRange
+from univers.version_range import VersionConstraint
 from univers.versions import SemverVersion
-from univers.version_range import GenericVersionRange, VersionConstraint
 
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.pipelines.v2_importers.curl_live_importer import CurlLiveImporterPipeline

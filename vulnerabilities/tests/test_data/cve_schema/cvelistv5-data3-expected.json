@@ -1,0 +1,35 @@
+{
+  "advisory_id": "CVE-2023-0710",
+  "aliases": [],
+  "summary": "The Metform Elementor Contact Form Builder for WordPress is vulnerable to Cross-Site Scripting by using the 'fname' attribute of the 'mf_thankyou' shortcode to echo unescaped form submissions in versions up to, and including, 3.3.0. This allows authenticated attackers, with contributor-level permissions or above, to inject arbitrary web scripts in pages that will execute when the victim visits a a page containing the shortcode when the submission id is present in the query string. Note that getting the JavaScript to execute requires user interaction as the victim must visit a crafted link with the form entry id, but the script itself is stored in the site database. Additionally this requires successful payment, increasing the complexity.",
+  "affected_packages": [],
+  "references_v2": [
+    {
+      "reference_id": "89a98053-33c7-4e75-87a1-0f483a990641?source=cve",
+      "reference_type": "other",
+      "url": "https://www.wordfence.com/threat-intel/vulnerabilities/id/89a98053-33c7-4e75-87a1-0f483a990641?source=cve"
+    },
+    {
+      "reference_id": "shortcode.php?rev=2845078",
+      "reference_type": "other",
+      "url": "https://plugins.trac.wordpress.org/browser/metform/trunk/base/shortcode.php?rev=2845078"
+    }
+  ],
+  "severities": [
+    {
+      "system": "cvssv3.1",
+      "value": 4.9,
+      "scoring_elements": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:L/I:L/A:N"
+    },
+    {
+      "system": "ssvc",
+      "value": "Track",
+      "scoring_elements": "SSVCv2/E:N/A:N/T:P/P:M/B:A/M:M/D:T/2024-11-23T13:13:32Z/"
+    }
+  ],
+  "date_published": "2023-06-09T05:33:23.543000+00:00",
+  "weaknesses": [
+    79
+  ],
+  "url": "https://test.com"
+}

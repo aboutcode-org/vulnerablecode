@@ -44,6 +44,7 @@ from vulnerabilities.pipelines import pysec_importer
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
+from vulnerabilities.pipelines.v2_importers import cvelistv5_importer as cvelistv5_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
@@ -69,6 +70,7 @@ IMPORTERS_REGISTRY = create_registry(
         elixir_security_importer_v2.ElixirSecurityImporterPipeline,
         npm_importer_v2.NpmImporterPipeline,
         vulnrichment_importer_v2.VulnrichImporterPipeline,
+        cvelistv5_importer_v2.CVEListV5ImporterPipeline,
         apache_httpd_v2.ApacheHTTPDImporterPipeline,
         pypa_importer_v2.PyPaImporterPipeline,
         gitlab_importer_v2.GitLabImporterPipeline,

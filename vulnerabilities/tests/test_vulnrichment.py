@@ -7,7 +7,7 @@ from vulnerabilities.importers.vulnrichment import ssvc_calculator
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/vulnrichment")
+TEST_DATA = os.path.join(BASE_DIR, "test_data/cve_schema")
 
 
 class TestVulnrichmentImporter(TestCase):

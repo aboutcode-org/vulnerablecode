@@ -19,6 +19,7 @@ from vulnerabilities.utils import get_severity_range
 from vulnerabilities.utils import nearest_patched_package
 from vulnerabilities.utils import resolve_version_range
 from vulnerabilities.utils import split_markdown_front_matter
+from vulnerabilities.utils import ssvc_calculator
 
 
 def test_nearest_patched_package():
@@ -151,3 +152,38 @@ def test_resolve_version_range_without_ignorable_versions():
 def test_get_severity_range():
     assert get_severity_range({""}) is None
     assert get_severity_range({}) is None
+
+
+def test_ssvc_calculator1():
+    assert ssvc_calculator(
+        {
+            "id": "CVE-2024-5396",
+            "role": "CISA Coordinator",
+            "options": [
+                {"Exploitation": "poc"},
+                {"Automatable": "no"},
+                {"Technical Impact": "partial"},
+            ],
+            "version": "2.0.3",
+            "timestamp": "2024-05-28T15:58:04.187512Z",
+        }
+    ) == ("SSVCv2/E:P/A:N/T:P/P:M/B:A/M:M/D:T/2024-05-28T15:58:04Z/", "Track")
+
+
+def test_ssvc_calculator2():
+    assert ssvc_calculator(
+        {
+            "id": "CVE-2024-5396",
+            "role": "CISA Coordinator",
+            "options": [
+                {"Exploitation": "active"},
+                {"Automatable": "no"},
+                {"Technical Impact": "total"},
+                {"Mission Prevalence": "Minimal"},
+                {"Public Well-being Impact": "Material"},
+                {"Mission & Well-being": "medium"},
+            ],
+            "version": "2.0.3",
+            "timestamp": "2024-05-28T15:58:04.187512Z",
+        }
+    ) == ("SSVCv2/E:A/A:N/T:T/P:M/B:A/M:M/D:A/2024-05-28T15:58:04Z/", "Attend")

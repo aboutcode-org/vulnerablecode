@@ -1,0 +1,61 @@
+{
+  "advisory_id": "CVE-2025-0950",
+  "aliases": [],
+  "summary": "A vulnerability was found in itsourcecode Tailoring Management System 1.0 and classified as critical. This issue affects some unknown processing of the file staffview.php. The manipulation of the argument staffid leads to sql injection. The attack may be initiated remotely. The exploit has been disclosed to the public and may be used.",
+  "affected_packages": [],
+  "references_v2": [
+    {
+      "reference_id": "?id.294305",
+      "reference_type": "advisory",
+      "url": "https://vuldb.com/?id.294305"
+    },
+    {
+      "reference_id": "?ctiid.294305",
+      "reference_type": "other",
+      "url": "https://vuldb.com/?ctiid.294305"
+    },
+    {
+      "reference_id": "7",
+      "reference_type": "bug",
+      "url": "https://github.com/magic2353112890/cve/issues/7"
+    },
+    {
+      "reference_id": "itsourcecode.com",
+      "reference_type": "other",
+      "url": "https://itsourcecode.com/"
+    }
+  ],
+  "severities": [
+    {
+      "system": "cvssv4",
+      "value": 5.3,
+      "scoring_elements": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N"
+    },
+    {
+      "system": "cvssv3.1",
+      "value": 6.3,
+      "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    },
+    {
+      "system": "cvssv3",
+      "value": 6.3,
+      "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L"
+    },
+    {
+      "system": "cvssv2",
+      "value": 6.5,
+      "scoring_elements": "AV:N/AC:L/Au:S/C:P/I:P/A:P"
+    },
+    {
+      "system": "ssvc",
+      "value": "Track",
+      "scoring_elements": "SSVCv2/E:P/A:N/T:P/P:M/B:A/M:M/D:T/2025-02-03T17:14:26Z/"
+    }
+  ],
+  "date_published": "2025-02-01T20:00:12.431000+00:00",
+  "weaknesses": [
+    74,
+    89
+  ],
+  "url": "https://test.com"
+}

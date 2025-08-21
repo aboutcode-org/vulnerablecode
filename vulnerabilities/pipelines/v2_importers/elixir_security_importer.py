@@ -17,7 +17,7 @@ from univers.version_constraint import VersionConstraint
 from univers.version_range import HexVersionRange
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import is_cve
@@ -69,27 +69,44 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def process_file(self, file, base_path) -> Iterable[AdvisoryData]:
         relative_path = str(file.relative_to(base_path)).strip("/")
-        path_segments = str(file).split("/")
-        # use the last two segments as the advisory ID
-        advisory_id = "/".join(path_segments[-2:]).replace(".yml", "")
-        advisory_url = (
-            f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
-        )
         advisory_text = None
         with open(str(file)) as f:
             advisory_text = f.read()
 
         yaml_file = load_yaml(str(file))
 
+        # Delegate to shared builder
+        yield from self.build_advisory_from_yaml(
+            yaml_file=yaml_file,
+            advisory_text=advisory_text or str(yaml_file),
+            relative_path=relative_path,
+        )
+
+    def build_advisory_from_yaml(
+        self, yaml_file, advisory_text: str, relative_path: str
+    ) -> Iterable[AdvisoryData]:
+        """
+        Build AdvisoryData objects from a parsed YAML mapping and the repo-relative path.
+        relative_path example: "packages/<pkg>/<file>.yml"
+        """
+        from pathlib import Path  # ensure Path is available
+
+        path_segments = Path(relative_path).parts
+        # use the last two segments as the advisory ID
+        advisory_id = "/".join(path_segments[-2:]).replace(".yml", "")
+        advisory_url = (
+            f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
+        )
+
         summary = yaml_file.get("description") or ""
         pkg_name = yaml_file.get("package") or ""
 
         cve_id = ""
         cve = yaml_file.get("cve") or ""
-        if cve and not cve.startswith("CVE-"):
+        if cve and not str(cve).startswith("CVE-"):
             cve_id = f"CVE-{cve}"
         elif cve:
-            cve_id = cve
+            cve_id = str(cve)
 
         if not cve_id or not is_cve(cve_id):
             return
@@ -105,9 +122,12 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         patched_versions = yaml_file.get("patched_versions") or []
 
         for version in unaffected_versions:
-            constraints.append(VersionConstraint.from_string(version_class=vrc, string=version))
+            constraints.append(
+                VersionConstraint.from_string(version_class=vrc, string=str(version))
+            )
 
         for version in patched_versions:
+            version = str(version)
             if version.startswith("~>"):
                 version = version[2:]
             constraints.append(
@@ -117,7 +137,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         affected_packages = []
         if pkg_name:
             affected_packages.append(
-                AffectedPackageV2(
+                AffectedPackage(
                     package=PackageURL(type="hex", name=pkg_name),
                     affected_version_range=HexVersionRange(constraints=constraints),
                 )
@@ -125,7 +145,10 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         date_published = None
         if yaml_file.get("disclosure_date"):
-            date_published = dateparser.parse(yaml_file.get("disclosure_date"))
+            disclosure = yaml_file.get("disclosure_date")
+            if not isinstance(disclosure, str):
+                disclosure = str(disclosure)
+            date_published = dateparser.parse(disclosure)
 
         yield AdvisoryData(
             advisory_id=advisory_id,
@@ -135,5 +158,5 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages=affected_packages,
             url=advisory_url,
             date_published=date_published,
-            original_advisory_text=advisory_text or str(yaml_file),
+            original_advisory_text=advisory_text,
         )

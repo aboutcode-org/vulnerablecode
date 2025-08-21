@@ -17,7 +17,7 @@ from univers.version_constraint import VersionConstraint
 from univers.version_range import HexVersionRange
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import is_cve
@@ -137,7 +137,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         affected_packages = []
         if pkg_name:
             affected_packages.append(
-                AffectedPackage(
+                AffectedPackageV2(
                     package=PackageURL(type="hex", name=pkg_name),
                     affected_version_range=HexVersionRange(constraints=constraints),
                 )
@@ -158,5 +158,5 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages=affected_packages,
             url=advisory_url,
             date_published=date_published,
-            original_advisory_text=advisory_text,
+            original_advisory_text=advisory_text or str(yaml_file),
         )

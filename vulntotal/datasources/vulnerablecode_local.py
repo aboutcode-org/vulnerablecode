@@ -9,6 +9,7 @@
 
 import logging
 import os
+from typing import Optional
 from urllib.parse import urljoin
 
 import requests
@@ -21,7 +22,7 @@ from vulntotal.validator import VendorData
 logger = logging.getLogger(__name__)
 
 
-def _is_true(val: str | None) -> bool:
+def _is_true(val: Optional[str]) -> bool:
     return (val is not None) and str(val).strip().lower() in {"1", "true", "yes", "on"}
 
 

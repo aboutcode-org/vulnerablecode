@@ -82,6 +82,9 @@ from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
+from vulnerabilities.pipelines.v2_importers import (
+    elixir_security_live_importer as elixir_security_live_importer_v2,
+)
 
 IMPORTERS_REGISTRY = create_registry(
     [
@@ -196,3 +199,9 @@ TODO_EXCLUDED_PIPELINES = [
     for key, value in IMPORTERS_REGISTRY.items()
     if issubclass(value, VulnerableCodeBaseImporterPipelineV2) and value.exclude_from_package_todo
 ]
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        elixir_security_live_importer_v2.ElixirSecurityLiveImporterPipeline,
+    ]
+)

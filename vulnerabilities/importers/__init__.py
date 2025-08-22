@@ -49,6 +49,7 @@ from vulnerabilities.pipelines.v2_importers import (
 )
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
+from vulnerabilities.pipelines.v2_importers import gitlab_live_importer as gitlab_live_importer_v2
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
 from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
@@ -115,5 +116,11 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+    ]
+)
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        gitlab_live_importer_v2.GitLabLiveImporterPipeline,
     ]
 )

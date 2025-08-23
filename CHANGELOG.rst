@@ -1,6 +1,23 @@
 Release notes
 =============
 
+Version v37.0.0
+---------------------
+
+- This is a major version, this version introduces Advisory level details
+  https://github.com/aboutcode-org/vulnerablecode/issues/1796
+  https://github.com/aboutcode-org/vulnerablecode/issues/1393
+  https://github.com/aboutcode-org/vulnerablecode/issues/1883
+  https://github.com/aboutcode-org/vulnerablecode/issues/1882
+  https://github.com/aboutcode-org/vulnerablecode/pull/1866
+- We have added new models AdvisoryV2, AdvisoryAlias, AdvisoryReference, AdvisorySeverity, AdvisoryWeakness, PackageV2 and CodeFixV2.
+- We are using ``avid`` as an internal advisory ID for uniquely identifying advisories.
+- We have a new route ``/v2`` which only support package search which has information on packages that are reported to be affected or fixing by advisories.
+- This version introduces ``/api/v2/advisories-packages`` which has information on packages that are reported to be affected or fixing by advisories.
+- Pipeline Dashboard improvements #1920.
+- Throttle API requests based on user permissions #1909.
+- Add pipeline to compute Advisory ToDos #1764
+
 Version v36.1.3
 ---------------------
 

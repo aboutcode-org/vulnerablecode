@@ -26,7 +26,7 @@ from vulnerabilities.models import Advisory
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
-from vulnerabilities.utils import classproperty
+from vulnerabilities.pipes.advisory import insert_advisory_v2
 
 module_logger = logging.getLogger(__name__)
 
@@ -45,6 +45,7 @@ class BasePipelineRun:
         run_instance: PipelineRun = None,
         selected_groups: List = None,
         selected_steps: List = None,
+        **kwargs,
     ):
         """Load the Pipeline class."""
         self.run = run_instance
@@ -56,6 +57,9 @@ class BasePipelineRun:
 
         self.execution_log = []
         self.current_step = ""
+
+        # Optional args used as input in downstream pipeline steps
+        self.inputs = kwargs
 
     def append_to_log(self, message):
         if self.run and self.run.pipeline.live_logging:
@@ -148,14 +152,6 @@ class VulnerableCodePipeline(PipelineDefinition, BasePipelineRun):
         """
         pass
 
-    @classproperty
-    def pipeline_id(cls):
-        """Return unique pipeline_id set in cls.pipeline_id"""
-
-        if cls.pipeline_id is None or cls.pipeline_id == "":
-            raise NotImplementedError("pipeline_id is not defined or is empty")
-        return cls.pipeline_id
-
 
 class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     """
@@ -207,12 +203,13 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
         progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
-            if _obj := insert_advisory(
-                advisory=advisory,
-                pipeline_id=self.pipeline_id,
-                logger=self.log,
-            ):
-                collected_advisory_count += 1
+            if isinstance(advisory, AdvisoryData):
+                if _obj := insert_advisory(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 
@@ -248,3 +245,71 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
                 f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
                 level=logging.ERROR,
             )
+
+
+class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
+    """
+    Base importer pipeline for importing advisories.
+
+    Uses:
+        Subclass this Pipeline and implement ``advisories_count`` and ``collect_advisories``
+        method. Also override the ``steps`` and ``advisory_confidence`` as needed.
+    """
+
+    pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.
+    license_url = None
+    spdx_license_expression = None
+    repo_url = None
+    ignorable_versions = []
+
+    @classmethod
+    def steps(cls):
+        return (
+            # Add step for downloading/cloning resource as required.
+            cls.collect_and_store_advisories,
+            # Add step for removing downloaded/cloned resource as required.
+        )
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        """
+        Yield AdvisoryData for importer pipeline.
+
+        Populate the `self.collected_advisories_count` field and yield AdvisoryData
+        """
+        raise NotImplementedError
+
+    def advisories_count(self) -> int:
+        """
+        Return the estimated AdvisoryData to be yielded by ``collect_advisories``.
+
+        Used by ``collect_and_store_advisories`` to log the progress of advisory collection.
+        """
+        raise NotImplementedError
+
+    def collect_and_store_advisories(self):
+        collected_advisory_count = 0
+        estimated_advisory_count = self.advisories_count()
+
+        if estimated_advisory_count > 0:
+            self.log(f"Collecting {estimated_advisory_count:,d} advisories")
+
+        progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
+        for advisory in progress.iter(self.collect_advisories()):
+            if advisory is None:
+                self.log("Advisory is None, skipping")
+                continue
+            try:
+                if _obj := insert_advisory_v2(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
+            except Exception as e:
+                self.log(
+                    f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
+                    level=logging.ERROR,
+                )
+                continue
+
+        self.log(f"Successfully collected {collected_advisory_count:,d} advisories")

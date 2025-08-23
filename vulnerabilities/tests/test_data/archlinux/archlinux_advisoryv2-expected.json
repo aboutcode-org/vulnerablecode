@@ -1,0 +1,106 @@
+[
+  {
+    "advisory_id": "AVG-2781",
+    "aliases": [
+      "CVE-2022-29217"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "python-pyjwt",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:alpm/2.3.0-1",
+        "fixed_version_range": "vers:alpm/2.4.0-1"
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "AVG-2781",
+        "reference_type": "",
+        "url": "https://security.archlinux.org/AVG-2781"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2781.json"
+  },
+  {
+    "advisory_id": "AVG-2780",
+    "aliases": [
+      "CVE-2022-26710",
+      "CVE-2022-22677",
+      "CVE-2022-22662"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "wpewebkit",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:alpm/2.36.3-1",
+        "fixed_version_range": "vers:alpm/2.36.4-1"
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "AVG-2780",
+        "reference_type": "",
+        "url": "https://security.archlinux.org/AVG-2780"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-2780.json"
+  },
+  {
+    "advisory_id": "AVG-4",
+    "aliases": [
+      "CVE-2016-3189",
+      "ASA-201702-19"
+    ],
+    "summary": "denial of service",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "alpm",
+          "namespace": "archlinux",
+          "name": "bzip2",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:alpm/1.0.6-5",
+        "fixed_version_range": "vers:alpm/1.0.6-6"
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "AVG-4",
+        "reference_type": "",
+        "url": "https://security.archlinux.org/AVG-4"
+      },
+      {
+        "reference_id": "ASA-201702-19",
+        "reference_type": "",
+        "url": "https://security.archlinux.org/ASA-201702-19"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://security.archlinux.org/AVG-4.json"
+  }
+]

@@ -36,6 +36,8 @@ def get_weighted_severity(severities):
 
     score_list = []
     for severity in severities:
+        if not severity.url:
+            continue
         parsed_url = urlparse(severity.url)
         severity_source = parsed_url.netloc.replace("www.", "", 1)
         weight = WEIGHT_CONFIG.get(severity_source, DEFAULT_WEIGHT)
@@ -106,6 +108,22 @@ def compute_package_risk(package):
     result = []
     for relation in package.affectedbypackagerelatedvulnerability_set.all():
         if risk := relation.vulnerability.risk_score:
+            result.append(float(risk))
+
+    if not result:
+        return
+
+    return round(max(result), 1)
+
+
+def compute_package_risk_v2(package):
+    """
+    Calculate the risk for a package by iterating over all vulnerabilities that affects this package
+    and determining the associated risk.
+    """
+    result = []
+    for impact in package.affected_in_impacts.all():
+        if risk := impact.advisory.risk_score:
             result.append(float(risk))
 
     if not result:

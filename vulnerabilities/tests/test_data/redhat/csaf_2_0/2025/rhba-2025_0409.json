@@ -1,0 +1,1066 @@
+{
+  "document": {
+    "aggregate_severity": {
+      "namespace": "https://access.redhat.com/security/updates/classification/",
+      "text": "Important"
+    },
+    "category": "csaf_security_advisory",
+    "csaf_version": "2.0",
+    "distribution": {
+      "text": "Copyright © Red Hat, Inc. All rights reserved.",
+      "tlp": {
+        "label": "WHITE",
+        "url": "https://www.first.org/tlp/"
+      }
+    },
+    "lang": "en",
+    "notes": [
+      {
+        "category": "summary",
+        "text": "Red Hat Developer Hub 1.4 has been released.",
+        "title": "Topic"
+      },
+      {
+        "category": "general",
+        "text": "Red Hat Developer Hub (RHDH) is Red Hat's enterprise-grade, self-managed, customizable developer portal based on Backstage.io. RHDH is supported on OpenShift and other major Kubernetes clusters (AKS, EKS, GKE). The core features of RHDH include a single pane of glass, a centralized software catalog, self-service via golden path templates, and Tech Docs. RHDH is extensible by plugins.",
+        "title": "Details"
+      },
+      {
+        "category": "legal_disclaimer",
+        "text": "This content is licensed under the Creative Commons Attribution 4.0 International License (https://creativecommons.org/licenses/by/4.0/). If you distribute this content, or a modified version of it, you must provide attribution to Red Hat Inc. and provide a link to the original.",
+        "title": "Terms of Use"
+      }
+    ],
+    "publisher": {
+      "category": "vendor",
+      "contact_details": "https://access.redhat.com/security/team/contact/",
+      "issuing_authority": "Red Hat Product Security is responsible for vulnerability handling across all Red Hat products and services.",
+      "name": "Red Hat Product Security",
+      "namespace": "https://www.redhat.com"
+    },
+    "references": [
+      {
+        "category": "self",
+        "summary": "https://access.redhat.com/errata/RHBA-2025:0409",
+        "url": "https://access.redhat.com/errata/RHBA-2025:0409"
+      },
+      {
+        "category": "external",
+        "summary": "https://developers.redhat.com/rhdh/overview",
+        "url": "https://developers.redhat.com/rhdh/overview"
+      },
+      {
+        "category": "external",
+        "summary": "https://docs.redhat.com/en/documentation/red_hat_developer_hub",
+        "url": "https://docs.redhat.com/en/documentation/red_hat_developer_hub"
+      },
+      {
+        "category": "external",
+        "summary": "https://catalog.redhat.com/search?gs&searchType=containers&q=rhdh",
+        "url": "https://catalog.redhat.com/search?gs&searchType=containers&q=rhdh"
+      },
+      {
+        "category": "external",
+        "summary": "https://access.redhat.com/security/cve/CVE-2024-45338",
+        "url": "https://access.redhat.com/security/cve/CVE-2024-45338"
+      },
+      {
+        "category": "external",
+        "summary": "https://access.redhat.com/security/cve/CVE-2024-52798",
+        "url": "https://access.redhat.com/security/cve/CVE-2024-52798"
+      },
+      {
+        "category": "external",
+        "summary": "https://access.redhat.com/security/cve/CVE-2024-55565",
+        "url": "https://access.redhat.com/security/cve/CVE-2024-55565"
+      },
+      {
+        "category": "external",
+        "summary": "https://access.redhat.com/security/cve/CVE-2024-56201",
+        "url": "https://access.redhat.com/security/cve/CVE-2024-56201"
+      },
+      {
+        "category": "external",
+        "summary": "https://access.redhat.com/security/cve/CVE-2024-56326",
+        "url": "https://access.redhat.com/security/cve/CVE-2024-56326"
+      },
+      {
+        "category": "external",
+        "summary": "https://access.redhat.com/security/cve/CVE-2024-56334",
+        "url": "https://access.redhat.com/security/cve/CVE-2024-56334"
+      },
+      {
+        "category": "self",
+        "summary": "Canonical URL",
+        "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2025/rhba-2025_0409.json"
+      }
+    ],
+    "title": "Red Hat Bug Fix Advisory: Red Hat Developer Hub 1.4.1 release.",
+    "tracking": {
+      "current_release_date": "2025-07-31T10:36:28+00:00",
+      "generator": {
+        "date": "2025-07-31T10:36:28+00:00",
+        "engine": {
+          "name": "Red Hat SDEngine",
+          "version": "4.6.6"
+        }
+      },
+      "id": "RHBA-2025:0409",
+      "initial_release_date": "2025-01-20T12:54:15+00:00",
+      "revision_history": [
+        {
+          "date": "2025-01-20T12:54:15+00:00",
+          "number": "1",
+          "summary": "Initial version"
+        },
+        {
+          "date": "2025-02-12T12:54:15+00:00",
+          "number": "2",
+          "summary": "Last updated version"
+        },
+        {
+          "date": "2025-07-31T10:36:28+00:00",
+          "number": "3",
+          "summary": "Last generated version"
+        }
+      ],
+      "status": "final",
+      "version": "3"
+    }
+  },
+  "product_tree": {
+    "branches": [
+      {
+        "branches": [
+          {
+            "branches": [
+              {
+                "category": "product_name",
+                "name": "Red Hat Developer Hub (RHDH) 1.4",
+                "product": {
+                  "name": "Red Hat Developer Hub (RHDH) 1.4",
+                  "product_id": "Red Hat Developer Hub (RHDH) 1.4",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/a:redhat:rhdh:1.4::el9"
+                  }
+                }
+              }
+            ],
+            "category": "product_family",
+            "name": "Red Hat Developer Hub (RHDH)"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+                "product": {
+                  "name": "registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+                  "product_id": "registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+                  "product_identification_helper": {
+                    "purl": "pkg:oci/rhdh-hub-rhel9@sha256%3Ad8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572?arch=amd64&repository_url=registry.redhat.io/rhdh&tag=1.4-1737055846"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64",
+                "product": {
+                  "name": "registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64",
+                  "product_id": "registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64",
+                  "product_identification_helper": {
+                    "purl": "pkg:oci/rhdh-rhel9-operator@sha256%3A9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60?arch=amd64&repository_url=registry.redhat.io/rhdh&tag=1.4-1737054925"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+                "product": {
+                  "name": "registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+                  "product_id": "registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+                  "product_identification_helper": {
+                    "purl": "pkg:oci/rhdh-operator-bundle@sha256%3Aa91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303?arch=amd64&repository_url=registry.redhat.io/rhdh&tag=1.4-1737079124"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "amd64"
+          }
+        ],
+        "category": "vendor",
+        "name": "Red Hat"
+      }
+    ],
+    "relationships": [
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64 as a component of Red Hat Developer Hub (RHDH) 1.4",
+          "product_id": "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+        },
+        "product_reference": "registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+        "relates_to_product_reference": "Red Hat Developer Hub (RHDH) 1.4"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64 as a component of Red Hat Developer Hub (RHDH) 1.4",
+          "product_id": "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64"
+        },
+        "product_reference": "registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+        "relates_to_product_reference": "Red Hat Developer Hub (RHDH) 1.4"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64 as a component of Red Hat Developer Hub (RHDH) 1.4",
+          "product_id": "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+        },
+        "product_reference": "registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64",
+        "relates_to_product_reference": "Red Hat Developer Hub (RHDH) 1.4"
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "cve": "CVE-2024-45338",
+      "cwe": {
+        "id": "CWE-770",
+        "name": "Allocation of Resources Without Limits or Throttling"
+      },
+      "discovery_date": "2024-12-18T21:00:59.938173+00:00",
+      "flags": [
+        {
+          "label": "vulnerable_code_not_present",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64"
+          ]
+        }
+      ],
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2333122"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in golang.org/x/net/html. This flaw allows an attacker to craft input to the parse functions that would be processed non-linearly with respect to its length, resulting in extremely slow parsing. This issue can cause a denial of service.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "golang.org/x/net/html: Non-linear parsing of case-insensitive content in golang.org/x/net/html",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "This vulnerability is rated as an Important severity because an attacker can craft malicious input that causes the parsing functions to process data non-linearly, resulting in significant delays which leads to a denial of service by exhausting system resources.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+        ],
+        "known_not_affected": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-45338"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2333122",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2333122"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-45338",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-45338"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-45338",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-45338"
+        },
+        {
+          "category": "external",
+          "summary": "https://go.dev/cl/637536",
+          "url": "https://go.dev/cl/637536"
+        },
+        {
+          "category": "external",
+          "summary": "https://go.dev/issue/70906",
+          "url": "https://go.dev/issue/70906"
+        },
+        {
+          "category": "external",
+          "summary": "https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ",
+          "url": "https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ"
+        },
+        {
+          "category": "external",
+          "summary": "https://pkg.go.dev/vuln/GO-2024-3333",
+          "url": "https://pkg.go.dev/vuln/GO-2024-3333"
+        }
+      ],
+      "release_date": "2024-12-18T20:38:22.660000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-20T12:54:15+00:00",
+          "details": "For more about Red Hat Developer Hub, see References links",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2025:0409"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 7.5,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "NONE",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "golang.org/x/net/html: Non-linear parsing of case-insensitive content in golang.org/x/net/html"
+    },
+    {
+      "cve": "CVE-2024-52798",
+      "cwe": {
+        "id": "CWE-1333",
+        "name": "Inefficient Regular Expression Complexity"
+      },
+      "discovery_date": "2024-12-05T23:00:59.020167+00:00",
+      "flags": [
+        {
+          "label": "vulnerable_code_not_present",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2330689"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in path-to-regexp. A path-to-regexp turns path strings into regular expressions. In certain cases, path-to-regexp will output a regular expression that can be exploited to cause poor performance.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "path-to-regexp: path-to-regexp Unpatched `path-to-regexp` ReDoS in 0.1.x",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "This vulnerability exists because of an incomplete fix for CVE-2024-45296.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+        ],
+        "known_not_affected": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-52798"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2330689",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2330689"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-52798",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-52798"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-52798",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-52798"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pillarjs/path-to-regexp/commit/f01c26a013b1889f0c217c643964513acf17f6a4",
+          "url": "https://github.com/pillarjs/path-to-regexp/commit/f01c26a013b1889f0c217c643964513acf17f6a4"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-rhx6-c78j-4q9w",
+          "url": "https://github.com/pillarjs/path-to-regexp/security/advisories/GHSA-rhx6-c78j-4q9w"
+        }
+      ],
+      "release_date": "2024-12-05T22:45:42.774000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-20T12:54:15+00:00",
+          "details": "For more about Red Hat Developer Hub, see References links",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2025:0409"
+        },
+        {
+          "category": "workaround",
+          "details": "Avoid using two parameters within a single path segment when the separator is not, for example, /:a-:b. Alternatively, you can define the regex used for both parameters and ensure they do not overlap to allow backtracking.",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "LOW",
+            "baseScore": 5.3,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "NONE",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "version": "3.1"
+          },
+          "products": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "path-to-regexp: path-to-regexp Unpatched `path-to-regexp` ReDoS in 0.1.x"
+    },
+    {
+      "cve": "CVE-2024-55565",
+      "cwe": {
+        "id": "CWE-835",
+        "name": "Loop with Unreachable Exit Condition ('Infinite Loop')"
+      },
+      "discovery_date": "2024-12-09T02:00:45.255738+00:00",
+      "flags": [
+        {
+          "label": "vulnerable_code_not_present",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2331063"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "nanoid (aka Nano ID) before 5.0.9 mishandles non-integer values. 3.3.8 is also a fixed version.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "nanoid: nanoid mishandles non-integer values",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+        ],
+        "known_not_affected": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-55565"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2331063",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2331063"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-55565",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-55565"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-55565",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-55565"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/ai/nanoid/compare/3.3.7...3.3.8",
+          "url": "https://github.com/ai/nanoid/compare/3.3.7...3.3.8"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/ai/nanoid/pull/510",
+          "url": "https://github.com/ai/nanoid/pull/510"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/ai/nanoid/releases/tag/5.0.9",
+          "url": "https://github.com/ai/nanoid/releases/tag/5.0.9"
+        }
+      ],
+      "release_date": "2024-12-09T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-20T12:54:15+00:00",
+          "details": "For more about Red Hat Developer Hub, see References links",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2025:0409"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "ADJACENT_NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 6.5,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "NONE",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "nanoid: nanoid mishandles non-integer values"
+    },
+    {
+      "cve": "CVE-2024-56201",
+      "cwe": {
+        "id": "CWE-150",
+        "name": "Improper Neutralization of Escape, Meta, or Control Sequences"
+      },
+      "discovery_date": "2024-12-23T16:00:38.768252+00:00",
+      "flags": [
+        {
+          "label": "vulnerable_code_not_present",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2333854"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in the Jinja2 package. A bug in the Jinja compiler allows an attacker that controls both the content and filename of a template to execute arbitrary Python code, regardless of Jinja's sandbox being used. An attacker needs to be able to control both the filename and the contents of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications that execute untrusted templates where the template author can also choose the template filename.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "jinja2: Jinja has a sandbox breakout through malicious filenames",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "This vulnerability has rated as a IMPORTANT flaw because an attacker controlling both the template content and filename to execute arbitrary Python code, bypassing the sandbox.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+        ],
+        "known_not_affected": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-56201"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2333854",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2333854"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-56201",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-56201"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-56201",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-56201"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f",
+          "url": "https://github.com/pallets/jinja/commit/767b23617628419ae3709ccfb02f9602ae9fe51f"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pallets/jinja/issues/1792",
+          "url": "https://github.com/pallets/jinja/issues/1792"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pallets/jinja/releases/tag/3.1.5",
+          "url": "https://github.com/pallets/jinja/releases/tag/3.1.5"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699",
+          "url": "https://github.com/pallets/jinja/security/advisories/GHSA-gmj6-6f8f-6699"
+        }
+      ],
+      "release_date": "2024-12-23T15:37:36.110000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-20T12:54:15+00:00",
+          "details": "For more about Red Hat Developer Hub, see References links",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2025:0409"
+        },
+        {
+          "category": "workaround",
+          "details": "To mitigate this vulnerabilty restrict user-controlled template filenames, ensuring they follow a predefined templates.",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "LOCAL",
+            "availabilityImpact": "HIGH",
+            "baseScore": 7.3,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "LOW",
+            "scope": "UNCHANGED",
+            "userInteraction": "REQUIRED",
+            "vectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "jinja2: Jinja has a sandbox breakout through malicious filenames"
+    },
+    {
+      "cve": "CVE-2024-56326",
+      "cwe": {
+        "id": "CWE-693",
+        "name": "Protection Mechanism Failure"
+      },
+      "discovery_date": "2024-12-23T16:00:46.619763+00:00",
+      "flags": [
+        {
+          "label": "vulnerable_code_not_present",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2333856"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in the Jinja package. In affected versions of Jinja, an oversight in how the Jinja sandboxed environment detects calls to str.format allows an attacker that controls the content of a template to execute arbitrary Python code. To exploit the vulnerability, an attacker needs to control the content of a template. Whether that is the case depends on the type of application using Jinja. This vulnerability impacts users of applications that execute untrusted templates. Jinja's sandbox does catch calls to str.format and ensures they don't escape the sandbox. However, storing a reference to a malicious string's format method is possible, then passing that to a filter that calls it. No such filters are built into Jinja but could be present through custom filters in an application. After the fix, such indirect calls are also handled by the sandbox.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "jinja2: Jinja has a sandbox breakout through indirect reference to format method",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "This vulnerability is rated as Moderate due to an oversight in Jinja's sandbox environment, allowing attackers to execute arbitrary Python code through controlled template content. This requires control over template content, making exploitation possible only in specific applications, thus limiting its overall impact.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+        ],
+        "known_not_affected": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-56326"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2333856",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2333856"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-56326",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-56326"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-56326",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-56326"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4",
+          "url": "https://github.com/pallets/jinja/commit/48b0687e05a5466a91cd5812d604fa37ad0943b4"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pallets/jinja/releases/tag/3.1.5",
+          "url": "https://github.com/pallets/jinja/releases/tag/3.1.5"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h",
+          "url": "https://github.com/pallets/jinja/security/advisories/GHSA-q2x7-8rv6-6q7h"
+        }
+      ],
+      "release_date": "2024-12-23T15:43:49.400000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-20T12:54:15+00:00",
+          "details": "For more about Red Hat Developer Hub, see References links",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2025:0409"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "HIGH",
+            "attackVector": "LOCAL",
+            "availabilityImpact": "HIGH",
+            "baseScore": 6.3,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "HIGH",
+            "scope": "UNCHANGED",
+            "userInteraction": "REQUIRED",
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "jinja2: Jinja has a sandbox breakout through indirect reference to format method"
+    },
+    {
+      "cve": "CVE-2024-56334",
+      "cwe": {
+        "id": "CWE-94",
+        "name": "Improper Control of Generation of Code ('Code Injection')"
+      },
+      "discovery_date": "2024-12-20T21:00:48.166699+00:00",
+      "flags": [
+        {
+          "label": "vulnerable_code_not_present",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2333587"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in the systeminformation library for Node.js. In Windows systems, the SSID parameter of the `getWindowsIEEE8021x` function is not sanitized before it is passed to cmd.exe. This may allow a remote attacker to execute arbitrary commands on the target system.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "systeminformation: Command injection vulnerability in getWindowsIEEE8021x (SSID) function in systeminformation",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "This vulnerability in the systeminformation library is marked as a high-severity issue because it allows for the execution of arbitrary commands via an unsanitized SSID input passed to `cmd.exe`. Since this flaw can lead to remote code execution (RCE) or local privilege escalation, it provides an attacker with the potential to execute malicious scripts on the affected system.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+        ],
+        "known_not_affected": [
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+          "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-56334"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2333587",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2333587"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-56334",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-56334"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-56334",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-56334"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/sebhildebrandt/systeminformation/commit/f7af0a67b78e7894335a6cad510566a25e06ae41",
+          "url": "https://github.com/sebhildebrandt/systeminformation/commit/f7af0a67b78e7894335a6cad510566a25e06ae41"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/sebhildebrandt/systeminformation/security/advisories/GHSA-cvv5-9h9w-qp2m",
+          "url": "https://github.com/sebhildebrandt/systeminformation/security/advisories/GHSA-cvv5-9h9w-qp2m"
+        }
+      ],
+      "release_date": "2024-12-20T20:10:12.578000+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-20T12:54:15+00:00",
+          "details": "For more about Red Hat Developer Hub, see References links",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2025:0409"
+        },
+        {
+          "category": "workaround",
+          "details": "Mitigation for this issue is either not available or the currently available options do not meet the Red Hat Product Security criteria comprising ease of use and deployment, applicability to widespread installation base or stability.",
+          "product_ids": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "ADJACENT_NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 8.0,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "NONE",
+            "scope": "UNCHANGED",
+            "userInteraction": "REQUIRED",
+            "vectorString": "CVSS:3.1/AV:A/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-hub-rhel9@sha256:d8268197ba0466643efb818fcad8f0fc29e32463f75b0f7f51d9ce75ec717572_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-operator-bundle@sha256:a91c4931ef5111c555ec5cc8128c3148c94fe2983d2e4fa7babe843e9292b303_amd64",
+            "Red Hat Developer Hub (RHDH) 1.4:registry.redhat.io/rhdh/rhdh-rhel9-operator@sha256:9e1e2fac9519bd480c9629f5a9cf69be0169715483b7e662eaac61a48b37eb60_amd64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "systeminformation: Command injection vulnerability in getWindowsIEEE8021x (SSID) function in systeminformation"
+    }
+  ]
+}

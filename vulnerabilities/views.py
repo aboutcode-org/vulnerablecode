@@ -29,10 +29,12 @@ from django.views.generic.list import ListView
 
 from vulnerabilities import models
 from vulnerabilities.forms import AdminLoginForm
+from vulnerabilities.forms import AdvisorySearchForm
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.severity_systems import EPSS
@@ -46,6 +48,34 @@ PAGE_SIZE = 20
 class PackageSearch(ListView):
     model = models.Package
     template_name = "packages.html"
+    ordering = ["type", "namespace", "name", "version"]
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["package_search_form"] = PackageSearchForm(request_query)
+        context["search"] = request_query.get("search")
+        return context
+
+    def get_queryset(self, query=None):
+        """
+        Return a Package queryset for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
+        query = query or self.request.GET.get("search") or ""
+        return (
+            self.model.objects.search(query)
+            .with_vulnerability_counts()
+            .prefetch_related()
+            .order_by("package_url")
+        )
+
+
+class PackageSearchV2(ListView):
+    model = models.PackageV2
+    template_name = "packages_v2.html"
     ordering = ["type", "namespace", "name", "version"]
     paginate_by = PAGE_SIZE
 
@@ -89,6 +119,24 @@ class VulnerabilitySearch(ListView):
         return self.model.objects.search(query=query).with_package_counts()
 
 
+class AdvisorySearch(ListView):
+    model = models.AdvisoryV2
+    template_name = "vulnerabilities.html"
+    ordering = ["advisory_id"]
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["advisory_search_form"] = VulnerabilitySearchForm(request_query)
+        context["search"] = request_query.get("search")
+        return context
+
+    def get_queryset(self, query=None):
+        query = query or self.request.GET.get("search") or ""
+        return self.model.objects.search(query=query).with_package_counts()
+
+
 class PackageDetails(DetailView):
     model = models.Package
     template_name = "package_details.html"
@@ -109,6 +157,78 @@ class PackageDetails(DetailView):
 
         context["history"] = list(package.history)
         return context
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        purl = self.kwargs.get(self.slug_url_kwarg)
+        if purl:
+            queryset = queryset.for_purl(purl)
+        else:
+            cls = self.__class__.__name__
+            raise AttributeError(
+                f"Package details view {cls} must be called with a purl, " f"but got: {purl!r}"
+            )
+
+        try:
+            package = queryset.get()
+        except queryset.model.DoesNotExist:
+            raise Http404(f"No Package found for purl: {purl}")
+        return package
+
+
+class PackageV2Details(DetailView):
+    model = models.PackageV2
+    template_name = "package_details_v2.html"
+    slug_url_kwarg = "purl"
+    slug_field = "purl"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        package = self.object
+        next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions()
+        fixed_pkg_details = {}
+        for impact in package.affected_in_impacts.all():
+            if impact.advisory.id not in fixed_pkg_details:
+                fixed_pkg_details[impact.advisory.id] = []
+            fixed_pkg_details[impact.advisory.id].extend(
+                [
+                    {"pkg": pkg, "affected_count": pkg.affected_in_impacts.count()}
+                    for pkg in impact.fixed_by_packages.all()
+                ]
+            )
+        context["package"] = package
+        context["next_non_vulnerable"] = next_non_vulnerable
+        context["latest_non_vulnerable"] = latest_non_vulnerable
+        context["affected_by_advisories"] = {
+            impact.advisory for impact in package.affected_in_impacts.all()
+        }
+        context["fixing_advisories"] = {
+            impact.advisory for impact in package.fixed_in_impacts.all()
+        }
+
+        context["package_search_form"] = PackageSearchForm(self.request.GET)
+        context["fixed_package_details"] = fixed_pkg_details
+
+        # context["history"] = list(package.history)
+        return context
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "affected_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory"),
+                ),
+                Prefetch(
+                    "fixed_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory"),
+                ),
+            )
+        )
 
     def get_object(self, queryset=None):
         if queryset is None:
@@ -193,9 +313,11 @@ class VulnerabilityDetails(DetailView):
 
         for severity in valid_severities:
             try:
-                vector_values = SCORING_SYSTEMS[severity.scoring_system].get(
-                    severity.scoring_elements
-                )
+                vector_values_system = SCORING_SYSTEMS[severity.scoring_system]
+                if not vector_values_system:
+                    logging.error(f"Unknown scoring system: {severity.scoring_system}")
+                    continue
+                vector_values = vector_values_system.get(severity.scoring_elements)
                 if vector_values:
                     severity_vectors.append({"vector": vector_values, "origin": severity.url})
             except (
@@ -232,6 +354,112 @@ class VulnerabilityDetails(DetailView):
         return context
 
 
+class AdvisoryDetails(DetailView):
+    model = models.AdvisoryV2
+    template_name = "advisory_detail.html"
+    slug_url_kwarg = "avid"
+    slug_field = "avid"
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related()
+            .prefetch_related(
+                Prefetch(
+                    "references",
+                    queryset=models.AdvisoryReference.objects.only(
+                        "reference_id", "reference_type", "url"
+                    ),
+                ),
+                Prefetch(
+                    "aliases",
+                    queryset=models.AdvisoryAlias.objects.only("alias"),
+                ),
+                Prefetch(
+                    "weaknesses",
+                    queryset=models.AdvisoryWeakness.objects.only("cwe_id"),
+                ),
+                Prefetch(
+                    "severities",
+                    queryset=models.AdvisorySeverity.objects.only(
+                        "scoring_system", "value", "url", "scoring_elements", "published_at"
+                    ),
+                ),
+                Prefetch(
+                    "exploits",
+                    queryset=models.AdvisoryExploit.objects.only(
+                        "data_source", "description", "required_action", "due_date", "notes"
+                    ),
+                ),
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        """
+        Build context with preloaded QuerySets and minimize redundant queries.
+        """
+        context = super().get_context_data(**kwargs)
+        advisory = self.object
+
+        # Pre-fetch and process data in Python instead of the template
+        weaknesses_present_in_db = [
+            weakness_object
+            for weakness_object in advisory.weaknesses.all()
+            if weakness_object.weakness
+        ]
+
+        valid_severities = self.object.severities.exclude(scoring_system=EPSS.identifier).filter(
+            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
+        )
+
+        severity_vectors = []
+
+        for severity in valid_severities:
+            try:
+                vector_values_system = SCORING_SYSTEMS.get(severity.scoring_system)
+                if not vector_values_system:
+                    logging.error(f"Unknown scoring system: {severity.scoring_system}")
+                    continue
+                if vector_values_system.identifier in ["cvssv3.1_qr"]:
+                    continue
+                vector_values = vector_values_system.get(severity.scoring_elements)
+                if vector_values:
+                    severity_vectors.append({"vector": vector_values, "origin": severity.url})
+                    logging.error(f"Error processing scoring elements: {severity.scoring_elements}")
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ):
+                logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
+
+        epss_severity = advisory.severities.filter(scoring_system="epss").first()
+        epss_data = None
+        if epss_severity:
+            epss_data = {
+                "percentile": epss_severity.scoring_elements,
+                "score": epss_severity.value,
+                "published_at": epss_severity.published_at,
+            }
+        print(severity_vectors)
+        context.update(
+            {
+                "advisory": advisory,
+                "severities": list(advisory.severities.all()),
+                "severity_vectors": severity_vectors,
+                "references": list(advisory.references.all()),
+                "aliases": list(advisory.aliases.all()),
+                "weaknesses": weaknesses_present_in_db,
+                "status": advisory.get_status_label,
+                # "history": advisory.history,
+                "epss_data": epss_data,
+            }
+        )
+        return context
+
+
 class HomePage(View):
     template_name = "index.html"
 
@@ -239,6 +467,19 @@ class HomePage(View):
         request_query = request.GET
         context = {
             "vulnerability_search_form": VulnerabilitySearchForm(request_query),
+            "package_search_form": PackageSearchForm(request_query),
+            "release_url": f"https://github.com/aboutcode-org/vulnerablecode/releases/tag/v{VULNERABLECODE_VERSION}",
+        }
+        return render(request=request, template_name=self.template_name, context=context)
+
+
+class HomePageV2(View):
+    template_name = "index_v2.html"
+
+    def get(self, request):
+        request_query = request.GET
+        context = {
+            "vulnerability_search_form": AdvisorySearchForm(request_query),
             "package_search_form": PackageSearchForm(request_query),
             "release_url": f"https://github.com/aboutcode-org/vulnerablecode/releases/tag/v{VULNERABLECODE_VERSION}",
         }
@@ -353,10 +594,50 @@ class VulnerabilityPackagesDetails(DetailView):
         return context
 
 
+class AdvisoryPackagesDetails(DetailView):
+    """
+    View to display all packages affected by or fixing a specific vulnerability.
+    URL: /advisories/{id}/packages
+    """
+
+    model = models.AdvisoryV2
+    template_name = "advisory_package_details.html"
+    slug_url_kwarg = "avid"
+    slug_field = "avid"
+
+    def get_queryset(self):
+        """
+        Prefetch and optimize related data to minimize database hits.
+        """
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "impacted_packages",
+                    queryset=models.ImpactedPackage.objects.prefetch_related(
+                        Prefetch(
+                            "affecting_packages",
+                            queryset=models.PackageV2.objects.only(
+                                "type", "namespace", "name", "version"
+                            ),
+                        ),
+                        Prefetch(
+                            "fixed_by_packages",
+                            queryset=models.PackageV2.objects.only(
+                                "type", "namespace", "name", "version"
+                            ),
+                        ),
+                    ),
+                )
+            )
+        )
+
+
 class PipelineScheduleListView(ListView, FormMixin):
     model = PipelineSchedule
     context_object_name = "schedule_list"
-    template_name = "pipeline_schedule_list.html"
+    template_name = "pipeline_dashboard.html"
     paginate_by = 20
     form_class = PipelineSchedulePackageForm
 
@@ -367,6 +648,14 @@ class PipelineScheduleListView(ListView, FormMixin):
                 pipeline_id__icontains=form.cleaned_data.get("search")
             )
         return PipelineSchedule.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["active_pipeline_count"] = PipelineSchedule.objects.filter(is_active=True).count()
+        context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
+            is_active=False
+        ).count()
+        return context
 
 
 class PipelineRunListView(ListView):
@@ -425,3 +714,9 @@ class PipelineRunDetailView(DetailView):
 class AdminLoginView(LoginView):
     template_name = "admin_login.html"
     authentication_form = AdminLoginForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["site_title"] = "VulnerableCode site admin"
+        context["site_header"] = "VulnerableCode Administration"
+        return context

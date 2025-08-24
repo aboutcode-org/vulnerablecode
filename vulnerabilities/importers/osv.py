@@ -313,7 +313,7 @@ def get_affected_purl(affected_pkg, raw_id):
             namespace = ""
             if purl_type == "maven":
                 namespace, _, name = name.partition(":")
-            if ecosys in ["almalinux:8","almalinux:9" , "almalinux:10"]:
+            if ecosys in ["almalinux:8", "almalinux:9", "almalinux:10"]:
                 namespace = "almalinux"
 
             purl = PackageURL(type=purl_type, namespace=namespace, name=name)

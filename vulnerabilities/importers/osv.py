@@ -46,6 +46,7 @@ PURL_TYPE_BY_OSV_ECOSYSTEM = {
     "cargo": "cargo",
     "almalinux:8": "rpm",
     "almalinux:9": "rpm",
+    "almalinux:10": "rpm",
 }
 
 
@@ -312,7 +313,7 @@ def get_affected_purl(affected_pkg, raw_id):
             namespace = ""
             if purl_type == "maven":
                 namespace, _, name = name.partition(":")
-            if ecosys == "almalinux:8" or ecosys == "almalinux:9":
+            if ecosys in ["almalinux:8","almalinux:9" , "almalinux:10"]:
                 namespace = "almalinux"
 
             purl = PackageURL(type=purl_type, namespace=namespace, name=name)

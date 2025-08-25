@@ -23,6 +23,7 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import CodeFixV2
+from vulnerabilities.models import LivePipelineRun
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageV2
 from vulnerabilities.models import PipelineRun
@@ -911,12 +912,27 @@ class LiveEvaluationAPITest(APITestCase):
         self.url = "/api/v2/live-evaluation/evaluate"
 
     @patch("vulnerabilities.api_v2.LIVE_IMPORTERS_REGISTRY")
-    def test_evaluate_success(self, mock_registry):
+    @patch("vulnerabilities.api_v2.enqueue_ad_hoc_pipeline")
+    @patch("vulnerabilities.models.PipelineRun.objects.get")
+    @patch("vulnerabilities.models.LivePipelineRun.objects.create")
+    def test_evaluate_success(
+        self, mock_live_create, mock_pipeline_get, mock_enqueue, mock_registry
+    ):
         class MockImporter:
             pipeline_id = "pypa_live_importer_v2"
             supported_types = ["pypi"]
 
         mock_registry.values.return_value = [MockImporter]
+        mock_live_run = type("MockLiveRun", (), {"run_id": "mock-live-id"})()
+        mock_live_create.return_value = mock_live_run
+        mock_enqueue.return_value = "mock-run-id"
+        mock_pipeline_run = type(
+            "MockPipelineRun",
+            (),
+            {"run_id": "mock-run-id", "live_pipeline": None, "save": lambda self: None},
+        )()
+        mock_pipeline_get.return_value = mock_pipeline_run
+
         data = {"purl": "pkg:pypi/django@3.2"}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == 202
@@ -943,7 +959,9 @@ class LiveEvaluationAPITest(APITestCase):
         assert response.status_code == 400
         assert "Invalid PackageURL" in response.data["error"]
 
-    def test_status_not_found(self):
+    @patch("vulnerabilities.models.LivePipelineRun.objects.get")
+    def test_status_not_found(self, mock_live_get):
+        mock_live_get.side_effect = LivePipelineRun.DoesNotExist()
         url = "/api/v2/live-evaluation/status/00000000-0000-0000-0000-000000000000"
         response = self.client.get(url)
         assert response.status_code == 404

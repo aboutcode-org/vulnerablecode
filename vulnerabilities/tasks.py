@@ -21,10 +21,10 @@ from vulnerablecode.settings import VULNERABLECODE_PIPELINE_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
-queue = django_rq.get_queue("default")
+default_queue = django_rq.get_queue("default")
 
 
-def execute_pipeline(pipeline_id, run_id):
+def execute_pipeline(pipeline_id, run_id, inputs=None):
     from vulnerabilities.pipelines import VulnerableCodePipeline
 
     logger.info(f"Enter `execute_pipeline` {pipeline_id}")
@@ -39,7 +39,8 @@ def execute_pipeline(pipeline_id, run_id):
     exitcode = 0
     run_class = run.pipeline_class
     if issubclass(run_class, VulnerableCodePipeline):
-        pipeline_instance = run_class(run_instance=run)
+        inputs = inputs or {}
+        pipeline_instance = run_class(run_instance=run, **inputs)
         exitcode, output = pipeline_instance.execute()
     elif issubclass(run_class, Importer) or issubclass(run_class, Improver):
         exitcode, output = legacy_runner(run_class=run_class, run=run)
@@ -121,7 +122,7 @@ def enqueue_pipeline(pipeline_id):
     run = models.PipelineRun.objects.create(
         pipeline=pipeline_schedule,
     )
-    job = queue.enqueue(
+    job = default_queue.enqueue(
         execute_pipeline,
         pipeline_id,
         run.run_id,
@@ -131,7 +132,35 @@ def enqueue_pipeline(pipeline_id):
     )
 
 
+def enqueue_ad_hoc_pipeline(pipeline_id, *, inputs=None):
+    """Enqueue a one-off execution for the given pipeline_id with optional inputs.
+
+    Returns the created run_id or None if the pipeline cannot be enqueued.
+    """
+    try:
+        pipeline_schedule = models.PipelineSchedule.objects.get(pipeline_id=pipeline_id)
+    except models.PipelineSchedule.DoesNotExist:
+        pipeline_schedule = models.PipelineSchedule.objects.create(
+            pipeline_id=pipeline_id,
+            is_active=False,
+        )
+
+    run = models.PipelineRun.objects.create(pipeline=pipeline_schedule)
+
+    live_queue = django_rq.get_queue("live")
+    job = live_queue.enqueue(
+        execute_pipeline,
+        pipeline_id,
+        run.run_id,
+        inputs or {},
+        job_id=str(run.run_id),
+        on_failure=set_run_failure,
+        job_timeout=f"{pipeline_schedule.execution_timeout}h",
+    )
+    return run.run_id
+
+
 def dequeue_job(job_id):
     """Remove a job from queue if it hasn't been executed yet."""
-    if job_id in queue.jobs:
-        queue.remove(job_id)
+    if job_id in default_queue.jobs:
+        default_queue.remove(job_id)

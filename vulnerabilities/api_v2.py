@@ -44,6 +44,7 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.tasks import enqueue_ad_hoc_pipeline
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
 
 
@@ -1300,8 +1301,7 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LiveEvaluationSerializer(serializers.Serializer):
-    purl_string = serializers.CharField(help_text="PackageURL to evaluate")
-    no_threading = serializers.BooleanField(required=False, default=False)
+    purl = serializers.CharField(help_text="PackageURL to evaluate")
 
 
 class LiveEvaluationViewSet(viewsets.GenericViewSet):
@@ -1310,7 +1310,7 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
     @extend_schema(
         request=LiveEvaluationSerializer,
         responses={
-            202: {"description": "Live evaluation done successfully"},
+            202: {"description": "Live evaluation enqueued successfully; returns Run IDs"},
             400: {"description": "Invalid request"},
             500: {"description": "Internal server error"},
         },
@@ -1324,8 +1324,7 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        purl_string = serializer.validated_data.get("purl_string")
-        no_threading = serializer.validated_data.get("no_threading", False)
+        purl_string = serializer.validated_data.get("purl")
 
         try:
             purl = PackageURL.from_string(purl_string) if purl_string else None
@@ -1349,31 +1348,78 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        results = []
+        # Create a single LivePipelineRun to represent this evaluation
+        from vulnerabilities.models import LivePipelineRun
 
-        def run_importer(importer):
+        live_run = LivePipelineRun.objects.create(purl=purl_string)
+        runs = []
+        for importer in importers:
             importer_name = getattr(importer, "pipeline_id", importer.__name__)
-            response_data = {"importer": importer_name, "purl": purl_string, "steps_completed": []}
+            run_id = enqueue_ad_hoc_pipeline(importer_name, inputs={"purl": purl})
+            # Attach each PipelineRun to the LivePipelineRun
+            from vulnerabilities.models import PipelineRun
+
             try:
-                pipeline_instance = importer(purl=purl)
-                status_code, error = pipeline_instance.execute()
-                if status_code != 0:
-                    response_data["error"] = f"Importer {importer_name} failed: {error}"
-                else:
-                    response_data["steps_completed"].append("import")
-            except Exception as e:
-                response_data["error"] = f"Error running importer {importer_name}: {str(e)}"
-            return response_data
-
-        if not no_threading and len(importers) > 1:
-            with ThreadPoolExecutor(max_workers=len(importers)) as executor:
-                future_to_importer = {
-                    executor.submit(run_importer, importer): importer for importer in importers
+                run_obj = PipelineRun.objects.get(run_id=run_id)
+                run_obj.live_pipeline = live_run
+                run_obj.save()
+            except PipelineRun.DoesNotExist:
+                pass
+            runs.append(
+                {
+                    "importer": importer_name,
+                    "run_id": str(run_id) if run_id else None,
                 }
-                for future in as_completed(future_to_importer):
-                    results.append(future.result())
-        else:
-            for importer in importers:
-                results.append(run_importer(importer))
+            )
+        return Response(
+            {"live_run_id": str(live_run.run_id), "runs": runs}, status=status.HTTP_202_ACCEPTED
+        )
 
-        return Response(results, status=status.HTTP_202_ACCEPTED)
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="live_run_id",
+                description="UUID of the live run to check status for",
+                required=True,
+                type={"type": "string"},
+                location=OpenApiParameter.PATH,
+            )
+        ],
+        responses={200: "LivePipelineRun status and importers status"},
+    )
+    @action(detail=False, methods=["get"], url_path=r"status/(?P<live_run_id>[0-9a-f\-]{36})")
+    def status(self, request, live_run_id=None):
+        from vulnerabilities.models import LivePipelineRun
+        from vulnerabilities.models import PipelineRun
+
+        try:
+            live_run = LivePipelineRun.objects.get(run_id=live_run_id)
+        except LivePipelineRun.DoesNotExist:
+            return Response({"detail": "Live run not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        live_run.update_status()
+
+        # Gather status for each importer run
+        importer_statuses = []
+        for run in live_run.pipelineruns.all():
+            importer_statuses.append(
+                {
+                    "importer": run.pipeline.pipeline_id,
+                    "run_id": str(run.run_id),
+                    "status": run.status,
+                    "run_start_date": run.run_start_date,
+                    "run_end_date": run.run_end_date,
+                    "run_exitcode": run.run_exitcode,
+                    "run_output": run.run_output,
+                }
+            )
+
+        response = {
+            "live_run_id": str(live_run.run_id),
+            "overall_status": live_run.status,
+            "created_date": live_run.created_date,
+            "completed_date": live_run.completed_date,
+            "purl": live_run.purl,
+            "importers": importer_statuses,
+        }
+        return Response(response)

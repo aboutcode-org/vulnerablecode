@@ -385,3 +385,10 @@ RQ_QUEUES = {
         "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
     }
 }
+
+RQ_QUEUES["live"] = {
+    "HOST": env.str("VULNERABLECODE_REDIS_HOST", default=RQ_QUEUES["default"]["HOST"]),
+    "PORT": env.str("VULNERABLECODE_REDIS_PORT", default=RQ_QUEUES["default"]["PORT"]),
+    "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=RQ_QUEUES["default"]["PASSWORD"]),
+    "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_LIVE_REDIS_DEFAULT_TIMEOUT", default=3600),
+}

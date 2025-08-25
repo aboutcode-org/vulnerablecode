@@ -8,6 +8,9 @@
 #
 
 
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import as_completed
+
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
@@ -25,6 +28,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 
+from vulnerabilities.importers import LIVE_IMPORTERS_REGISTRY
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
@@ -40,6 +44,7 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.tasks import enqueue_ad_hoc_pipeline
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
 
 
@@ -1293,3 +1298,128 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(
             AdvisoryPackageV2Serializer(qs, many=True, context={"request": request}).data
         )
+
+
+class LiveEvaluationSerializer(serializers.Serializer):
+    purl = serializers.CharField(help_text="PackageURL to evaluate")
+
+
+class LiveEvaluationViewSet(viewsets.GenericViewSet):
+    serializer_class = LiveEvaluationSerializer
+
+    @extend_schema(
+        request=LiveEvaluationSerializer,
+        responses={
+            202: {"description": "Live evaluation enqueued successfully; returns Run IDs"},
+            400: {"description": "Invalid request"},
+            500: {"description": "Internal server error"},
+        },
+    )
+    @action(detail=False, methods=["post"])
+    def evaluate(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        purl_string = serializer.validated_data.get("purl")
+
+        try:
+            purl = PackageURL.from_string(purl_string) if purl_string else None
+            if not purl:
+                return Response({"error": "Invalid PackageURL"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(
+                {"error": f"Invalid PackageURL: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        importers = [
+            importer
+            for importer in LIVE_IMPORTERS_REGISTRY.values()
+            if hasattr(importer, "supported_types")
+            and purl.type in getattr(importer, "supported_types", [])
+        ]
+
+        if not importers:
+            return Response(
+                {"error": f"No live importers found for purl type '{purl.type}'"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Create a single LivePipelineRun to represent this evaluation
+        from vulnerabilities.models import LivePipelineRun
+
+        live_run = LivePipelineRun.objects.create(purl=purl_string)
+        runs = []
+        for importer in importers:
+            importer_name = getattr(importer, "pipeline_id", importer.__name__)
+            run_id = enqueue_ad_hoc_pipeline(importer_name, inputs={"purl": purl})
+            # Attach each PipelineRun to the LivePipelineRun
+            from vulnerabilities.models import PipelineRun
+
+            try:
+                run_obj = PipelineRun.objects.get(run_id=run_id)
+                run_obj.live_pipeline = live_run
+                run_obj.save()
+            except PipelineRun.DoesNotExist:
+                pass
+            runs.append(
+                {
+                    "importer": importer_name,
+                    "run_id": str(run_id) if run_id else None,
+                }
+            )
+        return Response(
+            {"live_run_id": str(live_run.run_id), "runs": runs}, status=status.HTTP_202_ACCEPTED
+        )
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="live_run_id",
+                description="UUID of the live run to check status for",
+                required=True,
+                type={"type": "string"},
+                location=OpenApiParameter.PATH,
+            )
+        ],
+        responses={200: "LivePipelineRun status and importers status"},
+    )
+    @action(detail=False, methods=["get"], url_path=r"status/(?P<live_run_id>[0-9a-f\-]{36})")
+    def status(self, request, live_run_id=None):
+        from vulnerabilities.models import LivePipelineRun
+        from vulnerabilities.models import PipelineRun
+
+        try:
+            live_run = LivePipelineRun.objects.get(run_id=live_run_id)
+        except LivePipelineRun.DoesNotExist:
+            return Response({"detail": "Live run not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        live_run.update_status()
+
+        # Gather status for each importer run
+        importer_statuses = []
+        for run in live_run.pipelineruns.all():
+            importer_statuses.append(
+                {
+                    "importer": run.pipeline.pipeline_id,
+                    "run_id": str(run.run_id),
+                    "status": run.status,
+                    "run_start_date": run.run_start_date,
+                    "run_end_date": run.run_end_date,
+                    "run_exitcode": run.run_exitcode,
+                    "run_output": run.run_output,
+                }
+            )
+
+        response = {
+            "live_run_id": str(live_run.run_id),
+            "overall_status": live_run.status,
+            "created_date": live_run.created_date,
+            "completed_date": live_run.completed_date,
+            "purl": live_run.purl,
+            "importers": importer_statuses,
+        }
+        return Response(response)

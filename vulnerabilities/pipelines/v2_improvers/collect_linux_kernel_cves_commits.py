@@ -24,7 +24,7 @@ class CollectFixCommitLinuxKernelPipeline(VulnerableCodePipeline):
 
     pipeline_id = "linux_kernel_cves_fix_commits"
     spdx_license_expression = "Apache-2.0"
-    license_url = "https://github.com/quarkslab/aosp_dataset/blob/master/LICENSE"
+    license_url = "https://github.com/nluedtke/linux_kernel_cves/blob/master/LICENSE"
     importer_name = "linux_kernel_cves_fix_commits"
     qualified_name = "linux_kernel_cves_fix_commits"
     repo_url = "git+https://github.com/nluedtke/linux_kernel_cves"

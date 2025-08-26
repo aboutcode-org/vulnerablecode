@@ -33,6 +33,7 @@ from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2
+from vulnerabilities.views import LiveEvaluationPipelineScheduleListView
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import PackageSearchV2
@@ -89,6 +90,11 @@ urlpatterns = [
         "pipelines/dashboard/",
         PipelineScheduleListView.as_view(),
         name="dashboard",
+    ),
+    path(
+        "pipelines/live-evaluation-dashboard/",
+        LiveEvaluationPipelineScheduleListView.as_view(),
+        name="live-evaluation-dashboard",
     ),
     path(
         "pipelines/<str:pipeline_id>/runs/",

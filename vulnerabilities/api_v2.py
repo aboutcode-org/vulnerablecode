@@ -8,10 +8,8 @@
 #
 
 
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import as_completed
-
 from django.db.models import Prefetch
+from django.urls import reverse
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
@@ -1371,8 +1369,24 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
                     "run_id": str(run_id) if run_id else None,
                 }
             )
+
+        request_obj = request
+        status_path = reverse(
+            "live-evaluation-status", kwargs={"live_run_id": str(live_run.run_id)}
+        )
+
+        if hasattr(request_obj, "build_absolute_uri"):
+            status_url = request_obj.build_absolute_uri(status_path)
+        else:
+            status_url = status_path
+
         return Response(
-            {"live_run_id": str(live_run.run_id), "runs": runs}, status=status.HTTP_202_ACCEPTED
+            {
+                "live_run_id": str(live_run.run_id),
+                "runs": runs,
+                "status_url": status_url,
+            },
+            status=status.HTTP_202_ACCEPTED,
         )
 
     @extend_schema(
@@ -1390,7 +1404,6 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=["get"], url_path=r"status/(?P<live_run_id>[0-9a-f\-]{36})")
     def status(self, request, live_run_id=None):
         from vulnerabilities.models import LivePipelineRun
-        from vulnerabilities.models import PipelineRun
 
         try:
             live_run = LivePipelineRun.objects.get(run_id=live_run_id)

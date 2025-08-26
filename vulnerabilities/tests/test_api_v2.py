@@ -915,15 +915,17 @@ class LiveEvaluationAPITest(APITestCase):
     @patch("vulnerabilities.api_v2.enqueue_ad_hoc_pipeline")
     @patch("vulnerabilities.models.PipelineRun.objects.get")
     @patch("vulnerabilities.models.LivePipelineRun.objects.create")
+    @patch("django.urls.reverse")
     def test_evaluate_success(
-        self, mock_live_create, mock_pipeline_get, mock_enqueue, mock_registry
+        self, mock_reverse, mock_live_create, mock_pipeline_get, mock_enqueue, mock_registry
     ):
         class MockImporter:
             pipeline_id = "pypa_live_importer_v2"
             supported_types = ["pypi"]
 
         mock_registry.values.return_value = [MockImporter]
-        mock_live_run = type("MockLiveRun", (), {"run_id": "mock-live-id"})()
+        valid_uuid = "00000000-0000-0000-0000-000000000001"
+        mock_live_run = type("MockLiveRun", (), {"run_id": valid_uuid})()
         mock_live_create.return_value = mock_live_run
         mock_enqueue.return_value = "mock-run-id"
         mock_pipeline_run = type(
@@ -932,6 +934,7 @@ class LiveEvaluationAPITest(APITestCase):
             {"run_id": "mock-run-id", "live_pipeline": None, "save": lambda self: None},
         )()
         mock_pipeline_get.return_value = mock_pipeline_run
+        mock_reverse.return_value = f"/api/v2/live-evaluation/status/{valid_uuid}"
 
         data = {"purl": "pkg:pypi/django@3.2"}
         response = self.client.post(self.url, data, format="json")
@@ -940,6 +943,8 @@ class LiveEvaluationAPITest(APITestCase):
         assert response.data["live_run_id"] is not None
         assert response.data["runs"][0]["importer"] == "pypa_live_importer_v2"
         assert response.data["runs"][0]["run_id"] is not None
+        assert "status_url" in response.data
+        assert response.data["status_url"].endswith(f"/api/v2/live-evaluation/status/{valid_uuid}")
 
     @patch("vulnerabilities.api_v2.LIVE_IMPORTERS_REGISTRY")
     def test_evaluate_no_importer_found(self, mock_registry):

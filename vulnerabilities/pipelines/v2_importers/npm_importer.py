@@ -19,8 +19,8 @@ from packageurl import PackageURL
 from univers.version_range import NpmVersionRange
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import CVSSV2
@@ -31,7 +31,7 @@ from vulnerabilities.utils import load_json
 
 class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
-    Node.js Security Working Group importer pipeline
+    Node.js Security Working Group importer pipeline.
 
     Import advisories from nodejs security working group including node proper advisories and npm advisories.
     """
@@ -40,7 +40,6 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "MIT"
     license_url = "https://github.com/nodejs/security-wg/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/nodejs/security-wg"
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
@@ -69,7 +68,12 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             self.log(f"Skipping {file.name} file")
             return
         data = load_json(file)
+        advisory_text = file.read_text()
         id = data.get("id")
+        if not id:
+            self.log(f"Advisory ID not found in {file}")
+            return
+
         description = data.get("overview") or ""
         summary = data.get("title") or ""
         # TODO: Take care of description
@@ -96,18 +100,15 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
                 )
             )
-        if not id:
-            self.log(f"Advisory ID not found in {file}")
-            return
 
-        advisory_reference = Reference(
+        advisory_reference = ReferenceV2(
             url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
             reference_id=id,
         )
 
         for ref in data.get("references") or []:
             references.append(
-                Reference(
+                ReferenceV2(
                     url=ref,
                 )
             )
@@ -130,12 +131,12 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             references_v2=references,
             severities=severities,
             url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
+            original_advisory_text=advisory_text,
         )
 
     def get_affected_package(self, data, package_name):
         affected_version_range = None
         unaffected_version_range = None
-        fixed_version = None
 
         vulnerable_range = data.get("vulnerable_versions") or ""
         patched_range = data.get("patched_versions") or ""
@@ -152,21 +153,13 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         if patched_range:
             unaffected_version_range = NpmVersionRange.from_native(patched_range)
 
-        # We only store single fixed versions and not a range of fixed versions
-        # If there is a single constraint in the unaffected_version_range
-        # having comparator as ">=" then we store that as the fixed version
-        if unaffected_version_range and len(unaffected_version_range.constraints) == 1:
-            constraint = unaffected_version_range.constraints[0]
-            if constraint.comparator == ">=":
-                fixed_version = constraint.version
-
-        return AffectedPackage(
+        return AffectedPackageV2(
             package=PackageURL(
                 type="npm",
                 name=package_name,
             ),
             affected_version_range=affected_version_range,
-            fixed_version=fixed_version,
+            fixed_version_range=unaffected_version_range,
         )
 
     def clean_downloads(self):

@@ -17,8 +17,8 @@ from univers.version_constraint import VersionConstraint
 from univers.version_range import HexVersionRange
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import load_yaml
@@ -26,7 +26,7 @@ from vulnerabilities.utils import load_yaml
 
 class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
-    Elixir Security Advisiories Importer Pipeline
+    Elixir Security Advisories Importer Pipeline
 
     This pipeline imports security advisories for elixir.
     """
@@ -35,11 +35,15 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC0-1.0"
     license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
     repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
-        return (cls.collect_and_store_advisories,)
+        return (cls.clone, cls.collect_and_store_advisories, cls.clean_downloads)
+
+    def clean_downloads(self):
+        if self.vcs_response:
+            self.log(f"Removing cloned repository")
+            self.vcs_response.delete()
 
     def clone(self):
         self.log(f"Cloning `{self.repo_url}`")
@@ -60,11 +64,21 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             if self.vcs_response:
                 self.vcs_response.delete()
 
+    def on_failure(self):
+        self.clean_downloads()
+
     def process_file(self, file, base_path) -> Iterable[AdvisoryData]:
         relative_path = str(file.relative_to(base_path)).strip("/")
+        path_segments = str(file).split("/")
+        # use the last two segments as the advisory ID
+        advisory_id = "/".join(path_segments[-2:]).replace(".yml", "")
         advisory_url = (
             f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
         )
+        advisory_text = None
+        with open(str(file)) as f:
+            advisory_text = f.read()
+
         yaml_file = load_yaml(str(file))
 
         summary = yaml_file.get("description") or ""
@@ -83,7 +97,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         references = []
         link = yaml_file.get("link") or ""
         if link:
-            references.append(Reference(url=link))
+            references.append(ReferenceV2(url=link))
 
         constraints = []
         vrc = HexVersionRange.version_class
@@ -103,7 +117,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         affected_packages = []
         if pkg_name:
             affected_packages.append(
-                AffectedPackage(
+                AffectedPackageV2(
                     package=PackageURL(type="hex", name=pkg_name),
                     affected_version_range=HexVersionRange(constraints=constraints),
                 )
@@ -114,11 +128,12 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             date_published = dateparser.parse(yaml_file.get("disclosure_date"))
 
         yield AdvisoryData(
-            advisory_id=cve_id,
-            aliases=[],
+            advisory_id=advisory_id,
+            aliases=[cve_id],
             summary=summary,
             references_v2=references,
             affected_packages=affected_packages,
             url=advisory_url,
             date_published=date_published,
+            original_advisory_text=advisory_text or str(yaml_file),
         )

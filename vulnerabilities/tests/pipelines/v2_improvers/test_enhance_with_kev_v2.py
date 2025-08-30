@@ -17,26 +17,25 @@ import pytest
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryExploit
 from vulnerabilities.models import AdvisoryV2
-from vulnerabilities.pipelines.v2_improvers.enhance_with_metasploit import (
-    MetasploitImproverPipeline,
-)
+from vulnerabilities.pipelines.v2_improvers.enhance_with_kev import VulnerabilityKevPipeline
 from vulnerabilities.utils import load_json
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "../test_data", "metasploit_improver/modules_metadata_base.json")
+TEST_DATA = os.path.join(BASE_DIR, "../../test_data", "kev_data.json")
 
 
 @pytest.mark.django_db
 @mock.patch("requests.get")
-def test_metasploit_improver(mock_get):
+def test_kev_improver(mock_get):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = load_json(TEST_DATA)
     mock_get.return_value = mock_response
 
-    improver = MetasploitImproverPipeline()
+    improver = VulnerabilityKevPipeline()
 
     # Run the improver when there is no matching aliases
     improver.execute()
+
     assert AdvisoryExploit.objects.count() == 0
 
     adv1 = AdvisoryV2.objects.create(
@@ -47,10 +46,12 @@ def test_metasploit_improver(mock_get):
         url="https://test.com",
         date_collected=datetime.now(),
     )
-    alias = AdvisoryAlias.objects.create(alias="CVE-2007-4387")
+    adv1.save()
+
+    alias = AdvisoryAlias.objects.create(alias="CVE-2021-38647")
 
     adv1.aliases.add(alias)
 
-    # Run metasploit Improver again when there are matching aliases.
+    # Run Kev Improver again when there are matching aliases.
     improver.execute()
     assert AdvisoryExploit.objects.count() == 1

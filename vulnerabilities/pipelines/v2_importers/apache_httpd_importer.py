@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
 import re
 import urllib.parse
@@ -14,14 +15,15 @@ from typing import Iterable
 
 import requests
 from bs4 import BeautifulSoup
+from dateutil import parser as date_parser
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
 from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import APACHE_HTTPD
@@ -149,7 +151,6 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     base_url = "https://httpd.apache.org/security/json/"
-    unfurl_version_ranges = True
 
     links = []
 
@@ -217,7 +218,6 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             "pre_ajp_proxy",
         ]
     )
-    unfurl_version_ranges = True
 
     @classmethod
     def steps(cls):
@@ -260,7 +260,7 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                 )
                 break
-        reference = Reference(
+        reference = ReferenceV2(
             reference_id=alias,
             url=urllib.parse.urljoin(self.base_url, f"{alias}.json"),
         )
@@ -272,8 +272,11 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     versions_data.append(version_data)
 
         fixed_versions = []
+        date_published = None
         for timeline_object in data.get("timeline") or []:
             timeline_value = timeline_object.get("value")
+            if timeline_value == "public":
+                date_published = timeline_object.get("time")
             if "release" in timeline_value:
                 split_timeline_value = timeline_value.split(" ")
                 if "never" in timeline_value:
@@ -287,7 +290,7 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         affected_version_range = self.to_version_ranges(versions_data, fixed_versions)
         if affected_version_range:
             affected_packages.append(
-                AffectedPackage(
+                AffectedPackageV2(
                     package=PackageURL(
                         type="apache",
                         name="httpd",
@@ -307,6 +310,8 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             weaknesses=weaknesses,
             url=reference.url,
             severities=severities,
+            original_advisory_text=json.dumps(data, indent=2, ensure_ascii=False),
+            date_published=date_parser.parse(date_published) if date_published else None,
         )
 
     def to_version_ranges(self, versions_data, fixed_versions):

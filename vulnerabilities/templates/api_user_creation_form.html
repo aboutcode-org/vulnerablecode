@@ -4,6 +4,8 @@
 VulnerableCode API key request
 {% endblock %}
 
+
+
 {% block content %}
     <section class="section pt-0">
         {% for message in messages %}
@@ -44,31 +46,15 @@ VulnerableCode API key request
 
     <br/>
       <div class="columns is-centered">
-        <div class="column is-half">
+        <div class="column is-one-third">
           <form method = "post">
               {% csrf_token %}
-              <div class="field">
-                <div class="control">
-                  <input class="input" placeholder="Email" type="email" name="email" id="{{form.email.id_for_label}}"
-                  autofocus required >
-                </div>
-              </div>
-              <div class="field">
-                <div class="control">
-                  <input class="input" placeholder="First Name" type="text" name="first_name" id="{{form.first_name.id_for_label}}"
-                  autofocus required>
-                </div>
-              </div>
-              <div class="field">
-                <div class="control">
-                  <input class="input" placeholder="Last Name" type="text" name="last_name" id="{{form.last_name.id_for_label}}"
-                  autofocus required>
-                </div>
-              </div>
-              <div class="field">
-                {{ form.captcha }}
-              </div>
-              <input class="button is-link mt-5" type="submit" value="Request my API Key">
+                  {% for field in form %}
+                      <p class="mb-4">
+                          {{ field }}
+                      </p>
+                  {% endfor %}
+              <input class="button is-link mt-2" type="submit" value="Request my API Key">
           </form>
         </div>
       </div>

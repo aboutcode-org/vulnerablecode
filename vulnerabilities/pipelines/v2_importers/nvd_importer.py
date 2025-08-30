@@ -20,7 +20,7 @@ from dateutil import parser as dateparser
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_cwe_id
@@ -111,7 +111,7 @@ def fetch(url, logger=None):
     return json.loads(data)
 
 
-def fetch_cve_data_1_1(starting_year=2002, logger=None):
+def fetch_cve_data_1_1(starting_year=2025, logger=None):
     """
     Yield tuples of (year, lists of CVE mappings) from the NVD, one for each
     year since ``starting_year`` defaulting to 2002.
@@ -267,11 +267,11 @@ class CveItem:
         # we track each CPE as a reference for now
         for cpe in self.cpes:
             cpe_url = f"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query={cpe}"
-            references.append(Reference(reference_id=cpe, url=cpe_url))
+            references.append(ReferenceV2(reference_id=cpe, url=cpe_url))
 
         # FIXME: we also add the CVE proper as a reference, but is this correct?
         references.append(
-            Reference(
+            ReferenceV2(
                 url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
                 reference_id=self.cve_id,
             )
@@ -283,7 +283,7 @@ class CveItem:
             for ru in self.reference_urls
             if ru != f"https://nvd.nist.gov/vuln/detail/{self.cve_id}"
         ]
-        references.extend([Reference(url=url) for url in ref_urls])
+        references.extend([ReferenceV2(url=url) for url in ref_urls])
 
         return references
 
@@ -326,6 +326,7 @@ class CveItem:
             weaknesses=self.weaknesses,
             severities=self.severities,
             url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
+            original_advisory_text=json.dumps(self.cve_item, indent=2, ensure_ascii=False),
         )
 
 

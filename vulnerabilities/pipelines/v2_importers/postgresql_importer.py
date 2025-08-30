@@ -18,8 +18,8 @@ from univers.versions import GenericVersion
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackage
-from vulnerabilities.importer import Reference
+from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
@@ -43,17 +43,13 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return (cls.collect_and_store_advisories,)
 
     def advisories_count(self) -> int:
-        if not self.links:
-            self.collect_links()
-        return len(self.links)
+        return 30
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        if not self.links:
-            self.collect_links()
+        url = "https://www.postgresql.org/support/security/"
 
-        for url in self.links:
-            data = requests.get(url).content
-            yield from self.to_advisories(data)
+        data = requests.get(url).content
+        yield from self.to_advisories(data, url)
 
     def collect_links(self):
         known_urls = {self.base_url}
@@ -69,7 +65,7 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 break
         self.links = known_urls
 
-    def to_advisories(self, data):
+    def to_advisories(self, data, url):
         advisories = []
         soup = BeautifulSoup(data, features="lxml")
         tables = soup.select("table")
@@ -87,31 +83,25 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages = []
             affected_version_list = [v.strip() for v in affected_col.text.split(",") if v.strip()]
             fixed_version_list = [v.strip() for v in fixed_col.text.split(",") if v.strip()]
+            fixed_version_range = (
+                GenericVersionRange.from_versions(fixed_version_list)
+                if fixed_version_list
+                else None
+            )
+            affected_version_range = (
+                GenericVersionRange.from_versions(affected_version_list)
+                if affected_version_list
+                else None
+            )
 
-            if fixed_version_list:
-                for fixed_version in fixed_version_list:
-                    affected_packages.append(
-                        AffectedPackage(
-                            package=PackageURL(
-                                name="postgresql", type="generic", qualifiers=pkg_qualifiers
-                            ),
-                            affected_version_range=GenericVersionRange.from_versions(
-                                affected_version_list
-                            )
-                            if affected_version_list
-                            else None,
-                            fixed_version=GenericVersion(fixed_version),
-                        )
-                    )
-            elif affected_version_list:
+            if affected_version_range or fixed_version_range:
                 affected_packages.append(
-                    AffectedPackage(
+                    AffectedPackageV2(
                         package=PackageURL(
                             name="postgresql", type="generic", qualifiers=pkg_qualifiers
                         ),
-                        affected_version_range=GenericVersionRange.from_versions(
-                            affected_version_list
-                        ),
+                        affected_version_range=affected_version_range,
+                        fixed_version_range=fixed_version_range,
                     )
                 )
 
@@ -122,12 +112,12 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 pass
 
             references = []
+            severities = []
             vector_link_tag = severity_score_col.find("a")
             for a_tag in ref_col.select("a"):
                 link = a_tag.attrs["href"]
                 if link.startswith("/"):
                     link = urlparse.urljoin("https://www.postgresql.org/", link)
-                severities = []
                 if "support/security/CVE" in link and vector_link_tag:
                     parsed_link = urlparse.urlparse(vector_link_tag["href"])
                     cvss3_vector = urlparse.parse_qs(parsed_link.query).get("vector", [""])[0]
@@ -139,7 +129,7 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                             scoring_elements=cvss3_vector,
                         )
                     )
-                references.append(Reference(url=link, severities=severities))
+                references.append(ReferenceV2(url=link))
 
             if cve_id:
                 advisories.append(
@@ -148,8 +138,10 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         aliases=[],
                         summary=summary,
                         references_v2=references,
+                        severities=severities,
                         affected_packages=affected_packages,
-                        url=f"https://www.postgresql.org/support/security/{cve_id}",
+                        url=url,
+                        original_advisory_text=str(row),
                     )
                 )
 

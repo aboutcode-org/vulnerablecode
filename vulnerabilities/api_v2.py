@@ -31,6 +31,7 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
 from vulnerabilities.models import CodeFix
 from vulnerabilities.models import CodeFixV2
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageV2
 from vulnerabilities.models import PipelineRun
@@ -40,6 +41,10 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
+
+
+class CharInFilter(filters.BaseInFilter, filters.CharFilter):
+    pass
 
 
 class WeaknessV2Serializer(serializers.ModelSerializer):
@@ -306,8 +311,8 @@ class AdvisoryPackageV2Serializer(serializers.ModelSerializer):
     risk_score = serializers.FloatField(read_only=True)
     affected_by_vulnerabilities = serializers.SerializerMethodField()
     fixing_vulnerabilities = serializers.SerializerMethodField()
-    next_non_vulnerable_version = serializers.CharField(read_only=True)
-    latest_non_vulnerable_version = serializers.CharField(read_only=True)
+    next_non_vulnerable_version = serializers.SerializerMethodField()
+    latest_non_vulnerable_version = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
@@ -320,36 +325,36 @@ class AdvisoryPackageV2Serializer(serializers.ModelSerializer):
             "risk_score",
         ]
 
-    def get_affected_by_vulnerabilities(self, obj):
-        """
-        Return a dictionary with vulnerabilities as keys and their details, including fixed_by_packages.
-        """
+    def get_affected_by_vulnerabilities(self, package):
+        """Return a dictionary with advisory as keys and their details, including fixed_by_packages."""
         result = {}
         request = self.context.get("request")
-        for adv in getattr(obj, "prefetched_affected_advisories", []):
-            fixed_by_package = adv.fixed_by_packages.first()
-            purl = None
-            if fixed_by_package:
-                purl = fixed_by_package.package_url
-            # Get code fixed for a vulnerability
-            code_fixes = CodeFixV2.objects.filter(advisory=adv).distinct()
+        for impact in package.affected_in_impacts.all():
+            advisory = impact.advisory
+            fixed_by_packages = [pkg.purl for pkg in impact.fixed_by_packages.all()]
+            code_fixes = CodeFixV2.objects.filter(advisory=advisory).distinct()
             code_fix_urls = [
                 reverse("advisory-codefix-detail", args=[code_fix.id], request=request)
                 for code_fix in code_fixes
             ]
-
-            result[adv.avid] = {
-                "advisory_id": adv.avid,
-                "fixed_by_packages": purl,
+            result[advisory.avid] = {
+                "advisory_id": advisory.avid,
+                "fixed_by_packages": fixed_by_packages,
                 "code_fixes": code_fix_urls,
             }
+
         return result
 
-    def get_fixing_vulnerabilities(self, obj):
-        # Ghost package should not fix any vulnerability.
-        if obj.is_ghost:
-            return []
-        return [adv.advisory_id for adv in obj.fixing_advisories.all()]
+    def get_fixing_vulnerabilities(self, package):
+        return [impact.advisory.avid for impact in package.fixed_in_impacts.all()]
+
+    def get_next_non_vulnerable_version(self, package):
+        if next_non_vulnerable := package.get_non_vulnerable_versions()[0]:
+            return next_non_vulnerable.version
+
+    def get_latest_non_vulnerable_version(self, package):
+        if latest_non_vulnerable := package.get_non_vulnerable_versions()[-1]:
+            return latest_non_vulnerable.version
 
 
 class PackageurlListSerializer(serializers.Serializer):
@@ -381,9 +386,24 @@ class PackageV2FilterSet(filters.FilterSet):
 
 
 class AdvisoryPackageV2FilterSet(filters.FilterSet):
-    affected_by_vulnerability = filters.CharFilter(field_name="affected_by_advisory__advisory_id")
-    fixing_vulnerability = filters.CharFilter(field_name="fixing_advisories__advisory_id")
-    purl = filters.CharFilter(field_name="package_url")
+    affected_by_advisory = filters.CharFilter(
+        field_name="affected_in_impacts__advisory__avid",
+        label="Affected By Advisory ID",
+        help_text="Filter packages affected by a specific Advisory ID.",
+    )
+
+    fixing_advisory = filters.CharFilter(
+        field_name="fixed_in_impacts__advisory__avid",
+        label="Fixed By Advisory ID",
+        help_text="Filter packages fixed by a specific Advisory ID.",
+    )
+
+    purls = CharInFilter(
+        field_name="package_url",
+        lookup_expr="in",
+        label="Package URL",
+        help_text="Filter by one or more Package URLs. Multi-value supported (comma-separated).",
+    )
 
 
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
@@ -968,40 +988,39 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
 
 
 class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = PackageV2.objects.all().prefetch_related(
-        Prefetch(
-            "affected_by_advisories",
-            queryset=AdvisoryV2.objects.prefetch_related("fixed_by_packages"),
-            to_attr="prefetched_affected_advisories",
-        )
-    )
+    queryset = PackageV2.objects.all()
     serializer_class = AdvisoryPackageV2Serializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = [filters.DjangoFilterBackend]
     filterset_class = AdvisoryPackageV2FilterSet
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        package_purls = self.request.query_params.getlist("purl")
-        affected_by_advisory = self.request.query_params.get("affected_by_advisory")
-        fixing_advisory = self.request.query_params.get("fixing_advisory")
-        if package_purls:
-            queryset = queryset.filter(package_url__in=package_purls)
-        if affected_by_advisory:
-            queryset = queryset.filter(affected_by_advisories__advisory_id=affected_by_advisory)
-        if fixing_advisory:
-            queryset = queryset.filter(fixing_advisories__advisory=fixing_advisory)
-        return queryset.with_is_vulnerable()
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "affected_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory").prefetch_related(
+                        "fixed_by_packages",
+                    ),
+                ),
+                Prefetch(
+                    "fixed_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory"),
+                ),
+            )
+            .with_is_vulnerable()
+        )
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        # Apply pagination
-        page = self.paginate_queryset(queryset)
+        filtered_queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(filtered_queryset)
+
+        advisories = set()
         if page is not None:
-            # Collect only vulnerabilities for packages in the current page
-            advisories = set()
             for package in page:
-                advisories.update(package.affected_by_advisories.all())
-                advisories.update(package.fixing_advisories.all())
+                advisories.update({impact.advisory for impact in package.affected_in_impacts.all()})
+                advisories.update({impact.advisory for impact in package.fixed_in_impacts.all()})
 
             # Serialize the vulnerabilities with advisory_id and advisory label as keys
             advisory_data = {f"{adv.avid}": AdvisoryV2Serializer(adv).data for adv in advisories}
@@ -1009,15 +1028,14 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             # Serialize the current page of packages
             serializer = self.get_serializer(page, many=True)
             data = serializer.data
-            print(data)
+
             # Use 'self.get_paginated_response' to include pagination data
             return self.get_paginated_response({"advisories": advisory_data, "packages": data})
 
         # If pagination is not applied, collect vulnerabilities for all packages
-        advisories = set()
         for package in queryset:
-            advisories.update(package.affected_by_vulnerabilities.all())
-            advisories.update(package.fixing_vulnerabilities.all())
+            advisories.update({impact.advisory for impact in package.affected_in_impacts.all()})
+            advisories.update({impact.advisory for impact in package.fixed_in_impacts.all()})
 
         advisory_data = {f"{adv.avid}": AdvisoryV2Serializer(adv).data for adv in advisories}
 
@@ -1053,13 +1071,28 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         purls = validated_data.get("purls")
 
         # Fetch packages matching the provided purls
-        packages = PackageV2.objects.for_purls(purls).with_is_vulnerable()
+        packages = (
+            PackageV2.objects.for_purls(purls)
+            .prefetch_related(
+                Prefetch(
+                    "affected_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory").prefetch_related(
+                        "fixed_by_packages",
+                    ),
+                ),
+                Prefetch(
+                    "fixed_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory"),
+                ),
+            )
+            .with_is_vulnerable()
+        )
 
         # Collect vulnerabilities associated with these packages
         advisories = set()
         for package in packages:
-            advisories.update(package.affected_by_advisories.all())
-            advisories.update(package.fixing_advisories.all())
+            advisories.update({impact.advisory for impact in package.affected_in_impacts.all()})
+            advisories.update({impact.advisory for impact in package.fixed_in_impacts.all()})
 
         # Serialize vulnerabilities with vulnerability_id as keys
         advisory_data = {adv.avid: AdvisoryV2Serializer(adv).data for adv in advisories}
@@ -1124,6 +1157,20 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
                 PackageV2.objects.filter(plain_package_url__in=plain_purls)
                 .order_by("plain_package_url")
                 .distinct("plain_package_url")
+                .prefetch_related(
+                    Prefetch(
+                        "affected_in_impacts",
+                        queryset=ImpactedPackage.objects.select_related(
+                            "advisory"
+                        ).prefetch_related(
+                            "fixed_by_packages",
+                        ),
+                    ),
+                    Prefetch(
+                        "fixed_in_impacts",
+                        queryset=ImpactedPackage.objects.select_related("advisory"),
+                    ),
+                )
                 .with_is_vulnerable()
             )
 
@@ -1132,14 +1179,16 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             # Collect vulnerabilities associated with these packages
             advisories = set()
             for package in packages:
-                advisories.update(package.affected_by_advisories.all())
-                advisories.update(package.fixing_advisories.all())
+                advisories.update({impact.advisory for impact in package.affected_in_impacts.all()})
+                advisories.update({impact.advisory for impact in package.fixed_in_impacts.all()})
 
             advisory_data = {adv.avid: AdvisoryV2Serializer(adv).data for adv in advisories}
 
             if not purl_only:
                 package_data = AdvisoryPackageV2Serializer(
-                    packages, many=True, context={"request": request}
+                    packages,
+                    many=True,
+                    context={"request": request},
                 ).data
                 return Response(
                     {
@@ -1154,20 +1203,39 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
             return Response(data=vulnerable_purls)
 
-        query = PackageV2.objects.filter(package_url__in=purls).distinct().with_is_vulnerable()
+        query = (
+            PackageV2.objects.filter(package_url__in=purls)
+            .order_by("plain_package_url")
+            .distinct("plain_package_url")
+            .prefetch_related(
+                Prefetch(
+                    "affected_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory").prefetch_related(
+                        "fixed_by_packages",
+                    ),
+                ),
+                Prefetch(
+                    "fixed_in_impacts",
+                    queryset=ImpactedPackage.objects.select_related("advisory"),
+                ),
+            )
+            .with_is_vulnerable()
+        )
         packages = query
 
         # Collect vulnerabilities associated with these packages
         advisories = set()
         for package in packages:
-            advisories.update(package.affected_by_advisories.all())
-            advisories.update(package.fixing_advisories.all())
+            advisories.update({impact.advisory for impact in package.affected_in_impacts.all()})
+            advisories.update({impact.advisory for impact in package.fixed_in_impacts.all()})
 
         advisory_data = {adv.advisory_id: AdvisoryV2Serializer(adv).data for adv in advisories}
 
         if not purl_only:
             package_data = AdvisoryPackageV2Serializer(
-                packages, many=True, context={"request": request}
+                packages,
+                many=True,
+                context={"request": request},
             ).data
             return Response(
                 {

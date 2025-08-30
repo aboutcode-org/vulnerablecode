@@ -72,7 +72,7 @@ def test_collect_advisories(mock_fetch_via_vcs, mock_vcs_response):
     assert len(advisories) == 1
 
     advisory: AdvisoryData = advisories[0]
-    assert advisory.advisory_id == "CVE-2022-9999"
+    assert advisory.advisory_id == "some_package/CVE-2022-9999"
     assert advisory.summary.startswith("Cross-site scripting vulnerability")
     assert advisory.affected_packages[0].package.name == "plug"
     assert advisory.affected_packages[0].package.type == "hex"

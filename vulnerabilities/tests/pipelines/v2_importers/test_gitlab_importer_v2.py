@@ -5,13 +5,16 @@
 # See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
 #
 
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import pytest
+import saneyaml
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.pipelines.v2_importers.gitlab_importer import parse_gitlab_advisory
 
 
 @pytest.fixture
@@ -92,11 +95,11 @@ def test_collect_advisories(mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_
     advisory = advisories[0]
 
     assert isinstance(advisory, AdvisoryData)
-    assert advisory.advisory_id == "CVE-2022-0001"
+    assert advisory.advisory_id == "pypi/package_name/CVE-2022-0001"
     assert advisory.summary == "Example vulnerability\nExample description"
     assert advisory.references_v2[0].url == "https://example.com/advisory"
     assert advisory.affected_packages[0].package.name == "package-name"
-    assert advisory.affected_packages[0].fixed_version
+    assert str(advisory.affected_packages[0].fixed_version_range) == "vers:pypi/2.0.0"
     assert advisory.weaknesses[0] == 79
 
 
@@ -151,3 +154,55 @@ def test_advisories_count_empty(mock_vcs_response, mock_fetch_via_vcs, tmp_path)
 
     count = pipeline.advisories_count()
     assert count == 0
+
+
+@pytest.fixture
+def gitlab_advisory_yaml(tmp_path):
+    content = {
+        "identifier": "GMS-2018-26",
+        "package_slug": "pypi/django",
+        "title": "Incorrect header injection check",
+        "description": "django isn't properly protected against HTTP header injection.",
+        "pubdate": "2018-03-15",
+        "affected_range": "<2.0.1",
+        "fixed_versions": ["v2.0.1"],
+        "urls": ["https://github.com/django/django/pull/123"],
+        "cwe_ids": ["CWE-1035", "CWE-937"],
+        "identifiers": ["GMS-2018-26"],
+    }
+
+    advisory_path = tmp_path / "GMS-2018-26.yaml"
+    advisory_path.write_text(saneyaml.dump(content))
+    return advisory_path, content
+
+
+def test_parse_gitlab_advisory_with_no_purl(monkeypatch, gitlab_advisory_yaml):
+    file_path, advisory_data = gitlab_advisory_yaml
+
+    # Mock get_purl to always return None
+    def mock_get_purl(package_slug, purl_type_by_gitlab_scheme, logger):
+        return None
+
+    # Patch the dependencies
+    import vulnerabilities.pipelines.v2_importers.gitlab_importer as gitlab_module
+
+    monkeypatch.setattr(gitlab_module, "get_purl", mock_get_purl)
+
+    dummy_logger = lambda *args, **kwargs: None  # Ignore logging in test
+
+    result = parse_gitlab_advisory(
+        file=file_path,
+        base_path=file_path.parent,
+        gitlab_scheme_by_purl_type={},
+        purl_type_by_gitlab_scheme={},
+        logger=dummy_logger,
+    )
+
+    assert isinstance(result, AdvisoryData)
+    assert result.advisory_id == "pypi/django/GMS-2018-26"
+    assert result.aliases == ["GMS-2018-26"]
+    assert result.summary.startswith("Incorrect header")
+    assert result.url.startswith("https://gitlab.com/gitlab-org/advisories-community")
+    assert isinstance(result.date_published, datetime)
+    assert result.date_published.year == 2018
+    assert result.affected_packages == []  # Because get_purl was mocked to return None

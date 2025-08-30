@@ -1,0 +1,1645 @@
+{
+  "document": {
+    "aggregate_severity": {
+      "namespace": "https://access.redhat.com/security/updates/classification/",
+      "text": "Important"
+    },
+    "category": "csaf_security_advisory",
+    "csaf_version": "2.0",
+    "distribution": {
+      "text": "Copyright © Red Hat, Inc. All rights reserved.",
+      "tlp": {
+        "label": "WHITE",
+        "url": "https://www.first.org/tlp/"
+      }
+    },
+    "lang": "en",
+    "notes": [
+      {
+        "category": "summary",
+        "text": "Red Hat OpenShift Container Platform release 4.16.28 is now available with updates to packages and images that fix several bugs.",
+        "title": "Topic"
+      },
+      {
+        "category": "general",
+        "text": "Red Hat OpenShift Container Platform is Red Hat's cloud computing Kubernetes application platform solution designed for on-premise or private cloud deployments.\n\nThis advisory contains the RPM packages for Red Hat OpenShift Container Platform 4.16.28. See the following advisory for the container images for this release:\n\nhttps://access.redhat.com/errata/RHBA-2024:11502\n\nAll OpenShift Container Platform 4.16 users are advised to upgrade to these\nupdated packages and images when they are available in the appropriate release channel. To check for available updates, use the OpenShift Console or the CLI oc command. Instructions for upgrading a cluster are available at\nhttps://docs.openshift.com/container-platform/4.16/updating/updating_a_cluster/updating-cluster-cli.html",
+        "title": "Details"
+      },
+      {
+        "category": "legal_disclaimer",
+        "text": "This content is licensed under the Creative Commons Attribution 4.0 International License (https://creativecommons.org/licenses/by/4.0/). If you distribute this content, or a modified version of it, you must provide attribution to Red Hat Inc. and provide a link to the original.",
+        "title": "Terms of Use"
+      }
+    ],
+    "publisher": {
+      "category": "vendor",
+      "contact_details": "https://access.redhat.com/security/team/contact/",
+      "issuing_authority": "Red Hat Product Security is responsible for vulnerability handling across all Red Hat products and services.",
+      "name": "Red Hat Product Security",
+      "namespace": "https://www.redhat.com"
+    },
+    "references": [
+      {
+        "category": "self",
+        "summary": "https://access.redhat.com/errata/RHBA-2024:11505",
+        "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+      },
+      {
+        "category": "self",
+        "summary": "Canonical URL",
+        "url": "https://security.access.redhat.com/data/csaf/v2/advisories/2025/rhba-2024_11505.json"
+      }
+    ],
+    "title": "Red Hat Bug Fix Advisory: OpenShift Container Platform 4.16.28 packages and security update",
+    "tracking": {
+      "current_release_date": "2025-05-30T13:09:52+00:00",
+      "generator": {
+        "date": "2025-05-30T13:09:52+00:00",
+        "engine": {
+          "name": "Red Hat SDEngine",
+          "version": "4.6.1"
+        }
+      },
+      "id": "RHBA-2024:11505",
+      "initial_release_date": "2025-01-02T20:02:49+00:00",
+      "revision_history": [
+        {
+          "date": "2025-01-02T20:02:49+00:00",
+          "number": "1",
+          "summary": "Initial version"
+        },
+        {
+          "date": "2025-01-02T20:02:49+00:00",
+          "number": "2",
+          "summary": "Last updated version"
+        },
+        {
+          "date": "2025-05-30T13:09:52+00:00",
+          "number": "3",
+          "summary": "Last generated version"
+        }
+      ],
+      "status": "final",
+      "version": "3"
+    }
+  },
+  "product_tree": {
+    "branches": [
+      {
+        "branches": [
+          {
+            "branches": [
+              {
+                "category": "product_name",
+                "name": "Red Hat OpenShift Container Platform 4.16",
+                "product": {
+                  "name": "Red Hat OpenShift Container Platform 4.16",
+                  "product_id": "9Base-RHOSE-4.16",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/a:redhat:openshift:4.16::el9"
+                  }
+                }
+              }
+            ],
+            "category": "product_family",
+            "name": "Red Hat OpenShift Enterprise"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "libreswan-0:4.6-3.el9_0.3.src",
+                "product": {
+                  "name": "libreswan-0:4.6-3.el9_0.3.src",
+                  "product_id": "libreswan-0:4.6-3.el9_0.3.src",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan@4.6-3.el9_0.3?arch=src"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "src"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "libreswan-0:4.6-3.el9_0.3.aarch64",
+                "product": {
+                  "name": "libreswan-0:4.6-3.el9_0.3.aarch64",
+                  "product_id": "libreswan-0:4.6-3.el9_0.3.aarch64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan@4.6-3.el9_0.3?arch=aarch64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+                "product": {
+                  "name": "libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+                  "product_id": "libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan-debugsource@4.6-3.el9_0.3?arch=aarch64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+                "product": {
+                  "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+                  "product_id": "libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan-debuginfo@4.6-3.el9_0.3?arch=aarch64"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "aarch64"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "libreswan-0:4.6-3.el9_0.3.ppc64le",
+                "product": {
+                  "name": "libreswan-0:4.6-3.el9_0.3.ppc64le",
+                  "product_id": "libreswan-0:4.6-3.el9_0.3.ppc64le",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan@4.6-3.el9_0.3?arch=ppc64le"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+                "product": {
+                  "name": "libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+                  "product_id": "libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan-debugsource@4.6-3.el9_0.3?arch=ppc64le"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+                "product": {
+                  "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+                  "product_id": "libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan-debuginfo@4.6-3.el9_0.3?arch=ppc64le"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "ppc64le"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "libreswan-0:4.6-3.el9_0.3.x86_64",
+                "product": {
+                  "name": "libreswan-0:4.6-3.el9_0.3.x86_64",
+                  "product_id": "libreswan-0:4.6-3.el9_0.3.x86_64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan@4.6-3.el9_0.3?arch=x86_64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "libreswan-debugsource-0:4.6-3.el9_0.3.x86_64",
+                "product": {
+                  "name": "libreswan-debugsource-0:4.6-3.el9_0.3.x86_64",
+                  "product_id": "libreswan-debugsource-0:4.6-3.el9_0.3.x86_64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan-debugsource@4.6-3.el9_0.3?arch=x86_64"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+                "product": {
+                  "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+                  "product_id": "libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan-debuginfo@4.6-3.el9_0.3?arch=x86_64"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "x86_64"
+          },
+          {
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "libreswan-0:4.6-3.el9_0.3.s390x",
+                "product": {
+                  "name": "libreswan-0:4.6-3.el9_0.3.s390x",
+                  "product_id": "libreswan-0:4.6-3.el9_0.3.s390x",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan@4.6-3.el9_0.3?arch=s390x"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+                "product": {
+                  "name": "libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+                  "product_id": "libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan-debugsource@4.6-3.el9_0.3?arch=s390x"
+                  }
+                }
+              },
+              {
+                "category": "product_version",
+                "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+                "product": {
+                  "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+                  "product_id": "libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+                  "product_identification_helper": {
+                    "purl": "pkg:rpm/redhat/libreswan-debuginfo@4.6-3.el9_0.3?arch=s390x"
+                  }
+                }
+              }
+            ],
+            "category": "architecture",
+            "name": "s390x"
+          }
+        ],
+        "category": "vendor",
+        "name": "Red Hat"
+      }
+    ],
+    "relationships": [
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-0:4.6-3.el9_0.3.aarch64 as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64"
+        },
+        "product_reference": "libreswan-0:4.6-3.el9_0.3.aarch64",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-0:4.6-3.el9_0.3.ppc64le as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le"
+        },
+        "product_reference": "libreswan-0:4.6-3.el9_0.3.ppc64le",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-0:4.6-3.el9_0.3.s390x as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x"
+        },
+        "product_reference": "libreswan-0:4.6-3.el9_0.3.s390x",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-0:4.6-3.el9_0.3.src as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src"
+        },
+        "product_reference": "libreswan-0:4.6-3.el9_0.3.src",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-0:4.6-3.el9_0.3.x86_64 as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64"
+        },
+        "product_reference": "libreswan-0:4.6-3.el9_0.3.x86_64",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64 as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64"
+        },
+        "product_reference": "libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le"
+        },
+        "product_reference": "libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.s390x as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x"
+        },
+        "product_reference": "libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64 as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64"
+        },
+        "product_reference": "libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-debugsource-0:4.6-3.el9_0.3.aarch64 as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64"
+        },
+        "product_reference": "libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le"
+        },
+        "product_reference": "libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-debugsource-0:4.6-3.el9_0.3.s390x as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x"
+        },
+        "product_reference": "libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      },
+      {
+        "category": "default_component_of",
+        "full_product_name": {
+          "name": "libreswan-debugsource-0:4.6-3.el9_0.3.x86_64 as a component of Red Hat OpenShift Container Platform 4.16",
+          "product_id": "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        },
+        "product_reference": "libreswan-debugsource-0:4.6-3.el9_0.3.x86_64",
+        "relates_to_product_reference": "9Base-RHOSE-4.16"
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "cve": "CVE-2023-2295",
+      "cwe": {
+        "id": "CWE-400",
+        "name": "Uncontrolled Resource Consumption"
+      },
+      "discovery_date": "2023-04-26T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2189777"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A vulnerability was found in the libreswan library. This security issue occurs when an IKEv1 Aggressive Mode packet is received with only unacceptable crypto algorithms, and the response packet is not sent with a zero responder SPI. When a subsequent packet is received where the sender reuses the libreswan responder SPI as its own initiator SPI, the pluto daemon state machine crashes. No remote code execution is possible. This CVE exists because of a CVE-2023-30570 security regression for libreswan package in Red Hat Enterprise Linux 8.8 and Red Hat Enterprise Linux 9.2.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "libreswan: Regression of CVE-2023-30570 fixes in the Red Hat Enterprise Linux",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "This issue only affects Red Hat Enterprise Linux 8.8 and Red Hat Enterprise Linux 9.2, which introduced this regression via the following errata:\n\nhttps://access.redhat.com/errata/RHBA-2023:2865 (Red Hat Enterprise Linux 8.8)\nhttps://access.redhat.com/errata/RHBA-2023:2355 (Red Hat Enterprise Linux 9.2)\n\nThese errata provided updates for libreswan package, but did not include fixes for CVE-2023-30570.\n\nA user who installs or updates to Red Hat Enterprise Linux 8.8 or Red Hat Enterprise Linux 9.2 would be vulnerable to the CVE-2023-30570, even if they were properly fixed in Red Hat Enterprise Linux 8.7 and Red Hat Enterprise Linux 9.1. The CVE-2023-2295 was assigned to that Red Hat specific security regression and it is not applicable to any upstream libreswan version or libreswan packages of any other vendor that are not directly based on Red Hat Enterprise Linux packages.\n\nFor more details about the original security issue CVE-2023-30570, refer to the CVE page: https://access.redhat.com/security/cve/CVE-2023-30570.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2023-2295"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2189777",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2189777"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2023-2295",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2023-2295"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2023-2295",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-2295"
+        }
+      ],
+      "release_date": "2023-05-09T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-02T20:02:49+00:00",
+          "details": "See the following documentation, which will be updated shortly for this release, for important instructions on how to upgrade your cluster and fully apply this asynchronous errata update:\n\nhttps://docs.openshift.com/container-platform/4.16/release_notes/ocp-4-16-release-notes.html\n\nDetails on how to access this content are available at https://docs.openshift.com/container-platform/4.16/updating/updating-cluster-cli.html",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 7.5,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "NONE",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "libreswan: Regression of CVE-2023-30570 fixes in the Red Hat Enterprise Linux"
+    },
+    {
+      "cve": "CVE-2023-23009",
+      "cwe": {
+        "id": "CWE-20",
+        "name": "Improper Input Validation"
+      },
+      "discovery_date": "2023-02-21T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2173610"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in the Libreswan package. A crafted TS payload with an incorrect selector length may allow a remote attacker to cause a denial of service.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "libreswan: remote DoS via crafted TS payload with an incorrect selector length",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2023-23009"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2173610",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2173610"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2023-23009",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2023-23009"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2023-23009",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-23009"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/libreswan/libreswan/issues/954",
+          "url": "https://github.com/libreswan/libreswan/issues/954"
+        }
+      ],
+      "release_date": "2023-02-21T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-02T20:02:49+00:00",
+          "details": "See the following documentation, which will be updated shortly for this release, for important instructions on how to upgrade your cluster and fully apply this asynchronous errata update:\n\nhttps://docs.openshift.com/container-platform/4.16/release_notes/ocp-4-16-release-notes.html\n\nDetails on how to access this content are available at https://docs.openshift.com/container-platform/4.16/updating/updating-cluster-cli.html",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 6.5,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "LOW",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "libreswan: remote DoS via crafted TS payload with an incorrect selector length"
+    },
+    {
+      "cve": "CVE-2023-30570",
+      "cwe": {
+        "id": "CWE-400",
+        "name": "Uncontrolled Resource Consumption"
+      },
+      "discovery_date": "2023-04-17T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2187165"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A vulnerability was found in the libreswan library. This security issue occurs when an IKEv1 Aggressive Mode packet is received with only unacceptable crypto algorithms, and the response packet is not sent with a zero responder SPI. When a subsequent packet is received where the sender reuses the libreswan responder SPI as its own initiator SPI, the pluto daemon state machine crashes. No remote code execution is possible.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "libreswan: Malicious IKEv1 Aggressive Mode packets can crash libreswan",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2023-30570"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2187165",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2187165"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2023-30570",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2023-30570"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2023-30570",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-30570"
+        },
+        {
+          "category": "external",
+          "summary": "https://libreswan.org/security/",
+          "url": "https://libreswan.org/security/"
+        },
+        {
+          "category": "external",
+          "summary": "https://libreswan.org/security/CVE-2023-30570/CVE-2023-30570.txt",
+          "url": "https://libreswan.org/security/CVE-2023-30570/CVE-2023-30570.txt"
+        }
+      ],
+      "release_date": "2023-05-03T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-02T20:02:49+00:00",
+          "details": "See the following documentation, which will be updated shortly for this release, for important instructions on how to upgrade your cluster and fully apply this asynchronous errata update:\n\nhttps://docs.openshift.com/container-platform/4.16/release_notes/ocp-4-16-release-notes.html\n\nDetails on how to access this content are available at https://docs.openshift.com/container-platform/4.16/updating/updating-cluster-cli.html",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 7.5,
+            "baseSeverity": "HIGH",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "NONE",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "libreswan: Malicious IKEv1 Aggressive Mode packets can crash libreswan"
+    },
+    {
+      "acknowledgments": [
+        {
+          "names": [
+            "X1AOxiang"
+          ]
+        }
+      ],
+      "cve": "CVE-2023-38710",
+      "cwe": {
+        "id": "CWE-617",
+        "name": "Reachable Assertion"
+      },
+      "discovery_date": "2023-07-25T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2225368"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "An assertion failure flaw was found in the Libreswan package that occurs when processing IKEv2 REKEY requests. When an IKEv2 Child SA REKEY packet contains an invalid IPsec protocol ID number of 0 or 1, an error notification INVALID_SPI is sent back. The notify payload's protocol ID is copied from the incoming packet, but the code that verifies outgoing packets fails an assertion that the protocol ID must be ESP (2) or AH(3). This flaw allows a malicious client or attacker to send a malformed IKEv2 REKEY packet, causing a crash and restarting the libreswan pluto daemon. When sent continuously, this could lead to a denial of service attack.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "libreswan: Invalid IKEv2 REKEY proposal causes restart",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "IKEv2 REKEY requests are only processed when received from authenticated peers, limiting the scope of possible attackers to peers who have successfully authenticated.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2023-38710"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2225368",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2225368"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2023-38710",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2023-38710"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2023-38710",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-38710"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/libreswan/libreswan/releases/tag/v4.12",
+          "url": "https://github.com/libreswan/libreswan/releases/tag/v4.12"
+        },
+        {
+          "category": "external",
+          "summary": "https://libreswan.org/security/CVE-2023-38710/CVE-2023-38710.txt",
+          "url": "https://libreswan.org/security/CVE-2023-38710/CVE-2023-38710.txt"
+        }
+      ],
+      "release_date": "2023-08-08T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-02T20:02:49+00:00",
+          "details": "See the following documentation, which will be updated shortly for this release, for important instructions on how to upgrade your cluster and fully apply this asynchronous errata update:\n\nhttps://docs.openshift.com/container-platform/4.16/release_notes/ocp-4-16-release-notes.html\n\nDetails on how to access this content are available at https://docs.openshift.com/container-platform/4.16/updating/updating-cluster-cli.html",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 6.5,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "LOW",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "libreswan: Invalid IKEv2 REKEY proposal causes restart"
+    },
+    {
+      "cve": "CVE-2023-38711",
+      "cwe": {
+        "id": "CWE-476",
+        "name": "NULL Pointer Dereference"
+      },
+      "discovery_date": "2023-06-19T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2215952"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A NULL pointer dereference flaw was found in Libreswan when processing IKEv1 Quick Mode requests. When an IKEv1 Quick Mode connection configured with ID_IPV4_ADDR or ID_IPV6_ADDR receives an IDcr payload with ID_FQDN, it triggers a NULL pointer dereference error. This flaw allows a malicious client or attacker to send a malformed IKEv1 Quick Mode packet, causing a crash and restart of the libreswan pluto daemon. When sent continuously, this issue leads to a denial of service attack.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "libreswan: Invalid IKEv1 Quick Mode ID causes restart",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "IKEv1 Quick Mode requests are only processed when received from authenticated peers, limiting the scope of possible attackers to peers who have successfully authenticated.\n\nWithin regulated environments, a combination of the following controls acts as a significant barrier to successfully exploiting a CWE-476: NULL Pointer Dereference vulnerability and therefore downgrades the severity of this particular CVE from Moderate to Low.\n\nThe platform incorporates secure engineering principles and controls to enforce secure coding practices, including proper memory handling and error checking, reducing the likelihood of null pointer dereference vulnerabilities. Coding standards, tools, and processes support early detection and prevention of memory-related flaws. Static code analysis identifies null dereference and related issues during development, while system monitoring detects memory errors and anomalous behavior in the event of exploitation. Additionally, the platform leverages memory protection mechanisms such as Data Execution Prevention (DEP) and Address Space Layout Randomization (ASLR) to strengthen resilience against memory-related vulnerabilities.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2023-38711"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2215952",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2215952"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2023-38711",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2023-38711"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2023-38711",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-38711"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/libreswan/libreswan/releases/tag/v4.12",
+          "url": "https://github.com/libreswan/libreswan/releases/tag/v4.12"
+        },
+        {
+          "category": "external",
+          "summary": "https://libreswan.org/security/CVE-2023-38711/CVE-2023-38711.txt",
+          "url": "https://libreswan.org/security/CVE-2023-38711/CVE-2023-38711.txt"
+        }
+      ],
+      "release_date": "2023-08-08T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-02T20:02:49+00:00",
+          "details": "See the following documentation, which will be updated shortly for this release, for important instructions on how to upgrade your cluster and fully apply this asynchronous errata update:\n\nhttps://docs.openshift.com/container-platform/4.16/release_notes/ocp-4-16-release-notes.html\n\nDetails on how to access this content are available at https://docs.openshift.com/container-platform/4.16/updating/updating-cluster-cli.html",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 6.5,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "LOW",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "libreswan: Invalid IKEv1 Quick Mode ID causes restart"
+    },
+    {
+      "cve": "CVE-2023-38712",
+      "cwe": {
+        "id": "CWE-476",
+        "name": "NULL Pointer Dereference"
+      },
+      "discovery_date": "2023-07-25T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2225369"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A NULL pointer dereference vulnerability was found in the Libreswan package. When an IKEv1 ISAKMP SA Informational Exchange packet contains a Delete/Notify payload followed by further Notifies that act on the ISAKMP SA, such as a duplicated Delete/Notify message, a NULL pointer dereference on the deleted state occurs. This flaw allows a malicious client or attacker to send a malformed IKEv1 Delete/Notify packet, causing a crash and restarting the libreswan pluto daemon. When sent continuously, this could lead to a denial of service attack.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "libreswan: Invalid IKEv1 repeat IKE SA delete causes crash and restart",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "IKEv1 Delete/Notify requests are only processed when received from authenticated peers, limiting the scope of possible attackers to peers who have successfully authenticated.\n\nWithin regulated environments, a combination of the following controls acts as a significant barrier to successfully exploiting a CWE-476: NULL Pointer Dereference vulnerability and therefore downgrades the severity of this particular CVE from Moderate to Low.\n\nThe platform incorporates secure engineering principles and controls to enforce secure coding practices, including proper memory handling and error checking, reducing the likelihood of null pointer dereference vulnerabilities. Coding standards, tools, and processes support early detection and prevention of memory-related flaws. Static code analysis identifies null dereference and related issues during development, while system monitoring detects memory errors and anomalous behavior in the event of exploitation. Additionally, the platform leverages memory protection mechanisms such as Data Execution Prevention (DEP) and Address Space Layout Randomization (ASLR) to strengthen resilience against memory-related vulnerabilities.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2023-38712"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2225369",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2225369"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2023-38712",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2023-38712"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2023-38712",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-38712"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/libreswan/libreswan/releases/tag/v4.12",
+          "url": "https://github.com/libreswan/libreswan/releases/tag/v4.12"
+        },
+        {
+          "category": "external",
+          "summary": "https://libreswan.org/security/CVE-2023-38712/CVE-2023-38712.txt",
+          "url": "https://libreswan.org/security/CVE-2023-38712/CVE-2023-38712.txt"
+        }
+      ],
+      "release_date": "2023-08-08T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-02T20:02:49+00:00",
+          "details": "See the following documentation, which will be updated shortly for this release, for important instructions on how to upgrade your cluster and fully apply this asynchronous errata update:\n\nhttps://docs.openshift.com/container-platform/4.16/release_notes/ocp-4-16-release-notes.html\n\nDetails on how to access this content are available at https://docs.openshift.com/container-platform/4.16/updating/updating-cluster-cli.html",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 6.5,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "LOW",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "libreswan: Invalid IKEv1 repeat IKE SA delete causes crash and restart"
+    },
+    {
+      "acknowledgments": [
+        {
+          "names": [
+            "Andrew Vaughn"
+          ]
+        }
+      ],
+      "cve": "CVE-2024-2357",
+      "cwe": {
+        "id": "CWE-400",
+        "name": "Uncontrolled Resource Consumption"
+      },
+      "discovery_date": "2024-03-11T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2268952"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in Libreswan. This issue causes Libreswan to restart under some IKEv2 retransmit scenarios when a connection is configured to use PreSharedKeys (authby=secret), and the connection cannot find a matching configured secret. When automatically added on startup using the auto= keyword, it can cause repeated crashes, leading to a denial of service.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "libreswan: Missing PreSharedKey for connection can cause crash",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "Libreswan may restart repeatedly under certain IKEv2 retransmission scenarios when using PreSharedKeys (authby=secret) if the connection cannot find a matching configured secret. If such a connection is added automatically on startup using the auto= keyword, it can lead to repeated crashes, causing a denial of service. The vulnerability arises when IKEv2 fails to find its PreSharedKey for the AUTH payload in the IKE_AUTH Exchange, resulting in assertion failure and daemon crashes. This vulnerability is triggered by local misconfiguration, and there is no known exploitation by external peers.\n\nWithin regulated environments, a combination of the following controls acts as a significant barrier to successfully exploiting a CWE-400: Uncontrolled Resource Consumption vulnerability and therefore downgrades the severity of this particular CVE from Moderate to Low.\n\nRed Hat restricts access to all platform information by default, granting access only after successful hard token-based multi-factor authentication (MFA) and enforcing least privilege to ensure only authorized roles can execute or modify code. The environment employs malicious code protections, including IDS/IPS and antimalware tools to detect threats and monitor resource usage, helping prevent uncontrolled consumption that could lead to system failure. Additional safeguards, such as web application firewalls and load-balancing strategies, protect against resource exhaustion and performance degradation. Event logs are centrally collected, correlated, and analyzed to support monitoring, alerting, and retention, aiding in the detection of abnormal behavior and potential denial-of-service (DoS) conditions. Static code analysis and peer reviews enforce strong input validation and error handling, reducing the likelihood of input-based DoS attacks.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-2357"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2268952",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2268952"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-2357",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-2357"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-2357",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-2357"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/libreswan/libreswan/commit/cb9e1047d33fde695d63a95854c2bc2470a476c8.patch",
+          "url": "https://github.com/libreswan/libreswan/commit/cb9e1047d33fde695d63a95854c2bc2470a476c8.patch"
+        },
+        {
+          "category": "external",
+          "summary": "https://libreswan.org/security/CVE-2024-2357",
+          "url": "https://libreswan.org/security/CVE-2024-2357"
+        }
+      ],
+      "release_date": "2024-03-11T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-02T20:02:49+00:00",
+          "details": "See the following documentation, which will be updated shortly for this release, for important instructions on how to upgrade your cluster and fully apply this asynchronous errata update:\n\nhttps://docs.openshift.com/container-platform/4.16/release_notes/ocp-4-16-release-notes.html\n\nDetails on how to access this content are available at https://docs.openshift.com/container-platform/4.16/updating/updating-cluster-cli.html",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+        },
+        {
+          "category": "workaround",
+          "details": "As a workaround to prevent the misconfiguration from causing the crash, place an unguessable long random \"catch-all\" secret in /etc/ipsec.secrets, for example, using the following command:\n\necho -e \"# CVE-2024-2357 workaround\\n: PSK \\\"$(openssl rand -hex 32)\\\"\" >> /etc/ipsec.secrets\n\nThis will ensure a PSK secret is always found, but it will always be wrong, and thus authentication will still properly fail.",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "LOCAL",
+            "availabilityImpact": "HIGH",
+            "baseScore": 5.0,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "LOW",
+            "scope": "UNCHANGED",
+            "userInteraction": "REQUIRED",
+            "vectorString": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "libreswan: Missing PreSharedKey for connection can cause crash"
+    },
+    {
+      "cve": "CVE-2024-3652",
+      "cwe": {
+        "id": "CWE-617",
+        "name": "Reachable Assertion"
+      },
+      "discovery_date": "2024-04-11T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2274448"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in Libreswan, where it was identified to contain an assertion failure issue in the compute_proto_keymat() function. The vulnerability can be exploited when an IKEv1 connection is loaded with an AH/ESP default setting when no esp= line is present in the connection. This flaw allows an authenticated attacker to send the bogus AES-GMAC proposal request, triggering the issue and causing Libreswan to crash and restart. When this connection is automatically added on startup using the auto= keyword, it can cause repeated crashes, leading to a denial of service. No remote code execution is possible.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "libreswan: IKEv1 default AH/ESP responder can crash and restart",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "The CVE-2024-3652 vulnerability in Libreswan is classified as a moderate severity issue due to its limited scope and impact. While the vulnerability can lead to Denial of Service (DoS) by causing the Libreswan service to crash and restart, it does not allow for Remote Code Execution or expose sensitive data. Additionally, the exploitation of this vulnerability requires specific conditions to be met: an IKEv1 connection loaded without an esp= line and the peer to have authenticated itself. Furthermore, IKEv2 connections are not vulnerable to this issue.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+          "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+          "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-3652"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2274448",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2274448"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-3652",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-3652"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-3652",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-3652"
+        },
+        {
+          "category": "external",
+          "summary": "https://libreswan.org/security/CVE-2024-3652",
+          "url": "https://libreswan.org/security/CVE-2024-3652"
+        }
+      ],
+      "release_date": "2024-04-15T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "date": "2025-01-02T20:02:49+00:00",
+          "details": "See the following documentation, which will be updated shortly for this release, for important instructions on how to upgrade your cluster and fully apply this asynchronous errata update:\n\nhttps://docs.openshift.com/container-platform/4.16/release_notes/ocp-4-16-release-notes.html\n\nDetails on how to access this content are available at https://docs.openshift.com/container-platform/4.16/updating/updating-cluster-cli.html",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHBA-2024:11505"
+        },
+        {
+          "category": "workaround",
+          "details": "An esp= line using a common IKEv1 algorithm list can be added to all IKEv1 based connections. An example of such an esp= line could be:\n~~~\nesp=aes-sha2_512,aes-sha1,aes-sha2_256,aes-md5,3des-sha1,3des-md5\n~~~",
+          "product_ids": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 6.5,
+            "baseSeverity": "MEDIUM",
+            "confidentialityImpact": "NONE",
+            "integrityImpact": "NONE",
+            "privilegesRequired": "LOW",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.src",
+            "9Base-RHOSE-4.16:libreswan-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debuginfo-0:4.6-3.el9_0.3.x86_64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.aarch64",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.ppc64le",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.s390x",
+            "9Base-RHOSE-4.16:libreswan-debugsource-0:4.6-3.el9_0.3.x86_64"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Moderate"
+        }
+      ],
+      "title": "libreswan: IKEv1 default AH/ESP responder can crash and restart"
+    }
+  ]
+}

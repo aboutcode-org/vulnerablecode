@@ -912,6 +912,7 @@ class LiveEvaluationAPITest(APITestCase):
         self.client = APIClient(enforce_csrf_checks=True)
         self.url = "/api/v2/live-evaluation/evaluate"
 
+    @patch("vulnerabilities.api_v2.VULNERABLECODE_ENABLE_LIVE_EVALUATION_API", True)
     @patch("vulnerabilities.api_v2.LIVE_IMPORTERS_REGISTRY")
     @patch("vulnerabilities.api_v2.enqueue_ad_hoc_pipeline")
     @patch("django.urls.reverse")
@@ -920,7 +921,6 @@ class LiveEvaluationAPITest(APITestCase):
             pipeline_id = "pypa_live_importer_v2"
             supported_types = ["pypi"]
 
-        os.environ["VULNERABLECODE_ENABLE_LIVE_EVALUATION_API"] = "true"
         mock_registry.values.return_value = [MockImporter]
         valid_uuid = "00000000-0000-0000-0000-000000000001"
         mock_enqueue.return_value = (valid_uuid, ["mock-run-id"])
@@ -936,30 +936,36 @@ class LiveEvaluationAPITest(APITestCase):
         assert "status_url" in response.data
         assert response.data["status_url"].endswith(f"/api/v2/live-evaluation/status/{valid_uuid}")
 
+    @patch("vulnerabilities.api_v2.VULNERABLECODE_ENABLE_LIVE_EVALUATION_API", True)
     @patch("vulnerabilities.api_v2.LIVE_IMPORTERS_REGISTRY")
     def test_evaluate_no_importer_found(self, mock_registry):
         class MockImporter:
             pipeline_id = "dummy"
             supported_types = ["npm"]
 
-        os.environ["VULNERABLECODE_ENABLE_LIVE_EVALUATION_API"] = "true"
         mock_registry.values.return_value = [MockImporter]
         data = {"purl": "pkg:pypi/django@3.2"}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == 400
         assert "No live importers found" in response.data["error"]
 
+    @patch("vulnerabilities.api_v2.VULNERABLECODE_ENABLE_LIVE_EVALUATION_API", True)
     def test_evaluate_invalid_purl(self):
-        os.environ["VULNERABLECODE_ENABLE_LIVE_EVALUATION_API"] = "true"
         data = {"purl": "not_a_valid_purl"}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == 400
         assert "Invalid PackageURL" in response.data["error"]
 
+    @patch("vulnerabilities.api_v2.VULNERABLECODE_ENABLE_LIVE_EVALUATION_API", True)
     @patch("vulnerabilities.models.LivePipelineRun.objects.get")
     def test_status_not_found(self, mock_live_get):
-        os.environ["VULNERABLECODE_ENABLE_LIVE_EVALUATION_API"] = "true"
         mock_live_get.side_effect = LivePipelineRun.DoesNotExist()
         url = "/api/v2/live-evaluation/status/00000000-0000-0000-0000-000000000000"
         response = self.client.get(url)
         assert response.status_code == 404
+
+    @patch("vulnerabilities.api_v2.VULNERABLECODE_ENABLE_LIVE_EVALUATION_API", False)
+    def test_evaluate_disabled_returns_403(self):
+        data = {"purl": "pkg:pypi/django@3.2"}
+        response = self.client.post(self.url, data, format="json")
+        assert response.status_code == 403

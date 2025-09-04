@@ -44,6 +44,7 @@ from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.tasks import enqueue_ad_hoc_pipeline
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
+from vulnerablecode.settings import VULNERABLECODE_ENABLE_LIVE_EVALUATION_API
 
 
 class CharInFilter(filters.BaseInFilter, filters.CharFilter):
@@ -1316,6 +1317,11 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
     )
     @action(detail=False, methods=["post"])
     def evaluate(self, request):
+        if not VULNERABLECODE_ENABLE_LIVE_EVALUATION_API:
+            return Response(
+                {"error": "Live evaluation API is disabled."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return Response(
@@ -1385,6 +1391,12 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
     )
     @action(detail=False, methods=["get"], url_path=r"status/(?P<live_run_id>[0-9a-f\-]{36})")
     def status(self, request, live_run_id=None):
+        if not VULNERABLECODE_ENABLE_LIVE_EVALUATION_API:
+            return Response(
+                {"error": "Live evaluation API is disabled."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         from vulnerabilities.models import LivePipelineRun
 
         try:

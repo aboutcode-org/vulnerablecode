@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import os
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
@@ -919,6 +920,7 @@ class LiveEvaluationAPITest(APITestCase):
             pipeline_id = "pypa_live_importer_v2"
             supported_types = ["pypi"]
 
+        os.environ["VULNERABLECODE_ENABLE_LIVE_EVALUATION_API"] = "true"
         mock_registry.values.return_value = [MockImporter]
         valid_uuid = "00000000-0000-0000-0000-000000000001"
         mock_enqueue.return_value = (valid_uuid, ["mock-run-id"])
@@ -940,6 +942,7 @@ class LiveEvaluationAPITest(APITestCase):
             pipeline_id = "dummy"
             supported_types = ["npm"]
 
+        os.environ["VULNERABLECODE_ENABLE_LIVE_EVALUATION_API"] = "true"
         mock_registry.values.return_value = [MockImporter]
         data = {"purl": "pkg:pypi/django@3.2"}
         response = self.client.post(self.url, data, format="json")
@@ -947,6 +950,7 @@ class LiveEvaluationAPITest(APITestCase):
         assert "No live importers found" in response.data["error"]
 
     def test_evaluate_invalid_purl(self):
+        os.environ["VULNERABLECODE_ENABLE_LIVE_EVALUATION_API"] = "true"
         data = {"purl": "not_a_valid_purl"}
         response = self.client.post(self.url, data, format="json")
         assert response.status_code == 400
@@ -954,6 +958,7 @@ class LiveEvaluationAPITest(APITestCase):
 
     @patch("vulnerabilities.models.LivePipelineRun.objects.get")
     def test_status_not_found(self, mock_live_get):
+        os.environ["VULNERABLECODE_ENABLE_LIVE_EVALUATION_API"] = "true"
         mock_live_get.side_effect = LivePipelineRun.DoesNotExist()
         url = "/api/v2/live-evaluation/status/00000000-0000-0000-0000-000000000000"
         response = self.client.get(url)

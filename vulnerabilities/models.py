@@ -1985,17 +1985,37 @@ class LivePipelineRun(models.Model):
         return self.status == "finished"
 
     def update_status(self):
-        if not self.pipelineruns.exists():
+        runs = list(self.pipelineruns.all())
+        if not runs:
             self.status = "queued"
-        elif all(run.status == PipelineRun.Status.SUCCESS for run in self.pipelineruns.all()):
+            self.completed_date = None
+            self.save(update_fields=["status", "completed_date"])
+            return
+
+        # Determine aggregate status
+        if all(r.status == PipelineRun.Status.SUCCESS for r in runs):
             self.status = "finished"
-            self.completed_date = timezone.now()
-        elif any(run.status == PipelineRun.Status.FAILURE for run in self.pipelineruns.all()):
+        elif any(r.status == PipelineRun.Status.FAILURE for r in runs):
             self.status = "failed"
-            self.completed_date = timezone.now()
-        else:
+        elif any(r.status == PipelineRun.Status.RUNNING for r in runs):
             self.status = "running"
-        self.save()
+        else:
+            # queued or mixed queued
+            self.status = "queued"
+
+        end_times = [r.run_end_date for r in runs if r.run_end_date]
+        completed = None
+        if self.status in ("finished", "failed") and end_times:
+            completed = max(end_times)
+        self.completed_date = completed
+        self.save(update_fields=["status", "completed_date"])
+
+    @property
+    def started_date(self):
+        """Return earliest run_start_date among child runs, if any."""
+        runs = self.pipelineruns.all()
+        start_times = [r.run_start_date for r in runs if r.run_start_date]
+        return min(start_times) if start_times else None
 
     class Meta:
         ordering = ["-created_date"]
@@ -2281,10 +2301,8 @@ class PipelineRun(models.Model):
         message = message.strip()
         if not is_multiline:
             message = message.replace("\n", "").replace("\r", "")
-
-        new_log = (self.log or "") + message + "\n"
-        type(self).objects.filter(run_id=self.run_id).update(log=new_log)
-        self.log = new_log
+        self.log = (self.log or "") + message + "\n"
+        self.save(update_fields=["log"])
 
     def dequeue(self):
         from vulnerabilities.tasks import dequeue_job

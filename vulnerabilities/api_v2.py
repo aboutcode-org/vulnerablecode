@@ -1304,6 +1304,7 @@ class LiveEvaluationSerializer(serializers.Serializer):
 
 class LiveEvaluationViewSet(viewsets.GenericViewSet):
     serializer_class = LiveEvaluationSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
     @extend_schema(
         request=LiveEvaluationSerializer,
@@ -1346,34 +1347,15 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Create a single LivePipelineRun to represent this evaluation
-        from vulnerabilities.models import LivePipelineRun
-
-        live_run = LivePipelineRun.objects.create(purl=purl_string)
-        runs = []
-        for importer in importers:
-            importer_name = getattr(importer, "pipeline_id", importer.__name__)
-            run_id = enqueue_ad_hoc_pipeline(importer_name, inputs={"purl": purl})
-            # Attach each PipelineRun to the LivePipelineRun
-            from vulnerabilities.models import PipelineRun
-
-            try:
-                run_obj = PipelineRun.objects.get(run_id=run_id)
-                run_obj.live_pipeline = live_run
-                run_obj.save()
-            except PipelineRun.DoesNotExist:
-                pass
-            runs.append(
-                {
-                    "importer": importer_name,
-                    "run_id": str(run_id) if run_id else None,
-                }
-            )
+        # Enqueue all selected importers together and link runs to a new LivePipelineRun
+        importer_ids = [getattr(imp, "pipeline_id", imp.__name__) for imp in importers]
+        live_run_id, run_ids = enqueue_ad_hoc_pipeline(importer_ids, inputs={"purl": purl})
+        runs = [
+            {"importer": importer_ids[idx], "run_id": str(rid)} for idx, rid in enumerate(run_ids)
+        ]
 
         request_obj = request
-        status_path = reverse(
-            "live-evaluation-status", kwargs={"live_run_id": str(live_run.run_id)}
-        )
+        status_path = reverse("live-evaluation-status", kwargs={"live_run_id": str(live_run_id)})
 
         if hasattr(request_obj, "build_absolute_uri"):
             status_url = request_obj.build_absolute_uri(status_path)
@@ -1382,7 +1364,7 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
 
         return Response(
             {
-                "live_run_id": str(live_run.run_id),
+                "live_run_id": str(live_run_id),
                 "runs": runs,
                 "status_url": status_url,
             },
@@ -1431,6 +1413,7 @@ class LiveEvaluationViewSet(viewsets.GenericViewSet):
             "live_run_id": str(live_run.run_id),
             "overall_status": live_run.status,
             "created_date": live_run.created_date,
+            "started_date": getattr(live_run, "started_date", None),
             "completed_date": live_run.completed_date,
             "purl": live_run.purl,
             "importers": importer_statuses,

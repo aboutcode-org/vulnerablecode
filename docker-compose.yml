@@ -23,9 +23,9 @@ services:
   vulnerablecode:
     build: .
     command: /bin/sh -c "
-        ./manage.py migrate &&
-        ./manage.py collectstatic --no-input --verbosity 0 --clear &&
-        gunicorn vulnerablecode.wsgi:application -u nobody -g nogroup --bind :8000 --timeout 600 --workers 8"
+      ./manage.py migrate &&
+      ./manage.py collectstatic --no-input --verbosity 0 --clear &&
+      gunicorn vulnerablecode.wsgi:application -u nobody -g nogroup --bind :8000 --timeout 600 --workers 8"
     env_file:
       - docker.env
     expose:
@@ -60,6 +60,17 @@ services:
       - db
       - vulnerablecode
 
+  vulnerablecode_rqworker_live:
+    build: .
+    command: wait-for-it web:8000 -- python ./manage.py rqworker live
+    env_file:
+      - docker.env
+    volumes:
+      - /etc/vulnerablecode/:/etc/vulnerablecode/
+    depends_on:
+      - vulnerablecode_redis
+      - db
+      - vulnerablecode
 
   nginx:
     image: nginx
@@ -75,9 +86,7 @@ services:
     depends_on:
       - vulnerablecode
 
-
 volumes:
   db_data:
   static:
   vulnerablecode_redis_data:
-

@@ -697,6 +697,15 @@ class LiveEvaluationPipelineScheduleListView(ListView, FormMixin):
         context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
             pipeline_id__in=live_pipeline_ids, is_active=False
         ).count()
+
+        # Update status of recent LivePipelineRun groups for freshness
+        try:
+            from vulnerabilities.models import LivePipelineRun
+
+            for lpr in LivePipelineRun.objects.order_by("-created_date")[:50]:
+                lpr.update_status()
+        except Exception:
+            pass
         return context
 
 

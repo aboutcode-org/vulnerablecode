@@ -46,6 +46,7 @@ from vulnerabilities.views import VulnerabilityPackagesDetails
 from vulnerabilities.views import VulnerabilitySearch
 from vulnerablecode.settings import DEBUG
 from vulnerablecode.settings import DEBUG_TOOLBAR
+from vulnerablecode.settings import VULNERABLECODE_ENABLE_LIVE_EVALUATION_API
 
 
 # See the comment at https://stackoverflow.com/a/46163870.
@@ -71,7 +72,9 @@ api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vuln
 api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
 api_v2_router.register("pipelines", PipelineScheduleV2ViewSet, basename="pipelines")
 api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisory-codefix")
-api_v2_router.register("live-evaluation", LiveEvaluationViewSet, basename="live-evaluation")
+
+if VULNERABLECODE_ENABLE_LIVE_EVALUATION_API:
+    api_v2_router.register("live-evaluation", LiveEvaluationViewSet, basename="live-evaluation")
 
 
 urlpatterns = [

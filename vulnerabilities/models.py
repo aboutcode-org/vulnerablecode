@@ -2927,17 +2927,19 @@ class ImpactedPackage(models.Model):
 
     base_purl = models.CharField(
         max_length=500,
-        blank=True,
+        blank=False,
         help_text="Version less PURL related to impacted range.",
     )
 
     affecting_vers = models.TextField(
         blank=True,
+        null=True,
         help_text="VersionRange expression for package vulnerable to this impact.",
     )
 
     fixed_vers = models.TextField(
         blank=True,
+        null=True,
         help_text="VersionRange expression for packages fixing the vulnerable package in this impact.",
     )
 

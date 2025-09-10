@@ -8,6 +8,7 @@
 #
 
 import logging
+import re
 from traceback import format_exc as traceback_format_exc
 
 import requests
@@ -69,11 +70,26 @@ def add_vulnerability_exploit(record, logger):
     vulnerabilities = set()
     references = record.get("references", [])
 
-    interesting_references = [
-        ref for ref in references if not ref.startswith("OSVDB") and not ref.startswith("URL-")
-    ]
+    # Regex to allow short commit hashes (6–40 chars)
+    commit_pattern = re.compile(r"https://github\.com/.+/commit/[a-f0-9]{6,40}")
 
-    if not interesting_references:
+    interesting_references = []
+    commit_links = set()
+
+    for ref in references:
+        if ref.startswith("OSVDB"):
+            continue
+
+        # Handle "URL-" prefixed references
+        if ref.startswith("URL-"):
+            url = ref[4:]
+            interesting_references.append(url)
+            if commit_pattern.match(url):
+                commit_links.add(url)
+        else:
+            interesting_references.append(ref)
+
+    if not interesting_references and not commit_links:
         return 0
 
     for ref in interesting_references:
@@ -94,17 +110,22 @@ def add_vulnerability_exploit(record, logger):
     source_url = ""
     if path := record.get("path"):
         source_url = f"https://github.com/rapid7/metasploit-framework/tree/master{path}"
-    source_date_published = None
 
+    # Add unique commit links to notes
+    if commit_links:
+        notes["commit_links"] = sorted(commit_links) 
+
+    source_date_published = None
     if disclosure_date := record.get("disclosure_date"):
         try:
             source_date_published = dateparser.parse(disclosure_date).date()
         except ValueError as e:
             logger(
-                f"Error while parsing date {disclosure_date} with error {e!r}:\n{traceback_format_exc()}",
+                f"Error parsing date {disclosure_date}: {e!r}\n{traceback_format_exc()}",
                 level=logging.ERROR,
             )
 
+    # Save or update exploit records
     for vulnerability in vulnerabilities:
         Exploit.objects.update_or_create(
             vulnerability=vulnerability,
@@ -117,4 +138,5 @@ def add_vulnerability_exploit(record, logger):
                 "source_url": source_url,
             },
         )
+
     return 1

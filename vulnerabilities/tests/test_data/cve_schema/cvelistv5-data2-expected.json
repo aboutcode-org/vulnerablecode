@@ -1,0 +1,35 @@
+{
+  "advisory_id": "CVE-2024-0906",
+  "aliases": [],
+  "summary": "The f(x) Private Site plugin for WordPress is vulnerable to Sensitive Information Exposure in all versions up to, and including, 1.2.1 via the API. This makes it possible for unauthenticated attackers to obtain page and post contents of a site protected with this plugin.",
+  "affected_packages": [],
+  "references_v2": [
+    {
+      "reference_id": "79c3abc6-68fa-4c51-88fa-03ab7d26cc4c?source=cve",
+      "reference_type": "other",
+      "url": "https://www.wordfence.com/threat-intel/vulnerabilities/id/79c3abc6-68fa-4c51-88fa-03ab7d26cc4c?source=cve"
+    },
+    {
+      "reference_id": "fx-private-site",
+      "reference_type": "other",
+      "url": "https://wordpress.org/plugins/fx-private-site/"
+    }
+  ],
+  "severities": [
+    {
+      "system": "cvssv3.1",
+      "value": 5.3,
+      "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+    },
+    {
+      "system": "ssvc",
+      "value": "Track",
+      "scoring_elements": "SSVCv2/E:N/A:N/T:P/P:M/B:A/M:M/D:T/2024-03-12T18:42:41Z/"
+    }
+  ],
+  "date_published": "2024-03-12T08:34:17.481000+00:00",
+  "weaknesses": [
+    200
+  ],
+  "url": "https://test.com"
+}

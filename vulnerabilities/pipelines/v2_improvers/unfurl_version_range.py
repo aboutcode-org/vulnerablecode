@@ -104,7 +104,7 @@ def get_affected_purls(versions, affecting_vers, base_purl, logger):
     return affected_purls
 
 
-def get_purl_versions(purl, cached_versions={}):
+def get_purl_versions(purl, cached_versions):
     if not purl in cached_versions:
         cached_versions[purl] = get_versions(purl)
     return cached_versions[purl]

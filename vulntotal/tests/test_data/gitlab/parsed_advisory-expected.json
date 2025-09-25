@@ -1,51 +1,26 @@
 [
   {
-    "purl": "pkg:generic/namespace/test",
-    "affected_versions": [
-      "<=2.7.1"
-    ],
-    "fixed_versions": [
-      "2.7.2"
-    ],
-    "aliases": [
-      "CVE-2014-1402"
-    ]
+    "purl": "pkg:pypi/namespace/test",
+    "affected_versions": ["<=2.7.1"],
+    "fixed_versions": ["2.7.2"],
+    "aliases": ["CVE-2014-1402"]
   },
   {
-    "purl": "pkg:generic/namespace/test",
-    "affected_versions": [
-      "<2.8.1"
-    ],
-    "fixed_versions": [
-      "2.8.1"
-    ],
-    "aliases": [
-      "GHSA-hj2j-77xm-mc5v",
-      "CVE-2016-10745"
-    ]
+    "purl": "pkg:pypi/namespace/test",
+    "affected_versions": ["<2.8.1"],
+    "fixed_versions": ["2.8.1"],
+    "aliases": ["GHSA-hj2j-77xm-mc5v", "CVE-2016-10745"]
   },
   {
-    "purl": "pkg:generic/namespace/test",
-    "affected_versions": [
-      "<2.10.1"
-    ],
-    "fixed_versions": [
-      "2.10.1"
-    ],
-    "aliases": [
-      "CVE-2019-10906"
-    ]
+    "purl": "pkg:pypi/namespace/test",
+    "affected_versions": ["<2.10.1"],
+    "fixed_versions": ["2.10.1"],
+    "aliases": ["CVE-2019-10906"]
   },
   {
-    "purl": "pkg:generic/namespace/test",
-    "affected_versions": [
-      "<2.11.3"
-    ],
-    "fixed_versions": [
-      "2.11.3"
-    ],
-    "aliases": [
-      "CVE-2020-28493"
-    ]
+    "purl": "pkg:pypi/namespace/test",
+    "affected_versions": ["<2.11.3"],
+    "fixed_versions": ["2.11.3"],
+    "aliases": ["CVE-2020-28493"]
   }
 ]

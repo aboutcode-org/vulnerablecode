@@ -111,3 +111,16 @@ class GithubOSVImporter(TestCase):
         )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)
+
+    def test_github_osv_importer8(self):
+        with open(os.path.join(TEST_DATA, "github_osv_test_8.json")) as f:
+            mock_response = json.load(f)
+        expected_file = os.path.join(TEST_DATA, "github_osv_expected_8.json")
+        imported_data = parse_advisory_data(
+            mock_response,
+            supported_ecosystems=["pypi"],
+            advisory_url="https://github.com/github/advisory-database"
+            "/blob/main/advisories/github-reviewed/github_osv_test_8.json",
+        )
+        result = imported_data.to_dict()
+        util_tests.check_results_against_json(result, expected_file)

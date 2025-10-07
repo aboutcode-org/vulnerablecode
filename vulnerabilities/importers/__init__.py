@@ -47,6 +47,9 @@ from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importe
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
+from vulnerabilities.pipelines.v2_importers import (
+    elixir_security_live_importer as elixir_security_live_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
@@ -115,5 +118,11 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+    ]
+)
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        elixir_security_live_importer_v2.ElixirSecurityLiveImporterPipeline,
     ]
 )

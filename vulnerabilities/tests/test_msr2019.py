@@ -26,7 +26,7 @@ def test_data_fetch(mock_value):
 
 
 def test_kbmsr_to_advisories():
-    TEST_DATA = os.path.join(TEST_DIR, "test_msr_data.csv")
+    TEST_DATA = os.path.join(TEST_DIR, "MSR2019", "dataset", "vulas_db_msr2019_release.csv")
     with open(TEST_DATA) as f:
         lines = [l for l in f.readlines()]
         test_data = csv.reader(lines)

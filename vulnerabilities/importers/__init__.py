@@ -55,6 +55,7 @@ from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
 from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgresql_importer_v2
+from vulnerabilities.pipelines.v2_importers import project_kb_importer as project_kb_importer_v2
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
@@ -81,6 +82,7 @@ IMPORTERS_REGISTRY = create_registry(
         mozilla_importer_v2.MozillaImporterPipeline,
         github_osv_importer_v2.GithubOSVImporterPipeline,
         redhat_importer_v2.RedHatImporterPipeline,
+        project_kb_importer_v2.ProjectKBPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

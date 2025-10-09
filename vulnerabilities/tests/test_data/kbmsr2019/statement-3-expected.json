@@ -1,0 +1,19 @@
+[
+  {
+    "advisory_id": "CVE-2019-1020012",
+    "aliases": [],
+    "summary": "parse-server before 3.4.1 allows DoS after any POST to a volatile class.",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/parse-community/parse-server/commit/8709daf698ea69b59268cb66f0f7cee75b52daa5"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  }
+]

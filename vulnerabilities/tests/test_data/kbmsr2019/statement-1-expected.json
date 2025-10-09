@@ -1,0 +1,968 @@
+[
+  {
+    "advisory_id": "CVE-2019-17531",
+    "aliases": [],
+    "summary": "A Polymorphic Typing issue was discovered in FasterXML jackson-databind 2.0.0 through 2.9.10. When Default Typing is enabled (either globally or for a specific property) for an externally exposed JSON endpoint and the service has the apache-log4j-extra (version 1.2.x) jar in the classpath, and an attacker can provide a JNDI service to access, it is possible to make the service execute a malicious payload.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.1.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.3.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.3.0"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.1.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.3.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.5.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.3.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.5.0"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.1.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.5.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.0"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.3.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.0"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.5.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.5"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.7"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.5"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.9"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.7"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.9.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.8"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.9.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.6"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.0.pr3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.0.pr4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.7.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.11.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.11.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.9"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.11.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.11.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.10"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.8.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.0.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.4.0"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.4.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.11"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.0.6"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.0"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.10"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.2.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.4.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.0"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.4.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.4.6"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.4.5"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.6"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.5"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.6"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.7"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.5"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.8"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.7"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.0.0"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.7.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.6.7.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.9.5"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.9.3"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.9.4"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.9.1"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.7.9.2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.8.0.rc2"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.9"
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "2.9.8"
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/FasterXML/jackson-databind/commit/b5a304a98590b6bb766134f9261e6566dcbbb6d0"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  }
+]

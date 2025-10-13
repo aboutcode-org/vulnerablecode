@@ -19,124 +19,233 @@ from packageurl import PackageURL
 from packageurl import normalize_qualifiers
 from packageurl import normalize_subpath
 
-__version__ = "0.2.0"
-
+__version__ = "0.3.0"
 
 """
-General purpose utilities to create Vulnerability Ids aka. VCID and content-defined, hash-based
-paths to store Vulnerability and Package data using these paths in many balanced directories.
+General purpose utilities to create content-defined, hash-based paths to store
+Package data keyed by PURL.
 
-The reason why this is needed is to store many vulnerability and package metadata files, we need
-to distribute these files in multiple directories and avoid too many files in the same directory
-which makes every filesystem performance suffer.
+The approach is to distribute the many data files for a package in multiple
+directories stored in multiple Git repositories, so that each directory and repo
+is not too big, with not too many files, spread roughly evenly across all the
+directories and repositories. At the same time the construction is such that it
+is possible to access a single data file across all these directories and Git
+repositories knowing only its package PURL.
 
-In addition, when storing these files in Git repositories, we need to avoid creating any repository
-with too many files that would make using this repository impractical or exceed the limits of some
-repository hosting services.
+Multiple directories are needed to store many package metadata files to avoid
+directories with too many files in the same directory, which makes every
+filesystem performance suffer. Typically a max of about 10,000 files in a
+directory is a decent target.
 
-Therefore we are storing vulnerability data using a directory tree using the first few characters
-of the PURL hash of a package or the UUID of a vulnerability id.
+We also need multiple Git repositories to avoid very big repositories that are
+impractical to use. We want each repo to be under the common limits of public
+repository hosting services, like GitHub and its 5GB limit. Typicaly a maximum
+size of 5GB and a target size of about 1GB of compressed content makes the most
+sense. We store text and Git combination of XDiff, XDelta a zlib compression
+typically can reduce the stored size by about 5, meaning that a 1GB repo may
+contain about 5GB actual uncompressed text.
+
+To distribute files roughly evenly across repositories and directories and still
+using PURL as a key, we use a hash computed on the PURL to create repositories
+and directory names.
+
+With this approach, it becomes possible to distribute the data across many Git
+repositories and directories and still access each data file directly by taking
+a PURL and computing a direct path and URL to an actual data file, such as a
+ScanCode scan.
+
+We use this hierarchy of git repos:
+
+    cluster (name for a data kind)
+    repo (name with a kind, type, and PURL-based hash)
+        -> directory name (kind, type, and PURL-based hash)
+            -> PURL ns/name/version (no ns segment if this does not apply)
+                -> PURL qualifiers+subpath
+
+For instance, for a cluster about purl versions::
+
+    aboutcode-purls: cluster name. This is a repo with config files to describe it
+        aboutcode-cluster-config.yml: the cluster config file
+
+    aboutcode-purls-gem-0000/ : repo name (0000 is on the first PURL hash of the range stored in this repo's dirs)
+        purls-gem-0107/ : dir name composed of kind+type+hashid
+            random_password_generator/purls.yml : path to a list of PURLs for the gem named random_password_generator
+
+If the base URL for the cluster is at this GitHub org: aboutcode-data, then the
+URL to the purls.yml file is inferred this way:
+
+https://github.com/aboutcode-data/aboutcode-purls-gem-0000/blob/main/purls-gem-0107/gem/random_password_generator/purls.yml
+
+Each directory may store specific data files, such as a list of PURLs with
+version, ScanCode scans, using conventional filenames so they can be retrieved
+directly.
+
+To recap:
+
+* Repo: A repo is a group of related directories, like for all the npms with a
+  PURL hash of 0000 to 0123, where we store npm metadata files for each PURL.
+
+* Cluster: A consistent set of repos for the same data kind, covering all or
+  many package types is called a cluster. All repos in a cluster share the same
+  name prefix. Clusters are focused on a data kind, for example a cluster of Git
+  repos with all the package versions (list of PURLs) and medatata files, and
+  another cluster for all the ScanCode scans.
+
+These clusters align with the needs of users: for example, a user using only
+vulnerability data for Java and JavaScript may not care directly for Haskell
+metadata. Or may care only for another kind of data like fingerprints.
+
+The PURL hashid consist of a SHA256 hash computed on a canonical PURL string (no
+version, qualifiers or subpath) keeping up 1024 values, from 0000 to 1023 (e.g.,
+modulo 1024)
+
+Based on this hashid and the kind and type, directories are grouped in one or
+more Git reposities of a cluster, based on a cluster-specific number of
+directories of a type per Git repo.
+
+For small ecosystems with few packages, like luarocks or swift, a single Git
+repo may be enough to store all the data. There, a luarocks cluster of repos
+will have a single Git repo, with 1024 root directories.
+
+At the other end of the spectrum, a package type with many packages like npm may
+need 1024 Git repositories to store all the metadata. In this case a npm cluster
+of repos will have 1024 Git repos, each with a single root directory.
+
+We can also rebalance a cluster, like starting to store the data in a cluster
+with a single Git repository, and later splitting to more repos without loosing
+the ability to address data files directly just knowing a PURL and without
+having to rename all the files and paths.
+
+In our scheme, the directory names are stable and do not change, the only thing
+that changes are the repo names when more repos are created from a split, when
+the size of a Git repo grows too large.
+
+When a split to occur, we perform these operations:
+- lock the cluster as "read-only" for the duration of a split operation.
+
+- copy existing Git repos to be split to new repos based on the new number of
+directories per repo.
+
+- filter Git history in existing and new repos to keep only the history related
+to the directories stored in a given repo.
+
+- update the cluster config file in Git repo 0000 with the new number of
+directories
+
+- push new Git and existing Git repos
+
+- unlock the cluster
+
+It may even be possible to continue writing to a cluster as long as writing is
+done in two places until the split is completed. In practice split should be
+reasonbly rare and reasonably fast making this a lesser issue.
+
+Furthermore, we can start with reasonable assumptions wrt. the size of each
+cluster, as a number of directory per Git repo using these starting values:
+
+1. Super Large Ecosystem (~5M packages)
+- one dir per repo, yielding 1,024 repos
+- github, npm
+
+2. Large Ecosystem (~500K packages)
+- eight dirs per repo, yielding 128 repos
+- golang, maven, nuget, perl, php, pypi, ruby, huggingface
+
+3. Medium Ecosystem (~50K packages)
+- 32 dirs per repo, yielding 32 Git repositories
+- alpm, bitbucket, cocoapods, composer, deb, docker, gem, generic,
+  mlflow, pub, rpm, cargo
+
+4. Small Ecosystem (~2K packages)
+- 1,024 directories in onegit repository
+- all others
+
+See also original approach:
+- https://github.com/aboutcode-org/federatedcode/issues/3#issuecomment-2388371726
+
+We can have multiple clusters:
+- for one package type
+- to store data across many package types, like for vulnerabilities and advisories
+- for one or more kind of data, like just the PURL versions, or the original
+  metadata or the high level scans, scans with file details, reachability slices
+  or fingerprints.
+
+For instance, say we want a cluster to store all the npm PURLs. As of 2025-10,
+npm hosts about 4M unique package names (and roughly 20 versions per name on
+average with ~80M updates in total in https://replicate.npmjs.com/). Storing 4M
+names takes about 100MB uncompressed. Adding versions would take about 2GB
+uncompressed. This means that we can store comfortably all npm PURLs in a single
+repository size-wise, but we may want to use more repositories anyway as storing
+4M directories and purls.yml files in a single repo will not be a happy event,
+so using 32 repos with 32 dirs or 64 repos with 16 dirs may be a better
+approach.
+
+
+Naming convention for repos:
+   maintainer-purl_type-data_kind-repo_number
+
+The repo_number is always the 1st repo of range of directory hashid
+
+
+
+
+
+1024 directories from 0000 to 1023
+    package-type
+        package namespace/name or name
+            purls.yml
+            vulnerabilities.yml
+            advisories.yml
+            <version>
+                possibly subdirectories?
+
+Each cluster meta repo contains a configuration file that describes
+its content and the number of directories per Git repos.
+
+Tools need to check the cluster configuration file on a regular basis to use the
+latest configuration.
+
+
+The aboutcode-cluster-config.yml is a config file that minimally tells
+  - what this data cluster is about
+  - the number of dirs per repo in this cluster
+
+
+aboutcode-cluster-config.yml fields
+---------------------------------------
+    base_url: base URL for this cluster of repos: https://github.com/aboutcode-data
+    cluter_name_prefix: a unique prefix name for this base URL : aboutcode-purls
+    number_of_dirs: 1024 (default)
+    number_of_repos: 1 (default)
+    # numbers_of_dirs_per_repo: number_of_dirs / number_of_repos
+    # The number of directories in each repos can be any power of 2 from 0 to
+    # 1024: 2**0: 1, 2, 4, 8, 16, 2**5: 32, 64, 128, 2**8: 256, 512, or 2**10:
+    # 1024.
+
+    purl_types: list of purl types stored in this cluster or * for all types.
+        Implied default to *
+
+    data_kind: a string that depicts the kind of data stored in this group of repos
+        purls
+        metadata
+        api_metafiles
+        vulnerablecode_advisories
+        vulnerablecode_vulnerabilities
+        scancode_scans
+        scancode_fingerprints
+        atom_slices
+        sboms
+
+    maintainer:
+      name:
+      email:
+      url:
 """
-
-VULNERABILITY_REPO_NAME = "aboutcode-vulnerabilities"
 
 PACKAGE_REPOS_NAME_PREFIX = "aboutcode-packages"
-PURLS_FILENAME = "purls.yml"
-VULNERABILITIES_FILENAME = "vulnerabilities.yml"
 
-
-def build_vcid(prefix="VCID"):
-    """
-    Return a new Vulnerable Code ID (aka. VCID) which is a strongly unique vulnerability
-    identifier string using the provided ``prefix``. A VCID is composed of a four letter prefix, and
-    three segments composed of four letters and digits each separated by a dash.
-    For example::
-    >>> import re
-    >>> vcid = build_vcid()
-    >>> assert re.match('VCID(-[a-hjkm-z1-9]{4}){3}', vcid), vcid
-
-    We were mistakenly not using enough bits. The symptom was that the last
-    segment of the VCID was always string with "aaa" This ensure we are now OK:
-    >>> vcids = [build_vcid() for _ in range(50)]
-    >>> assert not any(vid.split("-")[-1].startswith("aaa") for vid in vcids)
-    """
-    uid = uuid4().bytes
-    # we keep  three segments of 4 base32-encoded bytes, 3*4=12
-    # which corresponds to 60 bits
-    # because each base32 byte can store 5 bits (2**5 = 32)
-    uid = base32_custom(uid)[:12].decode("utf-8").lower()
-    return f"{prefix}-{uid[:4]}-{uid[4:8]}-{uid[8:12]}"
-
-
-def get_vcid_yml_file_path(vcid: str):
-    """
-    Return the path to the vulnerability YAML file for a VCID.
-    """
-    return Path(VULNERABILITY_REPO_NAME) / vulnerability_yml_path(vcid)
-
-
-# This custom 32 characters alphabet is designed to avoid visually easily confusable characters:
-# i and l
-# 0 and o
-_base32_alphabet = b"abcdefghjkmnpqrstuvwxyz123456789"
-_b32tab = [bytes((i,)) for i in _base32_alphabet]
-_base32_table = [a + b for a in _b32tab for b in _b32tab]
-
-base32_custom_alphabet = _base32_alphabet.decode("utf-8")
-
-
-def base32_custom(btes):
-    """
-    Encode the ``btes`` bytes using a custom Base32 encoding with a custom alphabet and return a
-    lowercase byte string. This alphabet is designed to avoid confusable characters.
-
-    Not meant for general purpose Base32 encoding as this is not designed to ever be decoded.
-    Code copied and modified from the Python Standard Library: base64._b32encode function
-
-    For example::
-    >>> base32_custom(b'abcd')
-    b'abtze25e'
-
-    >>> base32_custom(b'abcde00000xxxxxPPPPP')
-    b'pfugg3dfga2dapbtsb6ht8d2mbjfaxct'
-    """
-
-    encoded = bytearray()
-    from_bytes = int.from_bytes
-
-    for i in range(0, len(btes), 5):
-        c = from_bytes(btes[i : i + 5], "big")  # big-endian
-        encoded += (
-            _base32_table[c >> 30]  # bits 1 - 10
-            + _base32_table[(c >> 20) & 0x3FF]  # bits 11 - 20
-            + _base32_table[(c >> 10) & 0x3FF]  # bits 21 - 30
-            + _base32_table[c & 0x3FF]  # bits 31 - 40
-        )
-    return bytes(encoded)
-
-
-def vulnerability_yml_path(vcid):
-    """
-    Return the path to a vulnerability YAML file crafted from the ``vcid`` VCID vulnerability id.
-
-    The approach is to distribute the files in many directories to avoid having too many files in
-    any directory and be able to find the path to a vulnerability file given its VCID distributed on
-    the first two characters of the UUID section of a VCID.
-
-    The UUID is using a base32 encoding, hence keeping two characters means 32 x 32 = 1024
-    possibilities, meaning 1024 directories. Given a current count of vulnerabilities of about 300K,
-    mid 2024 this gives ample distribution of about 1000 vulnerabilities in each of 1000 directories
-    and plenty of room to grow.
-
-    The serialized vulnerability data should about 300MB compressed and should be storable in single
-    Git repository.
-
-    For example::
-    >>> vulnerability_yml_path("VCID-s9bw-m429-aaaf")
-    's9/VCID-s9bw-m429-aaaf.yml'
-    """
-    prefix = vcid[5 : 5 + 2]
-    return f"{prefix}/{vcid}.yml"
+KIND_PURLS_FILENAME = "purls.yml"
+KIND_VULNERABILITIES_FILENAME = "vulnerabilities.yml"
 
 
 def get_package_base_dir(purl: Union[PackageURL, str]):
@@ -155,89 +264,83 @@ def get_package_purls_yml_file_path(purl: Union[PackageURL, str]):
     """
     Return the path to a Package purls.yml YAML for a purl.
     """
-    return get_package_base_dir(purl) / PURLS_FILENAME
+    return get_package_base_dir(purl) / KIND_PURLS_FILENAME
 
 
 def get_package_vulnerabilities_yml_file_path(purl: Union[PackageURL, str]):
     """
     Return the path to a Package vulnerabilities.yml YAML for a purl.
     """
-    return get_package_base_dir(purl) / VULNERABILITIES_FILENAME
+    return get_package_base_dir(purl) / KIND_VULNERABILITIES_FILENAME
 
 
-# We use a 4-tier system for storing package metadata.
+# This is an initial tiering by type system for storing package metadata.
 # The tiers are as follows:
-# 1. Super Large Ecosystem (~5M packages): 2^10 = 1,024 git repositories
-# 2. Large Ecosystem (~500K packages): 2^7 = 128 git repositories
-# 3. Medium Ecosystem (~50K packages): 2^5 = 32 git repositories
-# 4. Small Ecosystem (~2K packages): 2^0 = 1 git repository
+# 1. Super Large Ecosystem (~5M packages): 1,024 git repositories
+# 2. Large Ecosystem (~500K packages): 128 git repositories
+# 3. Medium Ecosystem (~50K packages): 16 repositories
+# 4. Small Ecosystem (~2K packages): 1 git repository
 # See https://github.com/aboutcode-org/federatedcode/issues/3#issuecomment-2388371726
-BIT_COUNT_BY_ECOSYSTEM = {
+NUMBER_OF_REPOS_BY_ECOSYSTEM = {
     # Super Large Ecosystem
-    "github": 10,
-    "npm": 10,
+    "github": 1024,
+    "npm": 1024,
     # Large Ecosystem
-    "golang": 7,
-    "maven": 7,
-    "nuget": 7,
-    "perl": 7,
-    "php": 7,
-    "pypi": 7,
-    "ruby": 7,
+    "golang": 128,
+    "maven": 128,
+    "nuget": 128,
+    "perl": 128,
+    "php": 128,
+    "pypi": 128,
+    "ruby": 128,
     # Medium Ecosystem
-    "alpm": 5,
-    "bitbucket": 5,
-    "cocoapods": 5,
-    "composer": 5,
-    "deb": 5,
-    "docker": 5,
-    "gem": 5,
-    "generic": 5,
-    "huggingface": 5,
-    "mlflow": 5,
-    "pub": 5,
-    "rpm": 5,
+    "alpm": 16,
+    "bitbucket": 16,
+    "cargo": 16,
+    "cocoapods": 16,
+    "composer": 16,
+    "deb": 16,
+    "docker": 16,
+    "gem": 16,
+    "generic": 16,
+    "huggingface": 16,
+    "mlflow": 16,
+    "pub": 16,
+    "rpm": 16,
     # Small Ecosystem
-    "bitnami": 0,
-    "cargo": 0,
-    "conan": 0,
-    "conda": 0,
-    "cpan": 0,
-    "cran": 0,
-    "hackage": 0,
-    "hex": 0,
-    "luarocks": 0,
-    "swift": 0,
+    "bitnami": 1,
+    "conan": 1,
+    "conda": 1,
+    "cpan": 1,
+    "cran": 1,
+    "hackage": 1,
+    "hex": 1,
+    "luarocks": 1,
+    "swift": 1,
 }
 
 
-def package_path_elements(purl: Union[PackageURL, str]):
+def package_path_elements(
+    purl: Union[PackageURL, str], 
+    default_number_of_repos: int =1,
+):
     """
-    Return 4-tuple of POSIX path strings crafted from the ``purl`` package PURL string or object.
+    Return a 4-tuple of POSIX path strings from the ``purl`` string or object.
+    
     The tuple members are: (purl_hash, core_path, purl.version, extra_path)
-    These members can be joined using a POSIX "/" path separator to store package data distributed
-    evenly in many directories, where package data of the same package is co-located in the same
-    root directory.
-
-    The approach is to distribute the files in many directories to avoid having too many data files
-    in any directory and be able to find the path to the YAML data files for a package given its
-    PURL. For this we use the first characters of the "purl hash" to construct a path.
-
-    A purl hash has 8,192 possible values, meaning 8,192 directories or repositories, basically used
-    as a hash table. Given an estimated count of packages of about 30 million in mid 2024, this
-    gives ample distribution of about 4,000 packages in each of these top level directories and some
-    room to grow.
-
-    The size to store compressed package metadata is guesstimated to be 1MB on average and 10MB for
-    a full scan. This means that each directory will store 4K * 10MB ~= 4 GB. This should keep
-    backing git repositories to a reasonable size, below 5GB.
+    These members can be joined using a POSIX "/" path separator to store
+    package data distributed evenly in many directories, where package data of
+    the same package is co-located in the same directory.
 
     The storage scheme is designed to create this path structure:
 
     <short-purl-hash> : top level directory or repository
       <type>/<namespace>/<name> : sub directories
-        purls.yml : YAML file with known versions for this package ordered from oldest to newest
-        vulnerabilities.yml : YAML file with known vulnerabilities affecting (and fixed by) this package
+        purls.yml : YAML file with known versions for this package ordered
+           from oldest to newest
+
+        vulnerabilities.yml : YAML file with known vulnerabilities affecting
+           (and fixed by) this package
 
         <version> : one sub directory for each version
           metadata.yml : ABOUT YAML file with package origin and license metadata for this version
@@ -279,10 +382,9 @@ def package_path_elements(purl: Union[PackageURL, str]):
     >>> package_path_elements(purl)
     ('50', 'pypi/license-expression', 'b%23ar%2F%3F30.3.2%21', 'foo%3Dbar%23a%2Fb%2Fc')
     """
-    if isinstance(purl, str):
-        purl = PackageURL.from_string(purl)
+    purl = as_purl(purl)
 
-    bit_count = BIT_COUNT_BY_ECOSYSTEM.get(purl.type, 0)
+    bit_count = NUMBER_OF_REPOS_BY_ECOSYSTEM.get(purl.type, 0)
     purl_hash = get_purl_hash(purl=purl, _bit_count=bit_count)
 
     if ns := purl.namespace:
@@ -305,8 +407,9 @@ def package_path_elements(purl: Union[PackageURL, str]):
 
 def quote_more(qs):
     """
-    Return a quoted string from ``qs`` string by quoting all non-quoted characters ignoring already
-    quoted characters. This makes the quoted string safer to use in a path.
+    Return a quoted string from ``qs`` string by quoting all non-quoted
+    characters ignoring already quoted characters. This makes the quoted string
+    safer to use in a path.
 
     For example::
     >>> quote_more("foo")
@@ -325,14 +428,23 @@ def quote_more(qs):
     except Exception as e:
         raise Exception(f"Failed to quote_more: {qs!r}") from e
 
-
-def get_core_purl(purl: Union[PackageURL, str]):
+def as_purl(purl: Union[PackageURL, str]):
     """
-    Return a new "core" purl from a ``purl`` object, dropping version, qualifiers and subpath.
+    Return a  PackageURL from ``purl`` object or string.
     """
     if isinstance(purl, str):
         purl = PackageURL.from_string(purl)
+    elif not isinstance(purl, PackageURL):
+        raise ValueError(f"purl {purl!r} must be of type PackageURL or str, not {type(purl)!r}")
+    return purl
 
+
+def get_core_purl(purl: Union[PackageURL, str]):
+    """
+    Return a new "core" purl from a ``purl`` object or string, dropping version,
+    qualifiers and subpath.
+    """
+    purl = as_purl(purl)
     purld = purl.to_dict()
     del purld["version"]
     del purld["qualifiers"]
@@ -340,71 +452,61 @@ def get_core_purl(purl: Union[PackageURL, str]):
     return PackageURL(**purld)
 
 
-def get_purl_hash(purl: Union[PackageURL, str], _bit_count: int = 0) -> str:
+def get_purl_hash(purl: Union[PackageURL, str], max_value: int=1024) -> str:
     """
-    Return a short lower cased hash string from a ``purl`` string or object. The PURL is normalized
-    and we drop its version, qualifiers and subpath.
+    Return a hash string from a ``purl`` string or object.
 
-    This function takes a normalized PURL string and a ``_bit_count`` argument defaulting to 0 bits
-    which represents 2**0 = 1 possible hash value. It returns a fixed length short hash string
-    that is left-padded with zeros.
+    The PURL is normalized and we drop its version, qualifiers and subpath. This
+    four characters hash string is the integer hash value between 0000 and 1023,
+    left-padded with zeros.
 
-    The hash length is derived from the bit_count and the number of bits-per-byte stored in an hex
-    encoding of this bits count. For 10 bits, this means up to 3 characters.
+    The function is designed to be easily portable across tech stacks and easy
+    to implement in many programming languages:
 
-    The function is carefully designed to be portable across tech stacks and easy to implement in
-    many programming languages:
+    - the hash is based on sha256, available is all common languages,
+    - the hash is based on the hash integer value between, left padded with 0
+    - we use simple arithmetic on integer with modulo.
 
-    - the hash is computed using sha256 which is available is all common language,
-    - the hash is using simple lowercased HEX encoding,
-    - we use simple arithmetics on integer with modulo.
+    Use these steps to compute a PURL hash:
 
-    The processing goes through these steps:
-
-    First, a SHA256 hash computed on the PURL bytes encoded as UTF-8.
-
-    Then, the hash digest bytes are converted to an integer, which is reduced modulo the largest
-    possible value for the bit_count.
-
-    Finally, this number is converted to hex, left-padded with zero up to the hash_length, and
-    returned as a lowercase string.
+    - Convert the PURL to a core PURL with only type, namespace and name.
+    - Compute a SHA256 hash on that core PURL string encoded to bytes as UTF-8.
+    - Convert that hash value to an integer.
+    - Compute a modulo on that integer with the the max value.
+      With default max_value of 1024, this yields an int between 0 and 1023.
+    - Convert that integer to a 4-characters string left-padded with zero.
 
     For example::
 
     The hash does not change with version or qualifiers::
-    >>> get_purl_hash("pkg:pypi/univers@30.12.0", 7)
-    '09'
-    >>> get_purl_hash("pkg:pypi/univers@10.12.0", 7)
-    '09'
-    >>> get_purl_hash("pkg:pypi/univers@30.12.0?foo=bar#sub/path", 7)
-    '09'
+    >>> get_purl_hash("pkg:pypi/univers@30.12.0")
+    '0009'
+    >>> get_purl_hash("pkg:pypi/univers@10.12.0")
+    '0009'
+    >>> get_purl_hash("pkg:pypi/univers@30.12.0?foo=bar#sub/path")
+    '0009'
 
-    The hash is left padded with zero if it::
-    >>> get_purl_hash("pkg:pypi/expressionss", 7)
-    '57'
+    The hash is left padded with zeros::
+    >>> get_purl_hash("pkg:pypi/expressionss")
+    '0057'
 
-    We normalize the PURL. Here pypi normalization always uses dash for underscore ::
+    We use the canonical PURL. Here pypi normalization always uses dash for
+    underscore ::
 
-    >>> get_purl_hash("pkg:pypi/license_expression", 7)
-    '50'
-    >>> get_purl_hash("pkg:pypi/license-expression", 7)
-    '50'
+    >>> get_purl_hash("pkg:pypi/license_expression")
+    '0050'
+    >>> get_purl_hash("pkg:pypi/license-expression")
+    '0050'
 
-    Originally from:
-    https://github.com/nexB/purldb/pull/235/files#diff-a1fd023bd42d73f56019d540f38be711255403547add15108540d70f9948dd40R154
+    Originally designed in :
+    https://github.com/aboutcode-org/purldb/pull/235/files#diff-a1fd023bd42d73f56019d540f38be711255403547add15108540d70f9948dd40R154
     """
 
-    core_purl = get_core_purl(purl).to_string()
-    # compute the hash from a UTF-8 encoded string
-    purl_bytes = core_purl.encode("utf-8")
-    hash_bytes = sha256(purl_bytes).digest()
-    # ... converted to integer so we can truncate with modulo. Note that we use big endian.
+    core_purl_bytes = get_core_purl(purl).to_string().encode("utf-8")
+    hash_bytes = sha256(core_purl_bytes).digest()
+    # Convert bytes to integer, using big endian
     hash_int = int.from_bytes(hash_bytes, "big")
-    # take a modulo based on bit count to truncate digest to the largest int value for the bitcount
-    max_int = 2**_bit_count
-    short_hash = hash_int % max_int
-    # maximum number of hex characters in the hash string
-    bits_per_hex_byte = 4
-    num_chars_in_hash = ceil(_bit_count / bits_per_hex_byte)
-    # return an hex "x" string left padded with 0
-    return f"{short_hash:0{num_chars_in_hash}x}".lower()
+    # compute modulo max value
+    short_int = hash_int % max_value
+    # return as 4-char string left padded with 0
+    return f"{short_int:04}"

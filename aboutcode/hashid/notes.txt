@@ -1,0 +1,52 @@
+cluster (name for a data kind)
+repo (name with a kind, type, and PURL-based hash)
+    -> directory name (kind, type, and PURL-based hash)
+        -> PURL ns/name/version (no ns segment if this does not apply)
+            -> PURL qualifiers+subpath
+
+For instance, for a cluster about purl versions::
+
+    aboutcode-purls: cluster name. This is a repo with config files to describe it
+        aboutcode-cluster-config.yml: the cluster config file
+        	base_url: https://github.com/aboutcode-data
+        	cluster_prefix: purls
+        	data_kind: purls
+        	data_filename: purls.yml
+        	# hash length
+        	max_number_of_directories: 1024
+            number_of_repos_by_type:
+               - default: 1
+               - npm: 2
+               - github: 4
+
+        aboutcode-cluster-config.yml: the cluster config file
+        	base_url: https://github.com/aboutcode-data
+        	cluster_prefix: scancode-scans
+        	data_kind: scans
+        	data_filename: scancode.yml
+        	# hash length
+        	max_number_of_directories: 1024
+            number_of_repos_by_type:
+               - default: 1
+               - npm: 1024
+               - github: 1024
+
+        
+one repo for all gems
+    aboutcode-purls-gem-0000/ : it contains 1024 directories from 0000 to 1023
+
+two repos for npms
+    aboutcode-purls-npm-0000/ : it contains 512 directories from 0000 to 511
+    aboutcode-purls-npm-0512/ : it contains 512 directories from 0512 to 1023
+
+four repos for github
+    aboutcode-purls-github-0000/ : it contains 256 directories from 0000 to 0255
+    aboutcode-purls-github-0256/ : it contains 256 directories from 0256 to 0511
+    aboutcode-purls-github-0512/ : it contains 256 directories from 0512 to 0767
+    aboutcode-purls-github-0768/ : it contains 256 directories from 0768 to 1023
+    
+    
+
+    aboutcode-purls-gem-0000/ : repo name (0000 is on the first PURL hash of the range stored in this repo's dirs)
+        purls-gem-0107/ : dir name composed of kind+type+hashid
+            random_password_generator/purls.yml : path to a list of PURLs for the gem named random_password_generator

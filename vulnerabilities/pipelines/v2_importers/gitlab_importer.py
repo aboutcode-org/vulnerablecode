@@ -7,28 +7,21 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import json
 import logging
-import traceback
 from pathlib import Path
 from typing import Iterable
 from typing import Tuple
 
-import pytz
 import saneyaml
-from dateutil import parser as dateparser
 from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
-from univers.version_range import RANGE_CLASS_BY_SCHEMES
-from univers.version_range import from_gitlab_native
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackageV2
-from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
-from vulnerabilities.utils import build_description
+from vulnerabilities.pipelines.v2_importers.gitlab_advisory_utils import (
+    advisory_dict_to_advisory_data as shared_advisory_dict_to_advisory_data,
+)
 from vulnerabilities.utils import get_advisory_url
-from vulnerabilities.utils import get_cwe_id
 
 
 class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -208,97 +201,18 @@ def parse_gitlab_advisory(
         )
         return
 
-    # refer to schema here https://gitlab.com/gitlab-org/advisories-community/-/blob/main/ci/schema/schema.json
-    aliases = gitlab_advisory.get("identifiers")
-    advisory_id = gitlab_advisory.get("identifier")
-    package_slug = gitlab_advisory.get("package_slug")
-    advisory_id = f"{package_slug}/{advisory_id}" if package_slug else advisory_id
-    if advisory_id in aliases:
-        aliases.remove(advisory_id)
-    summary = build_description(gitlab_advisory.get("title"), gitlab_advisory.get("description"))
-    urls = gitlab_advisory.get("urls")
-    references = [ReferenceV2.from_url(u) for u in urls]
-
-    cwe_ids = gitlab_advisory.get("cwe_ids") or []
-    cwe_list = list(map(get_cwe_id, cwe_ids))
-
-    date_published = dateparser.parse(gitlab_advisory.get("pubdate"))
-    date_published = date_published.replace(tzinfo=pytz.UTC)
+    # Build a stable URL to the advisory file within the repo for traceability
     advisory_url = get_advisory_url(
         file=file,
         base_path=base_path,
         url="https://gitlab.com/gitlab-org/advisories-community/-/blob/main/",
     )
-    purl: PackageURL = get_purl(
-        package_slug=package_slug,
+
+    return shared_advisory_dict_to_advisory_data(
+        advisory=gitlab_advisory,
         purl_type_by_gitlab_scheme=purl_type_by_gitlab_scheme,
+        gitlab_scheme_by_purl_type=gitlab_scheme_by_purl_type,
         logger=logger,
-    )
-    if not purl:
-        logger(
-            f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}", level=logging.ERROR
-        )
-        return AdvisoryData(
-            advisory_id=advisory_id,
-            aliases=aliases,
-            summary=summary,
-            references_v2=references,
-            date_published=date_published,
-            url=advisory_url,
-            original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
-        )
-    affected_version_range = None
-    fixed_versions = gitlab_advisory.get("fixed_versions") or []
-    affected_range = gitlab_advisory.get("affected_range")
-    gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist", "conan"])
-    vrc = RANGE_CLASS_BY_SCHEMES[purl.type]
-    gitlab_scheme = gitlab_scheme_by_purl_type[purl.type]
-    try:
-        if affected_range:
-            if gitlab_scheme in gitlab_native_schemes:
-                affected_version_range = from_gitlab_native(
-                    gitlab_scheme=gitlab_scheme, string=affected_range
-                )
-            else:
-                affected_version_range = vrc.from_native(affected_range)
-    except Exception as e:
-        logger(
-            f"parse_yaml_file: affected_range is not parsable: {affected_range!r} for: {purl!s} error: {e!r}\n {traceback.format_exc()}",
-            level=logging.ERROR,
-        )
-
-    parsed_fixed_versions = []
-    for fixed_version in fixed_versions:
-        try:
-            fixed_version = vrc.version_class(fixed_version)
-            parsed_fixed_versions.append(fixed_version.string)
-        except Exception as e:
-            logger(
-                f"parse_yaml_file: fixed_version is not parsable`: {fixed_version!r} error: {e!r}\n {traceback.format_exc()}",
-                level=logging.ERROR,
-            )
-
-    if affected_version_range:
-        vrc = affected_version_range.__class__
-
-    fixed_version_range = vrc.from_versions(parsed_fixed_versions)
-    if not fixed_version_range and not affected_version_range:
-        return
-
-    affected_package = AffectedPackageV2(
-        package=purl,
-        affected_version_range=affected_version_range,
-        fixed_version_range=fixed_version_range,
-    )
-
-    return AdvisoryData(
-        advisory_id=advisory_id,
-        aliases=aliases,
-        summary=summary,
-        references_v2=references,
-        date_published=date_published,
-        affected_packages=[affected_package],
-        weaknesses=cwe_list,
-        url=advisory_url,
-        original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
+        get_purl_fn=get_purl,
+        advisory_url=advisory_url,
     )

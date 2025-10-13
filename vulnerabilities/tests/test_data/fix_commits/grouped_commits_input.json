@@ -1,0 +1,8 @@
+{
+  "CVE-2021-0001": [
+    ["abc123", "Fix CVE-2021-0001"]
+  ],
+  "GHSA-dead-beef-baad": [
+    ["def456", "Patch GHSA-dead-beef-baad"]
+  ]
+}

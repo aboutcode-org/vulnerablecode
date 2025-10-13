@@ -1,0 +1,40 @@
+[
+  {
+    "advisory_id": "CVE-2021-0001",
+    "aliases": [
+      "CVE-2021-0001"
+    ],
+    "summary": "Commits fixing CVE-2021-0001:\n- abc123: Fix CVE-2021-0001",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/test/repo/commit/abc123"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  },
+  {
+    "advisory_id": "GHSA-dead-beef-baad",
+    "aliases": [
+      "GHSA-dead-beef-baad"
+    ],
+    "summary": "Commits fixing GHSA-dead-beef-baad:\n- def456: Patch GHSA-dead-beef-baad",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/test/repo/commit/def456"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  }
+]

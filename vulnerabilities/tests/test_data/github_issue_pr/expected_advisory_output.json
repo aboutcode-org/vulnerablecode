@@ -1,0 +1,64 @@
+[
+  {
+    "advisory_id": "CVE-2023-1234",
+    "aliases": [
+      "CVE-2023-1234"
+    ],
+    "summary": "",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "Issue",
+        "reference_type": "",
+        "url": "https://example.com/issue1"
+      },
+      {
+        "reference_id": "PR",
+        "reference_type": "",
+        "url": "https://example.com/pr1"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  },
+  {
+    "advisory_id": "GHSA-zzz-111",
+    "aliases": [
+      "GHSA-zzz-111"
+    ],
+    "summary": "",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "PR",
+        "reference_type": "",
+        "url": "https://example.com/pr1"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  },
+  {
+    "advisory_id": "PYSEC-2024-5678",
+    "aliases": [
+      "PYSEC-2024-5678"
+    ],
+    "summary": "",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "PR",
+        "reference_type": "",
+        "url": "https://example.com/pr1"
+      }
+    ],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  }
+]

@@ -53,6 +53,7 @@ from vulnerabilities.pipelines.v2_importers import debian_importer as debian_imp
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
+from vulnerabilities.pipelines.v2_importers import github_issue_pr as github_issue_pr_v2
 from vulnerabilities.pipelines.v2_importers import epss_importer_v2
 from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
@@ -154,6 +155,7 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+        github_issue_pr_v2.GithubPipelineIssuePR,
         collect_fix_commits_v2.CollectLinuxFixCommitsPipeline,
         collect_fix_commits_v2.CollectBusyBoxFixCommitsPipeline,
         collect_fix_commits_v2.CollectNginxFixCommitsPipeline,

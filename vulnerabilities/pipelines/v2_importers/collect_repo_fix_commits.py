@@ -1,7 +1,5 @@
-import os
 import re
 import shutil
-import subprocess
 import tempfile
 from collections import defaultdict
 
@@ -38,17 +36,13 @@ class CollectRepoFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
         """Clone the repository."""
         self.repo_url = "https://github.com/torvalds/linux"
         repo_path = tempfile.mkdtemp()
-        cmd = [
-            "git",
-            "clone",
-            "--bare",
-            "--filter=blob:none",
-            "--no-checkout",
-            self.repo_url,
-            repo_path,
-        ]
-        subprocess.run(cmd, check=True)
-        self.repo = Repo(repo_path)
+        self.repo = Repo.clone_from(
+            url=self.repo_url,
+            to_path=repo_path,
+            bare=True,
+            no_checkout=True,
+            multi_options=["--filter=blob:none"],
+        )
 
     def advisories_count(self) -> int:
         return int(self.repo.git.rev_list("--count", "HEAD"))
@@ -109,8 +103,8 @@ class CollectRepoFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
     def clean_downloads(self):
         """Cleanup any temporary repository data."""
         self.log("Cleaning up local repository resources.")
-        if os.path.isdir(self.repo.working_tree_dir):
-            shutil.rmtree(path=self.repo.working_tree_dir)
+        if hasattr(self, "repo") and self.repo.working_dir:
+            shutil.rmtree(path=self.repo.working_dir)
 
     def on_failure(self):
         """Ensure cleanup is always performed on failure."""

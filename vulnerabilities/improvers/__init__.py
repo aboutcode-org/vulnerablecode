@@ -19,9 +19,6 @@ from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
 from vulnerabilities.pipelines import populate_vulnerability_summary_pipeline
 from vulnerabilities.pipelines import remove_duplicate_advisories
-from vulnerabilities.pipelines.v2_improvers import (
-    collect_commits_aosp_dataset as collect_commits_aosp_v2,
-)
 from vulnerabilities.pipelines.v2_improvers import compute_advisory_todo as compute_advisory_todo_v2
 from vulnerabilities.pipelines.v2_improvers import compute_package_risk as compute_package_risk_v2
 from vulnerabilities.pipelines.v2_improvers import (
@@ -71,6 +68,5 @@ IMPROVERS_REGISTRY = create_registry(
         compute_version_rank_v2.ComputeVersionRankPipeline,
         compute_advisory_todo_v2.ComputeToDo,
         compute_advisory_todo.ComputeToDo,
-        collect_commits_aosp_v2.CollectFixCommitsAospDatasetPipeline,
     ]
 )

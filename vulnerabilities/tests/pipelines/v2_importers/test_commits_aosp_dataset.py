@@ -20,7 +20,7 @@ TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "aosp"
 
 
 @pytest.mark.django_db
-def test_aosp_advisories1():
+def test_aosp_advisories():
     expected_file = os.path.join(TEST_DATA, "aosp_advisoryv2-expected.json")
     pipeline = AospImporterPipeline()
     pipeline.vcs_response = Mock(dest_dir=TEST_DATA)

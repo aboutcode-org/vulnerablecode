@@ -41,7 +41,7 @@
         "scoring_elements": ""
       }
     ],
-    "date_published": "2018-04-04T00:00:00",
+    "date_published": "2018-04-04T00:00:00+00:00",
     "weaknesses": [],
     "url": "https://raw.githubusercontent.com/quarkslab/aosp_dataset/refs/heads/master/cves/CVE-aosp_test2.json"
   }

@@ -9,10 +9,10 @@
 
 import json
 import shutil
+from datetime import timezone
 from pathlib import Path
 
 import dateparser
-from django.core.exceptions import ValidationError
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
@@ -69,6 +69,8 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             summary = vulnerability_data.get("vulnerabilityType")
             date_reported = vulnerability_data.get("dateReported")
             date_published = dateparser.parse(date_reported) if date_reported else None
+            if date_published and not date_published.tzinfo:
+                date_published = date_published.replace(tzinfo=timezone.utc)
 
             severities = []
             severity_value = vulnerability_data.get("severity")

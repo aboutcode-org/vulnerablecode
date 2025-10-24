@@ -7,11 +7,17 @@
     "references_v2": [
       {
         "reference_id": "",
-        "reference_type": "",
+        "reference_type": "commit",
         "url": "https://source.codeaurora.org/quic/la/kernel/msm-5.4/commit/?id=d6876813add62f3cac7c429a41cc8710005d69e8"
       }
     ],
-    "severities": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "High",
+        "scoring_elements": ""
+      }
+    ],
     "date_published": null,
     "weaknesses": [],
     "url": "https://raw.githubusercontent.com/quarkslab/aosp_dataset/refs/heads/master/cves/CVE-aosp_test1.json"
@@ -24,11 +30,17 @@
     "references_v2": [
       {
         "reference_id": "",
-        "reference_type": "",
+        "reference_type": "commit",
         "url": "https://android.googlesource.com/platform/system/bt/+/6ecbbc093f4383e90cbbf681cd55da1303a8ef94"
       }
     ],
-    "severities": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "Critical",
+        "scoring_elements": ""
+      }
+    ],
     "date_published": "2018-04-04T00:00:00",
     "weaknesses": [],
     "url": "https://raw.githubusercontent.com/quarkslab/aosp_dataset/refs/heads/master/cves/CVE-aosp_test2.json"

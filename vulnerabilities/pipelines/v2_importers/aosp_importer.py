@@ -17,7 +17,9 @@ from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.severity_systems import GENERIC
 
 
 class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -68,6 +70,16 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             date_reported = vulnerability_data.get("dateReported")
             date_published = dateparser.parse(date_reported) if date_reported else None
 
+            severities = []
+            severity_value = vulnerability_data.get("severity")
+            if severity_value:
+                severities.append(
+                    VulnerabilitySeverity(
+                        system=GENERIC,
+                        value=severity_value,
+                    )
+                )
+
             references = []
             for commit_data in vulnerability_data.get("fixes", []):
                 vcs_url = commit_data.get("patchUrl")
@@ -75,13 +87,17 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 if not vcs_url:
                     continue
 
-                ref = ReferenceV2(reference_type="commit", url=vcs_url)
+                ref = ReferenceV2(
+                    reference_type="commit",
+                    url=vcs_url,
+                )
                 references.append(ref)
 
             yield AdvisoryData(
                 advisory_id=vulnerability_id,
                 summary=summary,
                 references_v2=references,
+                severities=severities,
                 date_published=date_published,
                 url=f"https://raw.githubusercontent.com/quarkslab/aosp_dataset/refs/heads/master/cves/{file_path.name}",
             )

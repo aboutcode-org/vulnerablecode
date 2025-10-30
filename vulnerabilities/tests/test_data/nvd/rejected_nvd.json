@@ -1,40 +1,28 @@
 {
-  "CVE_Items": [
+  "resultsPerPage": 27259,
+  "startIndex": 0,
+  "totalResults": 27259,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "timestamp": "2025-12-25T03:00:54.3217243",
+  "vulnerabilities": [
     {
       "cve": {
-        "data_type": "CVE",
-        "data_format": "MITRE",
-        "data_version": "4.0",
-        "CVE_data_meta": {
-          "ID": "CVE-2022-0094",
-          "ASSIGNER": "cve@mitre.org"
-        },
-        "problemtype": {
-          "problemtype_data": [
-            {
-              "description": []
-            }
-          ]
-        },
-        "references": {
-          "reference_data": []
-        },
-        "description": {
-          "description_data": [
-            {
-              "lang": "en",
-              "value": "** REJECT ** DO NOT USE THIS CANDIDATE NUMBER. ConsultIDs: none. Reason: This candidate is unused by its CNA. Notes: none."
-            }
-          ]
-        }
-      },
-      "configurations": {
-        "CVE_data_version": "4.0",
-        "nodes": []
-      },
-      "impact": {},
-      "publishedDate": "2023-05-12T05:15Z",
-      "lastModifiedDate": "2023-05-12T05:15Z"
+        "id": "CVE-2022-0094",
+        "sourceIdentifier": "security_alert@emc.com",
+        "published": "2023-05-12T05:15:14.540",
+        "lastModified": "2023-11-07T03:40:56.960",
+        "vulnStatus": "Rejected",
+        "cveTags": [],
+        "descriptions": [
+          {
+            "lang": "en",
+            "value": "Rejected reason: DO NOT USE THIS CANDIDATE NUMBER. ConsultIDs: none. Reason: This candidate is unused by its CNA. Notes: none."
+          }
+        ],
+        "metrics": {},
+        "references": []
+      }
     }
   ]
 }

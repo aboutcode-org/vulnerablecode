@@ -3394,7 +3394,7 @@ class CodeCommit(models.Model):
 
     commit_hash = models.CharField(max_length=64, help_text="Unique commit identifier (e.g., SHA).")
     vcs_url = models.URLField(
-        max_length=200, help_text="URL of the repository containing the commit."
+        max_length=1024, help_text="URL of the repository containing the commit."
     )
 
     commit_rank = models.IntegerField(

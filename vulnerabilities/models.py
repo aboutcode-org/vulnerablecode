@@ -2957,6 +2957,18 @@ class ImpactedPackage(models.Model):
         help_text="Packages vulnerable to this impact.",
     )
 
+    affecting_commits = models.ManyToManyField(
+        "CodeCommit",
+        related_name="affecting_commits_in_impacts",
+        help_text="Commits introducing this impact.",
+    )
+
+    fixed_by_commits = models.ManyToManyField(
+        "CodeCommit",
+        related_name="fixing_commits_in_impacts",
+        help_text="Commits fixing this impact.",
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
@@ -3373,3 +3385,32 @@ class AdvisoryExploit(models.Model):
     @property
     def get_known_ransomware_campaign_use_type(self):
         return "Known" if self.known_ransomware_campaign_use else "Unknown"
+
+
+class CodeCommit(models.Model):
+    """
+    A CodeCommit Represents a single VCS commit (e.g., Git) related to a ImpactedPackage.
+    """
+
+    commit_hash = models.CharField(max_length=64, help_text="Unique commit identifier (e.g., SHA).")
+    vcs_url = models.URLField(
+        max_length=200, help_text="URL of the repository containing the commit."
+    )
+
+    commit_rank = models.IntegerField(
+        default=0,
+        help_text="Rank of the commit to support ordering by commit. Rank "
+        "zero means the rank has not been defined yet",
+    )
+    commit_author = models.CharField(
+        max_length=100, null=True, blank=True, help_text="Author of the commit."
+    )
+    commit_date = models.DateTimeField(
+        null=True, blank=True, help_text="Timestamp indicating when this commit was created."
+    )
+    commit_message = models.TextField(
+        null=True, blank=True, help_text="Commit message or description."
+    )
+
+    class Meta:
+        unique_together = ("commit_hash", "vcs_url")

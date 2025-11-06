@@ -32,8 +32,9 @@ __version__ = "0.1.0"
 
 """
 Federated data utilities to handle content-defined and hash-addressable Package
-data keyed by PURL stored in many Git repositories. This approach to federate
-decentralized data is called FederatedCode.
+Federated data utilities goal is to handle content-defined and hash-addressable
+Package data keyed by PURL stored in many Git repositories. This approach to
+federate decentralized data is called FederatedCode.
 
 
 Overview
@@ -61,7 +62,8 @@ database.
 PURLs. The directory name PURL-type+hashid
 
 5. Data File: This is a Data File of the DataCluster's Data Kind that is
-stored in subdirectories structured after the PURL components:
+stored in subdirectories structured after the PURL components::
+
    namespace/name/version/qualifiers/subpath:
 
 - Either at the level of a PURL name: namespace/name,
@@ -71,7 +73,7 @@ stored in subdirectories structured after the PURL components:
 A Data File can be for instance a JSON scan results file, or a list of PURLs in
 YAML.
 
-For example, a list of PURLs as a Data Kind  would sored at the name
+For example, a list of PURLs as a Data Kind  would stored at the name
 subdirectory level::
 
     gem-0107/gem/random_password_generator/purls.yml
@@ -131,14 +133,19 @@ from a PURL.
 Object hierarchy
 ----------------
 
-**federation**: defined by its name and a Git repo with a config file with
-clusters configuration for data kind and PURL type parameters, enabling pointing
-to multiple repositories.
-    **cluster**: identified by the data kind name, prefixing its data repos
-        **repo**: data repo (Git) identified by datakind+PURL-type+hashid
-            **directory**: dir in a repo, identified by PURL-type+PURL-hashid
-                **PURL path**: ns/name/version/extra_path derived from the PURL
-                    **datafile**: file storing the data as text JSON/YAML/XML
+- **federation**: defined by its name and a Git repo with a config file with
+  clusters configuration for data kind and PURL type parameters, enabling pointing
+  to multiple repositories
+
+    - **cluster**: identified by the data kind name, prefixing its data repos
+
+        - **repo**: data repo (Git) identified by datakind+PURL-type+hashid
+
+            - **directory**: dir in a repo, identified by PURL-type+PURL-hashid
+
+                - **PURL path**: ns/name/version/extra_path derived from the PURL
+
+                    - **datafile**: file storing the data as text JSON/YAML/XML
 
 Example
 -------
@@ -147,32 +154,34 @@ For instance, in the aboutcode data federation, for a cluster about purl
 versions, we would have:
 
 - data federation definition git repo, with its config file.
-  aboutcode-data/aboutcode-data
-    aboutcode-federation-config.yml
+   - aboutcode-data/aboutcode-data
+      - aboutcode-federation-config.yml
 
 - data cluster repos name prefix is the data kind
-  aboutcode-data/purls
+    - aboutcode-data/purls
 
 - data repository git repo, with a purl sub dir tree and datafile.
   The first repo name has a hash of 0000 which is the first PURL hashid of the
   range of PURL hashid stored in this repo's dirs.
-    aboutcode-data/purls-gem-0000/
+
+    - aboutcode-data/purls-gem-0000/
 
 - data directory, with a purl sub dir tree and datafile. The dir name
   composed of type+hashid.
-    aboutcode-data/purls-gem-0000/gem-0107/
+
+    - aboutcode-data/purls-gem-0000/gem-0107/
 
 - PURL subdirectory, and datafile, here list of PURLs for the gem named rails:
-    aboutcode-data/purls-gem-0000/gem-0107/rails/purls.yml
+    - aboutcode-data/purls-gem-0000/gem-0107/rails/purls.yml
 
 In this example, if the base URL for this cluster is at the aboutcode-data
 GitHub organization, so the URL to the purls.yml datafile is inferred this way
-based on the cluster config:
+based on the cluster config::
 
-https://github.com/
-    aboutcode-data/purls-gem-0000/
-        raw/refs/heads/main/
-            gem-0107/rails/purls.yml
+    https://github.com/
+        aboutcode-data/purls-gem-0000/
+            raw/refs/heads/main/
+                gem-0107/rails/purls.yml
 
 
 More Design details
@@ -290,19 +299,23 @@ number of directory per Git repo and the volume of data we would store in each
 using these starting values:
 
 1. For super large ecosystems (with ~5M packages):
+
 - one dir per repo, yielding 1,024 repos
 - github, npm
 
 2. For large ecosystems (with ~500K packages)
+
 - eight dirs per repo, yielding 128 repos
 - golang, maven, nuget, perl, php, pypi, ruby, huggingface
 
 3. For medium ecosystems (with ~50K packages)
+
 - 32 dirs per repo, yielding 32 Git repositories
 - alpm, bitbucket, cocoapods, composer, deb, docker, gem, generic,
   mlflow, pub, rpm, cargo
 
 4. For small ecosystem (with ~2K packages)
+
 - 1,024 directories in one git repository
 - all others
 
@@ -321,7 +334,7 @@ See also original post on the approach:
 
 
 Rebalancing and splitting a DataCluster repos
-------------------------------------------
+------------------------------------------------
 
 We can rebalance a cluster, like when we first store the data in a cluster with
 a single Git repository for a given PURL type, and later split this repo to more
@@ -365,6 +378,7 @@ It is also possible to change the PURL hashid range for a DataCluster, say going
 from 1024 to 2049, 4096 or 8192. This would imply moving all the files around
 are the directory structure would change from the new hashids. This is likely
 to be an exceptional operation.
+
 """
 
 PACKAGE_REPOS_NAME_PREFIX = "aboutcode-packages"

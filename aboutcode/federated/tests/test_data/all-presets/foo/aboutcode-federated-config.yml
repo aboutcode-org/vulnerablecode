@@ -1,0 +1,1034 @@
+name: foo
+remote_root_url:
+description:
+documentation_url:
+data_license:
+data_maintainers: []
+data_clusters:
+  - data_kind: api_package_metadata
+    datafile_path_template:
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: Raw API response datafiles for a package (ignoring versions). Each datafile
+      path and schema is PURL type-specific and not documented here.
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: api_package_version_responses
+    datafile_path_template:
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: Raw API response datafiles for a package versions. Each datafile path and schema
+      is PURL type-specific and not documented here.
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: atom_slices
+    datafile_path_template: '{/namespace}/{name}/{version}/atom.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: Atom slices for each package version
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: atom_vulnerable_slices
+    datafile_path_template: '{/namespace}/{name}/{version}/atom-vulnerable.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: Atom vulnerable_slices for each vulnerable package version
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: cyclonedx14_sboms
+    datafile_path_template: '{/namespace}/{name}/{version}/cyclonedx-14.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: CycloneDX v1.4 sboms for each package version
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: cyclonedx15_sboms
+    datafile_path_template: '{/namespace}/{name}/{version}/cyclonedx-15.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: CycloneDX v1.5 sboms for each package version
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: cyclonedx16_sboms
+    datafile_path_template: '{/namespace}/{name}/{version}/cyclonedx-16.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: CycloneDX v1.6 sboms for each package version
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: openssf_security_scorecards
+    datafile_path_template: '{/namespace}/{name}/security_scorecard.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 256
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 256
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 32
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 32
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 32
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 32
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 32
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 32
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 32
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 8
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: OpenSSf security_scorecards for package
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: purldb
+    datafile_path_template: '{/namespace}/{name}/{version}/purldb.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: PurlDB normalized metadata datafiles for each package versions. Does not include
+      fingerprints and symbols.
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: purls
+    datafile_path_template: '{/namespace}/{name}/purls.yml'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 4
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: List of fully qualified PURL strings for a package, sorted by version.
+    documentation_url: https://github.com/package-url/purl-spec/
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: scancode_fingerprints
+    datafile_path_template: '{/namespace}/{name}/{version}/scancode-fingerprints.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: scancode_fingerprints for each package version.
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: scancode_toolkit_scans
+    datafile_path_template: '{/namespace}/{name}/{version}/scancode-toolkit.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: scancode toolkit scans for each package version.
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: security_advisories
+    datafile_path_template: '{/namespace}/{name}/{version}/advisories.json'
+    purl_type_configs:
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: VulnerableCode security advisories for each package version.
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: spdx2_sboms
+    datafile_path_template: '{/namespace}/{name}/{version}/spdx-2.json'
+    purl_type_configs:
+      - purl_type: github
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: npm
+        number_of_repos: 1024
+        number_of_dirs: 1024
+      - purl_type: golang
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: maven
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: nuget
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: perl
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: php
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: pypi
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: ruby
+        number_of_repos: 128
+        number_of_dirs: 1024
+      - purl_type: alpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: bitbucket
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cargo
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: cocoapods
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: composer
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: deb
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: docker
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: gem
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: generic
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: huggingface
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: mlflow
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: pub
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: rpm
+        number_of_repos: 16
+        number_of_dirs: 1024
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: SPDX version 2.x sboms for each package version
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []
+  - data_kind: vulnerabilities
+    datafile_path_template: '{/namespace}/{name}/vulnerabilities.json'
+    purl_type_configs:
+      - purl_type: default
+        number_of_repos: 1
+        number_of_dirs: 1024
+    data_schema_url:
+    description: VulnerableCode vulnerabilities for each package. Also includes a separate vulnerabilities
+      directory/
+    documentation_url:
+    data_license: CC-BY-4.0
+    data_maintainers: []

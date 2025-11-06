@@ -6,6 +6,8 @@
 # See https://aboutcode.org for more information about our open source projects.
 #
 
+from pathlib import Path
+
 import pytest
 import requests
 from packageurl import PackageURL
@@ -19,11 +21,17 @@ from aboutcode.federated import GitRepo
 from aboutcode.federated import PurlTypeConfig
 from aboutcode.federated import as_purl
 from aboutcode.federated import build_direct_federation_config_file_url
+from aboutcode.federated import cluster_preset
 from aboutcode.federated import compute_purl_hash
 from aboutcode.federated import get_core_purl
 from aboutcode.federated import is_valid_power_of_two
 from aboutcode.federated import package_path_elements
 from aboutcode.federated import percent_quote_more
+from pickle import FALSE
+
+TEST_DATA = Path(__file__).parent / "test_data"
+
+REGEN =False
 
 
 def test_DataFederation_from_dict_and_to_dict(tmp_path):
@@ -56,7 +64,7 @@ def test_DataFederation_remote_config_file_url():
     url = DataFederation.remote_config_file_url(
         remote_root_url="https://github.com/org", federation_name="fed"
     )
-    assert url == "https://github.com/org/fed/raw/refs/heads/aboutcode-federated-config.yml"
+    assert url == "https://github.com/org/fed/raw/refs/heads/main/aboutcode-federated-config.yml"
 
 
 def test_DataFederation_load(tmp_path):
@@ -72,6 +80,7 @@ def test_DataFederation_load(tmp_path):
 
 
 def test_DataFederation_from_url(monkeypatch):
+
     class Response:
         ok = True
         text = "name: fed\n" "remote_root_url: https://github.com/org\n"
@@ -155,10 +164,11 @@ def test_build_direct_federation_config_file_url():
     url = build_direct_federation_config_file_url(
         remote_root_url="https://github.com/aboutcode-data",
         federation_name="aboutcode-data",
+        config_filename="aboutcode-federated-config.yml",
     )
     assert (
         url
-        == "https://github.com/aboutcode-data/aboutcode-data/raw/refs/heads/aboutcode-federated-config.yml"
+        == "https://github.com/aboutcode-data/aboutcode-data/raw/refs/heads/main/aboutcode-federated-config.yml"
     )
 
 
@@ -269,3 +279,13 @@ PURLS_AND_HASHES = [
 def test_purl_hash(purl, purl_hash):
     result_hash, *_ = package_path_elements(purl)
     assert result_hash == purl_hash
+
+
+def test_federation_with_all_cluster_preset():
+    df = DataFederation(name="foo", data_clusters=sorted(cluster_preset().values()))
+    local_root_dir = TEST_DATA / "all-presets"
+    if False:
+        df.local_root_dir = local_root_dir
+        df.dump() 
+    df2 = DataFederation.load(name="foo", local_root_dir=local_root_dir)
+    assert df.to_dict() == df2.to_dict()

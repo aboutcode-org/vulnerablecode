@@ -2,7 +2,7 @@ aboutcode.federated
 ===================
 
 This is a library of utilities to compute ids and file paths for AboutCode
-federated data.
+federated data based on Package URL
 
 License
 -------

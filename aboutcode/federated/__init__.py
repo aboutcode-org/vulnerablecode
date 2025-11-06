@@ -11,11 +11,14 @@ from dataclasses import dataclass
 from dataclasses import field as datafield
 from hashlib import sha256
 from pathlib import Path
+from pathlib import PurePosixPath
 from typing import Any
 from typing import Iterable
 from typing import Optional
 from typing import Union
 from urllib.parse import quote
+from urllib.parse import urljoin
+from urllib.parse import urlsplit
 
 import requests
 import saneyaml
@@ -354,7 +357,6 @@ We may need to keep the old and new Clusters around too, and may need to add a
 simple DataCluster version suffix in Cluter names, and a way to redirect from an
 old frozen, inactive DataCluster to a new rebalanced one.
 
-
 It may even be possible to continue writing to a cluster as long as writing is
 done in two places until the split is completed. In practice split should be
 reasonbly rare and reasonably fast, making this a lesser issue.
@@ -418,15 +420,31 @@ class DataFederation:
     local_root_dir: Path = None
     # root URL for all Git repos for this federation
     remote_root_url: str = None
-    description: Optional[str] = datafield(default=None)
-    documentation_url: Optional[str] = datafield(default=None)
+    description: Optional[str] = datafield(default="")
+    documentation_url: Optional[str] = datafield(default="")
     # SPDX license expression
-    data_license: Optional[str] = datafield(default=None)
+    data_license: Optional[str] = datafield(default="")
     data_maintainers: list["DataMaintainer"] = datafield(default_factory=list)
 
     # List of DataCluster objects
     # Each cluster is for a single, unique data kind in a federation.
     data_clusters: list["DataCluster"] = datafield(default_factory=list, repr=False)
+
+    _data_clusters_by_data_kind: dict[str, "DataCluster"] = datafield(
+        default_factory=dict, repr=False, init=False
+    )
+
+    def __post_init__(self):
+        self.populate_clusters()
+
+    def populate_clusters(self):
+        self._data_clusters_by_data_kind = {
+            cluster.data_kind: cluster for cluster in self.data_clusters
+        }
+
+    def add_cluster(self, cluster):
+        self._data_clusters_by_data_kind[cluster.data_kind] = cluster
+        self.data_clusters = list(self._data_clusters_by_data_kind.values())
 
     @property
     def local_config_dir(self):
@@ -447,10 +465,14 @@ class DataFederation:
         return build_direct_federation_config_file_url(
             remote_root_url=remote_root_url,
             federation_name=federation_name,
+            config_filename=cls.CONFIG_FILENAME,
         )
 
     @property
     def config_repo(self) -> "GitRepo":
+        """
+        Return the GitRepo that contains the configuration for this federation.
+        """
         return GitRepo(
             name=self.name,
             local_root_dir=self.local_root_dir,
@@ -475,7 +497,7 @@ class DataFederation:
 
         data_clusters = data.get("data_clusters") or []
 
-        data_kinds = sorted(c.data_kind for c in data_clusters)
+        data_kinds = sorted(c["data_kind"] for c in data_clusters)
         if data_kinds != sorted(set(data_kinds)):
             raise TypeError(f"Duplicated data kinds: {data_kinds}")
 
@@ -499,7 +521,7 @@ class DataFederation:
     def load(cls, name: str, local_root_dir: Path, remote_root_url: str = None) -> "DataFederation":
         """
         Return an existing DataFederation loaded from ``local_root_dir`` using
-        the existing configuration file.
+        the existing configuration file at its conventional location.
         """
         lrd = Path(local_root_dir).resolve()
         lcf = lrd / name / cls.CONFIG_FILENAME
@@ -523,6 +545,7 @@ class DataFederation:
         rcf_url = build_direct_federation_config_file_url(
             remote_root_url=remote_root_url,
             federation_name=name,
+            config_filename=cls.CONFIG_FILENAME,
         )
         headers = {"User-Agent": "AboutCode/FederatedCode"}
         response = requests.get(url=rcf_url, headers=headers)
@@ -581,7 +604,7 @@ class DataFederation:
         """
         Write federation configuration file as YAML.
         """
-        if not (lrd := self.self.local_root_dir):
+        if not (lrd := self.local_root_dir):
             raise ValueError(f"Cannot dump without a local_root_dir : {lrd!r}")
         Path(self.local_config_file).write_text(self.to_yaml())
 
@@ -591,13 +614,18 @@ class DataFederation:
         Initialize a new DataFederation in local_root_dir. Fetch the remote
         config repo if remote_root_url is provided and the repo exists there.
         """
-        raise NotImplementedError()
         local_root_dir = Path(local_root_dir).resolve()
         local_config_repo_dir = local_root_dir / name
+        # create dir if needed
+        # or check if this is a git repo?
+        # if not init git repo
+        # create basic config and save that in the config file
         if remote_root_url:
             # TODO: clone or sync? repo in local_config_repo_dir
             # raise NotImplementedError("remote_repo_url is not yet supported.")
             pass
+
+        raise NotImplementedError()
 
     def git_init(self):
         """
@@ -612,19 +640,20 @@ class DataFederation:
         Return the root, seed DataFederation from AboutCode, bootstrapping in
         local_root_dir.
         """
-        raise NotImplementedError()
-
         return DataFederation.init(
             name=cls.ABCD_FED_NAME,
             local_root_dir=local_root_dir,
             remote_root_url=cls.ABCD_FED_ROOT_URL,
         )
 
-    def add_cluster(self, data_kind: str, purl_types: list["PurlTypeConfig"]):
-        raise NotImplementedError()
+    def get_cluster(self, data_kind: str) -> "DataCluster":
+        """
+        Return a DataCluster for this data kind or None.
+        """
+        return self._data_clusters_by_data_kind.get(data_kind)
 
 
-@dataclass
+@dataclass(order=True)
 class DataCluster:
     """
     AboutCode Federation DataCluster.
@@ -655,34 +684,48 @@ class DataCluster:
     )
 
     # JSON or XML schema URL for the file format of this data kind if available
-    data_schema_url: Optional[str] = datafield(default=None)
+    data_schema_url: Optional[str] = datafield(default="")
 
     # description of the data kind format, and description of how this data kind
     # is created: which tool, option, etc for instance, a short description of a
     # tool and the tool options, like a scancode toolkit command line option, or
     # the URL to an API whe we fetch API data
-    description: Optional[str] = datafield(default=None)
+    description: Optional[str] = datafield(default="")
 
-    documentation_url: Optional[str] = datafield(default=None)
+    documentation_url: Optional[str] = datafield(default="")
 
     # SPDX license expression
-    data_license: Optional[str] = datafield(default=None)
+    data_license: Optional[str] = datafield(default="")
 
     data_maintainers: list["DataMaintainer"] = datafield(default_factory=list)
 
     # mapping of {purl_type: DataRepository} for the repos stored in this data
     # cluster. This is auto populated and not serialized in the config file.
-    data_repositories_by_purl_type: dict[str, "DataRepository"] = datafield(
+    _data_repositories_by_purl_type: dict[str, "DataRepository"] = datafield(
         default_factory=dict,
         init=False,
         repr=False,
     )
 
+    def __post_init__(self):
+        self.populate_repos()
+
+    def populate_repos(self):
+        """
+        Populate the DataRepository for this DataCluster data kind and PurlTypeConfig.
+        """
+        kind = self.data_kind
+        drbpt = self._data_repositories_by_purl_type
+
+        for ptc in self.purl_type_configs:
+            for repo in ptc.get_repos(data_kind=kind):
+                drbpt[ptc.purl_type] = repo
+
     @classmethod
     def from_dict(cls, data: dict) -> "DataCluster":
         ptcs = [PurlTypeConfig(**pt) for pt in data.get("purl_type_configs", [])]
 
-        ptypes = sorted(pt.t for pt in ptcs)
+        ptypes = sorted(pt.purl_type for pt in ptcs)
         if ptypes != sorted(set(ptypes)):
             raise ValueError(f"Duplicate purl types: {ptypes!r}")
 
@@ -694,7 +737,7 @@ class DataCluster:
 
         return cls(
             data_kind=data["data_kind"],
-            datafile_path_template=data["datafile_path_template"],
+            datafile_path_template=data.get("datafile_path_template"),
             purl_type_configs=ptcs,
             data_schema_url=data.get("data_schema_url"),
             description=data.get("description"),
@@ -706,7 +749,7 @@ class DataCluster:
     def to_dict(self):
         return dict(
             data_kind=self.data_kind,
-            data_file_path_template=self.datafile_path_template,
+            datafile_path_template=self.datafile_path_template,
             purl_type_configs=[pt.to_dict() for pt in self.purl_type_configs],
             data_schema_url=self.data_schema_url,
             description=self.description,
@@ -715,25 +758,35 @@ class DataCluster:
             data_maintainers=[m.to_dict() for m in self.data_maintainers],
         )
 
-    def __post_init__(self):
-        self.populate_repos()
-
-    def populate_repos(self):
-        """
-        Populate the DataRepository for this DataCluster data kind and PurlTypeConfig.
-        """
-        kind = self.data_kind
-        drbpt = self.data_repositories_by_purl_type
-
-        for ptc in self.purl_type_configs:
-            for repo in ptc.get_repos(data_kind=kind):
-                drbpt[ptc.purl_type] = repo
-
     def split_cluster(self, number_of_repos, number_of_dirs):
         """
         Split the repositories of a cluster in more repositories and directories
         """
         raise NotImplementedError()
+
+    def get_datafile_download_url(self, purl: Union[str, PackageURL]) -> str:
+        """
+        Return the direct download URL to the data file of the data kind stored
+        in this cluster given a PURL.
+        """
+        purl = as_purl(purl)
+        # FIXME: create as member
+        purl_type_config_by_type = {ptc.purl_type: ptc for ptc in self.purl_type_configs}
+        purl_type_config = purl_type_config_by_type(purl.type, self.default_config())
+
+        ppe = package_path_elements(purl, max_value=purl_type_config.number_of_dirs)
+        purl_hash, core_path, version, extra_path = ppe
+
+        direct_url = None
+        # construct a path based on path template
+        # construct a URL
+        return direct_url
+
+    def get_datafile_local_path(self, purl: Union[str, PackageURL]) -> str:
+        """
+        Return the direct download URL to the data file of the data kind stored
+        in this cluster given a PURL.
+        """
 
 
 @dataclass
@@ -764,6 +817,9 @@ class PurlTypeConfig:
         )
 
     def __post_init__(self):
+        self.number_of_repos = int(self.number_of_repos)
+        self.number_of_dirs = int(self.number_of_dirs)
+
         if not self.number_of_dirs or self.number_of_dirs > self.MAX_NUMBER_OF_DIRS:
             raise TypeError(
                 f"number_of_dirs {self.number_of_dirs!r} "
@@ -970,7 +1026,7 @@ def cluster_preset():
             description="List of fully qualified PURL strings for a package, sorted by version.",
             datafile_path_template="{/namespace}/{name}/purls.yml",
             purl_type_configs=PurlTypeConfig.small_size_configs(),
-            data_schema_url=None,
+            data_schema_url="",
             documentation_url="https://github.com/package-url/purl-spec/",
             data_license="CC-BY-4.0",
         ),
@@ -980,10 +1036,10 @@ def cluster_preset():
             "Each datafile path and schema is PURL type-specific "
             "and not documented here.",
             # FIXME: a POM is in XML, some metadata files may be code
-            datafile_path_template=None,
+            datafile_path_template="",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -992,29 +1048,31 @@ def cluster_preset():
             "Each datafile path and schema is PURL type-specific "
             "and not documented here.",
             # FIXME: a POM is in XML, some metadata files may be code
-            datafile_path_template=None,
+            datafile_path_template="",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
             data_kind="purldb",
-            description="PurlDB normalized metadata datafiles for each package versions. Does not include fingerprints and symbols.",
+            description="PurlDB normalized metadata datafiles for each package "
+            "versions. Does not include fingerprints and symbols.",
             datafile_path_template="{/namespace}/{name}/{version}/purldb.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         # legacy, moving to advisories instead
         DataCluster(
             data_kind="vulnerabilities",
-            description="VulnerableCode vulnerabilities for each package. Also includes a separate vulnerabilities directory/",
+            description="VulnerableCode vulnerabilities for each package. "
+            "Also includes a separate vulnerabilities directory/",
             datafile_path_template="{/namespace}/{name}/vulnerabilities.json",
             purl_type_configs=[PurlTypeConfig.default_config()],
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1022,8 +1080,8 @@ def cluster_preset():
             description="VulnerableCode security advisories for each package version.",
             datafile_path_template="{/namespace}/{name}/{version}/advisories.json",
             purl_type_configs=[PurlTypeConfig.default_config()],
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1031,8 +1089,8 @@ def cluster_preset():
             description="scancode toolkit scans for each package version.",
             datafile_path_template="{/namespace}/{name}/{version}/scancode-toolkit.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1040,8 +1098,8 @@ def cluster_preset():
             description="scancode_fingerprints for each package version.",
             datafile_path_template="{/namespace}/{name}/{version}/scancode-fingerprints.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1049,8 +1107,8 @@ def cluster_preset():
             description="CycloneDX v1.4 sboms for each package version",
             datafile_path_template="{/namespace}/{name}/{version}/cyclonedx-14.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1058,8 +1116,8 @@ def cluster_preset():
             description="CycloneDX v1.5 sboms for each package version",
             datafile_path_template="{/namespace}/{name}/{version}/cyclonedx-15.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1067,8 +1125,8 @@ def cluster_preset():
             description="CycloneDX v1.6 sboms for each package version",
             datafile_path_template="{/namespace}/{name}/{version}/cyclonedx-16.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1076,8 +1134,8 @@ def cluster_preset():
             description="SPDX version 2.x sboms for each package version",
             datafile_path_template="{/namespace}/{name}/{version}/spdx-2.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1085,8 +1143,8 @@ def cluster_preset():
             description="Atom slices for each package version",
             datafile_path_template="{/namespace}/{name}/{version}/atom.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1095,8 +1153,8 @@ def cluster_preset():
             # FIXME: need to qualify these with an advisory / CVE?
             datafile_path_template="{/namespace}/{name}/{version}/atom-vulnerable.json",
             purl_type_configs=PurlTypeConfig.large_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
         DataCluster(
@@ -1105,8 +1163,8 @@ def cluster_preset():
             # FIXME: need to qualify these with an advisory / CVE?
             datafile_path_template="{/namespace}/{name}/security_scorecard.json",
             purl_type_configs=PurlTypeConfig.medium_size_configs(),
-            data_schema_url=None,
-            documentation_url=None,
+            data_schema_url="",
+            documentation_url="",
             data_license="CC-BY-4.0",
         ),
     ]
@@ -1242,72 +1300,81 @@ class GitRepo:
         raise NotImplementedError()
 
 
-def build_direct_federation_config_file_url(remote_root_url, federation_name):
-    # TODO: we could do a better job at parsing
-    server, _, org = remote_root_url.strip("/").rpartition("/")
-    repo = federation_name
-    path = DataFederation.CONFIG_FILENAME
-
-    builder = builder_by_server[server]
-    return builder(
-        org=org,
-        repo=repo,
-        path=path,
+def build_direct_federation_config_file_url(
+    remote_root_url: str,
+    federation_name: str,
+    config_filename: str,
+):
+    """
+    Return the URL to download a remote config file for a federation
+    """
+    return build_raw_download_url(
+        root_url=remote_root_url,
+        repo=federation_name,
+        path=config_filename,
         branch="main",
-        server=server,
     )
 
 
-def build_direct_github_url(org, repo, path, branch="main", server="https://github.com"):
+def build_raw_download_url(
+    root_url: str,
+    repo: str,
+    path: str,
+    branch: str = "main",
+    builder=None,
+):
+    """
+    Return a direct access raw URL to a file in a know public repo.
+    """
+    _scheme, server, _path, _query, _fragment = urlsplit(root_url)
+    if not builder:
+        git_url_builder_by_server = {
+            "github.com": build_raw_download_url_github,
+            "gitlab.com": build_raw_download_url_gitlab,
+            "codeberg.org": build_raw_download_url_codeberg,
+        }
+        builder = git_url_builder_by_server[server]
+
+    return builder(root_url=root_url, repo=repo, path=path, branch=branch)
+
+
+def build_raw_download_url_github(
+    root_url: str,
+    repo: str,
+    path: str,
+    branch: str = "main",
+):
     """
     Return a direct access raw URL to a file in a github repo.
     """
     # NB: an alternative could be
     # https://raw.githubusercontent.com/{org}/{repo}/refs/heads/main/{path}
-    path = uritemplate.expand(
-        "{org}{/repo}/raw/refs/heads{/branch}{/path}",
-        server=server,
-        org=org,
-        repo=repo,
-        path=path,
-    )
-    return f"{server}/{path}"
+    return "/".join([root_url, repo, "raw/refs/heads", branch, path])
 
 
-def build_direct_gitlab_url(org, repo, path, branch="master", server="https://gitlab.com"):
+def build_raw_download_url_gitlab(
+    root_url: str,
+    repo: str,
+    path: str,
+    branch: str = "main",
+):
     """
     Return a direct access raw URL to a file in a gitlab repo.
     """
     # note that the org can be multiple path segments
-    return uritemplate.expand(
-        "{server}/{org}/{repo}/-/raw/{branch}/{path}",
-        server=server,
-        org=org,
-        repo=repo,
-        branch=branch,
-        path=path,
-    )
+    return "/".join([root_url, repo, "-/raw", branch, path])
 
 
-def build_direct_codeberg_url(org, repo, path, branch="master", server="https://codeberg.org"):
+def build_raw_download_url_codeberg(
+    root_url: str,
+    repo: str,
+    path: str,
+    branch: str = "main",
+):
     """
     Return a direct access raw URL to a file in a codeberg repo.
     """
-    return uritemplate.expand(
-        "{server}/{org}/{repo}/raw/branch/{branch}/{path}",
-        server=server,
-        org=org,
-        repo=repo,
-        branch=branch,
-        path=path,
-    )
-
-
-builder_by_server = {
-    "https://github.com": build_direct_github_url,
-    "https://gitlab.com": build_direct_gitlab_url,
-    "https://codeberg.org": build_direct_codeberg_url,
-}
+    return "/".join([root_url, repo, "raw/branch", branch, path])
 
 
 def compute_purl_hash(purl: Union[PackageURL, str], max_value: int = 1024) -> str:
@@ -1398,7 +1465,7 @@ def is_valid_power_of_two(n: int, max_value: int = 1024):
     Return True if ``n`` is a power of two between 1 and ``max_value``.
     Use bit manipulations.
 
-    See https://stackoverflow.com/questions/57025836/how-to-check-if-a-given-number-is-a-power-of-two
+    See https://stackoverflow.com/questions/57025836
     """
     return n > 0 and n <= max_value and (n & (n - 1) == 0)
 

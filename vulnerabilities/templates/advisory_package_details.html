@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+{% load static %}
+{% load show_cvss %}
+{% load url_filters %}
+
+{% block title %}
+VulnerableCode Advisory Package Details - {{ advisoryv2.advisory_id }}
+{% endblock %}
+
+{% block content %}
+
+{% if advisoryv2 %}
+    <section class="section pt-0">
+        <div class="details-container">
+            <article class="panel is-info panel-header-only">
+                <div class="panel-heading py-2 is-size-6">
+                    Vulnerable and Fixing Package details for Advisory:
+                    <span class="tag is-white custom">
+                        {{ advisoryv2.advisory_id }}
+                    </span>
+                </div>
+            </article>
+                <div id="tab-content">
+                    <table class="table vcio-table width-100-pct mt-2">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Affected</th>
+                                <th>Fixed by</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for impact in advisoryv2.impacted_packages.all %}
+                                <tr>
+                                    <td>
+                                        {% for package in impact.affecting_packages.all %}
+                                            <a href="{{ package.get_absolute_url }}?search={{ package.purl }}" target="_self">{{ package.purl }}</a>
+                                            <br />
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for package in impact.fixed_by_packages.all %}
+                                            <a href="{{ package.get_absolute_url }}?search={{ package.purl }}" target="_self">{{ package.purl }}</a>
+                                            <br />
+                                        {% empty %}
+                                            <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="2">
+                                        This vulnerability is not known to affect any packages.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </section>
+{% endif %}
+
+<script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
+
+{% endblock %}

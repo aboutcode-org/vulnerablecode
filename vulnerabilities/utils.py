@@ -39,7 +39,7 @@ from univers.version_range import AlpineLinuxVersionRange
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
-from aboutcode.hashid import build_vcid  # NOQA
+from aboutcode.hashid import build_vcid
 
 logger = logging.getLogger(__name__)
 
@@ -249,6 +249,11 @@ def fetch_github_graphql_query(graphql_query: dict):
 
     response = _get_gh_response(gh_token=gh_token, graphql_query=graphql_query)
 
+    if not response:
+        msg = "No response received from GitHub API."
+        logger.error(msg)
+        raise GraphQLError(msg)
+
     message = response.get("message")
     if message and message == "Bad credentials":
         raise GitHubTokenError(f"Invalid GitHub token: {message}")
@@ -266,7 +271,10 @@ def _get_gh_response(gh_token, graphql_query):
     """
     endpoint = "https://api.github.com/graphql"
     headers = {"Authorization": f"bearer {gh_token}"}
-    return requests.post(endpoint, headers=headers, json=graphql_query).json()
+    try:
+        return requests.post(endpoint, headers=headers, json=graphql_query).json()
+    except Exception as e:
+        logger.error(f"Failed to fetch data from GitHub GraphQL API: {e}")
 
 
 def dedupe(original: List) -> List:
@@ -287,9 +295,10 @@ def get_affected_packages_by_patched_package(
     """
     affected_packages_by_patched_package = defaultdict(list)
     for package in affected_packages:
-        affected_packages_by_patched_package[package.patched_package].append(
-            package.vulnerable_package
-        )
+        if package.vulnerable_package:
+            affected_packages_by_patched_package[package.patched_package].append(
+                package.vulnerable_package
+            )
     return affected_packages_by_patched_package
 
 
@@ -610,20 +619,62 @@ def compute_content_id(advisory_data):
         normalized_data["url"] = advisory_data.url
 
     elif isinstance(advisory_data, AdvisoryData):
-        normalized_data = {
-            "aliases": normalize_list(advisory_data.aliases),
-            "summary": normalize_text(advisory_data.summary),
-            "affected_packages": [
-                pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
-            ],
-            "references": [
-                ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
-            ],
-            "weaknesses": normalize_list(advisory_data.weaknesses),
-        }
+        if advisory_data.references_v2:
+            normalized_data = {
+                "aliases": normalize_list(advisory_data.aliases),
+                "summary": normalize_text(advisory_data.summary),
+                "affected_packages": [
+                    pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+                ],
+                "references": [
+                    ref.to_dict() for ref in normalize_list(advisory_data.references_v2) if ref
+                ],
+                "severities": [
+                    sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev
+                ],
+                "weaknesses": normalize_list(advisory_data.weaknesses),
+            }
+        elif advisory_data.references or advisory_data.references == []:
+            normalized_data = {
+                "aliases": normalize_list(advisory_data.aliases),
+                "summary": normalize_text(advisory_data.summary),
+                "affected_packages": [
+                    pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+                ],
+                "references": [
+                    ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
+                ],
+                "weaknesses": normalize_list(advisory_data.weaknesses),
+            }
+
         normalized_data["url"] = advisory_data.url
 
     normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
     content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
 
     return content_id
+
+
+def create_registry(pipelines):
+    """
+    Return a mapping of {pipeline ID: pipeline class} for a list of pipelines.
+    """
+    from vulnerabilities.pipelines import VulnerableCodePipeline
+
+    registry = {}
+    for pipeline in pipelines:
+        if issubclass(pipeline, VulnerableCodePipeline):
+            key = pipeline.pipeline_id
+        else:
+            # For everything legacy use qualified_name
+            key = pipeline.qualified_name
+
+        if not key:
+            raise Exception(f"Pipeline ID can not be empty: {pipeline!r}")
+
+        if key in registry:
+            raise Exception(f"Duplicate pipeline found: {key}")
+
+        registry[key] = pipeline
+
+    return registry

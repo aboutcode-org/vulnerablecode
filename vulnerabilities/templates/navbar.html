@@ -1,15 +1,17 @@
+{% load utils %}
+
 <nav class="navbar is-dark mb-5 border-bottom-radius" role="navigation" aria-label="main navigation">
     <div class="navbar-brand ml-3">
-        <a class="navbar-item is-size-4 has-text-weight-bold" href="/">
+        <a class="navbar-item is-size-4 has-text-weight-bold {% active_item 'home' %}" href="{% url 'home' %}">
             VulnerableCode<span class="nexb-orange">.</span>io
         </a>
     </div>
     <div class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item" href="{% url 'package_search' %}">
+            <a class="navbar-item {% active_item 'package_search' %}" href="{% url 'package_search' %}">
                 Packages
             </a>
-            <a class="navbar-item" href="{% url 'vulnerability_search' %}">
+            <a class="navbar-item {% active_item 'vulnerability_search' %}" href="{% url 'vulnerability_search' %}">
                 Vulnerabilities
             </a>
             <a class="navbar-item" href="https://vulnerablecode.readthedocs.io/en/latest/" target="_blank">
@@ -18,7 +20,10 @@
         </div>
     </div>
     <div class="navbar-end mr-3">
-        <a class="navbar-item" href="{% url 'api_user_request' %}" target="_blank">
+        <a class="navbar-item  {% active_item 'dashboard' %}" href="{% url 'dashboard' %}">
+            Pipeline Dashboard
+        </a>
+        <a class="navbar-item {% active_item 'api_user_request' %}" href="{% url 'api_user_request' %}" target="_blank">
             API
         </a>
         <div class="navbar-item navbar-item is-cursor-help">

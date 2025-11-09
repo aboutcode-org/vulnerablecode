@@ -8,9 +8,9 @@
 #
 
 from django import forms
+from django.contrib.admin.forms import AdminAuthenticationForm
 from django.core.validators import validate_email
-from django_recaptcha.fields import ReCaptchaField
-from django_recaptcha.widgets import ReCaptchaV2Checkbox
+from django_altcha import AltchaField
 
 from vulnerabilities.models import ApiUser
 
@@ -35,14 +35,18 @@ class VulnerabilitySearchForm(forms.Form):
     )
 
 
-class ApiUserCreationForm(forms.ModelForm):
-    """
-    Support a simplified creation for API-only users directly from the UI.
-    """
+class AdvisorySearchForm(forms.Form):
 
-    captcha = ReCaptchaField(
-        error_messages={"required": ("Captcha is required")}, widget=ReCaptchaV2Checkbox
+    search = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Advisory id or alias such as CVE or GHSA"}),
     )
+
+
+class ApiUserCreationForm(forms.ModelForm):
+    """Support a simplified creation for API-only users directly from the UI."""
+
+    captcha = AltchaField(floating=True, hidefooter=True)
 
     class Meta:
         model = ApiUser
@@ -58,18 +62,15 @@ class ApiUserCreationForm(forms.ModelForm):
         first_name_field = self.fields["first_name"]
         last_name_field = self.fields["last_name"]
         email_field.required = True
-        email_field.label = "Email"
         email_field.widget.attrs["class"] = "input"
-        email_field.widget.attrs["style"] = "width: 50%"
-        email_field.widget.attrs["placeholder"] = "foo@bar.com"
-        first_name_field.label = "First Name"
+        email_field.widget.attrs["placeholder"] = "Email"
         first_name_field.widget.attrs["class"] = "input"
-        first_name_field.widget.attrs["style"] = "width: 50%"
-        first_name_field.widget.attrs["placeholder"] = "Jon"
-        last_name_field.label = "Last Name"
+        first_name_field.widget.attrs["placeholder"] = "First Name"
         last_name_field.widget.attrs["class"] = "input"
-        last_name_field.widget.attrs["style"] = "width: 50%"
-        last_name_field.widget.attrs["placeholder"] = "Doe"
+        last_name_field.widget.attrs["placeholder"] = "Last Name"
+        email_field.label = ""
+        first_name_field.label = ""
+        last_name_field.label = ""
 
     def save(self, commit=True):
         return ApiUser.objects.create_api_user(
@@ -85,3 +86,20 @@ class ApiUserCreationForm(forms.ModelForm):
 
     def save_m2m(self):
         pass
+
+
+class PipelineSchedulePackageForm(forms.Form):
+    search = forms.CharField(
+        required=True,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search a pipeline...",
+                "class": "input ",
+            },
+        ),
+    )
+
+
+class AdminLoginForm(AdminAuthenticationForm):
+    captcha = AltchaField(floating=True, hidefooter=True)

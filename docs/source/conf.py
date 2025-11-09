@@ -38,6 +38,8 @@ linkcheck_ignore = [
     "https://example.org/api/non-existent-packages",
     "https://github.com/aboutcode-org/vulnerablecode/pull/495/commits",
     "https://nvd.nist.gov/products/cpe",
+    "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml",
+    "http://ftp.suse.com/pub/projects/security/yaml/",
 ]
 
 # Add any Sphinx extension module names here, as strings. They can be

@@ -47,7 +47,7 @@ jobs:
     name: Create GH release
     needs:
       - build-pypi-distribs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Download built archives
@@ -67,7 +67,7 @@ jobs:
     name: Create PyPI release
     needs:
       - create-gh-release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Download built archives

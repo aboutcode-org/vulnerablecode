@@ -1,6 +1,51 @@
 Release notes
 =============
 
+Version v37.0.0
+---------------------
+
+- This is a major version, this version introduces Advisory level details
+  https://github.com/aboutcode-org/vulnerablecode/issues/1796
+  https://github.com/aboutcode-org/vulnerablecode/issues/1393
+  https://github.com/aboutcode-org/vulnerablecode/issues/1883
+  https://github.com/aboutcode-org/vulnerablecode/issues/1882
+  https://github.com/aboutcode-org/vulnerablecode/pull/1866
+- We have added new models AdvisoryV2, AdvisoryAlias, AdvisoryReference, AdvisorySeverity, AdvisoryWeakness, PackageV2 and CodeFixV2.
+- We are using ``avid`` as an internal advisory ID for uniquely identifying advisories.
+- We have a new route ``/v2`` which only support package search which has information on packages that are reported to be affected or fixing by advisories.
+- This version introduces ``/api/v2/advisories-packages`` which has information on packages that are reported to be affected or fixing by advisories.
+- Pipeline Dashboard improvements #1920.
+- Throttle API requests based on user permissions #1909.
+- Add pipeline to compute Advisory ToDos #1764
+
+Version v36.1.3
+---------------------
+
+- Increase docker shared memory size #1896
+
+
+Version v36.1.2
+---------------------
+
+- Get tag from VERSION manifest #1895
+
+
+Version v36.1.1
+---------------------
+
+- Update is_active help text in pipeline migration #1887
+
+
+Version v36.1.0
+---------------------
+
+- Remove admin panel #1885
+- Support running pipelines in scheduled task queue #1871
+- Optimize export management command #1868
+- Fix alpine linux importer #1861
+- Stop github OSV importer crashes #1854
+- Make advisory content_id a unique field #1864
+
 
 Version v36.0.0
 ---------------------

@@ -9,6 +9,10 @@
 
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.contrib.auth.admin import GroupAdmin as BasicGroupAdmin
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 from django.core.validators import validate_email
 
 from vulnerabilities.models import ApiUser
@@ -16,6 +20,10 @@ from vulnerabilities.models import Package
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
+
+admin.site.site_header = "VulnerableCode Administration"
+admin.site.site_title = "VulnerableCode Admin Portal"
+admin.site.index_title = "Welcome to VulnerableCode Management"
 
 
 @admin.register(Vulnerability)
@@ -97,3 +105,50 @@ class ApiUserAdmin(admin.ModelAdmin):
             defaults["form"] = self.add_form
         defaults.update(kwargs)
         return super().get_form(request, obj, **defaults)
+
+
+class GroupWithUsersForm(forms.ModelForm):
+    users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        widget=FilteredSelectMultiple("Users", is_stacked=False),
+        label="Users",
+    )
+
+    class Meta:
+        model = Group
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["users"].label_from_instance = lambda user: (
+            f"{user.username} | {user.email}" if user.email else user.username
+        )
+        if self.instance.pk:
+            self.fields["users"].initial = self.instance.user_set.all()
+
+    def save(self, commit=True):
+        group = super().save(commit=commit)
+        group.save()
+        self.save_m2m()
+        group.user_set.set(self.cleaned_data["users"])
+        return group
+
+
+admin.site.unregister(Group)
+
+
+@admin.register(Group)
+class GroupAdmin(admin.ModelAdmin):
+    form = GroupWithUsersForm
+    search_fields = ("name",)
+    ordering = ("name",)
+    filter_horizontal = ("permissions",)
+
+    def formfield_for_manytomany(self, db_field, request=None, **kwargs):
+        if db_field.name == "permissions":
+            qs = kwargs.get("queryset", db_field.remote_field.model.objects)
+            # Avoid a major performance hit resolving permission names which
+            # triggers a content_type load:
+            kwargs["queryset"] = qs.select_related("content_type")
+        return super().formfield_for_manytomany(db_field, request=request, **kwargs)

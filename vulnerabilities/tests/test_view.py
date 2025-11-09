@@ -58,13 +58,13 @@ class PackageSearchTestCase(TestCase):
             Package.objects.create(**attrs)
 
     def test_packages_search_view_paginator(self):
-        response = self.client.get("/packages/search?type=deb&name=&page=1")
+        response = self.client.get("/packages/search/?type=deb&name=&page=1")
         self.assertEqual(response.status_code, 200)
-        response = self.client.get("/packages/search?type=deb&name=&page=*")
+        response = self.client.get("/packages/search/?type=deb&name=&page=*")
         self.assertEqual(response.status_code, 404)
-        response = self.client.get("/packages/search?type=deb&name=&page=")
+        response = self.client.get("/packages/search/?type=deb&name=&page=")
         self.assertEqual(response.status_code, 200)
-        response = self.client.get("/packages/search?type=&name=&page=")
+        response = self.client.get("/packages/search/?type=&name=&page=")
         self.assertEqual(response.status_code, 200)
 
     def test_package_view(self):
@@ -198,11 +198,11 @@ class VulnerabilitySearchTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_vulnerabilties_search_view_with_empty(self):
-        response = self.client.get(f"/vulnerabilities/search")
+        response = self.client.get(f"/vulnerabilities/search/")
         self.assertEqual(response.status_code, 200)
 
     def test_vulnerabilties_search_view_can_find_alias(self):
-        response = self.client.get(f"/vulnerabilities/search?search=TEST-2022")
+        response = self.client.get(f"/vulnerabilities/search/?search=TEST-2022")
         self.assertEqual(response.status_code, 200)
 
 

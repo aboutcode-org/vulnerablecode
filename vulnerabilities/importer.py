@@ -11,17 +11,15 @@ import dataclasses
 import datetime
 import functools
 import logging
-import os
-import shutil
 import traceback
 import xml.etree.ElementTree as ET
-from pathlib import Path
 from typing import Iterable
 from typing import List
 from typing import Mapping
 from typing import Optional
 from typing import Set
 from typing import Tuple
+from typing import Union
 
 import pytz
 from dateutil import parser as dateparser
@@ -55,6 +53,7 @@ class VulnerabilitySeverity:
     value: str
     scoring_elements: str = ""
     published_at: Optional[datetime.datetime] = None
+    url: Optional[str] = None
 
     def to_dict(self):
         data = {
@@ -139,6 +138,56 @@ class Reference:
     def from_url(cls, url):
         reference_id = get_reference_id(url)
         if "GHSA-" in reference_id.upper():
+            return cls(reference_id=reference_id, url=url)
+        if is_cve(reference_id):
+            return cls(url=url, reference_id=reference_id.upper())
+        return cls(url=url)
+
+
+@dataclasses.dataclass(eq=True)
+@functools.total_ordering
+class ReferenceV2:
+    reference_id: str = ""
+    reference_type: str = ""
+    url: str = ""
+
+    def __post_init__(self):
+        if not self.url:
+            raise TypeError("Reference must have a url")
+        if self.reference_id and not isinstance(self.reference_id, str):
+            self.reference_id = str(self.reference_id)
+
+    def __lt__(self, other):
+        if not isinstance(other, ReferenceV2):
+            return NotImplemented
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (self.reference_id, self.reference_type, self.url)
+
+    def to_dict(self):
+        """Return a normalized dictionary representation"""
+        return {
+            "reference_id": self.reference_id,
+            "reference_type": self.reference_type,
+            "url": self.url,
+        }
+
+    @classmethod
+    def from_dict(cls, ref: dict):
+        return cls(
+            reference_id=str(ref["reference_id"]),
+            reference_type=ref.get("reference_type") or "",
+            url=ref["url"],
+        )
+
+    @classmethod
+    def from_url(cls, url):
+        reference_id = get_reference_id(url)
+        if "GHSA-" in reference_id.upper():
+            return cls(reference_id=reference_id, url=url)
+        if reference_id.startswith(("RHSA-", "RHEA-", "RHBA-")):
             return cls(reference_id=reference_id, url=url)
         if is_cve(reference_id):
             return cls(url=url, reference_id=reference_id.upper())
@@ -268,9 +317,13 @@ class AffectedPackage:
                 return
 
         fixed_version = affected_pkg["fixed_version"]
-        if fixed_version and affected_version_range:
-            # TODO: revisit after https://github.com/nexB/univers/issues/10
-            fixed_version = affected_version_range.version_class(fixed_version)
+        if fixed_version:
+            if affected_version_range:
+                # TODO: revisit after https://github.com/nexB/univers/issues/10
+                fixed_version = affected_version_range.version_class(fixed_version)
+            elif package.type in RANGE_CLASS_BY_SCHEMES:
+                vrc = RANGE_CLASS_BY_SCHEMES[package.type]
+                fixed_version = vrc.version_class(fixed_version)
 
         if not fixed_version and not affected_version_range:
             logger.error(
@@ -282,6 +335,88 @@ class AffectedPackage:
             package=package,
             affected_version_range=affected_version_range,
             fixed_version=fixed_version,
+        )
+
+
+@functools.total_ordering
+@dataclasses.dataclass(eq=True)
+class AffectedPackageV2:
+    """
+    Relate a Package URL with a range of affected versions and fixed versions.
+    The Package URL must *not* have a version.
+    AffectedPackage must contain either ``affected_version_range`` or ``fixed_version_range``.
+    """
+
+    package: PackageURL
+    affected_version_range: Optional[VersionRange] = None
+    fixed_version_range: Optional[VersionRange] = None
+
+    def __post_init__(self):
+        if self.package.version:
+            raise ValueError(f"Affected Package URL {self.package!r} cannot have a version.")
+
+        if not (self.affected_version_range or self.fixed_version_range):
+            raise ValueError(
+                f"Affected Package {self.package!r} should have either fixed version range or an "
+                "affected version range."
+            )
+
+    def __lt__(self, other):
+        if not isinstance(other, AffectedPackageV2):
+            return NotImplemented
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (
+            str(self.package),
+            str(self.affected_version_range or ""),
+            str(self.fixed_version_range or ""),
+        )
+
+    def to_dict(self):
+        """Return a serializable dict that can be converted back using self.from_dict"""
+
+        affected_version_range = (
+            str(self.affected_version_range) if self.affected_version_range else None
+        )
+        fixed_version_range = str(self.fixed_version_range) if self.fixed_version_range else None
+        return {
+            "package": purl_to_dict(self.package),
+            "affected_version_range": affected_version_range,
+            "fixed_version_range": fixed_version_range,
+        }
+
+    @classmethod
+    def from_dict(cls, affected_pkg: dict):
+        """Return an AffectedPackage object from dict generated by self.to_dict"""
+
+        package = PackageURL(**affected_pkg["package"])
+        affected_version_range = None
+        fixed_version_range = None
+        affected_range = affected_pkg["affected_version_range"]
+        fixed_range = affected_pkg["fixed_version_range"]
+
+        try:
+            affected_version_range = VersionRange.from_string(affected_range)
+            fixed_version_range = VersionRange.from_string(fixed_range)
+        except:
+            tb = traceback.format_exc()
+            logger.error(
+                f"Cannot create AffectedPackage with invalid or unknown range: {affected_pkg!r} with error: {tb!r}"
+            )
+            return
+
+        if not fixed_version_range and not affected_version_range:
+            logger.error(
+                f"Cannot create AffectedPackage without fixed or affected range: {affected_pkg!r}"
+            )
+            return
+
+        return cls(
+            package=package,
+            affected_version_range=affected_version_range,
+            fixed_version_range=fixed_version_range,
         )
 
 
@@ -298,10 +433,106 @@ class AdvisoryData:
     date_published must be aware datetime
     """
 
+    advisory_id: str = ""
+    aliases: List[str] = dataclasses.field(default_factory=list)
+    summary: Optional[str] = ""
+    affected_packages: Union[List[AffectedPackage], List[AffectedPackageV2]] = dataclasses.field(
+        default_factory=list
+    )
+    references: List[Reference] = dataclasses.field(default_factory=list)
+    references_v2: List[ReferenceV2] = dataclasses.field(default_factory=list)
+    date_published: Optional[datetime.datetime] = None
+    weaknesses: List[int] = dataclasses.field(default_factory=list)
+    severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
+    url: Optional[str] = None
+    original_advisory_text: Optional[str] = None
+
+    def __post_init__(self):
+        if self.summary:
+            self.summary = self.clean_summary(self.summary)
+
+    def clean_summary(self, summary):
+        # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
+        # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
+        summary = summary.strip()
+        if summary:
+            summary = summary.replace("\x00", "\uFFFD")
+        return summary
+
+    def to_dict(self):
+        is_adv_v2 = (
+            self.advisory_id
+            or self.severities
+            or self.references_v2
+            or (self.affected_packages and isinstance(self.affected_packages[0], AffectedPackageV2))
+        )
+        if is_adv_v2:
+            return {
+                "advisory_id": self.advisory_id,
+                "aliases": self.aliases,
+                "summary": self.summary,
+                "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
+                "references_v2": [ref.to_dict() for ref in self.references_v2],
+                "severities": [sev.to_dict() for sev in self.severities],
+                "date_published": self.date_published.isoformat() if self.date_published else None,
+                "weaknesses": self.weaknesses,
+                "url": self.url if self.url else "",
+            }
+        return {
+            "aliases": self.aliases,
+            "summary": self.summary,
+            "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
+            "references": [ref.to_dict() for ref in self.references],
+            "date_published": self.date_published.isoformat() if self.date_published else None,
+            "weaknesses": self.weaknesses,
+            "url": self.url if self.url else "",
+        }
+
+    @classmethod
+    def from_dict(cls, advisory_data):
+        date_published = advisory_data["date_published"]
+        affected_packages = advisory_data["affected_packages"]
+        affected_package_cls = AffectedPackage
+        if affected_packages:
+            affected_package_cls = (
+                AffectedPackageV2
+                if "fixed_version_range" in affected_packages[0]
+                else AffectedPackage
+            )
+        transformed = {
+            "aliases": advisory_data["aliases"],
+            "summary": advisory_data["summary"],
+            "affected_packages": [
+                affected_package_cls.from_dict(pkg) for pkg in affected_packages if pkg is not None
+            ],
+            "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
+            "date_published": datetime.datetime.fromisoformat(date_published)
+            if date_published
+            else None,
+            "weaknesses": advisory_data["weaknesses"],
+            "url": advisory_data.get("url") or None,
+        }
+        return cls(**transformed)
+
+
+@dataclasses.dataclass(order=True)
+class AdvisoryDataV2:
+    """
+    This data class expresses the contract between data sources and the import runner.
+
+    If a vulnerability_id is present then:
+        summary or affected_packages or references must be present
+    otherwise
+        either affected_package or references should be present
+
+    date_published must be aware datetime
+    """
+
+    advisory_id: str = ""
     aliases: List[str] = dataclasses.field(default_factory=list)
     summary: Optional[str] = ""
     affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
-    references: List[Reference] = dataclasses.field(default_factory=list)
+    references: List[ReferenceV2] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
     url: Optional[str] = None

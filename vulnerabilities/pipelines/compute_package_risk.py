@@ -17,11 +17,9 @@ from vulnerabilities.risk import compute_vulnerability_risk_factors
 
 
 class ComputePackageRiskPipeline(VulnerableCodePipeline):
-    """
-    Compute risk score for packages.
+    """Compute risk score for packages."""
 
-    See https://github.com/aboutcode-org/vulnerablecode/issues/1543
-    """
+    # See https://github.com/aboutcode-org/vulnerablecode/issues/1543
 
     pipeline_id = "compute_package_risk"
     license_expression = None

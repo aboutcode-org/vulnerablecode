@@ -8,39 +8,84 @@
 #
 
 import logging
+import traceback
 from datetime import datetime
 from datetime import timezone
 from timeit import default_timer as timer
 from traceback import format_exc as traceback_format_exc
 from typing import Iterable
+from typing import List
 
-from aboutcode.pipeline import BasePipeline
 from aboutcode.pipeline import LoopProgress
+from aboutcode.pipeline import PipelineDefinition
 from aboutcode.pipeline import humanize_time
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import PipelineRun
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
-from vulnerabilities.utils import classproperty
+from vulnerabilities.pipes.advisory import insert_advisory_v2
 
 module_logger = logging.getLogger(__name__)
 
 
-class VulnerableCodePipeline(BasePipeline):
-    pipeline_id = None  # Unique Pipeline ID
+class BasePipelineRun:
+    """
+    Encapsulate the code related to a Pipeline run (execution):
+    - Execution context: groups, steps
+    - Execution logic
+    - Logging
+    - Results
+    """
 
-    def on_failure(self):
-        """
-        Tasks to run in the event that pipeline execution fails.
+    def __init__(
+        self,
+        run_instance: PipelineRun = None,
+        selected_groups: List = None,
+        selected_steps: List = None,
+        **kwargs,
+    ):
+        """Load the Pipeline class."""
+        self.run = run_instance
+        self.pipeline_class = self.__class__
+        self.pipeline_name = self.__class__.__name__
 
-        Implement cleanup or other tasks that need to be performed
-        on pipeline failure, such as:
-            - Removing cloned repositories.
-            - Deleting downloaded archives.
-        """
-        pass
+        self.selected_groups = selected_groups
+        self.selected_steps = selected_steps or []
+
+        self.execution_log = []
+        self.current_step = ""
+
+        # Optional args used as input in downstream pipeline steps
+        self.inputs = kwargs
+
+    def append_to_log(self, message):
+        if self.run and self.run.pipeline.live_logging:
+            self.run.append_to_log(message)
+        self.execution_log.append(message)
+
+    def update_final_run_log(self):
+        if self.run and not self.run.pipeline.live_logging:
+            final_log = "\n".join(self.execution_log)
+            self.run.append_to_log(final_log, is_multiline=True)
+
+    def set_current_step(self, message):
+        self.current_step = message
+
+    @staticmethod
+    def output_from_exception(exception):
+        """Return a formatted error message including the traceback."""
+        output = f"{exception}\n\n"
+
+        if exception.__cause__ and str(exception.__cause__) != str(exception):
+            output += f"Cause: {exception.__cause__}\n\n"
+
+        traceback_formatted = "".join(traceback.format_tb(exception.__traceback__))
+        output += f"Traceback:\n{traceback_formatted}"
+
+        return output
 
     def execute(self):
         """Execute each steps in the order defined on this pipeline class."""
@@ -70,6 +115,7 @@ class VulnerableCodePipeline(BasePipeline):
                 self.on_failure()
                 on_failure_run_time = timer() - on_failure_start_time
                 self.log(f"Completed [on_failure] tasks in {humanize_time(on_failure_run_time)}")
+                self.update_final_run_log()
 
                 return 1, self.output_from_exception(exception)
 
@@ -79,24 +125,32 @@ class VulnerableCodePipeline(BasePipeline):
         self.set_current_step("")  # Reset the `current_step` field on completion
         pipeline_run_time = timer() - pipeline_start_time
         self.log(f"Pipeline completed in {humanize_time(pipeline_run_time)}")
+        self.update_final_run_log()
 
         return 0, ""
 
     def log(self, message, level=logging.INFO):
         """Log the given `message` to the current module logger and execution_log."""
         now_local = datetime.now(timezone.utc).astimezone()
-        timestamp = now_local.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+        timestamp = now_local.strftime("%Y-%m-%d %T.%f %Z")
         message = f"{timestamp} {message}"
         module_logger.log(level, message)
         self.append_to_log(message)
 
-    @classproperty
-    def pipeline_id(cls):
-        """Return unique pipeline_id set in cls.pipeline_id"""
 
-        if cls.pipeline_id is None or cls.pipeline_id == "":
-            raise NotImplementedError("pipeline_id is not defined or is empty")
-        return cls.pipeline_id
+class VulnerableCodePipeline(PipelineDefinition, BasePipelineRun):
+    pipeline_id = None  # Unique Pipeline ID
+
+    def on_failure(self):
+        """
+        Tasks to run in the event that pipeline execution fails.
+
+        Implement cleanup or other tasks that need to be performed
+        on pipeline failure, such as:
+            - Removing cloned repositories.
+            - Deleting downloaded archives.
+        """
+        pass
 
 
 class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
@@ -149,12 +203,13 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
 
         progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
         for advisory in progress.iter(self.collect_advisories()):
-            if _obj := insert_advisory(
-                advisory=advisory,
-                pipeline_id=self.pipeline_id,
-                logger=self.log,
-            ):
-                collected_advisory_count += 1
+            if isinstance(advisory, AdvisoryData):
+                if _obj := insert_advisory(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 
@@ -190,3 +245,71 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
                 f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
                 level=logging.ERROR,
             )
+
+
+class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
+    """
+    Base importer pipeline for importing advisories.
+
+    Uses:
+        Subclass this Pipeline and implement ``advisories_count`` and ``collect_advisories``
+        method. Also override the ``steps`` and ``advisory_confidence`` as needed.
+    """
+
+    pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.
+    license_url = None
+    spdx_license_expression = None
+    repo_url = None
+    ignorable_versions = []
+
+    @classmethod
+    def steps(cls):
+        return (
+            # Add step for downloading/cloning resource as required.
+            cls.collect_and_store_advisories,
+            # Add step for removing downloaded/cloned resource as required.
+        )
+
+    def collect_advisories(self) -> Iterable[AdvisoryData]:
+        """
+        Yield AdvisoryData for importer pipeline.
+
+        Populate the `self.collected_advisories_count` field and yield AdvisoryData
+        """
+        raise NotImplementedError
+
+    def advisories_count(self) -> int:
+        """
+        Return the estimated AdvisoryData to be yielded by ``collect_advisories``.
+
+        Used by ``collect_and_store_advisories`` to log the progress of advisory collection.
+        """
+        raise NotImplementedError
+
+    def collect_and_store_advisories(self):
+        collected_advisory_count = 0
+        estimated_advisory_count = self.advisories_count()
+
+        if estimated_advisory_count > 0:
+            self.log(f"Collecting {estimated_advisory_count:,d} advisories")
+
+        progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
+        for advisory in progress.iter(self.collect_advisories()):
+            if advisory is None:
+                self.log("Advisory is None, skipping")
+                continue
+            try:
+                if _obj := insert_advisory_v2(
+                    advisory=advisory,
+                    pipeline_id=self.pipeline_id,
+                    logger=self.log,
+                ):
+                    collected_advisory_count += 1
+            except Exception as e:
+                self.log(
+                    f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
+                    level=logging.ERROR,
+                )
+                continue
+
+        self.log(f"Successfully collected {collected_advisory_count:,d} advisories")

@@ -29,6 +29,7 @@ ACTIVATE?=. ${VENV}/bin/activate;
 VIRTUALENV_PYZ=etc/thirdparty/virtualenv.pyz
 # Do not depend on Python to generate the SECRET_KEY
 GET_SECRET_KEY=`base64 /dev/urandom | head -c50`
+GET_ALTCHA_HMAC_KEY=`head -c 32 /dev/urandom | xxd -p -c 32`
 # Customize with `$ make envfile ENV_FILE=/etc/vulnerablecode/.env`
 ENV_FILE=.env
 # Customize with `$ make postgres VULNERABLECODE_DB_PASSWORD=YOUR_PASSWORD`
@@ -63,6 +64,7 @@ envfile:
 	@if test -f ${ENV_FILE}; then echo ".env file exists already"; exit 1; fi
 	@mkdir -p $(shell dirname ${ENV_FILE}) && touch ${ENV_FILE}
 	@echo SECRET_KEY=\"${GET_SECRET_KEY}\" > ${ENV_FILE}
+	@echo ALTCHA_HMAC_KEY=\"${GET_ALTCHA_HMAC_KEY}\" >> ${ENV_FILE}
 
 isort:
 	@echo "-> Apply isort changes to ensure proper imports ordering"

@@ -20,16 +20,29 @@ from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
+from vulnerabilities.api_v2 import AdvisoriesPackageV2ViewSet
+from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
+from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
+from vulnerabilities.views import AdminLoginView
+from vulnerabilities.views import AdvisoryDetails
+from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
+from vulnerabilities.views import HomePageV2
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
+from vulnerabilities.views import PackageSearchV2
+from vulnerabilities.views import PackageV2Details
+from vulnerabilities.views import PipelineRunDetailView
+from vulnerabilities.views import PipelineRunListView
+from vulnerabilities.views import PipelineScheduleListView
 from vulnerabilities.views import VulnerabilityDetails
 from vulnerabilities.views import VulnerabilityPackagesDetails
 from vulnerabilities.views import VulnerabilitySearch
+from vulnerablecode.settings import DEBUG
 from vulnerablecode.settings import DEBUG_TOOLBAR
 
 
@@ -49,11 +62,17 @@ api_router.register("aliases", AliasViewSet, basename="alias")
 
 api_v2_router = OptionalSlashRouter()
 api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
+api_v2_router.register(
+    "advisories-packages", AdvisoriesPackageV2ViewSet, basename="advisories-package-v2"
+)
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
+api_v2_router.register("pipelines", PipelineScheduleV2ViewSet, basename="pipelines")
+api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisory-codefix")
 
 
 urlpatterns = [
+    path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
     path("api/v2/", include(api_v2_router.urls)),
     path(
         "robots.txt",
@@ -65,17 +84,57 @@ urlpatterns = [
         name="home",
     ),
     path(
-        "packages/search",
+        "pipelines/dashboard/",
+        PipelineScheduleListView.as_view(),
+        name="dashboard",
+    ),
+    path(
+        "pipelines/<str:pipeline_id>/runs/",
+        PipelineRunListView.as_view(),
+        name="runs-list",
+    ),
+    path(
+        "pipelines/<str:pipeline_id>/run/<uuid:run_id>/",
+        PipelineRunDetailView.as_view(),
+        name="run-details",
+    ),
+    path(
+        "v2",
+        HomePageV2.as_view(),
+        name="home",
+    ),
+    path(
+        "advisories/packages/<path:avid>",
+        AdvisoryPackagesDetails.as_view(),
+        name="advisory_package_details",
+    ),
+    path(
+        "advisories/<path:avid>",
+        AdvisoryDetails.as_view(),
+        name="advisory_details",
+    ),
+    path(
+        "packages/search/",
         PackageSearch.as_view(),
         name="package_search",
+    ),
+    path(
+        "packages/v2/search/",
+        PackageSearchV2.as_view(),
+        name="package_search_v2",
     ),
     re_path(
         r"^packages/(?P<purl>pkg:.+)$",
         PackageDetails.as_view(),
         name="package_details",
     ),
+    re_path(
+        r"^packages/v2/(?P<purl>pkg:.+)$",
+        PackageV2Details.as_view(),
+        name="package_details_v2",
+    ),
     path(
-        "vulnerabilities/search",
+        "vulnerabilities/search/",
         VulnerabilitySearch.as_view(),
         name="vulnerability_search",
     ),
@@ -119,6 +178,9 @@ urlpatterns = [
         admin.site.urls,
     ),
 ]
+
+if DEBUG:
+    urlpatterns += [path("django-rq/", include("django_rq.urls"))]
 
 if DEBUG_TOOLBAR:
     urlpatterns += [

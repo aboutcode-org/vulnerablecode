@@ -1,0 +1,100 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
+{{ form.media }}
+
+<style>
+    /* Altcha theme correction for dark mode */
+
+    html[data-theme="dark"] altcha-widget {
+        --altcha-color-base: #1e1e1e;
+        --altcha-color-text: #ffffff;
+        --altcha-color-border: #444;
+        --altcha-border-radius: 8px;
+        --altcha-border-width: 2px;
+        --altcha-color-footer-bg: #2a2a2a;
+    }
+
+    html[data-theme="light"] altcha-widget {
+        --altcha-color-base: #ffffff;
+        --altcha-color-text: #000000;
+        --altcha-color-border: #ccc;
+        --altcha-border-radius: 8px;
+        --altcha-color-footer-bg: #f9f9f9;
+    }
+
+    @media (prefers-color-scheme: dark) {
+    altcha-widget {
+      --altcha-color-base: #1e1e1e;
+      --altcha-color-text: #ffffff;
+      --altcha-color-border: #444;
+      --altcha-border-radius: 8px;
+      --altcha-border-width: 2px;
+      --altcha-color-footer-bg: #2a2a2a;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+    {% if form.errors.captcha %}
+        {{ form.errors.captcha }}
+    {% else %}
+        {% for error in form.errors.values %}
+            {{ error }}
+        {% endfor %}
+    {% endif %}
+{% endif %}
+
+
+<div id="content-main">
+
+    {% if user.is_authenticated %}
+    <p class="errornote">
+        {% blocktranslate trimmed %}
+        You are authenticated as {{ username }}, but are not authorized to
+        access this page. Would you like to login to a different account?
+        {% endblocktranslate %}
+    </p>
+    {% endif %}
+
+    <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+        <div class="form-row">
+            {{ form.username.errors }}
+            {{ form.username.label_tag }} {{ form.username }}
+        </div>
+        <div class="form-row">
+            {{ form.password.errors }}
+            {{ form.password.label_tag }} {{ form.password }}
+            <input type="hidden" name="next" value="{{ next }}">
+        </div>
+        {% url 'admin_password_reset' as password_reset_url %}
+        {% if password_reset_url %}
+        <div class="password-reset-link">
+            <a href="{{ password_reset_url }}">{% translate 'Forgotten your password or username?' %}</a>
+        </div>
+        {% endif %}
+        <div class="field" style="padding-top: 0.5rem;">
+            {{ form.captcha }}
+        </div>
+        <div class="submit-row">
+            <input type="submit" value="{% translate 'Log in' %}">
+        </div>
+    </form>
+</div>
+{% endblock %}

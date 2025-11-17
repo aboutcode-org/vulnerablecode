@@ -10,14 +10,18 @@
 import logging
 from traceback import format_exc as traceback_format_exc
 from typing import Callable
+from typing import Union
 
 from fetchcode.package_versions import SUPPORTED_ECOSYSTEMS as FETCHCODE_SUPPORTED_ECOSYSTEMS
 from fetchcode.package_versions import versions
 from packageurl import PackageURL
 
 
-def get_versions(purl: PackageURL, logger: Callable = None):
+def get_versions(purl: Union[PackageURL, str], logger: Callable = None):
     """Return set of known versions for the given purl."""
+    if isinstance(purl, str):
+        purl = PackageURL.from_string(purl)
+
     if purl.type not in FETCHCODE_SUPPORTED_ECOSYSTEMS:
         return
 

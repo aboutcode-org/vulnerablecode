@@ -16,6 +16,8 @@ from contextlib import suppress
 from functools import cached_property
 from itertools import groupby
 from operator import attrgetter
+from traceback import format_exc as traceback_format_exc
+from typing import List
 from typing import Union
 from urllib.parse import urljoin
 
@@ -2927,17 +2929,19 @@ class ImpactedPackage(models.Model):
 
     base_purl = models.CharField(
         max_length=500,
-        blank=True,
+        blank=False,
         help_text="Version less PURL related to impacted range.",
     )
 
     affecting_vers = models.TextField(
         blank=True,
+        null=True,
         help_text="VersionRange expression for package vulnerable to this impact.",
     )
 
     fixed_vers = models.TextField(
         blank=True,
+        null=True,
         help_text="VersionRange expression for packages fixing the vulnerable package in this impact.",
     )
 
@@ -2951,6 +2955,18 @@ class ImpactedPackage(models.Model):
         "PackageV2",
         related_name="fixed_in_impacts",
         help_text="Packages vulnerable to this impact.",
+    )
+
+    affecting_commits = models.ManyToManyField(
+        "CodeCommit",
+        related_name="affecting_commits_in_impacts",
+        help_text="Commits introducing this impact.",
+    )
+
+    fixed_by_commits = models.ManyToManyField(
+        "CodeCommit",
+        related_name="fixing_commits_in_impacts",
+        help_text="Commits fixing this impact.",
     )
 
     created_at = models.DateTimeField(
@@ -3064,6 +3080,41 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         package, is_created = PackageV2.objects.get_or_create(**purl_to_dict(purl=purl))
 
         return package, is_created
+
+    def bulk_get_or_create_from_purls(self, purls: List[Union[PackageURL, str]]):
+        """
+        Return new or existing Packages given ``purls`` list of PackageURL object or PURL string.
+        """
+        purl_strings = [str(p) for p in purls]
+        existing_packages = PackageV2.objects.filter(package_url__in=purl_strings)
+        existing_purls = set(existing_packages.values_list("package_url", flat=True))
+
+        all_packages = list(existing_packages)
+        packages_to_create = []
+        for purl in purls:
+            if str(purl) in existing_purls:
+                continue
+
+            purl_dict = purl_to_dict(purl)
+            purl = PackageURL(**purl_dict)
+
+            normalized = normalize_purl(purl=purl)
+            for name, value in purl_to_dict(normalized).items():
+                setattr(self, name, value)
+
+            purl_dict["package_url"] = str(normalized)
+            purl_dict["plain_package_url"] = str(utils.plain_purl(normalized))
+
+            packages_to_create.append(PackageV2(**purl_dict))
+
+        try:
+            new_packages = PackageV2.objects.bulk_create(packages_to_create)
+        except Exception as e:
+            logging.error(f"Error creating PackageV2: {e} \n {traceback_format_exc()}")
+            return []
+
+        all_packages.extend(new_packages)
+        return all_packages
 
     def only_vulnerable(self):
         return self._vulnerable(True)
@@ -3334,3 +3385,32 @@ class AdvisoryExploit(models.Model):
     @property
     def get_known_ransomware_campaign_use_type(self):
         return "Known" if self.known_ransomware_campaign_use else "Unknown"
+
+
+class CodeCommit(models.Model):
+    """
+    A CodeCommit Represents a single VCS commit (e.g., Git) related to a ImpactedPackage.
+    """
+
+    commit_hash = models.CharField(max_length=64, help_text="Unique commit identifier (e.g., SHA).")
+    vcs_url = models.URLField(
+        max_length=1024, help_text="URL of the repository containing the commit."
+    )
+
+    commit_rank = models.IntegerField(
+        default=0,
+        help_text="Rank of the commit to support ordering by commit. Rank "
+        "zero means the rank has not been defined yet",
+    )
+    commit_author = models.CharField(
+        max_length=100, null=True, blank=True, help_text="Author of the commit."
+    )
+    commit_date = models.DateTimeField(
+        null=True, blank=True, help_text="Timestamp indicating when this commit was created."
+    )
+    commit_message = models.TextField(
+        null=True, blank=True, help_text="Commit message or description."
+    )
+
+    class Meta:
+        unique_together = ("commit_hash", "vcs_url")

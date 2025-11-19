@@ -497,8 +497,8 @@ class DataFederation:
     def from_dict(
         cls,
         data: dict,
-        local_root_dir: Path = None,
-        remote_root_url: str = None,
+        local_root_dir: Path=None,
+        remote_root_url: str=None,
     ) -> "DataFederation":
         """
         Return a DataFederation from a configuration mapping.
@@ -532,7 +532,7 @@ class DataFederation:
         )
 
     @classmethod
-    def load(cls, name: str, local_root_dir: Path, remote_root_url: str = None) -> "DataFederation":
+    def load(cls, name: str, local_root_dir: Path, remote_root_url: str=None) -> "DataFederation":
         """
         Return an existing DataFederation loaded from ``local_root_dir`` using
         the existing configuration file at its conventional location.
@@ -551,7 +551,7 @@ class DataFederation:
         cls,
         name: str,
         remote_root_url: str,
-        local_root_dir: Path = None,
+        local_root_dir: Path=None,
     ) -> "DataFederation":
         """
         Return a DataFederation loaded from a remote configuration file.
@@ -578,8 +578,8 @@ class DataFederation:
         cls,
         name: str,
         text: str,
-        local_root_dir: Path = None,
-        remote_root_url: str = None,
+        local_root_dir: Path=None,
+        remote_root_url: str=None,
     ) -> "DataFederation":
         """
         Return a DataFederation loaded from a YAML configuration text.
@@ -665,6 +665,28 @@ class DataFederation:
         Return a DataCluster for this data kind or None.
         """
         return self._data_clusters_by_data_kind.get(data_kind)
+
+    def get_datafile_download_url(self, data_kind: str, purl: Union[str, PackageURL]) -> Path:
+        """
+        Return the direct download URL to the data file for a data kind given a
+        PURL, or None.
+        """
+        cluster = self.get_cluster(data_kind=data_kind)
+        return cluster.get_datafile_download_url(purl=purl)
+
+    def get_local_datafile(self, data_kind: str, purl: Union[str, PackageURL]) -> "LocalDataFile":
+        """
+        Return a LocalDataFile for a data kind given a PURL, or None.
+        """
+        cluster = self.get_cluster(data_kind=data_kind)
+        return cluster.get_datafile_local_path(purl=purl)
+
+
+@dataclass
+class LocalDataFile:
+    """A local data file storeed optionally in a GitRepo"""
+    path: Path
+    git_repo: "GitRepo" = None
 
 
 @dataclass(order=True)
@@ -783,6 +805,8 @@ class DataCluster:
         Return the direct download URL to the data file of the data kind stored
         in this cluster given a PURL.
         """
+        raise NotImplementedError()
+
         purl = as_purl(purl)
         # FIXME: create as member
         purl_type_config_by_type = {ptc.purl_type: ptc for ptc in self.purl_type_configs}
@@ -796,11 +820,12 @@ class DataCluster:
         # construct a URL
         return direct_url
 
-    def get_datafile_local_path(self, purl: Union[str, PackageURL]) -> str:
+    def get_local_datafile(self, purl: Union[str, PackageURL]) -> LocalDataFile:
         """
-        Return the direct download URL to the data file of the data kind stored
-        in this cluster given a PURL.
+        Return a LocalDataFile of the data kind stored in this cluster given a
+        PURL, or None
         """
+        raise NotImplementedError()
 
 
 @dataclass
@@ -880,7 +905,7 @@ class PurlTypeConfig:
         hashids = self.hashids
 
         for i in range(0, self.number_of_dirs, dirs_per_repo):
-            hashids_of_repo = hashids[i : i + dirs_per_repo]
+            hashids_of_repo = hashids[i: i + dirs_per_repo]
             yield DataRepository.from_hashids(
                 data_kind=data_kind,
                 purl_type=purl_type,
@@ -1188,7 +1213,7 @@ def cluster_preset():
 @dataclass
 class DataRepository:
     """
-    A Git Data Repository in a DataCluster
+    A Data Repository (Git repo or local plain dir) in a DataCluster
     """
 
     data_kind: str
@@ -1199,7 +1224,7 @@ class DataRepository:
         default_factory=list,
         repr=False,
     )
-
+    
     @property
     def name(self):
         return f"{self.data_kind}-{self.purl_type}-{self.start_hashid}"
@@ -1227,6 +1252,17 @@ class DataRepository:
             purl_type=purl_type,
             start_hashid=start_hashid,
             data_directories=data_directories,
+        )
+
+    @property
+    def git_repo(self) -> "GitRepo":
+        """
+        Return the GitRepo that contains the data for this DataRepository.
+        """
+        return GitRepo(
+            name=self.name,
+            local_root_dir=self.local_root_dir,
+            remote_root_url=self.remote_root_url,
         )
 
 
@@ -1334,7 +1370,7 @@ def build_raw_download_url(
     root_url: str,
     repo: str,
     path: str,
-    branch: str = "main",
+    branch: str="main",
     builder=None,
 ):
     """
@@ -1356,7 +1392,7 @@ def build_raw_download_url_github(
     root_url: str,
     repo: str,
     path: str,
-    branch: str = "main",
+    branch: str="main",
 ):
     """
     Return a direct access raw URL to a file in a github repo.
@@ -1370,7 +1406,7 @@ def build_raw_download_url_gitlab(
     root_url: str,
     repo: str,
     path: str,
-    branch: str = "main",
+    branch: str="main",
 ):
     """
     Return a direct access raw URL to a file in a gitlab repo.
@@ -1383,7 +1419,7 @@ def build_raw_download_url_codeberg(
     root_url: str,
     repo: str,
     path: str,
-    branch: str = "main",
+    branch: str="main",
 ):
     """
     Return a direct access raw URL to a file in a codeberg repo.
@@ -1391,7 +1427,7 @@ def build_raw_download_url_codeberg(
     return "/".join([root_url, repo, "raw/branch", branch, path])
 
 
-def compute_purl_hash(purl: Union[PackageURL, str], max_value: int = 1024) -> str:
+def compute_purl_hash(purl: Union[PackageURL, str], max_value: int=1024) -> str:
     """
     Return a hash string from a ``purl`` string or object.
 
@@ -1445,7 +1481,7 @@ def compute_purl_hash(purl: Union[PackageURL, str], max_value: int = 1024) -> st
     return _compute_hash(core_purl=core_purl, max_value=max_value)
 
 
-def _compute_hash(core_purl: str, max_value: int = 1024) -> str:
+def _compute_hash(core_purl: str, max_value: int=1024) -> str:
     """
     Return a hash string from a ``core_purl`` string. The core purl string
     must be computed ahead
@@ -1474,7 +1510,7 @@ def _compute_hash(core_purl: str, max_value: int = 1024) -> str:
     return f"{short_int:04}"
 
 
-def is_valid_power_of_two(n: int, max_value: int = 1024):
+def is_valid_power_of_two(n: int, max_value: int=1024):
     """
     Return True if ``n`` is a power of two between 1 and ``max_value``.
     Use bit manipulations.
@@ -1537,7 +1573,7 @@ def get_core_purl(purl: Union[PackageURL, str]):
 
 def package_path_elements(
     purl: Union[PackageURL, str],
-    max_value: int = 1024,
+    max_value: int=1024,
 ):
     """
     Return a 4-tuple of POSIX path strings from the ``purl`` string or object.

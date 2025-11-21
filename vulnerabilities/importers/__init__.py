@@ -20,6 +20,7 @@ from vulnerabilities.importers import fireeye
 from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github_osv
 from vulnerabilities.importers import istio
+from vulnerabilities.importers import liferay
 from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
@@ -115,5 +116,6 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+        liferay.LiferayImporter,
     ]
 )

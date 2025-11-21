@@ -33,35 +33,40 @@ class LiferayImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "liferay_importer_v2"
     importer_name = "Liferay Importer"
 
+    release_links = []
+
     @classmethod
     def steps(cls):
         return (cls.collect_and_store_advisories,)
 
     def advisories_count(self) -> int:
-        return 1
+        if not self.release_links:
+            self.release_links = self.fetch_release_links()
+        return len(self.release_links)
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
+        if not self.release_links:
+            self.release_links = self.fetch_release_links()
+
+        for release_url in self.release_links:
+            yield from self.process_release_page(release_url)
+
+    def fetch_release_links(self):
         base_url = "https://liferay.dev/portal/security/known-vulnerabilities"
-        
-        # 1. Fetch Main Page
         try:
             main_page = requests.get(base_url)
             main_page.raise_for_status()
         except requests.RequestException as e:
             logger.error(f"Failed to fetch Liferay main page: {e}")
-            return
+            return []
 
         soup = BeautifulSoup(main_page.content, "lxml")
-        
-        # 2. Find Release Links
-        release_links = set()
+        links = set()
         for a in soup.find_all("a", href=True):
             href = a["href"]
             if "/categories/" in href and "known-vulnerabilities" in href:
-                release_links.add(urljoin(base_url, href))
-
-        for release_url in release_links:
-            yield from self.process_release_page(release_url)
+                links.add(urljoin(base_url, href))
+        return list(links)
 
     def process_release_page(self, release_url):
         try:
@@ -161,12 +166,13 @@ class LiferayImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                                 affected_packages.append(pkg)
 
         # Clean URL
+        # Example: https://liferay.dev/portal/security/known-vulnerabilities/-/asset_publisher/jekt/content/cve-2025-1234?_com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet_INSTANCE_jekt_redirect=...
         if "?" in vuln_url:
             vuln_url = vuln_url.split("?")[0]
 
         yield AdvisoryData(
             advisory_id=cve_id,
-            aliases=[cve_id],
+            aliases=[],
             summary=description,
             affected_packages=affected_packages,
             references_v2=[ReferenceV2(url=vuln_url)],

@@ -76,7 +76,7 @@ class TestLiferayImporterPipeline(TestCase):
         self.assertEqual(len(advisories), 1)
         advisory = advisories[0]
         self.assertIsInstance(advisory, AdvisoryData)
-        self.assertEqual(advisory.aliases, ["CVE-2023-1234"])
+        self.assertEqual(advisory.aliases, [])
         self.assertEqual(advisory.summary, "This is a test vulnerability description.")
         self.assertEqual(len(advisory.affected_packages), 1)
         self.assertEqual(advisory.affected_packages[0].package.name, "liferay-portal")

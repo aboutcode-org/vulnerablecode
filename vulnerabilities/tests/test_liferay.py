@@ -11,17 +11,17 @@ import os
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-from vulnerabilities.importers.liferay import LiferayImporter
+from vulnerabilities.pipelines.v2_importers.liferay_importer import LiferayImporterPipeline
 from vulnerabilities.importer import AdvisoryData
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")
 
 
-class TestLiferayImporter(TestCase):
-    @patch("vulnerabilities.importers.liferay.requests.get")
-    def test_advisory_data(self, mock_get):
-        importer = LiferayImporter()
+class TestLiferayImporterPipeline(TestCase):
+    @patch("vulnerabilities.pipelines.v2_importers.liferay_importer.requests.get")
+    def test_collect_advisories(self, mock_get):
+        importer = LiferayImporterPipeline()
         
         # Mock responses
         mock_main_page = MagicMock()
@@ -71,7 +71,7 @@ class TestLiferayImporter(TestCase):
             
         mock_get.side_effect = side_effect
         
-        advisories = list(importer.advisory_data())
+        advisories = list(importer.collect_advisories())
         
         self.assertEqual(len(advisories), 1)
         advisory = advisories[0]

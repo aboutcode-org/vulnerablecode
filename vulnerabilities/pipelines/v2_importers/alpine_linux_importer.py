@@ -94,11 +94,8 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def fetch(self) -> Iterable[Mapping]:
         self.log("Fetching Alpine Linux APKBUILD files")
         
-        # For now, process known packages
-        # In production, this would discover all packages
         self.packages_data = []
         
-        # Example package - can be expanded to fetch multiple packages
         packages_to_process = [
             ('main', 'asterisk'),
         ]
@@ -139,7 +136,6 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         secfixes = package_data['secfixes']
         url = package_data['url']
         
-        # Group by CVE
         cve_to_versions = {}
         for version, cve_list in secfixes.items():
             for cve_id in cve_list:
@@ -147,18 +143,15 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     cve_to_versions[cve_id] = []
                 cve_to_versions[cve_id].append(version)
         
-        # Create advisories
         for cve_id, versions in cve_to_versions.items():
             affected_packages = []
             
-            # PackageURL should NOT have version
             purl = PackageURL(
                 type="apk",
                 namespace=branch,
                 name=package_name,
             )
             
-            # Create affected package with version range
             affected_package = AffectedPackageV2(
                 package=purl,
                 fixed_version_range=GenericVersionRange.from_versions(versions),

@@ -7,6 +7,7 @@
 #
 
 from pathlib import Path
+from pickle import FALSE
 
 import pytest
 import requests
@@ -27,11 +28,10 @@ from aboutcode.federated import get_core_purl
 from aboutcode.federated import is_valid_power_of_two
 from aboutcode.federated import package_path_elements
 from aboutcode.federated import percent_quote_more
-from pickle import FALSE
 
 TEST_DATA = Path(__file__).parent / "test_data"
 
-REGEN =False
+REGEN = False
 
 
 def test_DataFederation_from_dict_and_to_dict(tmp_path):
@@ -80,7 +80,6 @@ def test_DataFederation_load(tmp_path):
 
 
 def test_DataFederation_from_url(monkeypatch):
-
     class Response:
         ok = True
         text = "name: fed\n" "remote_root_url: https://github.com/org\n"
@@ -286,6 +285,6 @@ def test_federation_with_all_cluster_preset():
     local_root_dir = TEST_DATA / "all-presets"
     if False:
         df.local_root_dir = local_root_dir
-        df.dump() 
+        df.dump()
     df2 = DataFederation.load(name="foo", local_root_dir=local_root_dir)
     assert df.to_dict() == df2.to_dict()

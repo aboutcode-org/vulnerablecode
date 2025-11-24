@@ -162,7 +162,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: atom_slices
-    datafile_path_template: '{/namespace}/{name}/{version}/atom.json'
+    datafile_path_template: '{namespace}/{name}/{version}/atom.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -239,7 +239,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: atom_vulnerable_slices
-    datafile_path_template: '{/namespace}/{name}/{version}/atom-vulnerable.json'
+    datafile_path_template: '{namespace}/{name}/{version}/atom-vulnerable.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -316,7 +316,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: cyclonedx14_sboms
-    datafile_path_template: '{/namespace}/{name}/{version}/cyclonedx-14.json'
+    datafile_path_template: '{namespace}/{name}/{version}/cyclonedx-14.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -393,7 +393,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: cyclonedx15_sboms
-    datafile_path_template: '{/namespace}/{name}/{version}/cyclonedx-15.json'
+    datafile_path_template: '{namespace}/{name}/{version}/cyclonedx-15.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -470,7 +470,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: cyclonedx16_sboms
-    datafile_path_template: '{/namespace}/{name}/{version}/cyclonedx-16.json'
+    datafile_path_template: '{namespace}/{name}/{version}/cyclonedx-16.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -547,7 +547,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: openssf_security_scorecards
-    datafile_path_template: '{/namespace}/{name}/security_scorecard.json'
+    datafile_path_template: '{namespace}/{name}/security_scorecard.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 256
@@ -624,7 +624,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: purldb
-    datafile_path_template: '{/namespace}/{name}/{version}/purldb.json'
+    datafile_path_template: '{namespace}/{name}/{version}/purldb.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -702,7 +702,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: purls
-    datafile_path_template: '{/namespace}/{name}/purls.yml'
+    datafile_path_template: '{namespace}/{name}/purls.yml'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 128
@@ -779,7 +779,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: scancode_fingerprints
-    datafile_path_template: '{/namespace}/{name}/{version}/scancode-fingerprints.json'
+    datafile_path_template: '{namespace}/{name}/{version}/scancode-fingerprints.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -856,7 +856,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: scancode_toolkit_scans
-    datafile_path_template: '{/namespace}/{name}/{version}/scancode-toolkit.json'
+    datafile_path_template: '{namespace}/{name}/{version}/scancode-toolkit.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -933,7 +933,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: security_advisories
-    datafile_path_template: '{/namespace}/{name}/{version}/advisories.json'
+    datafile_path_template: '{namespace}/{name}/{version}/advisories.json'
     purl_type_configs:
       - purl_type: default
         number_of_repos: 1
@@ -944,7 +944,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: spdx2_sboms
-    datafile_path_template: '{/namespace}/{name}/{version}/spdx-2.json'
+    datafile_path_template: '{namespace}/{name}/{version}/spdx-2.json'
     purl_type_configs:
       - purl_type: github
         number_of_repos: 1024
@@ -1021,7 +1021,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: vulnerabilities
-    datafile_path_template: '{/namespace}/{name}/vulnerabilities.json'
+    datafile_path_template: '{namespace}/{name}/vulnerabilities.json'
     purl_type_configs:
       - purl_type: default
         number_of_repos: 1

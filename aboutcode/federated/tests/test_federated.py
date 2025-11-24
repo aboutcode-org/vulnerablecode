@@ -288,3 +288,15 @@ def test_federation_with_all_cluster_preset():
         df.dump()
     df2 = DataFederation.load(name="foo", local_root_dir=local_root_dir)
     assert df.to_dict() == df2.to_dict()
+
+
+def test_datacluster_get_datafile_repo_and_path():
+    df = DataFederation(name="foo", data_clusters=sorted(cluster_preset().values()))
+    local_root_dir = TEST_DATA / "all-presets"
+
+    df = DataFederation.load(name="foo", local_root_dir=local_root_dir)
+    purls_dc = df.get_cluster("purls")
+    result_repo, result_path = purls_dc.get_datafile_repo_and_path("pkg:npm/foo/bar")
+
+    assert result_repo == "purls-npm-0920"
+    assert result_path == "npm-0927/foo/bar/purls.yml"

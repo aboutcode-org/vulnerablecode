@@ -754,8 +754,7 @@ class DataCluster:
         drbpt = self._data_repositories_by_purl_type
 
         for ptc in self.purl_type_configs:
-            for repo in ptc.get_repos(data_kind=kind):
-                drbpt[ptc.purl_type] = repo
+            drbpt[ptc.purl_type] = [repo for repo in ptc.get_repos(data_kind=kind)]
 
     @classmethod
     def from_dict(cls, data: dict) -> "DataCluster":

@@ -26,8 +26,11 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import CodeFix
 from vulnerabilities.models import CodeFixV2
+from vulnerabilities.models import DetectionRule
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
@@ -849,3 +852,36 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
         if self.detail:
             return "Pipeline Instance"
         return "Pipeline Jobs"
+
+
+class DetectionRuleFilter(filters.FilterSet):
+    advisory_avid = filters.CharFilter(field_name="related_advisories__avid", lookup_expr="exact")
+
+    rule_text_contains = filters.CharFilter(field_name="rule_text", lookup_expr="icontains")
+
+    class Meta:
+        model = DetectionRule
+        fields = ["rule_type"]
+
+
+class DetectionRuleSerializer(serializers.ModelSerializer):
+    advisory_avid = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DetectionRule
+        fields = ["rule_type", "source_url", "rule_metadata", "rule_text", "advisory_avid"]
+
+    def get_advisory_avid(self, obj):
+        avids = set(advisory.avid for advisory in obj.related_advisories.all())
+        return sorted(list(avids))
+
+
+class DetectionRuleViewSet(viewsets.ReadOnlyModelViewSet):
+    advisories_prefetch = Prefetch(
+        "related_advisories", queryset=AdvisoryV2.objects.only("id", "avid").distinct()
+    )
+    queryset = DetectionRule.objects.prefetch_related(advisories_prefetch)
+    serializer_class = DetectionRuleSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = DetectionRuleFilter

@@ -1,0 +1,46 @@
+{% load widget_tweaks %}
+<article class='panel is-info'>
+    <div class='panel-heading py-2 is-size-6'>
+        Search for Rules
+        <div class="dropdown is-hoverable has-text-weight-normal">
+            <div class="dropdown-trigger">
+                <i class="fa fa-question-circle ml-2"></i>
+            </div>
+            <div class="dropdown-menu dropdown-instructions-width" id="dropdown-menu4" role="menu">
+                <div class="dropdown-content dropdown-instructions-box-shadow">
+                    <div class="dropdown-item">
+                        Search for Rules by <strong>Rule Type such as: Sigma, Yara, Clamav signatures, Suricata</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-block">
+        <div class="pb-3 width-100-pct">
+            <form
+                action="{% url 'detection_rule_search' %}"
+                method="get"
+                name="detection_search_form"
+            >
+                <div class="field has-addons mt-3 width-100-pct">
+                    <div class="control">
+                        <div class="select">
+                            {% render_field detection_search_form.rule_type %}
+                        </div>
+                    </div>
+                    <div class="control is-expanded">
+                        {% render_field detection_search_form.advisory_avid class="input" %}
+                    </div>
+                    <div class="control is-expanded">
+                        {% render_field detection_search_form.rule_text_contains class="input" %}
+                    </div>
+                    <div class="control">
+                        <button class="is-link button" type="submit" id="submit_rule">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</article>

@@ -22,6 +22,7 @@ from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
+from vulnerabilities.api_v2 import DetectionRuleViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
@@ -34,6 +35,7 @@ from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import AffectedByAdvisoriesListView
 from vulnerabilities.views import ApiUserCreateView
+from vulnerabilities.views import DetectionRuleSearch
 from vulnerabilities.views import FixingAdvisoriesListView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2
@@ -81,6 +83,8 @@ api_v3_router.register(
 )
 api_v3_router.register("fixing-advisories", FixingAdvisoriesViewSet, basename="fixing-advisories")
 
+api_v3_router.register("detection-rules", DetectionRuleViewSet, basename="detection-rule")
+
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
     path("api/v2/", include(api_v2_router.urls)),
@@ -123,6 +127,11 @@ urlpatterns = [
         "advisories/<path:avid>",
         AdvisoryDetails.as_view(),
         name="advisory_details",
+    ),
+    path(
+        "rules/search/",
+        DetectionRuleSearch.as_view(),
+        name="detection_rule_search",
     ),
     path(
         "packages/search/",

@@ -3489,3 +3489,31 @@ class SSVC(models.Model):
 
     class Meta:
         unique_together = ("vector", "source_advisory")
+
+
+class AdvisoryDetectionRule(models.Model):
+    """
+    A detection rule (YARA, Sigma, ClamAV) linked to an advisory.
+    """
+
+    RULE_TYPES = [
+        ("yara", "YARA"),
+        ("sigma", "Sigma Detection Rule"),
+        ("clamav", "ClamAV Signature"),
+    ]
+
+    advisory = models.ForeignKey(
+        AdvisoryV2,
+        related_name="detection_rules",
+        on_delete=models.CASCADE,
+    )
+
+    rule_text = models.TextField(help_text="Full text of the detection rule, script, or signature.")
+
+    rule_type = models.CharField(max_length=100, choices=RULE_TYPES, blank=True)
+
+    source_url = models.URLField(
+        null=True,
+        blank=True,
+        help_text="URL or reference to the source of the rule (vendor feed, GitHub repo, etc.).",
+    )

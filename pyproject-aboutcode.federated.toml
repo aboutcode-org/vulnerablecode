@@ -1,0 +1,76 @@
+[build-system]
+requires = [ "flot>=0.7.0" ]
+build-backend = "flot.buildapi"
+
+[project]
+name = "aboutcode.federated"
+version = "0.1.0"
+description = "A library for AboutCode PURL-based federated identifiers"
+readme = "aboutcode/federated/README.rst"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.9"
+
+authors = [
+    { name = "AboutCode and others", email = "info@aboutcode.org" },
+]
+
+keywords = [
+    "purl",
+    "Package-URL",
+    "open source",
+    "package",
+    "sca",
+    "scan",
+    "hash",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "packageurl_python >= 0.15.6",
+    "saneyaml",
+    "requests",
+    "uritemplate",
+]
+
+urls = { Homepage = "https://github.com/aboutcode-org/vulnerablecode" }
+
+
+[tool.bumpversion]
+current_version = "0.1.0"
+allow_dirty = true
+
+files = [
+    { filename = "pyproject-aboutcode.federated.toml" },
+]
+
+[tool.flot]
+includes = [
+    "aboutcode/federated/**/*",
+]
+
+excludes = [
+    # Python compiled files
+    "**/*.py[cod]",
+    "**/*.egg-info",
+    # Various junk and temp files
+    "**/.DS_Store",
+    "**/*~",
+    "**/.*.sw[po]",
+    "**/.ve",
+    "**/*.bak",
+    "**/.ipynb_checkpoints",
+    "aboutcode/hashid/**/*",
+    "aboutcode/federated/tests/**/*",
+]
+
+metadata_files = ["apache-2.0.LICENSE", "NOTICE"]
+
+editable_paths = ["aboutcode"]

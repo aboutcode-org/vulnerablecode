@@ -1,0 +1,32 @@
+name: Build aboutcode.federated Python distributions and publish on PyPI
+
+on:
+  workflow_dispatch:
+  push:
+   tags:
+     - "aboutcode.federated/*"
+
+jobs:
+  build-and-publish:
+    name: Build and publish library to PyPI
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install flot
+        run: python -m pip install flot --user
+
+      - name: Build binary wheel and source tarball
+        run:  python -m flot --pyproject pyproject-aboutcode.federated.toml --sdist --wheel --output-dir dist/
+
+      - name: Publish to PyPI
+        if: startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN_ABOUTCODE_FEDERATED }}

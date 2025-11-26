@@ -9,12 +9,12 @@
 
 import json
 import logging
-import requests
 import time
 from datetime import datetime
 from http import HTTPStatus
 from typing import Iterable
 
+import requests
 from dateutil import parser as dateparser
 
 from vulnerabilities.importer import AdvisoryData
@@ -51,7 +51,7 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         if self._cached_data is not None:
             logger.info(f"Using cached data: {len(self._cached_data)} items")
             return self._cached_data
-            
+
         headers = {"User-Agent": "VulnerableCode"}
         all_items = []
         page = 0
@@ -61,7 +61,7 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         logger.info(f"Fetching data from EUVD API: {self.url}")
 
         while True:
-            
+
             retry_count = 0
             success = False
 
@@ -75,7 +75,9 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         retry_count += 1
                         if retry_count < max_retries:
                             sleep_time = min(10 * (2 ** min(retry_count - 1, 5)), 60)
-                            logger.info(f"Retrying page {page} in {sleep_time}s (attempt {retry_count}/{max_retries})")
+                            logger.info(
+                                f"Retrying page {page} in {sleep_time}s (attempt {retry_count}/{max_retries})"
+                            )
                             time.sleep(sleep_time)
                             continue
                         else:
@@ -87,23 +89,29 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
                     if not items:
                         logger.info(f"No items in response for page {page}; stopping fetch.")
-                        logger.info(f"Fetch completed successfully. Total items collected: {len(all_items)}")
-                        
+                        logger.info(
+                            f"Fetch completed successfully. Total items collected: {len(all_items)}"
+                        )
+
                         # Cache the fetched data for reuse
                         self._cached_data = all_items
                         logger.info(f"Cached {len(all_items)} items for reuse")
-                        
+
                         return all_items
 
                     all_items.extend(items)
-                    logger.info(f"Fetched page {page}: {len(items)} items (total: {len(all_items)})")
+                    logger.info(
+                        f"Fetched page {page}: {len(items)} items (total: {len(all_items)})"
+                    )
                     success = True
                     page += 1
 
                 except requests.exceptions.Timeout as e:
                     retry_count += 1
                     if retry_count < max_retries:
-                        logger.warning(f"Timeout on page {page}: {e}. Retrying in 10s (attempt {retry_count}/{max_retries})")
+                        logger.warning(
+                            f"Timeout on page {page}: {e}. Retrying in 10s (attempt {retry_count}/{max_retries})"
+                        )
                         time.sleep(10)
                     else:
                         logger.error(f"Max retries reached for page {page} after timeout")
@@ -112,7 +120,9 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 except Exception as e:
                     retry_count += 1
                     if retry_count < max_retries:
-                        logger.error(f"Error fetching page {page}: {e}. Retrying in 10s (attempt {retry_count}/{max_retries})")
+                        logger.error(
+                            f"Error fetching page {page}: {e}. Retrying in 10s (attempt {retry_count}/{max_retries})"
+                        )
                         time.sleep(10)
                     else:
                         logger.error(f"Max retries reached for page {page}")
@@ -134,41 +144,43 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def parse_advisory(self, raw_data: dict) -> AdvisoryData:
         advisory_id = raw_data.get("id", "")
-        
+
         aliases = [advisory_id] if advisory_id else []
         aliases_str = raw_data.get("aliases", "")
         if aliases_str:
             cve_aliases = [alias.strip() for alias in aliases_str.split("\n") if alias.strip()]
             aliases.extend(cve_aliases)
-        
+
         summary = raw_data.get("description", "")
-        
+
         date_published = None
         date_str = raw_data.get("datePublished", "")
         if date_str:
             try:
                 date_published = dateparser.parse(date_str)
                 if date_published and date_published.tzinfo is None:
-                    date_published = date_published.replace(tzinfo=datetime.now().astimezone().tzinfo)
+                    date_published = date_published.replace(
+                        tzinfo=datetime.now().astimezone().tzinfo
+                    )
             except Exception as e:
                 logger.warning(f"Failed to parse date '{date_str}': {e}")
-        
+
         references = []
         references_str = raw_data.get("references", "")
         if references_str:
             urls = [url.strip() for url in references_str.split("\n") if url.strip()]
             for url in urls:
                 references.append(ReferenceV2(url=url))
-        
+
         if advisory_id:
             advisory_url = f"https://euvd.enisa.europa.eu/vulnerability/{advisory_id}"
             references.append(ReferenceV2(url=advisory_url))
-        
+
         severities = []
         base_score = raw_data.get("baseScore")
         base_score_version = raw_data.get("baseScoreVersion")
         base_score_vector = raw_data.get("baseScoreVector")
-        
+
         if base_score and base_score_version:
             scoring_system = self.get_scoring_system(base_score_version)
             if scoring_system:
@@ -178,7 +190,7 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     scoring_elements=base_score_vector or "",
                 )
                 severities.append(severity)
-        
+
         return AdvisoryData(
             advisory_id=advisory_id,
             aliases=aliases,

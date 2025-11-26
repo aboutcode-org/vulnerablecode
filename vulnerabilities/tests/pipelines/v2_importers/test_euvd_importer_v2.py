@@ -46,15 +46,15 @@ class TestEUVDImporterPipeline(TestCase):
         assert first.advisory_id == "EUVD-2025-197757"
         assert "EUVD-2025-197757" in first.aliases
         assert "CVE-2025-13284" in first.aliases
-        assert (
-            first.summary == "ThinPLUS vulnerability that allows remote code execution"
-        )
+        assert first.summary == "ThinPLUS vulnerability that allows remote code execution"
         assert first.date_published is not None
         assert len(first.severities) == 1
         assert first.severities[0].system.identifier == "cvssv3.1"
         assert first.severities[0].value == "9.8"
-        assert first.severities[0].scoring_elements == "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
-        
+        assert (
+            first.severities[0].scoring_elements == "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+        )
+
         urls = [ref.url for ref in first.references_v2]
         assert "https://nvd.nist.gov/vuln/detail/CVE-2025-13284" in urls
         assert "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-197757" in urls
@@ -88,23 +88,23 @@ class TestEUVDImporterPipeline(TestCase):
     def test_get_scoring_system(self):
         """Test CVSS version to scoring system mapping"""
         pipeline = EUVDImporterPipeline()
-        
+
         system_v4 = pipeline.get_scoring_system("4.0")
         assert system_v4 is not None
         assert system_v4.identifier == "cvssv4"
-        
+
         system_v31 = pipeline.get_scoring_system("3.1")
         assert system_v31 is not None
         assert system_v31.identifier == "cvssv3.1"
-        
+
         system_v3 = pipeline.get_scoring_system("3.0")
         assert system_v3 is not None
         assert system_v3.identifier == "cvssv3"
-        
+
         system_v2 = pipeline.get_scoring_system("2.0")
         assert system_v2 is not None
         assert system_v2.identifier == "cvssv2"
-        
+
         system_unknown = pipeline.get_scoring_system("unknown")
         assert system_unknown is None
 
@@ -122,4 +122,3 @@ class TestEUVDImporterPipeline(TestCase):
         count = pipeline.advisories_count()
 
         assert count == 3
-

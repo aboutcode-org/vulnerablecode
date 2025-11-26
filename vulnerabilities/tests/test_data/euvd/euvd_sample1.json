@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": "EUVD-2025-197757",
+      "aliases": "CVE-2025-13284",
+      "description": "ThinPLUS vulnerability that allows remote code execution",
+      "datePublished": "2025-01-09T01:00:00.000Z",
+      "baseScore": "9.8",
+      "baseScoreVersion": "3.1",
+      "baseScoreVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+      "references": "https://nvd.nist.gov/vuln/detail/CVE-2025-13284"
+    },
+    {
+      "id": "EUVD-2024-123456",
+      "aliases": "CVE-2024-12345\nCVE-2024-67890",
+      "description": "Multiple vulnerabilities in authentication system",
+      "datePublished": "2024-12-15T10:30:00.000Z",
+      "baseScore": "7.5",
+      "baseScoreVersion": "3.1",
+      "baseScoreVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "references": "https://example.com/advisory1\nhttps://example.com/advisory2"
+    },
+    {
+      "id": "EUVD-2023-999999",
+      "aliases": "CVE-2023-99999",
+      "description": "Denial of service vulnerability",
+      "datePublished": "2023-06-20T14:22:00.000Z",
+      "baseScore": "5.3",
+      "baseScoreVersion": "3.0",
+      "baseScoreVector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+      "references": "https://security.example.org/2023-999999"
+    }
+  ]
+}

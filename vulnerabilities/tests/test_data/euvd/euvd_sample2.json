@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "id": "EUVD-2022-555555",
+      "aliases": "CVE-2022-55555",
+      "description": "",
+      "datePublished": "2022-03-10T08:15:00.000Z",
+      "baseScore": "4.3",
+      "baseScoreVersion": "2.0",
+      "baseScoreVector": "AV:N/AC:M/Au:N/C:N/I:P/A:N",
+      "references": ""
+    },
+    {
+      "id": "EUVD-2021-111111",
+      "aliases": "",
+      "description": "Advisory without CVE alias but with EUVD ID",
+      "datePublished": "2021-11-05T16:45:00.000Z",
+      "baseScore": "6.5",
+      "baseScoreVersion": "3.1",
+      "baseScoreVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+      "references": "https://euvd.example.org/2021-111111"
+    }
+  ]
+}

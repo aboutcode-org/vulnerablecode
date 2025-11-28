@@ -1,0 +1,157 @@
+[
+  {
+    "advisory_id": "EUVD-2025-197757",
+    "aliases": [
+      "EUVD-2025-197757",
+      "CVE-2025-13284"
+    ],
+    "summary": "ThinPLUS vulnerability that allows remote code execution",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-13284"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-197757"
+      }
+    ],
+    "severities": [
+      {
+        "system": "cvssv3.1",
+        "value": "9.8",
+        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      }
+    ],
+    "date_published": "2025-01-09T01:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-197757"
+  },
+  {
+    "advisory_id": "EUVD-2024-123456",
+    "aliases": [
+      "EUVD-2024-123456",
+      "CVE-2024-12345",
+      "CVE-2024-67890"
+    ],
+    "summary": "Multiple vulnerabilities in authentication system",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://example.com/advisory1"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://example.com/advisory2"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-123456"
+      }
+    ],
+    "severities": [
+      {
+        "system": "cvssv3.1",
+        "value": "7.5",
+        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      }
+    ],
+    "date_published": "2024-12-15T10:30:00+00:00",
+    "weaknesses": [],
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-123456"
+  },
+  {
+    "advisory_id": "EUVD-2023-999999",
+    "aliases": [
+      "EUVD-2023-999999",
+      "CVE-2023-99999"
+    ],
+    "summary": "Denial of service vulnerability",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://security.example.org/2023-999999"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2023-999999"
+      }
+    ],
+    "severities": [
+      {
+        "system": "cvssv3",
+        "value": "5.3",
+        "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      }
+    ],
+    "date_published": "2023-06-20T14:22:00+00:00",
+    "weaknesses": [],
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2023-999999"
+  },
+  {
+    "advisory_id": "EUVD-2022-555555",
+    "aliases": [
+      "EUVD-2022-555555",
+      "CVE-2022-55555"
+    ],
+    "summary": "",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2022-555555"
+      }
+    ],
+    "severities": [
+      {
+        "system": "cvssv2",
+        "value": "4.3",
+        "scoring_elements": "AV:N/AC:M/Au:N/C:N/I:P/A:N"
+      }
+    ],
+    "date_published": "2022-03-10T08:15:00+00:00",
+    "weaknesses": [],
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2022-555555"
+  },
+  {
+    "advisory_id": "EUVD-2021-111111",
+    "aliases": [
+      "EUVD-2021-111111"
+    ],
+    "summary": "Advisory without CVE alias but with EUVD ID",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.example.org/2021-111111"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2021-111111"
+      }
+    ],
+    "severities": [
+      {
+        "system": "cvssv3.1",
+        "value": "6.5",
+        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+      }
+    ],
+    "date_published": "2021-11-05T16:45:00+00:00",
+    "weaknesses": [],
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2021-111111"
+  }
+]

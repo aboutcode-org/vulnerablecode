@@ -20,5 +20,6 @@
       "baseScoreVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
       "references": "https://euvd.example.org/2021-111111"
     }
-  ]
+  ],
+  "total": 200
 }

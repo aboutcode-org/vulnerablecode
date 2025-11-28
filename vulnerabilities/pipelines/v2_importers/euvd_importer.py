@@ -9,6 +9,7 @@
 
 import json
 import logging
+import math
 import time
 from datetime import datetime
 from http import HTTPStatus
@@ -47,86 +48,111 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return (cls.collect_and_store_advisories,)
 
     def fetch_data(self):
-        # Return cached data if already fetched
         if self._cached_data is not None:
             logger.info(f"Using cached data: {len(self._cached_data)} items")
             return self._cached_data
 
-        headers = {"User-Agent": "VulnerableCode"}
         all_items = []
-        page = 0
         size = 100
-        max_retries = 100
+        max_retries = 2
 
         logger.info(f"Fetching data from EUVD API: {self.url}")
 
-        while True:
+        total_count = self._fetch_total_count(size, max_retries)
+        if total_count is None:
+            logger.error("Failed to fetch total count from API")
+            return all_items
 
-            retry_count = 0
-            success = False
+        total_pages = math.ceil(total_count / size)
+        logger.info(f"Total advisories: {total_count}, Total pages: {total_pages}")
 
-            while retry_count < max_retries and not success:
-                try:
-                    params = {"size": size, "page": page}
-                    response = requests.get(self.url, headers=headers, params=params, timeout=30)
+        first_page_data = self._fetch_page(0, size, max_retries)
+        if first_page_data:
+            all_items.extend(first_page_data)
+            logger.info(f"Fetched page 0: {len(first_page_data)} items (total: {len(all_items)})")
 
-                    if response.status_code != HTTPStatus.OK:
-                        logger.error(f"API returned status {response.status_code} for page {page}")
-                        retry_count += 1
-                        if retry_count < max_retries:
-                            sleep_time = min(10 * (2 ** min(retry_count - 1, 5)), 60)
-                            logger.info(
-                                f"Retrying page {page} in {sleep_time}s (attempt {retry_count}/{max_retries})"
-                            )
-                            time.sleep(sleep_time)
-                            continue
-                        else:
-                            logger.error(f"Max retries reached for page {page}")
-                            return all_items
+        for page in range(1, total_pages):
+            page_data = self._fetch_page(page, size, max_retries)
+            if page_data is None:
+                logger.warning(f"Skipping page {page} after failed retries")
+                continue
 
-                    data = response.json()
-                    items = data.get("items", [])
+            if not page_data:
+                logger.info(f"No items in response for page {page}; stopping fetch.")
+                break
 
-                    if not items:
-                        logger.info(f"No items in response for page {page}; stopping fetch.")
-                        logger.info(
-                            f"Fetch completed successfully. Total items collected: {len(all_items)}"
-                        )
+            all_items.extend(page_data)
+            logger.info(f"Fetched page {page}: {len(page_data)} items (total: {len(all_items)})")
 
-                        # Cache the fetched data for reuse
-                        self._cached_data = all_items
-                        logger.info(f"Cached {len(all_items)} items for reuse")
+        logger.info(f"Fetch completed successfully. Total items collected: {len(all_items)}")
 
-                        return all_items
+        self._cached_data = all_items
+        logger.info(f"Cached {len(all_items)} items for reuse")
 
-                    all_items.extend(items)
-                    logger.info(
-                        f"Fetched page {page}: {len(items)} items (total: {len(all_items)})"
-                    )
-                    success = True
-                    page += 1
+        return all_items
 
-                except requests.exceptions.Timeout as e:
-                    retry_count += 1
-                    if retry_count < max_retries:
-                        logger.warning(
-                            f"Timeout on page {page}: {e}. Retrying in 10s (attempt {retry_count}/{max_retries})"
-                        )
-                        time.sleep(10)
-                    else:
-                        logger.error(f"Max retries reached for page {page} after timeout")
-                        return all_items
+    def _make_request_with_retry(self, params, max_retries, context):
+        headers = {"User-Agent": "VulnerableCode"}
 
-                except Exception as e:
-                    retry_count += 1
-                    if retry_count < max_retries:
-                        logger.error(
-                            f"Error fetching page {page}: {e}. Retrying in 10s (attempt {retry_count}/{max_retries})"
-                        )
-                        time.sleep(10)
-                    else:
-                        logger.error(f"Max retries reached for page {page}")
-                        return all_items
+        for attempt in range(max_retries):
+            try:
+                response = requests.get(self.url, headers=headers, params=params, timeout=30)
+
+                if response.status_code != HTTPStatus.OK:
+                    logger.error(f"API returned status {response.status_code} for {context}")
+                    if attempt < max_retries - 1:
+                        logger.info(f"Retrying {context} (attempt {attempt + 1}/{max_retries})")
+                        time.sleep(3)
+                        continue
+                    return None
+
+                return response.json()
+
+            except requests.exceptions.Timeout:
+                logger.warning(f"Timeout on {context} (attempt {attempt + 1}/{max_retries})")
+                if attempt < max_retries - 1:
+                    time.sleep(3)
+                    continue
+                return None
+
+            except requests.exceptions.RequestException as e:
+                logger.error(
+                    f"Network error on {context}: {e} (attempt {attempt + 1}/{max_retries})"
+                )
+                if attempt < max_retries - 1:
+                    time.sleep(3)
+                    continue
+                return None
+
+            except (ValueError, KeyError) as e:
+                logger.error(f"Error parsing response for {context}: {e}")
+                return None
+
+        return None
+
+    def _fetch_total_count(self, size, max_retries):
+        """Fetch the total count of advisories from the API."""
+        params = {"size": size, "page": 0}
+        data = self._make_request_with_retry(params, max_retries, "total count")
+
+        if data is None:
+            return None
+
+        total = data.get("total")
+        if total is None:
+            logger.error("No 'total' field in API response")
+
+        return total
+
+    def _fetch_page(self, page, size, max_retries):
+        """Fetch a single page of advisories from the API."""
+        params = {"size": size, "page": page}
+        data = self._make_request_with_retry(params, max_retries, f"page {page}")
+
+        if data is None:
+            return None
+
+        return data.get("items", [])
 
     def advisories_count(self) -> int:
         return len(self.fetch_data())
@@ -137,7 +163,7 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 advisory = self.parse_advisory(raw_data)
                 if advisory:
                     yield advisory
-            except Exception as e:
+            except (ValueError, KeyError, TypeError) as e:
                 logger.error(f"Failed to parse advisory: {e}")
                 logger.debug(f"Raw data: {raw_data}")
                 continue
@@ -162,7 +188,7 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     date_published = date_published.replace(
                         tzinfo=datetime.now().astimezone().tzinfo
                     )
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 logger.warning(f"Failed to parse date '{date_str}': {e}")
 
         references = []

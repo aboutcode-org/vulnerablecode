@@ -30,5 +30,6 @@
       "baseScoreVector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
       "references": "https://security.example.org/2023-999999"
     }
-  ]
+  ],
+  "total": 200
 }

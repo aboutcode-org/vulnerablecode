@@ -13,8 +13,8 @@ from unittest import TestCase
 from unittest.mock import Mock
 from unittest.mock import patch
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines.v2_importers.euvd_importer import EUVDImporterPipeline
+from vulnerabilities.tests import util_tests
 
 TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "euvd"
 
@@ -31,59 +31,16 @@ class TestEUVDImporterPipeline(TestCase):
 
         mock_responses = [
             Mock(status_code=200, json=lambda: sample1),
+            Mock(status_code=200, json=lambda: sample1),
             Mock(status_code=200, json=lambda: sample2),
-            Mock(status_code=200, json=lambda: {"items": []}),
         ]
         mock_get.side_effect = mock_responses
 
         pipeline = EUVDImporterPipeline()
-        advisories = list(pipeline.collect_advisories())
+        advisories = [data.to_dict() for data in list(pipeline.collect_advisories())]
 
-        assert len(advisories) == 5
-
-        first = advisories[0]
-        assert isinstance(first, AdvisoryData)
-        assert first.advisory_id == "EUVD-2025-197757"
-        assert "EUVD-2025-197757" in first.aliases
-        assert "CVE-2025-13284" in first.aliases
-        assert first.summary == "ThinPLUS vulnerability that allows remote code execution"
-        assert first.date_published is not None
-        assert len(first.severities) == 1
-        assert first.severities[0].system.identifier == "cvssv3.1"
-        assert first.severities[0].value == "9.8"
-        assert (
-            first.severities[0].scoring_elements == "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
-        )
-
-        urls = [ref.url for ref in first.references_v2]
-        assert "https://nvd.nist.gov/vuln/detail/CVE-2025-13284" in urls
-        assert "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-197757" in urls
-
-        second = advisories[1]
-        assert second.advisory_id == "EUVD-2024-123456"
-        assert "CVE-2024-12345" in second.aliases
-        assert "CVE-2024-67890" in second.aliases
-        assert len([a for a in second.aliases if a.startswith("CVE-")]) == 2
-
-        urls = [ref.url for ref in second.references_v2]
-        assert "https://example.com/advisory1" in urls
-        assert "https://example.com/advisory2" in urls
-
-        third = advisories[2]
-        assert third.advisory_id == "EUVD-2023-999999"
-        assert third.severities[0].system.identifier == "cvssv3"
-        assert third.severities[0].value == "5.3"
-
-        fourth = advisories[3]
-        assert fourth.advisory_id == "EUVD-2022-555555"
-        assert fourth.summary == ""
-        assert fourth.severities[0].system.identifier == "cvssv2"
-        assert fourth.severities[0].value == "4.3"
-
-        fifth = advisories[4]
-        assert fifth.advisory_id == "EUVD-2021-111111"
-        assert len([a for a in fifth.aliases if a.startswith("CVE-")]) == 0
-        assert fifth.summary == "Advisory without CVE alias but with EUVD ID"
+        expected_file = TEST_DATA / "euvd-expected.json"
+        util_tests.check_results_against_json(advisories, expected_file)
 
     def test_get_scoring_system(self):
         """Test CVSS version to scoring system mapping"""
@@ -111,10 +68,10 @@ class TestEUVDImporterPipeline(TestCase):
     @patch("vulnerabilities.pipelines.v2_importers.euvd_importer.requests.get")
     def test_advisories_count(self, mock_get):
         """Test counting advisories"""
-        sample_data = {"items": [{"id": "1"}, {"id": "2"}, {"id": "3"}]}
+        sample_data = {"items": [{"id": "1"}, {"id": "2"}, {"id": "3"}], "total": 3}
         mock_responses = [
             Mock(status_code=200, json=lambda: sample_data),
-            Mock(status_code=200, json=lambda: {"items": []}),
+            Mock(status_code=200, json=lambda: sample_data),
         ]
         mock_get.side_effect = mock_responses
 

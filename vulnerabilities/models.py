@@ -3740,3 +3740,43 @@ class GroupedAdvisory(NamedTuple):
     weighted_severity: Optional[float]
     exploitability: Optional[float]
     risk_score: Optional[float]
+
+
+class DetectionRuleTypes(models.TextChoices):
+    """Defines the supported formats for security detection rules."""
+
+    YARA = "yara", "Yara"
+    YARA_X = "yara-x", "Yara-X"
+    SIGMA = "sigma", "Sigma"
+    CLAMAV = "clamav", "ClamAV"
+    SURICATA = "suricata", "Suricata"
+
+
+class DetectionRule(models.Model):
+    """
+    A Detection Rule is code used to identify malicious activity or security threats.
+    """
+
+    rule_type = models.CharField(
+        max_length=50,
+        choices=DetectionRuleTypes.choices,
+        help_text="The type of the detection rule content (e.g., YARA, Sigma).",
+    )
+
+    source_url = models.URLField(
+        max_length=1024, help_text="URL to the original source or reference for this rule."
+    )
+
+    rule_metadata = models.JSONField(
+        null=True,
+        blank=True,
+        help_text="Additional structured data such as tags, or author information.",
+    )
+
+    rule_text = models.TextField(help_text="The content of the detection signature.")
+
+    related_advisories = models.ManyToManyField(
+        AdvisoryV2,
+        related_name="detection_rules",
+        help_text="Advisories associated with this DetectionRule.",
+    )

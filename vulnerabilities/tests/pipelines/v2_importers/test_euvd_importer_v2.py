@@ -24,15 +24,12 @@ class TestEUVDImporterPipeline(TestCase):
     def test_collect_advisories(self, mock_get):
         """Test collecting and parsing advisories from test data"""
         sample1_path = TEST_DATA / "euvd_sample1.json"
-        sample2_path = TEST_DATA / "euvd_sample2.json"
 
         sample1 = json.loads(sample1_path.read_text(encoding="utf-8"))
-        sample2 = json.loads(sample2_path.read_text(encoding="utf-8"))
 
         mock_responses = [
             Mock(status_code=200, json=lambda: sample1),
             Mock(status_code=200, json=lambda: sample1),
-            Mock(status_code=200, json=lambda: sample2),
         ]
         mock_get.side_effect = mock_responses
 

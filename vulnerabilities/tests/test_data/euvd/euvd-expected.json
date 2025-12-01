@@ -1,157 +1,188 @@
 [
   {
-    "advisory_id": "EUVD-2025-197757",
+    "advisory_id": "EUVD-2022-0569",
     "aliases": [
-      "EUVD-2025-197757",
-      "CVE-2025-13284"
+      "EUVD-2022-0569",
+      "CVE-2018-1109",
+      "GHSA-cwfw-4gq5-mrqx"
     ],
-    "summary": "ThinPLUS vulnerability that allows remote code execution",
+    "summary": "A vulnerability was found in Braces versions 2.2.0 and above, prior to 2.3.1. Affected versions of this package are vulnerable to Regular Expression Denial of Service (ReDoS) attacks.",
     "affected_packages": [],
     "references_v2": [
       {
         "reference_id": "",
         "reference_type": "",
-        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-13284"
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1109"
       },
       {
         "reference_id": "",
         "reference_type": "",
-        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-197757"
+        "url": "https://github.com/micromatch/braces/commit/abdafb0cae1e0c00f184abbadc692f4eaa98f451"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1547272"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2022-0569"
       }
     ],
     "severities": [
       {
         "system": "cvssv3.1",
-        "value": "9.8",
-        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
-      }
-    ],
-    "date_published": "2025-01-09T01:00:00+00:00",
-    "weaknesses": [],
-    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-197757"
-  },
-  {
-    "advisory_id": "EUVD-2024-123456",
-    "aliases": [
-      "EUVD-2024-123456",
-      "CVE-2024-12345",
-      "CVE-2024-67890"
-    ],
-    "summary": "Multiple vulnerabilities in authentication system",
-    "affected_packages": [],
-    "references_v2": [
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://example.com/advisory1"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://example.com/advisory2"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-123456"
-      }
-    ],
-    "severities": [
-      {
-        "system": "cvssv3.1",
-        "value": "7.5",
-        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
-      }
-    ],
-    "date_published": "2024-12-15T10:30:00+00:00",
-    "weaknesses": [],
-    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2024-123456"
-  },
-  {
-    "advisory_id": "EUVD-2023-999999",
-    "aliases": [
-      "EUVD-2023-999999",
-      "CVE-2023-99999"
-    ],
-    "summary": "Denial of service vulnerability",
-    "affected_packages": [],
-    "references_v2": [
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://security.example.org/2023-999999"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2023-999999"
-      }
-    ],
-    "severities": [
-      {
-        "system": "cvssv3",
         "value": "5.3",
-        "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
       }
     ],
-    "date_published": "2023-06-20T14:22:00+00:00",
+    "date_published": "2021-03-30T01:52:55+00:00",
     "weaknesses": [],
-    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2023-999999"
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2022-0569"
   },
   {
-    "advisory_id": "EUVD-2022-555555",
+    "advisory_id": "EUVD-2025-199883",
     "aliases": [
-      "EUVD-2022-555555",
-      "CVE-2022-55555"
+      "EUVD-2025-199883",
+      "CVE-2025-66027"
     ],
-    "summary": "",
+    "summary": "Rallly is an open-source scheduling and collaboration tool. Prior to version 4.5.6, an information disclosure vulnerability exposes participant details, including names and email addresses through the /api/trpc/polls.get,polls.participants.list endpoint, even when Pro privacy features are enabled. This bypasses intended privacy controls that should prevent participants from viewing other users' personal information. This issue has been patched in version 4.5.6.",
     "affected_packages": [],
     "references_v2": [
       {
         "reference_id": "",
         "reference_type": "",
-        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2022-555555"
-      }
-    ],
-    "severities": [
-      {
-        "system": "cvssv2",
-        "value": "4.3",
-        "scoring_elements": "AV:N/AC:M/Au:N/C:N/I:P/A:N"
-      }
-    ],
-    "date_published": "2022-03-10T08:15:00+00:00",
-    "weaknesses": [],
-    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2022-555555"
-  },
-  {
-    "advisory_id": "EUVD-2021-111111",
-    "aliases": [
-      "EUVD-2021-111111"
-    ],
-    "summary": "Advisory without CVE alias but with EUVD ID",
-    "affected_packages": [],
-    "references_v2": [
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://euvd.example.org/2021-111111"
+        "url": "https://github.com/lukevella/rallly/security/advisories/GHSA-65wg-8xgw-f3fg"
       },
       {
         "reference_id": "",
         "reference_type": "",
-        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2021-111111"
+        "url": "https://github.com/lukevella/rallly/commit/59738c04f9a8ec25f0af5ce20ad0eab6cf134963"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-199883"
+      }
+    ],
+    "severities": [
+      {
+        "system": "cvssv4",
+        "value": "7.1",
+        "scoring_elements": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:N/VA:N/SC:L/SI:N/SA:N"
+      }
+    ],
+    "date_published": "2025-11-29T00:43:02+00:00",
+    "weaknesses": [],
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-199883"
+  },
+  {
+    "advisory_id": "EUVD-2025-199882",
+    "aliases": [
+      "EUVD-2025-199882",
+      "CVE-2025-66034"
+    ],
+    "summary": "fontTools is a library for manipulating fonts, written in Python. In versions from 4.33.0 to before 4.60.2, the fonttools varLib (or python3 -m fontTools.varLib) script has an arbitrary file write vulnerability that leads to remote code execution when a malicious .designspace file is processed. The vulnerability affects the main() code path of fontTools.varLib, used by the fonttools varLib CLI and any code that invokes fontTools.varLib.main(). This issue has been patched in version 4.60.2.",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/fonttools/fonttools/security/advisories/GHSA-768j-98cg-p3fv"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/fonttools/fonttools/commit/a696d5ba93270d5954f98e7cab5ddca8a02c1e32"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-199882"
       }
     ],
     "severities": [
       {
         "system": "cvssv3.1",
-        "value": "6.5",
-        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N"
+        "value": "6.3",
+        "scoring_elements": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:C/C:N/I:H/A:L"
       }
     ],
-    "date_published": "2021-11-05T16:45:00+00:00",
+    "date_published": "2025-11-29T01:07:12+00:00",
     "weaknesses": [],
-    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2021-111111"
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-199882"
+  },
+  {
+    "advisory_id": "EUVD-2025-199921",
+    "aliases": [
+      "EUVD-2025-199921",
+      "CVE-2025-66420"
+    ],
+    "summary": "Tryton sao (aka tryton-sao) before 7.6.9 allows XSS via an HTML attachment. This is fixed in 7.6.9, 7.4.19, 7.0.38, and 6.0.67.",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://discuss.tryton.org/t/security-release-for-issue-14290/8895"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://foss.heptapod.net/tryton/tryton/-/issues/14290"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-66420"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-199921"
+      }
+    ],
+    "severities": [
+      {
+        "system": "cvssv3.1",
+        "value": "5.4",
+        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N"
+      }
+    ],
+    "date_published": "2025-11-30T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-199921"
+  },
+  {
+    "advisory_id": "EUVD-2025-199889",
+    "aliases": [
+      "EUVD-2025-199889",
+      "CVE-2025-66036"
+    ],
+    "summary": "Retro is an online platform providing items of vintage collections. Prior to version 2.4.7, Retro is vulnerable to a cross-site scripting (XSS) in the input handling component. This issue has been patched in version 2.4.7.",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/Anjaliavv51/Retro/security/advisories/GHSA-gvv6-p6h6-2vj2"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-199889"
+      }
+    ],
+    "severities": [
+      {
+        "system": "cvssv3.1",
+        "value": "6.1",
+        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+      }
+    ],
+    "date_published": "2025-11-29T01:14:38+00:00",
+    "weaknesses": [],
+    "url": "https://euvd.enisa.europa.eu/vulnerability/EUVD-2025-199889"
   }
 ]

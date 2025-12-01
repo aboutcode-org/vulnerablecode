@@ -1,25 +1,67 @@
 {
   "items": [
     {
-      "id": "EUVD-2022-555555",
-      "aliases": "CVE-2022-55555",
-      "description": "",
-      "datePublished": "2022-03-10T08:15:00.000Z",
-      "baseScore": "4.3",
-      "baseScoreVersion": "2.0",
-      "baseScoreVector": "AV:N/AC:M/Au:N/C:N/I:P/A:N",
-      "references": ""
+      "id": "EUVD-2025-199882",
+      "enisaUuid": "911c0f6a-52a9-3013-a8e2-50ff32772b3f",
+      "description": "fontTools is a library for manipulating fonts, written in Python. In versions from 4.33.0 to before 4.60.2, the fonttools varLib (or python3 -m fontTools.varLib) script has an arbitrary file write vulnerability that leads to remote code execution when a malicious .designspace file is processed. The vulnerability affects the main() code path of fontTools.varLib, used by the fonttools varLib CLI and any code that invokes fontTools.varLib.main(). This issue has been patched in version 4.60.2.",
+      "datePublished": "Nov 29, 2025, 1:07:12 AM",
+      "dateUpdated": "Dec 1, 2025, 2:11:17 PM",
+      "baseScore": 6.3,
+      "baseScoreVersion": "3.1",
+      "baseScoreVector": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:C/C:N/I:H/A:L",
+      "references": "https://github.com/fonttools/fonttools/security/advisories/GHSA-768j-98cg-p3fv\nhttps://github.com/fonttools/fonttools/commit/a696d5ba93270d5954f98e7cab5ddca8a02c1e32\n",
+      "aliases": "CVE-2025-66034\n",
+      "assigner": "GitHub_M",
+      "epss": 0.09,
+      "enisaIdProduct": [
+        {
+          "id": "2ffeef7e-ff67-3e85-a9ac-983195786663",
+          "product": {
+            "name": "fonttools"
+          },
+          "product_version": "4.33.0, < 4.60.2"
+        }
+      ],
+      "enisaIdVendor": [
+        {
+          "id": "d709fba0-867b-3831-965e-05b3b019d930",
+          "vendor": {
+            "name": "fonttools"
+          }
+        }
+      ]
     },
     {
-      "id": "EUVD-2021-111111",
-      "aliases": "",
-      "description": "Advisory without CVE alias but with EUVD ID",
-      "datePublished": "2021-11-05T16:45:00.000Z",
-      "baseScore": "6.5",
+      "id": "EUVD-2025-199921",
+      "enisaUuid": "6ac6d459-6393-3e2e-ad31-122cf95d732e",
+      "description": "Tryton sao (aka tryton-sao) before 7.6.9 allows XSS via an HTML attachment. This is fixed in 7.6.9, 7.4.19, 7.0.38, and 6.0.67.",
+      "datePublished": "Nov 30, 2025, 12:00:00 AM",
+      "dateUpdated": "Dec 1, 2025, 2:10:50 PM",
+      "baseScore": 5.4,
       "baseScoreVersion": "3.1",
-      "baseScoreVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
-      "references": "https://euvd.example.org/2021-111111"
+      "baseScoreVector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N",
+      "references": "https://discuss.tryton.org/t/security-release-for-issue-14290/8895\nhttps://foss.heptapod.net/tryton/tryton/-/issues/14290\nhttps://nvd.nist.gov/vuln/detail/CVE-2025-66420\n",
+      "aliases": "CVE-2025-66420\n",
+      "assigner": "mitre",
+      "epss": 0.03,
+      "enisaIdProduct": [
+        {
+          "id": "3cc4305f-3f05-39df-bf41-6fe760513270",
+          "product": {
+            "name": "sao"
+          },
+          "product_version": "7.0.0 <7.0.38"
+        }
+      ],
+      "enisaIdVendor": [
+        {
+          "id": "2cb8be18-e27b-3cc9-aa3f-e68b7f308d98",
+          "vendor": {
+            "name": "tryton"
+          }
+        }
+      ]
     }
   ],
-  "total": 200
+  "total": 452826
 }

@@ -35,7 +35,7 @@ class EUVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "euvd_importer_v2"
-    spdx_license_expression = "LicenseRef-scancode-other-permissive"
+    spdx_license_expression = "CC-BY-4.0"
     license_url = "https://www.enisa.europa.eu/about-enisa/legal-notice/"
     url = "https://euvdservices.enisa.europa.eu/api/search"
 

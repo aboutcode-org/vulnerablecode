@@ -3414,3 +3414,31 @@ class CodeCommit(models.Model):
 
     class Meta:
         unique_together = ("commit_hash", "vcs_url")
+
+
+class AdvisoryDetectionRule(models.Model):
+    """"""
+
+    RULE_TYPES = [
+        ("yara", "YARA"),
+        ("sigma", "Sigma Detection Rule"),
+        ("clamav", "ClamAV Signature"),
+    ]
+
+    advisory = models.ForeignKey(
+        AdvisoryV2,
+        related_name="detection_rules",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
+    rule_text = models.TextField(help_text="Full text of the detection rule, script, or signature.")
+
+    rule_type = models.CharField(max_length=100, choices=RULE_TYPES, blank=True)
+
+    source_url = models.URLField(
+        null=True,
+        blank=True,
+        help_text="URL or reference to the source of the rule (vendor feed, GitHub repo, etc.).",
+    )

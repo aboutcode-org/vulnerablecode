@@ -9,6 +9,7 @@
 
 import csv
 import datetime
+import hashlib
 import logging
 import uuid
 import xml.etree.ElementTree as ET
@@ -2744,6 +2745,61 @@ class AdvisoryAlias(models.Model):
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
+class Patch(models.Model):
+    """
+    A generic patch linked to an advisory.
+    Used for raw text patches, fallback scenarios, or unsupported VCS types.
+    """
+
+    patch_url = models.URLField(
+        null=True,
+        blank=True,
+        help_text="URL to the patch file or diff.",
+    )
+
+    patch_text = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The actual text content of the code patch/diff.",
+    )
+
+    patch_checksum = models.CharField(
+        max_length=128,
+        help_text="SHA512 checksum of the patch content.",
+    )
+
+    class Meta:
+        unique_together = ["patch_checksum", "patch_url"]
+
+
+class PackageCommitPatch(models.Model):
+    """
+    A specific patch implementation for structured Package/VCS data.
+    Inherits from Patch.
+    """
+
+    commit_hash = models.CharField(
+        max_length=128,
+        help_text="The commit hash of the patch in the VCS.",
+    )
+
+    vcs_url = models.URLField(
+        max_length=1024,
+        help_text="The Version Control System URL (e.g., git repo URL).",
+    )
+
+    patch_text = models.TextField(blank=True, null=True)
+    patch_checksum = models.CharField(max_length=128, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.patch_text:
+            self.patch_checksum = hashlib.sha512(self.patch_text.encode("utf-8")).hexdigest()
+        super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ["commit_hash", "vcs_url"]
+
+
 class AdvisoryV2(models.Model):
     """
     An advisory represents data directly obtained from upstream transformed
@@ -2820,6 +2876,13 @@ class AdvisoryV2(models.Model):
         related_name="advisories",
         help_text="A list of software weaknesses associated with this advisory.",
     )
+
+    patches = models.ManyToManyField(
+        Patch,
+        related_name="advisories",
+        help_text="A list of patches associated with this advisory.",
+    )
+
     date_published = models.DateTimeField(
         blank=True, null=True, help_text="UTC Date of publication of the advisory"
     )
@@ -2957,16 +3020,16 @@ class ImpactedPackage(models.Model):
         help_text="Packages vulnerable to this impact.",
     )
 
-    affecting_commits = models.ManyToManyField(
-        "CodeCommit",
-        related_name="affecting_commits_in_impacts",
-        help_text="Commits introducing this impact.",
+    introduced_by_package_commit_patches = models.ManyToManyField(
+        "PackageCommitPatch",
+        related_name="introduced_in_impacts",
+        help_text="PackageCommitPatches that introduce this impact.",
     )
 
-    fixed_by_commits = models.ManyToManyField(
-        "CodeCommit",
-        related_name="fixing_commits_in_impacts",
-        help_text="Commits fixing this impact.",
+    fixed_by_package_commit_patches = models.ManyToManyField(
+        "PackageCommitPatch",
+        related_name="fixed_in_impacts",
+        help_text="PackageCommitPatches that fix this impact.",
     )
 
     created_at = models.DateTimeField(
@@ -3385,36 +3448,6 @@ class AdvisoryExploit(models.Model):
     @property
     def get_known_ransomware_campaign_use_type(self):
         return "Known" if self.known_ransomware_campaign_use else "Unknown"
-
-
-class CodeCommit(models.Model):
-    """
-    A CodeCommit Represents a single VCS commit (e.g., Git) related to a ImpactedPackage.
-    """
-
-    commit_hash = models.CharField(max_length=64, help_text="Unique commit identifier (e.g., SHA).")
-    vcs_url = models.URLField(
-        max_length=1024, help_text="URL of the repository containing the commit."
-    )
-
-    commit_rank = models.IntegerField(
-        default=0,
-        help_text="Rank of the commit to support ordering by commit. Rank "
-        "zero means the rank has not been defined yet",
-    )
-    commit_author = models.CharField(
-        max_length=100, null=True, blank=True, help_text="Author of the commit."
-    )
-    commit_date = models.DateTimeField(
-        null=True, blank=True, help_text="Timestamp indicating when this commit was created."
-    )
-    commit_message = models.TextField(
-        null=True, blank=True, help_text="Commit message or description."
-    )
-
-    class Meta:
-        unique_together = ("commit_hash", "vcs_url")
-
 
 class SSVC(models.Model):
     vector = models.CharField(max_length=255, help_text="The vector string representing the SSVC.")

@@ -18,8 +18,11 @@ from univers.version_range import VersionRange
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import PackageCommitPatchData
+from vulnerabilities.importer import PatchData
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
@@ -51,12 +54,42 @@ def dummy_advisory():
                 package=PackageURL.from_string("pkg:npm/foobar"),
                 affected_version_range=VersionRange.from_string("vers:npm/<=1.2.3"),
                 fixed_version_range=VersionRange.from_string("vers:npm/1.2.4"),
+                introduced_by_commit_patches=[
+                    PackageCommitPatchData(
+                        commit_hash="9ff29db8ec3adefefce0d37c3c9b5b2c22e59fac",
+                        vcs_url="https://github.com/aboutcode-org/vulnerablecode",
+                    )
+                ],
+                fixed_by_commit_patches=[
+                    PackageCommitPatchData(
+                        commit_hash="ab99939678dc36b3bee0f366493df1aeef521df4",
+                        vcs_url="https://github.com/aboutcode-org/vulnerablecode",
+                    )
+                ],
             ),
             AffectedPackageV2(
                 package=PackageURL.from_string("pkg:npm/foobar"),
                 affected_version_range=VersionRange.from_string("vers:npm/<=3.2.3"),
                 fixed_version_range=VersionRange.from_string("vers:npm/3.2.4"),
+                introduced_by_commit_patches=[
+                    PackageCommitPatchData(
+                        commit_hash="9ff29db8ec3adefefce0d37c3c9b5b2c22e59fac",
+                        vcs_url="https://github.com/aboutcode-org/vulnerablecode",
+                    )
+                ],
+                fixed_by_commit_patches=[
+                    PackageCommitPatchData(
+                        commit_hash="ab99939678dc36b3bee0f366493df1aeef521df4",
+                        vcs_url="https://github.com/aboutcode-org/vulnerablecode",
+                    )
+                ],
             ),
+        ],
+        patches=[
+            PatchData(
+                patch_text="patch_text",
+                patch_url="example.com/1.patch",
+            )
         ],
         advisory_id="ADV-123",
         date_published=datetime.now() - timedelta(days=10),
@@ -92,4 +125,5 @@ def test_advisory_import_atomicity(dummy_importer):
     dummy_importer.collect_and_store_advisories()
     assert AdvisoryV2.objects.count() == 1
     assert ImpactedPackage.objects.count() == 2
+    assert PackageCommitPatch.objects.count() == 2
     assert PackageV2.objects.count() == 4

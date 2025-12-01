@@ -64,7 +64,7 @@ MarkupSafe==2.1.1
 matplotlib-inline==0.1.3
 multidict==6.0.2
 mypy-extensions==0.4.3
-packageurl-python==0.15.6
+packageurl-python==0.17.6
 packaging==21.3
 paramiko==3.4.0
 parso==0.8.3

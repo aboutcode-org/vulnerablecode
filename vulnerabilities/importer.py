@@ -10,7 +10,6 @@
 import dataclasses
 import datetime
 import functools
-import hashlib
 import logging
 import traceback
 import xml.etree.ElementTree as ET
@@ -37,6 +36,7 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.utils import classproperty
+from vulnerabilities.utils import compute_patch_checksum
 from vulnerabilities.utils import get_reference_id
 from vulnerabilities.utils import is_commit
 from vulnerabilities.utils import is_cve
@@ -202,6 +202,7 @@ class PackageCommitPatchData:
     vcs_url: str
     commit_hash: str
     patch_text: Optional[str] = None
+    patch_checksum: Optional[str] = dataclasses.field(init=False, default=None)
 
     def __post_init__(self):
         if not self.commit_hash:
@@ -212,6 +213,9 @@ class PackageCommitPatchData:
 
         if not self.vcs_url:
             raise ValueError("Commit must have a non-empty vcs_url.")
+
+        if self.patch_text:
+            self.patch_checksum = compute_patch_checksum(self.patch_text)
 
     def __lt__(self, other):
         if not isinstance(other, PackageCommitPatchData):
@@ -224,6 +228,7 @@ class PackageCommitPatchData:
             self.vcs_url,
             self.commit_hash,
             self.patch_text,
+            self.patch_checksum,
         )
 
     def to_dict(self) -> dict:
@@ -232,6 +237,7 @@ class PackageCommitPatchData:
             "vcs_url": self.vcs_url,
             "commit_hash": self.commit_hash,
             "patch_text": self.patch_text,
+            "patch_checksum": self.patch_checksum,
         }
 
     @classmethod
@@ -256,7 +262,7 @@ class PatchData:
             raise ValueError("A patch must include either patch_url or patch_text")
 
         if self.patch_text:
-            self.patch_checksum = hashlib.sha512(self.patch_text.encode()).hexdigest()
+            self.patch_checksum = compute_patch_checksum(self.patch_text)
 
     def __lt__(self, other):
         if not isinstance(other, PatchData):

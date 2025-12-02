@@ -65,6 +65,7 @@ import vulnerablecode
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import compute_patch_checksum
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
@@ -2765,8 +2766,15 @@ class Patch(models.Model):
 
     patch_checksum = models.CharField(
         max_length=128,
+        blank=True,
+        null=True,
         help_text="SHA512 checksum of the patch content.",
     )
+
+    def save(self, *args, **kwargs):
+        if self.patch_text:
+            self.patch_checksum = compute_patch_checksum(self.patch_text)
+        super().save(*args, **kwargs)
 
     class Meta:
         unique_together = ["patch_checksum", "patch_url"]
@@ -2774,8 +2782,7 @@ class Patch(models.Model):
 
 class PackageCommitPatch(models.Model):
     """
-    A specific patch implementation for structured Package/VCS data.
-    Inherits from Patch.
+    A specific patch implementation for structured Package/VCS data
     """
 
     commit_hash = models.CharField(

@@ -147,8 +147,8 @@ def get_or_create_advisory_patches(
     pairs = [(c.patch_url, c.patch_checksum) for c in base_patches_data]
 
     query = Q()
-    for patch_checksum, patch_text in pairs:
-        query |= Q(patch_checksum=patch_checksum, patch_text=patch_text)
+    for patch_checksum, patch_url in pairs:
+        query |= Q(patch_checksum=patch_checksum, patch_url=patch_url)
 
     existing_commits_qs = Patch.objects.filter(query)
     existing_pairs = set(existing_commits_qs.values_list("patch_url", "patch_checksum"))

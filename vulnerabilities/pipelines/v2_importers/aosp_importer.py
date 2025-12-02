@@ -14,15 +14,11 @@ from urllib.parse import quote
 
 import dateparser
 from fetchcode.vcs import fetch_via_vcs
-from packageurl.contrib.purl2url import get_repo_url
-from packageurl.contrib.url2purl import url2purl
 
-from aboutcode.hashid import get_core_purl
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
-from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.advisory import classify_patch_source
@@ -37,8 +33,6 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "aosp_dataset_fix_commits"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/quarkslab/aosp_dataset/blob/master/LICENSE"
-    importer_name = "aosp_dataset"
-    qualified_name = "aosp_dataset_fix_commits"
 
     @classmethod
     def steps(cls):

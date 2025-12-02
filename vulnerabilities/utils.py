@@ -35,15 +35,12 @@ from cwe2.database import Database
 from cwe2.database import InvalidCWEError
 from packageurl import PackageURL
 from packageurl.contrib.django.utils import without_empty_values
-from packageurl.contrib.purl2url import get_repo_url
-from packageurl.contrib.url2purl import url2purl
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
 from aboutcode.hashid import build_vcid
-from aboutcode.hashid import get_core_purl
 
 logger = logging.getLogger(__name__)
 
@@ -799,3 +796,10 @@ def ssvc_calculator(ssvc_data):
 
         ssvc_vector += f"{timestamp_formatted}/"
     return ssvc_vector, decision
+
+
+def compute_patch_checksum(patch_text: str | None) -> str | None:
+    """
+    Compute SHA-512 checksum for patch text.
+    """
+    return hashlib.sha512(patch_text.encode("utf-8")).hexdigest()

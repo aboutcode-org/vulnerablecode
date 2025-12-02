@@ -797,8 +797,7 @@ def ssvc_calculator(ssvc_data):
         ssvc_vector += f"{timestamp_formatted}/"
     return ssvc_vector, decision
 
-
-def compute_patch_checksum(patch_text: str | None) -> str | None:
+def compute_patch_checksum(patch_text: str):
     """
     Compute SHA-512 checksum for patch text.
     """

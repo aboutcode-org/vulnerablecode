@@ -74,11 +74,11 @@ def to_advisories(data):
                             type="generic",
                             qualifiers=pkg_qualifiers,
                         ),
-                        affected_version_range=GenericVersionRange.from_versions(
-                            affected_version_list
-                        )
-                        if affected_version_list
-                        else None,
+                        affected_version_range=(
+                            GenericVersionRange.from_versions(affected_version_list)
+                            if affected_version_list
+                            else None
+                        ),
                         fixed_version=GenericVersion(fixed_version) if fixed_version else None,
                     )
                 )

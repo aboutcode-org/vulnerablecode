@@ -75,9 +75,9 @@ def cleaned_response(response):
                 reference["scores"] = sorted(
                     reference["scores"], key=lambda x: (x["value"], x["scoring_system"])
                 )
-                package_data["resolved_vulnerabilities"][index]["references"][index2][
-                    "scores"
-                ] = reference["scores"]
+                package_data["resolved_vulnerabilities"][index]["references"][index2]["scores"] = (
+                    reference["scores"]
+                )
 
         cleaned_response.append(package_data)
 

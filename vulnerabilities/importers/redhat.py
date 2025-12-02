@@ -156,7 +156,9 @@ def to_advisory(advisory_data):
         affected_packages=affected_packages,
         references=references,
         weaknesses=cwe_list,
-        url=resource_url
-        if resource_url
-        else "https://access.redhat.com/hydra/rest/securitydata/cve.json",
+        url=(
+            resource_url
+            if resource_url
+            else "https://access.redhat.com/hydra/rest/securitydata/cve.json"
+        ),
     )

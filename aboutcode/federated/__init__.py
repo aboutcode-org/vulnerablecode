@@ -1300,7 +1300,6 @@ class DataRepository:
         purl_type: str,
         hashids: list[str],
     ) -> "DataRepository":
-
         """
         Return a new DataRepository to store ``data_kind`` of ``purl_type`` for
         a list of ``hashids``.

@@ -88,22 +88,22 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     patch_url = commit_data.get("patchUrl")
                     commit_id = commit_data.get("commitId")
 
-                    base_purl, patch_obj = classify_patch_source(
+                    base_purl, patch_obj_list = classify_patch_source(
                         vcs_url=None,
                         commit_hash=commit_id,
                         patch_url=patch_url,
                         patch_text=None,
                     )
-
-                    if isinstance(patch_obj, PackageCommitPatchData):
-                        fixed_commit = patch_obj
-                        affected_package = AffectedPackageV2(
-                            package=base_purl,
-                            fixed_by_commit_patches=[fixed_commit],
-                        )
-                        affected_packages.append(affected_package)
-                    elif isinstance(patch_obj, PatchData):
-                        patches.append(patch_obj)
+                    for patch_obj in patch_obj_list:
+                        if isinstance(patch_obj, PackageCommitPatchData):
+                            fixed_commit = patch_obj
+                            affected_package = AffectedPackageV2(
+                                package=base_purl,
+                                fixed_by_commit_patches=[fixed_commit],
+                            )
+                            affected_packages.append(affected_package)
+                        elif isinstance(patch_obj, PatchData):
+                            patches.append(patch_obj)
 
                 url = (
                     "https://raw.githubusercontent.com/quarkslab/aosp_dataset/refs/heads/master/cves/"

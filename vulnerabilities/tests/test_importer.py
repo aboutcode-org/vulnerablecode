@@ -25,21 +25,27 @@ def test_all_importers_have_unique_name():
 
 
 @pytest.mark.parametrize(
-    "vcs_url, commit_hash, patch_text, patch_url, expected_result_tuple",
+    "vcs_url, commit_hash, patch_text, patch_url, expected_data_list",
     [
         # SUPPORTED: VCS URL + commit hash + no code patch
         (
             "https://github.com/user/repo",
-            "a1b2c3d4",
+            "a5f3206663e16c0686739fa83fca2978e6818b6",
             None,
             None,
             (
                 "pkg:github/user/repo",
-                PackageCommitPatchData(
-                    vcs_url="https://github.com/user/repo",
-                    commit_hash="a1b2c3d4",
-                    patch_text=None,
-                ),
+                [
+                    PackageCommitPatchData(
+                        vcs_url="https://github.com/user/repo",
+                        commit_hash="a5f3206663e16c0686739fa83fca2978e6818b6",
+                        patch_text=None,
+                    ),
+                    PatchData(
+                        patch_text=None,
+                        patch_url="https://github.com/user/repo/tree/a5f3206663e16c0686739fa83fca2978e6818b6",
+                    ),
+                ],
             ),
         ),
         # UNSUPPORTED: VCS URL + commit hash + no code patch
@@ -50,10 +56,12 @@ def test_all_importers_have_unique_name():
             None,
             (
                 None,
-                PatchData(
-                    patch_text=None,
-                    patch_url="https://unsupported.example.com/repo",
-                ),
+                [
+                    PatchData(
+                        patch_text=None,
+                        patch_url="https://unsupported.example.com/repo",
+                    )
+                ],
             ),
         ),
         # SUPPORTED: VCS URL + commit hash + code patch
@@ -64,11 +72,17 @@ def test_all_importers_have_unique_name():
             "https://github.com/user/repo/commit/a1b2c3d4",
             (
                 "pkg:github/user/repo",
-                PackageCommitPatchData(
-                    commit_hash="deadbeef",
-                    vcs_url="https://github.com/user/repo",
-                    patch_text="diff --git a/file b/file",
-                ),
+                [
+                    PackageCommitPatchData(
+                        commit_hash="deadbeef",
+                        vcs_url="https://github.com/user/repo",
+                        patch_text="diff --git a/file b/file",
+                    ),
+                    PatchData(
+                        patch_text="diff --git a/file b/file",
+                        patch_url="https://github.com/user/repo/commit/a1b2c3d4",
+                    ),
+                ],
             ),
         ),
         # UNSUPPORTED: VCS URL + commit hash + code patch
@@ -79,10 +93,12 @@ def test_all_importers_have_unique_name():
             "https://example.com/user/unknown/commits/a1b2c3d4",
             (
                 None,
-                PatchData(
-                    patch_text="diff content",
-                    patch_url="https://example.com/user/unknown/commits/a1b2c3d4",
-                ),
+                [
+                    PatchData(
+                        patch_text="diff content",
+                        patch_url="https://example.com/user/unknown/commits/a1b2c3d4",
+                    )
+                ],
             ),
         ),
         #  NO VCS URL + NO commit hash + code patch
@@ -93,10 +109,12 @@ def test_all_importers_have_unique_name():
             "https://example.com/user/unknown/commits/a1b2c3d4",
             (
                 None,
-                PatchData(
-                    patch_text="diff content",
-                    patch_url="https://example.com/user/unknown/commits/a1b2c3d4",
-                ),
+                [
+                    PatchData(
+                        patch_text="diff content",
+                        patch_url="https://example.com/user/unknown/commits/a1b2c3d4",
+                    )
+                ],
             ),
         ),
         # SUPPORTED: VCS URL + NO commit hash + no code patch #invalid
@@ -107,10 +125,12 @@ def test_all_importers_have_unique_name():
             None,
             (
                 None,
-                PatchData(
-                    patch_text=None,
-                    patch_url="https://github.com/user/repo",
-                ),
+                [
+                    PatchData(
+                        patch_text=None,
+                        patch_url="https://github.com/user/repo",
+                    )
+                ],
             ),
         ),
         # UNSUPPORTED: VCS URL + NO commit hash + no code patch #invalid
@@ -121,10 +141,12 @@ def test_all_importers_have_unique_name():
             None,
             (
                 None,
-                PatchData(
-                    patch_text=None,
-                    patch_url="https://example.com/user/repo",
-                ),
+                [
+                    PatchData(
+                        patch_text=None,
+                        patch_url="https://example.com/user/repo",
+                    )
+                ],
             ),
         ),
         # SUPPORTED: VCS URL + NO commit hash + code patch
@@ -135,11 +157,17 @@ def test_all_importers_have_unique_name():
             "https://github.com/user/unknown/commit/98e516011d6e096e25247b82fc5f196bbeecff10",
             (
                 "pkg:github/user/unknown",
-                PackageCommitPatchData(
-                    vcs_url="https://github.com/user/repo",
-                    commit_hash="98e516011d6e096e25247b82fc5f196bbeecff10",
-                    patch_text=None,
-                ),
+                [
+                    PackageCommitPatchData(
+                        vcs_url="https://github.com/user/repo",
+                        commit_hash="98e516011d6e096e25247b82fc5f196bbeecff10",
+                        patch_text=None,
+                    ),
+                    PatchData(
+                        patch_text=None,
+                        patch_url="https://github.com/user/unknown/commit/98e516011d6e096e25247b82fc5f196bbeecff10",
+                    ),
+                ],
             ),
         ),
         # UNSUPPORTED: VCS URL + NO commit hash + code patch
@@ -150,32 +178,40 @@ def test_all_importers_have_unique_name():
             "https://example.com/user/unknown/commits/98e516011d6e096e25247b82fc5f196bbeecff10.patch",
             (
                 None,
-                PatchData(
-                    patch_text=None,
-                    patch_url="https://example.com/user/unknown/commits/98e516011d6e096e25247b82fc5f196bbeecff10.patch",
-                ),
+                [
+                    PatchData(
+                        patch_text=None,
+                        patch_url="https://example.com/user/unknown/commits/98e516011d6e096e25247b82fc5f196bbeecff10.patch",
+                    )
+                ],
             ),
         ),
     ],
 )
 def test_classify_patch_source_integration(
-    vcs_url, commit_hash, patch_text, patch_url, expected_result_tuple
+    vcs_url, commit_hash, patch_text, patch_url, expected_data_list
 ):
-    expected_purl, expected_data_obj = expected_result_tuple
+    expected_purl, expected_data_objects = expected_data_list
 
-    actual_purl, actual_data_obj = classify_patch_source(
+    actual_purl, actual_data_objects = classify_patch_source(
         vcs_url=vcs_url, commit_hash=commit_hash, patch_text=patch_text, patch_url=patch_url
     )
 
-    assert isinstance(actual_data_obj, type(expected_data_obj))
-
-    if isinstance(actual_data_obj, PackageCommitPatchData):
-        assert actual_data_obj.vcs_url == expected_data_obj.vcs_url
-        assert actual_data_obj.commit_hash == expected_data_obj.commit_hash
-        assert actual_data_obj.patch_text == expected_data_obj.patch_text
+    if expected_purl:
         assert str(actual_purl) == expected_purl
-
-    elif isinstance(actual_data_obj, PatchData):
-        assert actual_data_obj.patch_url == expected_data_obj.patch_url
-        assert actual_data_obj.patch_text == expected_data_obj.patch_text
+    else:
         assert actual_purl is None
+
+    assert len(actual_data_objects) == len(expected_data_objects)
+
+    for actual_data_obj, expected_data_obj in zip(actual_data_objects, expected_data_objects):
+        assert isinstance(actual_data_obj, type(expected_data_obj))
+
+        if isinstance(actual_data_obj, PackageCommitPatchData):
+            assert actual_data_obj.vcs_url == expected_data_obj.vcs_url
+            assert actual_data_obj.commit_hash == expected_data_obj.commit_hash
+            assert actual_data_obj.patch_text == expected_data_obj.patch_text
+
+        elif isinstance(actual_data_obj, PatchData):
+            assert actual_data_obj.patch_url == expected_data_obj.patch_url
+            assert actual_data_obj.patch_text == expected_data_obj.patch_text

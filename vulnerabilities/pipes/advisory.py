@@ -19,7 +19,8 @@ from typing import Union
 from django.db import transaction
 from django.db.models import Q
 from django.db.models.query import QuerySet
-from packageurl.contrib.purl2url import get_repo_url
+from packageurl import PackageURL
+from packageurl.contrib.purl2url import purl2url
 from packageurl.contrib.url2purl import url2purl
 
 from aboutcode.hashid import get_core_purl
@@ -184,15 +185,17 @@ def classify_patch_source(vcs_url, commit_hash, patch_text, patch_url):
         purl = url2purl(vcs_url)
 
     if not purl:
-        return None, PatchData(
-            patch_text=patch_text,
-            patch_url=patch_url,
-        )
+        return None, [
+            PatchData(
+                patch_text=patch_text,
+                patch_url=patch_url,
+            )
+        ]
 
     base_purl = get_core_purl(purl)
     purl_string = base_purl.to_string()
 
-    vcs_url_p = get_repo_url(purl_string)
+    vcs_url_p = purl2url(purl_string)
     commit_hash_p = purl.version
 
     final_vcs_url = vcs_url or vcs_url_p
@@ -204,16 +207,28 @@ def classify_patch_source(vcs_url, commit_hash, patch_text, patch_url):
         and is_commit(final_commit_hash)
         and purl.type in VCS_URLS_SUPPORTED_TYPES
     ):
-        return base_purl, PackageCommitPatchData(
-            vcs_url=final_vcs_url,
-            commit_hash=final_commit_hash,
+        purl = PackageURL(
+            type=purl.type, namespace=purl.namespace, name=purl.name, version=final_commit_hash
+        )
+        final_patch_url = patch_url or purl2url(str(purl))
+        return base_purl, [
+            PackageCommitPatchData(
+                vcs_url=final_vcs_url,
+                commit_hash=final_commit_hash,
+                patch_text=patch_text,
+            ),
+            PatchData(
+                patch_text=patch_text,
+                patch_url=final_patch_url,
+            ),
+        ]
+
+    return None, [
+        PatchData(
+            patch_url=patch_url or final_vcs_url,
             patch_text=patch_text,
         )
-
-    return None, PatchData(
-        patch_url=patch_url or final_vcs_url,
-        patch_text=patch_text,
-    )
+    ]
 
 
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):

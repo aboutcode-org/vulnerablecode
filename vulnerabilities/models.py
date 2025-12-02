@@ -2800,7 +2800,7 @@ class PackageCommitPatch(models.Model):
 
     def save(self, *args, **kwargs):
         if self.patch_text:
-            self.patch_checksum = hashlib.sha512(self.patch_text.encode("utf-8")).hexdigest()
+            self.patch_checksum = compute_patch_checksum(self.patch_text)
         super().save(*args, **kwargs)
 
     class Meta:

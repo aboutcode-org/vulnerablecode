@@ -194,12 +194,16 @@ def insert_advisory_v2(
             impact = ImpactedPackage.objects.create(
                 advisory=advisory_obj,
                 base_purl=str(affected_pkg.package),
-                affecting_vers=str(affected_pkg.affected_version_range)
-                if affected_pkg.affected_version_range
-                else None,
-                fixed_vers=str(affected_pkg.fixed_version_range)
-                if affected_pkg.fixed_version_range
-                else None,
+                affecting_vers=(
+                    str(affected_pkg.affected_version_range)
+                    if affected_pkg.affected_version_range
+                    else None
+                ),
+                fixed_vers=(
+                    str(affected_pkg.fixed_version_range)
+                    if affected_pkg.fixed_version_range
+                    else None
+                ),
             )
             package_affected_purls, package_fixed_purls = get_exact_purls_v2(
                 affected_package=affected_pkg,

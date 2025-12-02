@@ -21,7 +21,6 @@ from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github_osv
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
-from vulnerabilities.pipelines.v2_importers import liferay_importer
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
@@ -51,6 +50,7 @@ from vulnerabilities.pipelines.v2_importers import (
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
+from vulnerabilities.pipelines.v2_importers import liferay_importer
 from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2

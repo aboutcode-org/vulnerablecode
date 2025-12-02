@@ -456,7 +456,7 @@ class AdvisoryData:
         # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
         summary = summary.strip()
         if summary:
-            summary = summary.replace("\x00", "\uFFFD")
+            summary = summary.replace("\x00", "\ufffd")
         return summary
 
     def to_dict(self):
@@ -506,9 +506,9 @@ class AdvisoryData:
                 affected_package_cls.from_dict(pkg) for pkg in affected_packages if pkg is not None
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
-            "date_published": datetime.datetime.fromisoformat(date_published)
-            if date_published
-            else None,
+            "date_published": (
+                datetime.datetime.fromisoformat(date_published) if date_published else None
+            ),
             "weaknesses": advisory_data["weaknesses"],
             "url": advisory_data.get("url") or None,
         }
@@ -548,7 +548,7 @@ class AdvisoryDataV2:
         # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
         summary = summary.strip()
         if summary:
-            summary = summary.replace("\x00", "\uFFFD")
+            summary = summary.replace("\x00", "\ufffd")
         return summary
 
     def to_dict(self):
@@ -574,9 +574,9 @@ class AdvisoryDataV2:
                 if pkg is not None
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
-            "date_published": datetime.datetime.fromisoformat(date_published)
-            if date_published
-            else None,
+            "date_published": (
+                datetime.datetime.fromisoformat(date_published) if date_published else None
+            ),
             "weaknesses": advisory_data["weaknesses"],
             "url": advisory_data.get("url") or None,
         }

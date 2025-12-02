@@ -50,6 +50,7 @@ def test_fetch_links_filters_and_resolves(monkeypatch):
     </body></html>
     """
     base_url = "https://example.com/base/"
+
     # Monkeypatch HTTP GET for HTML
     def fake_get(url):
         assert url == base_url
@@ -126,6 +127,7 @@ def test_collect_advisories_and_to_advisory(monkeypatch, pipeline):
         "affects": {"vendor": {"vendor_data": []}},
         "timeline": [],
     }
+
     # Monkeypatch requests.get to return JSON
     def fake_get(u):
         if u == "u1":

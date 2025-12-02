@@ -22,7 +22,7 @@ class TestLiferayImporterPipeline(TestCase):
     @patch("vulnerabilities.pipelines.v2_importers.liferay_importer.requests.get")
     def test_collect_advisories(self, mock_get):
         importer = LiferayImporterPipeline()
-        
+
         # Mock responses
         mock_main_page = MagicMock()
         mock_main_page.content = b"""
@@ -32,7 +32,7 @@ class TestLiferayImporterPipeline(TestCase):
             </body>
         </html>
         """
-        
+
         mock_release_page = MagicMock()
         mock_release_page.content = b"""
         <html>
@@ -41,7 +41,7 @@ class TestLiferayImporterPipeline(TestCase):
             </body>
         </html>
         """
-        
+
         mock_vuln_page = MagicMock()
         mock_vuln_page.content = b"""
         <html>
@@ -58,7 +58,7 @@ class TestLiferayImporterPipeline(TestCase):
             </body>
         </html>
         """
-        
+
         # Configure side_effect to return different mocks based on URL
         def side_effect(url):
             if url == "https://liferay.dev/portal/security/known-vulnerabilities":
@@ -68,11 +68,11 @@ class TestLiferayImporterPipeline(TestCase):
             elif "asset_publisher" in url:
                 return mock_vuln_page
             return MagicMock()
-            
+
         mock_get.side_effect = side_effect
-        
+
         advisories = list(importer.collect_advisories())
-        
+
         self.assertEqual(len(advisories), 1)
         advisory = advisories[0]
         self.assertIsInstance(advisory, AdvisoryData)

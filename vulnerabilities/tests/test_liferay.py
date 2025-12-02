@@ -9,10 +9,11 @@
 
 import os
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
-from vulnerabilities.pipelines.v2_importers.liferay_importer import LiferayImporterPipeline
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.pipelines.v2_importers.liferay_importer import LiferayImporterPipeline
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data")

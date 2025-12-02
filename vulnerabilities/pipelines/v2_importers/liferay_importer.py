@@ -77,7 +77,7 @@ class LiferayImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             return
 
         soup = BeautifulSoup(page.content, "lxml")
-        
+
         # 3. Find Vulnerability Links
         vuln_links = set()
         for a in soup.find_all("a", href=True):
@@ -97,16 +97,16 @@ class LiferayImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             return
 
         soup = BeautifulSoup(page.content, "lxml")
-        
+
         # Extract Details
         title = soup.find("h1")
         title_text = title.get_text(strip=True) if title else ""
-        
+
         # CVE ID
         cve_match = re.search(r"(CVE-\d{4}-\d{4,})", title_text)
         if not cve_match:
             cve_match = re.search(r"(CVE-\d{4}-\d{4,})", soup.get_text())
-        
+
         cve_id = cve_match.group(1) if cve_match else ""
         if not cve_id:
             return
@@ -135,12 +135,10 @@ class LiferayImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         vector = cvss_match.group(1)
                         score_match = re.match(r"([\d\.]+)", sev_text)
                         score = score_match.group(1) if score_match else None
-                        
+
                         severities.append(
                             VulnerabilitySeverity(
-                                system=CVSSV31,
-                                value=score,
-                                scoring_elements=f"CVSS:3.1/{vector}"
+                                system=CVSSV31, value=score, scoring_elements=f"CVSS:3.1/{vector}"
                             )
                         )
 
@@ -177,33 +175,30 @@ class LiferayImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages=affected_packages,
             references_v2=[ReferenceV2(url=vuln_url)],
             url=vuln_url,
-            severities=severities
+            severities=severities,
         )
 
     def parse_version_text(self, text):
         if not text:
             return None
-            
+
         if "DXP" in text:
             name = "liferay-dxp"
         elif "Portal" in text:
             name = "liferay-portal"
         else:
             name = "liferay-portal"
-            
+
         purl = PackageURL(type="generic", name=name)
-        
+
         version_match = re.search(r"(\d+\.\d+(\.\d+)?)", text)
         if version_match:
             version = version_match.group(1)
             try:
                 affected_range = MavenVersionRange.from_versions([version])
-                return AffectedPackageV2(
-                    package=purl,
-                    affected_version_range=affected_range
-                )
+                return AffectedPackageV2(package=purl, affected_version_range=affected_range)
             except Exception as e:
                 logger.error(f"Failed to parse version {version}: {e}")
                 return None
-            
+
         return None

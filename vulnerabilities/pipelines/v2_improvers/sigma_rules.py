@@ -9,13 +9,13 @@
 
 from pathlib import Path
 
-import saneyaml
 from aboutcode.pipeline import LoopProgress
 from fetchcode.vcs import fetch_via_vcs
 from yaml import YAMLError
 
 from vulnerabilities.models import AdvisoryAlias
-from vulnerabilities.models import AdvisoryDetectionRule
+from vulnerabilities.models import DetectionRule
+from vulnerabilities.models import DetectionRuleTypes
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.utils import find_all_cve
 
@@ -50,42 +50,48 @@ class SigmaRulesImproverPipeline(VulnerableCodePipeline):
         self.log(f"Enhancing the vulnerability with {rules_count:,d} rule records")
         progress = LoopProgress(total_iterations=rules_count, logger=self.log)
         for file_path in progress.iter(yaml_files):
-            cve_ids = find_all_cve(str(file_path))
-            if not cve_ids or len(cve_ids) > 1:
+            if any(part in [".github", "images", "documentation"] for part in file_path.parts):
                 continue
-
-            cve_id = cve_ids[0]
 
             with open(file_path, "r") as f:
                 try:
-                    rule_data = saneyaml.load(f)
+                    rule_data = f.read()
                 except YAMLError as err:
                     self.log(f"Invalid YAML in {file_path}: {err}. Skipping.")
                     continue
 
-            advisories = set()
-            try:
-                if alias := AdvisoryAlias.objects.get(alias=cve_id):
-                    for adv in alias.advisories.all():
-                        advisories.add(adv)
-            except AdvisoryAlias.DoesNotExist:
-                self.log(f"Advisory {file_path.name} not found.")
-                continue
-
-            rule_text = saneyaml.dump(rule_data)
             rule_url = f"https://raw.githubusercontent.com/SigmaHQ/sigma/refs/heads/master/{file_path.relative_to(base_directory)}"
+            cve_ids = find_all_cve(str(file_path))
+            found_advisories = set()
+            for cve_id in cve_ids:
+                try:
+                    alias = AdvisoryAlias.objects.get(alias=cve_id)
+                    for adv in alias.advisories.all():
+                        found_advisories.add(adv)
+                except AdvisoryAlias.DoesNotExist:
+                    self.log(f"Advisory {file_path.name} not found.")
+                    continue
 
-            for advisory in advisories:
-                AdvisoryDetectionRule.objects.update_or_create(
-                    advisory=advisory,
-                    rule_type="sigma",
+            for adv in found_advisories:
+                DetectionRule.objects.update_or_create(
+                    rule_text=rule_data,
+                    advisory=adv,
                     defaults={
-                        "rule_text": rule_text,
+                        "rule_type": DetectionRuleTypes.SIGMA,
                         "source_url": rule_url,
                     },
                 )
 
-        self.log(f"Successfully added {rules_count:,d} rules advisory")
+            if not found_advisories:
+                DetectionRule.objects.update_or_create(
+                    rule_text=rule_data,
+                    advisory=None,
+                    defaults={
+                        "rule_type": DetectionRuleTypes.SIGMA,
+                        "source_url": rule_url,
+                    },
+                )
+            self.log(f"Successfully processed rules.")
 
     def clean_downloads(self):
         if self.vcs_response:

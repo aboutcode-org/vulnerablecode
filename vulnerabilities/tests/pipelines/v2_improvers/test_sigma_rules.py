@@ -15,8 +15,8 @@ from unittest.mock import MagicMock
 import pytest
 
 from vulnerabilities.models import AdvisoryAlias
-from vulnerabilities.models import AdvisoryDetectionRule
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import DetectionRule
 from vulnerabilities.pipelines.v2_improvers.sigma_rules import SigmaRulesImproverPipeline
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -67,6 +67,6 @@ def test_sigma_rules_db_improver(mock_fetch_via_vcs):
     improver = SigmaRulesImproverPipeline()
     improver.execute()
 
-    assert len(AdvisoryDetectionRule.objects.all()) == 3
-    sigma_rule = AdvisoryDetectionRule.objects.first()
+    assert len(DetectionRule.objects.all()) == 3
+    sigma_rule = DetectionRule.objects.first()
     assert sigma_rule.rule_type == "sigma"

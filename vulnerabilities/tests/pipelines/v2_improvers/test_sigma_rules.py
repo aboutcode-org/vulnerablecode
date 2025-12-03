@@ -70,3 +70,10 @@ def test_sigma_rules_db_improver(mock_fetch_via_vcs):
     assert len(DetectionRule.objects.all()) == 3
     sigma_rule = DetectionRule.objects.first()
     assert sigma_rule.rule_type == "sigma"
+    assert sigma_rule.rule_metadata == {
+        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+        "date": "2025-06-13",
+        "id": "04fc4b22-91a6-495a-879d-0144fec5ec03",
+        "status": "experimental",
+        "title": "Potential Exploitation of RCE Vulnerability CVE-2025-33053 - Image " "Load",
+    }

@@ -2664,6 +2664,7 @@ class AdvisoryReference(models.Model):
 
     ADVISORY = "advisory"
     EXPLOIT = "exploit"
+    COMMIT = "commit"
     MAILING_LIST = "mailing_list"
     BUG = "bug"
     OTHER = "other"
@@ -2671,6 +2672,7 @@ class AdvisoryReference(models.Model):
     REFERENCE_TYPES = [
         (ADVISORY, "Advisory"),
         (EXPLOIT, "Exploit"),
+        (COMMIT, "Commit"),
         (MAILING_LIST, "Mailing List"),
         (BUG, "Bug"),
         (OTHER, "Other"),

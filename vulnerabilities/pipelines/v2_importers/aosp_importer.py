@@ -19,6 +19,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.advisory import classify_patch_source
@@ -84,26 +85,28 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
                 patches = []
                 affected_packages = []
+                references = []
                 for commit_data in vulnerability_data.get("fixes", []):
                     patch_url = commit_data.get("patchUrl")
                     commit_id = commit_data.get("commitId")
 
-                    base_purl, patch_obj_list = classify_patch_source(
-                        vcs_url=None,
+                    base_purl, patch_obj = classify_patch_source(
+                        url=patch_url,
                         commit_hash=commit_id,
-                        patch_url=patch_url,
                         patch_text=None,
                     )
-                    for patch_obj in patch_obj_list:
-                        if isinstance(patch_obj, PackageCommitPatchData):
-                            fixed_commit = patch_obj
-                            affected_package = AffectedPackageV2(
-                                package=base_purl,
-                                fixed_by_commit_patches=[fixed_commit],
-                            )
-                            affected_packages.append(affected_package)
-                        elif isinstance(patch_obj, PatchData):
-                            patches.append(patch_obj)
+
+                    if isinstance(patch_obj, PackageCommitPatchData):
+                        fixed_commit = patch_obj
+                        affected_package = AffectedPackageV2(
+                            package=base_purl,
+                            fixed_by_commit_patches=[fixed_commit],
+                        )
+                        affected_packages.append(affected_package)
+                    elif isinstance(patch_obj, PatchData):
+                        patches.append(patch_obj)
+                    elif isinstance(patch_obj, ReferenceV2):
+                        references.append(patch_obj)
 
                 url = (
                     "https://raw.githubusercontent.com/quarkslab/aosp_dataset/refs/heads/master/cves/"
@@ -116,6 +119,7 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     affected_packages=affected_packages,
                     severities=severities,
                     patches=patches,
+                    references_v2=references,
                     date_published=date_published,
                     url=url,
                 )

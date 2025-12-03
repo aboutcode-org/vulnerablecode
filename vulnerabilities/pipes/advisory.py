@@ -27,6 +27,7 @@ from aboutcode.hashid import get_core_purl
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import AdvisoryAlias
@@ -174,61 +175,31 @@ def get_or_create_advisory_patches(
 VCS_URLS_SUPPORTED_TYPES = {"github", "bitbucket", "gitlab"}
 
 
-def classify_patch_source(vcs_url, commit_hash, patch_text, patch_url):
+def classify_patch_source(url, commit_hash, patch_text):
     """Classify a patch as a PackageCommitPatchData or PatchData using provided args."""
-    purl = None
+    if not url:
+        if not patch_text:
+            return
 
-    if patch_url:
-        purl = url2purl(patch_url)
+        return None, PatchData(patch_text=patch_text)
 
-    if not purl or (purl.type not in VCS_URLS_SUPPORTED_TYPES) or (not purl.version and vcs_url):
-        purl = url2purl(vcs_url)
-
-    if not purl:
-        return None, [
-            PatchData(
-                patch_text=patch_text,
-                patch_url=patch_url,
+    purl = url2purl(url)
+    if not purl or (purl.type not in VCS_URLS_SUPPORTED_TYPES):
+        if commit_hash:
+            return None, ReferenceV2(
+                reference_id=commit_hash, reference_type=AdvisoryReference.COMMIT, url=url
             )
-        ]
+        return None, PatchData(patch_url=url, patch_text=patch_text)
+
+    if not commit_hash and not purl.version:
+        return None, PatchData(patch_url=url, patch_text=patch_text or None)
 
     base_purl = get_core_purl(purl)
-    purl_string = base_purl.to_string()
-
-    vcs_url_p = purl2url(purl_string)
-    commit_hash_p = purl.version
-
-    final_vcs_url = vcs_url or vcs_url_p
-    final_commit_hash = commit_hash or commit_hash_p
-
-    if (
-        final_vcs_url
-        and final_commit_hash
-        and is_commit(final_commit_hash)
-        and purl.type in VCS_URLS_SUPPORTED_TYPES
-    ):
-        purl = PackageURL(
-            type=purl.type, namespace=purl.namespace, name=purl.name, version=final_commit_hash
-        )
-        final_patch_url = patch_url or purl2url(str(purl))
-        return base_purl, [
-            PackageCommitPatchData(
-                vcs_url=final_vcs_url,
-                commit_hash=final_commit_hash,
-                patch_text=patch_text,
-            ),
-            PatchData(
-                patch_text=patch_text,
-                patch_url=final_patch_url,
-            ),
-        ]
-
-    return None, [
-        PatchData(
-            patch_url=patch_url or final_vcs_url,
-            patch_text=patch_text,
-        )
-    ]
+    base_purl_str = base_purl.to_string()
+    base_url = purl2url(base_purl_str)
+    return base_purl, PackageCommitPatchData(
+        vcs_url=base_url, commit_hash=purl.version or commit_hash, patch_text=patch_text or None
+    )
 
 
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):

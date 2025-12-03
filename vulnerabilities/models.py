@@ -3491,29 +3491,43 @@ class SSVC(models.Model):
         unique_together = ("vector", "source_advisory")
 
 
-class AdvisoryDetectionRule(models.Model):
+class DetectionRuleTypes(models.TextChoices):
+    """Defines the supported formats for security detection rules."""
+
+    YARA = "yara", "Yara"
+    YARA_X = "yara-x", "Yara-X"
+    SIGMA = "sigma", "Sigma"
+    CLAMAV = "clamav", "ClamAV"
+    SURICATA = "suricata", "Suricata"
+
+
+class DetectionRule(models.Model):
     """
-    A detection rule (YARA, Sigma, ClamAV) linked to an advisory.
+    A Detection Rule is code used to identify malicious activity or security threats.
     """
 
-    RULE_TYPES = [
-        ("yara", "YARA"),
-        ("sigma", "Sigma Detection Rule"),
-        ("clamav", "ClamAV Signature"),
-    ]
+    rule_type = models.CharField(
+        max_length=50,
+        choices=DetectionRuleTypes.choices,
+        help_text="The type of the detection rule content (e.g., YARA, Sigma).",
+    )
+
+    source_url = models.URLField(
+        max_length=1024, help_text="URL to the original source or reference for this rule."
+    )
+
+    rule_metadata = models.JSONField(
+        null=True,
+        blank=True,
+        help_text="Additional structured data such as tags, or author information.",
+    )
+
+    rule_text = models.TextField(help_text="The content of the detection signature.")
 
     advisory = models.ForeignKey(
         AdvisoryV2,
         related_name="detection_rules",
-        on_delete=models.CASCADE,
-    )
-
-    rule_text = models.TextField(help_text="Full text of the detection rule, script, or signature.")
-
-    rule_type = models.CharField(max_length=100, choices=RULE_TYPES, blank=True)
-
-    source_url = models.URLField(
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        help_text="URL or reference to the source of the rule (vendor feed, GitHub repo, etc.).",
     )

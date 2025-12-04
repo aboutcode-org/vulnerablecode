@@ -70,8 +70,18 @@ def test_github_poc_db_improver(mock_fetch_via_vcs):
     improver.execute()
 
     assert len(AdvisoryPOC.objects.all()) == 10
-    exploit = AdvisoryPOC.objects.first()
-    assert exploit.url == "https://github.com/iSee857/CVE-2025-0108-PoC"
-    assert exploit.is_confirmed == False
-    assert str(exploit.created_at) == "2025-02-13 06:39:25+00:00"
-    assert str(exploit.updated_at) == "2025-09-03 18:40:14+00:00"
+    exploit1 = AdvisoryPOC.objects.get(
+        url="https://github.com/iSee857/CVE-2025-0108-PoC",
+        is_confirmed=False,
+    )
+    exploit2 = AdvisoryPOC.objects.get(
+        url="https://github.com/FOLKS-iwd/CVE-2025-0108-PoC", advisory=adv2
+    )
+    exploit3 = AdvisoryPOC.objects.get(
+        url="https://github.com/B1ack4sh/Blackash-CVE-2025-0108",
+    )
+    assert exploit1.url == "https://github.com/iSee857/CVE-2025-0108-PoC"
+    assert str(exploit1.created_at) == "2025-02-13 06:39:25+00:00"
+    assert str(exploit2.updated_at) == "2025-04-28 07:22:48+00:00"
+    assert exploit2.url == "https://github.com/FOLKS-iwd/CVE-2025-0108-PoC"
+    assert exploit3.url == "https://github.com/B1ack4sh/Blackash-CVE-2025-0108"

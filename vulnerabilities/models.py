@@ -3510,9 +3510,7 @@ class AdvisoryPOC(models.Model):
         null=True, blank=True, help_text="The date and time when this POC was last updated."
     )
 
-    url = models.URLField(
-        help_text="The URL of the PoC, such as a repository or resource link."
-    )
+    url = models.URLField(help_text="The URL of the PoC, such as a repository or resource link.")
 
     is_confirmed = models.BooleanField(
         default=False, help_text="Indicates whether this POC has been verified or confirmed."

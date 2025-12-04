@@ -10,18 +10,22 @@
 import json
 from pathlib import Path
 
-import dateparser
 from aboutcode.pipeline import LoopProgress
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.models import AdvisoryAlias
-from vulnerabilities.models import AdvisoryExploit
+from vulnerabilities.models import AdvisoryPOC
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
 class GithubPocsImproverPipeline(VulnerableCodePipeline):
+    """
+    Pipeline to Collect an exploit-PoCs repository, parse exploit JSON files,
+    match them to advisories via aliases, and update/create POC records.
+    """
+
     pipeline_id = "enhance_with_github_poc"
-    repo_url = "https://github.com/nomi-sec/PoC-in-GitHub"
+    repo_url = "git+https://github.com/nomi-sec/PoC-in-GitHub"
 
     @classmethod
     def steps(cls):
@@ -55,8 +59,8 @@ class GithubPocsImproverPipeline(VulnerableCodePipeline):
                     continue
 
             filename = file_path.stem.strip()
-            advisories = set()
 
+            advisories = set()
             try:
                 if alias := AdvisoryAlias.objects.get(alias=filename):
                     for adv in alias.advisories.all():
@@ -71,19 +75,16 @@ class GithubPocsImproverPipeline(VulnerableCodePipeline):
                     if not exploit_repo_url:
                         continue
 
-                    AdvisoryExploit.objects.update_or_create(
+                    AdvisoryPOC.objects.update_or_create(
                         advisory=advisory,
-                        data_source="GitHub-PoC",
-                        source_url=exploit_repo_url,
+                        url=exploit_repo_url,
                         defaults={
-                            "description": exploit_data.get("description"),
-                            "source_date_published": dateparser.parse(
-                                exploit_data.get("created_at")
-                            ),
+                            "created_at": exploit_data.get("created_at"),
+                            "updated_at": exploit_data.get("updated_at"),
                         },
                     )
 
-        self.log(f"Successfully added {exploits_count:,d} exploit advisory")
+        self.log(f"Successfully added {exploits_count:,d} poc exploit advisory")
 
     def clean_downloads(self):
         if self.vcs_response:

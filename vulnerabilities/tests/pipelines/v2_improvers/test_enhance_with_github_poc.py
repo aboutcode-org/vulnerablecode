@@ -15,7 +15,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from vulnerabilities.models import AdvisoryAlias
-from vulnerabilities.models import AdvisoryExploit
+from vulnerabilities.models import AdvisoryPOC
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.pipelines.v2_improvers.enhance_with_github_poc import (
     GithubPocsImproverPipeline,
@@ -69,7 +69,9 @@ def test_github_poc_db_improver(mock_fetch_via_vcs):
     improver = GithubPocsImproverPipeline()
     improver.execute()
 
-    assert len(AdvisoryExploit.objects.all()) == 10
-    exploit = AdvisoryExploit.objects.first()
-    assert exploit.data_source == "GitHub-PoC"
-    assert exploit.source_url == "https://github.com/iSee857/CVE-2025-0108-PoC"
+    assert len(AdvisoryPOC.objects.all()) == 10
+    exploit = AdvisoryPOC.objects.first()
+    assert exploit.url == "https://github.com/iSee857/CVE-2025-0108-PoC"
+    assert exploit.is_confirmed == False
+    assert str(exploit.created_at) == "2025-02-13 06:39:25+00:00"
+    assert str(exploit.updated_at) == "2025-09-03 18:40:14+00:00"

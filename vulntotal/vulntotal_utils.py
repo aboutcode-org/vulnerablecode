@@ -73,12 +73,17 @@ def compare(version, package_comparator, package_version):
 
 def parse_constraint(constraint):
     """
-    Return operator and version from a constraint
+    Return operator and version from a constraint.
+
     For example:
-    >>> assert parse_constraint(">=7.0.0") == ('>=', '7.0.0')
-    >>> assert parse_constraint("=7.0.0") == ('=', '7.0.0')
-    >>> assert parse_constraint("[3.0.0") == ('[', '3.0.0')
-    >>> assert parse_constraint("3.1.25]") == (']', '3.1.25')
+    >>> parse_constraint(">=7.0.0")
+    ('>=', '7.0.0')
+    >>> parse_constraint("=7.0.0")
+    ('=', '7.0.0')
+    >>> parse_constraint("[3.0.0")
+    ('[', '3.0.0')
+    >>> parse_constraint("3.1.25]")
+    (']', '3.1.25')
     """
     if constraint.startswith(("<=", ">=", "==", "!=")):
         return constraint[:2], constraint[2:]
@@ -92,10 +97,14 @@ def parse_constraint(constraint):
 
 def github_constraints_satisfied(github_constraint, version):
     """
-    Return True or False depending on whether the given version satisfies the github constraint
+    Return True or False depending on whether the given version
+    satisfies the github constraint.
+
     For example:
-    >>> assert github_constraints_satisfied(">= 7.0.0, <= 7.6.57", "7.1.1") == True
-    >>> assert github_constraints_satisfied(">= 10.4.0, <= 10.4.1", "10.6.0") == False
+    >>> github_constraints_satisfied(">= 7.0.0, <= 7.6.57", "7.1.1")
+    True
+    >>> github_constraints_satisfied(">= 10.4.0, <= 10.4.1", "10.6.0")
+    False
     """
     gh_constraints = github_constraint.strip().replace(" ", "")
     constraints = gh_constraints.split(",")
@@ -110,11 +119,16 @@ def github_constraints_satisfied(github_constraint, version):
 
 def snyk_constraints_satisfied(snyk_constraint, version):
     """
-    Return True or False depending on whether the given version satisfies the snyk constraint
+    Return True or False depending on whether the given version
+    satisfies the snyk constraint.
+
     For example:
-    >>> assert snyk_constraints_satisfied(">=4.0.0, <4.0.10.16", "4.0.10.15") == True
-    >>> assert snyk_constraints_satisfied(" >=4.1.0, <4.4.15.7", "4.0.10.15") == False
-    >>> assert snyk_constraints_satisfied("[3.0.0,3.1.25)", "3.0.2") == True
+    >>> snyk_constraints_satisfied(">=4.0.0, <4.0.10.16", "4.0.10.15")
+    True
+    >>> snyk_constraints_satisfied(" >=4.1.0, <4.4.15.7", "4.0.10.15")
+    False
+    >>> snyk_constraints_satisfied("[3.0.0,3.1.25)", "3.0.2")
+    True
     """
     snyk_constraints = snyk_constraint.strip().replace(" ", "")
     constraints = snyk_constraints.split(",")
@@ -129,13 +143,20 @@ def snyk_constraints_satisfied(snyk_constraint, version):
 
 def gitlab_constraints_satisfied(gitlab_constraint, version):
     """
-    Return True or False depending on whether the given version satisfies the gitlab constraint
+    Return True or False depending on whether the given version
+    satisfies the gitlab constraint.
+
     For example:
-    >>> assert gitlab_constraints_satisfied("[7.0.0,7.0.11),[7.2.0,7.2.4)", "7.2.1") == True
-    >>> assert gitlab_constraints_satisfied("[7.0.0,7.0.11),[7.2.0,7.2.4)", "8.2.1") == False
-    >>> assert gitlab_constraints_satisfied( ">=4.0,<4.3||>=5.0,<5.2", "5.4") == False
-    >>> assert gitlab_constraints_satisfied( ">=0.19.0 <0.30.0", "0.24") == True
-    >>> assert gitlab_constraints_satisfied( ">=1.5,<1.5.2", "2.2") == False
+    >>> gitlab_constraints_satisfied("[7.0.0,7.0.11),[7.2.0,7.2.4)", "7.2.1")
+    True
+    >>> gitlab_constraints_satisfied("[7.0.0,7.0.11),[7.2.0,7.2.4)", "8.2.1")
+    False
+    >>> gitlab_constraints_satisfied(">=4.0,<4.3||>=5.0,<5.2", "5.4")
+    False
+    >>> gitlab_constraints_satisfied(">=0.19.0 <0.30.0", "0.24")
+    True
+    >>> gitlab_constraints_satisfied(">=1.5,<1.5.2", "2.2")
+    False
     """
 
     gitlab_constraints = gitlab_constraint.strip()
@@ -173,18 +194,22 @@ def gitlab_constraints_satisfied(gitlab_constraint, version):
 
 def get_item(entity: Union[dict, list], *attributes):
     """
-    Return `item` by going through all the `attributes` present in the `dictionary/list`
+    Return `item` by going through all the `attributes` present in the `dictionary/list`.
 
     Do a DFS for the `item` in the `dictionary/list` by traversing the `attributes`
-    and return None if can not traverse through the `attributes`
+    and return None if can not traverse through the `attributes`.
+
     For example:
     >>> get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')
     Traceback (most recent call last):
         ...
     KeyError: "Missing attribute e in {'c': 'd'}"
-    >>> assert get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c') == 'd'
-    >>> assert get_item({'a': [{'b': {'c': 'd'}}]}, 'a', 0, 'b') == {'c': 'd'}
-    >>> assert get_item(['b', ['c', ['d']]], 1, 1, 0) == 'd'
+    >>> get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c')
+    'd'
+    >>> get_item({'a': [{'b': {'c': 'd'}}]}, 'a', 0, 'b')
+    {'c': 'd'}
+    >>> get_item(['b', ['c', ['d']]], 1, 1, 0)
+    'd'
     """
     for attribute in attributes:
         if not entity:

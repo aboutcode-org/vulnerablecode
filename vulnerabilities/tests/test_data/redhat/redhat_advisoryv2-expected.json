@@ -758,7 +758,7 @@
       },
       {
         "reference_id": "531697",
-        "reference_type": "",
+        "reference_type": "bug",
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=531697"
       },
       {
@@ -1556,7 +1556,7 @@
       },
       {
         "reference_id": "2328554",
-        "reference_type": "",
+        "reference_type": "bug",
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2328554"
       },
       {

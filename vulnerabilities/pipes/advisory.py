@@ -19,7 +19,6 @@ from typing import Union
 from django.db import transaction
 from django.db.models import Q
 from django.db.models.query import QuerySet
-from packageurl import PackageURL
 from packageurl.contrib.purl2url import purl2url
 from packageurl.contrib.url2purl import url2purl
 
@@ -46,7 +45,6 @@ from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.pipes.univers_utils import get_exact_purls_v2
-from vulnerabilities.utils import is_commit
 
 
 def get_or_create_aliases(aliases: List) -> QuerySet:
@@ -71,7 +69,9 @@ def get_or_create_advisory_references(references: List) -> List[AdvisoryReferenc
     existing_urls = {r.url for r in existing}
 
     to_create = [
-        AdvisoryReference(reference_id=ref.reference_id, url=ref.url)
+        AdvisoryReference(
+            reference_id=ref.reference_id, url=ref.url, reference_type=ref.reference_type
+        )
         for ref in references
         if ref.url not in existing_urls
     ]
@@ -110,11 +110,11 @@ def get_or_create_advisory_weaknesses(weaknesses: List[str]) -> List[AdvisoryWea
 def get_or_create_advisory_package_commit_patches(
     commit_patches_data: List,
 ) -> List["PackageCommitPatch"]:
-
     if not commit_patches_data:
         return []
 
-    pairs = [(c.commit_hash, c.vcs_url) for c in commit_patches_data]
+    data_map = {(c.commit_hash, c.vcs_url): c for c in commit_patches_data}
+    pairs = list(data_map.keys())
 
     query = Q()
     for commit_hash, vcs_url in pairs:
@@ -123,37 +123,54 @@ def get_or_create_advisory_package_commit_patches(
     existing_commits_qs = PackageCommitPatch.objects.filter(query)
     existing_pairs = set(existing_commits_qs.values_list("commit_hash", "vcs_url"))
 
+    to_update = []
+    for commit_obj in existing_commits_qs:
+        key = (commit_obj.commit_hash, commit_obj.vcs_url)
+        input_data = data_map[key]
+
+        if (
+            commit_obj.patch_checksum != input_data.patch_checksum
+            or commit_obj.patch_text != input_data.patch_text
+        ):
+            commit_obj.patch_checksum = input_data.patch_checksum
+            commit_obj.patch_text = input_data.patch_text
+            to_update.append(commit_obj)
+
+    if to_update:
+        PackageCommitPatch.objects.bulk_update(to_update, fields=["patch_checksum", "patch_text"])
+
     to_create = [
         PackageCommitPatch(
             commit_hash=c.commit_hash,
             vcs_url=c.vcs_url,
-            patch_text=getattr(c, "patch_text", None),
+            patch_checksum=c.patch_checksum,
+            patch_text=c.patch_text,
         )
         for c in commit_patches_data
         if (c.commit_hash, c.vcs_url) not in existing_pairs
     ]
 
     if to_create:
-        PackageCommitPatch.objects.bulk_create(to_create, ignore_conflicts=True)
+        PackageCommitPatch.objects.bulk_create(to_create)
 
     all_commits = PackageCommitPatch.objects.filter(query)
     return list(all_commits)
 
 
 def get_or_create_advisory_patches(
-    base_patches_data: List,
+    patches: List,
 ) -> List["Patch"]:
-    if not base_patches_data:
+    if not patches:
         return []
 
-    pairs = [(c.patch_url, c.patch_checksum) for c in base_patches_data]
+    pairs = [(c.patch_text, c.patch_url) for c in patches]
 
     query = Q()
-    for patch_checksum, patch_url in pairs:
-        query |= Q(patch_checksum=patch_checksum, patch_url=patch_url)
+    for patch_text, patch_url in pairs:
+        query |= Q(patch_text=patch_text, patch_url=patch_url)
 
     existing_commits_qs = Patch.objects.filter(query)
-    existing_pairs = set(existing_commits_qs.values_list("patch_url", "patch_checksum"))
+    existing_pairs = set(existing_commits_qs.values_list("patch_text", "patch_url"))
 
     to_create = [
         Patch(
@@ -161,8 +178,8 @@ def get_or_create_advisory_patches(
             patch_text=getattr(c, "patch_text", None),
             patch_checksum=getattr(c, "patch_checksum", None),
         )
-        for c in base_patches_data
-        if (c.patch_url, c.patch_checksum) not in existing_pairs
+        for c in patches
+        if (c.patch_text, c.patch_url) not in existing_pairs
     ]
 
     if to_create:
@@ -176,7 +193,13 @@ VCS_URLS_SUPPORTED_TYPES = {"github", "bitbucket", "gitlab"}
 
 
 def classify_patch_source(url, commit_hash, patch_text):
-    """Classify a patch as a PackageCommitPatchData or PatchData using provided args."""
+    """
+    Classify the patch type based on the given URL, commit hash, and patch text.
+    Returns: a base_purl, patch_obj tuple where base_purl is a string PackageURL without version for supported VCS URLs, otherwise `None`.
+    patch_obj is one of: (PackageCommitPatchData for supported VCS URLs with a commit,
+    PatchData for raw patch text or non-VCS URLs, ReferenceV2 when unsupported VCS URL is paired with a commit hash)
+    Returns `None` only when both `url` and `patch_text` are missing.
+    """
     if not url:
         if not patch_text:
             return
@@ -254,7 +277,7 @@ def insert_advisory_v2(
     aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
     references = get_or_create_advisory_references(references=advisory.references_v2)
     severities = get_or_create_advisory_severities(severities=advisory.severities)
-    patches = get_or_create_advisory_patches(base_patches_data=advisory.patches)
+    patches = get_or_create_advisory_patches(patches=advisory.patches)
     weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
     content_id = compute_content_id(advisory_data=advisory)
 

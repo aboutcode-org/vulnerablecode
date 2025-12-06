@@ -19,7 +19,8 @@ from typing import List
 import requests
 
 from vulnerabilities.models import AdvisoryAlias
-from vulnerabilities.models import AdvisoryDetectionRule
+from vulnerabilities.models import DetectionRule
+from vulnerabilities.models import DetectionRuleTypes
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import find_all_cve
 
@@ -107,7 +108,7 @@ class ClamVRulesImproverPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     pipeline_id = "clamv_rules"
     MAIN_DATABASE_URL = "https://database.clamav.net/main.cvd"
-    license_url = ""
+    license_url = "https://github.com/Cisco-Talos/clamav/blob/c73755d3fc130b0c60ccf4e8f8d28c62fc58c95b/README.md#licensing"
     license_expression = "GNU GENERAL PUBLIC LICENSE"
 
     @classmethod
@@ -153,37 +154,41 @@ class ClamVRulesImproverPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def collect_and_store_advisories(self):
         """Parse .ndb and .hdb files and store rules in the DB."""
-        rules = {}
-        for entry in parse_hdb_file(self.extract_cvd_dir / "main.hdb") + parse_ndb_file(
+
+        for rule_entry in parse_hdb_file(self.extract_cvd_dir / "main.hdb") + parse_ndb_file(
             self.extract_cvd_dir / "main.ndb"
         ):
-            name = entry.get("name", "")
-            cve = extract_cve_id(name)
-            if cve:
-                rules[cve] = entry
+            name = rule_entry.get("name", "")
+            cve_id = extract_cve_id(name)
+            found_advisories = set()
 
-        rules_added = 0
-        for cve_id, rule_text in rules.items():
-            advisories = set()
-            try:
-                if alias := AdvisoryAlias.objects.get(alias=cve_id):
-                    for adv in alias.advisories.all():
-                        advisories.add(adv)
-            except AdvisoryAlias.DoesNotExist:
-                self.log(f"Advisory {cve_id} not found.")
-                continue
+            if cve_id:
+                try:
+                    if alias := AdvisoryAlias.objects.get(alias=cve_id):
+                        for adv in alias.advisories.all():
+                            found_advisories.add(adv)
+                except AdvisoryAlias.DoesNotExist:
+                    self.log(f"Advisory {cve_id} not found.")
 
-            for advisory in advisories:
-                AdvisoryDetectionRule.objects.update_or_create(
-                    advisory=advisory,
-                    rule_type="clamav",
+            for adv in found_advisories:
+                DetectionRule.objects.update_or_create(
+                    rule_text=str(rule_entry),
+                    rule_type=DetectionRuleTypes.CLAMAV,
+                    advisory=adv,
                     defaults={
-                        "rule_text": str(rule_text),
+                        "source_url": self.MAIN_DATABASE_URL,
                     },
                 )
 
-                rules_added += 1
-        self.log(f"Successfully added/updated {rules_added} rules for advisories.")
+            if not found_advisories:
+                DetectionRule.objects.update_or_create(
+                    rule_text=str(rule_entry),
+                    rule_type=DetectionRuleTypes.CLAMAV,
+                    advisory=None,
+                    defaults={
+                        "source_url": self.MAIN_DATABASE_URL,
+                    },
+                )
 
     def clean_downloads(self):
         """Clean up downloaded files."""

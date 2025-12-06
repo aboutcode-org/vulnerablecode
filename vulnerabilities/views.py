@@ -219,11 +219,57 @@ class VulnerabilitySearch(ListView):
         request_query = self.request.GET
         context["vulnerability_search_form"] = VulnerabilitySearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["sorts"] = getattr(self, "sort_tokens", [])
         return context
 
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query=query).with_package_counts()
+        qs = self.model.objects.search(query=query).with_package_counts()
+
+        tokens = parse_sort_tokens(self.request)
+        self.sort_tokens = tokens
+
+        order_fields = []
+        seen = set()
+        for tok in tokens:
+            if not tok:
+                continue
+            if tok[0] in ("+", "-") and len(tok) > 1:
+                dir_char = tok[0]
+                key = tok[1:]
+            else:
+                dir_char = None
+                key = tok
+
+            key = key.lower()
+            if key in ("id", "vulnerability_id"):
+                fields = ["vulnerability_id"]
+                default_dir = ""
+            elif key == "affected":
+                fields = ["vulnerable_package_count"]
+                default_dir = ""
+            elif key == "fixing":
+                fields = ["patched_package_count"]
+                default_dir = ""
+            else:
+                continue
+
+            for f in fields:
+                if dir_char == "-":
+                    prefix = "-"
+                elif dir_char == "+":
+                    prefix = ""
+                else:
+                    prefix = default_dir
+                ofield = f"{prefix}{f}"
+                if ofield not in seen:
+                    order_fields.append(ofield)
+                    seen.add(ofield)
+
+        if not order_fields:
+            order_fields = ["vulnerability_id"]
+
+        return qs.order_by(*order_fields)
 
 
 class AdvisorySearch(ListView):
@@ -235,13 +281,60 @@ class AdvisorySearch(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
-        context["advisory_search_form"] = VulnerabilitySearchForm(request_query)
+        # Use AdvisorySearchForm here (imported at top)
+        context["advisory_search_form"] = AdvisorySearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["sorts"] = getattr(self, "sort_tokens", [])
         return context
 
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query=query).with_package_counts()
+        qs = self.model.objects.search(query=query).with_package_counts()
+
+        tokens = parse_sort_tokens(self.request)
+        self.sort_tokens = tokens
+
+        order_fields = []
+        seen = set()
+        for tok in tokens:
+            if not tok:
+                continue
+            if tok[0] in ("+", "-") and len(tok) > 1:
+                dir_char = tok[0]
+                key = tok[1:]
+            else:
+                dir_char = None
+                key = tok
+
+            key = key.lower()
+            if key in ("id", "advisory_id"):
+                fields = ["advisory_id"]
+                default_dir = ""
+            elif key == "affected":
+                fields = ["vulnerable_package_count"]
+                default_dir = ""
+            elif key == "fixing":
+                fields = ["patched_package_count"]
+                default_dir = ""
+            else:
+                continue
+
+            for f in fields:
+                if dir_char == "-":
+                    prefix = "-"
+                elif dir_char == "+":
+                    prefix = ""
+                else:
+                    prefix = default_dir
+                ofield = f"{prefix}{f}"
+                if ofield not in seen:
+                    order_fields.append(ofield)
+                    seen.add(ofield)
+
+        if not order_fields:
+            order_fields = ["advisory_id"]
+
+        return qs.order_by(*order_fields)
 
 
 class PackageDetails(DetailView):

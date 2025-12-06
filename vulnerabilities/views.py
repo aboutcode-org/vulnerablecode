@@ -45,10 +45,22 @@ from vulnerablecode.settings import env
 PAGE_SIZE = 20
 
 
+def parse_sort_tokens(request):
+    raw_sorts = request.GET.getlist("sort")
+    tokens = []
+    for entry in raw_sorts:
+        for part in entry.split(","):
+            part = part.strip()
+            if part:
+                tokens.append(part)
+    return tokens
+
+
 class PackageSearch(ListView):
     model = models.Package
     template_name = "packages.html"
-    ordering = ["type", "namespace", "name", "version"]
+    # This is useful for fallback, but get_queryset overrides it
+    ordering = ["type", "namespace", "name", "-version"] 
     paginate_by = PAGE_SIZE
 
     def get_context_data(self, **kwargs):
@@ -56,21 +68,71 @@ class PackageSearch(ListView):
         request_query = self.request.GET
         context["package_search_form"] = PackageSearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["sorts"] = getattr(self, "sort_tokens", [])
         return context
 
     def get_queryset(self, query=None):
         """
         Return a Package queryset for the ``query``.
-        Make a best effort approach to find matching packages either based
-        on exact purl, partial purl or just name and namespace.
         """
         query = query or self.request.GET.get("search") or ""
-        return (
+        qs = (
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
-            .order_by("package_url")
         )
+
+        # collect raw sort tokens from repeated params and comma-separated values
+        tokens = parse_sort_tokens(self.request)
+        self.sort_tokens = tokens
+
+        # map tokens to actual model fields with direction
+        order_fields = []
+        seen = set()
+        for tok in tokens:
+            if not tok:
+                continue
+            # detect explicit direction prefix
+            if tok[0] in ("+", "-") and len(tok) > 1:
+                dir_char = tok[0]
+                key = tok[1:]
+            else:
+                dir_char = None
+                key = tok
+
+            key = key.lower()
+            if key == "affected":
+                fields = ["vulnerability_count"]
+                # unprefixed 'affected' should mean ascending
+                default_dir = ""
+            elif key == "fixing":
+                fields = ["patched_vulnerability_count"]
+                # unprefixed 'fixing' should mean ascending
+                default_dir = ""
+            elif key in ("type", "namespace", "name", "version", "package_url"):
+                fields = [key]
+                default_dir = ""  # ascending by default for textual fields
+            else:
+                # unknown key: skip
+                continue
+
+            for f in fields:
+                if dir_char == "-":
+                    prefix = "-"
+                elif dir_char == "+":
+                    prefix = ""
+                else:
+                    prefix = default_dir
+                ofield = f"{prefix}{f}"
+                if ofield not in seen:
+                    order_fields.append(ofield)
+                    seen.add(ofield)
+
+        # fallback ordering when nothing specified
+        if not order_fields:
+            order_fields = ["type", "namespace", "name", "-version"]
+
+        return qs.order_by(*order_fields)
 
 
 class PackageSearchV2(ListView):
@@ -84,6 +146,7 @@ class PackageSearchV2(ListView):
         request_query = self.request.GET
         context["package_search_form"] = PackageSearchForm(request_query)
         context["search"] = request_query.get("search")
+        context["sorts"] = getattr(self, "sort_tokens", [])
         return context
 
     def get_queryset(self, query=None):
@@ -93,12 +156,56 @@ class PackageSearchV2(ListView):
         on exact purl, partial purl or just name and namespace.
         """
         query = query or self.request.GET.get("search") or ""
-        return (
+        qs = (
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
-            .order_by("package_url")
         )
+
+        tokens = parse_sort_tokens(self.request)
+        self.sort_tokens = tokens
+
+        order_fields = []
+        seen = set()
+        for tok in tokens:
+            if not tok:
+                continue
+            if tok[0] in ("+", "-") and len(tok) > 1:
+                dir_char = tok[0]
+                key = tok[1:]
+            else:
+                dir_char = None
+                key = tok
+
+            key = key.lower()
+            if key == "affected":
+                fields = ["vulnerability_count"]
+                default_dir = ""
+            elif key == "fixing":
+                fields = ["patched_vulnerability_count"]
+                default_dir = ""
+            elif key in ("type", "namespace", "name", "version", "package_url"):
+                fields = [key]
+                default_dir = ""
+            else:
+                continue
+
+            for f in fields:
+                if dir_char == "-":
+                    prefix = "-"
+                elif dir_char == "+":
+                    prefix = ""
+                else:
+                    prefix = default_dir
+                ofield = f"{prefix}{f}"
+                if ofield not in seen:
+                    order_fields.append(ofield)
+                    seen.add(ofield)
+
+        if not order_fields:
+            order_fields = ["package_url"]
+
+        return qs.order_by(*order_fields)
 
 
 class VulnerabilitySearch(ListView):

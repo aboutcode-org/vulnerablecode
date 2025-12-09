@@ -269,6 +269,7 @@ def test_patch_advisory(dumpy_patch_advisory):
     adv = AdvisoryV2.objects.get(advisory_id="ADV-1234")
 
     assert ImpactedPackage.objects.count() == 6
+
     assert [
         (
             package_commit_patch.commit_hash,
@@ -291,6 +292,17 @@ def test_patch_advisory(dumpy_patch_advisory):
             "a5d6b89c35224d4ed69910a18fb544ca3fb26f62db53bc2769ce8a8d5cf8874c191186d170cb6e8896b0aaa8eaed891e7e819c4c0c7af499397c84761d6fb22d",
         ),
     ]
+
+    pkg_patches_that_fix = (
+        PackageCommitPatch.objects.filter(fixed_in_impacts__isnull=False).distinct().count()
+    )
+    assert pkg_patches_that_fix == 1
+
+    pkg_patches_that_introduce = (
+        PackageCommitPatch.objects.filter(introduced_in_impacts__isnull=False).distinct().count()
+    )
+    assert pkg_patches_that_introduce == 1
+
     assert (
         PackageCommitPatch.objects.count() == 2
     )  # Only 2 are created because the 6 inputs include duplicates with the VCS URL and commit_hash

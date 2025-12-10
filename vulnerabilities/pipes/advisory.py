@@ -16,6 +16,7 @@ from typing import Callable
 from typing import List
 from typing import Union
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Q
 from django.db.models.query import QuerySet
@@ -128,13 +129,19 @@ def get_or_create_advisory_package_commit_patches(
         key = (commit_obj.commit_hash, commit_obj.vcs_url)
         input_data = data_map[key]
 
-        if (
-            commit_obj.patch_checksum != input_data.patch_checksum
-            or commit_obj.patch_text != input_data.patch_text
-        ):
+        if not commit_obj.patch_text and input_data.patch_text:
             commit_obj.patch_checksum = input_data.patch_checksum
             commit_obj.patch_text = input_data.patch_text
             to_update.append(commit_obj)
+        elif (
+            commit_obj.patch_text
+            and input_data.patch_text
+            and (commit_obj.patch_text != input_data.patch_text)
+        ):
+            raise ValidationError(
+                f"Patch text conflict detected: existing record: {commit_obj.vcs_url} - {commit_obj.commit_hash} has different patch text"
+                f"than {input_data.vcs_url} - {input_data.commit_hash}"
+            )
 
     if to_update:
         PackageCommitPatch.objects.bulk_update(to_update, fields=["patch_checksum", "patch_text"])
@@ -204,25 +211,39 @@ def classify_patch_source(url, commit_hash, patch_text):
         if not patch_text:
             return
 
-        return None, PatchData(patch_text=patch_text)
+        return None, [PatchData(patch_text=patch_text)]
 
     purl = url2purl(url)
     if not purl or (purl.type not in VCS_URLS_SUPPORTED_TYPES):
         if commit_hash:
-            return None, ReferenceV2(
-                reference_id=commit_hash, reference_type=AdvisoryReference.COMMIT, url=url
-            )
-        return None, PatchData(patch_url=url, patch_text=patch_text)
+            if not patch_text:
+                return None, [
+                    ReferenceV2(
+                        reference_id=commit_hash, reference_type=AdvisoryReference.COMMIT, url=url
+                    )
+                ]
+
+            return None, [
+                ReferenceV2(
+                    reference_id=commit_hash, reference_type=AdvisoryReference.COMMIT, url=url
+                ),
+                PatchData(patch_url=url, patch_text=patch_text),
+            ]
+
+        return None, [PatchData(patch_url=url, patch_text=patch_text)]
 
     if not commit_hash and not purl.version:
-        return None, PatchData(patch_url=url, patch_text=patch_text or None)
+        return None, [PatchData(patch_url=url, patch_text=patch_text)]
 
     base_purl = get_core_purl(purl)
     base_purl_str = base_purl.to_string()
     base_url = purl2url(base_purl_str)
-    return base_purl, PackageCommitPatchData(
-        vcs_url=base_url, commit_hash=purl.version or commit_hash, patch_text=patch_text or None
-    )
+    package_commit_hash = purl.version or commit_hash
+    return base_purl, [
+        PackageCommitPatchData(
+            vcs_url=base_url, commit_hash=package_commit_hash, patch_text=patch_text
+        )
+    ]
 
 
 def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable = None):

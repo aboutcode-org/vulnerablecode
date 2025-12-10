@@ -191,7 +191,7 @@ def patch_source_samples():
             "url": "https://unknown.com/abc/def",
             "commit_hash": "8eb1b04ca4ae6fc0a0ef46f1b0c042f64db28ff9",
             "patch_text": "+1-2",
-        },  # ReferenceV2
+        },  # ReferenceV2, PatchData
         {
             "url": "https://unknown.com/abc/def/be891173be2fbdc897116bf5aa4fc9fdc8dc4f3d",
             "commit_hash": None,
@@ -225,28 +225,28 @@ def dumpy_patch_advisory(patch_source_samples):
         commit_hash = entry["commit_hash"]
         patch_text = entry["patch_text"]
 
-        base_purl, patch_obj = classify_patch_source(
+        base_purl, patch_objs = classify_patch_source(
             url=url, commit_hash=commit_hash, patch_text=patch_text
         )
-
-        if isinstance(patch_obj, PackageCommitPatchData):
-            # For testing only: commit hashes starting with "a" are treated as introduced_by_commit_patches,
-            # all others are treated as fixed_by_commit_patches.
-            if patch_obj.commit_hash.startswith("a"):
-                affected_package = AffectedPackageV2(
-                    package=base_purl,
-                    introduced_by_commit_patches=[patch_obj],
-                )
-            else:
-                affected_package = AffectedPackageV2(
-                    package=base_purl,
-                    fixed_by_commit_patches=[patch_obj],
-                )
-            affected_packages.append(affected_package)
-        elif isinstance(patch_obj, PatchData):
-            patches.append(patch_obj)
-        elif isinstance(patch_obj, ReferenceV2):
-            references.append(patch_obj)
+        for patch_obj in patch_objs:
+            if isinstance(patch_obj, PackageCommitPatchData):
+                # For testing only: commit hashes starting with "a" are treated as introduced_by_commit_patches,
+                # all others are treated as fixed_by_commit_patches.
+                if patch_obj.commit_hash.startswith("a"):
+                    affected_package = AffectedPackageV2(
+                        package=base_purl,
+                        introduced_by_commit_patches=[patch_obj],
+                    )
+                else:
+                    affected_package = AffectedPackageV2(
+                        package=base_purl,
+                        fixed_by_commit_patches=[patch_obj],
+                    )
+                affected_packages.append(affected_package)
+            elif isinstance(patch_obj, PatchData):
+                patches.append(patch_obj)
+            elif isinstance(patch_obj, ReferenceV2):
+                references.append(patch_obj)
 
     return AdvisoryData(
         summary="Test patch advisory",

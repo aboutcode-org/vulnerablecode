@@ -2773,19 +2773,19 @@ class Patch(models.Model):
         help_text="SHA512 checksum of the patch content.",
     )
 
-    def clean(self):
-        if not self.patch_url and not self.patch_text:
-            raise ValidationError("Either patch_url or patch_text must be provided.")
-
     def save(self, *args, **kwargs):
-        # https://docs.djangoproject.com/en/4.2/ref/models/instances/#django.db.models.Model.clean
-        self.full_clean()
         if self.patch_text:
             self.patch_checksum = compute_patch_checksum(self.patch_text)
         super().save(*args, **kwargs)
 
     class Meta:
         unique_together = ["patch_checksum", "patch_url"]
+        constraints = [
+            models.CheckConstraint(
+                check=(Q(patch_url__isnull=False) | Q(patch_text__isnull=False)),
+                name="patch_url_or_patch_text",
+            )
+        ]
 
 
 class PackageCommitPatch(models.Model):

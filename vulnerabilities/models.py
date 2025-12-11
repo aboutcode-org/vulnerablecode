@@ -2782,7 +2782,8 @@ class Patch(models.Model):
         unique_together = ["patch_checksum", "patch_url"]
         constraints = [
             models.CheckConstraint(
-                check=(Q(patch_url__isnull=False) | Q(patch_text__isnull=False)),
+                check=(Q(patch_url__isnull=False) | Q(patch_text__isnull=False))
+                & ~(Q(patch_url="") & Q(patch_text="")),
                 name="patch_url_or_patch_text",
             )
         ]

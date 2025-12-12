@@ -10,9 +10,11 @@
 import urllib.parse
 from datetime import datetime
 from unittest import TestCase
+from unittest.mock import patch
 
 import pytest
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from django.test import TestCase as DjangoTestCase
 from packageurl import PackageURL
 from univers import versions
@@ -25,6 +27,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
+from vulnerabilities.models import Patch
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.utils import compute_content_id
 
@@ -647,9 +650,6 @@ class TestAdvisoryModel(DjangoTestCase):
             )
 
 
-from unittest.mock import patch
-
-
 class TestPipelineRunModel(DjangoTestCase):
     def setUp(self):
         self.schedule1 = models.PipelineSchedule.objects.create(pipeline_id="test_pipeline")
@@ -694,3 +694,29 @@ class TestPipelineScheduleModel(DjangoTestCase):
 
     def test_pipelineschedule_all_runs(self):
         self.assertEqual(self.schedule1.all_runs.count(), 2)
+
+
+class PatchConstraintTests(TestCase):
+    @pytest.mark.django_db
+    def test_constraint_none(self):
+        with self.assertRaises(IntegrityError) as raised:
+            Patch.objects.create(patch_url=None, patch_text=None)
+        self.assertIn("patch_url_or_patch_text", str(raised.exception))
+
+    @pytest.mark.django_db
+    def test_constraint_empty(self):
+        with self.assertRaises(IntegrityError) as raised:
+            Patch.objects.create(patch_url="", patch_text="")
+        self.assertIn("patch_url_or_patch_text", str(raised.exception))
+
+    @pytest.mark.django_db
+    def test_constraint_empty_none(self):
+        with self.assertRaises(IntegrityError) as raised:
+            Patch.objects.create(patch_url="", patch_text=None)
+        self.assertIn("patch_url_or_patch_text", str(raised.exception))
+
+    @pytest.mark.django_db
+    def test_constraint_none_empty(self):
+        with self.assertRaises(IntegrityError) as raised:
+            Patch.objects.create(patch_url=None, patch_text="")
+        self.assertIn("patch_url_or_patch_text", str(raised.exception))

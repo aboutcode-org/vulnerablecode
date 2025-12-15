@@ -19,12 +19,15 @@ from univers.version_range import VersionRange
 from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import Reference
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryWeakness
+from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.pipes.advisory import get_or_create_advisory_aliases
+from vulnerabilities.pipes.advisory import get_or_create_advisory_package_commit_patches
 from vulnerabilities.pipes.advisory import get_or_create_advisory_references
 from vulnerabilities.pipes.advisory import get_or_create_advisory_severities
 from vulnerabilities.pipes.advisory import get_or_create_advisory_weaknesses
@@ -161,6 +164,25 @@ def advisory_references():
 
 
 @pytest.fixture
+def advisory_commit():
+    return [
+        PackageCommitPatchData(
+            commit_hash="ef1659c01708b2111d6f06e2aa32f0f9d8768e10",
+            vcs_url="https://github.com/aboutcode-org/vulnerablecode",
+            patch_text="""
+            @@ -2,3 +2,3 @@
+            -old line
+            +new line
+            """,
+        ),
+        PackageCommitPatchData(
+            commit_hash="eccbb45ac2d9c0eb7e22ea82d1fc49f9f4cda818",
+            vcs_url="https://github.com/aboutcode-org/vulnerablecode",
+        ),
+    ]
+
+
+@pytest.fixture
 def advisory_severities():
     class Severity:
         def __init__(self, system, value, scoring_elements, published_at=None, url=None):
@@ -225,3 +247,13 @@ def test_get_or_create_advisory_weaknesses(advisory_weaknesses):
     for w in weaknesses:
         assert isinstance(w, AdvisoryWeakness)
         assert w.cwe_id in advisory_weaknesses
+
+
+@pytest.mark.django_db
+def test_get_or_create_advisory_commit(advisory_commit):
+    commits = get_or_create_advisory_package_commit_patches(advisory_commit)
+    assert len(commits) == len(advisory_commit)
+    for commit in commits:
+        assert isinstance(commit, PackageCommitPatch)
+        assert commit.commit_hash in [c.commit_hash for c in advisory_commit]
+        assert commit.vcs_url in [c.vcs_url for c in advisory_commit]

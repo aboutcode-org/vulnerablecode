@@ -1687,7 +1687,7 @@ def package_path_elements(
     _pkg, _, core_path = core_purl.partition(":")
     purl_hash = _compute_hash(core_purl=core_purl, max_value=max_value)
 
-    version = normalize_version(purl.version)
+    version = normalize_version(purl.version, purl.type)
     if version:
         version = percent_quote_more(version)
 

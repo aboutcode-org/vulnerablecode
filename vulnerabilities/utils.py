@@ -49,6 +49,9 @@ is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
 cwe_regex = r"CWE-\d+"
 
+commit_regex = re.compile(r"\b[0-9a-f]{5,40}\b", re.IGNORECASE)
+is_commit = commit_regex.fullmatch
+
 
 @dataclasses.dataclass(order=True, frozen=True)
 class AffectedPackage:
@@ -793,3 +796,10 @@ def ssvc_calculator(ssvc_data):
 
         ssvc_vector += f"{timestamp_formatted}/"
     return ssvc_vector, decision
+
+
+def compute_patch_checksum(patch_text: str):
+    """
+    Compute SHA-512 checksum for patch text.
+    """
+    return hashlib.sha512(patch_text.encode("utf-8")).hexdigest()

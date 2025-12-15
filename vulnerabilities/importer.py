@@ -36,7 +36,9 @@ from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.utils import classproperty
+from vulnerabilities.utils import compute_patch_checksum
 from vulnerabilities.utils import get_reference_id
+from vulnerabilities.utils import is_commit
 from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import nearest_patched_package
 from vulnerabilities.utils import purl_to_dict
@@ -194,6 +196,103 @@ class ReferenceV2:
         return cls(url=url)
 
 
+@dataclasses.dataclass(eq=True)
+@functools.total_ordering
+class PackageCommitPatchData:
+    vcs_url: str
+    commit_hash: str
+    patch_text: Optional[str] = None
+    patch_checksum: Optional[str] = dataclasses.field(init=False, default=None)
+
+    def __post_init__(self):
+        if not self.commit_hash:
+            raise ValueError("Commit must have a non-empty commit_hash.")
+
+        if not is_commit(self.commit_hash):
+            raise ValueError(f"Commit must be a valid a commit_hash: {self.commit_hash}.")
+
+        if not self.vcs_url:
+            raise ValueError("Commit must have a non-empty vcs_url.")
+
+        if self.patch_text:
+            self.patch_checksum = compute_patch_checksum(self.patch_text)
+
+    def __lt__(self, other):
+        if not isinstance(other, PackageCommitPatchData):
+            return NotImplemented
+        return self._cmp_key() < other._cmp_key()
+
+    # TODO: Add cache
+    def _cmp_key(self):
+        return (
+            self.vcs_url,
+            self.commit_hash,
+            self.patch_text,
+            self.patch_checksum,
+        )
+
+    def to_dict(self) -> dict:
+        """Return a normalized dictionary representation of the commit."""
+        return {
+            "vcs_url": self.vcs_url,
+            "commit_hash": self.commit_hash,
+            "patch_text": self.patch_text,
+            "patch_checksum": self.patch_checksum,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        """Create a PackageCommitPatchData instance from a dictionary."""
+        return cls(
+            vcs_url=data.get("vcs_url"),
+            commit_hash=data.get("commit_hash"),
+            patch_text=data.get("patch_text"),
+        )
+
+
+@dataclasses.dataclass(eq=True)
+@functools.total_ordering
+class PatchData:
+    patch_url: Optional[str] = None
+    patch_text: Optional[str] = None
+    patch_checksum: Optional[str] = dataclasses.field(init=False, default=None)
+
+    def __post_init__(self):
+        if not self.patch_url and not self.patch_text:
+            raise ValueError("A patch must include either patch_url or patch_text")
+
+        if self.patch_text:
+            self.patch_checksum = compute_patch_checksum(self.patch_text)
+
+    def __lt__(self, other):
+        if not isinstance(other, PatchData):
+            return NotImplemented
+        return self._cmp_key() < other._cmp_key()
+
+    def _cmp_key(self):
+        return (
+            self.patch_url,
+            self.patch_text,
+            self.patch_checksum,
+        )
+
+    def to_dict(self) -> dict:
+        """Return a normalized dictionary representation of the commit."""
+        return {
+            "patch_url": self.patch_url,
+            "patch_text": self.patch_text,
+            "patch_checksum": self.patch_checksum,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        """Create a PatchData instance from a dictionary."""
+        return cls(
+            patch_url=data.get("patch_url"),
+            patch_text=data.get("patch_text"),
+        )
+
+
 class UnMergeablePackageError(Exception):
     """
     Raised when a package cannot be merged with another one.
@@ -344,21 +443,30 @@ class AffectedPackageV2:
     """
     Relate a Package URL with a range of affected versions and fixed versions.
     The Package URL must *not* have a version.
-    AffectedPackage must contain either ``affected_version_range`` or ``fixed_version_range``.
+    AffectedPackage must contain either ``affected_version_range`` or ``fixed_version_range`` or ``introduced_by_commits`` or ``fixed_by_commits``.
     """
 
     package: PackageURL
     affected_version_range: Optional[VersionRange] = None
     fixed_version_range: Optional[VersionRange] = None
+    introduced_by_commit_patches: List[PackageCommitPatchData] = dataclasses.field(
+        default_factory=list
+    )
+    fixed_by_commit_patches: List[PackageCommitPatchData] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
         if self.package.version:
             raise ValueError(f"Affected Package URL {self.package!r} cannot have a version.")
 
-        if not (self.affected_version_range or self.fixed_version_range):
+        if not (
+            self.affected_version_range
+            or self.fixed_version_range
+            or self.introduced_by_commit_patches
+            or self.fixed_by_commit_patches
+        ):
             raise ValueError(
-                f"Affected Package {self.package!r} should have either fixed version range or an "
-                "affected version range."
+                f"Affected package {self.package!r} must have either a fixed version range, "
+                "an affected version range, introduced commit patches, or fixed commit patches."
             )
 
     def __lt__(self, other):
@@ -372,6 +480,8 @@ class AffectedPackageV2:
             str(self.package),
             str(self.affected_version_range or ""),
             str(self.fixed_version_range or ""),
+            str(self.introduced_by_commit_patches or []),
+            str(self.fixed_by_commit_patches or []),
         )
 
     def to_dict(self):
@@ -385,6 +495,12 @@ class AffectedPackageV2:
             "package": purl_to_dict(self.package),
             "affected_version_range": affected_version_range,
             "fixed_version_range": fixed_version_range,
+            "introduced_by_commit_patches": [
+                commit.to_dict() for commit in self.introduced_by_commit_patches
+            ],
+            "fixed_by_commit_patches": [
+                commit.to_dict() for commit in self.fixed_by_commit_patches
+            ],
         }
 
     @classmethod
@@ -396,6 +512,10 @@ class AffectedPackageV2:
         fixed_version_range = None
         affected_range = affected_pkg["affected_version_range"]
         fixed_range = affected_pkg["fixed_version_range"]
+        introduced_by_commit_patches = (
+            affected_pkg.get("introduced_by_package_commit_patches") or []
+        )
+        fixed_by_commit_patches = affected_pkg.get("fixed_by_package_commit_patches") or []
 
         try:
             affected_version_range = VersionRange.from_string(affected_range)
@@ -417,6 +537,12 @@ class AffectedPackageV2:
             package=package,
             affected_version_range=affected_version_range,
             fixed_version_range=fixed_version_range,
+            introduced_by_commit_patches=[
+                PackageCommitPatchData.from_dict(commit) for commit in introduced_by_commit_patches
+            ],
+            fixed_by_commit_patches=[
+                PackageCommitPatchData.from_dict(commit) for commit in fixed_by_commit_patches
+            ],
         )
 
 
@@ -441,6 +567,7 @@ class AdvisoryData:
     )
     references: List[Reference] = dataclasses.field(default_factory=list)
     references_v2: List[ReferenceV2] = dataclasses.field(default_factory=list)
+    patches: List[PatchData] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
     severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
@@ -473,6 +600,7 @@ class AdvisoryData:
                 "summary": self.summary,
                 "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
                 "references_v2": [ref.to_dict() for ref in self.references_v2],
+                "patches": [patch.to_dict() for patch in self.patches],
                 "severities": [sev.to_dict() for sev in self.severities],
                 "date_published": self.date_published.isoformat() if self.date_published else None,
                 "weaknesses": self.weaknesses,
@@ -505,74 +633,7 @@ class AdvisoryData:
             "affected_packages": [
                 affected_package_cls.from_dict(pkg) for pkg in affected_packages if pkg is not None
             ],
-            "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
-            "date_published": datetime.datetime.fromisoformat(date_published)
-            if date_published
-            else None,
-            "weaknesses": advisory_data["weaknesses"],
-            "url": advisory_data.get("url") or None,
-        }
-        return cls(**transformed)
-
-
-@dataclasses.dataclass(order=True)
-class AdvisoryDataV2:
-    """
-    This data class expresses the contract between data sources and the import runner.
-
-    If a vulnerability_id is present then:
-        summary or affected_packages or references must be present
-    otherwise
-        either affected_package or references should be present
-
-    date_published must be aware datetime
-    """
-
-    advisory_id: str = ""
-    aliases: List[str] = dataclasses.field(default_factory=list)
-    summary: Optional[str] = ""
-    affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
-    references: List[ReferenceV2] = dataclasses.field(default_factory=list)
-    date_published: Optional[datetime.datetime] = None
-    weaknesses: List[int] = dataclasses.field(default_factory=list)
-    url: Optional[str] = None
-
-    def __post_init__(self):
-        if self.date_published and not self.date_published.tzinfo:
-            logger.warning(f"AdvisoryData with no tzinfo: {self!r}")
-        if self.summary:
-            self.summary = self.clean_summary(self.summary)
-
-    def clean_summary(self, summary):
-        # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
-        # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
-        summary = summary.strip()
-        if summary:
-            summary = summary.replace("\x00", "\uFFFD")
-        return summary
-
-    def to_dict(self):
-        return {
-            "aliases": self.aliases,
-            "summary": self.summary,
-            "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
-            "references": [ref.to_dict() for ref in self.references],
-            "date_published": self.date_published.isoformat() if self.date_published else None,
-            "weaknesses": self.weaknesses,
-            "url": self.url if self.url else "",
-        }
-
-    @classmethod
-    def from_dict(cls, advisory_data):
-        date_published = advisory_data["date_published"]
-        transformed = {
-            "aliases": advisory_data["aliases"],
-            "summary": advisory_data["summary"],
-            "affected_packages": [
-                AffectedPackage.from_dict(pkg)
-                for pkg in advisory_data["affected_packages"]
-                if pkg is not None
-            ],
+            "patches": [PatchData.from_dict(patch) for patch in advisory_data.get("patches", [])],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
             "date_published": datetime.datetime.fromisoformat(date_published)
             if date_published

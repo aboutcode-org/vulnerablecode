@@ -146,6 +146,31 @@ class AdvisoryV2Serializer(serializers.ModelSerializer):
     references = AdvisoryReferenceSerializer(many=True)
     severities = AdvisorySeveritySerializer(many=True)
     advisory_id = serializers.CharField(source="avid", read_only=True)
+    related_ssvc_trees = serializers.SerializerMethodField()
+
+    def get_related_ssvc_trees(self, obj):
+        related_ssvcs = obj.related_ssvcs.all().select_related("source_advisory")
+        source_ssvcs = obj.source_ssvcs.all().select_related("source_advisory")
+
+        seen = set()
+        result = []
+
+        for ssvc in list(related_ssvcs) + list(source_ssvcs):
+            key = (ssvc.vector, ssvc.source_advisory_id)
+            if key in seen:
+                continue
+            seen.add(key)
+
+            result.append(
+                {
+                    "vector": ssvc.vector,
+                    "decision": ssvc.decision,
+                    "options": ssvc.options,
+                    "source_url": ssvc.source_advisory.url,
+                }
+            )
+
+        return result
 
     class Meta:
         model = AdvisoryV2
@@ -160,6 +185,7 @@ class AdvisoryV2Serializer(serializers.ModelSerializer):
             "exploitability",
             "weighted_severity",
             "risk_score",
+            "related_ssvc_trees",
         ]
 
     def get_aliases(self, obj):

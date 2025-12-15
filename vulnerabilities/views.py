@@ -392,6 +392,26 @@ class AdvisoryDetails(DetailView):
                         "data_source", "description", "required_action", "due_date", "notes"
                     ),
                 ),
+                Prefetch(
+                    "related_ssvcs",
+                    queryset=models.SSVC.objects.select_related("source_advisory").only(
+                        "vector",
+                        "options",
+                        "decision",
+                        "source_advisory__id",
+                        "source_advisory__url",
+                    ),
+                ),
+                Prefetch(
+                    "source_ssvcs",
+                    queryset=models.SSVC.objects.select_related("source_advisory").only(
+                        "vector",
+                        "options",
+                        "decision",
+                        "source_advisory__id",
+                        "source_advisory__url",
+                    ),
+                ),
             )
         )
 
@@ -413,28 +433,6 @@ class AdvisoryDetails(DetailView):
             scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
         )
 
-        severity_vectors = []
-
-        for severity in valid_severities:
-            try:
-                vector_values_system = SCORING_SYSTEMS.get(severity.scoring_system)
-                if not vector_values_system:
-                    logging.error(f"Unknown scoring system: {severity.scoring_system}")
-                    continue
-                if vector_values_system.identifier in ["cvssv3.1_qr"]:
-                    continue
-                vector_values = vector_values_system.get(severity.scoring_elements)
-                if vector_values:
-                    severity_vectors.append({"vector": vector_values, "origin": severity.url})
-                    logging.error(f"Error processing scoring elements: {severity.scoring_elements}")
-            except (
-                CVSS2MalformedError,
-                CVSS3MalformedError,
-                CVSS4MalformedError,
-                NotImplementedError,
-            ):
-                logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
-
         epss_severity = advisory.severities.filter(scoring_system="epss").first()
         epss_data = None
         if epss_severity:
@@ -443,12 +441,36 @@ class AdvisoryDetails(DetailView):
                 "score": epss_severity.value,
                 "published_at": epss_severity.published_at,
             }
-        print(severity_vectors)
+
+        ssvc_entries = []
+        seen = set()
+
+        def add_ssvc(ssvc):
+            key = (ssvc.vector, ssvc.source_advisory_id)
+            if key in seen:
+                return
+            seen.add(key)
+            ssvc_entries.append(
+                {
+                    "vector": ssvc.vector,
+                    "decision": ssvc.decision,
+                    "options": ssvc.options,
+                    "advisory_url": ssvc.source_advisory.url,
+                    "advisory": ssvc.source_advisory,
+                }
+            )
+
+        for ssvc in advisory.source_ssvcs.all():
+            add_ssvc(ssvc)
+
+        for ssvc in advisory.related_ssvcs.all():
+            add_ssvc(ssvc)
+
+        context["ssvcs"] = ssvc_entries
         context.update(
             {
                 "advisory": advisory,
                 "severities": list(advisory.severities.all()),
-                "severity_vectors": severity_vectors,
                 "references": list(advisory.references.all()),
                 "aliases": list(advisory.aliases.all()),
                 "weaknesses": weaknesses_present_in_db,

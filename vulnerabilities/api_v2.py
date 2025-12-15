@@ -146,6 +146,18 @@ class AdvisoryV2Serializer(serializers.ModelSerializer):
     references = AdvisoryReferenceSerializer(many=True)
     severities = AdvisorySeveritySerializer(many=True)
     advisory_id = serializers.CharField(source="avid", read_only=True)
+    ssvc_trees = serializers.SerializerMethodField()
+
+    def get_ssvc_trees(self, obj):
+        ssvc_trees = obj.ssvc_entries.all()
+        return [
+            {
+                "vector": ssvc.vector,
+                "decision": ssvc.decision,
+                "options": ssvc.options,
+            }
+            for ssvc in ssvc_trees
+        ]
 
     class Meta:
         model = AdvisoryV2
@@ -160,6 +172,7 @@ class AdvisoryV2Serializer(serializers.ModelSerializer):
             "exploitability",
             "weighted_severity",
             "risk_score",
+            "ssvc_trees",
         ]
 
     def get_aliases(self, obj):
@@ -1033,13 +1046,13 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
             return self.get_paginated_response({"advisories": advisory_data, "packages": data})
 
         # If pagination is not applied, collect vulnerabilities for all packages
-        for package in queryset:
+        for package in filtered_queryset:
             advisories.update({impact.advisory for impact in package.affected_in_impacts.all()})
             advisories.update({impact.advisory for impact in package.fixed_in_impacts.all()})
 
         advisory_data = {f"{adv.avid}": AdvisoryV2Serializer(adv).data for adv in advisories}
 
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(filtered_queryset, many=True)
         data = serializer.data
         return Response({"advisories": advisory_data, "packages": data})
 

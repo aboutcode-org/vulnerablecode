@@ -3419,16 +3419,21 @@ class CodeCommit(models.Model):
 class SSVC(models.Model):
     vector = models.CharField(max_length=255, help_text="The vector string representing the SSVC.")
     options = models.JSONField(help_text="A JSON object containing the SSVC options.")
-    advisory = models.ForeignKey(
+    decision = models.CharField(max_length=255, help_text="The decision string for the SSVC.")
+    related_advisories = models.ManyToManyField(
+        AdvisoryV2,
+        related_name="related_ssvcs",
+        help_text="Advisories associated with this SSVC.",
+    )
+    source_advisory = models.ForeignKey(
         AdvisoryV2,
         on_delete=models.CASCADE,
-        related_name="ssvc_entries",
-        help_text="The advisory associated with this SSVC.",
+        related_name="source_ssvcs",
+        help_text="The advisory that was used to generate this SSVC decision.",
     )
-    decision = models.CharField(max_length=255, help_text="The decision string for the SSVC.")
 
     def __str__(self):
-        return f"SSVC for Advisory {self.advisory.advisory_id}: {self.decision}"
+        return f"SSVC Decision: {self.vector} -> {self.decision}"
 
     class Meta:
-        unique_together = ("vector", "advisory", "decision")
+        unique_together = ("vector", "source_advisory")

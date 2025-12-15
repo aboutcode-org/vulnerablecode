@@ -44,13 +44,6 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         </span>
                     </a>
                 </li>
-                <li data-tab="severities-vectors">
-                    <a>
-                        <span>
-                            Severity details ({{ severity_vectors|length }})
-                        </span>
-                    </a>
-                </li>
 
                 {% if advisory.exploits %}
                     <li data-tab="exploits">
@@ -69,6 +62,16 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         </span>
                     </a>
                 </li>
+
+                {% if ssvcs %}
+                    <li data-tab="ssvcs">
+                        <a>
+                            <span>
+                                Related SSVCS ({{ ssvcs|length }})
+                            </span>
+                        </a>
+                    </li>
+                {% endif %}
 
                 <!-- <li data-tab="history">
                     <a>
@@ -402,102 +405,6 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                     </tr>
                 {% endfor %}
             </div>
-        
-            <div class="tab-div content" data-content="severities-vectors">
-                {% for severity_vector in severity_vectors %}
-                    {% if severity_vector.vector.version == '2.0'  %}
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
-                          <tr>
-                            <th>Exploitability (E)</th>
-                            <th>Access Vector (AV)</th>
-                            <th>Access Complexity (AC)</th>
-                            <th>Authentication (Au)</th>
-                            <th>Confidentiality Impact (C)</th>
-                            <th>Integrity Impact (I)</th>
-                            <th>Availability Impact (A)</th>
-                          </tr>
-                          <tr>
-                            <td>{{ severity_vector.vector.exploitability|cvss_printer:"high,functional,unproven,proof_of_concept,not_defined" }}</td>
-                            <td>{{ severity_vector.vector.accessVector|cvss_printer:"local,adjacent_network,network" }}</td>
-                            <td>{{ severity_vector.vector.accessComplexity|cvss_printer:"high,medium,low" }}</td>
-                            <td>{{ severity_vector.vector.authentication|cvss_printer:"multiple,single,none" }}</td>
-                            <td>{{ severity_vector.vector.confidentialityImpact|cvss_printer:"none,partial,complete" }}</td>
-                            <td>{{ severity_vector.vector.integrityImpact|cvss_printer:"none,partial,complete" }}</td>
-                            <td>{{ severity_vector.vector.availabilityImpact|cvss_printer:"none,partial,complete" }}</td>
-                          </tr>
-                        </table>
-                    {% elif severity_vector.vector.version == '3.1' or severity_vector.vector.version == '3.0'%}
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
-                              <tr>
-                                <th>Attack Vector (AV)</th>
-                                <th>Attack Complexity (AC)</th>
-                                <th>Privileges Required (PR)</th>
-                                <th>User Interaction (UI)</th>
-                                <th>Scope (S)</th>
-                                <th>Confidentiality Impact (C)</th>
-                                <th>Integrity Impact (I)</th>
-                                <th>Availability Impact (A)</th>
-                              </tr>
-                              <tr>
-                                <td>{{ severity_vector.vector.attackVector|cvss_printer:"network,adjacent_network,local,physical"}}</td>
-                                <td>{{ severity_vector.vector.attackComplexity|cvss_printer:"low,high" }}</td>
-                                <td>{{ severity_vector.vector.privilegesRequired|cvss_printer:"none,low,high" }}</td>
-                                <td>{{ severity_vector.vector.userInteraction|cvss_printer:"none,required"}}</td>
-                                <td>{{ severity_vector.vector.scope|cvss_printer:"unchanged,changed" }}</td>
-                                <td>{{ severity_vector.vector.confidentialityImpact|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.integrityImpact|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.availabilityImpact|cvss_printer:"high,low,none" }}</td>
-                              </tr>
-                            </table>
-                    {% elif severity_vector.vector.version == '4' %}
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
-                              <tr>
-                                <th>Attack Vector (AV)</th>
-                                <th>Attack Complexity (AC)</th>
-                                <th>Attack Requirements (AT)</th>
-                                <th>Privileges Required (PR)</th>
-                                <th>User Interaction (UI)</th>
-
-                                <th>Vulnerable System Impact Confidentiality (VC)</th>
-                                <th>Vulnerable System Impact Integrity (VI)</th>
-                                <th>Vulnerable System Impact Availability (VA)</th>
-
-                                <th>Subsequent System Impact Confidentiality (SC)</th>
-                                <th>Subsequent System Impact Integrity (SI)</th>
-                                <th>Subsequent System Impact Availability (SA)</th>
-                              </tr>
-                              <tr>
-                                <td>{{ severity_vector.vector.attackVector|cvss_printer:"network,adjacent,local,physical"}}</td>
-                                <td>{{ severity_vector.vector.attackComplexity|cvss_printer:"low,high" }}</td>
-                                <td>{{ severity_vector.vector.attackRequirement|cvss_printer:"none,present" }}</td>
-                                <td>{{ severity_vector.vector.privilegesRequired|cvss_printer:"none,low,high" }}</td>
-                                <td>{{ severity_vector.vector.userInteraction|cvss_printer:"none,passive,active"}}</td>
-
-                                <td>{{ severity_vector.vector.vulnerableSystemImpactConfidentiality|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.vulnerableSystemImpactIntegrity|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.vulnerableSystemImpactAvailability|cvss_printer:"high,low,none" }}</td>
-
-                                <td>{{ severity_vector.vector.subsequentSystemImpactConfidentiality|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.subsequentSystemImpactIntegrity|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.subsequentSystemImpactAvailability|cvss_printer:"high,low,none" }}</td>
-                              </tr>
-                            </table>
-                    {% elif severity_vector.vector.version == 'ssvc' %}
-                        <hr/>
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
-                        <hr/>
-                    {% endif %}
-                    {% empty %}
-                        <tr>
-                            <td>
-                                There are no known vectors.
-                            </td>
-                        </tr>
-                    {% endfor %}
-            </div>
 
         
             <div class="tab-div content" data-content="epss">
@@ -542,6 +449,45 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                     <p>No EPSS data available for this advisory.</p>
                 {% endif %}
             </div>
+
+            <div class="tab-div content" data-content="ssvcs">
+                {% if ssvcs %}
+                  {% for ssvc in ssvcs %}
+                    <div class="box ssvc-card mb-0 pb-0">
+                        <div>
+                            <p>
+                              Vector: {{ ssvc.vector }}
+                            </p>
+                            <p>
+                              Decision: {{ ssvc.decision }}
+                            </p>
+                        <p>
+                          Source URL:
+                          <a href="{{ ssvc.advisory_url }}" target="_blank">
+                            {{ ssvc.advisory_url }}
+                            <i class="fa fa-external-link fa_link_custom"></i>
+                          </a>
+                        </p>
+                        <p>
+                          Source Advisory:
+                          <a href="{{ ssvc.advisory.get_absolute_url }}">
+                            {{ ssvc.advisory.avid }}
+                            <i class="fa fa-external-link fa_link_custom"></i>
+                          </a>
+                        </p>
+                          <details>
+                            <summary class="is-size-7 has-text-link" style="cursor: pointer;">
+                              View SSVC decision tree
+                            </summary>
+                            <pre>{{ ssvc.options|pprint }}</pre>
+                          </details>
+                        </div>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <p>There are no SSVC decisions available.</p>
+                {% endif %}
+              </div>
 
         <!-- <div class="tab-div content" data-content="history">
             <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">

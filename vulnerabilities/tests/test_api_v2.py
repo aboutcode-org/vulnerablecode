@@ -857,7 +857,7 @@ class AdvisoriesPackageV2Tests(APITestCase):
 
     def test_list_with_purl_filter(self):
         url = reverse("advisories-package-v2-list")
-        with self.assertNumQueries(17):
+        with self.assertNumQueries(19):
             response = self.client.get(url, {"purl": "pkg:pypi/sample@1.0.0"})
         assert response.status_code == 200
         assert "packages" in response.data["results"]
@@ -866,7 +866,7 @@ class AdvisoriesPackageV2Tests(APITestCase):
 
     def test_bulk_lookup(self):
         url = reverse("advisories-package-v2-bulk-lookup")
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(18):
             response = self.client.post(url, {"purls": ["pkg:pypi/sample@1.0.0"]}, format="json")
         assert response.status_code == 200
         assert "packages" in response.data
@@ -876,7 +876,7 @@ class AdvisoriesPackageV2Tests(APITestCase):
     def test_bulk_search_plain(self):
         url = reverse("advisories-package-v2-bulk-search")
         payload = {"purls": ["pkg:pypi/sample@1.0.0"], "plain_purl": True, "purl_only": False}
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(18):
             response = self.client.post(url, payload, format="json")
         assert response.status_code == 200
         assert "packages" in response.data
@@ -885,14 +885,14 @@ class AdvisoriesPackageV2Tests(APITestCase):
     def test_bulk_search_purl_only(self):
         url = reverse("advisories-package-v2-bulk-search")
         payload = {"purls": ["pkg:pypi/sample@1.0.0"], "plain_purl": False, "purl_only": True}
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(16):
             response = self.client.post(url, payload, format="json")
         assert response.status_code == 200
         assert "pkg:pypi/sample@1.0.0" in response.data
 
     def test_lookup_single_package(self):
         url = reverse("advisories-package-v2-lookup")
-        with self.assertNumQueries(12):
+        with self.assertNumQueries(16):
             response = self.client.post(url, {"purl": "pkg:pypi/sample@1.0.0"}, format="json")
         assert response.status_code == 200
         assert any(pkg["purl"] == "pkg:pypi/sample@1.0.0" for pkg in response.data)

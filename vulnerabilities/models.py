@@ -3467,6 +3467,7 @@ class AdvisoryExploit(models.Model):
     def get_known_ransomware_campaign_use_type(self):
         return "Known" if self.known_ransomware_campaign_use else "Unknown"
 
+
 class SSVC(models.Model):
     vector = models.CharField(max_length=255, help_text="The vector string representing the SSVC.")
     options = models.JSONField(help_text="A JSON object containing the SSVC options.")

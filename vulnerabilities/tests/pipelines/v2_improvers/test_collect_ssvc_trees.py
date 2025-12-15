@@ -7,6 +7,8 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from datetime import datetime
+
 import pytest
 
 from vulnerabilities.models import SSVC
@@ -18,7 +20,6 @@ from vulnerabilities.pipelines.v2_improvers.collect_ssvc_trees import (
     convert_vector_to_tree_and_decision,
 )
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from datetime import datetime
 
 
 @pytest.fixture

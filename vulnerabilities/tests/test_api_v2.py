@@ -892,7 +892,7 @@ class AdvisoriesPackageV2Tests(APITestCase):
 
     def test_lookup_single_package(self):
         url = reverse("advisories-package-v2-lookup")
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(12):
             response = self.client.post(url, {"purl": "pkg:pypi/sample@1.0.0"}, format="json")
         assert response.status_code == 200
         assert any(pkg["purl"] == "pkg:pypi/sample@1.0.0" for pkg in response.data)

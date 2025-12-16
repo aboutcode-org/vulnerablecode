@@ -11,6 +11,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
+
 from vulnerabilities.models import DetectionRule
 from vulnerabilities.pipelines.v2_improvers.yara_rules import YaraRulesImproverPipeline
 
@@ -24,9 +25,7 @@ def test_collect_and_store_rules_from_test_repo_dir():
     mock_vcs_response.dest_dir = str(TEST_REPO_DIR)
 
     improver = YaraRulesImproverPipeline()
-    improver.vcs_responses = [
-        (mock_vcs_response, "https://github.com/mock/repo")
-    ]
+    improver.vcs_responses = [(mock_vcs_response, "https://github.com/mock/repo")]
     improver.collect_and_store_rules()
 
     assert DetectionRule.objects.exists()

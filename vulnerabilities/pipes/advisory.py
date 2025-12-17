@@ -25,6 +25,7 @@ from packageurl.contrib.url2purl import url2purl
 
 from aboutcode.hashid import get_core_purl
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import ReferenceV2
@@ -501,3 +502,27 @@ def advisories_checksum(advisories: Union[Advisory, List[Advisory]]) -> str:
 
     checksum = hashlib.sha1(combined_contents.encode())
     return checksum.hexdigest()
+
+
+def append_patch_classifications(
+    url, commit_hash, patch_text, affected_packages, patches, references
+):
+    """Classify a patch source and append the results to affected_packages, patches, or references,
+    assuming all provided commits are fixed commits."""
+
+    base_purl, patch_objs = classify_patch_source(
+        url=url, commit_hash=commit_hash, patch_text=patch_text
+    )
+
+    for patch_obj in patch_objs:
+        if isinstance(patch_obj, PackageCommitPatchData):
+            fixed_commit = patch_obj
+            affected_package = AffectedPackageV2(
+                package=base_purl,
+                fixed_by_commit_patches=[fixed_commit],
+            )
+            affected_packages.append(affected_package)
+        elif isinstance(patch_obj, PatchData):
+            patches.append(patch_obj)
+        elif isinstance(patch_obj, ReferenceV2):
+            references.append(patch_obj)

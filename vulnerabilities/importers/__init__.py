@@ -24,7 +24,6 @@ from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
-from vulnerabilities.importers import project_kb_msr2019
 from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
 from vulnerabilities.importers import ruby
@@ -120,7 +119,6 @@ IMPORTERS_REGISTRY = create_registry(
         mozilla.MozillaImporter,
         gentoo.GentooImporter,
         istio.IstioImporter,
-        project_kb_msr2019.ProjectKBMSRImporter,
         suse_scores.SUSESeverityScoreImporter,
         elixir_security.ElixirSecurityImporter,
         xen.XenImporter,

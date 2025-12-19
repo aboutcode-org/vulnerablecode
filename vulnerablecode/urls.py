@@ -26,6 +26,8 @@ from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
+
+from vulnerabilities.views import AdvisoryTodoListView
 from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
@@ -69,7 +71,6 @@ api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vuln
 api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
 api_v2_router.register("pipelines", PipelineScheduleV2ViewSet, basename="pipelines")
 api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisory-codefix")
-
 
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
@@ -122,6 +123,11 @@ urlpatterns = [
         "packages/v2/search/",
         PackageSearchV2.as_view(),
         name="package_search_v2",
+    ),
+    path(
+        "todos/",
+        AdvisoryTodoListView.as_view(),
+        name="todos",
     ),
     re_path(
         r"^packages/(?P<purl>pkg:.+)$",

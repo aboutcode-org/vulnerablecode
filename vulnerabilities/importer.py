@@ -499,6 +499,31 @@ class AdvisoryData:
                 if "fixed_version_range" in affected_packages[0]
                 else AffectedPackage
             )
+        if advisory_data.get("advisory_id") or advisory_data.get("severities") or affected_package_cls is AffectedPackageV2:
+            transformed = {
+                "advisory_id": advisory_data["advisory_id"],
+                "aliases": advisory_data["aliases"],
+                "summary": advisory_data["summary"],
+                "affected_packages": [
+                    affected_package_cls.from_dict(pkg)
+                    for pkg in affected_packages
+                    if pkg is not None
+                ],
+                "references_v2": [
+                    ReferenceV2.from_dict(ref) for ref in advisory_data["references"]
+                ],
+                "severities": [
+                    VulnerabilitySeverity.from_dict(sev)
+                    for sev in advisory_data.get("severities", [])
+                ],
+                "date_published": datetime.datetime.fromisoformat(date_published)
+                if date_published
+                else None,
+                "weaknesses": advisory_data["weaknesses"],
+                "url": advisory_data.get("url") or None,
+                "original_advisory_text": advisory_data.get("original_advisory_text") or None,
+            }
+            return cls(**transformed)
         transformed = {
             "aliases": advisory_data["aliases"],
             "summary": advisory_data["summary"],

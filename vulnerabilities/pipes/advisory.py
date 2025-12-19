@@ -330,12 +330,15 @@ def import_advisory(
     advisory.save()
 
 
-def advisories_checksum(advisories: Union[Advisory, List[Advisory]]) -> str:
+def compute_advisories_content_id(advisories: Union[Advisory, List[Advisory]]) -> str:
+    """
+    Return a content based ID string that uniquely identifies the list of advisories.
+    """
     if isinstance(advisories, Advisory) or isinstance(advisories, AdvisoryV2):
         advisories = [advisories]
 
     contents = sorted([advisory.unique_content_id for advisory in advisories])
     combined_contents = "".join(contents)
 
-    checksum = hashlib.sha1(combined_contents.encode())
+    checksum = hashlib.sha256(combined_contents.encode(), usedforsecurity=False)
     return checksum.hexdigest()

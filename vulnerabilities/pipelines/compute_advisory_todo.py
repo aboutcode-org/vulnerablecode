@@ -18,7 +18,7 @@ from vulnerabilities.models import AdvisoryToDo
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ToDoRelatedAdvisory
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.pipes.advisory import advisories_checksum
+from vulnerabilities.pipes.advisory import compute_advisories_content_id
 
 
 class ComputeToDo(VulnerableCodePipeline):
@@ -52,7 +52,7 @@ class ComputeToDo(VulnerableCodePipeline):
             progress_step=1,
         )
         for advisory in progress.iter(advisories.iterator(chunk_size=5000)):
-            advisory_todo_id = advisories_checksum(advisories=advisory)
+            advisory_todo_id = compute_advisories_content_id(advisories=advisory)
             check_missing_summary(
                 advisory=advisory,
                 todo_id=advisory_todo_id,
@@ -297,7 +297,7 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
         "Conflict matrix": matrix,
     }
 
-    todo_id = advisories_checksum(advisories)
+    todo_id = compute_advisories_content_id(advisories)
     todo = AdvisoryToDo(
         related_advisories_id=todo_id,
         issue_type=issue_type,

@@ -2422,13 +2422,22 @@ class PipelineSchedule(models.Model):
 
 
 ISSUE_TYPE_CHOICES = [
-    ("MISSING_AFFECTED_PACKAGE", "Advisory is missing affected package"),
-    ("MISSING_FIXED_BY_PACKAGE", "Advisory is missing fixed-by package"),
+    (
+        "MISSING_AFFECTED_PACKAGE",
+        "Advisory is missing affected package",
+    ),
+    (
+        "MISSING_FIXED_BY_PACKAGE",
+        "Advisory is missing fixed-by package",
+    ),
     (
         "MISSING_AFFECTED_AND_FIXED_BY_PACKAGES",
         "Advisory is missing both affected and fixed-by packages",
     ),
-    ("MISSING_SUMMARY", "Advisory is missing summary"),
+    (
+        "MISSING_SUMMARY",
+        "Advisory is missing summary",
+    ),
     ("CONFLICTING_FIXED_BY_PACKAGES", "Advisories have conflicting fixed-by packages"),
     ("CONFLICTING_AFFECTED_PACKAGES", "Advisories have conflicting affected packages"),
     (
@@ -2502,22 +2511,22 @@ class AdvisoryToDoV2(models.Model):
     # (see https://code.djangoproject.com/ticket/702), we use related_advisories_id
     # to avoid creating duplicate issue for same set of advisories,
     related_advisories_id = models.CharField(
-        max_length=40,
-        help_text="SHA1 digest of the unique_content_id field of the applicable advisories.",
+        max_length=64,
+        help_text="Computed unique content ID that identifies the related advisories.",
     )
 
     advisories = models.ManyToManyField(
         "AdvisoryV2",
         through="ToDoRelatedAdvisoryV2",
         related_name="advisory_todos",
-        help_text="Advisory/ies where this TODO is applicable.",
+        help_text="Advisories for this TODO.",
     )
 
     issue_type = models.CharField(
         max_length=50,
         choices=ISSUE_TYPE_CHOICES,
         db_index=True,
-        help_text="Select the issue that needs to be addressed from the available options.",
+        help_text="The issue type that needs to be addressed.",
     )
 
     issue_detail = models.TextField(
@@ -2528,12 +2537,6 @@ class AdvisoryToDoV2(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
         help_text="Timestamp indicating when this TODO was created.",
-    )
-
-    is_resolved = models.BooleanField(
-        default=False,
-        db_index=True,
-        help_text="This TODO is resolved or not.",
     )
 
     resolved_at = models.DateTimeField(
@@ -2547,9 +2550,23 @@ class AdvisoryToDoV2(models.Model):
         help_text="Additional detail on how this TODO was resolved.",
     )
 
+    curation_advisory = models.ForeignKey(
+        "AdvisoryV2",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="curated_todos",
+        help_text="The advisory that was created/updated to resolve this TODO.",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        default="open",
+        help_text="The current status of the TODO item.",
+    )
+
     class Meta:
         unique_together = ("related_advisories_id", "issue_type")
-
 
 class AdvisorySeverity(models.Model):
     url = models.URLField(

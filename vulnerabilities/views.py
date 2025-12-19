@@ -34,6 +34,7 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerabilities.models import AdvisoryToDoV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
@@ -720,3 +721,10 @@ class AdminLoginView(LoginView):
         context["site_title"] = "VulnerableCode site admin"
         context["site_header"] = "VulnerableCode Administration"
         return context
+
+
+class AdvisoryTodoListView(ListView):
+    model = AdvisoryToDoV2
+    template_name = "advisory_todo_list.html"
+    context_object_name = "todos"
+    paginate_by = 50

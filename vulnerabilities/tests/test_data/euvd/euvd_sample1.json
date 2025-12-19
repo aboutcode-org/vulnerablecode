@@ -1,0 +1,47 @@
+{
+  "items": [
+    {
+      "id": "EUVD-2022-0569",
+      "enisaUuid": "ff8d275e-fded-32e0-b1dd-74cbae780c34",
+      "description": "A vulnerability was found in Braces versions 2.2.0 and above, prior to 2.3.1. Affected versions of this package are vulnerable to Regular Expression Denial of Service (ReDoS) attacks.",
+      "datePublished": "Mar 30, 2021, 1:52:55 AM",
+      "dateUpdated": "Dec 1, 2025, 2:18:10 PM",
+      "baseScore": 5.3,
+      "baseScoreVersion": "3.1",
+      "baseScoreVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+      "references": "https://nvd.nist.gov/vuln/detail/CVE-2018-1109\nhttps://github.com/micromatch/braces/commit/abdafb0cae1e0c00f184abbadc692f4eaa98f451\nhttps://bugzilla.redhat.com/show_bug.cgi?id=1547272\n",
+      "aliases": "CVE-2018-1109\nGHSA-cwfw-4gq5-mrqx\n",
+      "assigner": "redhat",
+      "epss": 0.27
+    },
+    {
+      "id": "EUVD-2025-199883",
+      "enisaUuid": "227b1294-1b89-32c6-acd8-2cc50af9ea1c",
+      "description": "Rallly is an open-source scheduling and collaboration tool. Prior to version 4.5.6, an information disclosure vulnerability exposes participant details, including names and email addresses through the /api/trpc/polls.get,polls.participants.list endpoint, even when Pro privacy features are enabled. This bypasses intended privacy controls that should prevent participants from viewing other users' personal information. This issue has been patched in version 4.5.6.",
+      "datePublished": "Nov 29, 2025, 12:43:02 AM",
+      "dateUpdated": "Dec 1, 2025, 2:11:22 PM",
+      "baseScore": 7.1,
+      "baseScoreVersion": "4.0",
+      "baseScoreVector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:N/VA:N/SC:L/SI:N/SA:N",
+      "references": "https://github.com/lukevella/rallly/security/advisories/GHSA-65wg-8xgw-f3fg\nhttps://github.com/lukevella/rallly/commit/59738c04f9a8ec25f0af5ce20ad0eab6cf134963\n",
+      "aliases": "CVE-2025-66027\n",
+      "assigner": "GitHub_M",
+      "epss": 0.04
+    },
+    {
+      "id": "EUVD-2025-199882",
+      "enisaUuid": "911c0f6a-52a9-3013-a8e2-50ff32772b3f",
+      "description": "fontTools is a library for manipulating fonts, written in Python. In versions from 4.33.0 to before 4.60.2, the fonttools varLib (or python3 -m fontTools.varLib) script has an arbitrary file write vulnerability that leads to remote code execution when a malicious .designspace file is processed. The vulnerability affects the main() code path of fontTools.varLib, used by the fonttools varLib CLI and any code that invokes fontTools.varLib.main(). This issue has been patched in version 4.60.2.",
+      "datePublished": "Nov 29, 2025, 1:07:12 AM",
+      "dateUpdated": "Dec 1, 2025, 2:11:17 PM",
+      "baseScore": 6.3,
+      "baseScoreVersion": "3.1",
+      "baseScoreVector": "CVSS:3.1/AV:L/AC:H/PR:N/UI:R/S:C/C:N/I:H/A:L",
+      "references": "https://github.com/fonttools/fonttools/security/advisories/GHSA-768j-98cg-p3fv\nhttps://github.com/fonttools/fonttools/commit/a696d5ba93270d5954f98e7cab5ddca8a02c1e32\n",
+      "aliases": "CVE-2025-66034\n",
+      "assigner": "GitHub_M",
+      "epss": 0.09
+    }
+  ],
+  "total": 5
+}

@@ -85,16 +85,17 @@ def get_or_create_advisory_severities(severities: List) -> QuerySet:
     severity_objs = []
     for severity in severities:
         published_at = str(severity.published_at) if severity.published_at else None
-        sev, _ = AdvisorySeverity.objects.get_or_create(
-            scoring_system=severity.system.identifier,
-            value=severity.value,
-            scoring_elements=severity.scoring_elements,
-            defaults={
-                "published_at": published_at,
-            },
-            url=severity.url,
-        )
-        severity_objs.append(sev)
+        if severity.scoring_elements or severity.value:
+            sev, _ = AdvisorySeverity.objects.get_or_create(
+                scoring_system=severity.system.identifier,
+                value=severity.value,
+                scoring_elements=severity.scoring_elements,
+                defaults={
+                    "published_at": published_at,
+                },
+                url=severity.url,
+            )
+            severity_objs.append(sev)
     return AdvisorySeverity.objects.filter(id__in=[severity.id for severity in severity_objs])
 
 

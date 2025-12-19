@@ -2573,7 +2573,8 @@ class AdvisorySeverity(models.Model):
         ),
     )
 
-    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+    # A severity value might be missing and it may just contain scoring_elements only
+    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High", null=True)
 
     scoring_elements = models.CharField(
         max_length=150,
@@ -2591,6 +2592,16 @@ class AdvisorySeverity(models.Model):
     class Meta:
         verbose_name_plural = "Advisory severities"
         ordering = ["url", "scoring_system", "value"]
+        unique_together = ("url", "scoring_system", "value", "scoring_elements", "published_at")
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    Q(value__isnull=False) & ~Q(value="")
+                    | Q(scoring_elements__isnull=False) & ~Q(scoring_elements="")
+                ),
+                name="scoring_elements_or_value_must_be_set",
+            )
+        ]
 
     def to_dict(self):
         return {
@@ -2612,7 +2623,7 @@ class AdvisoryWeakness(models.Model):
     A weakness is a software weakness that is associated with a vulnerability.
     """
 
-    cwe_id = models.IntegerField(help_text="CWE id")
+    cwe_id = models.IntegerField(help_text="CWE id", unique=True)
 
     cwe_by_id = {}
 
@@ -2659,7 +2670,6 @@ class AdvisoryReference(models.Model):
     url = models.URLField(
         max_length=1024,
         help_text="URL to the vulnerability reference",
-        unique=True,
     )
 
     ADVISORY = "advisory"
@@ -2689,6 +2699,7 @@ class AdvisoryReference(models.Model):
 
     class Meta:
         ordering = ["reference_id", "url", "reference_type"]
+        unique_together = ("url", "reference_type")
 
     def __str__(self):
         reference_id = f" {self.reference_id}" if self.reference_id else ""

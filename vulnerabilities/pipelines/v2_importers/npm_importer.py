@@ -88,6 +88,7 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             severities.append(
                 VulnerabilitySeverity(
                     system=CVSSV3,
+                    scoring_elements=cvss_vector,
                     value=cvss_score,
                     url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
                 )
@@ -97,6 +98,7 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 VulnerabilitySeverity(
                     system=CVSSV2,
                     value=cvss_score,
+                    scoring_elements=cvss_vector,
                     url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
                 )
             )

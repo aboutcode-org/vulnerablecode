@@ -456,7 +456,7 @@ def import_advisory(
                         f"and scoring_elements: {severity.scoring_elements!r}",
                         level=logging.DEBUG,
                     )
-            except:
+            except Exception:
                 if logger:
                     logger(
                         f"Failed to create VulnerabilitySeverity for: {severity} with error:\n{traceback_format_exc()}",

@@ -16,7 +16,6 @@ from vulnerabilities.models import SSVC
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.pipelines.v2_importers.vulnrichment_importer import VulnrichImporterPipeline
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 logger = logging.getLogger(__name__)
@@ -38,7 +37,6 @@ class CollectSSVCPipeline(VulnerableCodePipeline):
     def collect_ssvc_data(self):
         vulnrichment_advisories = (
             AdvisoryV2.objects.filter(
-                datasource_id=VulnrichImporterPipeline.pipeline_id,
                 severities__scoring_system=SCORING_SYSTEMS["ssvc"],
             )
             .distinct()
@@ -59,6 +57,7 @@ class CollectSSVCPipeline(VulnerableCodePipeline):
             self.log(f"Processing advisory: {advisory.advisory_id}")
             for severity in advisory.severities.all():
                 ssvc_vector = severity.scoring_elements
+                self.log(f"SSVC Vector found: {ssvc_vector}")
                 try:
                     ssvc_tree, decision = convert_vector_to_tree_and_decision(ssvc_vector)
                     self.log(
@@ -78,7 +77,7 @@ class CollectSSVCPipeline(VulnerableCodePipeline):
                     ).distinct()
                     related_advisories = related_advisories.exclude(id=advisory.id)
                     ssvc_obj.related_advisories.set(related_advisories)
-                except ValueError as e:
+                except Exception as e:
                     logger.error(
                         f"Failed to parse SSVC vector '{ssvc_vector}' for advisory '{advisory}': {e}"
                     )

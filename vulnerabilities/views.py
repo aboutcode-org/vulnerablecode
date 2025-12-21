@@ -429,8 +429,10 @@ class AdvisoryDetails(DetailView):
             if weakness_object.weakness
         ]
 
-        valid_severities = self.object.severities.exclude(scoring_system=EPSS.identifier).filter(
-            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
+        valid_severities = (
+            self.object.severities.exclude(scoring_system=EPSS.identifier)
+            .filter(scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.values())
+            .exclude(scoring_elements="")
         )
 
         epss_severity = advisory.severities.filter(scoring_system="epss").first()
@@ -444,6 +446,27 @@ class AdvisoryDetails(DetailView):
 
         ssvc_entries = []
         seen = set()
+
+        severity_vectors = []
+
+        for severity in valid_severities:
+            try:
+                vector_values_system = SCORING_SYSTEMS.get(severity.scoring_system)
+                if not vector_values_system:
+                    logging.error(f"Unknown scoring system: {severity.scoring_system}")
+                    continue
+                if vector_values_system.identifier in ["cvssv3.1_qr"]:
+                    continue
+                vector_values = vector_values_system.get(severity.scoring_elements)
+                if vector_values:
+                    severity_vectors.append({"vector": vector_values, "origin": severity.url})
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ):
+                logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
 
         def add_ssvc(ssvc):
             key = (ssvc.vector, ssvc.source_advisory_id)
@@ -473,9 +496,9 @@ class AdvisoryDetails(DetailView):
                 "severities": list(advisory.severities.all()),
                 "references": list(advisory.references.all()),
                 "aliases": list(advisory.aliases.all()),
+                "severity_vectors": severity_vectors,
                 "weaknesses": weaknesses_present_in_db,
                 "status": advisory.get_status_label,
-                # "history": advisory.history,
                 "epss_data": epss_data,
             }
         )

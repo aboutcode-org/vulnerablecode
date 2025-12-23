@@ -1,0 +1,31 @@
+
+CVEs fixed in 3.12:
+  CVE-2013-4511: 201f99f170df14ba52ea4c52847779042b7a623b uml: check length in exitcode_proc_write()
+  CVE-2013-4512: 201f99f170df14ba52ea4c52847779042b7a623b uml: check length in exitcode_proc_write()
+  CVE-2013-4513: c2c65cd2e14ada6de44cb527e7f1990bede24e15 staging: ozwpan: prevent overflow in oz_cdev_write()
+  CVE-2013-4514: b5e2f339865fb443107e5b10603e53bbc92dc054 staging: wlags49_h2: buffer overflow setting station name
+  CVE-2013-4515: 8d1e72250c847fa96498ec029891de4dc638a5ba Staging: bcm: info leak in ioctl
+  CVE-2013-4516: a8b33654b1e3b0c74d4a1fed041c9aae50b3c427 Staging: sb105x: info leak in mp_get_count()
+  CVE-2013-6383: f856567b930dfcdbc3323261bf77240ccdde01f5 aacraid: missing capable() check in compat ioctl
+
+CVEs fixed in 3.12.1:
+  CVE-2013-4348: cec64fecff2eff7dd701b883ed3f5f6faf1aab92 net: flow_dissector: fail on evil iph->ihl
+
+CVEs fixed in 3.12.2:
+  CVE-2013-2929: 9d4dd888b4b5799ecadfb0d8c9adda7a76779806 exec/ptrace: fix get_dumpable() incorrect tests
+  CVE-2013-2930: 539ddb09c46389cc22d35543e40ccde2c2e20244 perf/ftrace: Fix paranoid level for enabling function tracer
+  CVE-2013-4345: 8ea7fffd97835f4e3ffd5f757df152a79835f65f crypto: ansi_cprng - Fix off by one error in non-block size request
+  CVE-2013-6378: 0f6ff65ed8d3630118c3149a4fbc493dd3b8fdc4 libertas: potential oops in debugfs
+  CVE-2013-6380: 12cc2209deeda65c963c84a5e6aaf0c39aca8e6d aacraid: prevent invalid pointer dereference
+  CVE-2013-7026: dd272212175ad47ee84cf38e9d5f99502df2d930 ipc,shm: fix shm_file deletion races
+
+CVE-2024-26791: (unk) btrfs: dev-replace: properly validate device names
+CVE-2024-26793: (unk) gtp: fix use-after-free and null-ptr-deref in gtp_newlink()
+CVE-2024-26797: (unk) drm/amd/display: Prevent potential buffer overflow in map_hw_resources
+CVE-2024-26798: (unk) fbcon: always restore the old font data in fbcon_do_set_font()
+CVE-2024-26802: (unk) stmmac: Clear variable when destroying workqueue
+CVE-2024-26803: (unk) net: veth: clear GRO when clearing XDP even when down
+CVE-2024-26804: (unk) net: ip_tunnel: prevent perpetual headroom growth
+CVE-2024-26806: (unk) spi: cadence-qspi: remove system-wide suspend helper calls from runtime PM hooks
+CVE-2024-26808: (unk) netfilter: nft_chain_filter: handle NETDEV_UNREGISTER for inet/ingress basechain
+CVE-2024-26809: (unk) netfilter: nft_set_pipapo: release elements in clone only from destroy path

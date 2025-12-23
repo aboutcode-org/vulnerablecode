@@ -1,0 +1,47 @@
+{
+  "advisory_id": "OSV-2022-96",
+  "aliases": [],
+  "summary": "Heap-buffer-overflow in sequence_compression_api.c\nOSS-Fuzz report: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=44122\n\n```\nCrash type: Heap-buffer-overflow WRITE 16\nCrash state:\nsequence_compression_api.c\n```",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "generic",
+        "namespace": "",
+        "name": "zstd",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": null,
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [
+        {
+          "vcs_url": "https://github.com/facebook/zstd",
+          "commit_hash": "fc2ea97442460158a92d1e7b7c26e7486e45a605",
+          "patch_text": null,
+          "patch_checksum": null
+        }
+      ],
+      "fixed_by_commit_patches": [
+        {
+          "vcs_url": "https://github.com/facebook/zstd",
+          "commit_hash": "5684bae4f666f2730f2121048b0aa8472ac30457",
+          "patch_text": null,
+          "patch_checksum": null
+        }
+      ]
+    }
+  ],
+  "references_v2": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=44122"
+    }
+  ],
+  "patches": [],
+  "severities": [],
+  "date_published": "2022-01-29T00:00:24.594329+00:00",
+  "weaknesses": [],
+  "url": "https://test.com"
+}

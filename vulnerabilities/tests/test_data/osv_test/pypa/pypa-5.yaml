@@ -1,46 +1,58 @@
-id: PYSEC-2021-796
-details: TensorFlow is an end-to-end open source platform for machine learning. In
-  affected versions TFLite's [`expand_dims.cc`](https://github.com/tensorflow/tensorflow/blob/149562d49faa709ea80df1d99fc41d005b81082a/tensorflow/lite/kernels/expand_dims.cc#L36-L50)
-  contains a vulnerability which allows reading one element outside of bounds of heap
-  allocated data. If `axis` is a large negative value (e.g., `-100000`), then after
-  the first `if` it would still be negative. The check following the `if` statement
-  will pass and the `for` loop would read one element before the start of `input_dims.data`
-  (when `i = 0`). We have patched the issue in GitHub commit d94ffe08a65400f898241c0374e9edc6fa8ed257.
-  The fix will be included in TensorFlow 2.6.0. We will also cherrypick this commit
-  on TensorFlow 2.5.1, TensorFlow 2.4.3, and TensorFlow 2.3.4, as these are also affected
-  and still in supported range.
+id: PYSEC-2017-94
+details: Heap-based buffer overflow in the ALGnew function in block_templace.c in
+  Python Cryptography Toolkit (aka pycrypto) allows remote attackers to execute arbitrary
+  code as demonstrated by a crafted iv parameter to cryptmsg.py.
 affected:
 - package:
-    name: tensorflow-gpu
+    name: pycrypto
     ecosystem: PyPI
-    purl: pkg:pypi/tensorflow-gpu
+    purl: pkg:pypi/pycrypto
   ranges:
   - type: GIT
-    repo: https://github.com/tensorflow/tensorflow
+    repo: https://github.com/dlitz/pycrypto
     events:
-    - introduced: "0"
-    - fixed: d94ffe08a65400f898241c0374e9edc6fa8ed257
+    - introduced: '0'
+    - fixed: 8dbe0dc3eea5c689d4f76b37b93fe216cf1f00d4
   - type: ECOSYSTEM
     events:
-    - introduced: 2.3.0
-    - fixed: 2.3.4
-    - introduced: 2.4.0
-    - fixed: 2.4.3
+    - introduced: '0'
   versions:
-  - 2.3.0
-  - 2.3.1
-  - 2.3.2
-  - 2.3.3
-  - 2.4.0
+  - 1.9a2
+  - 1.9a5
+  - 1.9a6
+  - '2.0'
+  - 2.0.1
+  - 2.1.0
+  - '2.2'
+  - '2.3'
+  - '2.4'
   - 2.4.1
-  - 2.4.2
+  - '2.5'
+  - '2.6'
+  - 2.6.1
 references:
+- type: WEB
+  url: https://pony7.fr/ctf:public:32c3:cryptmsg
+- type: WEB
+  url: https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/RJ37R2YLX56YZABFNAOWV4VTHTGYREAE/
+- type: WEB
+  url: https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/C6BWNADPLKDBBQBUT3P75W7HAJCE7M3B/
+- type: REPORT
+  url: https://github.com/dlitz/pycrypto/issues/176
 - type: FIX
-  url: https://github.com/tensorflow/tensorflow/commit/d94ffe08a65400f898241c0374e9edc6fa8ed257
+  url: https://github.com/dlitz/pycrypto/commit/8dbe0dc3eea5c689d4f76b37b93fe216cf1f00d4
+- type: REPORT
+  url: https://bugzilla.redhat.com/show_bug.cgi?id=1409754
+- type: WEB
+  url: http://www.securityfocus.com/bid/95122
+- type: WEB
+  url: http://www.openwall.com/lists/oss-security/2016/12/27/8
 - type: ADVISORY
-  url: https://github.com/tensorflow/tensorflow/security/advisories/GHSA-c545-c4f9-rf6v
+  url: https://security.gentoo.org/glsa/201702-14
+- type: ADVISORY
+  url: https://github.com/advisories/GHSA-cq27-v7xp-c356
 aliases:
-- CVE-2021-37685
-- GHSA-c545-c4f9-rf6v
-modified: "2021-12-09T06:35:39.778016Z"
-published: "2021-08-12T23:15:00Z"
+- CVE-2013-7459
+- GHSA-cq27-v7xp-c356
+modified: '2021-08-27T03:22:16.665546Z'
+published: '2017-02-15T15:59:00Z'

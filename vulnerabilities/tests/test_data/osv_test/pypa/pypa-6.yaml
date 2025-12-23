@@ -1,0 +1,255 @@
+id: PYSEC-2023-56
+details: Wagtail is an open source content management system built on Django. Prior
+  to versions 4.1.4 and 4.2.2, a memory exhaustion bug exists in Wagtail's handling
+  of uploaded images and documents. For both images and documents, files are loaded
+  into memory during upload for additional processing. A user with access to upload
+  images or documents through the Wagtail admin interface could upload a file so large
+  that it results in a crash of denial of service. The vulnerability is not exploitable
+  by an ordinary site visitor without access to the Wagtail admin. It can only be
+  exploited by admin users with permission to upload images or documents. Image uploads
+  are restricted to 10MB by default, however this validation only happens on the frontend
+  and on the backend after the vulnerable code. Patched versions have been released
+  as Wagtail 4.1.4 and Wagtail 4.2.2). Site owners who are unable to upgrade to the
+  new versions are encouraged to add extra protections outside of Wagtail to limit
+  the size of uploaded files.
+affected:
+- package:
+    name: wagtail
+    ecosystem: PyPI
+    purl: pkg:pypi/wagtail
+  ranges:
+  - type: GIT
+    repo: https://github.com/wagtail/wagtail
+    events:
+    - introduced: "0"
+    - fixed: cfa11bbe00dbe7ce8cd4c0bbfe2a898a690df2bf
+    - fixed: 3c0c64642b9e5b8d28b111263c7f4bddad6c3880
+    - fixed: c9d2fcd650a88d76ae122646142245e5927a9165
+    - fixed: d4022310cbe497993459c3136311467c7ac6329a
+  - type: ECOSYSTEM
+    events:
+    - introduced: "4.2"
+    - fixed: 4.2.2
+    - introduced: "0"
+    - fixed: 4.1.4
+  versions:
+  - "0.1"
+  - "0.2"
+  - "0.3"
+  - 0.3.1
+  - "0.4"
+  - 0.4.1
+  - "0.5"
+  - "0.6"
+  - "0.7"
+  - "0.8"
+  - 0.8.1
+  - 0.8.10
+  - 0.8.2
+  - 0.8.3
+  - 0.8.4
+  - 0.8.5
+  - 0.8.6
+  - 0.8.7
+  - 0.8.8
+  - 0.8.9
+  - "1.0"
+  - 1.0b1
+  - 1.0b2
+  - 1.0rc1
+  - 1.0rc2
+  - "1.1"
+  - "1.10"
+  - 1.10.1
+  - 1.10rc1
+  - "1.11"
+  - 1.11.1
+  - 1.11rc1
+  - "1.12"
+  - 1.12.1
+  - 1.12.2
+  - 1.12.3
+  - 1.12.4
+  - 1.12.5
+  - 1.12.6
+  - 1.12rc1
+  - "1.13"
+  - 1.13.1
+  - 1.13.2
+  - 1.13.3
+  - 1.13.4
+  - 1.13rc1
+  - 1.1rc1
+  - "1.2"
+  - 1.2rc1
+  - "1.3"
+  - 1.3.1
+  - 1.3rc1
+  - "1.4"
+  - 1.4.1
+  - 1.4.2
+  - 1.4.3
+  - 1.4.4
+  - 1.4.5
+  - 1.4.6
+  - 1.4rc1
+  - "1.5"
+  - 1.5.1
+  - 1.5.2
+  - 1.5.3
+  - 1.5rc1
+  - "1.6"
+  - 1.6.1
+  - 1.6.2
+  - 1.6.3
+  - 1.6rc1
+  - "1.7"
+  - 1.7rc1
+  - "1.8"
+  - 1.8.1
+  - 1.8.2
+  - 1.8rc1
+  - "1.9"
+  - 1.9.1
+  - 1.9rc1
+  - "2.0"
+  - 2.0.1
+  - 2.0.2
+  - 2.0b1
+  - 2.0rc1
+  - "2.1"
+  - 2.1.1
+  - 2.1.2
+  - 2.1.3
+  - "2.10"
+  - 2.10.1
+  - 2.10.2
+  - 2.10rc1
+  - 2.10rc2
+  - "2.11"
+  - 2.11.1
+  - 2.11.2
+  - 2.11.3
+  - 2.11.4
+  - 2.11.5
+  - 2.11.6
+  - 2.11.7
+  - 2.11.8
+  - 2.11.9
+  - 2.11rc1
+  - "2.12"
+  - 2.12.1
+  - 2.12.2
+  - 2.12.3
+  - 2.12.4
+  - 2.12.5
+  - 2.12.6
+  - 2.12rc1
+  - "2.13"
+  - 2.13.1
+  - 2.13.2
+  - 2.13.3
+  - 2.13.4
+  - 2.13.5
+  - 2.13rc1
+  - 2.13rc2
+  - 2.13rc3
+  - "2.14"
+  - 2.14.1
+  - 2.14.2
+  - 2.14rc1
+  - "2.15"
+  - 2.15.1
+  - 2.15.2
+  - 2.15.3
+  - 2.15.4
+  - 2.15.5
+  - 2.15.6
+  - 2.15rc1
+  - 2.15rc2
+  - "2.16"
+  - 2.16.1
+  - 2.16.2
+  - 2.16.3
+  - 2.16rc1
+  - 2.16rc2
+  - 2.1rc1
+  - 2.1rc2
+  - "2.2"
+  - 2.2.1
+  - 2.2.2
+  - 2.2rc1
+  - 2.2rc2
+  - "2.3"
+  - 2.3rc1
+  - 2.3rc2
+  - "2.4"
+  - 2.4rc1
+  - "2.5"
+  - 2.5.1
+  - 2.5.2
+  - 2.5rc1
+  - "2.6"
+  - 2.6.1
+  - 2.6.2
+  - 2.6.3
+  - 2.6rc1
+  - "2.7"
+  - 2.7.1
+  - 2.7.2
+  - 2.7.3
+  - 2.7.4
+  - 2.7rc1
+  - 2.7rc2
+  - "2.8"
+  - 2.8.1
+  - 2.8.2
+  - 2.8rc1
+  - "2.9"
+  - 2.9.1
+  - 2.9.2
+  - 2.9.3
+  - 2.9rc1
+  - "3.0"
+  - 3.0.1
+  - 3.0.2
+  - 3.0.3
+  - 3.0rc1
+  - 3.0rc2
+  - 3.0rc3
+  - "4.0"
+  - 4.0.1
+  - 4.0.2
+  - 4.0.3
+  - 4.0.4
+  - 4.0rc1
+  - 4.0rc2
+  - "4.1"
+  - 4.1.1
+  - 4.1.2
+  - 4.1.3
+  - 4.1rc1
+  - "4.2"
+  - 4.2.1
+references:
+- type: FIX
+  url: https://github.com/wagtail/wagtail/commit/cfa11bbe00dbe7ce8cd4c0bbfe2a898a690df2bf
+- type: WEB
+  url: https://github.com/wagtail/wagtail/releases/tag/v4.2.2
+- type: FIX
+  url: https://github.com/wagtail/wagtail/commit/3c0c64642b9e5b8d28b111263c7f4bddad6c3880
+- type: ADVISORY
+  url: https://github.com/wagtail/wagtail/security/advisories/GHSA-33pv-vcgh-jfg9
+- type: WEB
+  url: https://docs.wagtail.org/en/stable/reference/settings.html#wagtailimages-max-upload-size
+- type: FIX
+  url: https://github.com/wagtail/wagtail/commit/c9d2fcd650a88d76ae122646142245e5927a9165
+- type: FIX
+  url: https://github.com/wagtail/wagtail/commit/d4022310cbe497993459c3136311467c7ac6329a
+- type: WEB
+  url: https://github.com/wagtail/wagtail/releases/tag/v4.1.4
+aliases:
+- CVE-2023-28837
+- GHSA-33pv-vcgh-jfg9
+modified: "2023-05-04T03:49:48.874145Z"
+published: "2023-04-03T17:15:00Z"

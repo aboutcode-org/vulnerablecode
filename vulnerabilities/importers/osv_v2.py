@@ -17,7 +17,7 @@ import dateparser
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from packageurl import PackageURL
-from univers.version_constraint import VersionConstraint
+from univers.version_constraint import VersionConstraint, validate_comparators
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.versions import InvalidVersion
 from univers.versions import SemverVersion
@@ -152,15 +152,18 @@ def parse_advisory_data_v3(
             or fixed_by_commit_patches
             or introduced_by_commit_patches
         ):
-            affected_packages.append(
-                AffectedPackageV2(
-                    package=purl,
-                    affected_version_range=affected_version_range,
-                    fixed_version_range=fixed_version_range,
-                    fixed_by_commit_patches=fixed_by_commit_patches,
-                    introduced_by_commit_patches=introduced_by_commit_patches,
+            try:
+                affected_packages.append(
+                    AffectedPackageV2(
+                        package=purl,
+                        affected_version_range=affected_version_range,
+                        fixed_version_range=fixed_version_range,
+                        fixed_by_commit_patches=fixed_by_commit_patches,
+                        introduced_by_commit_patches=introduced_by_commit_patches,
+                    )
                 )
-            )
+            except Exception as e:
+                logger.error(f"Invalid AffectedPackageV2 {e} for {advisory_id}")
 
     database_specific = raw_data.get("database_specific") or {}
     cwe_ids = database_specific.get("cwe_ids") or []
@@ -168,20 +171,22 @@ def parse_advisory_data_v3(
 
     if advisory_id in aliases:
         aliases.remove(advisory_id)
-
-    return AdvisoryData(
-        advisory_id=advisory_id,
-        aliases=aliases,
-        summary=summary,
-        references_v2=references,
-        severities=severities,
-        affected_packages=affected_packages,
-        date_published=date_published,
-        weaknesses=weaknesses,
-        patches=patches,
-        url=advisory_url,
-        original_advisory_text=advisory_text or json.dumps(raw_data, indent=2, ensure_ascii=False),
-    )
+    try:
+        return AdvisoryData(
+            advisory_id=advisory_id,
+            aliases=aliases,
+            summary=summary,
+            references_v2=references,
+            severities=severities,
+            affected_packages=affected_packages,
+            date_published=date_published,
+            weaknesses=weaknesses,
+            patches=patches,
+            url=advisory_url,
+            original_advisory_text=advisory_text or json.dumps(raw_data, indent=2, ensure_ascii=False),
+        )
+    except Exception as e:
+        logger.error(f"Invalid AdvisoryData for {advisory_id}: {e}")
 
 
 def extract_events(range_data) -> Iterable[str]:
@@ -335,12 +340,18 @@ def get_explicit_affected_constraints(affected_pkg, raw_id, supported_ecosystem)
             version_obj = version_range_class.version_class(version)
             constraint = VersionConstraint(comparator="=", version=version_obj)
             constraints.append(constraint)
+            validate_comparators(constraints)
         except Exception as e:
             logger.error(
-                f"Invalid VersionRange for affected_pkg: {affected_pkg} "
-                f"for OSV id: {raw_id!r}: error:{e!r}"
+                f"Invalid VersionConstraint: {version} " f"for OSV id: {raw_id!r}: error:{e!r}"
             )
 
+        try:
+            validate_comparators(constraints)
+        except Exception as e:
+            logger.error(
+                f"InvalidConstraint: {version} " f"for OSV id: {raw_id!r}: error:{e!r}"
+            )
     return constraints
 
 

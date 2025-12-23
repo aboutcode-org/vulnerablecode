@@ -48,8 +48,6 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return sum(1 for _ in advisory_dir.rglob("*.json"))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        from vulnerabilities.importers.osv import parse_advisory_data_v2
-
         supported_ecosystems = [
             "pypi",
             "npm",

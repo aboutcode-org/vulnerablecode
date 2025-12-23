@@ -44,8 +44,6 @@ class OSSFuzzImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return sum(1 for _ in vulns_directory.rglob("*.yaml"))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        from vulnerabilities.importers.osv import parse_advisory_data_v2
-
         base_directory = Path(self.vcs_response.dest_dir)
         vulns_directory = base_directory / "vulns"
 

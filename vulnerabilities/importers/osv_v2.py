@@ -17,7 +17,8 @@ import dateparser
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from packageurl import PackageURL
-from univers.version_constraint import VersionConstraint, validate_comparators
+from univers.version_constraint import VersionConstraint
+from univers.version_constraint import validate_comparators
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.versions import InvalidVersion
 from univers.versions import SemverVersion
@@ -119,7 +120,7 @@ def parse_advisory_data_v3(
                         )
                     except Exception as e:
                         logger.error(
-                            f"Invalid Commit Data: repo_url:{repo_url!r} - commit_hash: {commit_hash} for OSV id: {advisory_id}"
+                            f"Invalid Commit Data: repo_url:{repo_url!r} - commit_hash: {commit_hash} error: {e} for OSV id: {advisory_id}"
                         )
                         continue
                     for patch_obj in patch_objs:
@@ -183,7 +184,8 @@ def parse_advisory_data_v3(
             weaknesses=weaknesses,
             patches=patches,
             url=advisory_url,
-            original_advisory_text=advisory_text or json.dumps(raw_data, indent=2, ensure_ascii=False),
+            original_advisory_text=advisory_text
+            or json.dumps(raw_data, indent=2, ensure_ascii=False),
         )
     except Exception as e:
         logger.error(f"Invalid AdvisoryData for {advisory_id}: {e}")
@@ -324,8 +326,7 @@ def get_affected_purl(affected_pkg, raw_id):
 
 def get_explicit_affected_constraints(affected_pkg, raw_id, supported_ecosystem):
     """
-    Return a univers VersionRange for the ``affected_pkg`` package data mapping
-    or None. Use a ``raw_id`` OSV id and ``supported_ecosystem``.
+    Return a list of explicit version constraints for the ``affected_pkg`` data.
     """
     affected_versions = affected_pkg.get("versions") or []
     constraints = []
@@ -340,7 +341,6 @@ def get_explicit_affected_constraints(affected_pkg, raw_id, supported_ecosystem)
             version_obj = version_range_class.version_class(version)
             constraint = VersionConstraint(comparator="=", version=version_obj)
             constraints.append(constraint)
-            validate_comparators(constraints)
         except Exception as e:
             logger.error(
                 f"Invalid VersionConstraint: {version} " f"for OSV id: {raw_id!r}: error:{e!r}"
@@ -349,25 +349,30 @@ def get_explicit_affected_constraints(affected_pkg, raw_id, supported_ecosystem)
         try:
             validate_comparators(constraints)
         except Exception as e:
-            logger.error(
-                f"InvalidConstraint: {version} " f"for OSV id: {raw_id!r}: error:{e!r}"
-            )
+            logger.error(f"InvalidConstraint: {version} " f"for OSV id: {raw_id!r}: error:{e!r}")
     return constraints
 
 
 def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
     """
-    Return a list of unique fixed univers Versions given a ``fixed_range``
-    univers VersionRange and a ``raw_id``.
+    Return a tuple containing lists of affected constraints, fixed constraints,
+    introduced commits, and fixed commits
     For example::
-    >>> get_version_ranges_constraints(range={}, raw_id="GHSA-j3f7-7rmc-6wqj", supported_ecosystem="pypi",)
+    >>> get_version_ranges_constraints(ranges={}, raw_id="GHSA-j3f7-7rmc-6wqj", supported_ecosystem="pypi")
     []
-    >>> get_version_ranges_constraints(
-    ...   ranges={"type": "ECOSYSTEM", "events": [{"fixed": "1.7.0"}], },
+    >>> affected, fixed, intro_commits, fixed_commits = get_version_ranges_constraints(
+    ...   ranges={"type": "ECOSYSTEM", "events": [{"fixed": "1.7.0"}]},
     ...   raw_id="GHSA-j3f7-7rmc-6wqj",
     ...   supported_ecosystem="pypi",
     ... )
-    [PypiVersion(string='1.7.0')]
+    >>> affected
+    [VersionConstraint(comparator='<', version=PypiVersion(string='1.7.0'))]
+    >>> fixed
+    [VersionConstraint(comparator='=', version=PypiVersion(string='1.7.0'))]
+    >>> intro_commits
+    []
+    >>> fixed_commits
+    []
     """
     fixed_commits = []
     intro_commits = []

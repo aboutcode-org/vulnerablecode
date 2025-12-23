@@ -14,6 +14,7 @@ from typing import Iterable
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importers.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_advisory_url
 
@@ -72,7 +73,7 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             with open(file) as f:
                 raw_data = json.load(f)
             advisory_text = file.read_text()
-            yield parse_advisory_data_v2(
+            yield parse_advisory_data_v3(
                 raw_data=raw_data,
                 supported_ecosystems=supported_ecosystems,
                 advisory_url=advisory_url,

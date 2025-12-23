@@ -1,0 +1,43 @@
+{
+  "advisory_id": "GHSA-2jm2-2p35-rp3j",
+  "aliases": [
+    "CVE-2025-65103"
+  ],
+  "summary": "OpenSTAManager has Authenticated SQL Injection in API via 'display' parameter\n### Summary\nAn authenticated SQL Injection vulnerability in the API allows any user, regardless of permission level, to execute arbitrary SQL queries. By manipulating the `display` parameter in an API request, an attacker can exfiltrate, modify, or delete any data in the database, leading to a full system compromise.\n\n### Details\nThe vulnerability is located in the `retrieve()` method within `src/API/Manager.php`.\n\nUser input from the `display` GET parameter is processed without proper validation. The code strips the surrounding brackets `[]`, splits the string by commas, and then passes each resulting element directly into the `selectRaw()` function of the query builder.\n\n```php\n// User input from 'display' is taken without sanitization.\n$select = !empty($request['display']) ? explode(',', substr((string) $request['display'], 1, -1)) : null;\n\n// ...\n\n// The unsanitized input is passed directly to `selectRaw()`.\nforeach ($select as $s) {\n    $query->selectRaw($s);\n}\n```\n\nSince `selectRaw()` is designed to execute raw SQL expressions, it executes any malicious SQL code provided in the `display` parameter.\n\n### PoC\n1.  Log in to an OpenSTAManager instance as any user.\n2.  Navigate to the user's profile page to obtain their personal API Token.\n3.  Use this API token to send a specially crafted GET request to the API endpoint.\n\n**Time-Based Blind Injection Test:**\n\nReplace `<your_host>`, `<your_token>`, and `<resource_name>` with your actual values. `anagrafiche` is a valid resource.\n\n```bash\ncurl \"http://<your_host>/openstamanager/api?token=<your_token>&resource=anagrafiche&display=[1,SLEEP(5)]\"\n```\n\nThe server will delay its response by approximately 5 seconds, confirming the `SLEEP(5)` command was executed by the database.\n\n### Impact\nThis is a critical SQL Injection vulnerability. Any authenticated user, even those with the lowest privileges, can exploit this vulnerability to:\n\n*   **Exfiltrate all data** from the database (e.g., user credentials, customer information, invoices, internal data).\n*   **Modify or delete data**, compromising data integrity.\n*   Potentially achieve further system compromise, depending on the database user's privileges and system configuration.",
+  "affected_packages": [],
+  "references_v2": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/devcode-it/openstamanager/security/advisories/GHSA-2jm2-2p35-rp3j"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-65103"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/devcode-it/openstamanager"
+    }
+  ],
+  "patches": [],
+  "severities": [
+    {
+      "system": "cvssv3.1",
+      "value": "8.8",
+      "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+    },
+    {
+      "system": "generic_textual",
+      "value": "HIGH",
+      "scoring_elements": ""
+    }
+  ],
+  "date_published": "2025-11-19T21:00:37+00:00",
+  "weaknesses": [
+    89
+  ],
+  "url": "https://test.com"
+}

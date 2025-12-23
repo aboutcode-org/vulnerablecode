@@ -1,0 +1,30 @@
+id: OSV-2022-96
+summary: Heap-buffer-overflow in sequence_compression_api.c
+details: |
+  OSS-Fuzz report: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=44122
+
+  ```
+  Crash type: Heap-buffer-overflow WRITE 16
+  Crash state:
+  sequence_compression_api.c
+  ```
+modified: '2022-04-13T03:04:31.675527Z'
+published: '2022-01-29T00:00:24.594329Z'
+references:
+- type: REPORT
+  url: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=44122
+affected:
+- package:
+    name: zstd
+    ecosystem: OSS-Fuzz
+    purl: pkg:generic/zstd
+  ranges:
+  - type: GIT
+    repo: https://github.com/facebook/zstd
+    events:
+    - introduced: fc2ea97442460158a92d1e7b7c26e7486e45a605
+    - fixed: 5684bae4f666f2730f2121048b0aa8472ac30457
+  ecosystem_specific:
+    severity: HIGH
+  versions: []
+schema_version: 1.2.0

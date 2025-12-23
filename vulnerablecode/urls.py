@@ -23,6 +23,7 @@ from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api_v2 import AdvisoriesPackageV2ViewSet
 from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
+from vulnerabilities.api_v2 import LiveEvaluationViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
@@ -32,6 +33,7 @@ from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2
+from vulnerabilities.views import LiveEvaluationPipelineScheduleListView
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import PackageSearchV2
@@ -70,6 +72,8 @@ api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
 api_v2_router.register("pipelines", PipelineScheduleV2ViewSet, basename="pipelines")
 api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisory-codefix")
 
+api_v2_router.register("live-evaluation", LiveEvaluationViewSet, basename="live-evaluation")
+
 
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
@@ -87,6 +91,11 @@ urlpatterns = [
         "pipelines/dashboard/",
         PipelineScheduleListView.as_view(),
         name="dashboard",
+    ),
+    path(
+        "pipelines/live-evaluation-dashboard/",
+        LiveEvaluationPipelineScheduleListView.as_view(),
+        name="live-evaluation-dashboard",
     ),
     path(
         "pipelines/<str:pipeline_id>/runs/",

@@ -1976,6 +1976,55 @@ class CodeFixV2(CodeChangeV2):
     )
 
 
+class LivePipelineRun(models.Model):
+    """Represents a single live evaluation run for all compatible importers."""
+
+    run_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    created_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    completed_date = models.DateTimeField(blank=True, null=True, editable=False)
+    status = models.CharField(max_length=20, default="queued")
+    purl = models.CharField(max_length=300, blank=True, null=True)
+
+    def is_finished(self):
+        return self.status == "finished"
+
+    def update_status(self):
+        runs = list(self.pipelineruns.all())
+        if not runs:
+            self.status = "queued"
+            self.completed_date = None
+            self.save(update_fields=["status", "completed_date"])
+            return
+
+        # Determine aggregate status
+        if all(r.status == PipelineRun.Status.SUCCESS for r in runs):
+            self.status = "finished"
+        elif any(r.status == PipelineRun.Status.FAILURE for r in runs):
+            self.status = "failed"
+        elif any(r.status == PipelineRun.Status.RUNNING for r in runs):
+            self.status = "running"
+        else:
+            # queued or mixed queued
+            self.status = "queued"
+
+        end_times = [r.run_end_date for r in runs if r.run_end_date]
+        completed = None
+        if self.status in ("finished", "failed") and end_times:
+            completed = max(end_times)
+        self.completed_date = completed
+        self.save(update_fields=["status", "completed_date"])
+
+    @property
+    def started_date(self):
+        """Return earliest run_start_date among child runs, if any."""
+        runs = self.pipelineruns.all()
+        start_times = [r.run_start_date for r in runs if r.run_start_date]
+        return min(start_times) if start_times else None
+
+    class Meta:
+        ordering = ["-created_date"]
+
+
 class PipelineRun(models.Model):
     """The Database representation of a pipeline execution."""
 
@@ -1983,6 +2032,14 @@ class PipelineRun(models.Model):
         "PipelineSchedule",
         related_name="pipelineruns",
         on_delete=models.CASCADE,
+    )
+
+    live_pipeline = models.ForeignKey(
+        "LivePipelineRun",
+        related_name="pipelineruns",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     run_id = models.UUIDField(
@@ -2248,8 +2305,7 @@ class PipelineRun(models.Model):
         message = message.strip()
         if not is_multiline:
             message = message.replace("\n", "").replace("\r", "")
-
-        self.log = self.log + message + "\n"
+        self.log = (self.log or "") + message + "\n"
         self.save(update_fields=["log"])
 
     def dequeue(self):
@@ -2346,12 +2402,15 @@ class PipelineSchedule(models.Model):
     def pipeline_class(self):
         """Return the pipeline class."""
         from vulnerabilities.importers import IMPORTERS_REGISTRY
+        from vulnerabilities.importers import LIVE_IMPORTERS_REGISTRY
         from vulnerabilities.improvers import IMPROVERS_REGISTRY
 
         if self.pipeline_id in IMPROVERS_REGISTRY:
             return IMPROVERS_REGISTRY.get(self.pipeline_id)
         if self.pipeline_id in IMPORTERS_REGISTRY:
             return IMPORTERS_REGISTRY.get(self.pipeline_id)
+        if self.pipeline_id in LIVE_IMPORTERS_REGISTRY:
+            return LIVE_IMPORTERS_REGISTRY.get(self.pipeline_id)
 
     @property
     def description(self):

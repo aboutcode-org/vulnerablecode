@@ -34,6 +34,7 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerabilities.importers import LIVE_IMPORTERS_REGISTRY
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
@@ -687,19 +688,69 @@ class PipelineScheduleListView(ListView, FormMixin):
     form_class = PipelineSchedulePackageForm
 
     def get_queryset(self):
+        live_pipeline_ids = list(LIVE_IMPORTERS_REGISTRY.keys())
         form = self.form_class(self.request.GET)
+
         if form.is_valid():
-            return PipelineSchedule.objects.filter(
+            return PipelineSchedule.objects.exclude(pipeline_id__in=live_pipeline_ids).filter(
                 pipeline_id__icontains=form.cleaned_data.get("search")
             )
-        return PipelineSchedule.objects.all()
+        return PipelineSchedule.objects.exclude(pipeline_id__in=live_pipeline_ids)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["active_pipeline_count"] = PipelineSchedule.objects.filter(is_active=True).count()
-        context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
-            is_active=False
+        live_pipeline_ids = list(LIVE_IMPORTERS_REGISTRY.keys())
+
+        context["active_pipeline_count"] = (
+            PipelineSchedule.objects.exclude(pipeline_id__in=live_pipeline_ids)
+            .filter(is_active=True)
+            .count()
+        )
+        context["disabled_pipeline_count"] = (
+            PipelineSchedule.objects.exclude(pipeline_id__in=live_pipeline_ids)
+            .filter(is_active=False)
+            .count()
+        )
+        return context
+
+
+class LiveEvaluationPipelineScheduleListView(ListView, FormMixin):
+    model = PipelineSchedule
+    context_object_name = "schedule_list"
+    template_name = "pipeline_dashboard.html"
+    paginate_by = 20
+    form_class = PipelineSchedulePackageForm
+
+    def get_queryset(self):
+        live_pipeline_ids = list(LIVE_IMPORTERS_REGISTRY.keys())
+        form = self.form_class(self.request.GET)
+
+        if form.is_valid():
+            return PipelineSchedule.objects.filter(
+                pipeline_id__in=live_pipeline_ids,
+                pipeline_id__icontains=form.cleaned_data.get("search"),
+            )
+        return PipelineSchedule.objects.filter(pipeline_id__in=live_pipeline_ids)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        live_pipeline_ids = list(LIVE_IMPORTERS_REGISTRY.keys())
+
+        context["active_pipeline_count"] = PipelineSchedule.objects.filter(
+            pipeline_id__in=live_pipeline_ids, is_active=True
         ).count()
+        context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
+            pipeline_id__in=live_pipeline_ids, is_active=False
+        ).count()
+
+        # Update status of recent LivePipelineRun groups for freshness
+        try:
+            from vulnerabilities.models import LivePipelineRun
+
+            for lpr in LivePipelineRun.objects.order_by("-created_date")[:50]:
+                lpr.update_status()
+        except Exception:
+            pass
         return context
 
 

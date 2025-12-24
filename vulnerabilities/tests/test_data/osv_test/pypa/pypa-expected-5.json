@@ -15,7 +15,7 @@
         "qualifiers": "",
         "subpath": ""
       },
-      "affected_version_range": "vers:pypi/>=0|1.9a2|1.9a5|1.9a6|2.0|2.0.1|2.1.0|2.2|2.3|2.4|2.4.1|2.5|2.6|2.6.1",
+      "affected_version_range": "vers:pypi/1.9a2|1.9a5|1.9a6|2.0|2.0.1|2.1.0|2.2|2.3|2.4|2.4.1|2.5|2.6|2.6.1",
       "fixed_version_range": null,
       "introduced_by_commit_patches": [
         {

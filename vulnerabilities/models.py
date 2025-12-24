@@ -2577,7 +2577,7 @@ class AdvisorySeverity(models.Model):
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High", null=True)
 
     scoring_elements = models.CharField(
-        max_length=150,
+        max_length=200,
         null=True,
         help_text="Supporting scoring elements used to compute the score values. "
         "For example a CVSS vector string as used to compute a CVSS score.",

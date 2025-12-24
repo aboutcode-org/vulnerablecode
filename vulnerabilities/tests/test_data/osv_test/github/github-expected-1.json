@@ -14,7 +14,7 @@
         "qualifiers": "",
         "subpath": ""
       },
-      "affected_version_range": "vers:maven/>=0|<7.17.16",
+      "affected_version_range": "vers:maven/<7.17.16",
       "fixed_version_range": "vers:maven/7.17.16",
       "introduced_by_commit_patches": [],
       "fixed_by_commit_patches": []

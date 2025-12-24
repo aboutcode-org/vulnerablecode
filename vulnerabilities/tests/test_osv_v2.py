@@ -35,7 +35,7 @@ class TestOSVImporter(TestCase):
             mock_response = json.load(f)
         expected_file = os.path.join(TEST_DATA, "github/github-expected-2.json")
         imported_data = parse_advisory_data_v3(
-            mock_response, "packagist", advisory_url="https://test.com", advisory_text=""
+            mock_response, "composer", advisory_url="https://test.com", advisory_text=""
         )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)

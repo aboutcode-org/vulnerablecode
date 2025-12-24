@@ -18,7 +18,6 @@ from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
-from univers.version_constraint import validate_comparators
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.versions import InvalidVersion
 from univers.versions import SemverVersion
@@ -89,6 +88,13 @@ def parse_advisory_data_v3(
             supported_ecosystem=purl.type,
         )
         affected_constraints.extend(explicit_affected_constraints)
+
+        last_known_affected = get_last_known_affected__constraint(
+            affected_pkg=affected_pkg,
+            raw_id=advisory_id,
+            supported_ecosystem=purl.type,
+        )
+        affected_constraints.extend(last_known_affected)
 
         fixed_constraints = []
         for r in affected_pkg.get("ranges") or []:
@@ -345,12 +351,30 @@ def get_explicit_affected_constraints(affected_pkg, raw_id, supported_ecosystem)
             logger.error(
                 f"Invalid VersionConstraint: {version} " f"for OSV id: {raw_id!r}: error:{e!r}"
             )
-
-        try:
-            validate_comparators(constraints)
-        except Exception as e:
-            logger.error(f"InvalidConstraint: {version} " f"for OSV id: {raw_id!r}: error:{e!r}")
     return constraints
+
+
+def get_last_known_affected__constraint(affected_pkg, raw_id, supported_ecosystem):
+    """
+    Return the last_known_affected_version_range from the database_specific
+    """
+    database_specific = affected_pkg.get("database_specific") or {}
+    last_known_value = database_specific.get("last_known_affected_version_range")
+
+    if not last_known_value:
+        return []
+
+    try:
+        version_range_class = RANGE_CLASS_BY_SCHEMES.get(supported_ecosystem)
+        version_range = version_range_class.from_native(last_known_value)
+        return version_range.constraints
+
+    except Exception as e:
+        logger.error(
+            f"Invalid VersionConstraint in last_known_affected_version_range: {last_known_value!r} "
+            f"for OSV id: {raw_id!r}: error:{e!r}"
+        )
+        return []
 
 
 def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
@@ -378,7 +402,7 @@ def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
     intro_commits = []
 
     if "type" not in ranges:
-        logger.error(f"Invalid fixed_range type for: {ranges} for OSV id: {raw_id!r}")
+        logger.error(f"Invalid Range type for: {ranges} for OSV id: {raw_id!r}")
         return []
 
     range_type = ranges["type"]
@@ -408,10 +432,12 @@ def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
             try:
                 v_obj = version_class(event_value)
             except InvalidVersion:
-                logger.error(f"Invalid SemverVersion: {event_value!r} for OSV id: {raw_id!r}")
+                logger.error(f"Invalid Version: {event_value!r} for OSV id: {raw_id!r}")
                 continue
 
             if event_type == "introduced":
+                if event_value == "0":
+                    continue
                 constraint = VersionConstraint(comparator=">=", version=v_obj)
                 affected_constraints.append(constraint)
 
@@ -426,7 +452,9 @@ def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
                 constraint = VersionConstraint(comparator="<=", version=v_obj)
                 affected_constraints.append(constraint)
         else:
-            logger.error(f"Unsupported fixed version type: {event_value!r} for OSV id: {raw_id!r}")
+            logger.error(
+                f"Unsupported version constraint type: {event_type}:{event_value!r} for OSV id: {raw_id!r}"
+            )
 
     return (
         affected_constraints,

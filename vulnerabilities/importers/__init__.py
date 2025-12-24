@@ -24,6 +24,7 @@ from vulnerabilities.importers import mozilla
 from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
+from vulnerabilities.importers import project_kb_msr2019
 from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
 from vulnerabilities.importers import ruby
@@ -58,7 +59,12 @@ from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
 from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgresql_importer_v2
-from vulnerabilities.pipelines.v2_importers import project_kb_importer as project_kb_importer_v2
+from vulnerabilities.pipelines.v2_importers import (
+    project_kb_msr2019_importer as project_kb_msr2019_importer_v2,
+)
+from vulnerabilities.pipelines.v2_importers import (
+    project_kb_statements_importer as project_kb_statements_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
@@ -87,7 +93,8 @@ IMPORTERS_REGISTRY = create_registry(
         github_osv_importer_v2.GithubOSVImporterPipeline,
         redhat_importer_v2.RedHatImporterPipeline,
         aosp_importer_v2.AospImporterPipeline,
-        project_kb_importer_v2.ProjectKBPipeline,
+        project_kb_statements_importer_v2.ProjectKBStatementsPipeline,
+        project_kb_msr2019_importer_v2.ProjectKBMSR2019Pipeline,
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
@@ -119,6 +126,7 @@ IMPORTERS_REGISTRY = create_registry(
         mozilla.MozillaImporter,
         gentoo.GentooImporter,
         istio.IstioImporter,
+        project_kb_msr2019.ProjectKBMSRImporter,
         suse_scores.SUSESeverityScoreImporter,
         elixir_security.ElixirSecurityImporter,
         xen.XenImporter,

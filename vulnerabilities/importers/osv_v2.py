@@ -18,6 +18,7 @@ from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
+from univers.version_constraint import simplify_constraints
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.versions import InvalidVersion
 from univers.versions import SemverVersion
@@ -142,14 +143,18 @@ def parse_advisory_data_v3(
         affected_version_range = None
         if affected_constraints:
             try:
-                affected_version_range = version_range_class(constraints=affected_constraints)
+                affected_version_range = version_range_class(
+                    constraints=simplify_constraints(affected_constraints)
+                )
             except Exception as e:
                 logger.error(f"Failed to build VersionRange for {advisory_id}: {e}")
 
         fixed_version_range = None
         if fixed_constraints:
             try:
-                fixed_version_range = version_range_class(constraints=fixed_constraints)
+                fixed_version_range = version_range_class(
+                    constraints=simplify_constraints(fixed_constraints)
+                )
             except Exception as e:
                 logger.error(f"Failed to build VersionRange for {advisory_id}: {e}")
 

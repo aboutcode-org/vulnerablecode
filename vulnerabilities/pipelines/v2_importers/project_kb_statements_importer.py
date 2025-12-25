@@ -123,31 +123,31 @@ class ProjectKBStatementsPipeline(VulnerableCodeBaseImporterPipelineV2):
                 else:
                     purls_to_versions[base_purl][1].append(purl.version)
 
-                for base_purl, (affected_versions, fixed_versions) in purls_to_versions.items():
-                    version_range_class = RANGE_CLASS_BY_SCHEMES.get(base_purl.type)
+            for base_purl, (affected_versions, fixed_versions) in purls_to_versions.items():
+                version_range_class = RANGE_CLASS_BY_SCHEMES.get(base_purl.type)
 
-                    affected_range = None
-                    fixed_range = None
+                affected_range = None
+                fixed_range = None
 
-                    if affected_versions:
-                        try:
-                            affected_range = version_range_class.from_versions(affected_versions)
-                        except InvalidVersion as e:
-                            self.log(f"Invalid affected versions for {base_purl}: {e}")
+                if affected_versions:
+                    try:
+                        affected_range = version_range_class.from_versions(affected_versions)
+                    except InvalidVersion as e:
+                        self.log(f"Invalid affected versions for {base_purl}: {e}")
 
-                    if fixed_versions:
-                        try:
-                            fixed_range = version_range_class.from_versions(fixed_versions)
-                        except InvalidVersion as e:
-                            self.log(f"Invalid fixed versions for {base_purl}: {e}")
+                if fixed_versions:
+                    try:
+                        fixed_range = version_range_class.from_versions(fixed_versions)
+                    except InvalidVersion as e:
+                        self.log(f"Invalid fixed versions for {base_purl}: {e}")
 
-                    if affected_range or fixed_range:
-                        pkg = AffectedPackageV2(
-                            package=base_purl,
-                            affected_version_range=affected_range,
-                            fixed_version_range=fixed_range,
-                        )
-                        affected_packages.append(pkg)
+                if affected_range or fixed_range:
+                    pkg = AffectedPackageV2(
+                        package=base_purl,
+                        affected_version_range=affected_range,
+                        fixed_version_range=fixed_range,
+                    )
+                    affected_packages.append(pkg)
 
             advisory_url = get_advisory_url(
                 file=yaml_file,

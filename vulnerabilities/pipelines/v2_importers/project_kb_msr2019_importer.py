@@ -56,31 +56,35 @@ class ProjectKBMSR2019Pipeline(VulnerableCodeBaseImporterPipelineV2):
         with open(csv_path, newline="", encoding="utf-8") as f:
             reader = csv.reader(f)
             next(reader, None)  # skip header
-            rows = [r for r in reader if len(r) == 4 and r[0]]  # vuln_id, vcs_url, commit_hash, poc
 
-        for vuln_id, vcs_url, commit_hash, _ in rows:
-            if not vuln_id or not vcs_url or not commit_hash:
-                continue
+            for row in reader:
+                if len(row) != 4:
+                    continue
 
-            patches = []
-            affected_packages = []
-            references = []
-            append_patch_classifications(
-                url=vcs_url,
-                commit_hash=commit_hash,
-                patch_text=None,
-                affected_packages=affected_packages,
-                references=references,
-                patches=patches,
-            )
+                vuln_id, vcs_url, commit_hash, poc = row
 
-            yield AdvisoryData(
-                advisory_id=vuln_id,
-                affected_packages=affected_packages,
-                patches=patches,
-                references_v2=references,
-                url="https://github.com/SAP/project-kb/blob/main/MSR2019/dataset/vulas_db_msr2019_release.csv",
-            )
+                if not vuln_id or not vcs_url or not commit_hash:
+                    continue
+
+                patches = []
+                affected_packages = []
+                references = []
+                append_patch_classifications(
+                    url=vcs_url,
+                    commit_hash=commit_hash,
+                    patch_text=None,
+                    affected_packages=affected_packages,
+                    references=references,
+                    patches=patches,
+                )
+
+                yield AdvisoryData(
+                    advisory_id=vuln_id,
+                    affected_packages=affected_packages,
+                    patches=patches,
+                    references_v2=references,
+                    url="https://github.com/SAP/project-kb/blob/main/MSR2019/dataset/vulas_db_msr2019_release.csv",
+                )
 
     def clean_downloads(self):
         """Remove the cloned repository from disk."""

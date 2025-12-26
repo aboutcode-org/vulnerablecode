@@ -3,7 +3,7 @@
     "aliases": [
       "CVE-2022-0094"
     ],
-    "summary": "** REJECT ** DO NOT USE THIS CANDIDATE NUMBER. ConsultIDs: none. Reason: This candidate is unused by its CNA. Notes: none.",
+    "summary": "Rejected reason: DO NOT USE THIS CANDIDATE NUMBER. ConsultIDs: none. Reason: This candidate is unused by its CNA. Notes: none.",
     "affected_packages": [],
     "references": [
       {
@@ -13,7 +13,7 @@
         "severities": []
       }
     ],
-    "date_published": "2023-05-12T05:15:00+00:00",
+    "date_published": "2023-05-12T05:15:14.540000+00:00",
     "weaknesses": [],
     "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0094"
   }

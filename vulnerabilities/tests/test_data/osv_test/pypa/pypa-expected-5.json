@@ -15,16 +15,9 @@
         "qualifiers": "",
         "subpath": ""
       },
-      "affected_version_range": "vers:pypi/1.9a2|1.9a5|1.9a6|2.0|2.0.1|2.1.0|2.2|2.3|2.4|2.4.1|2.5|2.6|2.6.1",
+      "affected_version_range": null,
       "fixed_version_range": null,
-      "introduced_by_commit_patches": [
-        {
-          "vcs_url": "https://github.com/dlitz/pycrypto",
-          "commit_hash": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
-          "patch_text": null,
-          "patch_checksum": null
-        }
-      ],
+      "introduced_by_commit_patches": [],
       "fixed_by_commit_patches": [
         {
           "vcs_url": "https://github.com/dlitz/pycrypto",
@@ -33,6 +26,20 @@
           "patch_checksum": null
         }
       ]
+    },
+    {
+      "package": {
+        "type": "pypi",
+        "namespace": "",
+        "name": "pycrypto",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:pypi/1.9a2|1.9a5|1.9a6|2.0|2.0.1|2.1.0|2.2|2.3|2.4|2.4.1|2.5|2.6|2.6.1",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
     }
   ],
   "references_v2": [

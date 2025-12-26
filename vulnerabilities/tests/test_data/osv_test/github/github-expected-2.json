@@ -18,6 +18,20 @@
       "fixed_version_range": "vers:composer/2.9.5",
       "introduced_by_commit_patches": [],
       "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "composer",
+        "namespace": "devcode-it",
+        "name": "openstamanager",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:composer/<=2.9.4",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
     }
   ],
   "references_v2": [

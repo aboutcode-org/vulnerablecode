@@ -11,12 +11,135 @@ import os
 from unittest import TestCase
 
 import saneyaml
+from univers.version_constraint import VersionConstraint
+from univers.version_range import MavenVersionRange
+from univers.versions import MavenVersion
 
+from vulnerabilities.importers.osv_v2 import get_explicit_affected_range
+from vulnerabilities.importers.osv_v2 import get_version_ranges_constraints
 from vulnerabilities.importers.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.tests import util_tests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "test_data/osv_test")
+
+
+def test_get_version_ranges_constraints():
+    assert get_version_ranges_constraints(
+        ranges={"type": "ECOSYSTEM", "events": [{"introduced": "0"}, {"fixed": "0.21.8"}]},
+        raw_id="GHSA-8hxh-r6f7-jf45",
+        supported_ecosystem="maven",
+    ) == (
+        [VersionConstraint(comparator="<", version=MavenVersion(string="0.21.8"))],
+        [VersionConstraint(comparator="=", version=MavenVersion(string="0.21.8"))],
+        [],
+        [],
+    )
+
+    assert get_version_ranges_constraints(
+        ranges={
+            "events": [
+                {"introduced": "0"},
+                {"fixed": "91f4af7e6af53e1c6bf17ed36cb2161863eddae4"},
+                {"fixed": "18eea90ebb24a9c22248f0b7e18646cc6e3e3e0f"},
+                {"fixed": "a1991aeac19c3fec1fdd0d184c6760c90c9f9fc9"},
+                {"fixed": "31e41eea6c2322689826e6065ceba82551c565aa"},
+                {"fixed": "a40285c5a0288669b72f9d991508d4405885bffc"},
+            ],
+            "repo": "https://fedoraproject.org/wiki/Infrastructure/Fedorahosted-retirement",
+            "type": "GIT",
+        },
+        raw_id="GHSA-8hxh-r6f7-jf45",
+        supported_ecosystem="maven",
+    ) == (
+        [],
+        [],
+        [],
+        [
+            "91f4af7e6af53e1c6bf17ed36cb2161863eddae4",
+            "18eea90ebb24a9c22248f0b7e18646cc6e3e3e0f",
+            "a1991aeac19c3fec1fdd0d184c6760c90c9f9fc9",
+            "31e41eea6c2322689826e6065ceba82551c565aa",
+            "a40285c5a0288669b72f9d991508d4405885bffc",
+        ],
+    )
+
+    assert get_version_ranges_constraints(
+        ranges={"type": "ECOSYSTEM", "events": []},
+        raw_id="GHSA-8hxh-r6f7-jf45",
+        supported_ecosystem="maven",
+    ) == (
+        [],
+        [],
+        [],
+        [],
+    )
+
+
+def test_get_explicit_affected_constraints():
+    assert get_explicit_affected_range(
+        affected_pkg={
+            "versions": [
+                "4.10.2",
+                "4.12.2",
+                "4.4.0.dev1",
+                "4.5.0",
+                "4.5.2",
+                "4.5.4",
+                "4.6.2",
+                "4.6.3",
+                "4.6.4",
+                "4.6.5",
+                "4.6.7",
+                "4.7.0",
+                "4.7.1",
+                "4.7.2",
+                "4.7.4",
+                "4.7.5",
+                "4.8.0",
+                "4.8.0rc1",
+                "4.8.1",
+                "4.8.2",
+                "4.8.3",
+                "4.8.5",
+                "4.8.6",
+                "4.8.7",
+                "4.8.9",
+                "4.9.12",
+            ]
+        },
+        raw_id="GHSA-8hxh-r6f7-jf45",
+        supported_ecosystem="maven",
+    ) == MavenVersionRange(
+        constraints=(
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.4.0.dev1")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.5.0")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.5.2")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.5.4")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.6.2")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.6.3")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.6.4")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.6.5")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.6.7")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.7.0")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.7.1")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.7.2")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.7.4")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.7.5")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.0rc1")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.0")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.1")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.2")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.3")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.5")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.6")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.7")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.8.9")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.9.12")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.10.2")),
+            VersionConstraint(comparator="=", version=MavenVersion(string="4.12.2")),
+        )
+    )
 
 
 class TestOSVImporter(TestCase):
@@ -36,6 +159,16 @@ class TestOSVImporter(TestCase):
         expected_file = os.path.join(TEST_DATA, "github/github-expected-2.json")
         imported_data = parse_advisory_data_v3(
             mock_response, "composer", advisory_url="https://test.com", advisory_text=""
+        )
+        result = imported_data.to_dict()
+        util_tests.check_results_against_json(result, expected_file)
+
+    def test_to_advisories_github3(self):
+        with open(os.path.join(TEST_DATA, "github/github-3.json")) as f:
+            mock_response = json.load(f)
+        expected_file = os.path.join(TEST_DATA, "github/github-expected-3.json")
+        imported_data = parse_advisory_data_v3(
+            mock_response, "maven", advisory_url="https://test.com", advisory_text=""
         )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)
@@ -114,6 +247,16 @@ class TestOSVImporter(TestCase):
         with open(os.path.join(TEST_DATA, "pypa/pypa-6.yaml")) as f:
             mock_response = saneyaml.load(f)
         expected_file = os.path.join(TEST_DATA, "pypa/pypa-expected-6.json")
+        imported_data = parse_advisory_data_v3(
+            mock_response, "pypi", advisory_url="https://test.com", advisory_text=""
+        )
+        result = imported_data.to_dict()
+        util_tests.check_results_against_json(result, expected_file)
+
+    def test_to_advisories_pypa7(self):
+        with open(os.path.join(TEST_DATA, "pypa/pypa-7.yaml")) as f:
+            mock_response = saneyaml.load(f)
+        expected_file = os.path.join(TEST_DATA, "pypa/pypa-expected-7.json")
         imported_data = parse_advisory_data_v3(
             mock_response, "pypi", advisory_url="https://test.com", advisory_text=""
         )

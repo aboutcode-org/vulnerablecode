@@ -17,9 +17,11 @@ import dateparser
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from packageurl import PackageURL
+from univers.version_constraint import InvalidConstraintsError
 from univers.version_constraint import VersionConstraint
-from univers.version_constraint import simplify_constraints
+from univers.version_constraint import validate_comparators
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_range import build_range_from_github_advisory_constraint
 from univers.versions import InvalidVersion
 from univers.versions import SemverVersion
 
@@ -83,20 +85,6 @@ def parse_advisory_data_v3(
             continue
 
         affected_constraints = []
-        explicit_affected_constraints = get_explicit_affected_constraints(
-            affected_pkg=affected_pkg,
-            raw_id=advisory_id,
-            supported_ecosystem=purl.type,
-        )
-        affected_constraints.extend(explicit_affected_constraints)
-
-        last_known_affected = get_last_known_affected__constraint(
-            affected_pkg=affected_pkg,
-            raw_id=advisory_id,
-            supported_ecosystem=purl.type,
-        )
-        affected_constraints.extend(last_known_affected)
-
         fixed_constraints = []
         for r in affected_pkg.get("ranges") or []:
             (
@@ -109,9 +97,11 @@ def parse_advisory_data_v3(
                 raw_id=advisory_id,
                 supported_ecosystem=purl.type,
             )
+            if affected_constraint:
+                affected_constraints.extend(affected_constraint)
 
-            affected_constraints.extend(affected_constraint)
-            fixed_constraints.extend(fixed_constraint)
+            if fixed_constraint:
+                fixed_constraints.extend(fixed_constraint)
 
             repo_url = r.get("repo")
             commit_processing_queue = [
@@ -139,22 +129,27 @@ def parse_advisory_data_v3(
                             references.append(patch_obj)
 
         version_range_class = RANGE_CLASS_BY_SCHEMES.get(purl.type)
-
         affected_version_range = None
         if affected_constraints:
             try:
-                affected_version_range = version_range_class(
-                    constraints=simplify_constraints(affected_constraints)
-                )
+                valid_affected_constraints = VersionConstraint.simplify(affected_constraints)
+                if not validate_comparators(valid_affected_constraints):
+                    raise InvalidConstraintsError(
+                        f"Failed to build Affected VersionRange Constraints for {advisory_id}: {valid_affected_constraints}"
+                    )
+                affected_version_range = version_range_class(constraints=valid_affected_constraints)
             except Exception as e:
                 logger.error(f"Failed to build VersionRange for {advisory_id}: {e}")
 
         fixed_version_range = None
         if fixed_constraints:
             try:
-                fixed_version_range = version_range_class(
-                    constraints=simplify_constraints(fixed_constraints)
-                )
+                valid_fixed_constraints = VersionConstraint.simplify(fixed_constraints)
+                if not validate_comparators(valid_fixed_constraints):
+                    raise InvalidConstraintsError(
+                        f"Failed to build Fixed VersionRange Constraints for {advisory_id}: {valid_fixed_constraints}"
+                    )
+                fixed_version_range = version_range_class(constraints=valid_fixed_constraints)
             except Exception as e:
                 logger.error(f"Failed to build VersionRange for {advisory_id}: {e}")
 
@@ -176,6 +171,32 @@ def parse_advisory_data_v3(
                 )
             except Exception as e:
                 logger.error(f"Invalid AffectedPackageV2 {e} for {advisory_id}")
+
+        explicit_affected_range = get_explicit_affected_range(
+            affected_pkg=affected_pkg,
+            raw_id=advisory_id,
+            supported_ecosystem=purl.type,
+        )
+        if explicit_affected_range:
+            affected_packages.append(
+                AffectedPackageV2(
+                    package=purl,
+                    affected_version_range=explicit_affected_range,
+                )
+            )
+
+        explicit_last_known_affected_range = get_last_known_affected_range(
+            affected_pkg=affected_pkg,
+            raw_id=advisory_id,
+            supported_ecosystem=purl.type,
+        )
+        if explicit_last_known_affected_range:
+            affected_packages.append(
+                AffectedPackageV2(
+                    package=purl,
+                    affected_version_range=explicit_last_known_affected_range,
+                )
+            )
 
     database_specific = raw_data.get("database_specific") or {}
     cwe_ids = database_specific.get("cwe_ids") or []
@@ -335,9 +356,9 @@ def get_affected_purl(affected_pkg, raw_id):
         return None
 
 
-def get_explicit_affected_constraints(affected_pkg, raw_id, supported_ecosystem):
+def get_explicit_affected_range(affected_pkg, raw_id, supported_ecosystem):
     """
-    Return a list of explicit version constraints for the ``affected_pkg`` data.
+    Return an explicit affected version range for the affected package data.
     """
     affected_versions = affected_pkg.get("versions") or []
     constraints = []
@@ -345,7 +366,7 @@ def get_explicit_affected_constraints(affected_pkg, raw_id, supported_ecosystem)
     version_range_class = RANGE_CLASS_BY_SCHEMES.get(supported_ecosystem)
     if not version_range_class:
         logger.error(f"unsupported ecosystem {supported_ecosystem}")
-        return []
+        return
 
     for version in affected_versions:
         try:
@@ -356,10 +377,12 @@ def get_explicit_affected_constraints(affected_pkg, raw_id, supported_ecosystem)
             logger.error(
                 f"Invalid VersionConstraint: {version} " f"for OSV id: {raw_id!r}: error:{e!r}"
             )
-    return constraints
+    if not constraints:
+        return
+    return version_range_class(constraints=constraints)
 
 
-def get_last_known_affected__constraint(affected_pkg, raw_id, supported_ecosystem):
+def get_last_known_affected_range(affected_pkg, raw_id, supported_ecosystem):
     """
     Return the last_known_affected_version_range from the database_specific
     """
@@ -367,19 +390,20 @@ def get_last_known_affected__constraint(affected_pkg, raw_id, supported_ecosyste
     last_known_value = database_specific.get("last_known_affected_version_range")
 
     if not last_known_value:
-        return []
+        return
 
     try:
-        version_range_class = RANGE_CLASS_BY_SCHEMES.get(supported_ecosystem)
-        version_range = version_range_class.from_native(last_known_value)
-        return version_range.constraints
+        affected_version_range = build_range_from_github_advisory_constraint(
+            supported_ecosystem, last_known_value
+        )
+        return affected_version_range
 
     except Exception as e:
         logger.error(
             f"Invalid VersionConstraint in last_known_affected_version_range: {last_known_value!r} "
             f"for OSV id: {raw_id!r}: error:{e!r}"
         )
-        return []
+        return
 
 
 def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
@@ -419,7 +443,7 @@ def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
     for event_type, event_value in extract_events(ranges):
         if range_type == "GIT":
             if event_value == "0":
-                event_value = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+                continue
 
             if event_type == "fixed":
                 fixed_commits.append(event_value)

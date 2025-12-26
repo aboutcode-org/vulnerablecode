@@ -202,46 +202,32 @@ class CveItem:
         Return a list of VulnerabilitySeverity for this CVE.
         """
         severities = []
-        impact = self.cve_item.get("impact") or {}
-        base_metric_v4 = impact.get("baseMetricV4") or {}
-        if base_metric_v4:
-            cvss_v4 = base_metric_v4.get("cvssV4") or {}
-            vs = VulnerabilitySeverity(
-                system=severity_systems.CVSSV4,
-                value=str(cvss_v4.get("baseScore") or ""),
-                scoring_elements=str(cvss_v4.get("vectorString") or ""),
-                url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
-            )
-            severities.append(vs)
+        metrics = get_item(self.cve_item, "cve", "metrics") or {}
+        url = f"https://nvd.nist.gov/vuln/detail/{self.cve_id}"
+        metric_configs = [
+            ("cvssMetricV40", severity_systems.CVSSV4),
+            ("cvssMetricV31", severity_systems.CVSSV31),
+            ("cvssMetricV30", severity_systems.CVSSV3),
+            ("cvssMetricV2", severity_systems.CVSSV2),
+        ]
 
-        base_metric_v3 = impact.get("baseMetricV3") or {}
-        if base_metric_v3:
-            cvss_v3 = get_item(base_metric_v3, "cvssV3")
-            version = cvss_v3.get("version")
-            system = None
-            if version == "3.1":
-                system = severity_systems.CVSSV31
-            else:
-                system = severity_systems.CVSSV3
-            vs = VulnerabilitySeverity(
-                system=system,
-                value=str(cvss_v3.get("baseScore") or ""),
-                scoring_elements=str(cvss_v3.get("vectorString") or ""),
-                url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
-            )
-            severities.append(vs)
+        for key, default_system in metric_configs:
+            items = metrics.get(key) or []
 
-        base_metric_v2 = impact.get("baseMetricV2") or {}
-        if base_metric_v2:
-            cvss_v2 = base_metric_v2.get("cvssV2") or {}
-            vs = VulnerabilitySeverity(
-                system=severity_systems.CVSSV2,
-                value=str(cvss_v2.get("baseScore") or ""),
-                scoring_elements=str(cvss_v2.get("vectorString") or ""),
-                url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
-            )
-            severities.append(vs)
+            for item in items:
+                cvss_data = item.get("cvssData") or {}
+                system = default_system
+                if key == "cvssMetricV31" and cvss_data.get("version") != "3.1":
+                    system = severity_systems.CVSSV3
 
+                severities.append(
+                    VulnerabilitySeverity(
+                        system=system,
+                        value=str(cvss_data.get("baseScore") or ""),
+                        scoring_elements=str(cvss_data.get("vectorString") or ""),
+                        url=url,
+                    )
+                )
         return severities
 
     @property

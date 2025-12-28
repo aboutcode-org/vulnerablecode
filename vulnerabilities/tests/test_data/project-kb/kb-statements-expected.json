@@ -1,0 +1,359 @@
+[
+  {
+    "advisory_id": "CVE-2018-16406",
+    "aliases": [],
+    "summary": "An issue was discovered in Mayan EDMS before 3.0.2. The Cabinets app has XSS via a crafted cabinet label.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "github",
+          "namespace": "mayan-edms",
+          "name": "mayan-edms",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/mayan-edms/mayan-edms",
+            "commit_hash": "48dfc06e49c7f773749e063f8cc69c95509d1c32",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://gitlab.com/mayan-edms/mayan-edms/issues/495"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://snyk.io/vuln/SNYK-PYTHON-MAYANEDMS-72285"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2019-1020012",
+    "aliases": [],
+    "summary": "parse-server before 3.4.1 allows DoS after any POST to a volatile class.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "github",
+          "namespace": "parse-community",
+          "name": "parse-server",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/parse-community/parse-server",
+            "commit_hash": "8709daf698ea69b59268cb66f0f7cee75b52daa5",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      }
+    ],
+    "references_v2": [],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2019-16942",
+    "aliases": [],
+    "summary": "A Polymorphic Typing issue was discovered in FasterXML jackson-databind 2.0.0 through 2.9.10. When Default Typing is enabled (either globally or for a specific property) for an externally exposed JSON endpoint and the service has the commons-dbcp (1.4) jar in the classpath, and an attacker can find an RMI service endpoint to access, it is possible to make the service execute a malicious payload. This issue exists because of org.apache.commons.dbcp.datasources.SharedPoolDataSource and org.apache.commons.dbcp.datasources.PerUserPoolDataSource mishandling.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "github",
+          "namespace": "fasterxml",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/fasterxml/jackson-databind",
+            "commit_hash": "9593e16cf5a3d289a9c584f7123639655de9ddac",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      },
+      {
+        "package": {
+          "type": "github",
+          "namespace": "fasterxml",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/fasterxml/jackson-databind",
+            "commit_hash": "328a0f833daf6baa443ac3b37c818a0204714b0b",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      },
+      {
+        "package": {
+          "type": "github",
+          "namespace": "fasterxml",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/fasterxml/jackson-databind",
+            "commit_hash": "54aa38d87dcffa5ccc23e64922e9536c82c1b9c8",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.0.0|2.0.2|2.0.6|2.1.1|2.1.2|2.1.4|2.2.3|2.3.0|2.3.1|2.3.2|2.3.3|2.3.4|2.4.0|2.4.2|2.4.3|2.4.4|2.4.5|2.4.6|2.5.0|2.5.1|2.5.3|2.5.4|2.6.0|2.6.1|2.6.2|2.6.3|2.6.4|2.6.5|2.6.6|2.6.7|2.6.7.1|2.6.7.2|2.7.0|2.7.2|2.7.3|2.7.4|2.7.5|2.7.7|2.7.8|2.7.9|2.7.9.1|2.7.9.2|2.7.9.3|2.7.9.4|2.7.9.5|2.8.0.rc2|2.8.0|2.8.1|2.8.2|2.8.3|2.8.4|2.8.5|2.8.6|2.8.7|2.8.8|2.8.8.1|2.8.9|2.8.10|2.8.11|2.8.11.1|2.8.11.2|2.8.11.3|2.8.11.4|2.9.0|2.9.0.pr3|2.9.0.pr4|2.9.1|2.9.2|2.9.3|2.9.4|2.9.5|2.9.6|2.9.7|2.9.8|2.9.9|2.9.9.1|2.9.9.2|2.9.10",
+        "fixed_version_range": "vers:maven/2.8.11.5|2.9.10.1|2.10.0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "org.apache.htrace",
+          "name": "htrace-core4",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/4.1.0-incubating|4.2.0-incubating",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "net.sf.ehcache",
+          "name": "ehcache",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/2.10.6",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.signalfx.public",
+          "name": "signalfx-java",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/0.0.48|0.1.0|0.2.0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "org.apache.htrace",
+          "name": "htrace-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/3.1.0-incubating|3.2.0-incubating",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.couchbase.client",
+          "name": "core-io",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/1.5.9|1.7.0|1.7.2|1.7.4|1.7.7|1.7.9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2019-17531",
+    "aliases": [],
+    "summary": "A Polymorphic Typing issue was discovered in FasterXML jackson-databind 2.0.0 through 2.9.10. When Default Typing is enabled (either globally or for a specific property) for an externally exposed JSON endpoint and the service has the apache-log4j-extra (version 1.2.x) jar in the classpath, and an attacker can provide a JNDI service to access, it is possible to make the service execute a malicious payload.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "github",
+          "namespace": "fasterxml",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/fasterxml/jackson-databind",
+            "commit_hash": "b5a304a98590b6bb766134f9261e6566dcbbb6d0",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-databind",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.0.0|2.0.2|2.0.6|2.1.1|2.1.2|2.1.4|2.2.3|2.3.0|2.3.1|2.3.2|2.3.3|2.3.4|2.4.0|2.4.2|2.4.3|2.4.4|2.4.5|2.4.6|2.5.0|2.5.1|2.5.3|2.5.4|2.6.0|2.6.1|2.6.2|2.6.3|2.6.4|2.6.5|2.6.6|2.6.7|2.6.7.1|2.6.7.2|2.6.7.3|2.7.0|2.7.2|2.7.3|2.7.4|2.7.5|2.7.7|2.7.8|2.7.9|2.7.9.1|2.7.9.2|2.7.9.3|2.7.9.4|2.7.9.5|2.8.0.rc2|2.8.0|2.8.1|2.8.2|2.8.3|2.8.4|2.8.5|2.8.6|2.8.7|2.8.8|2.8.8.1|2.8.9|2.8.10|2.8.11|2.8.11.1|2.8.11.2|2.8.11.3|2.8.11.4|2.9.0|2.9.0.pr3|2.9.0.pr4|2.9.1|2.9.2|2.9.3|2.9.4|2.9.5|2.9.6|2.9.7|2.9.8|2.9.9|2.9.9.1|2.9.9.2|2.9.10",
+        "fixed_version_range": "vers:maven/2.8.11.5|2.9.10.1|2.10.0|2.10.0.pr1|2.10.0.pr2|2.10.0.pr3|2.10.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "org.apache.htrace",
+          "name": "htrace-core4",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/4.1.0-incubating|4.2.0-incubating",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "net.sf.ehcache",
+          "name": "ehcache",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/2.10.6",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "org.apache.htrace",
+          "name": "htrace-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/3.1.0-incubating",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.couchbase.client",
+          "name": "core-io",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/1.7.9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.signalfx.public",
+          "name": "signalfx-java",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:maven/0.0.48",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  }
+]

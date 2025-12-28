@@ -16,13 +16,9 @@ import dateparser
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackageV2
-from vulnerabilities.importer import PackageCommitPatchData
-from vulnerabilities.importer import PatchData
-from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
-from vulnerabilities.pipes.advisory import classify_patch_source
+from vulnerabilities.pipes.advisory import append_patch_classifications
 from vulnerabilities.severity_systems import GENERIC
 
 
@@ -90,23 +86,14 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     patch_url = commit_data.get("patchUrl")
                     commit_id = commit_data.get("commitId")
 
-                    base_purl, patch_objs = classify_patch_source(
+                    append_patch_classifications(
                         url=patch_url,
                         commit_hash=commit_id,
                         patch_text=None,
+                        affected_packages=affected_packages,
+                        references=references,
+                        patches=patches,
                     )
-                    for patch_obj in patch_objs:
-                        if isinstance(patch_obj, PackageCommitPatchData):
-                            fixed_commit = patch_obj
-                            affected_package = AffectedPackageV2(
-                                package=base_purl,
-                                fixed_by_commit_patches=[fixed_commit],
-                            )
-                            affected_packages.append(affected_package)
-                        elif isinstance(patch_obj, PatchData):
-                            patches.append(patch_obj)
-                        elif isinstance(patch_obj, ReferenceV2):
-                            references.append(patch_obj)
 
                 url = (
                     "https://raw.githubusercontent.com/quarkslab/aosp_dataset/refs/heads/master/cves/"

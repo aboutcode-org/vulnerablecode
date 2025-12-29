@@ -15,8 +15,8 @@ from dateutil.parser import parse
 from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from pytz import UTC
+from univers.version_constraint import validate_comparators
 from univers.version_range import GemVersionRange
-from univers.version_range import InvalidVersionRange
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
@@ -158,6 +158,11 @@ def get_affected_packages(record, purl):
     for unaffected_version in record.get("unaffected_versions", []):
         try:
             affected_version_range = GemVersionRange.from_native(unaffected_version).invert()
+            if not validate_comparators(affected_version_range.constraints):
+                logger.error(
+                    f"Invalid VersionRange Constraints for unaffected_version: {unaffected_version}"
+                )
+                continue
             affected_packages.append(
                 AffectedPackageV2(
                     package=purl,
@@ -165,12 +170,14 @@ def get_affected_packages(record, purl):
                     fixed_version_range=None,
                 )
             )
-        except InvalidVersionRange as e:
-            logger.error(f"InvalidVersionRange {e}")
+        except Exception as e:
+            logger.error(f"Invalid VersionRange Constraints for unaffected_version: {e}")
 
     for patched_version in record.get("patched_versions", []):
         try:
             fixed_version_range = GemVersionRange.from_native(patched_version)
+            if not validate_comparators(fixed_version_range.constraints):
+                continue
             affected_packages.append(
                 AffectedPackageV2(
                     package=purl,
@@ -178,8 +185,9 @@ def get_affected_packages(record, purl):
                     fixed_version_range=fixed_version_range,
                 )
             )
-        except InvalidVersionRange as e:
-            logger.error(f"InvalidVersionRange {e}")
+        except Exception as e:
+            logger.error(f"Invalid VersionRange Constraints for patched_versions: {e}")
+
     return affected_packages
 
 

@@ -23,6 +23,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views import generic
+from django.db.models import F
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
@@ -359,6 +360,15 @@ class AdvisoryDetails(DetailView):
     template_name = "advisory_detail.html"
     slug_url_kwarg = "avid"
     slug_field = "avid"
+
+    def get_object(self, queryset=None):
+        avid = self.kwargs.get(self.slug_url_kwarg)
+        obj = models.AdvisoryV2.objects.latest_for_avid(avid)
+
+        if not obj:
+            raise Http404("Advisory not found")
+
+        return obj
 
     def get_queryset(self):
         return (

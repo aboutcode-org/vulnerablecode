@@ -16,8 +16,10 @@ from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from pytz import UTC
 from univers.version_range import GemVersionRange
+from univers.version_range import InvalidVersionRange
 
-from vulnerabilities.importer import AdvisoryData, AffectedPackageV2
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -68,24 +70,30 @@ class RubyImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
     def advisories_count(self):
-        return 10
+        base_path = Path(self.vcs_response.dest_dir)
+        return sum(1 for _ in base_path.rglob("*.yml"))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         base_path = Path(self.vcs_response.dest_dir)
-        supported_subdir = ["rubies", "gems"]
-        for subdir in supported_subdir:
-            for file_path in base_path.glob(f"{subdir}/**/*.yml"):
-                if file_path.name.startswith("OSVDB-"):
-                    continue
+        for file_path in base_path.rglob("*.yml"):
+            if file_path.name.startswith("OSVDB-"):
+                continue
 
-                raw_data = load_yaml(file_path)
-                advisory_id = file_path.stem
-                advisory_url = get_advisory_url(
-                    file=file_path,
-                    base_path=base_path,
-                    url="https://github.com/rubysec/ruby-advisory-db/blob/master/",
-                )
-                yield parse_ruby_advisory(advisory_id, raw_data, subdir, advisory_url)
+            if "gems" in file_path.parts:
+                subdir = "gems"
+            elif "rubies" in file_path.parts:
+                subdir = "rubies"
+            else:
+                continue
+
+            raw_data = load_yaml(file_path)
+            advisory_id = file_path.stem
+            advisory_url = get_advisory_url(
+                file=file_path,
+                base_path=base_path,
+                url="https://github.com/rubysec/ruby-advisory-db/blob/master/",
+            )
+            yield parse_ruby_advisory(advisory_id, raw_data, subdir, advisory_url)
 
     def clean_downloads(self):
         if self.vcs_response:
@@ -107,36 +115,37 @@ def parse_ruby_advisory(advisory_id, record, schema_type, advisory_url):
 
         if not package_name:
             logger.error("Invalid package name")
-        else:
-            purl = PackageURL(type="gem", name=package_name)
+            return
 
-            return AdvisoryData(
-                advisory_id=advisory_id,
-                aliases=get_aliases(record),
-                summary=get_summary(record),
-                affected_packages=get_affected_packages(record, purl),
-                references=get_references(record),
-                severities=get_severities(record),
-                date_published=get_publish_time(record),
-                url=advisory_url,
-            )
+        purl = PackageURL(type="gem", name=package_name)
+        return AdvisoryData(
+            advisory_id=advisory_id,
+            aliases=get_aliases(record),
+            summary=get_summary(record),
+            affected_packages=get_affected_packages(record, purl),
+            references=get_references(record),
+            severities=get_severities(record),
+            date_published=get_publish_time(record),
+            url=advisory_url,
+        )
 
     elif schema_type == "rubies":
         engine = record.get("engine")  # engine enum: [jruby, rbx, ruby]
         if not engine:
             logger.error("Invalid engine name")
-        else:
-            purl = PackageURL(type="ruby", name=engine)
-            return AdvisoryData(
-                advisory_id=advisory_id,
-                aliases=get_aliases(record),
-                summary=get_summary(record),
-                affected_packages=get_affected_packages(record, purl),
-                severities=get_severities(record),
-                references=get_references(record),
-                date_published=get_publish_time(record),
-                url=advisory_url,
-            )
+            return
+
+        purl = PackageURL(type="ruby", name=engine)
+        return AdvisoryData(
+            advisory_id=advisory_id,
+            aliases=get_aliases(record),
+            summary=get_summary(record),
+            affected_packages=get_affected_packages(record, purl),
+            severities=get_severities(record),
+            references=get_references(record),
+            date_published=get_publish_time(record),
+            url=advisory_url,
+        )
 
 
 def get_affected_packages(record, purl):
@@ -145,27 +154,32 @@ def get_affected_packages(record, purl):
     ( patched_versions , unaffected_versions ) then passing the purl and the inverted safe_version_range
     to the AffectedPackage object
     """
-    safe_version_ranges = record.get("patched_versions", [])
-    # this case happens when the advisory contain only 'patched_versions' field
-    # and it has value None(i.e it is empty :( ).
-    if not safe_version_ranges:
-        safe_version_ranges = []
-    safe_version_ranges += record.get("unaffected_versions", [])
-    safe_version_ranges = [i for i in safe_version_ranges if i]
-
     affected_packages = []
-    affected_version_ranges = [
-        GemVersionRange.from_native(elem).invert() for elem in safe_version_ranges
-    ]
-
-    for affected_version_range in affected_version_ranges:
-        affected_packages.append(
-            AffectedPackageV2(
-                package=purl,
-                affected_version_range=affected_version_range,
-                fixed_version_range=None
+    for unaffected_version in record.get("unaffected_versions", []):
+        try:
+            affected_version_range = GemVersionRange.from_native(unaffected_version).invert()
+            affected_packages.append(
+                AffectedPackageV2(
+                    package=purl,
+                    affected_version_range=affected_version_range,
+                    fixed_version_range=None,
+                )
             )
-        )
+        except InvalidVersionRange as e:
+            logger.error(f"InvalidVersionRange {e}")
+
+    for patched_version in record.get("patched_versions", []):
+        try:
+            fixed_version_range = GemVersionRange.from_native(patched_version)
+            affected_packages.append(
+                AffectedPackageV2(
+                    package=purl,
+                    affected_version_range=None,
+                    fixed_version_range=fixed_version_range,
+                )
+            )
+        except InvalidVersionRange as e:
+            logger.error(f"InvalidVersionRange {e}")
     return affected_packages
 
 
@@ -205,7 +219,7 @@ def get_severities(record):
 
     cvss_v3 = record.get("cvss_v3")
     if cvss_v3:
-        severities.append(VulnerabilitySeverity(system=CVSSV3, value=cvss_v4))
+        severities.append(VulnerabilitySeverity(system=CVSSV3, value=cvss_v3))
 
     cvss_v2 = record.get("cvss_v2")
     if cvss_v2:

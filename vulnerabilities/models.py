@@ -42,7 +42,9 @@ from django.db import models
 from django.db import transaction
 from django.db.models import Count
 from django.db.models import Exists
+from django.db.models import F
 from django.db.models import OuterRef
+from django.db.models import Subquery
 from django.db.models import Prefetch
 from django.db.models import Q
 from django.db.models.functions import Length
@@ -1367,6 +1369,17 @@ class AdvisoryQuerySet(BaseQuerySet):
             | Q(summary__icontains=query)
             | Q(references__url__icontains=query)
         ).distinct()
+
+class AdvisoryV2QuerySet(BaseQuerySet):
+    def latest_for_avid(self, avid: str):
+        return (
+            self.filter(avid=avid)
+            .order_by(
+                F("date_collected").desc(nulls_last=True),
+                "-id",
+            )
+            .first()
+        )
 
 
 # FIXME: Remove when migration from Vulnerability to Advisory is completed
@@ -2916,9 +2929,6 @@ class AdvisoryV2(models.Model):
         blank=True, null=True, help_text="UTC Date of publication of the advisory"
     )
     date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
-    date_imported = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date on which the advisory was imported"
-    )
 
     original_advisory_text = models.TextField(
         blank=True,
@@ -2959,11 +2969,15 @@ class AdvisoryV2(models.Model):
             risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
             return round(risk_score, 1)
 
-    objects = AdvisoryQuerySet.as_manager()
+    objects = AdvisoryV2QuerySet.as_manager()
 
     class Meta:
         unique_together = ["datasource_id", "advisory_id", "unique_content_id"]
         ordering = ["datasource_id", "advisory_id", "date_published", "unique_content_id"]
+        # indexes = models.Index(
+        #     fields=["avid", "-date_collected", "-id"],
+        #     name="advisory_latest_by_avid_idx",
+        # )
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -3003,6 +3017,29 @@ class AdvisoryV2(models.Model):
         Return a queryset of all Aliases for this vulnerability.
         """
         return self.aliases.all()
+
+    def latest_for_avid(self, avid: str):
+        return (
+            self.filter(avid=avid)
+            .order_by(
+                F("date_collected").desc(nulls_last=True),
+                "-id",
+            )
+            .first()
+        )
+    
+    def latest_per_avid(self):
+        latest_ids = (
+            AdvisoryV2.objects
+            .filter(avid=OuterRef("avid"))
+            .order_by(
+                F("date_collected").desc(nulls_last=True),
+                "-id",
+            )
+            .values("id")[:1]
+        )
+
+        return self.filter(id=Subquery(latest_ids))
 
     alias = get_aliases
 

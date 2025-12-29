@@ -181,6 +181,10 @@ VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
     "VULNERABLECODEIO_REQUIRE_AUTHENTICATION", default=False
 )
 
+VULNERABLECODE_ENABLE_LIVE_EVALUATION_API = env.bool(
+    "VULNERABLECODE_ENABLE_LIVE_EVALUATION_API", default=False
+)
+
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
@@ -383,5 +387,11 @@ RQ_QUEUES = {
         "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
         "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
         "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
-    }
+    },
+    "live": {
+        "HOST": env.str("VULNERABLECODE_REDIS_HOST", default="localhost"),
+        "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
+        "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
+        "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_LIVE_REDIS_DEFAULT_TIMEOUT", default=3600),
+    },
 }

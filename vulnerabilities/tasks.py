@@ -21,10 +21,11 @@ from vulnerablecode.settings import VULNERABLECODE_PIPELINE_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
-queue = django_rq.get_queue("default")
+default_queue = django_rq.get_queue("default")
+live_queue = django_rq.get_queue("live")
 
 
-def execute_pipeline(pipeline_id, run_id):
+def execute_pipeline(pipeline_id, run_id, inputs=None):
     from vulnerabilities.pipelines import VulnerableCodePipeline
 
     logger.info(f"Enter `execute_pipeline` {pipeline_id}")
@@ -39,7 +40,8 @@ def execute_pipeline(pipeline_id, run_id):
     exitcode = 0
     run_class = run.pipeline_class
     if issubclass(run_class, VulnerableCodePipeline):
-        pipeline_instance = run_class(run_instance=run)
+        inputs = inputs or {}
+        pipeline_instance = run_class(run_instance=run, **inputs)
         exitcode, output = pipeline_instance.execute()
     elif issubclass(run_class, Importer) or issubclass(run_class, Improver):
         exitcode, output = legacy_runner(run_class=run_class, run=run)
@@ -121,7 +123,7 @@ def enqueue_pipeline(pipeline_id):
     run = models.PipelineRun.objects.create(
         pipeline=pipeline_schedule,
     )
-    job = queue.enqueue(
+    job = default_queue.enqueue(
         execute_pipeline,
         pipeline_id,
         run.run_id,
@@ -131,7 +133,59 @@ def enqueue_pipeline(pipeline_id):
     )
 
 
+def enqueue_ad_hoc_pipeline(pipeline_ids, *, inputs=None):
+    """Enqueue one-off executions for the given pipeline_ids with optional inputs.
+
+    When multiple pipeline IDs are provided, this will create a single LivePipelineRun and attach
+    each created PipelineRun to it. Returns a tuple of (live_run_id, run_ids).
+
+    If a single pipeline ID (str) is provided, it will be wrapped into a list.
+    """
+    inputs = inputs or {}
+    # Normalize to list
+    if isinstance(pipeline_ids, str):
+        pipeline_ids = [pipeline_ids]
+
+    # Create a LivePipelineRun to group these ad-hoc runs, if any inputs (such as purl) are given
+    purl_val = inputs.get("purl")
+    try:
+        # accept PackageURL instance as well as string
+        purl_str = str(purl_val) if purl_val is not None else None
+    except Exception:
+        purl_str = None
+
+    live_run = models.LivePipelineRun.objects.create(purl=purl_str)
+
+    run_ids = []
+    for pipeline_id in pipeline_ids:
+        try:
+            pipeline_schedule = models.PipelineSchedule.objects.get(pipeline_id=pipeline_id)
+        except models.PipelineSchedule.DoesNotExist:
+            pipeline_schedule = models.PipelineSchedule.objects.create(
+                pipeline_id=pipeline_id,
+                is_active=False,
+            )
+
+        run = models.PipelineRun.objects.create(pipeline=pipeline_schedule, live_pipeline=live_run)
+
+        # Enqueue on the dedicated live queue
+        live_queue.enqueue(
+            execute_pipeline,
+            pipeline_id,
+            run.run_id,
+            inputs,
+            job_id=str(run.run_id),
+            on_failure=set_run_failure,
+            job_timeout=f"{pipeline_schedule.execution_timeout}h",
+        )
+        run_ids.append(run.run_id)
+
+    return live_run.run_id, run_ids
+
+
 def dequeue_job(job_id):
     """Remove a job from queue if it hasn't been executed yet."""
-    if job_id in queue.jobs:
-        queue.remove(job_id)
+    if job_id in default_queue.jobs:
+        default_queue.remove(job_id)
+    if job_id in live_queue.jobs:
+        live_queue.remove(job_id)

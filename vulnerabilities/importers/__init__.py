@@ -58,6 +58,7 @@ from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
 from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgresql_importer_v2
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
+from vulnerabilities.pipelines.v2_importers import pypa_live_importer as pypa_live_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
@@ -119,5 +120,11 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+    ]
+)
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        pypa_live_importer_v2.PyPaLiveImporterPipeline,
     ]
 )

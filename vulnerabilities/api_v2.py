@@ -9,6 +9,7 @@
 
 
 from django.db.models import Prefetch
+from django.urls import reverse
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
@@ -25,6 +26,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 
+from vulnerabilities.importers import LIVE_IMPORTERS_REGISTRY
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
@@ -40,7 +42,9 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.tasks import enqueue_ad_hoc_pipeline
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
+from vulnerablecode.settings import VULNERABLECODE_ENABLE_LIVE_EVALUATION_API
 
 
 class CharInFilter(filters.BaseInFilter, filters.CharFilter):
@@ -1319,3 +1323,137 @@ class AdvisoriesPackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(
             AdvisoryPackageV2Serializer(qs, many=True, context={"request": request}).data
         )
+
+
+class LiveEvaluationSerializer(serializers.Serializer):
+    purl = serializers.CharField(help_text="PackageURL to evaluate")
+
+
+class LiveEvaluationViewSet(viewsets.GenericViewSet):
+    serializer_class = LiveEvaluationSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+
+    @extend_schema(
+        request=LiveEvaluationSerializer,
+        responses={
+            202: {"description": "Live evaluation enqueued successfully; returns Run IDs"},
+            400: {"description": "Invalid request"},
+            500: {"description": "Internal server error"},
+        },
+    )
+    @action(detail=False, methods=["post"])
+    def evaluate(self, request):
+        if not VULNERABLECODE_ENABLE_LIVE_EVALUATION_API:
+            return Response(
+                {"error": "Live evaluation API is disabled."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        purl_string = serializer.validated_data.get("purl")
+
+        try:
+            purl = PackageURL.from_string(purl_string) if purl_string else None
+            if not purl:
+                return Response({"error": "Invalid PackageURL"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(
+                {"error": f"Invalid PackageURL: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        importers = [
+            importer
+            for importer in LIVE_IMPORTERS_REGISTRY.values()
+            if hasattr(importer, "supported_types")
+            and purl.type in getattr(importer, "supported_types", [])
+        ]
+
+        if not importers:
+            return Response(
+                {"error": f"No live importers found for purl type '{purl.type}'"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Enqueue all selected importers together and link runs to a new LivePipelineRun
+        importer_ids = [getattr(imp, "pipeline_id", imp.__name__) for imp in importers]
+        live_run_id, run_ids = enqueue_ad_hoc_pipeline(importer_ids, inputs={"purl": purl})
+        runs = [
+            {"importer": importer_ids[idx], "run_id": str(rid)} for idx, rid in enumerate(run_ids)
+        ]
+
+        request_obj = request
+        status_path = reverse("live-evaluation-status", kwargs={"live_run_id": str(live_run_id)})
+
+        if hasattr(request_obj, "build_absolute_uri"):
+            status_url = request_obj.build_absolute_uri(status_path)
+        else:
+            status_url = status_path
+
+        return Response(
+            {
+                "live_run_id": str(live_run_id),
+                "runs": runs,
+                "status_url": status_url,
+            },
+            status=status.HTTP_202_ACCEPTED,
+        )
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="live_run_id",
+                description="UUID of the live run to check status for",
+                required=True,
+                type={"type": "string"},
+                location=OpenApiParameter.PATH,
+            )
+        ],
+        responses={200: "LivePipelineRun status and importers status"},
+    )
+    @action(detail=False, methods=["get"], url_path=r"status/(?P<live_run_id>[0-9a-f\-]{36})")
+    def status(self, request, live_run_id=None):
+        if not VULNERABLECODE_ENABLE_LIVE_EVALUATION_API:
+            return Response(
+                {"error": "Live evaluation API is disabled."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        from vulnerabilities.models import LivePipelineRun
+
+        try:
+            live_run = LivePipelineRun.objects.get(run_id=live_run_id)
+        except LivePipelineRun.DoesNotExist:
+            return Response({"detail": "Live run not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        live_run.update_status()
+
+        # Gather status for each importer run
+        importer_statuses = []
+        for run in live_run.pipelineruns.all():
+            importer_statuses.append(
+                {
+                    "importer": run.pipeline.pipeline_id,
+                    "run_id": str(run.run_id),
+                    "status": run.status,
+                    "run_start_date": run.run_start_date,
+                    "run_end_date": run.run_end_date,
+                    "run_exitcode": run.run_exitcode,
+                    "run_output": run.run_output,
+                }
+            )
+
+        response = {
+            "live_run_id": str(live_run.run_id),
+            "overall_status": live_run.status,
+            "created_date": live_run.created_date,
+            "started_date": getattr(live_run, "started_date", None),
+            "completed_date": live_run.completed_date,
+            "purl": live_run.purl,
+            "importers": importer_statuses,
+        }
+        return Response(response)

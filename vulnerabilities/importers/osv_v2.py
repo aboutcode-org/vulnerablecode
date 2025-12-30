@@ -133,10 +133,7 @@ def parse_advisory_data_v3(
         if affected_constraints:
             try:
                 valid_affected_constraints = VersionConstraint.simplify(affected_constraints)
-                if not validate_comparators(valid_affected_constraints):
-                    raise InvalidConstraintsError(
-                        f"Failed to build Affected VersionRange Constraints for {advisory_id}: {valid_affected_constraints}"
-                    )
+                validate_comparators(valid_affected_constraints)
                 affected_version_range = version_range_class(constraints=valid_affected_constraints)
             except Exception as e:
                 logger.error(f"Failed to build VersionRange for {advisory_id}: {e}")
@@ -145,10 +142,7 @@ def parse_advisory_data_v3(
         if fixed_constraints:
             try:
                 valid_fixed_constraints = VersionConstraint.simplify(fixed_constraints)
-                if not validate_comparators(valid_fixed_constraints):
-                    raise InvalidConstraintsError(
-                        f"Failed to build Fixed VersionRange Constraints for {advisory_id}: {valid_fixed_constraints}"
-                    )
+                validate_comparators(valid_fixed_constraints)
                 fixed_version_range = version_range_class(constraints=valid_fixed_constraints)
             except Exception as e:
                 logger.error(f"Failed to build VersionRange for {advisory_id}: {e}")

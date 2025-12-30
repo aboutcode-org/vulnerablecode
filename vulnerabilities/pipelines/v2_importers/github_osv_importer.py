@@ -11,7 +11,6 @@ import json
 from pathlib import Path
 from typing import Iterable
 
-from fetchcode.vcs import VCSResponse
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData

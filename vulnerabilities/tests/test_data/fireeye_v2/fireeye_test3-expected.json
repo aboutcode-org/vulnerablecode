@@ -1,0 +1,35 @@
+[
+  {
+    "advisory_id": "fireeye_test3",
+    "aliases": [
+      "MNDT-2025-0009"
+    ],
+    "summary": "Improper verification of cryptographic signature in the installer for Zoom Workplace VDI Client for Windows may allow an authenticated user to conduct an escalation of privilege via local access.",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://www.zoom.com/en/trust/security-bulletin/zsb-25042/"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://www.cve.org/CVERecord?id=CVE-2025-64740"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "Medium",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [
+      347
+    ],
+    "url": "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/fireeye_test3.md"
+  }
+]

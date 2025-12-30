@@ -16,11 +16,14 @@ from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.severity_systems import GENERIC
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import create_weaknesses_list
 from vulnerabilities.utils import cwe_regex
 from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import get_advisory_url
 
 logger = logging.getLogger(__name__)
 
@@ -46,10 +49,12 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         )
 
     def advisories_count(self):
-        files = filter(
-            lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
+        base_path = Path(self.vcs_response.dest_dir)
+        return sum(
+            1
+            for p in base_path.glob("**/*")
+            if p.suffix.lower() == ".md" or p.stem.upper() == "README"
         )
-        return len(list(files))
 
     def clone(self):
         self.log(f"Cloning `{self.repo_url}`")
@@ -57,17 +62,20 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         base_path = Path(self.vcs_response.dest_dir)
-        files = filter(
-            lambda p: p.suffix in [".md", ".MD"], Path(self.vcs_response.dest_dir).glob("**/*")
-        )
-        for file in files:
-            if Path(file).stem == "README":
+        for file_path in base_path.glob("**/*"):
+            if file_path.suffix.lower() != ".md":
                 continue
+
+            if file_path.stem.upper() == "README":
+                continue
+
             try:
-                with open(file, encoding="utf-8-sig") as f:
-                    yield parse_advisory_data(raw_data=f.read(), file=file, base_path=base_path)
+                with open(file_path, encoding="utf-8-sig") as f:
+                    yield parse_advisory_data(
+                        raw_data=f.read(), file_path=file_path, base_path=base_path
+                    )
             except UnicodeError:
-                logger.error(f"Invalid file {file}")
+                logger.error(f"Invalid File UnicodeError: {file_path}")
 
     def clean_downloads(self):
         if self.vcs_response:
@@ -78,15 +86,11 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.clean_downloads()
 
 
-def parse_advisory_data(raw_data, file, base_path) -> AdvisoryData:
+def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryData:
     """
     Parse a fireeye advisory repo and return an AdvisoryData or None.
     These files are in Markdown format.
     """
-    relative_path = str(file.relative_to(base_path)).strip("/")
-    advisory_url = (
-        f"https://github.com/mandiant/Vulnerability-Disclosures/blob/master/{relative_path}"
-    )
     raw_data = raw_data.replace("\n\n", "\n")
     md_list = raw_data.split("\n")
     md_dict = md_list_to_dict(md_list)
@@ -94,23 +98,27 @@ def parse_advisory_data(raw_data, file, base_path) -> AdvisoryData:
     database_id = md_list[0][1::]
     summary = md_dict.get(database_id[1::]) or []
     description = md_dict.get("## Description") or []
-    impact = md_dict.get("## Impact")  # not used but can be used to get severity
-    exploit_ability = md_dict.get("## Exploitability")  # not used
+    impact = md_dict.get("## Impact")
     cve_ref = md_dict.get("## CVE Reference") or []
-    tech_details = md_dict.get("## Technical Details")  # not used
-    resolution = md_dict.get("## Resolution")  # not used
-    disc_credits = md_dict.get("## Discovery Credits")  # not used
-    disc_timeline = md_dict.get("## Disclosure Timeline")  # not used
     references = md_dict.get("## References") or []
     cwe_data = md_dict.get("## Common Weakness Enumeration") or []
 
+    advisory_id = file_path.stem
+    advisory_url = get_advisory_url(
+        file=file_path,
+        base_path=base_path,
+        url="https://github.com/mandiant/Vulnerability-Disclosures/blob/master/",
+    )
+
     return AdvisoryData(
-        advisory_id=base_path.stem,
+        advisory_id=advisory_id,
         aliases=get_aliases(database_id, cve_ref),
         summary=build_description(" ".join(summary), " ".join(description)),
         references_v2=get_references(references),
+        severities=get_severities(impact),
         weaknesses=get_weaknesses(cwe_data),
         url=advisory_url,
+        original_advisory_text=raw_data,
     )
 
 
@@ -124,11 +132,11 @@ def get_references(references):
     """
     urls = []
     for ref in references:
-        if ref.startswith("- "):
-            urls.append(matcher_url(ref[2::]))
-        else:
-            urls.append(matcher_url(ref))
-
+        clean_ref = ref.strip()
+        clean_ref = clean_ref.lstrip("-* ")
+        url = matcher_url(clean_ref)
+        if url:
+            urls.append(url)
     return [ReferenceV2(url=url) for url in urls if url]
 
 
@@ -150,7 +158,8 @@ def get_aliases(database_id, cve_ref) -> List:
     >>> get_aliases("MNDT-2021-0012", ["CVE-2021-44207"])
     ['CVE-2021-44207', 'MNDT-2021-0012']
     """
-    cve_ref.append(database_id)
+    cleaned_db_id = database_id.strip()
+    cve_ref.append(cleaned_db_id)
     return dedupe(cve_ref)
 
 
@@ -174,12 +183,11 @@ def md_list_to_dict(md_list):
 def get_weaknesses(cwe_data):
     """
     Return the list of CWE IDs as integers from a list of weakness summaries, e.g., [379].
-
-        >>> get_weaknesses([
-        ... "CWE-379: Creation of Temporary File in Directory with Insecure Permissions",
-        ... "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
-        ... ])
-        [379, 362]
+    >>> get_weaknesses([
+    ... "CWE-379: Creation of Temporary File in Directory with Insecure Permissions",
+    ... "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
+    ... ])
+    [379, 362]
     """
     cwe_list = []
     for line in cwe_data:
@@ -188,3 +196,37 @@ def get_weaknesses(cwe_data):
 
     weaknesses = create_weaknesses_list(cwe_list)
     return weaknesses
+
+
+def get_severities(impact):
+    """
+    Return a list of VulnerabilitySeverity extracted from the impact string.
+    >>> get_severities([
+    ... "High - Arbitrary Ring 0 code execution",
+    ... ])
+    [VulnerabilitySeverity(system="generic", value="high")]
+    >>> get_severities([
+    ... "Low - The `ValidationKey` and `DecryptionKey` values would need to be obtained via a separate vulnerability or other channel."
+    ... ])
+    [VulnerabilitySeverity(system="generic", value="low")]
+    >>> get_severities([])
+    []
+    """
+    if not impact:
+        return []
+
+    impact_text = impact[0]
+    value = ""
+    if " - " in impact_text:
+        value = impact_text.split(" - ")[0]
+    elif ": " in impact_text:
+        value = impact_text.split(": ")[0]
+    else:
+        parts = impact_text.split(" ")
+        if parts:
+            value = parts[0]
+
+    if not value.lower() in ["high", "medium", "low"]:
+        return []
+
+    return [VulnerabilitySeverity(system=GENERIC, value=value)]

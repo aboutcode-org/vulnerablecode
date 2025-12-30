@@ -87,7 +87,7 @@ class RubyImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 continue
 
             raw_data = load_yaml(file_path)
-            advisory_id = file_path.stem
+            advisory_id = str(file_path.relative_to(base_path).with_suffix(""))
             advisory_url = get_advisory_url(
                 file=file_path,
                 base_path=base_path,
@@ -123,7 +123,7 @@ def parse_ruby_advisory(advisory_id, record, schema_type, advisory_url):
             aliases=get_aliases(record),
             summary=get_summary(record),
             affected_packages=get_affected_packages(record, purl),
-            references=get_references(record),
+            references_v2=get_references(record),
             severities=get_severities(record),
             date_published=get_publish_time(record),
             url=advisory_url,
@@ -158,11 +158,7 @@ def get_affected_packages(record, purl):
     for unaffected_version in record.get("unaffected_versions", []):
         try:
             affected_version_range = GemVersionRange.from_native(unaffected_version).invert()
-            if not validate_comparators(affected_version_range.constraints):
-                logger.error(
-                    f"Invalid VersionRange Constraints for unaffected_version: {unaffected_version}"
-                )
-                continue
+            validate_comparators(affected_version_range.constraints)
             affected_packages.append(
                 AffectedPackageV2(
                     package=purl,
@@ -170,14 +166,15 @@ def get_affected_packages(record, purl):
                     fixed_version_range=None,
                 )
             )
-        except Exception as e:
-            logger.error(f"Invalid VersionRange Constraints for unaffected_version: {e}")
+        except ValueError as e:
+            logger.error(
+                f"Invalid VersionRange Constraints for unaffected_version: {unaffected_version} - error: {e}"
+            )
 
     for patched_version in record.get("patched_versions", []):
         try:
             fixed_version_range = GemVersionRange.from_native(patched_version)
-            if not validate_comparators(fixed_version_range.constraints):
-                continue
+            validate_comparators(fixed_version_range.constraints)
             affected_packages.append(
                 AffectedPackageV2(
                     package=purl,
@@ -185,8 +182,10 @@ def get_affected_packages(record, purl):
                     fixed_version_range=fixed_version_range,
                 )
             )
-        except Exception as e:
-            logger.error(f"Invalid VersionRange Constraints for patched_versions: {e}")
+        except ValueError as e:
+            logger.error(
+                f"Invalid VersionRange Constraints for patched_version: {patched_version} - error: {e}"
+            )
 
     return affected_packages
 

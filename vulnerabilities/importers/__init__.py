@@ -54,6 +54,7 @@ from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
 from vulnerabilities.pipelines.v2_importers import epss_importer_v2
+from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
 from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
@@ -108,6 +109,7 @@ IMPORTERS_REGISTRY = create_registry(
         project_kb_msr2019_importer_v2.ProjectKBMSR2019Pipeline,
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
+        gentoo_importer_v2.GentooImporterPipeline,
         nginx_importer_v2.NginxImporterPipeline,
         debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,

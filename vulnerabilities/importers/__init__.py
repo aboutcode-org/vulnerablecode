@@ -49,6 +49,7 @@ from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
 from vulnerabilities.pipelines.v2_importers import epss_importer_v2
+from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
@@ -88,6 +89,7 @@ IMPORTERS_REGISTRY = create_registry(
         aosp_importer_v2.AospImporterPipeline,
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
+        gentoo_importer_v2.GentooImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,

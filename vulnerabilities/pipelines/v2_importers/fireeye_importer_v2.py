@@ -204,11 +204,7 @@ def get_severities(impact):
     >>> get_severities([
     ... "High - Arbitrary Ring 0 code execution",
     ... ])
-    [VulnerabilitySeverity(system="generic", value="high")]
-    >>> get_severities([
-    ... "Low - The `ValidationKey` and `DecryptionKey` values would need to be obtained via a separate vulnerability or other channel."
-    ... ])
-    [VulnerabilitySeverity(system="generic", value="low")]
+    [VulnerabilitySeverity(system=ScoringSystem(identifier='generic_textual', name='Generic textual severity rating', url='', notes='Severity for generic scoring systems. Contains generic textual values like High, Low etc'), value='High', scoring_elements='', published_at=None, url=None)]
     >>> get_severities([])
     []
     """

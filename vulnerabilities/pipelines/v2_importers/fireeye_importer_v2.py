@@ -99,11 +99,12 @@ def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryData:
     summary = md_dict.get(database_id[1::]) or []
     description = md_dict.get("## Description") or []
     impact = md_dict.get("## Impact")
-    cve_ref = md_dict.get("## CVE Reference") or []
+    cve_ids = md_dict.get("## CVE Reference") or []
     references = md_dict.get("## References") or []
     cwe_data = md_dict.get("## Common Weakness Enumeration") or []
 
-    advisory_id = file_path.stem
+    advisory_id = database_id.strip()
+    aliases = dedupe([cve_id.strip() for cve_id in cve_ids])
     advisory_url = get_advisory_url(
         file=file_path,
         base_path=base_path,
@@ -112,7 +113,7 @@ def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryData:
 
     return AdvisoryData(
         advisory_id=advisory_id,
-        aliases=get_aliases(database_id, cve_ref),
+        aliases=aliases,
         summary=build_description(" ".join(summary), " ".join(description)),
         references_v2=get_references(references),
         severities=get_severities(impact),
@@ -150,17 +151,6 @@ def matcher_url(ref) -> str:
         return matched_markup[0][1]
     else:
         return ref
-
-
-def get_aliases(database_id, cve_ref) -> List:
-    """
-    Returns a List of Aliases from a database_id and a list of CVEs
-    >>> get_aliases("MNDT-2021-0012", ["CVE-2021-44207"])
-    ['CVE-2021-44207', 'MNDT-2021-0012']
-    """
-    cleaned_db_id = database_id.strip()
-    cve_ref.append(cleaned_db_id)
-    return dedupe(cve_ref)
 
 
 def md_list_to_dict(md_list):

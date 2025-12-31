@@ -1,9 +1,7 @@
 [
   {
-    "advisory_id": "fireeye_test3",
-    "aliases": [
-      "MNDT-2025-0009"
-    ],
+    "advisory_id": "MNDT-2025-0009",
+    "aliases": [],
     "summary": "Improper verification of cryptographic signature in the installer for Zoom Workplace VDI Client for Windows may allow an authenticated user to conduct an escalation of privilege via local access.",
     "affected_packages": [],
     "references_v2": [

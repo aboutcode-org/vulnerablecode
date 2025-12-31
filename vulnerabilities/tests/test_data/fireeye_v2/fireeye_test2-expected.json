@@ -1,9 +1,8 @@
 [
   {
-    "advisory_id": "fireeye_test2",
+    "advisory_id": "FEYE-2020-0020",
     "aliases": [
-      "CVE-2020-12878",
-      "FEYE-2020-0020"
+      "CVE-2020-12878"
     ],
     "summary": "Digi International's ConnectPort X2e is susceptible to a local privilege escalation vulnerable to the privileged user `root`.",
     "affected_packages": [],

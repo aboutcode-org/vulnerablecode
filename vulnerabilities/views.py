@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.db.models import F
 from django.db.models import Prefetch
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -691,7 +692,18 @@ class AdvisoryPackagesDetails(DetailView):
     model = models.AdvisoryV2
     template_name = "advisory_package_details.html"
     slug_url_kwarg = "avid"
-    slug_field = "avid"
+
+    def get_object(self, queryset=None):
+        avid = self.kwargs.get(self.slug_url_kwarg)
+        if not avid:
+            raise Http404("Missing advisory identifier")
+
+        advisory = models.AdvisoryV2.objects.latest_for_avid(avid)
+
+        if not advisory:
+            raise Http404(f"No advisory found for avid: {avid}")
+
+        return advisory
 
     def get_queryset(self):
         """

@@ -15,6 +15,7 @@ from univers.version_range import GitHubVersionRange
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import fetch_response
@@ -23,6 +24,8 @@ MM_REPO = {
     "Mattermost Mobile Apps": "mattermost-mobile",
     "Mattermost Server": "mattermost-server",
     "Mattermost Desktop App": "desktop",
+    "Mattermost Boards": "mattermost-plugin-boards",
+    "Mattermost Plugins": "mattermost-plugin-github",
 }
 
 
@@ -57,6 +60,9 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         for advisory in data:
             vuln_id = advisory.get("issue_id")
+            if not vuln_id or not vuln_id.startswith("MMSA-"):
+                self.log(f"Skipping advisory with missing issue_id. {vuln_id}")
+                continue
             cve_id = advisory.get("cve_id")
             details = advisory.get("details")
 
@@ -66,42 +72,53 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             package_name = MM_REPO.get(platform)
 
-            if not package_name:
-                self.log(f"Unknown platform '{platform}' in advisory '{vuln_id}'. Skipping.")
-                continue
-
-            package = PackageURL(
-                type="github",
-                namespace="mattermost",
-                name=MM_REPO.get(platform),
-            )
-
             affected_packages = []
-
             severity = advisory.get("severity")
+            if not package_name:
+                self.log(f"Unknown platform '{platform}' in advisory '{vuln_id}'.")
 
-            if isinstance(fixed_versions, list):
-                fixed_versions = [v for v in fixed_versions if v and v.strip()]
-                fixed_versions = [v.lstrip("v") for v in fixed_versions]
-            if isinstance(fixed_versions, str):
-                fixed_versions = [fixed_versions.lstrip("v")]
-
-            affected_packages.append(
-                AffectedPackageV2(
-                    package=package,
-                    fixed_version_range=GitHubVersionRange.from_versions(fixed_versions),
+            else:
+                package = PackageURL(
+                    type="github",
+                    namespace="mattermost",
+                    name=MM_REPO.get(platform),
                 )
-            )
+
+                if isinstance(fixed_versions, list):
+                    fixed_versions = [v for v in fixed_versions if v and v.strip()]
+                    fixed_versions = [v.lstrip("v") for v in fixed_versions]
+                if isinstance(fixed_versions, str):
+                    fixed_versions = [fixed_versions.lstrip("v")]
+
+                fixed_versions = [v.replace("and ", "") for v in fixed_versions]
+                fixed_versions = [v.strip() for v in fixed_versions]
+
+                try:
+                    affected_packages.append(
+                        AffectedPackageV2(
+                            package=package,
+                            fixed_version_range=GitHubVersionRange.from_versions(fixed_versions),
+                        )
+                    )
+                except Exception as e:
+                    self.log(
+                        f"Error processing fixed versions '{fixed_versions}' for advisory '{vuln_id}': {e}"
+                    )
 
             severities = []
             severities.append(
                 VulnerabilitySeverity(system=severity_systems.CVSS31_QUALITY, value=severity)
             )
 
+            reference = ReferenceV2(
+                url="https://mattermost.com/security-updates/",
+            )
+
             yield AdvisoryData(
                 advisory_id=vuln_id,
                 aliases=[cve_id],
                 summary=details,
+                references_v2=[reference],
                 affected_packages=affected_packages,
-                url="https://mattermost.com/security-updates/",
+                url=self.url,
             )

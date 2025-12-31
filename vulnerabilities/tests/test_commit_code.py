@@ -16,7 +16,6 @@ class TestCodePatch:
             unique_content_id="test_id",
             url="https://example.com",
             summary="summary",
-            date_imported=date,
             date_collected=date,
             advisory_id="test_id",
             avid="test_pipeline/test_id",

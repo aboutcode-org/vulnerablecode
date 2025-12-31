@@ -10,7 +10,6 @@ import logging
 import re
 from pathlib import Path
 from typing import Iterable
-from typing import List
 
 from fetchcode.vcs import fetch_via_vcs
 
@@ -23,6 +22,7 @@ from vulnerabilities.utils import build_description
 from vulnerabilities.utils import create_weaknesses_list
 from vulnerabilities.utils import cwe_regex
 from vulnerabilities.utils import dedupe
+from vulnerabilities.utils import find_all_cve
 from vulnerabilities.utils import get_advisory_url
 
 logger = logging.getLogger(__name__)
@@ -99,12 +99,19 @@ def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryData:
     summary = md_dict.get(database_id[1::]) or []
     description = md_dict.get("## Description") or []
     impact = md_dict.get("## Impact")
-    cve_ids = md_dict.get("## CVE Reference") or []
+    cve_refs = md_dict.get("## CVE Reference") or []
+    cve_ids = md_dict.get("## CVE ID") or []
+    cleaned_cve_ids = []
+    for line in cve_ids:
+        found_cves = find_all_cve(line)
+        cleaned_cve_ids.extend(found_cves)
+
     references = md_dict.get("## References") or []
     cwe_data = md_dict.get("## Common Weakness Enumeration") or []
 
     advisory_id = file_path.stem
-    aliases = dedupe([cve_id.strip() for cve_id in cve_ids])
+    aliases = dedupe([cve.strip() for cve in cleaned_cve_ids + cve_refs])
+    aliases = [aliase for aliase in aliases if aliase != advisory_id]
     advisory_url = get_advisory_url(
         file=file_path,
         base_path=base_path,

@@ -13,7 +13,9 @@ from unittest import TestCase
 import saneyaml
 from univers.version_constraint import VersionConstraint
 from univers.version_range import MavenVersionRange
+from univers.version_range import PypiVersionRange
 from univers.versions import MavenVersion
+from univers.versions import PypiVersion
 
 from vulnerabilities.importers.osv_v2 import get_explicit_affected_range
 from vulnerabilities.importers.osv_v2 import get_version_ranges_constraints
@@ -139,6 +141,15 @@ def test_get_explicit_affected_constraints():
             VersionConstraint(comparator="=", version=MavenVersion(string="4.10.2")),
             VersionConstraint(comparator="=", version=MavenVersion(string="4.12.2")),
         )
+    )
+
+    # Invalid versions are skipped.
+    assert get_explicit_affected_range(
+        affected_pkg={"versions": ["qwqw4684", "4.10.2", "fhgj5449"]},
+        raw_id="GHSA-8hxh-r6f7-jf45",
+        supported_ecosystem="pypi",
+    ) == PypiVersionRange(
+        constraints=(VersionConstraint(comparator="=", version=PypiVersion(string="4.10.2")),)
     )
 
 

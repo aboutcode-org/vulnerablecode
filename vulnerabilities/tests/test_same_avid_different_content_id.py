@@ -8,8 +8,9 @@
 #
 
 import uuid
-import pytest
 from datetime import timedelta
+
+import pytest
 from django.utils.timezone import now
 
 from vulnerabilities.models import AdvisoryV2
@@ -69,9 +70,7 @@ def test_latest_for_avid_returns_latest_by_date_collected(
 
 
 @pytest.mark.django_db
-def test_latest_for_avid_tie_breaks_by_id(
-    advisory_factory, timestamps, django_assert_num_queries
-):
+def test_latest_for_avid_tie_breaks_by_id(advisory_factory, timestamps, django_assert_num_queries):
     avid = "source/ADV-2"
     ts = timestamps["mid"]
 
@@ -123,9 +122,7 @@ def test_latest_per_avid_returns_one_row_per_avid(
 
 
 @pytest.mark.django_db
-def test_latest_per_avid_excludes_older_versions(
-    advisory_factory, timestamps
-):
+def test_latest_per_avid_excludes_older_versions(advisory_factory, timestamps):
     avid = "source/C"
 
     older = advisory_factory(
@@ -182,9 +179,7 @@ def test_latest_for_avids_filters_and_collapses_correctly(
 
 
 @pytest.mark.django_db
-def test_latest_for_avids_with_empty_input_returns_empty_queryset(
-    django_assert_num_queries
-):
+def test_latest_for_avids_with_empty_input_returns_empty_queryset(django_assert_num_queries):
     with django_assert_num_queries(0):
         qs = AdvisoryV2.objects.latest_for_avids(set())
         assert qs.count() == 0

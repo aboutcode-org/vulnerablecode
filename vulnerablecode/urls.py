@@ -20,10 +20,10 @@ from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
-from vulnerabilities.api_v2 import AdvisoriesPackageV2ViewSet
 from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
+from vulnerabilities.api_v2 import PackageV3ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.views import AdminLoginView
@@ -62,18 +62,19 @@ api_router.register("aliases", AliasViewSet, basename="alias")
 
 api_v2_router = OptionalSlashRouter()
 api_v2_router.register("packages", PackageV2ViewSet, basename="package-v2")
-api_v2_router.register(
-    "advisories-packages", AdvisoriesPackageV2ViewSet, basename="advisories-package-v2"
-)
 api_v2_router.register("vulnerabilities", VulnerabilityV2ViewSet, basename="vulnerability-v2")
 api_v2_router.register("codefixes", CodeFixViewSet, basename="codefix")
 api_v2_router.register("pipelines", PipelineScheduleV2ViewSet, basename="pipelines")
 api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisory-codefix")
 
+api_v3_router = OptionalSlashRouter()
+
+api_v3_router.register("packages", PackageV3ViewSet, basename="package-v3")
 
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
     path("api/v2/", include(api_v2_router.urls)),
+    path("api/v3/", include(api_v3_router.urls)),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),

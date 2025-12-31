@@ -44,9 +44,9 @@ from django.db.models import Count
 from django.db.models import Exists
 from django.db.models import F
 from django.db.models import OuterRef
-from django.db.models import Subquery
 from django.db.models import Prefetch
 from django.db.models import Q
+from django.db.models import Subquery
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
 from django.urls import reverse
@@ -1343,20 +1343,6 @@ class Alias(models.Model):
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
-class AdvisoryV2QuerySet(BaseQuerySet):
-    def search(query):
-        """
-        This function will take a string as an input, the string could be an alias or an advisory ID or
-        something in the advisory description.
-        """
-        return AdvisoryV2.objects.filter(
-            Q(advisory_id__icontains=query)
-            | Q(aliases__alias__icontains=query)
-            | Q(summary__icontains=query)
-            | Q(references__url__icontains=query)
-        ).distinct()
-
-
 class AdvisoryQuerySet(BaseQuerySet):
     def search(query):
         """
@@ -1369,17 +1355,6 @@ class AdvisoryQuerySet(BaseQuerySet):
             | Q(summary__icontains=query)
             | Q(references__url__icontains=query)
         ).distinct()
-
-class AdvisoryV2QuerySet(BaseQuerySet):
-    def latest_for_avid(self, avid: str):
-        return (
-            self.filter(avid=avid)
-            .order_by(
-                F("date_collected").desc(nulls_last=True),
-                "-id",
-            )
-            .first()
-        )
 
 
 # FIXME: Remove when migration from Vulnerability to Advisory is completed
@@ -2842,6 +2817,33 @@ class PackageCommitPatch(models.Model):
         unique_together = ["commit_hash", "vcs_url"]
 
 
+class AdvisoryV2QuerySet(BaseQuerySet):
+    def latest_for_avid(self, avid: str):
+        return (
+            self.filter(avid=avid)
+            .order_by(
+                F("date_collected").desc(nulls_last=True),
+                "-id",
+            )
+            .first()
+        )
+
+    def latest_per_avid(self):
+        latest_ids = (
+            self.filter(avid=OuterRef("avid"))
+            .order_by(
+                F("date_collected").desc(nulls_last=True),
+                "-id",
+            )
+            .values("id")[:1]
+        )
+
+        return self.filter(id=Subquery(latest_ids))
+
+    def latest_for_avids(self, avids):
+        return self.filter(avid__in=avids).latest_per_avid()
+
+
 class AdvisoryV2(models.Model):
     """
     An advisory represents data directly obtained from upstream transformed
@@ -2974,10 +2976,12 @@ class AdvisoryV2(models.Model):
     class Meta:
         unique_together = ["datasource_id", "advisory_id", "unique_content_id"]
         ordering = ["datasource_id", "advisory_id", "date_published", "unique_content_id"]
-        # indexes = models.Index(
-        #     fields=["avid", "-date_collected", "-id"],
-        #     name="advisory_latest_by_avid_idx",
-        # )
+        indexes = [
+            models.Index(
+                fields=["avid", "-date_collected", "-id"],
+                name="advisory_latest_by_avid_idx",
+            )
+        ]
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -3017,29 +3021,6 @@ class AdvisoryV2(models.Model):
         Return a queryset of all Aliases for this vulnerability.
         """
         return self.aliases.all()
-
-    def latest_for_avid(self, avid: str):
-        return (
-            self.filter(avid=avid)
-            .order_by(
-                F("date_collected").desc(nulls_last=True),
-                "-id",
-            )
-            .first()
-        )
-    
-    def latest_per_avid(self):
-        latest_ids = (
-            AdvisoryV2.objects
-            .filter(avid=OuterRef("avid"))
-            .order_by(
-                F("date_collected").desc(nulls_last=True),
-                "-id",
-            )
-            .values("id")[:1]
-        )
-
-        return self.filter(id=Subquery(latest_ids))
 
     alias = get_aliases
 

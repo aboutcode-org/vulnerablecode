@@ -8,10 +8,9 @@
 #
 
 
+from aboutcode.pipeline import humanize_time
 from django import template
 import saneyaml
-
-from aboutcode.pipeline import humanize_time
 
 register = template.Library()
 

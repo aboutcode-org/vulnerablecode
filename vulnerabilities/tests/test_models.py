@@ -25,10 +25,12 @@ from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
+from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Patch
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.severity_systems import CVSSV4
 from vulnerabilities.utils import compute_content_id
 
 
@@ -720,3 +722,16 @@ class PatchConstraintTests(TestCase):
         with self.assertRaises(IntegrityError) as raised:
             Patch.objects.create(patch_url=None, patch_text="")
         self.assertIn("patch_url_or_patch_text", str(raised.exception))
+
+
+class TestStoreLongCVSSV4(TestCase):
+    @pytest.mark.django_db
+    def test_constraint_none(self):
+        AdvisorySeverity.objects.create(
+            scoring_system=CVSSV4,
+            scoring_elements="CVSS:4.0/AV:N/AC:L/AT:P/PR:H/UI:P/VC:N/VI:N/VA:N/SC:H/SI:H/SA:H/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+        )
+        AdvisorySeverity.objects.create(
+            scoring_system=CVSSV4,
+            scoring_elements="CVSS:4.0/AV:P/AC:H/AT:P/PR:H/UI:A/VC:L/VI:L/VA:H/SC:H/SI:L/SA:L/E:A/CR:M/IR:M/AR:M/MAV:A/MAC:L/MAT:P/MPR:L/MVC:L/MVI:L/MVA:L/MSC:H/MSI:H/MSA:H/S:P/AU:Y/R:U/V:C/RE:M/U:Amber",
+        )

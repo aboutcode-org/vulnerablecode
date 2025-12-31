@@ -19,9 +19,9 @@ from vulnerabilities.tests import util_tests
 TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "fireeye_v2"
 
 TEST_CVE_FILES = [
-    TEST_DATA / "fireeye_test1.md",
-    TEST_DATA / "fireeye_test2.md",
-    TEST_DATA / "fireeye_test3.md",
+    TEST_DATA / "FEYE-2019-0002.md",
+    TEST_DATA / "FEYE-2020-0020.md",
+    TEST_DATA / "MNDT-2025-0009.md",
 ]
 
 

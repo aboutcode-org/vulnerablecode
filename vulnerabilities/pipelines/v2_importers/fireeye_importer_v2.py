@@ -103,7 +103,7 @@ def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryData:
     references = md_dict.get("## References") or []
     cwe_data = md_dict.get("## Common Weakness Enumeration") or []
 
-    advisory_id = database_id.strip()
+    advisory_id = file_path.stem
     aliases = dedupe([cve_id.strip() for cve_id in cve_ids])
     advisory_url = get_advisory_url(
         file=file_path,

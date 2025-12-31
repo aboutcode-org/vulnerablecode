@@ -4,6 +4,7 @@
 {% load static %}
 {% load show_cvss %}
 {% load url_filters %}
+{% load utils %}
 
 {% block title %}
 VulnerableCode Advisory Details - {{ advisory.advisory_id }}
@@ -583,7 +584,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                             <summary class="is-size-7 has-text-link" style="cursor: pointer;">
                               View SSVC decision tree
                             </summary>
-                            <pre>{{ ssvc.options|pprint }}</pre>
+                            <pre>{{ ssvc.options|yaml_dump }}</pre>
                           </details>
                         </div>
                     </div>

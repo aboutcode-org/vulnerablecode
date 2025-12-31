@@ -60,6 +60,7 @@ from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgr
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
+from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
@@ -84,6 +85,7 @@ IMPORTERS_REGISTRY = create_registry(
         github_osv_importer_v2.GithubOSVImporterPipeline,
         redhat_importer_v2.RedHatImporterPipeline,
         aosp_importer_v2.AospImporterPipeline,
+        ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,

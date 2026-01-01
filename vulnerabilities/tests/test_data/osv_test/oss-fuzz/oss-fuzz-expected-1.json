@@ -1,0 +1,23 @@
+{
+  "advisory_id": "OSV-2024-269",
+  "aliases": [],
+  "summary": "Security exception in java.base/java.util.stream.AbstractPipeline.evaluate\nOSS-Fuzz report: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=66703\n\n```\nCrash type: Security exception\nCrash state:\njava.base/java.util.stream.AbstractPipeline.evaluate\njava.base/java.util.stream.ReferencePipeline.collect\norg.apache.commons.configuration2.AbstractYAMLBasedConfiguration.parseCollection\n```",
+  "affected_packages": [],
+  "references_v2": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=66703"
+    },
+    {
+      "reference_id": "4117b2050ab011f131d5a81c824bf89ddde303d4",
+      "reference_type": "commit",
+      "url": "https://gitbox.apache.org/repos/asf/commons-configuration.git"
+    }
+  ],
+  "patches": [],
+  "severities": [],
+  "date_published": "2024-04-18T00:04:02.456948+00:00",
+  "weaknesses": [],
+  "url": "https://test.com"
+}

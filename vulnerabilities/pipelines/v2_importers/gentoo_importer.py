@@ -17,11 +17,15 @@ from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import EbuildVersionRange
 from univers.versions import GentooVersion
+from univers.versions import InvalidVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.management.commands.commit_export import logger
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.severity_systems import GENERIC
 
 
 class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -57,18 +61,19 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def process_file(self, file):
         cves = []
         summary = ""
-        vuln_references = []
         xml_root = ET.parse(file).getroot()
         id = xml_root.attrib.get("id")
-        if id:
-            glsa = "GLSA-" + id
-            vuln_references = [
-                ReferenceV2(
-                    reference_id=glsa,
-                    url=f"https://security.gentoo.org/glsa/{id}",
-                )
-            ]
+        glsa = "GLSA-" + id
 
+        vuln_references = [
+            ReferenceV2(
+                reference_id=glsa,
+                url=f"https://security.gentoo.org/glsa/{id}",
+            )
+        ]
+
+        severities = []
+        affected_packages = []
         for child in xml_root:
             if child.tag == "references":
                 cves = self.cves_from_reference(child)
@@ -79,19 +84,23 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             if child.tag == "affected":
                 affected_packages = list(affected_and_safe_purls(child))
 
-        # It is very inefficient, to create new Advisory for each CVE
-        # this way, but there seems no alternative.
-        for cve in cves:
-            yield AdvisoryData(
-                advisory_id=cve,
-                aliases=[cve],
-                summary=summary,
-                references=vuln_references,
-                affected_packages=affected_packages,
-                url=f"https://security.gentoo.org/glsa/{id}"
-                if id
-                else "https://security.gentoo.org/glsa",
-            )
+            if child.tag == "impact":
+                severity_value = child.attrib.get("type")
+                if severity_value:
+                    severities.append(VulnerabilitySeverity(system=GENERIC, value=severity_value))
+
+        yield AdvisoryData(
+            advisory_id=glsa,
+            aliases=cves,
+            summary=summary,
+            references_v2=vuln_references,
+            severities=severities,
+            affected_packages=affected_packages,
+            url=f"https://security.gentoo.org/glsa/{id}"
+            if id
+            else "https://security.gentoo.org/glsa",
+            original_advisory_text=file,
+        )
 
     def clean_downloads(self):
         if self.vcs_response:
@@ -123,12 +132,20 @@ def affected_and_safe_purls(affected_elem):
         safe_versions, affected_versions = get_safe_and_affected_versions(pkg)
 
         for version in safe_versions:
-            constraints.append(
-                VersionConstraint(version=GentooVersion(version), comparator="=").invert()
-            )
+            try:
+                constraints.append(
+                    VersionConstraint(version=GentooVersion(version), comparator="=").invert()
+                )
+            except InvalidVersion as e:
+                logger.error(f"InvalidVersion - version: {version} - error:{e}")
 
         for version in affected_versions:
-            constraints.append(VersionConstraint(version=GentooVersion(version), comparator="="))
+            try:
+                constraints.append(
+                    VersionConstraint(version=GentooVersion(version), comparator="=")
+                )
+            except InvalidVersion as e:
+                logger.error(f"InvalidVersion - version: {version} - error:{e}")
 
         if not constraints:
             continue

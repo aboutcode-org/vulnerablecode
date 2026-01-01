@@ -32,6 +32,7 @@ from vulnerabilities.pipelines.v2_improvers import (
 )
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
+from vulnerabilities.pipelines.v2_improvers import yara_rules
 from vulnerabilities.utils import create_registry
 
 IMPROVERS_REGISTRY = create_registry(
@@ -72,5 +73,6 @@ IMPROVERS_REGISTRY = create_registry(
         unfurl_version_range_v2.UnfurlVersionRangePipeline,
         compute_advisory_todo.ComputeToDo,
         collect_ssvc_trees.CollectSSVCPipeline,
+        yara_rules.YaraRulesImproverPipeline,
     ]
 )

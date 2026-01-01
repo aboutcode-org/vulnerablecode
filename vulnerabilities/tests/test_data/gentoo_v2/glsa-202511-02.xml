@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glsa SYSTEM "http://www.gentoo.org/dtd/glsa.dtd">
+<glsa id="202511-02">
+    <title>WebKitGTK+: Multiple Vulnerabilities</title>
+    <synopsis>Multiple vulnerabilities have been discovered in WebKitGTK+, the worst of which can lead to execution of arbitary code.</synopsis>
+    <product type="ebuild">webkit-gtk</product>
+    <announced>2025-11-24</announced>
+    <revised count="1">2025-11-24</revised>
+    <bug>938026</bug>
+    <bug>941276</bug>
+    <bug>951739</bug>
+    <bug>961021</bug>
+    <access>remote</access>
+    <affected>
+        <package name="net-libs/webkit-gtk" auto="yes" arch="*">
+            <unaffected range="ge" slot="4.1">2.48.5</unaffected>
+            <unaffected range="ge" slot="6">2.48.5</unaffected>
+            <vulnerable range="lt" slot="4.1">2.48.5</vulnerable>
+            <vulnerable range="lt" slot="6">2.48.5</vulnerable>
+        </package>
+    </affected>
+    <background>
+        <p>WebKitGTK+ is a full-featured port of the WebKit rendering engine, suitable for projects requiring any kind of web integration, from hybrid HTML/CSS applications to full-fledged web browsers.</p>
+    </background>
+    <description>
+        <p>Multiple vulnerabilities have been discovered in WebKitGTK+. Please review the CVE identifiers referenced below for details.</p>
+    </description>
+    <impact type="high">
+        <p>Please review the referenced CVE identifiers for details.</p>
+    </impact>
+    <workaround>
+        <p>There is no known workaround at this time.</p>
+    </workaround>
+    <resolution>
+        <p>All WebKitGTK+ users should upgrade to the latest version:</p>
+
+        <code>
+          # emerge --sync
+          # emerge --ask --oneshot --verbose ">=net-libs/webkit-gtk-2.48.5:4.1" ">=net-libs/webkit-gtk-2.48.5:6"
+        </code>
+    </resolution>
+    <references>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-40857">CVE-2024-40857</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-40866">CVE-2024-40866</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-44185">CVE-2024-44185</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-44187">CVE-2024-44187</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-44192">CVE-2024-44192</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-44244">CVE-2024-44244</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-44296">CVE-2024-44296</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-54467">CVE-2024-54467</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2024-54551">CVE-2024-54551</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-24201">CVE-2025-24201</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-24208">CVE-2025-24208</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-24209">CVE-2025-24209</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-24213">CVE-2025-24213</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-24216">CVE-2025-24216</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-24264">CVE-2025-24264</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-30427">CVE-2025-30427</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-31273">CVE-2025-31273</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-31278">CVE-2025-31278</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-43211">CVE-2025-43211</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-43212">CVE-2025-43212</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-43216">CVE-2025-43216</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-43227">CVE-2025-43227</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-43228">CVE-2025-43228</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-43240">CVE-2025-43240</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-43265">CVE-2025-43265</uri>
+        <uri link="https://webkitgtk.org/security/WSA-2025-0002.html">WSA-2025-0002</uri>
+        <uri link="https://webkitgtk.org/security/WSA-2025-0003.html">WSA-2025-0003</uri>
+    </references>
+    <metadata tag="requester" timestamp="2025-11-24T23:57:31.542544Z">graaff</metadata>
+    <metadata tag="submitter" timestamp="2025-11-24T23:57:31.545141Z">sam</metadata>
+</glsa>

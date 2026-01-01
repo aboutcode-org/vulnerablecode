@@ -1,0 +1,547 @@
+{
+  "resultsPerPage": 38743,
+  "startIndex": 0,
+  "totalResults": 38743,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "timestamp": "2025-12-25T03:00:00.7378299",
+  "vulnerabilities": [
+    {"cve" : {
+      "id" : "CVE-2005-4895",
+      "sourceIdentifier" : "cve@mitre.org",
+      "published" : "2012-07-25T19:55:01.273",
+      "lastModified" : "2025-04-11T00:51:21.963",
+      "vulnStatus" : "Deferred",
+      "cveTags" : [ ],
+      "descriptions" : [ {
+        "lang" : "en",
+        "value" : "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools before 0.4 make it easier for context-dependent attackers to perform memory-related attacks such as buffer overflows via a large size value, which causes less memory to be allocated than expected."
+      }, {
+        "lang" : "es",
+        "value" : "Múltiples desbordamientos de enteros en TCMalloc (tcmalloc.cc) en gperftools antes v0.4 hace que sea más fácil para los atacantes dependientes de contexto realizar ataques relacionados con la memoria, tales como desbordamientos de memoria a través de un valor de tamaño grande, lo que causa que se asigne menos memoria de lo esperado."
+      } ],
+      "metrics" : {
+        "cvssMetricV2" : [ {
+          "source" : "nvd@nist.gov",
+          "type" : "Primary",
+          "cvssData" : {
+            "version" : "2.0",
+            "vectorString" : "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+            "baseScore" : 5.0,
+            "accessVector" : "NETWORK",
+            "accessComplexity" : "LOW",
+            "authentication" : "NONE",
+            "confidentialityImpact" : "NONE",
+            "integrityImpact" : "NONE",
+            "availabilityImpact" : "PARTIAL"
+          },
+          "baseSeverity" : "MEDIUM",
+          "exploitabilityScore" : 10.0,
+          "impactScore" : 2.9,
+          "acInsufInfo" : false,
+          "obtainAllPrivilege" : false,
+          "obtainUserPrivilege" : false,
+          "obtainOtherPrivilege" : false,
+          "userInteractionRequired" : false
+        } ]
+      },
+      "weaknesses" : [ {
+        "source" : "nvd@nist.gov",
+        "type" : "Primary",
+        "description" : [ {
+          "lang" : "en",
+          "value" : "CWE-189"
+        } ]
+      } ],
+      "configurations" : [ {
+        "nodes" : [ {
+          "operator" : "OR",
+          "negate" : false,
+          "cpeMatch" : [ {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
+            "versionEndIncluding" : "0.3",
+            "matchCriteriaId" : "BEC9A6EA-129D-4A9E-A3F6-379FC64E4B22"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "7BDB58C4-45E6-401B-9305-B422E7760FB3"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "B0D76DB5-A8CA-4667-8B62-F38132D7A5C8"
+          } ]
+        } ]
+      } ],
+      "references" : [ {
+        "url" : "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      } ]
+    }},
+    {"cve" : {
+      "id" : "CVE-2005-4900",
+      "sourceIdentifier" : "cve@mitre.org",
+      "published" : "2016-10-14T16:59:00.187",
+      "lastModified" : "2025-04-12T10:46:40.837",
+      "vulnStatus" : "Deferred",
+      "cveTags" : [ ],
+      "descriptions" : [ {
+        "lang" : "en",
+        "value" : "SHA-1 is not collision resistant, which makes it easier for context-dependent attackers to conduct spoofing attacks, as demonstrated by attacks on the use of SHA-1 in TLS 1.2.  NOTE: this CVE exists to provide a common identifier for referencing this SHA-1 issue; the existence of an identifier is not, by itself, a technology recommendation."
+      }, {
+        "lang" : "es",
+        "value" : "SHA-1 no es resistente a la colisión, lo que facilita a atacantes dependientes del contexto llevar a cabo ataques de espionaje, como es demostrado por ataques en el uso de SHA-1 en TLS 1.2. NOTA: esta CVE existe para dar un identificador común para referenciar este problema de SHA-1; la existencia de un identificador no es, en si misma, una recomendación tecnológica."
+      } ],
+      "metrics" : {
+        "cvssMetricV30" : [ {
+          "source" : "nvd@nist.gov",
+          "type" : "Primary",
+          "cvssData" : {
+            "version" : "3.0",
+            "vectorString" : "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N",
+            "baseScore" : 5.9,
+            "baseSeverity" : "MEDIUM",
+            "attackVector" : "NETWORK",
+            "attackComplexity" : "HIGH",
+            "privilegesRequired" : "NONE",
+            "userInteraction" : "NONE",
+            "scope" : "UNCHANGED",
+            "confidentialityImpact" : "HIGH",
+            "integrityImpact" : "NONE",
+            "availabilityImpact" : "NONE"
+          },
+          "exploitabilityScore" : 2.2,
+          "impactScore" : 3.6
+        } ],
+        "cvssMetricV2" : [ {
+          "source" : "nvd@nist.gov",
+          "type" : "Primary",
+          "cvssData" : {
+            "version" : "2.0",
+            "vectorString" : "AV:N/AC:M/Au:N/C:P/I:N/A:N",
+            "baseScore" : 4.3,
+            "accessVector" : "NETWORK",
+            "accessComplexity" : "MEDIUM",
+            "authentication" : "NONE",
+            "confidentialityImpact" : "PARTIAL",
+            "integrityImpact" : "NONE",
+            "availabilityImpact" : "NONE"
+          },
+          "baseSeverity" : "MEDIUM",
+          "exploitabilityScore" : 8.6,
+          "impactScore" : 2.9,
+          "acInsufInfo" : false,
+          "obtainAllPrivilege" : false,
+          "obtainUserPrivilege" : false,
+          "obtainOtherPrivilege" : false,
+          "userInteractionRequired" : false
+        } ]
+      },
+      "weaknesses" : [ {
+        "source" : "nvd@nist.gov",
+        "type" : "Primary",
+        "description" : [ {
+          "lang" : "en",
+          "value" : "CWE-326"
+        } ]
+      } ],
+      "configurations" : [ {
+        "nodes" : [ {
+          "operator" : "OR",
+          "negate" : false,
+          "cpeMatch" : [ {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
+            "versionEndIncluding" : "47.0.2526.111",
+            "matchCriteriaId" : "AFB52550-C3FC-4CDD-AA6E-500BD3304241"
+          } ]
+        } ]
+      } ],
+      "references" : [ {
+        "url" : "http://ia.cr/2007/474",
+        "source" : "cve@mitre.org",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "http://shattered.io/",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.cwi.nl/news/2017/cwi-and-google-announce-first-collision-industry-security-standard-sha-1",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.securityfocus.com/bid/12577",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "https://arstechnica.com/security/2017/02/at-deaths-door-for-years-widely-used-sha1-function-is-now-dead/",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "https://kc.mcafee.com/corporate/index?page=content&id=SB10340",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "https://security.googleblog.com/2015/12/an-update-on-sha-1-certificates-in.html",
+        "source" : "cve@mitre.org",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "https://sites.google.com/site/itstheshappening",
+        "source" : "cve@mitre.org",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "https://www.schneier.com/blog/archives/2005/02/sha1_broken.html",
+        "source" : "cve@mitre.org",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "https://www.schneier.com/blog/archives/2005/08/new_cryptanalyt.html",
+        "source" : "cve@mitre.org",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "http://ia.cr/2007/474",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "http://shattered.io/",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.cwi.nl/news/2017/cwi-and-google-announce-first-collision-industry-security-standard-sha-1",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.securityfocus.com/bid/12577",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "https://arstechnica.com/security/2017/02/at-deaths-door-for-years-widely-used-sha1-function-is-now-dead/",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "https://kc.mcafee.com/corporate/index?page=content&id=SB10340",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "https://security.googleblog.com/2015/12/an-update-on-sha-1-certificates-in.html",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "https://sites.google.com/site/itstheshappening",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "https://www.schneier.com/blog/archives/2005/02/sha1_broken.html",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108",
+        "tags" : [ "Third Party Advisory" ]
+      }, {
+        "url" : "https://www.schneier.com/blog/archives/2005/08/new_cryptanalyt.html",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108",
+        "tags" : [ "Third Party Advisory" ]
+      } ],
+      "evaluatorComment" : "SHA-1 is likely present in a large number of products across the entire IT sector. The applicability statement for this CVE will be updated when specific products are identified, as time and resources permit."
+    }},
+    {"cve" : {
+      "id" : "CVE-2003-0001",
+      "sourceIdentifier" : "cve@mitre.org",
+      "published" : "2003-01-17T05:00:00.000",
+      "lastModified" : "2025-04-03T01:03:51.193",
+      "vulnStatus" : "Deferred",
+      "cveTags" : [ ],
+      "descriptions" : [ {
+        "lang" : "en",
+        "value" : "Multiple ethernet Network Interface Card (NIC) device drivers do not pad frames with null bytes, which allows remote attackers to obtain information from previous packets or kernel memory by using malformed packets, as demonstrated by Etherleak."
+      }, {
+        "lang" : "es",
+        "value" : "Múltiples controladores de dispositivo (device drivers) de Tarjetas de Interfaz de Red (Network Interface Card - NIC) Ethernet no rellenan las tramas con bytes nulos, lo que permite a atacantes remotos obtener información de paquetes anteriores o memoria del kernel usando paquetes malformados, como ha sido demostrado por Etherleak."
+      } ],
+      "metrics" : {
+        "cvssMetricV2" : [ {
+          "source" : "nvd@nist.gov",
+          "type" : "Primary",
+          "cvssData" : {
+            "version" : "2.0",
+            "vectorString" : "AV:N/AC:L/Au:N/C:P/I:N/A:N",
+            "baseScore" : 5.0,
+            "accessVector" : "NETWORK",
+            "accessComplexity" : "LOW",
+            "authentication" : "NONE",
+            "confidentialityImpact" : "PARTIAL",
+            "integrityImpact" : "NONE",
+            "availabilityImpact" : "NONE"
+          },
+          "baseSeverity" : "MEDIUM",
+          "exploitabilityScore" : 10.0,
+          "impactScore" : 2.9,
+          "acInsufInfo" : false,
+          "obtainAllPrivilege" : false,
+          "obtainUserPrivilege" : false,
+          "obtainOtherPrivilege" : false,
+          "userInteractionRequired" : false
+        } ]
+      },
+      "weaknesses" : [ {
+        "source" : "nvd@nist.gov",
+        "type" : "Primary",
+        "description" : [ {
+          "lang" : "en",
+          "value" : "CWE-200"
+        } ]
+      } ],
+      "configurations" : [ {
+        "nodes" : [ {
+          "operator" : "OR",
+          "negate" : false,
+          "cpeMatch" : [ {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:freebsd:freebsd:4.2:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "DF49BF03-C25E-4737-84D5-892895C86C58"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:freebsd:freebsd:4.3:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "D2019E0E-426B-43AF-8904-1B811AE171E8"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:freebsd:freebsd:4.4:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "55C5FC1A-1253-4390-A4FC-573BB14EA937"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:freebsd:freebsd:4.5:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "44308D13-D935-4FF8-AB52-F0E115ED1AD2"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:freebsd:freebsd:4.6:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "9C001822-FDF8-497C-AC2C-B59A00E9ACD2"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:freebsd:freebsd:4.7:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "B86C77AB-B8FF-4376-9B4E-C88417396F3D"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.1:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "55B85D5B-4EA1-4FCF-8D50-9C54E8FDA92F"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.2:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "01408EC0-9C2D-4A44-8080-D7FC7E1A1FA1"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.3:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "5F49A384-7222-41F3-9BE1-4E18C00E50A6"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.4:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "05520FE3-C48D-42E8-BC24-C2396BD46CBA"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.5:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "D865FBB6-E07D-492F-A75E-168B06C8ADEE"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.6:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "598F24C2-0366-4799-865C-5EE4572B734B"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.7:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "D0399660-6385-45AB-9785-E504D8788146"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.8:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "DCBC50EA-130C-41B7-83EA-C523B3C3AAD7"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.9:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "B91F6CBE-400F-4D0B-B893-34577B47A342"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.10:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "1548ECFD-FCB5-4AE0-9788-42F61F25489F"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.11:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "6ABB9787-5497-4BDC-8952-F99CF60A89BD"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.12:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "615F6BA2-CD51-4159-B28A-A018CA9FC25C"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.13:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "093848CB-68A1-4258-8357-373A477FE4E2"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.14:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "E275F440-A427-465F-B314-BF0730C781DB"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.15:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "98651D39-60CF-409F-8276-DBBB56B972AA"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.16:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "067B8E09-C923-4DDA-92DB-4A2892CB526A"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.17:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "9EBE3738-E530-4EC6-9FC6-1A063605BE05"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.18:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "474384F1-FB2D-4C00-A4CD-0C2C5AE42DB4"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.19:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "F677E992-8D37-438F-97DF-9D98B28F020C"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:linux:linux_kernel:2.4.20:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "476687F9-722B-490C-BD0B-B5F2CD7891DC"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:microsoft:windows_2000:*:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "4E545C63-FE9C-4CA1-AF0F-D999D84D2AFD"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:microsoft:windows_2000:*:sp1:*:*:*:*:*:*",
+            "matchCriteriaId" : "294EBA01-147B-4DA0-937E-ACBB655EDE53"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:microsoft:windows_2000:*:sp2:*:*:*:*:*:*",
+            "matchCriteriaId" : "4E8B7346-F2AA-434C-A048-7463EC1BB117"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "9D34EFE5-22B7-4E8D-B5B2-2423C37CFFA7"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp1:*:*:*:*:*:*",
+            "matchCriteriaId" : "8208AFC9-0EFC-4A90-AD5A-FD94F5542885"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:microsoft:windows_2000_terminal_services:*:sp2:*:*:*:*:*:*",
+            "matchCriteriaId" : "4D4168AE-D19E-482E-8F2B-3E798B2D84E7"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:netbsd:netbsd:1.5:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "E10D9BF9-FCC7-4680-AD3A-95757FC005EA"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:netbsd:netbsd:1.5.1:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "78E8C3A4-9FA7-4F2A-8C65-D4404715E674"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:netbsd:netbsd:1.5.2:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "DBA2E3A3-EB9B-4B20-B754-EEC914FB1D47"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:netbsd:netbsd:1.5.3:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "7AC78BA4-70F4-4B9F-93C2-B107E4DCC418"
+          }, {
+            "vulnerable" : true,
+            "criteria" : "cpe:2.3:o:netbsd:netbsd:1.6:*:*:*:*:*:*:*",
+            "matchCriteriaId" : "28A10F5A-067E-4DD8-B585-ABCD6F6B324E"
+          } ]
+        } ]
+      } ],
+      "references" : [ {
+        "url" : "http://archives.neohapsis.com/archives/vulnwatch/2003-q1/0016.html",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://marc.info/?l=bugtraq&m=104222046632243&w=2",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://secunia.com/advisories/7996",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.atstake.com/research/advisories/2003/a010603-1.txt",
+        "source" : "cve@mitre.org",
+        "tags" : [ "Vendor Advisory" ]
+      }, {
+        "url" : "http://www.atstake.com/research/advisories/2003/atstake_etherleak_report.pdf",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.kb.cert.org/vuls/id/412115",
+        "source" : "cve@mitre.org",
+        "tags" : [ "Third Party Advisory", "US Government Resource" ]
+      }, {
+        "url" : "http://www.oracle.com/technetwork/topics/security/cpujan2015-1972971.html",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.osvdb.org/9962",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.redhat.com/support/errata/RHSA-2003-025.html",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.redhat.com/support/errata/RHSA-2003-088.html",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.securityfocus.com/archive/1/305335/30/26420/threaded",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.securityfocus.com/archive/1/307564/30/26270/threaded",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.securitytracker.com/id/1031583",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://www.securitytracker.com/id/1040185",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "https://oval.cisecurity.org/repository/search/definition/oval%3Aorg.mitre.oval%3Adef%3A2665",
+        "source" : "cve@mitre.org"
+      }, {
+        "url" : "http://archives.neohapsis.com/archives/vulnwatch/2003-q1/0016.html",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://marc.info/?l=bugtraq&m=104222046632243&w=2",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://secunia.com/advisories/7996",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.atstake.com/research/advisories/2003/a010603-1.txt",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108",
+        "tags" : [ "Vendor Advisory" ]
+      }, {
+        "url" : "http://www.atstake.com/research/advisories/2003/atstake_etherleak_report.pdf",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.kb.cert.org/vuls/id/412115",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108",
+        "tags" : [ "Third Party Advisory", "US Government Resource" ]
+      }, {
+        "url" : "http://www.oracle.com/technetwork/topics/security/cpujan2015-1972971.html",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.osvdb.org/9962",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.redhat.com/support/errata/RHSA-2003-025.html",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.redhat.com/support/errata/RHSA-2003-088.html",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.securityfocus.com/archive/1/305335/30/26420/threaded",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.securityfocus.com/archive/1/307564/30/26270/threaded",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.securitytracker.com/id/1031583",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "http://www.securitytracker.com/id/1040185",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      }, {
+        "url" : "https://oval.cisecurity.org/repository/search/definition/oval%3Aorg.mitre.oval%3Adef%3A2665",
+        "source" : "af854a3a-2127-422b-91ae-364da2661108"
+      } ]
+    }}
+  ]
+}

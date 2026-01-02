@@ -331,7 +331,7 @@ def insert_advisory_v2(
             if values:
                 getattr(advisory_obj, field_name).add(*values)
 
-    except Advisory.MultipleObjectsReturned:
+    except AdvisoryV2.MultipleObjectsReturned:
         logger.error(
             f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}"
         )

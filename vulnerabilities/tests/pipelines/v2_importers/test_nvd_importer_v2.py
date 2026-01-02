@@ -11,13 +11,11 @@ import json
 from pathlib import Path
 
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.pipelines import nvd_importer
-from vulnerabilities.severity_systems import Cvssv2ScoringSystem
+from vulnerabilities.pipelines.v2_importers import nvd_importer
 from vulnerabilities.severity_systems import Cvssv3ScoringSystem
-from vulnerabilities.severity_systems import Cvssv4ScoringSystem
 from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
 
-TEST_DATA = Path(__file__).parent.parent / "test_data" / "nvd"
+TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "nvd_v2"
 
 
 def load_test_data(file):
@@ -34,7 +32,7 @@ def sorted_advisory_data(advisory_data):
     for data in advisory_data:
         data["aliases"] = sorted(data["aliases"])
         data["affected_packages"] = sorted(data["affected_packages"], key=sorter)
-        data["references"] = sorted(data["references"], key=sorter)
+        data["references_v2"] = sorted(data["references_v2"], key=sorter)
     return advisory_data
 
 
@@ -99,139 +97,28 @@ def get_test_cve_item():
                 },
             ],
             "metrics": {
-                "cvssMetricV40": [
-                    {
-                        "source": "cna@vuldb.com",
-                        "type": "Secondary",
-                        "cvssData": {
-                            "version": "4.0",
-                            "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
-                            "baseScore": 5.3,
-                            "baseSeverity": "MEDIUM",
-                            "attackVector": "NETWORK",
-                            "attackComplexity": "LOW",
-                            "attackRequirements": "NONE",
-                            "privilegesRequired": "LOW",
-                            "userInteraction": "NONE",
-                            "vulnConfidentialityImpact": "LOW",
-                            "vulnIntegrityImpact": "LOW",
-                            "vulnAvailabilityImpact": "LOW",
-                            "subConfidentialityImpact": "NONE",
-                            "subIntegrityImpact": "NONE",
-                            "subAvailabilityImpact": "NONE",
-                            "exploitMaturity": "NOT_DEFINED",
-                            "confidentialityRequirement": "NOT_DEFINED",
-                            "integrityRequirement": "NOT_DEFINED",
-                            "availabilityRequirement": "NOT_DEFINED",
-                            "modifiedAttackVector": "NOT_DEFINED",
-                            "modifiedAttackComplexity": "NOT_DEFINED",
-                            "modifiedAttackRequirements": "NOT_DEFINED",
-                            "modifiedPrivilegesRequired": "NOT_DEFINED",
-                            "modifiedUserInteraction": "NOT_DEFINED",
-                            "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
-                            "modifiedVulnIntegrityImpact": "NOT_DEFINED",
-                            "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
-                            "modifiedSubConfidentialityImpact": "NOT_DEFINED",
-                            "modifiedSubIntegrityImpact": "NOT_DEFINED",
-                            "modifiedSubAvailabilityImpact": "NOT_DEFINED",
-                            "Safety": "NOT_DEFINED",
-                            "Automatable": "NOT_DEFINED",
-                            "Recovery": "NOT_DEFINED",
-                            "valueDensity": "NOT_DEFINED",
-                            "vulnerabilityResponseEffort": "NOT_DEFINED",
-                            "providerUrgency": "NOT_DEFINED",
-                        },
-                    }
-                ],
                 "cvssMetricV31": [
                     {
-                        "source": "cna@vuldb.com",
+                        "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
                         "type": "Secondary",
                         "cvssData": {
                             "version": "3.1",
-                            "vectorString": "CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L",
-                            "baseScore": 3.5,
-                            "baseSeverity": "LOW",
-                            "attackVector": "ADJACENT_NETWORK",
-                            "attackComplexity": "LOW",
-                            "privilegesRequired": "LOW",
-                            "userInteraction": "NONE",
-                            "scope": "UNCHANGED",
-                            "confidentialityImpact": "NONE",
-                            "integrityImpact": "NONE",
-                            "availabilityImpact": "LOW",
-                        },
-                        "exploitabilityScore": 2.1,
-                        "impactScore": 1.4,
-                    },
-                    {
-                        "source": "nvd@nist.gov",
-                        "type": "Primary",
-                        "cvssData": {
-                            "version": "3.1",
-                            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-                            "baseScore": 7.5,
-                            "baseSeverity": "HIGH",
+                            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                            "baseScore": 9.8,
+                            "baseSeverity": "CRITICAL",
                             "attackVector": "NETWORK",
                             "attackComplexity": "LOW",
                             "privilegesRequired": "NONE",
                             "userInteraction": "NONE",
                             "scope": "UNCHANGED",
-                            "confidentialityImpact": "NONE",
-                            "integrityImpact": "NONE",
+                            "confidentialityImpact": "HIGH",
+                            "integrityImpact": "HIGH",
                             "availabilityImpact": "HIGH",
                         },
                         "exploitabilityScore": 3.9,
-                        "impactScore": 3.6,
-                    },
-                ],
-                "cvssMetricV30": [
-                    {
-                        "source": "nvd@nist.gov",
-                        "type": "Primary",
-                        "cvssData": {
-                            "version": "3.0",
-                            "vectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-                            "baseScore": 7.5,
-                            "baseSeverity": "HIGH",
-                            "attackVector": "NETWORK",
-                            "attackComplexity": "LOW",
-                            "privilegesRequired": "NONE",
-                            "userInteraction": "NONE",
-                            "scope": "UNCHANGED",
-                            "confidentialityImpact": "NONE",
-                            "integrityImpact": "NONE",
-                            "availabilityImpact": "HIGH",
-                        },
-                        "exploitabilityScore": 3.9,
-                        "impactScore": 3.6,
+                        "impactScore": 5.9,
                     }
-                ],
-                "cvssMetricV2": [
-                    {
-                        "source": "cna@vuldb.com",
-                        "type": "Secondary",
-                        "cvssData": {
-                            "version": "2.0",
-                            "vectorString": "AV:A/AC:L/Au:S/C:N/I:N/A:P",
-                            "baseScore": 2.7,
-                            "accessVector": "ADJACENT_NETWORK",
-                            "accessComplexity": "LOW",
-                            "authentication": "SINGLE",
-                            "confidentialityImpact": "NONE",
-                            "integrityImpact": "NONE",
-                            "availabilityImpact": "PARTIAL",
-                        },
-                        "baseSeverity": "LOW",
-                        "exploitabilityScore": 5.1,
-                        "impactScore": 2.9,
-                        "acInsufInfo": False,
-                        "obtainAllPrivilege": False,
-                        "obtainUserPrivilege": False,
-                        "obtainOtherPrivilege": False,
-                        "userInteractionRequired": False,
-                    }
-                ],
+                ]
             },
             "weaknesses": [
                 {
@@ -499,62 +386,14 @@ def get_test_cve_item():
 def test_CveItem_severities():
     expected_severities = [
         VulnerabilitySeverity(
-            system=Cvssv4ScoringSystem(
-                identifier="cvssv4",
-                name="CVSSv4 Base Score",
-                url="https://www.first.org/cvss/v4-0/",
-                notes="CVSSv4 base score and " "vector",
-            ),
-            value="5.3",
-            scoring_elements="CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
-            published_at=None,
-            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
-        ),
-        VulnerabilitySeverity(
             system=Cvssv3ScoringSystem(
                 identifier="cvssv3.1",
                 name="CVSSv3.1 Base Score",
                 url="https://www.first.org/cvss/v3-1/",
                 notes="CVSSv3.1 base score and vector",
             ),
-            value="3.5",
-            scoring_elements="CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L",
-            published_at=None,
-            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
-        ),
-        VulnerabilitySeverity(
-            system=Cvssv3ScoringSystem(
-                identifier="cvssv3.1",
-                name="CVSSv3.1 Base Score",
-                url="https://www.first.org/cvss/v3-1/",
-                notes="CVSSv3.1 base score and vector",
-            ),
-            value="7.5",
-            scoring_elements="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-            published_at=None,
-            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
-        ),
-        VulnerabilitySeverity(
-            system=Cvssv3ScoringSystem(
-                identifier="cvssv3",
-                name="CVSSv3 Base Score",
-                url="https://www.first.org/cvss/v3-0/",
-                notes="CVSSv3 base score and " "vector",
-            ),
-            value="7.5",
-            scoring_elements="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-            published_at=None,
-            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
-        ),
-        VulnerabilitySeverity(
-            system=Cvssv2ScoringSystem(
-                identifier="cvssv2",
-                name="CVSSv2 Base Score",
-                url="https://www.first.org/cvss/v2/",
-                notes="CVSSv2 base score and vector",
-            ),
-            value="2.7",
-            scoring_elements="AV:A/AC:L/Au:S/C:N/I:N/A:P",
+            value="9.8",
+            scoring_elements="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
             published_at=None,
             url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
         ),

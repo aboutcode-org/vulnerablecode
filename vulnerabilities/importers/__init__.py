@@ -51,6 +51,7 @@ from vulnerabilities.pipelines.v2_importers import suse_score_importer as suse_s
 from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
+from vulnerabilities.pipelines.v2_importers import tuxcare_importer as tuxcare_importer_v2
 from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
@@ -83,6 +84,7 @@ IMPORTERS_REGISTRY = create_registry(
         debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
         glibc_importer_v2.GlibcImporterPipeline,
+        tuxcare_importer_v2.TuxCareImporterPipeline,
         apache_tomcat_v2.ApacheTomcatImporterPipeline,
         suse_score_importer_v2.SUSESeverityScoreImporterPipeline,
         retiredotnet_importer_v2.RetireDotnetImporterPipeline,

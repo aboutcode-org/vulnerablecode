@@ -77,6 +77,7 @@ from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importe
 from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
+from vulnerabilities.pipelines.v2_importers import tuxcare_importer as tuxcare_importer_v2
 from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
@@ -107,6 +108,7 @@ IMPORTERS_REGISTRY = create_registry(
         nginx_importer_v2.NginxImporterPipeline,
         debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
+        tuxcare_importer_v2.TuxCareImporterPipeline,
         apache_tomcat_v2.ApacheTomcatImporterPipeline,
         ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
         nvd_importer.NVDImporterPipeline,

@@ -1,0 +1,52 @@
+[
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "CloudLinux 7 ELS",
+    "project_name": "squid",
+    "version": "3.5.20",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "In Testing",
+    "last_updated": "2025-12-23 10:08:36.423446"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "Oracle Linux 7 ELS",
+    "project_name": "squid",
+    "version": "3.5.20",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "In Testing",
+    "last_updated": "2025-12-23 10:08:35.944749"
+  },
+  {
+    "cve": "CVE-2023-48161",
+    "os_name": "RHEL 7 ELS",
+    "project_name": "java-11-openjdk",
+    "version": "11.0.23",
+    "score": "7.1",
+    "severity": "HIGH",
+    "status": "In Progress",
+    "last_updated": "2025-12-23 08:55:12.096092"
+  },
+  {
+    "cve": "CVE-2024-21147",
+    "os_name": "RHEL 7 ELS",
+    "project_name": "java-11-openjdk",
+    "version": "11.0.23",
+    "score": "7.4",
+    "severity": "HIGH",
+    "status": "In Progress",
+    "last_updated": "2025-12-23 08:55:07.139188"
+  },
+  {
+    "cve": "CVE-2025-21587",
+    "os_name": "RHEL 7 ELS",
+    "project_name": "java-11-openjdk",
+    "version": "11.0.23",
+    "score": "7.4",
+    "severity": "HIGH",
+    "status": "In Progress",
+    "last_updated": "2025-12-23 08:55:06.706873"
+  }
+]

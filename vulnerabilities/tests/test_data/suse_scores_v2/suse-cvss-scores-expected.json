@@ -4,13 +4,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
-      {
-        "reference_id": "CVE-2004-0230",
-        "reference_type": "",
-        "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
-      }
-    ],
+    "references_v2": [],
     "patches": [],
     "severities": [
       {
@@ -33,13 +27,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
-      {
-        "reference_id": "CVE-2003-1605",
-        "reference_type": "",
-        "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
-      }
-    ],
+    "references_v2": [],
     "patches": [],
     "severities": [
       {
@@ -57,13 +45,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
-      {
-        "reference_id": "CVE-2010-20103",
-        "reference_type": "",
-        "url": "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
-      }
-    ],
+    "references_v2": [],
     "patches": [],
     "severities": [
       {

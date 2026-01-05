@@ -11,7 +11,6 @@ from typing import Iterable
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.management.commands.commit_export import logger
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -67,6 +66,6 @@ class SUSESeverityScoreImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 aliases=[],
                 summary="",
                 severities=severities,
-                references_v2=[ReferenceV2(reference_id=cve_id, url=self.url)],
+                references_v2=[],
                 url=self.url,
             )

@@ -575,6 +575,10 @@ class AdvisoryData:
     original_advisory_text: Optional[str] = None
 
     def __post_init__(self):
+        if self.advisory_id and self.advisory_id in self.aliases:
+            raise ValueError(
+                f"advisory_id {self.advisory_id} should not be present in aliases {self.aliases}"
+            )
         if self.summary:
             self.summary = self.clean_summary(self.summary)
 

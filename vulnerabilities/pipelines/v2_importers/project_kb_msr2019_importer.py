@@ -25,16 +25,20 @@ class ProjectKBMSR2019Pipeline(VulnerableCodeBaseImporterPipelineV2):
     - CSV database https://github.com/SAP/project-kb/blob/main/MSR2019/dataset/vulas_db_msr2019_release.csv
     """
 
-    pipeline_id = "project-kb-MSR-2019_v2"
+    pipeline_id = "project-kb-msr-2019_v2"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
     repo_url = "git+https://github.com/SAP/project-kb"
 
     @classmethod
     def steps(cls):
-        return (cls.clone_repo, cls.collect_and_store_advisories, cls.clean_downloads)
+        return (
+            cls.clone,
+            cls.collect_and_store_advisories,
+            cls.clean_downloads,
+        )
 
-    def clone_repo(self):
+    def clone(self):
         self.log("Cloning ProjectKB advisory data...")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 

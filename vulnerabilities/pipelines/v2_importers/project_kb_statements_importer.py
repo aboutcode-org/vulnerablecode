@@ -39,9 +39,13 @@ class ProjectKBStatementsPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     @classmethod
     def steps(cls):
-        return (cls.clone_repo, cls.collect_and_store_advisories, cls.clean_downloads)
+        return (
+            cls.clone,
+            cls.collect_and_store_advisories,
+            cls.clean_downloads,
+        )
 
-    def clone_repo(self):
+    def clone(self):
         self.log("Cloning ProjectKB Statements advisory data...")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 

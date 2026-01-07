@@ -271,9 +271,9 @@ class PatchData:
 
     def _cmp_key(self):
         return (
-            self.patch_url,
-            self.patch_text,
-            self.patch_checksum,
+            self.patch_url or "",
+            self.patch_text or "",
+            self.patch_checksum or "",
         )
 
     def to_dict(self) -> dict:

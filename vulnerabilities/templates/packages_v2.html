@@ -19,7 +19,14 @@ VulnerableCode Package Search
                     {{ page_obj.paginator.count|intcomma }} results
                 </div>
                 {% if is_paginated %}
-                    {% include 'includes/pagination.html' with page_obj=page_obj %}
+                    <div style="display:inline-block;">
+                        {% include 'includes/pagination.html' with page_obj=page_obj %}
+                    </div>
+                    <div style="display:inline-block; margin-left:12px; vertical-align:middle;">
+                        <a class="button is-small" href="?{% if search %}search={{ search|urlencode }}{% endif %}" title="Reset sorting and keep search">
+                            ⇵ Reset
+                        </a>
+                    </div>
                 {% endif %}
             </div>
         </section>
@@ -38,6 +45,17 @@ VulnerableCode Package Search
                             </span>
                         </th>
                         <th style="width: 225px;">
+                            {% if sorts %}
+                                {% if "-affected" in sorts %}
+                                    <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort=affected" title="Sort ascending" style="margin-right:6px; text-decoration:none;">▼</a>
+                                {% elif "affected" in sorts %}
+                                    <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort=-affected" title="Sort descending" style="margin-right:6px; text-decoration:none;">▲</a>
+                                {% else %}
+                                    <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort=-affected" title="Sort by affected (desc)" style="margin-right:6px; text-decoration:none;">⇵</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort=-affected" title="Sort by affected (desc)" style="margin-right:6px; text-decoration:none;">⇵</a>
+                            {% endif %}
                             <span
                                 class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                 data-tooltip="This is the number of vulnerabilities that affect the package.">
@@ -45,6 +63,17 @@ VulnerableCode Package Search
                             </span>
                         </th>
                         <th style="width: 225px;">
+                            {% if sorts %}
+                                {% if "-fixing" in sorts %}
+                                    <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort=fixing" title="Sort ascending" style="margin-right:6px; text-decoration:none;">▼</a>
+                                {% elif "fixing" in sorts %}
+                                    <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort=-fixing" title="Sort descending" style="margin-right:6px; text-decoration:none;">▲</a>
+                                {% else %}
+                                    <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort=-fixing" title="Sort by fixing (desc)" style="margin-right:6px; text-decoration:none;">⇵</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort=-fixing" title="Sort by fixing (desc)" style="margin-right:6px; text-decoration:none;">⇵</a>
+                            {% endif %}
                             <span
                                 class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                 data-tooltip="This is the number of vulnerabilities fixed by the package.">

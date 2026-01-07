@@ -1,7 +1,7 @@
 [
   {
-    "advisory_id": "TUXCARE-CVE-2023-52922-CloudLinux_7_ELS-squid",
-    "aliases": ["CVE-2023-52922"],
+    "advisory_id": "CVE-2023-52922",
+    "aliases": [],
     "summary": "TuxCare advisory for CVE-2023-52922 in squid on CloudLinux 7 ELS",
     "affected_packages": [
       {
@@ -12,16 +12,16 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [{"reference_id": "", "reference_type": "", "url": "https://cve.tuxcare.com/"}],
+    "references_v2": [],
     "patches": [],
-    "severities": [{"system": "generic_textual", "value": "HIGH (7.8)", "scoring_elements": "score=7.8,severity=HIGH"}],
+    "severities": [{"system": "generic_textual", "value": "7.8", "scoring_elements": "HIGH"}],
     "date_published": "2025-12-23T10:08:36.423446+00:00",
     "weaknesses": [],
-    "url": "https://cve.tuxcare.com/"
+    "url": "https://cve.tuxcare.com/els/cve/CVE-2023-52922"
   },
   {
-    "advisory_id": "TUXCARE-CVE-2023-52922-Oracle_Linux_7_ELS-squid",
-    "aliases": ["CVE-2023-52922"],
+    "advisory_id": "CVE-2023-52922",
+    "aliases": [],
     "summary": "TuxCare advisory for CVE-2023-52922 in squid on Oracle Linux 7 ELS",
     "affected_packages": [
       {
@@ -32,16 +32,16 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [{"reference_id": "", "reference_type": "", "url": "https://cve.tuxcare.com/"}],
+    "references_v2": [],
     "patches": [],
-    "severities": [{"system": "generic_textual", "value": "HIGH (7.8)", "scoring_elements": "score=7.8,severity=HIGH"}],
+    "severities": [{"system": "generic_textual", "value": "7.8", "scoring_elements": "HIGH"}],
     "date_published": "2025-12-23T10:08:35.944749+00:00",
     "weaknesses": [],
-    "url": "https://cve.tuxcare.com/"
+    "url": "https://cve.tuxcare.com/els/cve/CVE-2023-52922"
   },
   {
-    "advisory_id": "TUXCARE-CVE-2023-48161-RHEL_7_ELS-java-11-openjdk",
-    "aliases": ["CVE-2023-48161"],
+    "advisory_id": "CVE-2023-48161",
+    "aliases": [],
     "summary": "TuxCare advisory for CVE-2023-48161 in java-11-openjdk on RHEL 7 ELS",
     "affected_packages": [
       {
@@ -52,16 +52,16 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [{"reference_id": "", "reference_type": "", "url": "https://cve.tuxcare.com/"}],
+    "references_v2": [],
     "patches": [],
-    "severities": [{"system": "generic_textual", "value": "HIGH (7.1)", "scoring_elements": "score=7.1,severity=HIGH"}],
+    "severities": [{"system": "generic_textual", "value": "7.1", "scoring_elements": "HIGH"}],
     "date_published": "2025-12-23T08:55:12.096092+00:00",
     "weaknesses": [],
-    "url": "https://cve.tuxcare.com/"
+    "url": "https://cve.tuxcare.com/els/cve/CVE-2023-48161"
   },
   {
-    "advisory_id": "TUXCARE-CVE-2024-21147-RHEL_7_ELS-java-11-openjdk",
-    "aliases": ["CVE-2024-21147"],
+    "advisory_id": "CVE-2024-21147",
+    "aliases": [],
     "summary": "TuxCare advisory for CVE-2024-21147 in java-11-openjdk on RHEL 7 ELS",
     "affected_packages": [
       {
@@ -72,16 +72,16 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [{"reference_id": "", "reference_type": "", "url": "https://cve.tuxcare.com/"}],
+    "references_v2": [],
     "patches": [],
-    "severities": [{"system": "generic_textual", "value": "HIGH (7.4)", "scoring_elements": "score=7.4,severity=HIGH"}],
+    "severities": [{"system": "generic_textual", "value": "7.4", "scoring_elements": "HIGH"}],
     "date_published": "2025-12-23T08:55:07.139188+00:00",
     "weaknesses": [],
-    "url": "https://cve.tuxcare.com/"
+    "url": "https://cve.tuxcare.com/els/cve/CVE-2024-21147"
   },
   {
-    "advisory_id": "TUXCARE-CVE-2025-21587-RHEL_7_ELS-java-11-openjdk",
-    "aliases": ["CVE-2025-21587"],
+    "advisory_id": "CVE-2025-21587",
+    "aliases": [],
     "summary": "TuxCare advisory for CVE-2025-21587 in java-11-openjdk on RHEL 7 ELS",
     "affected_packages": [
       {
@@ -92,11 +92,11 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [{"reference_id": "", "reference_type": "", "url": "https://cve.tuxcare.com/"}],
+    "references_v2": [],
     "patches": [],
-    "severities": [{"system": "generic_textual", "value": "HIGH (7.4)", "scoring_elements": "score=7.4,severity=HIGH"}],
+    "severities": [{"system": "generic_textual", "value": "7.4", "scoring_elements": "HIGH"}],
     "date_published": "2025-12-23T08:55:06.706873+00:00",
     "weaknesses": [],
-    "url": "https://cve.tuxcare.com/"
+    "url": "https://cve.tuxcare.com/els/cve/CVE-2025-21587"
   }
 ]

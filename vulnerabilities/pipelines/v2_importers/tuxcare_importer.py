@@ -1,15 +1,15 @@
 import json
 import logging
 from typing import Iterable
+from typing import Mapping
 
-from dateutil import parser as date_parser
-from django.utils import timezone
+from dateutil.parser import parse
 from packageurl import PackageURL
+from pytz import UTC
 from univers.version_range import GenericVersionRange
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
-from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import GENERIC
@@ -22,27 +22,25 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "tuxcare_importer_v2"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://tuxcare.com/legal"
-    url = "https://cve.tuxcare.com/els/download-json?orderBy=updated-desc"
 
     @classmethod
     def steps(cls):
-        return (cls.collect_and_store_advisories,)
+        return (
+            cls.fetch,
+            cls.collect_and_store_advisories,
+        )
+
+    def fetch(self) -> Iterable[Mapping]:
+        url = "https://cve.tuxcare.com/els/download-json?orderBy=updated-desc"
+        self.log(f"Fetching `{url}`")
+        response = fetch_response(url)
+        self.response = response.json() if response else []
 
     def advisories_count(self) -> int:
-        response = fetch_response(self.url)
-        data = response.json() if response else []
-        return len(data)
+        return len(self.response)
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        response = fetch_response(self.url)
-        if not response:
-            return
-
-        data = response.json()
-        if not data:
-            return
-
-        for record in data:
+        for record in self.response:
             cve_id = record.get("cve", "").strip()
             if not cve_id or not cve_id.startswith("CVE-"):
                 continue
@@ -52,11 +50,9 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             version = record.get("version", "").strip()
             score = record.get("score", "").strip()
             severity = record.get("severity", "").strip()
-            status = record.get("status", "").strip()
             last_updated = record.get("last_updated", "").strip()
 
-            safe_os = os_name.replace(" ", "_") if os_name else "unknown"
-            advisory_id = f"TUXCARE-{cve_id}-{safe_os}-{project_name}"
+            advisory_id = cve_id
 
             summary = f"TuxCare advisory for {cve_id}"
             if project_name:
@@ -67,13 +63,13 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages = []
             if project_name:
                 purl = PackageURL(type="generic", name=project_name)
-                
+
                 affected_version_range = None
                 if version:
                     try:
                         affected_version_range = GenericVersionRange.from_versions([version])
-                    except Exception:
-                        pass
+                    except ValueError as e:
+                        logger.warning(f"Failed to parse version {version} for {cve_id}: {e}")
 
                 affected_packages.append(
                     AffectedPackageV2(
@@ -87,28 +83,24 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 severities.append(
                     VulnerabilitySeverity(
                         system=GENERIC,
-                        value=f"{severity} ({score})",
-                        scoring_elements=f"score={score},severity={severity}",
+                        value=score,
+                        scoring_elements=severity,
                     )
                 )
 
             date_published = None
             if last_updated:
                 try:
-                    date_published = date_parser.parse(last_updated)
-                    if timezone.is_naive(date_published):
-                        date_published = timezone.make_aware(date_published, timezone=timezone.utc)
-                except Exception:
-                    pass
+                    date_published = parse(last_updated).replace(tzinfo=UTC)
+                except ValueError as e:
+                    logger.warning(f"Failed to parse date {last_updated} for {cve_id}: {e}")
 
             yield AdvisoryData(
                 advisory_id=advisory_id,
-                aliases=[cve_id],
                 summary=summary,
                 affected_packages=affected_packages,
-                references_v2=[ReferenceV2(url="https://cve.tuxcare.com/")],
                 severities=severities,
                 date_published=date_published,
-                url="https://cve.tuxcare.com/",
+                url=f"https://cve.tuxcare.com/els/cve/{cve_id}",
                 original_advisory_text=json.dumps(record, indent=2, ensure_ascii=False),
             )

@@ -41,6 +41,7 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpine_linux_importer_v2
 from vulnerabilities.pipelines.v2_importers import aosp_importer as aosp_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
@@ -98,6 +99,7 @@ IMPORTERS_REGISTRY = create_registry(
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
+        alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

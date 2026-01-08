@@ -73,7 +73,7 @@ overlooked. We value any suggestions to improve
 
 .. tip::
     Our documentation is treated like code. Make sure to check our
-    `writing guidelines <https://scancode-toolkit.readthedocs.io/en/latest/contribute/contrib_doc.html>`_
+    `writing guidelines <https://web.archive.org/web/20241010170703/https://scancode-toolkit.readthedocs.io/en/latest/contribute/contrib_doc.html>`_
     to help guide new users.
 
 Other Ways

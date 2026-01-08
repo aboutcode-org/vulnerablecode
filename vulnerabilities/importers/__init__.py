@@ -57,6 +57,9 @@ from vulnerabilities.pipelines.v2_importers import mattermost_importer as matter
 from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
+from vulnerabilities.pipelines.v2_importers import (
+    openssf_malicious_importer as openssf_malicious_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
 from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgresql_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
@@ -98,6 +101,7 @@ IMPORTERS_REGISTRY = create_registry(
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
+        openssf_malicious_importer_v2.OpenSSFMaliciousImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

@@ -1,0 +1,58 @@
+id: PYSEC-2017-94
+details: Heap-based buffer overflow in the ALGnew function in block_templace.c in
+  Python Cryptography Toolkit (aka pycrypto) allows remote attackers to execute arbitrary
+  code as demonstrated by a crafted iv parameter to cryptmsg.py.
+affected:
+- package:
+    name: pycrypto
+    ecosystem: PyPI
+    purl: pkg:pypi/pycrypto
+  ranges:
+  - type: GIT
+    repo: https://github.com/dlitz/pycrypto
+    events:
+    - introduced: '0'
+    - fixed: 8dbe0dc3eea5c689d4f76b37b93fe216cf1f00d4
+  - type: ECOSYSTEM
+    events:
+    - introduced: '0'
+  versions:
+  - 1.9a2
+  - 1.9a5
+  - 1.9a6
+  - '2.0'
+  - 2.0.1
+  - 2.1.0
+  - '2.2'
+  - '2.3'
+  - '2.4'
+  - 2.4.1
+  - '2.5'
+  - '2.6'
+  - 2.6.1
+references:
+- type: WEB
+  url: https://pony7.fr/ctf:public:32c3:cryptmsg
+- type: WEB
+  url: https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/RJ37R2YLX56YZABFNAOWV4VTHTGYREAE/
+- type: WEB
+  url: https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/C6BWNADPLKDBBQBUT3P75W7HAJCE7M3B/
+- type: REPORT
+  url: https://github.com/dlitz/pycrypto/issues/176
+- type: FIX
+  url: https://github.com/dlitz/pycrypto/commit/8dbe0dc3eea5c689d4f76b37b93fe216cf1f00d4
+- type: REPORT
+  url: https://bugzilla.redhat.com/show_bug.cgi?id=1409754
+- type: WEB
+  url: http://www.securityfocus.com/bid/95122
+- type: WEB
+  url: http://www.openwall.com/lists/oss-security/2016/12/27/8
+- type: ADVISORY
+  url: https://security.gentoo.org/glsa/201702-14
+- type: ADVISORY
+  url: https://github.com/advisories/GHSA-cq27-v7xp-c356
+aliases:
+- CVE-2013-7459
+- GHSA-cq27-v7xp-c356
+modified: '2021-08-27T03:22:16.665546Z'
+published: '2017-02-15T15:59:00Z'

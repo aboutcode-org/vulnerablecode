@@ -72,6 +72,7 @@ from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importe
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
+from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpine_linux_importer_v2
 
 IMPORTERS_REGISTRY = create_registry(
     [
@@ -114,6 +115,7 @@ IMPORTERS_REGISTRY = create_registry(
         epss.EPSSImporter,
         vulnrichment.VulnrichImporter,
         alpine_linux_importer.AlpineLinuxImporterPipeline,
+        alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
         ruby.RubyImporter,
         apache_kafka.ApacheKafkaImporter,
         openssl.OpensslImporter,

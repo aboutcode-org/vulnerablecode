@@ -7,25 +7,28 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from typing import Iterable
 from typing import NamedTuple
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
+from univers.version_constraint import validate_comparators
 from univers.version_range import NginxVersionRange
 from univers.versions import InvalidVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.importer import logger
-from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import GENERIC
 
 
-class NginxImporterPipeline(VulnerableCodeBaseImporterPipeline):
+class NginxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect Nginx security advisories."""
 
     pipeline_id = "nginx_importer_v2"
@@ -49,7 +52,7 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipeline):
     def advisories_count(self):
         return self.advisory_data.count("<li><p>")
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self):
         """
         Yield AdvisoryData from nginx security advisories HTML
         web page.
@@ -66,6 +69,7 @@ class NginxAdvisory(NamedTuple):
     aliases: list
     summary: str
     severities: list
+    patches: list
     not_vulnerable: str
     vulnerable: str
     references: list
@@ -78,11 +82,9 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
     """
     Return AdvisoryData from an NginxAdvisory tuple.
     """
-    package_name = "nginx"
-    package_type = "nginx"
     qualifiers = {}
 
-    purl = PackageURL(type=package_type, name=package_name, qualifiers=qualifiers)
+    purl = PackageURL(type="nginx", name="nginx", qualifiers=qualifiers)
 
     _, _, affected_versions = nginx_adv.vulnerable.partition(":")
     affected_versions = affected_versions.strip()
@@ -112,6 +114,28 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
 
     affected_packages = []
     if purl and affected_version_range or fixed_version_range:
+        try:
+            if affected_version_range:
+                validate_comparators(affected_version_range.constraints)
+        except ValueError as e:
+            affected_version_range = None
+            logger.error(
+                f"Invalid version_range affected_version_range:{affected_version_range} - error: {e}"
+            )
+
+        try:
+            if fixed_version_range:
+                fixed_version_constraints = VersionConstraint.simplify(
+                    fixed_version_range.constraints
+                )
+                fixed_version_range = NginxVersionRange(constraints=fixed_version_constraints)
+                validate_comparators(fixed_version_range.constraints)
+        except ValueError as e:
+            fixed_version_range = None
+            logger.error(
+                f"Invalid version_range fixed_version_range:{fixed_version_range} - error: {e}"
+            )
+
         affected_packages.append(
             AffectedPackageV2(
                 package=purl,
@@ -126,6 +150,7 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
         summary=nginx_adv.summary,
         affected_packages=affected_packages,
         references_v2=nginx_adv.references,
+        patches=nginx_adv.patches,
         url="https://nginx.org/en/security_advisories.html",
     )
 
@@ -148,6 +173,7 @@ def parse_advisory_data_from_paragraph(vulnerability_info):
     aliases = []
     summary = None
     severities = []
+    patches = []
     not_vulnerable = None
     vulnerable = None
     references = []
@@ -196,8 +222,14 @@ def parse_advisory_data_from_paragraph(vulnerability_info):
                     references.append(ReferenceV2(reference_id=text, url=link))
                 elif "mailman.nginx.org" in link:
                     references.append(ReferenceV2(url=link))
+                elif "/download/patch" in link:
+                    link = urljoin("https://nginx.org", link)
+                    patch = PatchData(
+                        patch_url=link,
+                    )
+                    patches.append(patch)
                 else:
-                    link = requests.compat.urljoin("https://nginx.org", link)
+                    link = urljoin("https://nginx.org", link)
                     references.append(ReferenceV2(url=link))
 
     advisory_id = aliases.pop()
@@ -209,6 +241,7 @@ def parse_advisory_data_from_paragraph(vulnerability_info):
         not_vulnerable=not_vulnerable,
         vulnerable=vulnerable,
         references=references,
+        patches=patches,
     )
 
 

@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from commoncode import testcase
 from univers.version_range import NginxVersionRange
 
+from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines.v2_importers import nginx_importer
@@ -120,16 +121,10 @@ class NginxImporterPipeline(testcase.FileBasedTesting):
                     reference_type="",
                     url="https://nvd.nist.gov/vuln/detail/CVE-2021-23017",
                 ),
-                ReferenceV2(
-                    reference_id="",
-                    reference_type="",
-                    url="https://nginx.org/download/patch.2021.resolver.txt",
-                ),
-                ReferenceV2(
-                    reference_id="",
-                    reference_type="",
-                    url="https://nginx.org/download/patch.2021.resolver.txt.asc",
-                ),
+            ],
+            "patches": [
+                PatchData(patch_url="https://nginx.org/download/patch.2021.resolver.txt"),
+                PatchData(patch_url="https://nginx.org/download/patch.2021.resolver.txt.asc"),
             ],
         }
 

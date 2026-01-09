@@ -257,19 +257,20 @@
         "reference_id": "CVE-2022-41741",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41741"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2022.mp4.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2022.mp4.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2022.mp4.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2022.mp4.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -305,19 +306,20 @@
         "reference_id": "CVE-2022-41742",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41742"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2022.mp4.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2022.mp4.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2022.mp4.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2022.mp4.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -353,19 +355,20 @@
         "reference_id": "CVE-2021-23017",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23017"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2021.resolver.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2021.resolver.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2021.resolver.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2021.resolver.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -591,19 +594,20 @@
         "reference_id": "CVE-2018-16845",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-16845"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2018.mp4.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2018.mp4.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2018.mp4.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2018.mp4.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -639,19 +643,20 @@
         "reference_id": "CVE-2017-7529",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-7529"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2017.ranges.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2017.ranges.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2017.ranges.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2017.ranges.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -687,29 +692,30 @@
         "reference_id": "CVE-2016-4450",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-4450"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2016.write.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2016.write.txt.asc"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2016.write2.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2016.write2.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2016.write.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2016.write.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2016.write2.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2016.write2.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -897,19 +903,20 @@
         "reference_id": "CVE-2014-3556",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3556"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2014.starttls.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2014.starttls.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2014.starttls.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2014.starttls.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -945,19 +952,20 @@
         "reference_id": "CVE-2014-0133",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0133"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2014.spdy2.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2014.spdy2.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2014.spdy2.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2014.spdy2.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -993,19 +1001,20 @@
         "reference_id": "CVE-2014-0088",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0088"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2014.spdy.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2014.spdy.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2014.spdy.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2014.spdy.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -1041,19 +1050,20 @@
         "reference_id": "CVE-2013-4547",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2013-4547"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2013.space.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2013.space.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2013.space.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2013.space.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -1089,29 +1099,30 @@
         "reference_id": "CVE-2013-2070",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2013-2070"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2013.chunked.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2013.chunked.txt.asc"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2013.proxy.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2013.proxy.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2013.chunked.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2013.chunked.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2013.proxy.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2013.proxy.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -1147,19 +1158,20 @@
         "reference_id": "CVE-2013-2028",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2013-2028"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2013.chunked.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2013.chunked.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2013.chunked.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2013.chunked.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -1233,19 +1245,20 @@
         "reference_id": "CVE-2012-2089",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-2089"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2012.mp4.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2012.mp4.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2012.mp4.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2012.mp4.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -1281,19 +1294,20 @@
         "reference_id": "CVE-2012-1180",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2012-1180"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2012.memory.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.2012.memory.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.2012.memory.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.2012.memory.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -1347,7 +1361,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.40",
-        "fixed_version_range": "vers:nginx/>=0.7.67|>=0.8.41|<0.9.0",
+        "fixed_version_range": "vers:nginx/>=0.7.67|<0.9.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -1380,7 +1394,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.39",
-        "fixed_version_range": "vers:nginx/>=0.7.66|>=0.8.40|<0.9.0",
+        "fixed_version_range": "vers:nginx/>=0.7.66|<0.9.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -1413,7 +1427,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.32",
-        "fixed_version_range": "vers:nginx/>=0.7.65|>=0.8.33|<0.9.0",
+        "fixed_version_range": "vers:nginx/>=0.7.65|<0.9.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -1475,7 +1489,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.22",
-        "fixed_version_range": "vers:nginx/>=0.7.64|>=0.8.23|<0.9.0",
+        "fixed_version_range": "vers:nginx/>=0.7.64|<0.9.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -1485,19 +1499,20 @@
         "reference_id": "CVE-2009-3555",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-3555"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.cve-2009-3555.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.cve-2009-3555.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.cve-2009-3555.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.cve-2009-3555.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -1518,7 +1533,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.16",
-        "fixed_version_range": "vers:nginx/>=0.7.63|>=0.8.17|<0.9.0",
+        "fixed_version_range": "vers:nginx/>=0.7.63|<0.9.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -1553,7 +1568,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.14",
-        "fixed_version_range": "vers:nginx/>=0.5.38|>=0.6.39|<0.7.0|>=0.7.62|>=0.8.15|<0.9.0",
+        "fixed_version_range": "vers:nginx/>=0.5.38|<0.7.0|>=0.7.62|<0.9.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -1563,19 +1578,20 @@
         "reference_id": "CVE-2009-2629",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-2629"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.180065.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.180065.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.180065.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.180065.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -1596,7 +1612,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.1.0|<=0.8.13",
-        "fixed_version_range": "vers:nginx/>=0.5.38|>=0.6.39|<0.7.0|>=0.7.62|>=0.8.14|<0.9.0",
+        "fixed_version_range": "vers:nginx/>=0.5.38|<0.7.0|>=0.7.62|<0.9.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -1606,19 +1622,20 @@
         "reference_id": "CVE-2009-3896",
         "reference_type": "",
         "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-3896"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.null.pointer.txt"
-      },
-      {
-        "reference_id": "",
-        "reference_type": "",
-        "url": "https://nginx.org/download/patch.null.pointer.txt.asc"
       }
     ],
-    "patches": [],
+    "patches": [
+      {
+        "patch_url": "https://nginx.org/download/patch.null.pointer.txt",
+        "patch_text": null,
+        "patch_checksum": null
+      },
+      {
+        "patch_url": "https://nginx.org/download/patch.null.pointer.txt.asc",
+        "patch_text": null,
+        "patch_checksum": null
+      }
+    ],
     "severities": [],
     "date_published": null,
     "weaknesses": [],

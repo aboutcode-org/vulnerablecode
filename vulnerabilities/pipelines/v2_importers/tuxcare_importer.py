@@ -1,7 +1,6 @@
 import json
 import logging
-from typing import Iterable
-from typing import Mapping
+from typing import Iterable, Mapping
 
 from dateutil.parser import parse
 from packageurl import PackageURL
@@ -39,6 +38,35 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self) -> int:
         return len(self.response)
 
+    def _create_purl(self, project_name: str, os_name: str) -> PackageURL:
+        os_mapping = {
+            "ubuntu": ("deb", "ubuntu"),
+            "debian": ("deb", "debian"),
+            "centos": ("rpm", "centos"),
+            "almalinux": ("rpm", "almalinux"),
+            "rhel": ("rpm", "redhat"),
+            "red hat": ("rpm", "redhat"),
+            "oracle": ("rpm", "oracle"),
+            "cloudlinux": ("rpm", "cloudlinux"),
+            "alpine": ("apk", "alpine"),
+        }
+
+        qualifiers = {}
+        if os_name:
+            qualifiers["os"] = os_name
+
+        if not os_name:
+            return PackageURL(type="generic", name=project_name)
+
+        os_lower = os_name.lower()
+        for keyword, (pkg_type, namespace) in os_mapping.items():
+            if keyword in os_lower:
+                return PackageURL(
+                    type=pkg_type, namespace=namespace, name=project_name, qualifiers=qualifiers
+                )
+
+        return PackageURL(type="generic", name=project_name, qualifiers=qualifiers)
+
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         for record in self.response:
             cve_id = record.get("cve", "").strip()
@@ -62,7 +90,7 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             affected_packages = []
             if project_name:
-                purl = PackageURL(type="generic", name=project_name)
+                purl = self._create_purl(project_name, os_name)
 
                 affected_version_range = None
                 if version:

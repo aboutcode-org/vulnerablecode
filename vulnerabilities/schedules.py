@@ -89,7 +89,15 @@ def update_pipeline_schedule():
     from vulnerabilities.improvers import IMPROVERS_REGISTRY
     from vulnerabilities.models import PipelineSchedule
 
-    pipeline_ids = [*IMPORTERS_REGISTRY.keys(), *IMPROVERS_REGISTRY.keys()]
+    pipelines = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY
 
-    PipelineSchedule.objects.exclude(pipeline_id__in=pipeline_ids).delete()
-    [PipelineSchedule.objects.get_or_create(pipeline_id=id) for id in pipeline_ids]
+    PipelineSchedule.objects.exclude(pipeline_id__in=pipelines.keys()).delete()
+    for id, pipeline_class in pipelines.items():
+        run_once = getattr(pipeline_class, "run_once", False)
+
+        PipelineSchedule.objects.get_or_create(
+            pipeline_id=id,
+            defaults={
+                "is_run_once": run_once,
+            },
+        )

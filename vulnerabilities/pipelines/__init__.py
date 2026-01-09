@@ -169,6 +169,10 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     importer_name = None
     advisory_confidence = MAX_CONFIDENCE
 
+    # When set to true pipeline is run only once.
+    # To rerun onetime pipeline reset is_active field to True via migration.
+    run_once = False
+
     @classmethod
     def steps(cls):
         return (
@@ -261,6 +265,10 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     spdx_license_expression = None
     repo_url = None
     ignorable_versions = []
+
+    # When set to true pipeline is run only once.
+    # To rerun onetime pipeline reset is_active field to True via migration.
+    run_once = False
 
     @classmethod
     def steps(cls):

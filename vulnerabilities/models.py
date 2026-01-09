@@ -2273,6 +2273,13 @@ class PipelineSchedule(models.Model):
         ),
     )
 
+    is_run_once = models.BooleanField(
+        null=False,
+        db_index=True,
+        default=False,
+        help_text=("When set to True, this Pipeline will run only once."),
+    )
+
     live_logging = models.BooleanField(
         null=False,
         db_index=True,

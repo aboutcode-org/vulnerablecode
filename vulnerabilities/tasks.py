@@ -17,7 +17,6 @@ import django_rq
 from vulnerabilities import models
 from vulnerabilities.importer import Importer
 from vulnerabilities.improver import Improver
-from vulnerablecode.settings import VULNERABLECODE_PIPELINE_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +47,13 @@ def execute_pipeline(pipeline_id, run_id):
         exitcode = 1
 
     run.set_run_ended(exitcode=exitcode, output=output)
+
+    # Onetime pipeline are inactive after first execution.
+    pipeline = run.pipeline
+    if pipeline.is_run_once:
+        pipeline.is_active = False
+        pipeline.save()
+
     logger.info("Update Run instance with exitcode, output, and end_date")
 
 

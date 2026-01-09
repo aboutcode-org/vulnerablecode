@@ -5,7 +5,7 @@
     "summary": "TuxCare advisory for CVE-2023-52922 in squid on CloudLinux 7 ELS",
     "affected_packages": [
       {
-        "package": {"type": "generic", "namespace": "", "name": "squid", "version": "", "qualifiers": "", "subpath": ""},
+        "package": {"type": "rpm", "namespace": "cloudlinux", "name": "squid", "version": "", "qualifiers": "os=CloudLinux%207%20ELS", "subpath": ""},
         "affected_version_range": "vers:generic/3.5.20",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
@@ -25,7 +25,7 @@
     "summary": "TuxCare advisory for CVE-2023-52922 in squid on Oracle Linux 7 ELS",
     "affected_packages": [
       {
-        "package": {"type": "generic", "namespace": "", "name": "squid", "version": "", "qualifiers": "", "subpath": ""},
+        "package": {"type": "rpm", "namespace": "oracle", "name": "squid", "version": "", "qualifiers": "os=Oracle%20Linux%207%20ELS", "subpath": ""},
         "affected_version_range": "vers:generic/3.5.20",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
@@ -45,7 +45,7 @@
     "summary": "TuxCare advisory for CVE-2023-48161 in java-11-openjdk on RHEL 7 ELS",
     "affected_packages": [
       {
-        "package": {"type": "generic", "namespace": "", "name": "java-11-openjdk", "version": "", "qualifiers": "", "subpath": ""},
+        "package": {"type": "rpm", "namespace": "redhat", "name": "java-11-openjdk", "version": "", "qualifiers": "os=RHEL%207%20ELS", "subpath": ""},
         "affected_version_range": "vers:generic/11.0.23",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
@@ -65,7 +65,7 @@
     "summary": "TuxCare advisory for CVE-2024-21147 in java-11-openjdk on RHEL 7 ELS",
     "affected_packages": [
       {
-        "package": {"type": "generic", "namespace": "", "name": "java-11-openjdk", "version": "", "qualifiers": "", "subpath": ""},
+        "package": {"type": "rpm", "namespace": "redhat", "name": "java-11-openjdk", "version": "", "qualifiers": "os=RHEL%207%20ELS", "subpath": ""},
         "affected_version_range": "vers:generic/11.0.23",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
@@ -85,7 +85,7 @@
     "summary": "TuxCare advisory for CVE-2025-21587 in java-11-openjdk on RHEL 7 ELS",
     "affected_packages": [
       {
-        "package": {"type": "generic", "namespace": "", "name": "java-11-openjdk", "version": "", "qualifiers": "", "subpath": ""},
+        "package": {"type": "rpm", "namespace": "redhat", "name": "java-11-openjdk", "version": "", "qualifiers": "os=RHEL%207%20ELS", "subpath": ""},
         "affected_version_range": "vers:generic/11.0.23",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],

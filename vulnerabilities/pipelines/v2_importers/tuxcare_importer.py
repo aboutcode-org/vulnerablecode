@@ -1,6 +1,7 @@
 import json
 import logging
-from typing import Iterable, Mapping
+from typing import Iterable
+from typing import Mapping
 
 from dateutil.parser import parse
 from packageurl import PackageURL

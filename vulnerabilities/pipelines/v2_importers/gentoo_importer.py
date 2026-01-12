@@ -121,43 +121,43 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return cves
 
 
+def _yield_packages(pkg_name, pkg_ns, constraints, invert):
+    """
+    Generate AffectedPackageV2 objects for a list of constraints.
+    """
+    for comparator, version, slot_value in constraints:
+        qualifiers = {"slot": slot_value} if slot_value else {}
+        purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns, qualifiers=qualifiers)
+
+        try:
+            constraint = VersionConstraint(version=GentooVersion(version), comparator=comparator)
+
+            if invert:
+                constraint = constraint.invert()
+
+            yield AffectedPackageV2(
+                package=purl,
+                affected_version_range=EbuildVersionRange(constraints=[constraint]),
+                fixed_version_range=None,
+            )
+        except InvalidVersion as e:
+            logger.error(f"InvalidVersion constraints version: {version} error:{e}")
+
+
 def affected_and_safe_purls(affected_elem):
-    constraints = []
     for pkg in affected_elem:
         name = pkg.attrib.get("name")
         if not name:
             continue
         pkg_ns, _, pkg_name = name.rpartition("/")
-        purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns)
-        safe_versions, affected_versions = get_safe_and_affected_versions(pkg)
 
-        for version in safe_versions:
-            try:
-                constraints.append(
-                    VersionConstraint(version=GentooVersion(version), comparator="=").invert()
-                )
-            except InvalidVersion as e:
-                logger.error(f"InvalidVersion - version: {version} - error:{e}")
+        safe_constraints, affected_constraints = get_safe_and_affected_constraints(pkg)
 
-        for version in affected_versions:
-            try:
-                constraints.append(
-                    VersionConstraint(version=GentooVersion(version), comparator="=")
-                )
-            except InvalidVersion as e:
-                logger.error(f"InvalidVersion - version: {version} - error:{e}")
-
-        if not constraints:
-            continue
-
-        yield AffectedPackageV2(
-            package=purl,
-            affected_version_range=EbuildVersionRange(constraints=constraints),
-            fixed_version_range=None,
-        )
+        yield from _yield_packages(pkg_name, pkg_ns, affected_constraints, invert=False)
+        yield from _yield_packages(pkg_name, pkg_ns, safe_constraints, invert=True)
 
 
-def get_safe_and_affected_versions(pkg):
+def get_safe_and_affected_constraints(pkg):
     # TODO : Revisit why we are skipping some versions in gentoo importer
     skip_versions = {"1.3*", "7.3*", "7.4*"}
     safe_versions = set()
@@ -166,27 +166,20 @@ def get_safe_and_affected_versions(pkg):
         if info.text in skip_versions:
             continue
 
-        if info.attrib.get("range"):
-            if len(info.attrib.get("range")) > 2:
-                continue
+        # All possible values of info.attrib['range'] =
+        # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}, out of
+        # which ('rle', 'rge', 'rgt') are ignored, because they compare
+        # 'release' not the 'version'.
+        range_value = info.attrib.get("range")
+        slot_value = info.attrib.get("slot")
+        comparator_dict = {"gt": ">", "lt": "<", "ge": ">=", "le": "<=", "eq": "="}
+        comparator = comparator_dict.get(range_value)
+        if not comparator:
+            continue
 
         if info.tag == "unaffected":
-            # quick hack, to know whether this
-            # version lies in this range, 'e' stands for
-            # equal, which is paired with 'greater' or 'less'.
-            # All possible values of info.attrib['range'] =
-            # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}, out of
-            # which ('rle', 'rge', 'rgt') are ignored, because they compare
-            # 'release' not the 'version'.
-            if "e" in info.attrib["range"]:
-                safe_versions.add(info.text)
-            else:
-                affected_versions.add(info.text)
+            safe_versions.add((comparator, info.text, slot_value))
 
         elif info.tag == "vulnerable":
-            if "e" in info.attrib["range"]:
-                affected_versions.add(info.text)
-            else:
-                safe_versions.add(info.text)
-
+            affected_versions.add((comparator, info.text, slot_value))
     return safe_versions, affected_versions

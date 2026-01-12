@@ -22,22 +22,20 @@ from univers.versions import InvalidVersion
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
-from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.references import WireSharkReferenceV2
 from vulnerabilities.references import XsaReferenceV2
 from vulnerabilities.references import ZbxReferenceV2
 from vulnerabilities.utils import fetch_response
 
 
-class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipeline):
+class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect Alpine Linux advisories."""
 
     pipeline_id = "alpine_linux_importer_v2"
-
     spdx_license_expression = "CC-BY-SA-4.0"
     license_url = "https://secdb.alpinelinux.org/license.txt"
     url = "https://secdb.alpinelinux.org/"
-    importer_name = "Alpine Linux Importer"
 
     @classmethod
     def steps(cls):

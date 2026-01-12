@@ -6,7 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
+import json
 from pathlib import Path
 from unittest.mock import Mock
 from unittest.mock import patch
@@ -32,7 +32,10 @@ def test_gentoo_advisories_per_file(xml_file):
     pipeline.vcs_response = Mock(dest_dir=TEST_DATA)
 
     with patch.object(Path, "glob", return_value=[xml_file]):
-        result = [adv.to_dict() for adv in pipeline.collect_advisories()]
+        results = [adv.to_dict() for adv in pipeline.collect_advisories()]
+
+    for adv in results:
+        adv["affected_packages"].sort(key=lambda x: json.dumps(x, sort_keys=True))
 
     expected_file = xml_file.with_name(xml_file.stem + "-expected.json")
-    util_tests.check_results_against_json(result, expected_file)
+    util_tests.check_results_against_json(results, expected_file)

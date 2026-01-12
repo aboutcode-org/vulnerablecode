@@ -1,7 +1,6 @@
 import json
 import logging
 from typing import Iterable
-from typing import Mapping
 
 from dateutil.parser import parse
 from packageurl import PackageURL
@@ -30,7 +29,7 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             cls.collect_and_store_advisories,
         )
 
-    def fetch(self) -> Iterable[Mapping]:
+    def fetch(self) -> None:
         url = "https://cve.tuxcare.com/els/download-json?orderBy=updated-desc"
         self.log(f"Fetching `{url}`")
         response = fetch_response(url)
@@ -40,33 +39,13 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return len(self.response)
 
     def _create_purl(self, project_name: str, os_name: str) -> PackageURL:
-        os_mapping = {
-            "ubuntu": ("deb", "ubuntu"),
-            "debian": ("deb", "debian"),
-            "centos": ("rpm", "centos"),
-            "almalinux": ("rpm", "almalinux"),
-            "rhel": ("rpm", "redhat"),
-            "red hat": ("rpm", "redhat"),
-            "oracle": ("rpm", "oracle"),
-            "cloudlinux": ("rpm", "cloudlinux"),
-            "alpine": ("apk", "alpine"),
-        }
-
         qualifiers = {}
         if os_name:
-            qualifiers["os"] = os_name
+            qualifiers["distro"] = os_name
 
-        if not os_name:
-            return PackageURL(type="generic", name=project_name)
-
-        os_lower = os_name.lower()
-        for keyword, (pkg_type, namespace) in os_mapping.items():
-            if keyword in os_lower:
-                return PackageURL(
-                    type=pkg_type, namespace=namespace, name=project_name, qualifiers=qualifiers
-                )
-
-        return PackageURL(type="generic", name=project_name, qualifiers=qualifiers)
+        return PackageURL(
+            type="generic", namespace="tuxcare", name=project_name, qualifiers=qualifiers
+        )
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         for record in self.response:
@@ -82,12 +61,6 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             last_updated = record.get("last_updated", "").strip()
 
             advisory_id = cve_id
-
-            summary = f"TuxCare advisory for {cve_id}"
-            if project_name:
-                summary += f" in {project_name}"
-            if os_name:
-                summary += f" on {os_name}"
 
             affected_packages = []
             if project_name:
@@ -126,7 +99,6 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             yield AdvisoryData(
                 advisory_id=advisory_id,
-                summary=summary,
                 affected_packages=affected_packages,
                 severities=severities,
                 date_published=date_published,

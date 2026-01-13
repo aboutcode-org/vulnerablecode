@@ -12,7 +12,7 @@
         "qualifiers": "",
         "subpath": ""
       },
-      "affected_version_range": null,
+      "affected_version_range": "vers:generic/4.11.0|5.0.0-alpha",
       "fixed_version_range": null,
       "introduced_by_commit_patches": [
         {
@@ -36,20 +36,6 @@
           "patch_checksum": null
         }
       ]
-    },
-    {
-      "package": {
-        "type": "generic",
-        "namespace": "",
-        "name": "opencv",
-        "version": "",
-        "qualifiers": "",
-        "subpath": ""
-      },
-      "affected_version_range": "vers:generic/4.11.0|5.0.0-alpha",
-      "fixed_version_range": null,
-      "introduced_by_commit_patches": [],
-      "fixed_by_commit_patches": []
     }
   ],
   "references_v2": [

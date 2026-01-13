@@ -147,9 +147,25 @@ def parse_advisory_data_v3(
             except Exception as e:
                 logger.error(f"Failed to build VersionRange for {advisory_id}: {e}")
 
+        explicit_affected_range = get_explicit_affected_range(
+            affected_pkg=affected_pkg,
+            raw_id=advisory_id,
+            supported_ecosystem=purl.type,
+        )
+
+        explicit_last_known = get_last_known_affected_range(
+            affected_pkg=affected_pkg,
+            raw_id=advisory_id,
+            supported_ecosystem=purl.type,
+        )
+
+        final_affected_range = (
+            explicit_affected_range or explicit_last_known or affected_version_range
+        )
+
         if (
             fixed_version_range
-            or affected_version_range
+            or final_affected_range
             or fixed_by_commit_patches
             or introduced_by_commit_patches
         ):
@@ -157,7 +173,7 @@ def parse_advisory_data_v3(
                 affected_packages.append(
                     AffectedPackageV2(
                         package=purl,
-                        affected_version_range=affected_version_range,
+                        affected_version_range=final_affected_range,
                         fixed_version_range=fixed_version_range,
                         fixed_by_commit_patches=fixed_by_commit_patches,
                         introduced_by_commit_patches=introduced_by_commit_patches,
@@ -165,32 +181,6 @@ def parse_advisory_data_v3(
                 )
             except Exception as e:
                 logger.error(f"Invalid AffectedPackageV2 {e} for {advisory_id}")
-
-        explicit_affected_range = get_explicit_affected_range(
-            affected_pkg=affected_pkg,
-            raw_id=advisory_id,
-            supported_ecosystem=purl.type,
-        )
-        if explicit_affected_range:
-            affected_packages.append(
-                AffectedPackageV2(
-                    package=purl,
-                    affected_version_range=explicit_affected_range,
-                )
-            )
-
-        explicit_last_known_affected_range = get_last_known_affected_range(
-            affected_pkg=affected_pkg,
-            raw_id=advisory_id,
-            supported_ecosystem=purl.type,
-        )
-        if explicit_last_known_affected_range:
-            affected_packages.append(
-                AffectedPackageV2(
-                    package=purl,
-                    affected_version_range=explicit_last_known_affected_range,
-                )
-            )
 
     database_specific = raw_data.get("database_specific") or {}
     cwe_ids = database_specific.get("cwe_ids") or []

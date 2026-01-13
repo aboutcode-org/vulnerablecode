@@ -3,7 +3,7 @@
   "aliases": [
     "CVE-2023-49921"
   ],
-  "summary": "Elasticsearch Insertion of Sensitive Information into Log File\nAn issue was discovered by Elastic whereby Watcher search input logged the search query results on DEBUG log level. This could lead to raw contents of documents stored in Elasticsearch to be printed in logs. Elastic has released 8.11.2 and 7.17.16 that resolves this issue by removing this excessive logging. This issue only affects users that use Watcher and have a Watch defined that uses the search input and additionally have set the search input’s logger to DEBUG or finer, for example using: org.elasticsearch.xpack.watcher.input.search, org.elasticsearch.xpack.watcher.input, org.elasticsearch.xpack.watcher, or wider, since the loggers are hierarchical.",
+  "summary": "Elasticsearch Insertion of Sensitive Information into Log File\nAn issue was discovered by Elastic whereby Watcher search input logged the search query results on DEBUG log level. This could lead to raw contents of documents stored in Elasticsearch to be printed in logs. Elastic has released 8.11.2 and 7.17.16 that resolves this issue by removing this excessive logging. This issue only affects users that use Watcher and have a Watch defined that uses the search input and additionally have set the search input\u2019s logger to DEBUG or finer, for example using: org.elasticsearch.xpack.watcher.input.search, org.elasticsearch.xpack.watcher.input, org.elasticsearch.xpack.watcher, or wider, since the loggers are hierarchical.",
   "affected_packages": [
     {
       "package": {

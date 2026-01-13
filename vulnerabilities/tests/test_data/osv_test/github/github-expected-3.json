@@ -12,35 +12,7 @@
         "qualifiers": "",
         "subpath": ""
       },
-      "affected_version_range": "vers:maven/<0.21.8",
-      "fixed_version_range": "vers:maven/0.21.8",
-      "introduced_by_commit_patches": [],
-      "fixed_by_commit_patches": []
-    },
-    {
-      "package": {
-        "type": "maven",
-        "namespace": "org.http4s",
-        "name": "http4s-async-http-client_2.13",
-        "version": "",
-        "qualifiers": "",
-        "subpath": ""
-      },
       "affected_version_range": "vers:maven/<=0.21.7",
-      "fixed_version_range": null,
-      "introduced_by_commit_patches": [],
-      "fixed_by_commit_patches": []
-    },
-    {
-      "package": {
-        "type": "maven",
-        "namespace": "org.http4s",
-        "name": "http4s-async-http-client_2.12",
-        "version": "",
-        "qualifiers": "",
-        "subpath": ""
-      },
-      "affected_version_range": "vers:maven/<0.21.8",
       "fixed_version_range": "vers:maven/0.21.8",
       "introduced_by_commit_patches": [],
       "fixed_by_commit_patches": []
@@ -55,7 +27,7 @@
         "subpath": ""
       },
       "affected_version_range": "vers:maven/<=0.21.7",
-      "fixed_version_range": null,
+      "fixed_version_range": "vers:maven/0.21.8",
       "introduced_by_commit_patches": [],
       "fixed_by_commit_patches": []
     }

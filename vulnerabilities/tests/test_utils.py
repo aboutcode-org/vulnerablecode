@@ -151,3 +151,29 @@ def test_resolve_version_range_without_ignorable_versions():
 def test_get_severity_range():
     assert get_severity_range({""}) is None
     assert get_severity_range({}) is None
+
+
+def test_get_advisory_url():
+    from pathlib import Path
+
+    from vulnerabilities.utils import get_advisory_url
+
+    # Test case 1: Both parameters as strings (the bug fix scenario)
+    file_str = "/tmp/advisories/istio/ISTIO-2021-001.yaml"
+    base_str = "/tmp/advisories"
+    url = "https://github.com/istio/istio.io/tree/master/advisories/"
+
+    result = get_advisory_url(file_str, base_str, url)
+    expected = "https://github.com/istio/istio.io/tree/master/advisories/istio/ISTIO-2021-001.yaml"
+    assert result == expected
+
+    # Test case 2: Both parameters as Path objects
+    file_path = Path("/tmp/advisories/istio/ISTIO-2021-001.yaml")
+    base_path = Path("/tmp/advisories")
+
+    result = get_advisory_url(file_path, base_path, url)
+    assert result == expected
+
+    # Test case 3: Mixed - file as Path, base_path as string
+    result = get_advisory_url(file_path, base_str, url)
+    assert result == expected

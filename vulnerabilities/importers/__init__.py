@@ -78,11 +78,11 @@ from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_impor
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
 from vulnerabilities.pipelines.v2_importers import retiredotnet_importer as retiredotnet_importer_v2
 from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
+from vulnerabilities.pipelines.v2_importers import tuxcare_importer as tuxcare_importer_v2
 from vulnerabilities.pipelines.v2_importers import suse_score_importer as suse_score_importer_v2
 from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
-from vulnerabilities.pipelines.v2_importers import tuxcare_importer as tuxcare_importer_v2
 from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(

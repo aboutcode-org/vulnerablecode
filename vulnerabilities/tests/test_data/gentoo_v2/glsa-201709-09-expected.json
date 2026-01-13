@@ -33,20 +33,6 @@
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "ebuild",
-          "namespace": "dev-vcs",
-          "name": "subversion",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:ebuild/<1.9.7",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
       }
     ],
     "references_v2": [

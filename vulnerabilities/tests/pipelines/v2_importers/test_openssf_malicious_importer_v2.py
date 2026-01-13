@@ -165,7 +165,9 @@ def test_multiple_advisories(tmp_path: Path):
             {
                 "id": "MAL-2025-0001",
                 "summary": "Bad PyPI package",
-                "affected": [{"package": {"ecosystem": "PyPI", "name": "bad-pkg"}, "versions": ["1.0"]}],
+                "affected": [
+                    {"package": {"ecosystem": "PyPI", "name": "bad-pkg"}, "versions": ["1.0"]}
+                ],
             }
         )
     )
@@ -178,7 +180,9 @@ def test_multiple_advisories(tmp_path: Path):
             {
                 "id": "MAL-2025-0002",
                 "summary": "Bad npm package",
-                "affected": [{"package": {"ecosystem": "npm", "name": "bad-js"}, "versions": ["2.0"]}],
+                "affected": [
+                    {"package": {"ecosystem": "npm", "name": "bad-js"}, "versions": ["2.0"]}
+                ],
             }
         )
     )
@@ -212,7 +216,10 @@ def test_unsupported_ecosystem_skipped(tmp_path: Path):
                 "id": "MAL-2025-9999",
                 "summary": "Package in unsupported ecosystem",
                 "affected": [
-                    {"package": {"ecosystem": "UnsupportedEcosystem", "name": "pkg"}, "versions": ["1.0"]}
+                    {
+                        "package": {"ecosystem": "UnsupportedEcosystem", "name": "pkg"},
+                        "versions": ["1.0"],
+                    }
                 ],
             }
         )

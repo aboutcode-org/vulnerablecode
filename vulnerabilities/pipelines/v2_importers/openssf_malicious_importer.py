@@ -59,13 +59,13 @@ class OpenSSFMaliciousImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         # Ecosystems supported by both OpenSSF malicious-packages and VulnerableCode
         # Mapping: OSV ecosystem name -> purl type
         supported_ecosystems = [
-            "pypi",      # Python packages
-            "npm",       # JavaScript/Node.js packages
-            "cargo",     # Rust packages (crates.io)
-            "gem",       # Ruby packages (rubygems)
-            "maven",     # Java packages
-            "nuget",     # .NET packages
-            "golang",    # Go packages
+            "pypi",  # Python packages
+            "npm",  # JavaScript/Node.js packages
+            "cargo",  # Rust packages (crates.io)
+            "gem",  # Ruby packages (rubygems)
+            "maven",  # Java packages
+            "nuget",  # .NET packages
+            "golang",  # Go packages
         ]
 
         base_path = Path(self.vcs_response.dest_dir)

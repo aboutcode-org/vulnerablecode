@@ -64,7 +64,6 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         xml_root = ET.parse(file).getroot()
         id = xml_root.attrib.get("id")
         glsa = "GLSA-" + id
-
         vuln_references = [
             ReferenceV2(
                 reference_id=glsa,
@@ -82,7 +81,21 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 summary = child.text
 
             if child.tag == "affected":
-                affected_packages = list(affected_and_safe_purls(child))
+                affected_packages = []
+                seen_packages = set()
+
+                for purl, constraint in get_affected_and_safe_purls(child):
+                    signature = (purl.to_string(), str(constraint))
+
+                    if signature not in seen_packages:
+                        seen_packages.add(signature)
+
+                        affected_package = AffectedPackageV2(
+                            package=purl,
+                            affected_version_range=EbuildVersionRange(constraints=[constraint]),
+                            fixed_version_range=None,
+                        )
+                        affected_packages.append(affected_package)
 
             if child.tag == "impact":
                 severity_value = child.attrib.get("type")
@@ -121,10 +134,7 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return cves
 
 
-def _yield_packages(pkg_name, pkg_ns, constraints, invert):
-    """
-    Generate AffectedPackageV2 objects for a list of constraints.
-    """
+def extract_purls_and_constraints(pkg_name, pkg_ns, constraints, invert):
     for comparator, version, slot_value in constraints:
         qualifiers = {"slot": slot_value} if slot_value else {}
         purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns, qualifiers=qualifiers)
@@ -135,16 +145,12 @@ def _yield_packages(pkg_name, pkg_ns, constraints, invert):
             if invert:
                 constraint = constraint.invert()
 
-            yield AffectedPackageV2(
-                package=purl,
-                affected_version_range=EbuildVersionRange(constraints=[constraint]),
-                fixed_version_range=None,
-            )
+            yield purl, constraint
         except InvalidVersion as e:
             logger.error(f"InvalidVersion constraints version: {version} error:{e}")
 
 
-def affected_and_safe_purls(affected_elem):
+def get_affected_and_safe_purls(affected_elem):
     for pkg in affected_elem:
         name = pkg.attrib.get("name")
         if not name:
@@ -153,8 +159,10 @@ def affected_and_safe_purls(affected_elem):
 
         safe_constraints, affected_constraints = get_safe_and_affected_constraints(pkg)
 
-        yield from _yield_packages(pkg_name, pkg_ns, affected_constraints, invert=False)
-        yield from _yield_packages(pkg_name, pkg_ns, safe_constraints, invert=True)
+        yield from extract_purls_and_constraints(
+            pkg_name, pkg_ns, affected_constraints, invert=False
+        )
+        yield from extract_purls_and_constraints(pkg_name, pkg_ns, safe_constraints, invert=True)
 
 
 def get_safe_and_affected_constraints(pkg):

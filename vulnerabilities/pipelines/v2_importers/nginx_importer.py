@@ -103,14 +103,16 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
     fixed_version_range = None
     try:
         fixed_version_range = NginxVersionRange.from_native(fixed_versions)
-    except InvalidVersion:
-        logger.error(f"Invalid vulnerable range {fixed_versions}")
+    except InvalidVersion as e:
+        logger.error(f"InvalidVersionRange fixed_version_range: {fixed_versions} - error: {e}")
 
     affected_version_range = None
     try:
         affected_version_range = NginxVersionRange.from_native(affected_versions)
-    except InvalidVersion:
-        logger.error(f"Invalid non vulnerable range {affected_versions}")
+    except InvalidVersion as e:
+        logger.error(
+            f"InvalidVersionRange affected_version_range: {affected_versions} - error: {e}"
+        )
 
     affected_packages = []
     if purl and affected_version_range or fixed_version_range:

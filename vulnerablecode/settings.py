@@ -376,6 +376,34 @@ if DEBUG:
     }
 
 
+# Network Fetcher Configuration
+# Configure centralized HTTP client for all network operations in importers.
+#
+# Environment variables:
+#   FETCHER_USER_AGENT: Custom User-Agent string for HTTP requests
+#   FETCHER_TIMEOUT: Request timeout in seconds (default: 30)
+#   FETCHER_RETRY_COUNT: Number of retries for failed requests (default: 3)
+#   FETCHER_RETRY_BACKOFF: Exponential backoff factor for retries (default: 0.5)
+#   FETCHER_RATE_LIMIT: Max requests per second (0 = unlimited, default: 0)
+#   FETCHER_PROXY_HTTP: HTTP proxy URL (e.g., http://proxy.example.com:8080)
+#   FETCHER_PROXY_HTTPS: HTTPS proxy URL (e.g., https://proxy.example.com:8443)
+#
+# Example usage:
+#   export FETCHER_TIMEOUT=60
+#   export FETCHER_RETRY_COUNT=5
+#   export FETCHER_RATE_LIMIT=10.0  # 10 requests/second
+#
+FETCHER_USER_AGENT = env.str(
+    "FETCHER_USER_AGENT",
+    default="aboutcode/vulnerablecode (+https://github.com/aboutcode-org/vulnerablecode)",
+)
+FETCHER_TIMEOUT = env.int("FETCHER_TIMEOUT", default=30)
+FETCHER_RETRY_COUNT = env.int("FETCHER_RETRY_COUNT", default=3)
+FETCHER_RETRY_BACKOFF = env.float("FETCHER_RETRY_BACKOFF", default=0.5)
+FETCHER_RATE_LIMIT = env.float("FETCHER_RATE_LIMIT", default=0.0)
+FETCHER_PROXY_HTTP = env.str("FETCHER_PROXY_HTTP", default="")
+FETCHER_PROXY_HTTPS = env.str("FETCHER_PROXY_HTTPS", default="")
+
 VULNERABLECODE_PIPELINE_TIMEOUT = env.int("VULNERABLECODE_PIPELINE_TIMEOUT", default=24)
 RQ_QUEUES = {
     "default": {

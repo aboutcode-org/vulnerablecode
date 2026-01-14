@@ -75,8 +75,23 @@ def load_toml(path):
 
 
 def fetch_yaml(url):
-    response = requests.get(url)
-    return saneyaml.load(response.content)
+    """
+    Fetch and parse YAML from URL.
+
+    This is a backward-compatible wrapper around Fetcher.fetch_yaml().
+    """
+    try:
+        from vulnerabilities.fetcher import Fetcher
+
+        fetcher = Fetcher()
+        return fetcher.fetch_yaml(url)
+    except Exception as e:
+        # Fallback to old behavior if Fetcher fails
+        import logging
+
+        logging.warning(f"Fetcher failed for {url}: {e}, using fallback")
+        response = requests.get(url)
+        return saneyaml.load(response.content)
 
 
 # FIXME: Remove this entirely after complete importer-improver migration
@@ -377,12 +392,25 @@ def resolve_version_range(
 
 def fetch_response(url):
     """
-    Fetch and return `response` from the `url`
+    Fetch and return `response` from the `url`.
+
+    This is a backward-compatible wrapper around Fetcher.get().
     """
-    response = requests.get(url)
-    if response.status_code == HTTPStatus.OK:
+    try:
+        from vulnerabilities.fetcher import Fetcher
+
+        fetcher = Fetcher()
+        return fetcher.get(url)
+    except Exception as e:
+        # Fallback to old behavior if Fetcher fails
+        import logging
+
+        logging.warning(f"Fetcher failed for {url}: {e}, using fallback")
+        response = requests.get(url)
+        # Use raise_for_status() to be consistent with Fetcher behavior
+        # This accepts all 2xx status codes, not just 200
+        response.raise_for_status()
         return response
-    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
 
 
 # This should be a method on PackageURL

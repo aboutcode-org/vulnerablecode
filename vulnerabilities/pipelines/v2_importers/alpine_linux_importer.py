@@ -49,12 +49,17 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         advisory_directory_links = fetch_advisory_directory_links(
             page_response_content, self.url, self.log
         )
-        advisory_links = []
+        advisory_links = set()
+        visited_directories = set()
         for advisory_directory_link in advisory_directory_links:
+            if advisory_directory_link in visited_directories:
+                continue
+
             advisory_directory_page = fetch_response(advisory_directory_link).content
-            advisory_links.extend(
+            advisory_links.update(
                 fetch_advisory_links(advisory_directory_page, advisory_directory_link, self.log)
             )
+
         for link in advisory_links:
             record = fetch_response(link).json()
             if not record["packages"]:
@@ -241,11 +246,10 @@ def load_advisories(
             try:
                 fixed_version_range = AlpineLinuxVersionRange.from_versions([version])
             except InvalidVersion as e:
-                if logger:
-                    logger(
-                        f"{version!r} is not a valid AlpineVersion {e!r}",
-                        level=logging.DEBUG,
-                    )
+                logger(
+                    f"{version!r} is not a valid AlpineVersion {e!r}",
+                    level=logging.DEBUG,
+                )
 
             if not isinstance(archs, List):
                 if logger:
@@ -258,33 +262,36 @@ def load_advisories(
             if archs and fixed_version_range:
                 for arch in archs:
                     qualifiers["arch"] = arch
+                    purl = PackageURL(
+                        type="apk",
+                        namespace="alpine",
+                        name=pkg_infos["name"],
+                        qualifiers=qualifiers,
+                    )
                     affected_packages.append(
                         AffectedPackageV2(
-                            package=PackageURL(
-                                type="apk",
-                                namespace="alpine",
-                                name=pkg_infos["name"],
-                                qualifiers=qualifiers,
-                            ),
+                            package=purl,
                             fixed_version_range=fixed_version_range,
                         )
                     )
 
             if not archs and fixed_version_range:
                 # there is no arch, this is not an arch-specific package
+                purl = PackageURL(
+                    type="apk",
+                    namespace="alpine",
+                    name=pkg_infos["name"],
+                    qualifiers=qualifiers,
+                )
                 affected_packages.append(
                     AffectedPackageV2(
-                        package=PackageURL(
-                            type="apk",
-                            namespace="alpine",
-                            name=pkg_infos["name"],
-                            qualifiers=qualifiers,
-                        ),
+                        package=purl,
                         fixed_version_range=fixed_version_range,
                     )
                 )
 
-            for advisory_id in aliases:
+            for cve in aliases:
+                advisory_id = f"{pkg_infos['name']}/{qualifiers['distroversion']}/{cve}"
                 yield AdvisoryData(
                     advisory_id=advisory_id,
                     aliases=[],

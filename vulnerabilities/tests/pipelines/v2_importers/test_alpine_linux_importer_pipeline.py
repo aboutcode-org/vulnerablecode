@@ -34,7 +34,7 @@ def test_process_record():
     logger = TestLogger()
     expected_advisories = [
         AdvisoryData(
-            advisory_id="XSA-248",
+            advisory_id="xen/v3.11/XSA-248",
             aliases=[],
             summary="",
             affected_packages=[
@@ -203,7 +203,7 @@ def test_process_record():
             original_advisory_text=None,
         ),
         AdvisoryData(
-            advisory_id="XSA-252",
+            advisory_id="xen/v3.11/XSA-252",
             aliases=[],
             summary="",
             affected_packages=[],
@@ -223,7 +223,7 @@ def test_process_record():
             original_advisory_text=None,
         ),
         AdvisoryData(
-            advisory_id="CVE-2018-7540",
+            advisory_id="xen/v3.11/CVE-2018-7540",
             aliases=[],
             summary="",
             affected_packages=[
@@ -397,7 +397,7 @@ def test_process_record():
             original_advisory_text=None,
         ),
         AdvisoryData(
-            advisory_id="XSA-252",
+            advisory_id="xen/v3.11/XSA-252",
             aliases=[],
             summary="",
             affected_packages=[
@@ -571,7 +571,7 @@ def test_process_record():
             original_advisory_text=None,
         ),
         AdvisoryData(
-            advisory_id="CVE-2017-9669",
+            advisory_id="apk-tools/v3.11/CVE-2017-9669",
             aliases=[],
             summary="",
             affected_packages=[
@@ -740,7 +740,7 @@ def test_process_record():
             original_advisory_text=None,
         ),
         AdvisoryData(
-            advisory_id="CVE-2017-9671",
+            advisory_id="apk-tools/v3.11/CVE-2017-9671",
             aliases=[],
             summary="",
             affected_packages=[
@@ -909,6 +909,7 @@ def test_process_record():
             original_advisory_text=None,
         ),
     ]
+
     with open(TEST_DATA / "v3.11/main.json") as f:
         found_advisories = list(
             process_record(

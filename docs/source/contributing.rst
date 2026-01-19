@@ -73,7 +73,7 @@ overlooked. We value any suggestions to improve
 
 .. tip::
     Our documentation is treated like code. Make sure to check our
-    `writing guidelines <https://scancode-toolkit.readthedocs.io/en/stable/contribute/contrib_doc.html>`_
+    `writing guidelines <https://scancode-toolkit.readthedocs.io/en/stable/getting-started/contribute/contributing-docs.html>`_
     to help guide new users.
 
 Other Ways
@@ -87,7 +87,7 @@ questions, and interact with us and other community members on
 Helpful Resources
 -----------------
 
-- Review our `comprehensive guide <https://scancode-toolkit.readthedocs.io/en/stable/contribute/index.html>`_
+- Review our `comprehensive guide <https://scancode-toolkit.readthedocs.io/en/stable/getting-started/contribute/index.html>`_
   for more details on how to add quality contributions to our codebase and documentation
 - Check this free resource on `How to contribute to an open source project on github <https://egghead.io/lessons/javascript-identifying-how-to-contribute-to-an-open-source-project-on-github>`_
 - Follow `this wiki page <https://aboutcode.readthedocs.io/en/latest/contributing/writing_good_commit_messages.html>`_

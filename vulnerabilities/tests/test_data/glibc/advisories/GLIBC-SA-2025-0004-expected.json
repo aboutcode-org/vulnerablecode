@@ -1,0 +1,57 @@
+[
+  {
+    "advisory_id": "GLIBC-SA-2025-0004",
+    "aliases": [
+      "CVE-2025-5745"
+    ],
+    "summary": "power10: strncmp fails to save and restore nonvolatile vector registers\nThe Power 10 implementation of strncmp in\nsysdeps/powerpc/powerpc64/le/power10/strncmp.S failed to save/restore\nnonvolatile vector registers in the 32-byte aligned loop path.  This\nresults in callers reading content from those registers in a different\ncontext, potentially altering program logic.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "generic",
+          "namespace": "gnu",
+          "name": "gcc",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:generic/2.40.0",
+        "fixed_version_range": "vers:generic/2.40.0-136|2.41.0-57|2.42.0",
+        "introduced_by_commit_patches": [
+          {
+            "vcs_url": "https://sourceware.org/git/glibc.git",
+            "commit_hash": "23f0d81608d0ca6379894ef81670cf30af7fd081",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://sourceware.org/git/glibc.git",
+            "commit_hash": "63c60101ce7c5eac42be90f698ba02099b41b965",
+            "patch_text": null,
+            "patch_checksum": null
+          },
+          {
+            "vcs_url": "https://sourceware.org/git/glibc.git",
+            "commit_hash": "84bdbf8a6f2fdafd3661489dbb7f79835a52da82",
+            "patch_text": null,
+            "patch_checksum": null
+          },
+          {
+            "vcs_url": "https://sourceware.org/git/glibc.git",
+            "commit_hash": "42a5a940c974d02540c8da26d6374c744d148cb9",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      }
+    ],
+    "references_v2": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2025-06-05T00:00:00",
+    "weaknesses": [],
+    "url": ""
+  }
+]

@@ -36,7 +36,6 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "BSD-2-Clause"
     license_url = "https://nginx.org/LICENSE"
     url = "https://nginx.org/en/security_advisories.html"
-    importer_name = "Nginx Importer"
 
     @classmethod
     def steps(cls):
@@ -83,9 +82,6 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
     Return AdvisoryData from an NginxAdvisory tuple.
     """
     qualifiers = {}
-
-    purl = PackageURL(type="nginx", name="nginx", qualifiers=qualifiers)
-
     _, _, affected_versions = nginx_adv.vulnerable.partition(":")
     affected_versions = affected_versions.strip()
 
@@ -96,9 +92,7 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
     _, _, fixed_versions = nginx_adv.not_vulnerable.partition(":")
     fixed_versions = fixed_versions.strip()
 
-    if "nginx/Windows" in fixed_versions:
-        qualifiers["os"] = "windows"
-        fixed_versions = fixed_versions.replace("nginx/Windows", "")
+    purl = PackageURL(type="nginx", name="nginx", qualifiers=qualifiers)
 
     fixed_version_range = None
     try:

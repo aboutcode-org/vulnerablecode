@@ -1188,7 +1188,7 @@
           "namespace": "",
           "name": "nginx",
           "version": "",
-          "qualifiers": "",
+          "qualifiers": "os=windows",
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.7.52|<=1.3.0",
@@ -1357,7 +1357,7 @@
           "namespace": "",
           "name": "nginx",
           "version": "",
-          "qualifiers": "",
+          "qualifiers": "os=windows",
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.40",
@@ -1390,7 +1390,7 @@
           "namespace": "",
           "name": "nginx",
           "version": "",
-          "qualifiers": "",
+          "qualifiers": "os=windows",
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.39",
@@ -1423,7 +1423,7 @@
           "namespace": "",
           "name": "nginx",
           "version": "",
-          "qualifiers": "",
+          "qualifiers": "os=windows",
           "subpath": ""
         },
         "affected_version_range": "vers:nginx/>=0.7.52|<=0.8.32",

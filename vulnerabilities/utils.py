@@ -206,28 +206,38 @@ class classproperty(object):
         return self.fget(owner_cls)
 
 
-def get_item(dictionary: dict, *attributes):
+def get_item(entity: Union[dict, list], *attributes):
     """
-    Return `item` by going through all the `attributes` present in the `dictionary`
+    Return `item` by going through all the `attributes` present in the `dictionary/list`
 
-    Do a DFS for the `item` in the `dictionary` by traversing the `attributes`
+    Do a DFS for the `item` in the `dictionary/list` by traversing the `attributes`
     and return None if can not traverse through the `attributes`
     For example:
+    >>> assert get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c') == 'd'
+    >>> assert get_item({'a': [{'b': {'c': 'd'}}]}, 'a', 0, 'b') == {'c': 'd'}
+    >>> assert get_item(['b', ['c', ['d']]], 1, 1, 0) == 'd'
     >>> get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c')
     'd'
     >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
     """
     for attribute in attributes:
-        if not dictionary:
+        if not entity:
             return
-        if not isinstance(dictionary, dict):
-            logger.error("dictionary must be of type `dict`")
+        if not isinstance(entity, (dict, list)):
+            logger.error(f"Entity must be of type `dict` or `list` not {type(entity)}")
             return
-        if attribute not in dictionary:
-            logger.error(f"Missing attribute {attribute} in {dictionary}")
+        if isinstance(entity, dict) and attribute not in entity:
+            logger.error(f"Missing attribute {attribute} in {entity}")
             return
-        dictionary = dictionary[attribute]
-    return dictionary
+        if isinstance(entity, list) and not isinstance(attribute, int):
+            logger.error(f"List indices must be integers not {type(attribute)}")
+            return
+        if isinstance(entity, list) and len(entity) <= attribute:
+            logger.error(f"Index {attribute} out of range for {entity}")
+            return
+
+        entity = entity[attribute]
+    return entity
 
 
 class GitHubTokenError(Exception):

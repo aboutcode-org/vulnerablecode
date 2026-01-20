@@ -10,6 +10,7 @@
 
 from aboutcode.pipeline import humanize_time
 from django import template
+import saneyaml
 
 register = template.Library()
 
@@ -39,3 +40,14 @@ def active_item(context, url_name):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+
+@register.filter
+def yaml_dump(value):
+    """Render structured data as YAML using saneyaml.dump."""
+    if value is None:
+        return ""
+    try:
+        return saneyaml.dump(value)
+    except (TypeError, ValueError):
+        return str(value)

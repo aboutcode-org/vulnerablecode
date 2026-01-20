@@ -58,6 +58,7 @@ from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_i
 from vulnerabilities.pipelines.v2_importers import nginx_importer as nginx_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
+from vulnerabilities.pipelines.v2_importers import openssl_importer as openssl_importer_v2
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
 from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgresql_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
@@ -119,6 +120,7 @@ IMPORTERS_REGISTRY = create_registry(
         ruby.RubyImporter,
         apache_kafka.ApacheKafkaImporter,
         openssl.OpensslImporter,
+        openssl_importer_v2.OpenSSLImporterPipeline,
         redhat.RedhatImporter,
         archlinux.ArchlinuxImporter,
         ubuntu.UbuntuImporter,

@@ -166,14 +166,9 @@ def get_affected_and_safe_purls(affected_elem):
 
 
 def get_safe_and_affected_constraints(pkg):
-    # TODO : Revisit why we are skipping some versions in gentoo importer
-    skip_versions = {"1.3*", "7.3*", "7.4*"}
     safe_versions = set()
     affected_versions = set()
     for info in pkg:
-        if info.text in skip_versions:
-            continue
-
         # All possible values of info.attrib['range'] =
         # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}, out of
         # which ('rle', 'rge', 'rgt') are ignored, because they compare

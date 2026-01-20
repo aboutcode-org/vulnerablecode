@@ -512,14 +512,14 @@ class AffectedPackageV2:
         fixed_version_range = None
         affected_range = affected_pkg["affected_version_range"]
         fixed_range = affected_pkg["fixed_version_range"]
-        introduced_by_commit_patches = (
-            affected_pkg.get("introduced_by_package_commit_patches") or []
-        )
-        fixed_by_commit_patches = affected_pkg.get("fixed_by_package_commit_patches") or []
+        introduced_by_commit_patches = affected_pkg.get("introduced_by_commit_patches") or []
+        fixed_by_commit_patches = affected_pkg.get("fixed_by_commit_patches") or []
 
         try:
-            affected_version_range = VersionRange.from_string(affected_range)
-            fixed_version_range = VersionRange.from_string(fixed_range)
+            affected_version_range = (
+                VersionRange.from_string(affected_range) if affected_range else None
+            )
+            fixed_version_range = VersionRange.from_string(fixed_range) if fixed_range else None
         except:
             tb = traceback.format_exc()
             logger.error(
@@ -527,9 +527,15 @@ class AffectedPackageV2:
             )
             return
 
-        if not fixed_version_range and not affected_version_range:
+        if (
+            not fixed_version_range
+            and not affected_version_range
+            and not introduced_by_commit_patches
+            and not fixed_by_commit_patches
+        ):
             logger.error(
-                f"Cannot create AffectedPackage without fixed or affected range: {affected_pkg!r}"
+                f"Cannot create an AffectedPackage for: {affected_pkg!r}, at least one of the following must be provided: "
+                "a fixed version range, an affected version range, introduced commit patches, or fixed commit patches"
             )
             return
 
@@ -575,6 +581,10 @@ class AdvisoryData:
     original_advisory_text: Optional[str] = None
 
     def __post_init__(self):
+        if self.advisory_id and self.advisory_id in self.aliases:
+            raise ValueError(
+                f"advisory_id {self.advisory_id} should not be present in aliases {self.aliases}"
+            )
         if self.summary:
             self.summary = self.clean_summary(self.summary)
 

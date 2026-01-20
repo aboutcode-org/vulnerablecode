@@ -55,6 +55,7 @@ from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_imp
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
 from vulnerabilities.pipelines.v2_importers import mattermost_importer as mattermost_importer_v2
 from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_importer_v2
+from vulnerabilities.pipelines.v2_importers import nginx_importer as nginx_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
@@ -97,6 +98,7 @@ IMPORTERS_REGISTRY = create_registry(
         project_kb_msr2019_importer_v2.ProjectKBMSR2019Pipeline,
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
+        nginx_importer_v2.NginxImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,

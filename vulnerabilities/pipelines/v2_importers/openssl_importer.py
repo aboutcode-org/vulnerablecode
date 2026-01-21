@@ -64,6 +64,8 @@ class OpenSSLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             yield self.to_advisory_data(advisory)
 
     def to_advisory_data(self, file: Path) -> Iterable[AdvisoryData]:
+        # TODO: Collect the advisory credits, see https://github.com/aboutcode-org/vulnerablecode/issues/2121
+
         affected_packages = []
         severities = []
         references = []

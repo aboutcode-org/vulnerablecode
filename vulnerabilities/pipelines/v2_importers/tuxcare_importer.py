@@ -1,3 +1,12 @@
+#
+# Copyright (c) nexB Inc. and others. All rights reserved.
+# VulnerableCode is a trademark of nexB Inc.
+# SPDX-License-Identifier: Apache-2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+# See https://github.com/aboutcode-org/vulnerablecode for support or download.
+# See https://aboutcode.org for more information about nexB OSS projects.
+#
+
 import json
 import logging
 from typing import Iterable
@@ -39,18 +48,46 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return len(self.response)
 
     def _create_purl(self, project_name: str, os_name: str) -> PackageURL:
+        normalized_os = os_name.lower().replace(" ", "-")
+        os_lower = os_name.lower()
+
+        os_mapping = {
+            "ubuntu": ("deb", "ubuntu"),
+            "debian": ("deb", "debian"),
+            "centos": ("rpm", "centos"),
+            "almalinux": ("rpm", "almalinux"),
+            "rhel": ("rpm", "rhel"),
+            "oracle": ("rpm", "oracle"),
+            "cloudlinux": ("rpm", "cloudlinux"),
+            "alpine": ("apk", "alpine"),
+            "unknown": ("generic", "tuxcare"),
+            "tuxcare": ("generic", "tuxcare"),
+        }
+
+        pkg_type = "generic"
+        namespace = "tuxcare"
+
+        for keyword, (ptype, pns) in os_mapping.items():
+            if keyword in os_lower:
+                pkg_type = ptype
+                namespace = pns
+                break
+        else:
+            return None
+
         qualifiers = {}
-        if os_name:
-            qualifiers["distro"] = os_name
+        if normalized_os:
+            qualifiers["distro"] = normalized_os
 
         return PackageURL(
-            type="generic", namespace="tuxcare", name=project_name, qualifiers=qualifiers
+            type=pkg_type, namespace=namespace, name=project_name, qualifiers=qualifiers
         )
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         for record in self.response:
             cve_id = record.get("cve", "").strip()
             if not cve_id or not cve_id.startswith("CVE-"):
+                logger.warning(f"Skipping record with invalid CVE ID: {cve_id}")
                 continue
 
             os_name = record.get("os_name", "").strip()
@@ -58,27 +95,61 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             version = record.get("version", "").strip()
             score = record.get("score", "").strip()
             severity = record.get("severity", "").strip()
+            status = record.get("status", "").strip()
             last_updated = record.get("last_updated", "").strip()
 
-            advisory_id = cve_id
+            if not all([os_name, project_name, version, status]):
+                logger.warning(f"Skipping {cve_id} - missing required fields")
+                continue
 
-            affected_packages = []
-            if project_name:
-                purl = self._create_purl(project_name, os_name)
+            # See https://docs.tuxcare.com/els-for-os/#cve-status-definition
+            non_affected_statuses = ["Not Vulnerable"]
+            affected_statuses = [
+                "Ignored",
+                "Needs Triage",
+                "In Testing",
+                "In Progress",
+                "In Rollout",
+            ]
+            fixed_statuses = ["Released", "Already Fixed"]
 
-                affected_version_range = None
-                if version:
-                    try:
-                        affected_version_range = GenericVersionRange.from_versions([version])
-                    except ValueError as e:
-                        logger.warning(f"Failed to parse version {version} for {cve_id}: {e}")
+            # Skip CVEs that are not vulnerable
+            if status in non_affected_statuses:
+                continue
 
-                affected_packages.append(
-                    AffectedPackageV2(
-                        package=purl,
-                        affected_version_range=affected_version_range,
-                    )
+            if status not in affected_statuses and status not in fixed_statuses:
+                logger.warning(f"Skipping {cve_id} - unknown status: {status}")
+                continue
+
+            normalized_os = os_name.lower().replace(" ", "-")
+            advisory_id = f"{cve_id}-{normalized_os}-{project_name.lower()}-{version}"
+
+            purl = self._create_purl(project_name, os_name)
+            if not purl:
+                logger.warning(f"Skipping {cve_id} - unexpected OS type: '{os_name}'")
+                continue
+
+            try:
+                version_range = GenericVersionRange.from_versions([version])
+            except ValueError as e:
+                logger.warning(f"Failed to parse version {version} for {cve_id}: {e}")
+                continue
+
+            affected_version_range = None
+            fixed_version_range = None
+
+            if status in affected_statuses:
+                affected_version_range = version_range
+            elif status in fixed_statuses:
+                fixed_version_range = version_range
+
+            affected_packages = [
+                AffectedPackageV2(
+                    package=purl,
+                    affected_version_range=affected_version_range,
+                    fixed_version_range=fixed_version_range,
                 )
+            ]
 
             severities = []
             if severity and score:
@@ -99,6 +170,7 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             yield AdvisoryData(
                 advisory_id=advisory_id,
+                aliases=[cve_id],
                 affected_packages=affected_packages,
                 severities=severities,
                 date_published=date_published,

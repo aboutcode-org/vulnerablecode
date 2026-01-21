@@ -35,4 +35,4 @@ class TestTuxCareImporterPipeline(TestCase):
         expected_file = TEST_DATA / "expected.json"
         util_tests.check_results_against_json(advisories, expected_file)
 
-        assert pipeline.advisories_count() == 5
+        assert pipeline.advisories_count() == 13

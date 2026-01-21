@@ -14,8 +14,8 @@ import saneyaml
 from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importers.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.utils import get_advisory_url
 
 logger = logging.getLogger(__name__)

@@ -15,8 +15,8 @@ from zipfile import ZipFile
 import requests
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importers.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 
 
 class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):

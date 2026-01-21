@@ -8,6 +8,7 @@
 #
 import json
 import os
+from pathlib import Path
 from unittest import TestCase
 
 import saneyaml
@@ -17,13 +18,12 @@ from univers.version_range import PypiVersionRange
 from univers.versions import MavenVersion
 from univers.versions import PypiVersion
 
-from vulnerabilities.importers.osv_v2 import get_explicit_affected_range
-from vulnerabilities.importers.osv_v2 import get_version_ranges_constraints
-from vulnerabilities.importers.osv_v2 import parse_advisory_data_v3
+from vulnerabilities.pipes.osv_v2 import get_explicit_affected_range
+from vulnerabilities.pipes.osv_v2 import get_version_ranges_constraints
+from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.tests import util_tests
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA = os.path.join(BASE_DIR, "test_data/osv_test")
+TEST_DATA = Path(__file__).parent.parent / "test_data" / "osv_test"
 
 
 def test_get_version_ranges_constraints():

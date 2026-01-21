@@ -170,16 +170,20 @@ def get_safe_and_affected_constraints(pkg):
     affected_versions = set()
     for info in pkg:
         # All possible values of info.attrib['range'] =
-        # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}, out of
-        # which ('rle', 'rge', 'rgt') are ignored, because they compare
-        # 'release' not the 'version'.
+        # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}
         range_value = info.attrib.get("range")
         slot_value = info.attrib.get("slot")
-        comparator_dict = {"gt": ">", "lt": "<", "ge": ">=", "le": "<=", "eq": "="}
+        comparator_dict = {
+            "gt": ">",
+            "lt": "<",
+            "ge": ">=",
+            "le": "<=",
+            "eq": "=",
+            "rle": "<=",
+            "rge": ">=",
+            "rgt": ">",
+        }
         comparator = comparator_dict.get(range_value)
-        if not comparator:
-            continue
-
         if info.tag == "unaffected":
             safe_versions.add((comparator, info.text, slot_value))
 

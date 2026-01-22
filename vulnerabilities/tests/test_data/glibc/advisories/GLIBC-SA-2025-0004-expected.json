@@ -50,8 +50,8 @@
     "references_v2": [],
     "patches": [],
     "severities": [],
-    "date_published": "2025-06-05T00:00:00",
+    "date_published": "2025-06-05T00:00:00+00:00",
     "weaknesses": [],
-    "url": ""
+    "url": "https://sourceware.org/git/glibc.git"
   }
 ]

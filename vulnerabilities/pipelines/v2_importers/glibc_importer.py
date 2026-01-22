@@ -12,6 +12,7 @@ from pathlib import Path
 import dateparser
 from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
+from pytz import UTC
 from univers.version_range import GenericVersionRange
 from univers.versions import InvalidVersion
 
@@ -75,7 +76,7 @@ class GlibcImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     cve_id = item.get("value")
                 elif name == "Public-Date":
                     date_published_value = item.get("value")
-                    date_published = dateparser.parse(date_published_value)
+                    date_published = dateparser.parse(date_published_value).replace(tzinfo=UTC)
                 elif name == "Vulnerable-Commit":
                     fix_commit = item.get("commit")
                     affected_commits.append(fix_commit)
@@ -147,6 +148,7 @@ class GlibcImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 summary=build_description(summary, description),
                 affected_packages=affected_packages,
                 date_published=date_published,
+                url="https://sourceware.org/git/glibc.git",
             )
 
     def parse_advisory_text(self, text):

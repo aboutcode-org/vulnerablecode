@@ -14,7 +14,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -31,7 +31,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-4512",
@@ -48,28 +48,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -86,7 +65,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-4513",
@@ -103,49 +82,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -162,7 +99,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-4514",
@@ -179,70 +116,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -259,7 +133,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-4515",
@@ -276,91 +150,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -377,7 +167,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-4516",
@@ -394,112 +184,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -516,7 +201,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-6383",
@@ -533,133 +218,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "a8b33654b1e3b0c74d4a1fed041c9aae50b3c427",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.0",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -676,7 +235,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-4348",
@@ -693,154 +252,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "a8b33654b1e3b0c74d4a1fed041c9aae50b3c427",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "f856567b930dfcdbc3323261bf77240ccdde01f5",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.1",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -857,7 +269,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-2929",
@@ -874,175 +286,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "a8b33654b1e3b0c74d4a1fed041c9aae50b3c427",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "f856567b930dfcdbc3323261bf77240ccdde01f5",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "cec64fecff2eff7dd701b883ed3f5f6faf1aab92",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -1059,7 +303,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-2930",
@@ -1076,196 +320,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "a8b33654b1e3b0c74d4a1fed041c9aae50b3c427",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "f856567b930dfcdbc3323261bf77240ccdde01f5",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "cec64fecff2eff7dd701b883ed3f5f6faf1aab92",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "9d4dd888b4b5799ecadfb0d8c9adda7a76779806",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -1282,7 +337,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-4345",
@@ -1299,217 +354,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "a8b33654b1e3b0c74d4a1fed041c9aae50b3c427",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "f856567b930dfcdbc3323261bf77240ccdde01f5",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "cec64fecff2eff7dd701b883ed3f5f6faf1aab92",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "9d4dd888b4b5799ecadfb0d8c9adda7a76779806",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "539ddb09c46389cc22d35543e40ccde2c2e20244",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -1526,7 +371,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-6378",
@@ -1543,238 +388,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "a8b33654b1e3b0c74d4a1fed041c9aae50b3c427",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "f856567b930dfcdbc3323261bf77240ccdde01f5",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "cec64fecff2eff7dd701b883ed3f5f6faf1aab92",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "9d4dd888b4b5799ecadfb0d8c9adda7a76779806",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "539ddb09c46389cc22d35543e40ccde2c2e20244",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8ea7fffd97835f4e3ffd5f757df152a79835f65f",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -1791,7 +405,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-6380",
@@ -1808,259 +422,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "a8b33654b1e3b0c74d4a1fed041c9aae50b3c427",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "f856567b930dfcdbc3323261bf77240ccdde01f5",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "cec64fecff2eff7dd701b883ed3f5f6faf1aab92",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "9d4dd888b4b5799ecadfb0d8c9adda7a76779806",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "539ddb09c46389cc22d35543e40ccde2c2e20244",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8ea7fffd97835f4e3ffd5f757df152a79835f65f",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "0f6ff65ed8d3630118c3149a4fbc493dd3b8fdc4",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -2077,7 +439,7 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   },
   {
     "advisory_id": "CVE-2013-7026",
@@ -2094,280 +456,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "201f99f170df14ba52ea4c52847779042b7a623b",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "c2c65cd2e14ada6de44cb527e7f1990bede24e15",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "b5e2f339865fb443107e5b10603e53bbc92dc054",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8d1e72250c847fa96498ec029891de4dc638a5ba",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "a8b33654b1e3b0c74d4a1fed041c9aae50b3c427",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "f856567b930dfcdbc3323261bf77240ccdde01f5",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "cec64fecff2eff7dd701b883ed3f5f6faf1aab92",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "9d4dd888b4b5799ecadfb0d8c9adda7a76779806",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "539ddb09c46389cc22d35543e40ccde2c2e20244",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "8ea7fffd97835f4e3ffd5f757df152a79835f65f",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "0f6ff65ed8d3630118c3149a4fbc493dd3b8fdc4",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/torvalds/linux",
-            "commit_hash": "12cc2209deeda65c963c84a5e6aaf0c39aca8e6d",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "github",
-          "namespace": "torvalds",
-          "name": "linux",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:generic/3.12.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
@@ -2384,6 +473,6 @@
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/nluedtke/linux_kernel_cves/blob/master/data/3.12/3.12_security.txt"
+    "url": "https://github.com/nluedtke/linux_kernel_cves"
   }
 ]

@@ -24,5 +24,6 @@ def test_linux_kernel_advisories():
     expected_file = os.path.join(TEST_DATA, "expected-linux-kernel-advisory.json")
     pipeline = LinuxKernelPipeline()
     pipeline.vcs_response = Mock(dest_dir=TEST_DATA)
+    pipeline.extract_kernel_cve_fix_commits()
     result = [adv.to_dict() for adv in pipeline.collect_advisories()]
     util_tests.check_results_against_json(result, expected_file)

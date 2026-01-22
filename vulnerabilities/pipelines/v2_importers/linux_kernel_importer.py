@@ -6,9 +6,11 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+from collections import defaultdict
 from pathlib import Path
 
 from fetchcode.vcs import fetch_via_vcs
+from univers.version_range import GenericVersionRange
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
@@ -19,7 +21,6 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.advisory import classify_patch_source
 from vulnerabilities.utils import commit_regex
 from vulnerabilities.utils import cve_regex
-from vulnerabilities.utils import get_advisory_url
 from vulnerabilities.utils import is_commit
 
 
@@ -31,13 +32,13 @@ class LinuxKernelPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "linux_kernel_cves_fix_commits"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/nluedtke/linux_kernel_cves/blob/master/LICENSE"
-    importer_name = "linux_kernel_cves_fix_commits"
-    qualified_name = "linux_kernel_cves_fix_commits"
+    run_once = True
 
     @classmethod
     def steps(cls):
         return (
             cls.clone,
+            cls.extract_kernel_cve_fix_commits,
             cls.collect_and_store_advisories,
             cls.clean_downloads,
         )
@@ -51,60 +52,76 @@ class LinuxKernelPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
-    def collect_advisories(self):
+    def extract_kernel_cve_fix_commits(self):
         self.log(f"Processing linux kernel fix commits.")
         base_path = Path(self.vcs_response.dest_dir) / "data"
+
         for file_path in base_path.rglob("*.txt"):
             if "_CVEs.txt" in file_path.name:
                 continue
 
             if "_security.txt" in file_path.name:
-                patches = []
-                affected_packages = []
-                references = []
-                for vulnerability_id, commit_hash in self.parse_commits_file(file_path):
-                    patch_url = f"https://github.com/torvalds/linux/commit/{commit_hash}"
-                    if not commit_hash:
-                        continue
+                self.parse_commits_file(file_path)
 
-                    base_purl, patch_objs = classify_patch_source(
-                        url=patch_url,
-                        commit_hash=commit_hash,
-                        patch_text=None,
-                    )
+    def collect_advisories(self):
+        for (
+            vulnerability_id,
+            fixed_versions_commits,
+        ) in self.cve_to_fixed_versions_and_commits.items():
+            references = []
+            patches = []
+            affected_packages = []
 
-                    for patch_obj in patch_objs:
-                        if isinstance(patch_obj, PackageCommitPatchData):
-                            fixed_commit = patch_obj
-                            affected_package = AffectedPackageV2(
-                                package=base_purl,
-                                fixed_by_commit_patches=[fixed_commit],
-                            )
-                            affected_packages.append(affected_package)
-                        elif isinstance(patch_obj, PatchData):
-                            patches.append(patch_obj)
-                        elif isinstance(patch_obj, ReferenceV2):
-                            references.append(patch_obj)
+            for fixed_version, commit_hash in fixed_versions_commits:
+                patch_url = f"https://github.com/torvalds/linux/commit/{commit_hash}"
+                if not commit_hash:
+                    continue
 
-                    advisory_url = get_advisory_url(
-                        file=file_path,
-                        base_path=self.vcs_response.dest_dir,
-                        url="https://github.com/nluedtke/linux_kernel_cves/blob/master/",
-                    )
+                base_purl, patch_objs = classify_patch_source(
+                    url=patch_url,
+                    commit_hash=commit_hash,
+                    patch_text=None,
+                )
 
-                    yield AdvisoryData(
-                        advisory_id=vulnerability_id,
-                        references_v2=references,
-                        affected_packages=affected_packages,
-                        patches=patches,
-                        url=advisory_url,
-                    )
+                for patch_obj in patch_objs:
+                    fixed_version_range = GenericVersionRange.from_versions([fixed_version])
+                    if isinstance(patch_obj, PackageCommitPatchData):
+                        fixed_commit = patch_obj
+                        affected_package = AffectedPackageV2(
+                            package=base_purl,
+                            fixed_by_commit_patches=[fixed_commit],
+                            fixed_version_range=fixed_version_range,
+                        )
+                        affected_packages.append(affected_package)
+                    elif isinstance(patch_obj, PatchData):
+                        patches.append(patch_obj)
+                    elif isinstance(patch_obj, ReferenceV2):
+                        references.append(patch_obj)
+
+            yield AdvisoryData(
+                advisory_id=vulnerability_id,
+                references_v2=references,
+                affected_packages=affected_packages,
+                patches=patches,
+                url="https://github.com/nluedtke/linux_kernel_cves",
+            )
 
     def parse_commits_file(self, file_path):
         """Extract CVE-ID and commit hashes from a text file"""
+        self.cve_to_fixed_versions_and_commits = defaultdict(set)
+        fixed_version = None
         with open(file_path, "r", encoding="utf-8") as f:
             for line in f:
-                parts = line.strip().split(":", 2)
+                line = line.strip()
+
+                if not line:
+                    continue
+
+                if line.startswith("CVEs fixed in"):
+                    fixed_version = line.replace("CVEs fixed in", "").strip().rstrip(":")
+                    continue
+
+                parts = line.split(":", 2)
 
                 if len(parts) < 2:
                     continue
@@ -124,7 +141,7 @@ class LinuxKernelPipeline(VulnerableCodeBaseImporterPipelineV2):
                 if not commit_hash or not is_commit(commit_hash):
                     continue
 
-                yield cve, commit_hash
+                self.cve_to_fixed_versions_and_commits[cve].add((fixed_version, commit_hash))
 
     def clean_downloads(self):
         """Cleanup any temporary repository data."""

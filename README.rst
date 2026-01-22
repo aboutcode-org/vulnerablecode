@@ -19,10 +19,10 @@ VulnerableCode
 
 
 VulnerableCode is a free and open database of open source software package
-vulnerabilities **because open source software vulnerabilities data and tools
+vulnerabilities **because open source software vulnerability data and tools
 should be free and open source themselves**:
 
-we are trying to change this and evolve the status quo in a few other areas!
+We are trying to change this and evolve the status quo in a few other areas!
 
 - Vulnerability databases have been **traditionally proprietary** even though they
   are mostly about free and open source software. 
@@ -31,13 +31,13 @@ we are trying to change this and evolve the status quo in a few other areas!
   means a lot of false positive signals that require extensive expert reviews.
 
 - Vulnerability databases are also mostly about vulnerabilities first and software
-  package second, making it difficult to find if and when a vulnerability applies
-  to a piece of code. VulnerableCode focus is on software package first where
-  a Package URL is a key and natural identifier for packages; this is making it
+  packages second, making it difficult to find if and when a vulnerability applies
+  to a piece of code. VulnerableCode's focus is on software packages first where
+  a Package URL (PURL) is a key and natural identifier for packages; this makes it
   easier to find a package and whether it is vulnerable.
 
-Package URL themselves were designed first in ScanCode and VulnerableCode
-and are now a de-facto standard for vulnerability management and package references.
+PURLs were designed initially for ScanCode and VulnerableCode. PURL is
+now a de-facto standard for vulnerability management and package references.
 See https://github.com/package-url/purl-spec
 
 The VulnerableCode project is a FOSS community resource to help improve the
@@ -49,16 +49,13 @@ the database current.
 
 .. pull-quote::
    **Warning**
+   VulnerableCode is under active development and may not be ready for production
+use depending on your use cases.
 
-   VulnerableCode is under active development and is not yet fully
-   usable.
+Read more about VulnerableCode at https://vulnerablecode.readthedocs.org/
 
-
-Read more about VulnerableCode https://vulnerablecode.readthedocs.org/
-
-VulnerableCode tech stack is Python, Django, PostgreSQL, nginx and Docker and
+The VulnerableCode tech stack is Python, Django, PostgreSQL, nginx and Docker and
 several libraries.
-
 
 Getting started
 ===============

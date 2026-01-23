@@ -1,8 +1,8 @@
 {
   "CVE-2021-0001": [
-    ["abc123", "Fix CVE-2021-0001"]
+    ["41b43c74bda19753c757036673ea9db74acf494a", "Fixed CVE-2025-59681 -- Protected QuerySet.annotate(), alias(), aggregate(), and extra() against SQL injection in column aliases on MySQL/MariaDB."]
   ],
   "GHSA-dead-beef-baad": [
-    ["def456", "Patch GHSA-dead-beef-baad"]
+    ["49ff1042aa66bb25eda87e9a8ef82f3b0ad4eeba", "Fixed CVE-2024-53907 -- Mitigated potential DoS in strip_tags()."]
   ]
 }

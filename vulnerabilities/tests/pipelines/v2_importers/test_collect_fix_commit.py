@@ -14,6 +14,7 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import pytest
+from packageurl import PackageURL
 
 from vulnerabilities.pipelines.v2_importers.collect_repo_fix_commits import (
     CollectRepoFixCommitPipeline,
@@ -33,7 +34,7 @@ def test_classify_commit_type_extracts_ids(pipeline):
     class DummyCommit:
         message = "Fix for CVE-2023-1234 and GHSA-2479-qvv7-47qq"
 
-    result = pipeline.classify_commit_type(DummyCommit)
+    result = pipeline.extract_vulnerability_id(DummyCommit)
     assert result == ["CVE-2023-1234", "GHSA-2479-qvv7-47qq"]
 
 
@@ -78,12 +79,13 @@ class TestRepoFixCommitPipeline(TestCase):
 
         pipeline = CollectRepoFixCommitPipeline()
         pipeline.repo_url = "https://github.com/test/repo"
+        pipeline.purl = PackageURL.from_string("pkg:generic/test")
         pipeline.log = MagicMock()
         pipeline.collect_fix_commits = MagicMock(return_value=grouped_commits)
 
         result = [adv.to_dict() for adv in pipeline.collect_advisories()]
 
-        util_tests.check_results_against_json(result, expected_file)
+        util_tests.check_results_against_json(result, expected_file, True)
 
 
 @pytest.mark.parametrize(
@@ -108,7 +110,7 @@ def test_classify_commit_type_detects_vuln_ids(pipeline, commit_message, expecte
             self.message = message
 
     commit = DummyCommit(commit_message)
-    result = pipeline.classify_commit_type(commit)
+    result = pipeline.extract_vulnerability_id(commit)
 
     assert result == expected_ids, f"Unexpected result for message: {commit_message}"
 
@@ -119,6 +121,6 @@ def test_classify_commit_type_case_insensitive(pipeline):
     class DummyCommit:
         message = "fix cVe-2022-9999 and ghSa-dead-beef-baad"
 
-    result = pipeline.classify_commit_type(DummyCommit)
+    result = pipeline.extract_vulnerability_id(DummyCommit)
     assert any("CVE-2022-9999" in r.upper() for r in result)
     assert any("GHSA-DEAD-BEEF-BAAD" in r.upper() for r in result)

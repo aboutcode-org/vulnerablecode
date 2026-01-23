@@ -14,13 +14,15 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from vulnerabilities.pipelines.v2_importers.github_issue_pr import GithubPipelineIssuePR
+from vulnerabilities.pipelines.v2_importers.github_issue_pr import GithubPipelineIssuePRPipeline
 from vulnerabilities.tests import util_tests
+
+TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "github_issue_pr"
 
 
 @pytest.fixture
 def pipeline():
-    pipeline = GithubPipelineIssuePR()
+    pipeline = GithubPipelineIssuePRPipeline()
     pipeline.repo_url = "https://github.com/test/repo"
     pipeline.log = MagicMock()
     return pipeline
@@ -32,12 +34,12 @@ def test_collect_issues_and_prs(pipeline):
         SimpleNamespace(
             title="Fix for CVE-2023-1234 found",
             body="This resolves a security issue",
-            html_url="http://example.com/issue1",
+            html_url="https://example.com/issue1",
         ),
         SimpleNamespace(
             title="No vulnerability mentioned",
             body="This is unrelated",
-            html_url="http://example.com/issue2",
+            html_url="https://example.com/issue2",
         ),
     ]
 
@@ -45,21 +47,18 @@ def test_collect_issues_and_prs(pipeline):
         SimpleNamespace(
             title="Patch addressing GHSA-zzz-111",
             body="Also fixes PYSEC-2024-5678",
-            html_url="http://example.com/pr1",
+            html_url="https://example.com/pr1",
         )
     ]
 
     result = pipeline.collect_issues_and_prs()
     expected = {
-        "CVE-2023-1234": [("Issue", "http://example.com/issue1")],
-        "GHSA-zzz-111": [("PR", "http://example.com/pr1")],
-        "PYSEC-2024-5678": [("PR", "http://example.com/pr1")],
+        "CVE-2023-1234": [("Issue", "https://example.com/issue1")],
+        "GHSA-zzz-111": [("PR", "https://example.com/pr1")],
+        "PYSEC-2024-5678": [("PR", "https://example.com/pr1")],
     }
 
     assert result == expected
-
-
-TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "github_issue_pr"
 
 
 @pytest.mark.django_db
@@ -69,7 +68,7 @@ def test_collect_advisories_from_json():
 
     issues_and_prs = json.loads(input_file.read_text(encoding="utf-8"))
 
-    pipeline = GithubPipelineIssuePR()
+    pipeline = GithubPipelineIssuePRPipeline()
     pipeline.repo_url = "https://github.com/test/repo"
     pipeline.log = MagicMock()
 

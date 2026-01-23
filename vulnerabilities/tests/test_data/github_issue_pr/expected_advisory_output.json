@@ -1,9 +1,7 @@
 [
   {
     "advisory_id": "CVE-2023-1234",
-    "aliases": [
-      "CVE-2023-1234"
-    ],
+    "aliases": [],
     "summary": "",
     "affected_packages": [],
     "references_v2": [
@@ -18,6 +16,7 @@
         "url": "https://example.com/pr1"
       }
     ],
+    "patches": [],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -25,9 +24,7 @@
   },
   {
     "advisory_id": "GHSA-zzz-111",
-    "aliases": [
-      "GHSA-zzz-111"
-    ],
+    "aliases": [],
     "summary": "",
     "affected_packages": [],
     "references_v2": [
@@ -37,6 +34,7 @@
         "url": "https://example.com/pr1"
       }
     ],
+    "patches": [],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
@@ -44,9 +42,7 @@
   },
   {
     "advisory_id": "PYSEC-2024-5678",
-    "aliases": [
-      "PYSEC-2024-5678"
-    ],
+    "aliases": [],
     "summary": "",
     "affected_packages": [],
     "references_v2": [
@@ -56,6 +52,7 @@
         "url": "https://example.com/pr1"
       }
     ],
+    "patches": [],
     "severities": [],
     "date_published": null,
     "weaknesses": [],

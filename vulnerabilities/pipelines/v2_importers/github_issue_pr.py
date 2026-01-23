@@ -20,12 +20,12 @@ from vulnerablecode.settings import env
 GITHUB_TOKEN = env.str("GITHUB_TOKEN")
 
 
-class GithubPipelineIssuePR(VulnerableCodeBaseImporterPipelineV2):
+class GithubPipelineIssuePRPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
     Pipeline to collect GitHub issues and PRs related to vulnerabilities.
     """
 
-    pipeline_id = "collect_issues_pr"
+    pipeline_id = "collect_github_issues_pr"
 
     @classmethod
     def steps(cls):
@@ -86,7 +86,7 @@ class GithubPipelineIssuePR(VulnerableCodeBaseImporterPipelineV2):
 
             yield AdvisoryData(
                 advisory_id=vuln_id,
-                aliases=[vuln_id],
+                aliases=[],
                 references_v2=references,
                 url=self.repo_url,
             )

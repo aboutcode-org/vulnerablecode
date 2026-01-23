@@ -6,7 +6,8 @@ from collections import defaultdict
 from git import Repo
 
 from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 SECURITY_PATTERNS = [
@@ -22,7 +23,7 @@ class CollectRepoFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
     Pipeline to collect fix commits from any git repository.
     """
 
-    pipeline_id = "repo_fix_commit"
+    pipeline_id = "collect_fix_commit"
 
     @classmethod
     def steps(cls):
@@ -34,23 +35,26 @@ class CollectRepoFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def clone(self):
         """Clone the repository."""
-        self.repo_url = "https://github.com/torvalds/linux"
-        repo_path = tempfile.mkdtemp()
+        self.repo_url = self.inputs["repo_url"]
+        if not self.repo_url:
+            raise ValueError("Repo is required for CollectRepoFixCommitPipeline")
+
+        self.purl = self.inputs["purl"]
         self.repo = Repo.clone_from(
             url=self.repo_url,
-            to_path=repo_path,
+            to_path=tempfile.mkdtemp(),
             bare=True,
             no_checkout=True,
             multi_options=["--filter=blob:none"],
         )
 
     def advisories_count(self) -> int:
-        return int(self.repo.git.rev_list("--count", "HEAD"))
+        return 0
 
-    def classify_commit_type(self, commit) -> list[str]:
+    def extract_vulnerability_id(self, commit) -> list[str]:
         """
-        Extract vulnerability identifiers from a commit message.
-        Returns a list of matched vulnerability IDs (normalized to uppercase).
+        Extract vulnerability id from a commit message.
+        Returns a list of matched vulnerability IDs
         """
         matches = []
         for pattern in SECURITY_PATTERNS:
@@ -67,7 +71,7 @@ class CollectRepoFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         grouped_commits = defaultdict(list)
         for commit in self.repo.iter_commits("--all"):
-            matched_ids = self.classify_commit_type(commit)
+            matched_ids = self.extract_vulnerability_id(commit)
             if not matched_ids:
                 continue
 
@@ -87,16 +91,30 @@ class CollectRepoFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
         """
         self.log("Generating AdvisoryData objects from grouped commits.")
         grouped_commits = self.collect_fix_commits()
-        for vuln_id, commits in grouped_commits.items():
-            references = [ReferenceV2(url=f"{self.repo_url}/commit/{cid}") for cid, _ in commits]
+        for vuln_id, commits_data in grouped_commits.items():
+            if not commits_data or not vuln_id:
+                continue
 
-            summary_lines = [f"- {cid}: {msg}" for cid, msg in commits]
+            summary_lines = []
+            for c_hash, msg in commits_data:
+                summary_lines.append(f"{c_hash}: {msg}")
             summary = f"Commits fixing {vuln_id}:\n" + "\n".join(summary_lines)
+
+            commit_hash_set = {commit_hash for commit_hash, _ in commits_data}
+            affected_packages = [
+                AffectedPackageV2(
+                    package=self.purl,
+                    fixed_by_commit_patches=[
+                        PackageCommitPatchData(vcs_url=self.repo_url, commit_hash=commit_hash)
+                        for commit_hash in commit_hash_set
+                    ],
+                )
+            ]
+
             yield AdvisoryData(
                 advisory_id=vuln_id,
-                aliases=[vuln_id],
                 summary=summary,
-                references_v2=references,
+                affected_packages=affected_packages,
                 url=self.repo_url,
             )
 

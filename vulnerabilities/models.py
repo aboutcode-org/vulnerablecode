@@ -2273,6 +2273,13 @@ class PipelineSchedule(models.Model):
         ),
     )
 
+    is_run_once = models.BooleanField(
+        null=False,
+        db_index=True,
+        default=False,
+        help_text=("When set to True, this Pipeline will run only once."),
+    )
+
     live_logging = models.BooleanField(
         null=False,
         db_index=True,
@@ -2789,6 +2796,19 @@ class Patch(models.Model):
             )
         ]
 
+    def to_dict(self):
+        return {
+            "patch_url": self.patch_url,
+            "patch_text": self.patch_text,
+            "patch_checksum": self.patch_checksum,
+        }
+
+    def to_patch_data(self):
+        """Return `PatchData` from the Patch."""
+        from vulnerabilities.importer import PatchData
+
+        return PatchData.from_dict(self.to_dict())
+
 
 class PackageCommitPatch(models.Model):
     """
@@ -2815,6 +2835,14 @@ class PackageCommitPatch(models.Model):
 
     class Meta:
         unique_together = ["commit_hash", "vcs_url"]
+
+    def to_dict(self):
+        return {
+            "vcs_url": self.vcs_url,
+            "commit_hash": self.commit_hash,
+            "patch_text": self.patch_text,
+            "patch_checksum": self.patch_checksum,
+        }
 
 
 class AdvisoryV2QuerySet(BaseQuerySet):
@@ -3009,6 +3037,7 @@ class AdvisoryV2(models.Model):
                 impacted.to_affected_package_data() for impacted in self.impacted_packages.all()
             ],
             references_v2=[ref.to_reference_v2_data() for ref in self.references.all()],
+            patches=[patch.to_patch_data() for patch in self.patches.all()],
             date_published=self.date_published,
             weaknesses=[weak.cwe_id for weak in self.weaknesses.all()],
             severities=[sev.to_vulnerability_severity_data() for sev in self.severities.all()],
@@ -3092,6 +3121,12 @@ class ImpactedPackage(models.Model):
             "package": purl_to_dict(self.base_purl),
             "affected_version_range": self.affecting_vers,
             "fixed_version_range": self.fixed_vers,
+            "introduced_by_commit_patches": [
+                commit.to_dict() for commit in self.introduced_by_package_commit_patches.all()
+            ],
+            "fixed_by_commit_patches": [
+                commit.to_dict() for commit in self.fixed_by_package_commit_patches.all()
+            ],
         }
 
     def to_affected_package_data(self):

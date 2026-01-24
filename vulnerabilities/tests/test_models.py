@@ -24,7 +24,11 @@ from univers.version_range import VersionRange
 from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import PackageCommitPatchData
+from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
@@ -735,3 +739,34 @@ class TestStoreLongCVSSV4(TestCase):
             scoring_system=CVSSV4,
             scoring_elements="CVSS:4.0/AV:P/AC:H/AT:P/PR:H/UI:A/VC:L/VI:L/VA:H/SC:H/SI:L/SA:L/E:A/CR:M/IR:M/AR:M/MAV:A/MAC:L/MAT:P/MPR:L/MVC:L/MVI:L/MVA:L/MSC:H/MSI:H/MSA:H/S:P/AU:Y/R:U/V:C/RE:M/U:Amber",
         )
+
+
+class TestAdvisoryV2Model(DjangoTestCase):
+    def setUp(self):
+        self.advisoryv2_data1 = AdvisoryData(
+            advisory_id="test_adv",
+            aliases=[],
+            summary="vulnerability description here",
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL(type="pypi", name="dummy"),
+                    affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+                    introduced_by_commit_patches=[
+                        PackageCommitPatchData(
+                            vcs_url="http://foo.bar/", commit_hash="c4eab154606e801"
+                        )
+                    ],
+                )
+            ],
+            references_v2=[ReferenceV2(url="https://example.com/with/more/info/CVE-2020-13371337")],
+            patches=[PatchData(patch_url="https://foo.bar/", patch_text="test patch")],
+            url="https://test.com",
+        )
+
+    def test_advisoryv2_to_advisory_data_patch_seralization(self):
+        from vulnerabilities.pipes.advisory import insert_advisory_v2
+
+        insert_advisory_v2(advisory=self.advisoryv2_data1, pipeline_id="test_pipeline")
+        result = models.AdvisoryV2.objects.first().to_advisory_data()
+
+        self.assertEqual(result, self.advisoryv2_data1)

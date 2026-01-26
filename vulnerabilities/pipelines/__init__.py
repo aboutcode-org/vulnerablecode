@@ -8,25 +8,33 @@
 #
 
 import logging
+import re
 import traceback
+from abc import abstractmethod
+from collections import defaultdict
 from datetime import datetime
 from datetime import timezone
 from timeit import default_timer as timer
 from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 from typing import List
+from urllib.parse import urlparse
 
+import gitlab
 from aboutcode.pipeline import LoopProgress
 from aboutcode.pipeline import PipelineDefinition
 from aboutcode.pipeline import humanize_time
+from github import Github
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
 from vulnerabilities.pipes.advisory import insert_advisory_v2
+from vulnerablecode.settings import env
 
 module_logger = logging.getLogger(__name__)
 
@@ -321,3 +329,99 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
                 continue
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
+
+
+class VCSCollector(VulnerableCodeBaseImporterPipeline):
+    """
+    Pipeline to collect GitHub/GitLab issues and PRs related to vulnerabilities.
+    """
+
+    vcs_url: str
+    CVE_PATTERN = re.compile(r"(CVE-\d{4}-\d+)", re.IGNORECASE)
+    SUPPORTED_IDENTIFIERS = ["CVE-"]
+
+    collected_items: dict = {}
+
+    def advisories_count(self) -> int:
+        return 0
+
+    @classmethod
+    def steps(cls):
+        return (
+            cls.configure_target,
+            cls.fetch_entries,
+            cls.collect_items,
+            cls.collect_and_store_advisories,
+        )
+
+    def configure_target(self):
+        parsed_url = urlparse(self.repo_url)
+        parts = parsed_url.path.strip("/").split("/")
+        if len(parts) < 2:
+            raise ValueError(f"Invalid URL: {self.repo_url}")
+
+        self.repo_name = f"{parts[0]}/{parts[1]}"
+
+    @abstractmethod
+    def fetch_entries(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def collect_items(self):
+        raise NotImplementedError
+
+    def collect_advisories(self):
+        """
+        Generate AdvisoryData objects for each vulnerability ID grouped with its related GitHub/Gitlab issues and PRs.
+        """
+        self.log("Generating AdvisoryData objects from GitHub/Gitlab issues and PRs.")
+        for vuln_id, refs in self.collected_items.items():
+            print(vuln_id, refs)
+            references = [ReferenceV2(reference_type=ref_id, url=url) for ref_id, url in refs]
+            yield AdvisoryData(
+                advisory_id=vuln_id,
+                aliases=[],
+                references_v2=references,
+                url=self.repo_url,
+            )
+
+
+class GitHubCollector(VCSCollector):
+    def fetch_entries(self):
+        """Fetch GitHub Data Entries"""
+        github_token = env.str("GITHUB_TOKEN")
+        g = Github(login_or_token=github_token)
+        base_query = f"repo:{self.repo_name} ({' OR '.join(self.SUPPORTED_IDENTIFIERS)})"
+        self.issues = g.search_issues(f"{base_query} is:issue")
+        self.prs = g.search_issues(f"{base_query} is:pr")
+
+    def collect_items(self):
+        self.collected_items = defaultdict(list)
+
+        for i_type, items in [("Issue", self.issues), ("PR", self.prs)]:
+            for item in items:
+                matches = self.CVE_PATTERN.findall(item.title + " " + (item.body or ""))
+                for match in matches:
+                    self.collected_items[match].append(("Issue", item.html_url))
+
+
+class GitLabCollector(VCSCollector):
+    def fetch_entries(self):
+        """Fetch GitLab Data Entries"""
+        gitlab_token = env.str("GITLAB_TOKEN")
+        gl = gitlab.Gitlab("https://gitlab.com/", private_token=gitlab_token)
+        project = gl.projects.get(self.repo_name)
+        base_query = " ".join(self.SUPPORTED_IDENTIFIERS)
+        self.issues = project.search(scope="issues", search=base_query)
+        self.prs = project.search(scope="merge_requests", search=base_query)
+
+    def collect_items(self):
+        self.collected_items = defaultdict(list)
+        for i_type, items in [("Issue", self.issues), ("PR", self.prs)]:
+            for item in items:
+                title = item.get("title") or ""
+                description = item.get("description") or ""
+                matches = self.CVE_PATTERN.findall(title + " " + description)
+                for match in matches:
+                    url = item.get("web_url")
+                    self.collected_items[match].append((i_type, url))

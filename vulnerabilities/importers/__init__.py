@@ -47,6 +47,7 @@ from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apac
 from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_tomcat_importer as apache_tomcat_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
+from vulnerabilities.pipelines.v2_importers import collect_issue_pr as collect_issue_pr_v2
 from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
@@ -114,6 +115,7 @@ IMPORTERS_REGISTRY = create_registry(
         nginx_importer_v2.NginxImporterPipeline,
         debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
+        collect_issue_pr_v2.CollectIssuePRPipeline,
         github_issue_pr_v2.GithubPipelineIssuePRPipeline,
         apache_tomcat_v2.ApacheTomcatImporterPipeline,
         suse_score_importer_v2.SUSESeverityScoreImporterPipeline,
@@ -156,6 +158,8 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+        collect_issue_pr_v2.CollectKubernetesPRSIssues,
+        collect_issue_pr_v2.CollectWiresharkPRSIssues,
         github_issue_pr_v2.GithubPipelineIssuePR,
         collect_fix_commits_v2.CollectLinuxFixCommitsPipeline,
         collect_fix_commits_v2.CollectBusyBoxFixCommitsPipeline,

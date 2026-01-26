@@ -1,9 +1,7 @@
 [
   {
-    "advisory_id": "CVE-2023-52922-cloudlinux-7-els-squid-3.5.20",
-    "aliases": [
-      "CVE-2023-52922"
-    ],
+    "advisory_id": "CVE-2023-52922",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -15,7 +13,49 @@
           "qualifiers": "distro=cloudlinux-7-els",
           "subpath": ""
         },
-        "affected_version_range": "vers:generic/3.5.20",
+        "affected_version_range": "vers:rpm/3.5.20",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "oracle",
+          "name": "squid",
+          "version": "",
+          "qualifiers": "distro=oracle-linux-7-els",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/3.5.20",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "centos",
+          "name": "kernel",
+          "version": "",
+          "qualifiers": "distro=centos-8.5-els",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:rpm/4.18.0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "centos",
+          "name": "squid",
+          "version": "",
+          "qualifiers": "distro=centos-stream-8-els",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/4.15",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
@@ -35,45 +75,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2023-52922"
   },
   {
-    "advisory_id": "CVE-2023-52922-oracle-linux-7-els-squid-3.5.20",
-    "aliases": [
-      "CVE-2023-52922"
-    ],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "oracle",
-          "name": "squid",
-          "version": "",
-          "qualifiers": "distro=oracle-linux-7-els",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:generic/3.5.20",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references_v2": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.8",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-12-23T10:08:35.944749+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2023-52922"
-  },
-  {
-    "advisory_id": "CVE-2023-48161-rhel-7-els-java-11-openjdk-11.0.23",
-    "aliases": [
-      "CVE-2023-48161"
-    ],
+    "advisory_id": "CVE-2023-48161",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -85,7 +88,7 @@
           "qualifiers": "distro=rhel-7-els",
           "subpath": ""
         },
-        "affected_version_range": "vers:generic/11.0.23",
+        "affected_version_range": "vers:rpm/11.0.23",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
@@ -105,10 +108,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2023-48161"
   },
   {
-    "advisory_id": "CVE-2024-21147-rhel-7-els-java-11-openjdk-11.0.23",
-    "aliases": [
-      "CVE-2024-21147"
-    ],
+    "advisory_id": "CVE-2024-21147",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -120,7 +121,7 @@
           "qualifiers": "distro=rhel-7-els",
           "subpath": ""
         },
-        "affected_version_range": "vers:generic/11.0.23",
+        "affected_version_range": "vers:rpm/11.0.23",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
@@ -140,10 +141,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2024-21147"
   },
   {
-    "advisory_id": "CVE-2025-21587-rhel-7-els-java-11-openjdk-11.0.23",
-    "aliases": [
-      "CVE-2025-21587"
-    ],
+    "advisory_id": "CVE-2025-21587",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -155,7 +154,7 @@
           "qualifiers": "distro=rhel-7-els",
           "subpath": ""
         },
-        "affected_version_range": "vers:generic/11.0.23",
+        "affected_version_range": "vers:rpm/11.0.23",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
@@ -175,10 +174,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2025-21587"
   },
   {
-    "advisory_id": "CVE-2024-39502-unknown-os-kernel-2.6.32",
-    "aliases": [
-      "CVE-2024-39502"
-    ],
+    "advisory_id": "CVE-2024-39502",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -210,10 +207,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2024-39502"
   },
   {
-    "advisory_id": "CVE-2024-40927-unknown-os-kernel-2.6.32",
-    "aliases": [
-      "CVE-2024-40927"
-    ],
+    "advisory_id": "CVE-2024-40927",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -245,10 +240,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2024-40927"
   },
   {
-    "advisory_id": "CVE-2025-43392-tuxcare-9.6-esu-webkit2gtk3-2.50.1",
-    "aliases": [
-      "CVE-2025-43392"
-    ],
+    "advisory_id": "CVE-2025-43392",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -280,10 +273,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2025-43392"
   },
   {
-    "advisory_id": "CVE-2023-50868-cloudlinux-7-els-dhcp-4.2.5",
-    "aliases": [
-      "CVE-2023-50868"
-    ],
+    "advisory_id": "CVE-2023-50868",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -296,7 +287,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": "vers:generic/4.2.5",
+        "fixed_version_range": "vers:rpm/4.2.5",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -315,10 +306,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2023-50868"
   },
   {
-    "advisory_id": "CVE-2021-33193-unknown-os-httpd-2.2.15",
-    "aliases": [
-      "CVE-2021-33193"
-    ],
+    "advisory_id": "CVE-2021-33193",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -350,10 +339,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2021-33193"
   },
   {
-    "advisory_id": "CVE-2025-50093-almalinux-9.2-esu-mysql-8.0.32",
-    "aliases": [
-      "CVE-2025-50093"
-    ],
+    "advisory_id": "CVE-2025-50093",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -366,7 +353,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": "vers:generic/8.0.32",
+        "fixed_version_range": "vers:rpm/8.0.32",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -385,10 +372,8 @@
     "url": "https://cve.tuxcare.com/els/cve/CVE-2025-50093"
   },
   {
-    "advisory_id": "CVE-2025-64505-centos-7-els-libpng-1.5.13",
-    "aliases": [
-      "CVE-2025-64505"
-    ],
+    "advisory_id": "CVE-2025-64505",
+    "aliases": [],
     "summary": "",
     "affected_packages": [
       {
@@ -400,7 +385,7 @@
           "qualifiers": "distro=centos-7-els",
           "subpath": ""
         },
-        "affected_version_range": "vers:generic/1.5.13",
+        "affected_version_range": "vers:rpm/1.5.13",
         "fixed_version_range": null,
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
@@ -418,5 +403,92 @@
     "date_published": "2025-12-20T04:34:51.112485+00:00",
     "weaknesses": [],
     "url": "https://cve.tuxcare.com/els/cve/CVE-2025-64505"
+  },
+  {
+    "advisory_id": "CVE-2022-50268",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "ubuntu",
+          "name": "linux",
+          "version": "",
+          "qualifiers": "distro=ubuntu-16.04-els",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:deb/4.4.0",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "5.5",
+        "scoring_elements": "MEDIUM"
+      }
+    ],
+    "date_published": "2025-12-23T07:31:24.920518+00:00",
+    "weaknesses": [],
+    "url": "https://cve.tuxcare.com/els/cve/CVE-2022-50268"
+  },
+  {
+    "advisory_id": "CVE-2020-1472",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "deb",
+          "namespace": "debian",
+          "name": "samba",
+          "version": "",
+          "qualifiers": "distro=debian-10-els",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:deb/4.9.5",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2025-12-22T16:58:13.189255+00:00",
+    "weaknesses": [],
+    "url": "https://cve.tuxcare.com/els/cve/CVE-2020-1472"
+  },
+  {
+    "advisory_id": "CVE-2025-6297",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "dpkg",
+          "version": "",
+          "qualifiers": "distro=alpine-linux-3.18-els",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/1.21.21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2025-12-19T05:00:40.874276+00:00",
+    "weaknesses": [],
+    "url": "https://cve.tuxcare.com/els/cve/CVE-2025-6297"
   }
 ]

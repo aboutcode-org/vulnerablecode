@@ -20,6 +20,46 @@
     "last_updated": "2025-12-23 10:08:35.944749"
   },
   {
+    "cve": "CVE-2023-52922",
+    "os_name": "CentOS 8.5 ELS",
+    "project_name": "kernel",
+    "version": "4.18.0",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Released",
+    "last_updated": "2025-05-21 01:43:28.677045"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "AlmaLinux 9.2 ESU",
+    "project_name": "squid",
+    "version": "5.5",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Not Vulnerable",
+    "last_updated": "2025-08-28 00:52:25.579518"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "RHEL 7 ELS",
+    "project_name": "squid",
+    "version": "3.5.20",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Not Vulnerable",
+    "last_updated": "2025-11-27 10:32:13.088814"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "CentOS Stream 8 ELS",
+    "project_name": "squid",
+    "version": "4.15",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Ignored",
+    "last_updated": "2025-08-28 22:56:12.357818"
+  },
+  {
     "cve": "CVE-2023-48161",
     "os_name": "RHEL 7 ELS",
     "project_name": "java-11-openjdk",
@@ -128,5 +168,35 @@
     "severity": "MEDIUM",
     "status": "In Rollout",
     "last_updated": "2025-12-20 04:34:51.112485"
+  },
+  {
+    "cve": "CVE-2022-50268",
+    "os_name": "Ubuntu 16.04 ELS",
+    "project_name": "linux",
+    "version": "4.4.0",
+    "score": "5.5",
+    "severity": "MEDIUM",
+    "status": "Needs Triage",
+    "last_updated": "2025-12-23 07:31:24.920518"
+  },
+  {
+    "cve": "CVE-2020-1472",
+    "os_name": "Debian 10 ELS",
+    "project_name": "samba",
+    "version": "4.9.5",
+    "score": "0.0",
+    "severity": "",
+    "status": "In Testing",
+    "last_updated": "2025-12-22 16:58:13.189255"
+  },
+  {
+    "cve": "CVE-2025-6297",
+    "os_name": "Alpine Linux 3.18 ELS",
+    "project_name": "dpkg",
+    "version": "1.21.21",
+    "score": "0.0",
+    "severity": "",
+    "status": "Released",
+    "last_updated": "2025-12-19 05:00:40.874276"
   }
 ]

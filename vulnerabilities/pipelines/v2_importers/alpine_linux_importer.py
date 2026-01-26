@@ -198,6 +198,7 @@ def load_advisories(
             continue
         # fixed_vulns is a list of strings and each string is a space-separated
         # list of aliases and CVES
+        aliases = set()
         for vuln_ids in fixed_vulns:
             if not isinstance(vuln_ids, str):
                 if logger:
@@ -214,26 +215,27 @@ def load_advisories(
                         level=logging.DEBUG,
                     )
                 continue
-            aliases = vuln_ids
+            aliases.update(vuln_ids)
 
+        for vuln_id in aliases:
             references = []
-            for reference_id in vuln_ids:
-                if reference_id.startswith("XSA"):
-                    references.append(XsaReferenceV2.from_id(xsa_id=reference_id))
 
-                elif reference_id.startswith("ZBX"):
-                    references.append(ZbxReferenceV2.from_id(zbx_id=reference_id))
+            if vuln_id.startswith("XSA"):
+                references.append(XsaReferenceV2.from_id(xsa_id=vuln_id))
 
-                elif reference_id.startswith("wnpa-sec"):
-                    references.append(WireSharkReferenceV2.from_id(wnpa_sec_id=reference_id))
+            elif vuln_id.startswith("ZBX"):
+                references.append(ZbxReferenceV2.from_id(zbx_id=vuln_id))
 
-                elif reference_id.startswith("CVE"):
-                    references.append(
-                        ReferenceV2(
-                            reference_id=reference_id,
-                            url=f"https://nvd.nist.gov/vuln/detail/{reference_id}",
-                        )
+            elif vuln_id.startswith("wnpa-sec"):
+                references.append(WireSharkReferenceV2.from_id(wnpa_sec_id=vuln_id))
+
+            elif vuln_id.startswith("CVE"):
+                references.append(
+                    ReferenceV2(
+                        reference_id=vuln_id,
+                        url=f"https://nvd.nist.gov/vuln/detail/{vuln_id}",
                     )
+                )
 
             qualifiers = {
                 "distroversion": distroversion,
@@ -290,12 +292,11 @@ def load_advisories(
                     )
                 )
 
-            for cve in aliases:
-                advisory_id = f"{pkg_infos['name']}/{qualifiers['distroversion']}/{cve}"
-                yield AdvisoryData(
-                    advisory_id=advisory_id,
-                    aliases=[],
-                    references_v2=references,
-                    affected_packages=affected_packages,
-                    url=url,
-                )
+            advisory_id = f"{pkg_infos['name']}/{qualifiers['distroversion']}/{version}/{vuln_id}"
+            yield AdvisoryData(
+                advisory_id=advisory_id,
+                aliases=[vuln_id],
+                references_v2=references,
+                affected_packages=affected_packages,
+                url=url,
+            )

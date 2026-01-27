@@ -633,8 +633,9 @@ def compute_content_id(advisory_data):
         normalized_data["url"] = advisory_data.url
 
     elif isinstance(advisory_data, AdvisoryData):
-        if advisory_data.references_v2:
+        if advisory_data.references_v2 or advisory_data.severities or advisory_data.patches:
             normalized_data = {
+                "advisory_id": normalize_text(advisory_data.advisory_id),
                 "aliases": normalize_list(advisory_data.aliases),
                 "summary": normalize_text(advisory_data.summary),
                 "affected_packages": [
@@ -645,6 +646,9 @@ def compute_content_id(advisory_data):
                 ],
                 "severities": [
                     sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev
+                ],
+                "patches": [
+                    patch.to_dict() for patch in normalize_list(advisory_data.patches) if patch
                 ],
                 "weaknesses": normalize_list(advisory_data.weaknesses),
             }
@@ -665,7 +669,6 @@ def compute_content_id(advisory_data):
 
     normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
     content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
-
     return content_id
 
 

@@ -16,6 +16,7 @@ import requests
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 
 
 class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -47,7 +48,6 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
         """Yield AdvisoryData using a zipped data dump of OSV data"""
-        from vulnerabilities.importers.osv import parse_advisory_data_v2
 
         with ZipFile(BytesIO(self.advisory_zip)) as zip_file:
             for file_name in zip_file.namelist():
@@ -60,7 +60,7 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 with zip_file.open(file_name) as f:
                     vul_info = json.load(f)
                     advisory_text = f.read()
-                    yield parse_advisory_data_v2(
+                    yield parse_advisory_data_v3(
                         raw_data=vul_info,
                         supported_ecosystems=["pypi"],
                         advisory_url=self.url,

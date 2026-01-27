@@ -1,0 +1,60 @@
+{
+  "advisory_id": "GHSA-8hxh-r6f7-jf45",
+  "aliases": [],
+  "summary": "Memory exhaustion in http4s-async-http-client with large or malicious compressed responses\n### Impact\nA server we connect to with http4s-async-http-client could theoretically respond with a large or malicious compressed stream and exhaust memory in the client JVM.  It does not affect http4s servers, other client backends, or clients that speak only to trusted servers.  This is related to a transitive dependency on netty-codec-4.1.45.Final, which is affected by [CVE-2020-11612](https://app.snyk.io/vuln/SNYK-JAVA-IONETTY-564897).\n\n### Patches\nUpgrade to http4s-async-http-client >= 0.21.8.  All 1.0 milestones are also safe.\n\n### Workarounds\nAdd an explicit runtime dependency on async-http-client's netty dependencies that evicts them to an unaffected version:\n\n```scala\nlibraryDependencies ++= Seq(\n  \"io.netty\" %  \"netty-codec\"         % \"4.1.53.Final\" % Runtime,\n  \"io.netty\" %  \"netty-codec-socks\"   % \"4.1.53.Final\" % Runtime,\n  \"io.netty\" %  \"netty-handler-proxy\" % \"4.1.53.Final\" % Runtime,\n  \"io.netty\" %  \"netty-common\"        % \"4.1.53.Final\" % Runtime,\n  \"io.netty\" %  \"netty-transport\"     % \"4.1.53.Final\" % Runtime,\n  \"io.netty\" %  \"netty-handler\"       % \"4.1.53.Final\" % Runtime,\n  \"io.netty\" %  \"netty-resolver-dns\"  % \"4.1.53.Final\" % Runtime\n)\n```\n\n### References\n* https://app.snyk.io/vuln/SNYK-JAVA-IONETTY-564897\n* https://github.com/http4s/http4s/issues/3681\n\n### For more information\nIf you have any questions or comments about this advisory:\n* Open an issue in [http4s](https://github.com/http4s/http4s/issues/new)\n* Contact a maintainer privately per [http4s' security policy](https://github.com/http4s/http4s/blob/master/SECURITY.md#reporting-a-vulnerability)",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "maven",
+        "namespace": "org.http4s",
+        "name": "http4s-async-http-client_2.13",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:maven/<=0.21.7",
+      "fixed_version_range": "vers:maven/0.21.8",
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "maven",
+        "namespace": "org.http4s",
+        "name": "http4s-async-http-client_2.12",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:maven/<=0.21.7",
+      "fixed_version_range": "vers:maven/0.21.8",
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    }
+  ],
+  "references_v2": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/http4s/http4s/security/advisories/GHSA-8hxh-r6f7-jf45"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/http4s/http4s"
+    }
+  ],
+  "patches": [],
+  "severities": [
+    {
+      "system": "generic_textual",
+      "value": "LOW",
+      "scoring_elements": ""
+    }
+  ],
+  "date_published": "2020-10-16T17:03:43+00:00",
+  "weaknesses": [
+    400
+  ],
+  "url": "https://test.com"
+}

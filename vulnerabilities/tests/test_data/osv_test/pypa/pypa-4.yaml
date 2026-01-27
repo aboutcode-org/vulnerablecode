@@ -1,0 +1,46 @@
+affected:
+- package:
+    ecosystem: PyPI
+    name: ansible-runner
+    purl: pkg:pypi/ansible-runner
+  ranges:
+  - events:
+    - introduced: 2.0.0
+    - fixed: 2.1.0
+    type: ECOSYSTEM
+  versions:
+  - 2.0.0
+  - 2.0.1
+  - 2.0.2
+  - 2.0.3
+  - 2.0.4
+  - 2.1.0.0a1
+  - 2.1.0.0a2
+  - 2.1.0.0b1
+aliases:
+- CVE-2021-3702
+- GHSA-772j-xvf9-qpf5
+details: A race condition flaw was found in ansible-runner, where an attacker could
+  watch for rapid creation and deletion of a temporary directory, substitute their
+  directory at that name, and then have access to ansible-runner's private_data_dir
+  the next time ansible-runner made use of the private_data_dir. The highest Threat
+  out of this flaw is to integrity and confidentiality.
+id: PYSEC-2022-43068
+modified: '2024-11-25T18:33:04.123836Z'
+published: '2022-08-23T16:15:00Z'
+references:
+- type: REPORT
+  url: https://bugzilla.redhat.com/show_bug.cgi?id=1977965
+- type: FIX
+  url: https://bugzilla.redhat.com/show_bug.cgi?id=1977965
+- type: ADVISORY
+  url: https://bugzilla.redhat.com/show_bug.cgi?id=1977965
+- type: ADVISORY
+  url: https://access.redhat.com/security/cve/CVE-2021-3702
+- type: FIX
+  url: https://github.com/ansible/ansible-runner/pull/742/commits
+- type: WEB
+  url: https://github.com/ansible/ansible-runner/pull/742/commits
+severity:
+- score: CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N
+  type: CVSS_V3

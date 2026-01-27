@@ -1,0 +1,53 @@
+{
+  "advisory_id": "OSV-2025-68",
+  "aliases": [],
+  "summary": "UNKNOWN READ in std::__1::__function::__func<cv::PngDecoder::compose_frame\nOSS-Fuzz report: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=392318892\n\n```\nCrash type: UNKNOWN READ\nCrash state:\nstd::__1::__function::__func<cv::PngDecoder::compose_frame\ncv::ParallelLoopBodyWrapper::operator\ncv::ThreadPool::run\n```",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "generic",
+        "namespace": "",
+        "name": "opencv",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:generic/4.11.0|5.0.0-alpha",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [
+        {
+          "vcs_url": "https://github.com/opencv/opencv",
+          "commit_hash": "b4d03256663b6ceb2994c367be4664f282c9f1ec",
+          "patch_text": null,
+          "patch_checksum": null
+        }
+      ],
+      "fixed_by_commit_patches": [
+        {
+          "vcs_url": "https://github.com/opencv/opencv",
+          "commit_hash": "c21d0ad9d08d364542bb4a6eb971ee3051ccba63",
+          "patch_text": null,
+          "patch_checksum": null
+        },
+        {
+          "vcs_url": "https://github.com/opencv/opencv",
+          "commit_hash": "43cebe52eba056d9fbb1115928cf698ae44abd60",
+          "patch_text": null,
+          "patch_checksum": null
+        }
+      ]
+    }
+  ],
+  "references_v2": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=392318892"
+    }
+  ],
+  "patches": [],
+  "severities": [],
+  "date_published": "2025-01-28T00:00:46.845996+00:00",
+  "weaknesses": [],
+  "url": "https://test.com"
+}

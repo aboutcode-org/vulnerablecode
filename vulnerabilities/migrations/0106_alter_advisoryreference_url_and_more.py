@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="advisoryseverity",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     models.Q(("value__isnull", False), models.Q(("value", ""), _negated=True)),
                     models.Q(
                         ("scoring_elements__isnull", False),

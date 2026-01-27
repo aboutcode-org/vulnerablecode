@@ -208,12 +208,34 @@ class VulnerabilitySeverity(models.Model):
         help_text="Supporting scoring elements used to compute the score values. "
         "For example a CVSS vector string as used to compute a CVSS score.",
     )
+    
+    scoring_elements_data = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="The parsed data from the scoring elements."
+    )
 
     published_at = models.DateTimeField(
         blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
     )
 
     objects = BaseQuerySet.as_manager()
+
+    def save(self, *args, **kwargs):
+        if self.scoring_elements and self.scoring_system in SCORING_SYSTEMS:
+            try:
+                self.scoring_elements_data = SCORING_SYSTEMS[self.scoring_system].get(
+                    self.scoring_elements
+                )
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+                Exception,
+            ):
+                self.scoring_elements_data = {}
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "Vulnerability severities"
@@ -2590,7 +2612,7 @@ class AdvisorySeverity(models.Model):
         unique_together = ("url", "scoring_system", "value", "scoring_elements", "published_at")
         constraints = [
             models.CheckConstraint(
-                check=(
+                condition=(
                     Q(value__isnull=False) & ~Q(value="")
                     | Q(scoring_elements__isnull=False) & ~Q(scoring_elements="")
                 ),
@@ -2788,7 +2810,7 @@ class Patch(models.Model):
         unique_together = ["patch_checksum", "patch_url"]
         constraints = [
             models.CheckConstraint(
-                check=(
+                condition=(
                     Q(patch_url__isnull=False) & ~Q(patch_url="")
                     | Q(patch_text__isnull=False) & ~Q(patch_text="")
                 ),

@@ -100,7 +100,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="patch",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     models.Q(
                         ("patch_url__isnull", False), models.Q(("patch_url", ""), _negated=True)
                     ),

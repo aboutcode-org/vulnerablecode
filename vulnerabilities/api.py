@@ -263,7 +263,9 @@ class VulnerabilitySerializer(BaseResourceSerializer):
             if s.scoring_system == EPSS.identifier:
                 continue
 
-            if s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
+            if s.scoring_elements_data:
+                severity_vectors.append(s.scoring_elements_data)
+            elif s.scoring_elements and s.scoring_system in SCORING_SYSTEMS:
                 try:
                     vector_values = SCORING_SYSTEMS[s.scoring_system].get(s.scoring_elements)
                     severity_vectors.append(vector_values)

@@ -70,6 +70,7 @@ from vulnerabilities.pipelines.v2_importers import (
 )
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
+from vulnerabilities.pipelines.v2_importers import pysec_live_importer as pysec_live_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
 from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
@@ -139,5 +140,11 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+    ]
+)
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        pysec_live_importer_v2.PySecLiveImporterPipeline,
     ]
 )

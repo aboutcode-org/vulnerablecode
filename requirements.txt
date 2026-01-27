@@ -126,3 +126,4 @@ wcwidth==0.2.5
 websocket-client==0.59.0
 yarl==1.7.2
 zipp==3.19.1
+PyGithub==2.6.1

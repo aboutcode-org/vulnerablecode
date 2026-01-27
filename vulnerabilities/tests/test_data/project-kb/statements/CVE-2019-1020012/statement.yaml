@@ -1,0 +1,9 @@
+vulnerability_id: CVE-2019-1020012
+notes:
+- links: []
+  text: parse-server before 3.4.1 allows DoS after any POST to a volatile class.
+fixes:
+- id: DEFAULT_BRANCH
+  commits:
+  - id: 8709daf698ea69b59268cb66f0f7cee75b52daa5
+    repository: https://github.com/parse-community/parse-server

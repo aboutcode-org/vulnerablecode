@@ -10,7 +10,11 @@
 import json
 from pathlib import Path
 
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import nvd_importer
+from vulnerabilities.severity_systems import Cvssv2ScoringSystem
+from vulnerabilities.severity_systems import Cvssv3ScoringSystem
+from vulnerabilities.severity_systems import Cvssv4ScoringSystem
 from vulnerabilities.tests.util_tests import VULNERABLECODE_REGEN_TEST_FIXTURES as REGEN
 
 TEST_DATA = Path(__file__).parent.parent / "test_data" / "nvd"
@@ -76,96 +80,510 @@ def test_to_advisories_marks_rejected_cve(regen=REGEN):
 
 # TODO: use a JSON fixtures instead
 def get_test_cve_item():
-
     return {
         "cve": {
-            "data_type": "CVE",
-            "data_format": "MITRE",
-            "data_version": "4.0",
-            "CVE_data_meta": {"ID": "CVE-2005-4895", "ASSIGNER": "cve@mitre.org"},
-            "problemtype": {
-                "problemtype_data": [{"description": [{"lang": "en", "value": "CWE-189"}]}]
-            },
-            "references": {
-                "reference_data": [
-                    {
-                        "url": "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
-                        "name": "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
-                        "refsource": "CONFIRM",
-                        "tags": [],
-                    },
-                    {
-                        "url": "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
-                        "name": "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
-                        "refsource": "MISC",
-                        "tags": [],
-                    },
-                ]
-            },
-            "description": {
-                "description_data": [
-                    {
-                        "lang": "en",
-                        "value": "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools before 0.4 make it easier for context-dependent attackers to perform memory-related attacks such as buffer overflows via a large size value, which causes less memory to be allocated than expected.",
-                    }
-                ]
-            },
-        },
-        "configurations": {
-            "CVE_data_version": "4.0",
-            "nodes": [
+            "id": "CVE-2025-45988",
+            "sourceIdentifier": "cve@mitre.org",
+            "published": "2025-06-13T12:15:34.403",
+            "lastModified": "2025-07-10T12:16:15.107",
+            "vulnStatus": "Analyzed",
+            "cveTags": [],
+            "descriptions": [
                 {
-                    "operator": "OR",
-                    "cpe_match": [
-                        {
-                            "vulnerable": True,
-                            "cpe23Uri": "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
+                    "lang": "en",
+                    "value": "Blink routers BL-WR9000 V2.4.9 , BL-AC2100_AZ3 V1.0.4, BL-X10_AC8 v1.0.5 , BL-LTE300 v1.2.3, BL-F1200_AT1 v1.0.0, BL-X26_AC8 v1.2.8, BLAC450M_AE4 v4.0.0 and BL-X26_DA3 v1.2.7 were discovered to contain multiple command injection vulnerabilities via the cmd parameter in the bs_SetCmd function.",
+                },
+                {
+                    "lang": "es",
+                    "value": "Se descubrió que los enrutadores Blink BL-WR9000 V2.4.9, BL-AC2100_AZ3 V1.0.4, BL-X10_AC8 v1.0.5, BL-LTE300 v1.2.3, BL-F1200_AT1 v1.0.0, BL-X26_AC8 v1.2.8, BLAC450M_AE4 v4.0.0 y BL-X26_DA3 v1.2.7 contenían múltiples vulnerabilidades de inyección de comandos a través del parámetro cmd en la función bs_SetCmd.",
+                },
+            ],
+            "metrics": {
+                "cvssMetricV40": [
+                    {
+                        "source": "cna@vuldb.com",
+                        "type": "Secondary",
+                        "cvssData": {
+                            "version": "4.0",
+                            "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                            "baseScore": 5.3,
+                            "baseSeverity": "MEDIUM",
+                            "attackVector": "NETWORK",
+                            "attackComplexity": "LOW",
+                            "attackRequirements": "NONE",
+                            "privilegesRequired": "LOW",
+                            "userInteraction": "NONE",
+                            "vulnConfidentialityImpact": "LOW",
+                            "vulnIntegrityImpact": "LOW",
+                            "vulnAvailabilityImpact": "LOW",
+                            "subConfidentialityImpact": "NONE",
+                            "subIntegrityImpact": "NONE",
+                            "subAvailabilityImpact": "NONE",
+                            "exploitMaturity": "NOT_DEFINED",
+                            "confidentialityRequirement": "NOT_DEFINED",
+                            "integrityRequirement": "NOT_DEFINED",
+                            "availabilityRequirement": "NOT_DEFINED",
+                            "modifiedAttackVector": "NOT_DEFINED",
+                            "modifiedAttackComplexity": "NOT_DEFINED",
+                            "modifiedAttackRequirements": "NOT_DEFINED",
+                            "modifiedPrivilegesRequired": "NOT_DEFINED",
+                            "modifiedUserInteraction": "NOT_DEFINED",
+                            "modifiedVulnConfidentialityImpact": "NOT_DEFINED",
+                            "modifiedVulnIntegrityImpact": "NOT_DEFINED",
+                            "modifiedVulnAvailabilityImpact": "NOT_DEFINED",
+                            "modifiedSubConfidentialityImpact": "NOT_DEFINED",
+                            "modifiedSubIntegrityImpact": "NOT_DEFINED",
+                            "modifiedSubAvailabilityImpact": "NOT_DEFINED",
+                            "Safety": "NOT_DEFINED",
+                            "Automatable": "NOT_DEFINED",
+                            "Recovery": "NOT_DEFINED",
+                            "valueDensity": "NOT_DEFINED",
+                            "vulnerabilityResponseEffort": "NOT_DEFINED",
+                            "providerUrgency": "NOT_DEFINED",
                         },
-                        {
-                            "vulnerable": True,
-                            "cpe23Uri": "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
+                    }
+                ],
+                "cvssMetricV31": [
+                    {
+                        "source": "cna@vuldb.com",
+                        "type": "Secondary",
+                        "cvssData": {
+                            "version": "3.1",
+                            "vectorString": "CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L",
+                            "baseScore": 3.5,
+                            "baseSeverity": "LOW",
+                            "attackVector": "ADJACENT_NETWORK",
+                            "attackComplexity": "LOW",
+                            "privilegesRequired": "LOW",
+                            "userInteraction": "NONE",
+                            "scope": "UNCHANGED",
+                            "confidentialityImpact": "NONE",
+                            "integrityImpact": "NONE",
+                            "availabilityImpact": "LOW",
                         },
-                        {
-                            "vulnerable": True,
-                            "cpe23Uri": "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
-                            "versionEndIncluding": "0.3",
+                        "exploitabilityScore": 2.1,
+                        "impactScore": 1.4,
+                    },
+                    {
+                        "source": "nvd@nist.gov",
+                        "type": "Primary",
+                        "cvssData": {
+                            "version": "3.1",
+                            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                            "baseScore": 7.5,
+                            "baseSeverity": "HIGH",
+                            "attackVector": "NETWORK",
+                            "attackComplexity": "LOW",
+                            "privilegesRequired": "NONE",
+                            "userInteraction": "NONE",
+                            "scope": "UNCHANGED",
+                            "confidentialityImpact": "NONE",
+                            "integrityImpact": "NONE",
+                            "availabilityImpact": "HIGH",
                         },
-                    ],
+                        "exploitabilityScore": 3.9,
+                        "impactScore": 3.6,
+                    },
+                ],
+                "cvssMetricV30": [
+                    {
+                        "source": "nvd@nist.gov",
+                        "type": "Primary",
+                        "cvssData": {
+                            "version": "3.0",
+                            "vectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                            "baseScore": 7.5,
+                            "baseSeverity": "HIGH",
+                            "attackVector": "NETWORK",
+                            "attackComplexity": "LOW",
+                            "privilegesRequired": "NONE",
+                            "userInteraction": "NONE",
+                            "scope": "UNCHANGED",
+                            "confidentialityImpact": "NONE",
+                            "integrityImpact": "NONE",
+                            "availabilityImpact": "HIGH",
+                        },
+                        "exploitabilityScore": 3.9,
+                        "impactScore": 3.6,
+                    }
+                ],
+                "cvssMetricV2": [
+                    {
+                        "source": "cna@vuldb.com",
+                        "type": "Secondary",
+                        "cvssData": {
+                            "version": "2.0",
+                            "vectorString": "AV:A/AC:L/Au:S/C:N/I:N/A:P",
+                            "baseScore": 2.7,
+                            "accessVector": "ADJACENT_NETWORK",
+                            "accessComplexity": "LOW",
+                            "authentication": "SINGLE",
+                            "confidentialityImpact": "NONE",
+                            "integrityImpact": "NONE",
+                            "availabilityImpact": "PARTIAL",
+                        },
+                        "baseSeverity": "LOW",
+                        "exploitabilityScore": 5.1,
+                        "impactScore": 2.9,
+                        "acInsufInfo": False,
+                        "obtainAllPrivilege": False,
+                        "obtainUserPrivilege": False,
+                        "obtainOtherPrivilege": False,
+                        "userInteractionRequired": False,
+                    }
+                ],
+            },
+            "weaknesses": [
+                {
+                    "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                    "type": "Secondary",
+                    "description": [{"lang": "en", "value": "CWE-77"}],
                 }
             ],
-        },
-        "impact": {
-            "baseMetricV2": {
-                "cvssV2": {
-                    "version": "2.0",
-                    "vectorString": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
-                    "accessVector": "NETWORK",
-                    "accessComplexity": "LOW",
-                    "authentication": "NONE",
-                    "confidentialityImpact": "NONE",
-                    "integrityImpact": "NONE",
-                    "availabilityImpact": "PARTIAL",
-                    "baseScore": 5.0,
+            "configurations": [
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:bl-wr9000_firmware:2.4.9:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "0D1A3280-9C15-4961-8C69-9ECE34528FDB",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:bl-wr9000:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "2D5ADB0D-6D03-448A-A0F3-7C238A20AF46",
+                                }
+                            ],
+                        },
+                    ],
                 },
-                "severity": "MEDIUM",
-                "exploitabilityScore": 10.0,
-                "impactScore": 2.9,
-                "obtainAllPrivilege": False,
-                "obtainUserPrivilege": False,
-                "obtainOtherPrivilege": False,
-                "userInteractionRequired": False,
-            }
-        },
-        "publishedDate": "2012-07-25T19:55Z",
-        "lastModifiedDate": "2012-08-09T04:00Z",
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:bl-ac1900_firmware:1.0.2:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "BE554304-8F2B-40A1-98CB-DE641B4CCE61",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:bl-ac1900:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "2C5CA5E8-C497-475E-B0CE-6F54B6E9BFA8",
+                                }
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:bl-ac2100_az3_firmware:1.0.4:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "05E31365-4655-4B8D-9B75-AE70292C12C3",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:bl-ac2100_az3:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "3B134A86-F380-4BE4-9CEC-5CBAE046CF8B",
+                                }
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:bl-x10_ac8_firmware:1.0.5:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "AAA6D548-72E1-435B-8EDB-50C1C258CE9C",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:bl-x10_ac8:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "B153FF75-DDAF-4B43-8D54-C8211C607C2C",
+                                }
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:bl-lte300_firmware:1.2.3:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "8907D058-539D-44B8-BC30-EC137B4C6841",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:bl-lte300:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "4CD2D0EC-F71B-4CD6-8013-EDCDE49B6BC9",
+                                }
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:bl-f1200_at1_firmware:1.0.0:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "3DD8A5B3-0FF1-4512-9AEB-68A801956085",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:bl-f1200_at1:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "9391FA6B-40EF-4A53-9B38-3F5EA0611970",
+                                }
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:bl-x26_ac8_firmware:1.2.8:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "FCE90D05-D32B-4C52-917C-024FB4814751",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:bl-x26_ac8:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "A13AD09A-4BF0-49B9-AB05-439D34413C81",
+                                }
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:blac450m_ae4_firmware:4.0.0:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "5422B990-7572-42A1-89C4-D8FEEEC066ED",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:blac450m_ae4:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "A469F008-B95F-480C-A677-43E6D448FEEB",
+                                }
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "operator": "AND",
+                    "nodes": [
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": True,
+                                    "criteria": "cpe:2.3:o:b-link:bl-x26_da3_firmware:1.2.7:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "D3D8F5C4-F1A2-4E88-A795-DEAC4E77B3C1",
+                                }
+                            ],
+                        },
+                        {
+                            "operator": "OR",
+                            "negate": False,
+                            "cpeMatch": [
+                                {
+                                    "vulnerable": False,
+                                    "criteria": "cpe:2.3:h:b-link:bl-x26_da3:-:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "1C8F576A-7D13-4311-9FDD-9BFB4E5705D8",
+                                }
+                            ],
+                        },
+                    ],
+                },
+            ],
+            "references": [
+                {
+                    "url": "https://github.com/glkfc/IoT-Vulnerability/blob/main/LB-LINK/LB-LINK_cmd%20Indicates%20the%20unauthorized%20command%20injection/The%20LB-LINK_cmd%20command%20is%20used%20to%20inject%20information.md",
+                    "source": "cve@mitre.org",
+                    "tags": ["Exploit"],
+                }
+            ],
+        }
     }
+
+
+def test_CveItem_severities():
+    expected_severities = [
+        VulnerabilitySeverity(
+            system=Cvssv4ScoringSystem(
+                identifier="cvssv4",
+                name="CVSSv4 Base Score",
+                url="https://www.first.org/cvss/v4-0/",
+                notes="CVSSv4 base score and " "vector",
+            ),
+            value="5.3",
+            scoring_elements="CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+            published_at=None,
+            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
+        ),
+        VulnerabilitySeverity(
+            system=Cvssv3ScoringSystem(
+                identifier="cvssv3.1",
+                name="CVSSv3.1 Base Score",
+                url="https://www.first.org/cvss/v3-1/",
+                notes="CVSSv3.1 base score and vector",
+            ),
+            value="3.5",
+            scoring_elements="CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L",
+            published_at=None,
+            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
+        ),
+        VulnerabilitySeverity(
+            system=Cvssv3ScoringSystem(
+                identifier="cvssv3.1",
+                name="CVSSv3.1 Base Score",
+                url="https://www.first.org/cvss/v3-1/",
+                notes="CVSSv3.1 base score and vector",
+            ),
+            value="7.5",
+            scoring_elements="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            published_at=None,
+            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
+        ),
+        VulnerabilitySeverity(
+            system=Cvssv3ScoringSystem(
+                identifier="cvssv3",
+                name="CVSSv3 Base Score",
+                url="https://www.first.org/cvss/v3-0/",
+                notes="CVSSv3 base score and " "vector",
+            ),
+            value="7.5",
+            scoring_elements="CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+            published_at=None,
+            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
+        ),
+        VulnerabilitySeverity(
+            system=Cvssv2ScoringSystem(
+                identifier="cvssv2",
+                name="CVSSv2 Base Score",
+                url="https://www.first.org/cvss/v2/",
+                notes="CVSSv2 base score and vector",
+            ),
+            value="2.7",
+            scoring_elements="AV:A/AC:L/Au:S/C:N/I:N/A:P",
+            published_at=None,
+            url="https://nvd.nist.gov/vuln/detail/CVE-2025-45988",
+        ),
+    ]
+
+    found_severities = nvd_importer.CveItem(cve_item=get_test_cve_item()).severities
+    assert found_severities == expected_severities
 
 
 def test_CveItem_cpes():
     expected_cpes = [
-        "cpe:2.3:a:csilvers:gperftools:0.1:*:*:*:*:*:*:*",
-        "cpe:2.3:a:csilvers:gperftools:0.2:*:*:*:*:*:*:*",
-        "cpe:2.3:a:csilvers:gperftools:*:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:bl-wr9000_firmware:2.4.9:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:bl-wr9000:-:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:bl-ac1900_firmware:1.0.2:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:bl-ac1900:-:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:bl-ac2100_az3_firmware:1.0.4:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:bl-ac2100_az3:-:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:bl-x10_ac8_firmware:1.0.5:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:bl-x10_ac8:-:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:bl-lte300_firmware:1.2.3:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:bl-lte300:-:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:bl-f1200_at1_firmware:1.0.0:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:bl-f1200_at1:-:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:bl-x26_ac8_firmware:1.2.8:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:bl-x26_ac8:-:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:blac450m_ae4_firmware:4.0.0:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:blac450m_ae4:-:*:*:*:*:*:*:*",
+        "cpe:2.3:o:b-link:bl-x26_da3_firmware:1.2.7:*:*:*:*:*:*:*",
+        "cpe:2.3:h:b-link:bl-x26_da3:-:*:*:*:*:*:*:*",
     ]
 
     found_cpes = nvd_importer.CveItem(cve_item=get_test_cve_item()).cpes
@@ -182,10 +600,10 @@ def test_is_related_to_hardware():
 
 def test_CveItem_summary_with_single_summary():
     expected_summary = (
-        "Multiple integer overflows in TCMalloc (tcmalloc.cc) in gperftools "
-        "before 0.4 make it easier for context-dependent attackers to perform memory-related "
-        "attacks such as buffer overflows via a large size value, which causes less memory to "
-        "be allocated than expected."
+        "Blink routers BL-WR9000 V2.4.9 , BL-AC2100_AZ3 V1.0.4, BL-X10_AC8 v1.0.5 , "
+        "BL-LTE300 v1.2.3, BL-F1200_AT1 v1.0.0, BL-X26_AC8 v1.2.8, BLAC450M_AE4 "
+        "v4.0.0 and BL-X26_DA3 v1.2.7 were discovered to contain multiple command "
+        "injection vulnerabilities via the cmd parameter in the bs_SetCmd function."
     )
 
     assert nvd_importer.CveItem(cve_item=get_test_cve_item()).summary == expected_summary
@@ -193,8 +611,7 @@ def test_CveItem_summary_with_single_summary():
 
 def test_CveItem_reference_urls():
     expected_urls = [
-        "http://code.google.com/p/gperftools/source/browse/tags/perftools-0.4/ChangeLog",
-        "http://kqueue.org/blog/2012/03/05/memory-allocator-security-revisited/",
+        "https://github.com/glkfc/IoT-Vulnerability/blob/main/LB-LINK/LB-LINK_cmd%20Indicates%20the%20unauthorized%20command%20injection/The%20LB-LINK_cmd%20command%20is%20used%20to%20inject%20information.md"
     ]
 
     assert nvd_importer.CveItem(cve_item=get_test_cve_item()).reference_urls == expected_urls

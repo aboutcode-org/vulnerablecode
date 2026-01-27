@@ -43,6 +43,7 @@ from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
 from vulnerabilities.pipelines.v2_importers import aosp_importer as aosp_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
+from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
@@ -78,6 +79,7 @@ from vulnerabilities.utils import create_registry
 IMPORTERS_REGISTRY = create_registry(
     [
         archlinux_importer_v2.ArchLinuxImporterPipeline,
+        apache_kafka_importer_v2.ApacheKafkaImporterPipeline,
         nvd_importer_v2.NVDImporterPipeline,
         elixir_security_importer_v2.ElixirSecurityImporterPipeline,
         npm_importer_v2.NpmImporterPipeline,

@@ -1,0 +1,51 @@
+[
+  {
+    "advisory_id": "GLIBC-SA-2023-0001",
+    "aliases": [
+      "CVE-2023-25139"
+    ],
+    "summary": "printf: incorrect output for integers with thousands separator and width field\nWhen the printf family of functions is called with a format specifier\nthat uses an <apostrophe> (enable grouping) and a minimum width\nspecifier, the resulting output could be larger than reasonably expected\nby a caller that computed a tight bound on the buffer size.  The\nresulting larger than expected output could result in a buffer overflow\nin the printf family of functions.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "generic",
+          "namespace": "gnu",
+          "name": "gcc",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:generic/2.37.0",
+        "fixed_version_range": "vers:generic/2.37.0-4|2.38.0",
+        "introduced_by_commit_patches": [
+          {
+            "vcs_url": "https://sourceware.org/git/glibc.git",
+            "commit_hash": "e88b9f0e5cc50cab57a299dc7efe1a4eb385161d",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://sourceware.org/git/glibc.git",
+            "commit_hash": "c980549cc6a1c03c23cc2fe3e7b0fe626a0364b0",
+            "patch_text": null,
+            "patch_checksum": null
+          },
+          {
+            "vcs_url": "https://sourceware.org/git/glibc.git",
+            "commit_hash": "07b9521fc6369d000216b96562ff7c0ed32a16c4",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      }
+    ],
+    "references_v2": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2023-02-02T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://sourceware.org/git/glibc.git"
+  }
+]

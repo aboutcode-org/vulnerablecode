@@ -10,11 +10,16 @@
 import logging
 from pathlib import Path
 from typing import Iterable
+from typing import List
+from typing import Optional
 
+import requests
+import saneyaml
 from dateutil.parser import parse
 from packageurl import PackageURL
 from pytz import UTC
 from univers.version_range import GemVersionRange
+from univers.versions import RubygemsVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -52,7 +57,69 @@ class RubyImporter(Importer):
     SOFTWARE.
     """
 
+    def __init__(self, purl=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.purl = purl
+        if self.purl and self.purl.type not in ("gem", "ruby"):
+            print(
+                f"Warning: PURL type {self.purl.type} is not 'gem' or 'ruby, may not match any advisories"
+            )
+
     def advisory_data(self) -> Iterable[AdvisoryData]:
+        if not self.purl:
+            return self._batch_advisory_data()
+
+        return self._package_first_advisory_data()
+
+    def _package_first_advisory_data(self) -> Iterable[AdvisoryData]:
+        if self.purl.type not in ("gem", "ruby"):
+            return []
+
+        try:
+            yaml_files = []
+
+            if self.purl.type == "gem":
+                files = self._fetch_github_directory_content(f"gems/{self.purl.name}")
+                yaml_files.extend(
+                    [
+                        (file, "gems")
+                        for file in files
+                        if file.endswith(".yml") and not file.startswith("OSVDB-")
+                    ]
+                )
+            elif self.purl.type == "ruby":
+                files = self._fetch_github_directory_content("rubies")
+                yaml_files.extend(
+                    [
+                        (file, "rubies")
+                        for file in files
+                        if file.endswith(".yml") and not file.startswith("OSVDB-")
+                    ]
+                )
+
+            for file_path, schema_type in yaml_files:
+                content = self._fetch_github_file_content(file_path)
+                if not content:
+                    continue
+
+                raw_data = saneyaml.load(content)
+
+                if schema_type == "rubies" and raw_data.get("engine") != self.purl.name:
+                    continue
+
+                advisory_url = (
+                    f"https://github.com/rubysec/ruby-advisory-db/blob/master/{file_path}"
+                )
+                advisory = parse_ruby_advisory(raw_data, schema_type, advisory_url)
+
+                if advisory and self._advisory_affects_purl(advisory):
+                    yield advisory
+
+        except Exception as e:
+            logger.error(f"Error fetching advisories for {self.purl}: {str(e)}")
+            return []
+
+    def _batch_advisory_data(self) -> Iterable[AdvisoryData]:
         try:
             self.clone(self.repo_url)
             base_path = Path(self.vcs_response.dest_dir)
@@ -71,6 +138,56 @@ class RubyImporter(Importer):
         finally:
             if self.vcs_response:
                 self.vcs_response.delete()
+
+    def _advisory_affects_purl(self, advisory: AdvisoryData) -> bool:
+        if not self.purl:
+            return True
+
+        for affected_package in advisory.affected_packages:
+            if affected_package.package.type != self.purl.type:
+                continue
+
+            if affected_package.package.name != self.purl.name:
+                continue
+
+            if self.purl.version and affected_package.affected_version_range:
+                purl_version = RubygemsVersion(self.purl.version)
+
+                if purl_version not in affected_package.affected_version_range:
+                    continue
+
+            return True
+
+        return False
+
+    def _fetch_github_directory_content(self, path: str) -> List[str]:
+        url = f"https://api.github.com/repos/rubysec/ruby-advisory-db/contents/{path}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            logger.error(f"Failed to fetch directory contents from GitHub: {response.status_code}")
+            return []
+
+        contents = response.json()
+        file_paths = []
+
+        for item in contents:
+            if item["type"] == "file":
+                file_paths.append(item["path"])
+            elif item["type"] == "dir":
+                file_paths.extend(self._fetch_github_directory_content(item["path"]))
+
+        return file_paths
+
+    def _fetch_github_file_content(self, path: str) -> Optional[str]:
+        url = f"https://api.github.com/repos/rubysec/ruby-advisory-db/contents/{path}"
+        response = requests.get(url, headers={"Accept": "application/vnd.github.v3.raw"})
+
+        if response.status_code != 200:
+            logger.error(f"Failed to fetch file content from GitHub: {response.status_code}")
+            return None
+
+        return response.text
 
 
 def parse_ruby_advisory(record, schema_type, advisory_url):

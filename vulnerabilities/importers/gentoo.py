@@ -103,15 +103,33 @@ class GentooImporter(Importer):
             purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns)
             safe_versions, affected_versions = GentooImporter.get_safe_and_affected_versions(pkg)
 
+            # for version in safe_versions:
+            #     constraints.append(
+            #         VersionConstraint(version=GentooVersion(version), comparator="=").invert()
+            #     )
+
+            # for version in affected_versions:
+            #     constraints.append(
+            #         VersionConstraint(version=GentooVersion(version), comparator="=")
+            #     )
+
+            def clean_ver(v):
+                # removes ":something" which univers rejects
+                return v.split(":", 1)[0]
+            
             for version in safe_versions:
-                constraints.append(
-                    VersionConstraint(version=GentooVersion(version), comparator="=").invert()
-                )
+                try:
+                    v_obj = GentooVersion(version)
+                except Exception:
+                    v_obj = GentooVersion(clean_ver(version))
+                constraints.append(VersionConstraint(version=v_obj, comparator="=").invert())
 
             for version in affected_versions:
-                constraints.append(
-                    VersionConstraint(version=GentooVersion(version), comparator="=")
-                )
+                try:
+                    v_obj = GentooVersion(version)
+                except Exception:
+                    v_obj = GentooVersion(clean_ver(version))
+                constraints.append(VersionConstraint(version=v_obj, comparator="="))
 
             if not constraints:
                 continue

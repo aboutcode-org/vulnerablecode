@@ -52,7 +52,7 @@ class CollectFixCommitsPipeline(VulnerableCodePipeline):
         )
 
         for apv in progress.iter(
-            affected_by_package_related_vulnerabilities.paginated(per_page=500)
+            affected_by_package_related_vulnerabilities.iterator(chunk_size=500)
         ):
             vulnerability = apv.vulnerability
             for reference in vulnerability.references.all():

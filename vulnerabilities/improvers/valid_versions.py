@@ -64,8 +64,8 @@ class ValidVersionImprover(Improver):
     @property
     def interesting_advisories(self) -> QuerySet:
         if issubclass(self.importer, VulnerableCodeBaseImporterPipeline):
-            return Advisory.objects.filter(Q(created_by=self.importer.pipeline_id)).paginated()
-        return Advisory.objects.filter(Q(created_by=self.importer.qualified_name)).paginated()
+            return Advisory.objects.filter(Q(created_by=self.importer.pipeline_id)).iterator()
+        return Advisory.objects.filter(Q(created_by=self.importer.qualified_name)).iterator()
 
     def get_package_versions(
         self, package_url: PackageURL, until: Optional[datetime] = None

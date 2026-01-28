@@ -278,7 +278,6 @@ def parse_tomcat_security(html_content):
 
         for p in container.find_all("p", recursive=False):
 
-
             strong = p.find("strong")
             cve_link = p.find("a", href=re.compile(r"CVE-"))
 

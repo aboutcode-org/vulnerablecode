@@ -10,17 +10,17 @@
 import types
 from unittest.mock import patch
 
-from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import (
-    ApacheTomcatImporterPipeline,
-    parse_tomcat_security,
-    TomcatAdvisoryData,
-)
-from vulnerabilities.importer import AdvisoryData
-from vulnerabilities.importer import AffectedPackageV2
 from packageurl import PackageURL
 from univers.version_range import ApacheVersionRange
 from univers.version_range import MavenVersionRange
 
+from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import (
+    ApacheTomcatImporterPipeline,
+)
+from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import TomcatAdvisoryData
+from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import parse_tomcat_security
 
 TOMCAT_SECURITY_HTML = """
 <html>
@@ -51,7 +51,6 @@ TOMCAT_SECURITY_HTML = """
 </body>
 </html>
 """
-
 
 
 def test_parse_tomcat_security_multiple_fixed_sections_same_cve():
@@ -129,15 +128,11 @@ def test_apache_and_maven_version_ranges_created(mock_get):
     advisory = list(pipeline.collect_advisories())[0]
 
     apache_ranges = [
-        p.affected_version_range
-        for p in advisory.affected_packages
-        if p.package.type == "apache"
+        p.affected_version_range for p in advisory.affected_packages if p.package.type == "apache"
     ]
 
     maven_ranges = [
-        p.affected_version_range
-        for p in advisory.affected_packages
-        if p.package.type == "maven"
+        p.affected_version_range for p in advisory.affected_packages if p.package.type == "maven"
     ]
 
     assert len(apache_ranges) == 2

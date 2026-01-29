@@ -17,7 +17,6 @@ import dateparser
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from packageurl import PackageURL
-from univers.version_constraint import InvalidConstraintsError
 from univers.version_constraint import VersionConstraint
 from univers.version_constraint import validate_comparators
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
@@ -49,7 +48,7 @@ PURL_TYPE_BY_OSV_ECOSYSTEM = {
     "rubygems": "gem",
     "go": "golang",
     "hex": "hex",
-    "cargo": "cargo",
+    "crates.io": "cargo",
 }
 
 

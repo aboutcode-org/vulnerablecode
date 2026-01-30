@@ -7,14 +7,15 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
+from pathlib import Path
 from typing import Any
 from typing import Iterable
 from typing import List
 from typing import Mapping
-from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup
+from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from univers.version_range import AlpineLinuxVersionRange
 from univers.versions import InvalidVersion
@@ -26,7 +27,7 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.references import WireSharkReferenceV2
 from vulnerabilities.references import XsaReferenceV2
 from vulnerabilities.references import ZbxReferenceV2
-from vulnerabilities.utils import fetch_response
+from vulnerabilities.utils import get_advisory_url
 
 
 class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -35,90 +36,59 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "alpine_linux_importer_v2"
     spdx_license_expression = "CC-BY-SA-4.0"
     license_url = "https://secdb.alpinelinux.org/license.txt"
-    url = "https://secdb.alpinelinux.org/"
+    repo_url = "git+https://github.com/aboutcode-org/aboutcode-mirror-alpine-secdb/"
 
     @classmethod
     def steps(cls):
-        return (cls.collect_and_store_advisories,)
+        return (
+            cls.clone,
+            cls.collect_and_store_advisories,
+        )
 
     def advisories_count(self) -> int:
-        return 0
+        base_path = Path(self.vcs_response.dest_dir) / "secdb"
+        count = 0
+
+        for json_file in base_path.rglob("*.json"):
+            data = json.loads(json_file.read_text(encoding="utf-8"))
+            for pkg in data.get("packages", []):
+                count += len(pkg.get("advisories", []))
+
+        return count
+
+    def clone(self):
+        self.log(f"Cloning `{self.repo_url}`")
+        self.vcs_response = fetch_via_vcs(self.repo_url)
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        page_response_content = fetch_response(self.url).content
-        advisory_directory_links = fetch_advisory_directory_links(
-            page_response_content, self.url, self.log
-        )
-        advisory_links = set()
-        visited_directories = set()
-        for advisory_directory_link in advisory_directory_links:
-            if advisory_directory_link in visited_directories:
-                continue
-
-            advisory_directory_page = fetch_response(advisory_directory_link).content
-            advisory_links.update(
-                fetch_advisory_links(advisory_directory_page, advisory_directory_link, self.log)
+        base_path = Path(self.vcs_response.dest_dir) / "secdb"
+        for file_path in base_path.glob("**/*.json"):
+            advisory_url = get_advisory_url(
+                file=file_path,
+                base_path=base_path,
+                url="https://github.com/aboutcode-org/aboutcode-mirror-alpine-secdb/blob/main/",
             )
 
-        for link in advisory_links:
-            record = fetch_response(link).json()
-            if not record["packages"]:
+            with open(file_path) as f:
+                record = json.load(f)
+
+            if not record or not record["packages"]:
                 self.log(
-                    f'"packages" not found in {link!r}',
+                    f'"packages" not found in {advisory_url!r}',
                     level=logging.DEBUG,
                 )
                 continue
-            yield from process_record(record=record, url=link, logger=self.log)
+            yield from process_record(record=record, url=advisory_url, logger=self.log)
 
+    def clean_downloads(self):
+        """Cleanup any temporary repository data."""
+        if self.vcs_response:
+            self.log(f"Removing cloned repository")
+            self.vcs_response.delete()
 
-def fetch_advisory_directory_links(
-    page_response_content: str,
-    base_url: str,
-    logger: callable = None,
-) -> List[str]:
-    """
-    Return a list of advisory directory links present in `page_response_content` html string
-    """
-    index_page = BeautifulSoup(page_response_content, features="lxml")
-    alpine_versions = [
-        link.text
-        for link in index_page.find_all("a")
-        if link.text.startswith("v") or link.text.startswith("edge")
-    ]
-
-    if not alpine_versions:
-        if logger:
-            logger(
-                f"No versions found in {base_url!r}",
-                level=logging.DEBUG,
-            )
-        return []
-
-    advisory_directory_links = [urljoin(base_url, version) for version in alpine_versions]
-
-    return advisory_directory_links
-
-
-def fetch_advisory_links(
-    advisory_directory_page: str,
-    advisory_directory_link: str,
-    logger: callable = None,
-) -> Iterable[str]:
-    """
-    Yield json file urls present in `advisory_directory_page`
-    """
-    advisory_directory_page = BeautifulSoup(advisory_directory_page, features="lxml")
-    anchor_tags = advisory_directory_page.find_all("a")
-    if not anchor_tags:
-        if logger:
-            logger(
-                f"No anchor tags found in {advisory_directory_link!r}",
-                level=logging.DEBUG,
-            )
-        return iter([])
-    for anchor_tag in anchor_tags:
-        if anchor_tag.text.endswith("json"):
-            yield urljoin(advisory_directory_link, anchor_tag.text)
+    def on_failure(self):
+        """Ensure cleanup is always performed on failure."""
+        self.clean_downloads()
 
 
 def check_for_attributes(record, logger) -> bool:
@@ -196,30 +166,14 @@ def load_advisories(
                     level=logging.DEBUG,
                 )
             continue
+
         # fixed_vulns is a list of strings and each string is a space-separated
         # list of aliases and CVES
-        aliases = set()
         for vuln_ids in fixed_vulns:
-            if not isinstance(vuln_ids, str):
-                if logger:
-                    logger(
-                        f"{vuln_ids!r} is not of `str` instance",
-                        level=logging.DEBUG,
-                    )
-                continue
-            vuln_ids = vuln_ids.strip().split()
-            if not vuln_ids:
-                if logger:
-                    logger(
-                        f"{vuln_ids!r} is empty",
-                        level=logging.DEBUG,
-                    )
-                continue
-            aliases.update(vuln_ids)
+            aliases = vuln_ids.strip().split(" ")
+            vuln_id = aliases[0]
 
-        for vuln_id in aliases:
             references = []
-
             if vuln_id.startswith("XSA"):
                 references.append(XsaReferenceV2.from_id(xsa_id=vuln_id))
 
@@ -295,7 +249,7 @@ def load_advisories(
             advisory_id = f"{pkg_infos['name']}/{qualifiers['distroversion']}/{version}/{vuln_id}"
             yield AdvisoryData(
                 advisory_id=advisory_id,
-                aliases=[vuln_id],
+                aliases=aliases,
                 references_v2=references,
                 affected_packages=affected_packages,
                 url=url,

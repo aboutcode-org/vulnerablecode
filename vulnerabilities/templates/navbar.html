@@ -1,6 +1,18 @@
 {% load utils %}
 
-<nav class="navbar is-dark mb-5 border-bottom-radius" role="navigation" aria-label="main navigation">
+
+{% if STAGING %}
+<div class="notification is-danger has-text-centered is-fixed-top my-0" style="border-radius: 0;">
+    <span class="icon">
+        <i class="fa fa-exclamation-triangle"></i>
+    </span>
+    <strong> Staging Environment:</strong>
+    Content and features may be unstable or change without notice.
+</div>
+{% endif %}
+
+<nav class="navbar is-dark mb-5 border-bottom-radius" role="navigation" aria-label="main navigation"
+    style="border-radius: 0;">
     <div class="navbar-brand ml-3">
         <a class="navbar-item is-size-4 has-text-weight-bold {% active_item 'home' %}" href="{% url 'home' %}">
             VulnerableCode<span class="nexb-orange">.</span>io
@@ -29,7 +41,7 @@
         <div class="navbar-item navbar-item is-cursor-help">
             <div class="dropdown is-right is-hoverable ">
                 <div class="dropdown-trigger has-text-grey-light">About</div>
-                    <div class="dropdown-menu navbar-hover-div" role="menu">
+                <div class="dropdown-menu navbar-hover-div" role="menu">
                     <div class="dropdown-content">
                         <div class="dropdown-item about-hover-div">
 
@@ -37,18 +49,19 @@
                             <ul>
                                 <li>
                                     Live chat at <a href="https://gitter.im/aboutcode-org/vulnerablecode">
-                                    https://gitter.im/aboutcode-org/vulnerablecode</a>
+                                        https://gitter.im/aboutcode-org/vulnerablecode</a>
                                 </li>
                                 <li>
-                                    Source code and support at <a href="https://github.com/nexB/vulnerablecode">https://github.com/nexB/vulnerablecode</a>
+                                    Source code and support at <a
+                                        href="https://github.com/nexB/vulnerablecode">https://github.com/nexB/vulnerablecode</a>
                                 </li>
                                 <li>
-                                    Docs at <a href=https://vulnerablecode.readthedocs.org/>
+                                    Docs at <a href=https://vulnerablecode.readthedocs.org />
                                     https://vulnerablecode.readthedocs.org/</a>
                                 </li>
                                 <li>
                                     Sponsored by NLnet <a href="https://nlnet.nl/project/vulnerabilitydatabase/">
-                                    https://nlnet.nl/project/vulnerabilitydatabase/</a> for
+                                        https://nlnet.nl/project/vulnerabilitydatabase/</a> for
                                     <a href="https://www.aboutcode.org/">https://www.aboutcode.org/</a>
                                 </li>
                             </ul>
@@ -59,7 +72,7 @@
         </div>
         <div class="navbar-item navbar-item is-cursor-help">
             <div class="dropdown-trigger has-text-grey-light">
-            v{{ VULNERABLECODE_VERSION }}
+                v{{ VULNERABLECODE_VERSION }}
             </div>
         </div>
     </div>

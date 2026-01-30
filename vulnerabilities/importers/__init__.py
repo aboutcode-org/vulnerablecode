@@ -46,6 +46,7 @@ from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apac
 from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_tomcat_importer as apache_tomcat_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
+from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
@@ -145,5 +146,19 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+        collect_fix_commits_v2.CollectNodejsFixCommitsPipeline,
+        collect_fix_commits_v2.CollectCpythonFixCommitsPipeline,
+        collect_fix_commits_v2.CollectGoFixCommitsPipeline,
+        collect_fix_commits_v2.CollectRustFixCommitsPipeline,
+        collect_fix_commits_v2.CollectPhpFixCommitsPipeline,
+        collect_fix_commits_v2.CollectRubyFixCommitsPipeline,
+        collect_fix_commits_v2.CollectNginxFixCommitsPipeline,
+        collect_fix_commits_v2.CollectPostgresFixCommitsPipeline,
+        collect_fix_commits_v2.CollectMysqlFixCommitsPipeline,
+        collect_fix_commits_v2.CollectGitFixCommitsPipeline,
+        collect_fix_commits_v2.CollectTensorflowFixCommitsPipeline,
+        collect_fix_commits_v2.CollectFirefoxFixCommitsPipeline,
+        collect_fix_commits_v2.CollectQEMUFixCommitsPipeline,
+        collect_fix_commits_v2.CollectDenoFixCommitsPipeline,
     ]
 )

@@ -51,6 +51,9 @@ DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)
 # SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
 
+# WARNING: Set this to False in production
+STAGING = env.bool("STAGING", default=True)
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env.str("EMAIL_HOST", default="")
 EMAIL_USE_TLS = True
@@ -139,6 +142,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.template.context_processors.static",
                 "vulnerablecode.context_processors.versions",
+                "vulnerablecode.context_processors.staging",
             ],
         },
     },

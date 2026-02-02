@@ -12,7 +12,6 @@ from typing import Iterable
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.management.commands.commit_export import logger
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import fetch_yaml
 
@@ -50,21 +49,21 @@ class SUSESeverityScoreImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 cvss_version = cvss_score.get("version") or ""
                 scoring_system = systems_by_version.get(cvss_version)
                 if not scoring_system:
-                    logger.error(f"Unsupported CVSS version: {cvss_version}")
+                    self.log(f"Unsupported CVSS version: {cvss_version}")
                     continue
-                base_score = str(cvss_score.get("score") or "")
-                vector = str(cvss_score.get("vector") or "")
-                score = VulnerabilitySeverity(
-                    system=scoring_system,
-                    value=base_score,
-                    scoring_elements=vector,
-                )
-                severities.append(score)
+                base_score = cvss_score.get("score")
+                vector = cvss_score.get("vector")
+                if base_score and vector:
+                    score = VulnerabilitySeverity(
+                        system=scoring_system,
+                        value=base_score,
+                        scoring_elements=vector,
+                    )
+                    severities.append(score)
 
             yield AdvisoryData(
                 advisory_id=cve_id,
                 aliases=[],
-                summary="",
                 severities=severities,
                 references_v2=[],
                 url=self.url,

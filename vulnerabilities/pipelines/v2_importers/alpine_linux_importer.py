@@ -46,15 +46,14 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         )
 
     def advisories_count(self) -> int:
-        base_path = Path(self.vcs_response.dest_dir) / "secdb"
-        count = 0
-
-        for json_file in base_path.rglob("*.json"):
-            data = json.loads(json_file.read_text(encoding="utf-8"))
-            for pkg in data.get("packages", []):
-                count += len(pkg.get("advisories", []))
-
-        return count
+        return sum(
+            len(pkg.get("advisories", []))
+            for data in (
+                json.loads(p.read_text())
+                for p in (Path(self.vcs_response.dest_dir) / "secdb").rglob("*.json")
+            )
+            for pkg in data.get("packages", [])
+        )
 
     def clone(self):
         self.log(f"Cloning `{self.repo_url}`")

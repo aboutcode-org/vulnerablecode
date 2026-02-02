@@ -583,7 +583,7 @@ Here is your API key:
 
    Token {auth_token}
 
-If you did NOT request this API key, you can either ignore this email or contact us at support@nexb.com and let us know in the forward that you did not request an API key.
+If you did NOT request this API key, you can either ignore this email or contact us at support@nexb.com and let us know in the future that you did not request an API key.
 
 The API root is at https://public.vulnerablecode.io/api
 To learn more about using the VulnerableCode.io API, please refer to the live API documentation at https://public.vulnerablecode.io/api/docs

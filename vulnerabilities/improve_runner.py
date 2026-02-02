@@ -194,7 +194,7 @@ def get_or_create_vulnerability_and_aliases(
     aliases: List[str], vulnerability_id=None, summary=None, advisory=None
 ):
     """
-    Get or create vulnerabilitiy and aliases such that all existing and new
+    Get or create vulnerability and aliases such that all existing and new
     aliases point to the same vulnerability
     """
     aliases = set(alias.strip() for alias in aliases if alias and alias.strip())

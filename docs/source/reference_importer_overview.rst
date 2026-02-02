@@ -8,10 +8,10 @@ and for storing the scraped information in a structured fashion. The structured 
 importer then provides input to an improver (see :ref:`improver-overview`), which is responsible
 for creating a relational model for vulnerabilities, affected packages and fixed packages.
 
-All importer implementation-related code is defined in :file:`vulnerabilites/importer.py`.
+All importer implementation-related code is defined in :file:`vulnerabilities/importer.py`.
 
 In addition, the framework-related code for actually invoking and processing the importers is
-located in :file:`vulnerabilites/import_runner.py`.
+located in :file:`vulnerabilities/import_runner.py`.
 
 The importers, after scraping, provide ``AdvisoryData`` objects. These objects are then
 processed and inserted into the ``Advisory`` model.

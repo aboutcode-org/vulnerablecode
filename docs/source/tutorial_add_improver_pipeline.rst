@@ -115,7 +115,7 @@ At this point improver will look like this:
 
         pipeline_id = "flag_ghost_package_with_example_org"
 
-        license_url = "https://exmaple.org/license/"
+        license_url = "https://example.org/license/"
         spdx_license_expression = "CC-BY-4.0"
 
         @classmethod
@@ -152,7 +152,7 @@ methods.
 
         pipeline_id = "flag_ghost_package_with_example_org"
 
-        license_url = "https://exmaple.org/license/"
+        license_url = "https://example.org/license/"
         spdx_license_expression = "CC-BY-4.0"
 
         @classmethod

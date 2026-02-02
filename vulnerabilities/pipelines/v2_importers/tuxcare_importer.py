@@ -8,16 +8,13 @@
 #
 
 import json
-import logging
 from typing import Iterable
 
 from dateutil.parser import parse
 from packageurl import PackageURL
 from pytz import UTC
+from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
-from univers.version_range import DebianVersionRange
-from univers.version_range import GenericVersionRange
-from univers.version_range import RpmVersionRange
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
@@ -26,18 +23,16 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import GENERIC
 from vulnerabilities.utils import fetch_response
 
-logger = logging.getLogger(__name__)
-
 # See https://docs.tuxcare.com/els-for-os/#cve-status-definition
 NON_AFFECTED_STATUSES = ["Not Vulnerable"]
 AFFECTED_STATUSES = ["Ignored", "Needs Triage", "In Testing", "In Progress", "In Rollout"]
 FIXED_STATUSES = ["Released", "Already Fixed"]
 
 VERSION_RANGE_BY_PURL_TYPE = {
-    "rpm": RpmVersionRange,
-    "deb": DebianVersionRange,
+    "rpm": RANGE_CLASS_BY_SCHEMES["rpm"],
+    "deb": RANGE_CLASS_BY_SCHEMES["deb"],
     "apk": AlpineLinuxVersionRange,
-    "generic": GenericVersionRange,
+    "generic": RANGE_CLASS_BY_SCHEMES["generic"],
 }
 
 
@@ -61,14 +56,17 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self._grouped = self._group_records_by_cve()
 
     def _group_records_by_cve(self) -> dict:
+        """
+        A single CVE can appear in multiple records across different operating systems, distributions, or package versions. This method groups all records with the same CVE together and skips entries that are invalid or marked as not affected. The result is a dictionary keyed by CVE ID, with each value containing the related records.
+        """
         grouped = {}
         skipped_invalid = 0
         skipped_non_affected = 0
 
         for record in self.response:
             cve_id = record.get("cve", "").strip()
-            if not cve_id or not cve_id.startswith("CVE-"):
-                logger.warning(f"Skipping invalid CVE ID: {cve_id}")
+            if not cve_id:
+                self.log(f"Skipping record with empty CVE ID")
                 skipped_invalid += 1
                 continue
 
@@ -78,7 +76,7 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             status = record.get("status", "").strip()
 
             if not all([os_name, project_name, version, status]):
-                logger.warning(f"Skipping {cve_id}: missing required fields")
+                self.log(f"Skipping {cve_id}: missing required fields")
                 skipped_invalid += 1
                 continue
 
@@ -88,7 +86,7 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 continue
 
             if status not in AFFECTED_STATUSES and status not in FIXED_STATUSES:
-                logger.warning(f"Skipping {cve_id}: unrecognized status '{status}'")
+                self.log(f"Skipping {cve_id}: unrecognized status '{status}'")
                 skipped_invalid += 1
                 continue
 
@@ -146,7 +144,6 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             severities = []
             date_published = None
             all_records = []
-            severity_added = False
 
             for record in records:
                 os_name = record.get("os_name", "").strip()
@@ -159,16 +156,17 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
                 purl = self._create_purl(project_name, os_name)
                 if not purl:
-                    logger.warning(
+                    self.log(
                         f"Skipping package {project_name} on {os_name} for {cve_id} - unexpected OS type"
                     )
                     continue
 
-                version_range_class = VERSION_RANGE_BY_PURL_TYPE.get(purl.type, GenericVersionRange)
+                version_range_class = VERSION_RANGE_BY_PURL_TYPE.get(purl.type)
+
                 try:
                     version_range = version_range_class.from_versions([version])
                 except ValueError as e:
-                    logger.warning(f"Failed to parse version {version} for {cve_id}: {e}")
+                    self.log(f"Failed to parse version {version} for {cve_id}: {e}")
                     continue
 
                 affected_version_range = None
@@ -187,7 +185,8 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                 )
 
-                if severity and score and not severity_added:
+                # Severity is per-CVE hence we add it only once
+                if severity and score and not severities:
                     severities.append(
                         VulnerabilitySeverity(
                             system=GENERIC,
@@ -195,7 +194,6 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                             scoring_elements=severity,
                         )
                     )
-                    severity_added = True
 
                 if last_updated:
                     try:
@@ -203,12 +201,12 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         if date_published is None or current_date > date_published:
                             date_published = current_date
                     except ValueError as e:
-                        logger.warning(f"Failed to parse date {last_updated} for {cve_id}: {e}")
+                        self.log(f"Failed to parse date {last_updated} for {cve_id}: {e}")
 
                 all_records.append(record)
 
             if not affected_packages:
-                logger.warning(f"Skipping {cve_id} - no valid affected packages")
+                self.log(f"Skipping {cve_id} - no valid affected packages")
                 continue
 
             yield AdvisoryData(

@@ -23,7 +23,6 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.management.commands.commit_export import logger
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import GENERIC
 
@@ -84,7 +83,7 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 affected_packages = []
                 seen_packages = set()
 
-                for purl, constraint in get_affected_and_safe_purls(child):
+                for purl, constraint in get_affected_and_safe_purls(child, logger=self.log):
                     signature = (purl.to_string(), str(constraint))
 
                     if signature not in seen_packages:
@@ -134,7 +133,7 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return cves
 
 
-def extract_purls_and_constraints(pkg_name, pkg_ns, constraints, invert):
+def extract_purls_and_constraints(pkg_name, pkg_ns, constraints, invert, logger):
     for comparator, version, slot_value in constraints:
         qualifiers = {"slot": slot_value} if slot_value else {}
         purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns, qualifiers=qualifiers)
@@ -147,10 +146,10 @@ def extract_purls_and_constraints(pkg_name, pkg_ns, constraints, invert):
 
             yield purl, constraint
         except InvalidVersion as e:
-            logger.error(f"InvalidVersion constraints version: {version} error:{e}")
+            logger(f"InvalidVersion constraints version: {version} error:{e}")
 
 
-def get_affected_and_safe_purls(affected_elem):
+def get_affected_and_safe_purls(affected_elem, logger):
     for pkg in affected_elem:
         name = pkg.attrib.get("name")
         if not name:
@@ -160,9 +159,11 @@ def get_affected_and_safe_purls(affected_elem):
         safe_constraints, affected_constraints = get_safe_and_affected_constraints(pkg)
 
         yield from extract_purls_and_constraints(
-            pkg_name, pkg_ns, affected_constraints, invert=False
+            pkg_name, pkg_ns, affected_constraints, invert=False, logger=logger
         )
-        yield from extract_purls_and_constraints(pkg_name, pkg_ns, safe_constraints, invert=True)
+        yield from extract_purls_and_constraints(
+            pkg_name, pkg_ns, safe_constraints, invert=True, logger=logger
+        )
 
 
 def get_safe_and_affected_constraints(pkg):

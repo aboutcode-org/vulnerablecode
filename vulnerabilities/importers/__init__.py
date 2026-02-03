@@ -75,6 +75,7 @@ from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_imp
 from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
+from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
 from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
@@ -103,6 +104,7 @@ IMPORTERS_REGISTRY = create_registry(
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
         nginx_importer_v2.NginxImporterPipeline,
+        debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
         apache_tomcat_v2.ApacheTomcatImporterPipeline,
         nvd_importer.NVDImporterPipeline,

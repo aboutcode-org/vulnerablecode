@@ -32,6 +32,18 @@ environ.Env.read_env(str(ENV_FILE))
 
 SECRET_KEY = env.str("SECRET_KEY")
 
+# Validate SECRET_KEY for security
+if not SECRET_KEY:
+    raise exceptions.ImproperlyConfigured(
+        "SECRET_KEY environment variable must be set. "
+        "Generate one with: python -c 'import secrets; print(secrets.token_urlsafe(50))'"
+    )
+if len(SECRET_KEY) < 50:
+    raise exceptions.ImproperlyConfigured(
+        "SECRET_KEY must be at least 50 characters long for security. "
+        "Current length: {}".format(len(SECRET_KEY))
+    )
+
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[".localhost", "127.0.0.1", "[::1]"])
 
 VULNERABLECODE_PASSWORD_MIN_LENGTH = env.int("VULNERABLECODE_PASSWORD_MIN_LENGTH", default=14)
@@ -42,6 +54,18 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 ALTCHA_HMAC_KEY = env.str("ALTCHA_HMAC_KEY")
 
+# Validate ALTCHA_HMAC_KEY for security
+if not ALTCHA_HMAC_KEY:
+    raise exceptions.ImproperlyConfigured(
+        "ALTCHA_HMAC_KEY environment variable must be set. "
+        "Generate one with: head -c 32 /dev/urandom | xxd -p -c 32"
+    )
+if len(ALTCHA_HMAC_KEY) != 64:
+    raise exceptions.ImproperlyConfigured(
+        "ALTCHA_HMAC_KEY must be a 32-byte hexadecimal key (64 characters). "
+        "Current length: {}".format(len(ALTCHA_HMAC_KEY))
+    )
+
 # SECURITY WARNING: do not run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
@@ -51,8 +75,9 @@ DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)
 # SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
 
-# WARNING: Set this to False in production
-STAGING = env.bool("STAGING", default=True)
+# CRITICAL: STAGING must be explicitly set to True in non-production environments
+# Default is False for security - production deployments are secure by default
+STAGING = env.bool("STAGING", default=False)
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env.str("EMAIL_HOST", default="")
@@ -119,7 +144,7 @@ DATABASES = {
         "HOST": env.str("VULNERABLECODE_DB_HOST", "localhost"),
         "NAME": env.str("VULNERABLECODE_DB_NAME", "vulnerablecode"),
         "USER": env.str("VULNERABLECODE_DB_USER", "vulnerablecode"),
-        "PASSWORD": env.str("VULNERABLECODE_DB_PASSWORD", "vulnerablecode"),
+        "PASSWORD": env.str("VULNERABLECODE_DB_PASSWORD"),
         "PORT": env.str("VULNERABLECODE_DB_PORT", "5432"),
         "ATOMIC_REQUESTS": True,
     }

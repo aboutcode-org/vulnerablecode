@@ -14,7 +14,6 @@ from typing import Mapping
 
 from packageurl import PackageURL
 from univers.version_range import DebianVersionRange
-from univers.versions import DebianVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
@@ -27,7 +26,7 @@ from vulnerabilities.utils import get_item
 
 
 class DebianImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """ArchLinux Importer Pipeline"""
+    """Debian Importer Pipeline"""
 
     pipeline_id = "debian_importer_v2"
     spdx_license_expression = "LicenseRef-scancode-other-permissive"

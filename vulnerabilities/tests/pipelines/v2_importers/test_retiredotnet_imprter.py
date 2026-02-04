@@ -35,7 +35,7 @@ def test_vuln_id_from_desc():
 @pytest.mark.django_db
 def test_retiredotnet_advisories_per_file():
     pipeline = RetireDotnetImporterPipeline()
-    test_file = TEST_DATA / "1.json"
+    test_file = TEST_DATA / "12.json"
     expected_file = TEST_DATA / "expected_file.json"
     pipeline.vcs_response = Mock(dest_dir=TEST_DATA)
 

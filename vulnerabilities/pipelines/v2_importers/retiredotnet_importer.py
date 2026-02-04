@@ -94,7 +94,7 @@ class RetireDotnetImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     if fixed_versions:
                         fixed_version_range = NugetVersionRange.from_versions(affected_versions)
 
-                    if affected_packages:
+                    if affected_version_range or fixed_version_range:
                         affected_packages.append(
                             AffectedPackageV2(
                                 package=PackageURL(type="nuget", name=name),

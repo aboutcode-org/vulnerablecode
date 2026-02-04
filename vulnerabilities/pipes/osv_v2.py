@@ -67,6 +67,7 @@ def parse_advisory_data_v3(
     details = raw_data.get("details") or ""
     summary = build_description(summary=summary, description=details)
     aliases = raw_data.get("aliases") or []
+    aliases.extend(raw_data.get("upstream", []))
 
     date_published = get_published_date(raw_data=raw_data)
     severities = list(get_severities(raw_data=raw_data, url=advisory_url))

@@ -28,7 +28,7 @@ class TestUbuntuOSVImporterPipeline(TestCase):
     @patch(
         "vulnerabilities.pipelines.v2_importers.ubuntu_osv_importer.UbuntuOSVImporterPipeline.clone"
     )
-    def test_redhat_advisories_v2(self, mock_clone):
+    def test_ubuntu_advisories_v2(self, mock_clone):
         mock_clone.__name__ = "clone"
         pipeline = UbuntuOSVImporterPipeline()
         pipeline.advisories_path = TEST_DATA / "ubuntu_security_notices"
@@ -36,8 +36,8 @@ class TestUbuntuOSVImporterPipeline(TestCase):
         pipeline.log = self.logger.write
         pipeline.execute()
 
-        self.assertEqual(AdvisoryV2.objects.count(), 22)
+        self.assertEqual(AdvisoryV2.objects.count(), 6)
 
         expected_file = TEST_DATA / "ubuntu_osv_advisoryv2-expected.json"
         result = [adv.to_advisory_data().to_dict() for adv in AdvisoryV2.objects.all()]
-        util_tests.check_results_against_json(result, expected_file, regen=True)
+        util_tests.check_results_against_json(result, expected_file)

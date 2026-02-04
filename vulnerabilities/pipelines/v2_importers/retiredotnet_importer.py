@@ -8,9 +8,8 @@
 #
 
 import json
-import operator
 import re
-from itertools import groupby
+from collections import defaultdict
 from pathlib import Path
 
 from fetchcode.vcs import fetch_via_vcs
@@ -29,6 +28,7 @@ class RetireDotnetImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "MIT"
     repo_url = "git+https://github.com/RetireNet/Packages/"
     pipeline_id = "retiredotnet_importer_v2"
+    run_once = True
 
     @classmethod
     def steps(cls):
@@ -52,7 +52,7 @@ class RetireDotnetImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         affected_packages = []
 
         for file in vuln.glob("*.json"):
-            advisory_id = "RetireNet-" + file.stem
+            advisory_id = "retiredotnet-" + file.stem
             advisory_url = get_advisory_url(
                 file=file,
                 base_path=base_path,
@@ -64,40 +64,38 @@ class RetireDotnetImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 aliases = self.vuln_id_from_desc(description)
 
                 # group by package name `id`
-                packages = json_doc.get("packages") or []
-                key_func = operator.itemgetter("id")
-                packages.sort(key=key_func)
-                grouped_packages = groupby(packages, key=key_func)
+                # { pkg_id: {'affected_versions': [], 'fixed': []} }
+                grouped_packages = defaultdict(
+                    lambda: {"affected_versions": [], "fixed_versions": []}
+                )
+                for pkg in json_doc.get("packages") or []:
+                    name = pkg.get("id")
+                    if not name:
+                        continue
 
-                for key, group in grouped_packages:
-                    affected_versions = []
-                    fixed_versions = []
+                    affected_version = pkg.get("affected")
+                    if affected_version:
+                        grouped_packages[name]["affected_versions"].append(affected_version)
 
-                    for pkg in list(group):
-                        name = pkg.get("id")
-                        if not name:
-                            continue
+                    fixed_version = pkg.get("fix")
+                    if fixed_version:
+                        grouped_packages[name]["fixed_versions"].append(fixed_version)
 
-                        affected_version = pkg.get("affected")
-                        if affected_version:
-                            affected_versions.append(affected_version)
-
-                        fixed_version = pkg.get("fix")
-                        if fixed_version:
-                            fixed_versions.append(fixed_version)
-
+                for pkg in grouped_packages:
                     affected_version_range = None
+                    affected_versions = grouped_packages[pkg]["affected_versions"]
                     if affected_versions:
                         affected_version_range = NugetVersionRange.from_versions(affected_versions)
 
                     fixed_version_range = None
+                    fixed_versions = grouped_packages[pkg]["fixed_versions"]
                     if fixed_versions:
                         fixed_version_range = NugetVersionRange.from_versions(affected_versions)
 
                     if affected_version_range or fixed_version_range:
                         affected_packages.append(
                             AffectedPackageV2(
-                                package=PackageURL(type="nuget", name=name),
+                                package=PackageURL(type="nuget", name=pkg),
                                 affected_version_range=affected_version_range,
                                 fixed_version_range=fixed_version_range,
                             )

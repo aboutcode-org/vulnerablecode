@@ -44,13 +44,6 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         </span>
                     </a>
                 </li>
-                <li data-tab="severities-vectors">
-                    <a>
-                        <span>
-                            Severity details ({{ severity_vectors|length }})
-                        </span>
-                    </a>
-                </li>
 
                 {% if advisory.exploits %}
                     <li data-tab="exploits">
@@ -69,6 +62,24 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         </span>
                     </a>
                 </li>
+
+                <li data-tab="severities-vectors">
+                    <a>
+                        <span>
+                            Severity details ({{ severity_vectors|length }})
+                        </span>
+                    </a>
+                </li>
+
+                {% if ssvcs %}
+                    <li data-tab="ssvcs">
+                        <a>
+                            <span>
+                                Related SSVCS ({{ ssvcs|length }})
+                            </span>
+                        </a>
+                    </li>
+                {% endif %}
 
                 <!-- <li data-tab="history">
                     <a>
@@ -402,7 +413,51 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                     </tr>
                 {% endfor %}
             </div>
+
         
+            <div class="tab-div content" data-content="epss">
+                {% if epss_data %}
+                    <div class="has-text-weight-bold tab-nested-div ml-1 mb-1 mt-1">
+                        Exploit Prediction Scoring System (EPSS)
+                    </div>
+                    <table class="table vcio-table width-100-pct mt-2">
+                        <tbody>
+                            <tr>
+                                <td class="two-col-left">
+                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                          data-tooltip="The percentile of the current score, the proportion of all scored vulnerabilities with the same or a lower EPSS score">
+                                          Percentile
+                                    </span>
+                                </td>
+                                <td class="two-col-right">{{ epss_data.percentile }}</td>
+                            </tr>
+                            <tr>
+                                <td class="two-col-left">
+                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                          data-tooltip="The EPSS score represents the probability [0-1] of exploitation in the wild in the next 30 days.">
+                                          EPSS Score
+                                    </span>
+                                </td>
+                                <td class="two-col-right">{{ epss_data.score }}</td>
+                            </tr>
+                            {% if epss_data.published_at %}
+                            <tr>
+                                <td class="two-col-left">
+                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                          data-tooltip="Date when the EPSS score was published.">
+                                          Published At
+                                    </span>
+                                </td>
+                                <td class="two-col-right">{{ epss_data.published_at }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No EPSS data available for this advisory.</p>
+                {% endif %}
+            </div>
+
             <div class="tab-div content" data-content="severities-vectors">
                 {% for severity_vector in severity_vectors %}
                     {% if severity_vector.vector.version == '2.0'  %}
@@ -499,49 +554,44 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                     {% endfor %}
             </div>
 
-        
-            <div class="tab-div content" data-content="epss">
-                {% if epss_data %}
-                    <div class="has-text-weight-bold tab-nested-div ml-1 mb-1 mt-1">
-                        Exploit Prediction Scoring System (EPSS)
+            <div class="tab-div content" data-content="ssvcs">
+                {% if ssvcs %}
+                  {% for ssvc in ssvcs %}
+                    <div class="box ssvc-card mb-0 pb-0">
+                        <div>
+                            <p>
+                              Vector: {{ ssvc.vector }}
+                            </p>
+                            <p>
+                              Decision: {{ ssvc.decision }}
+                            </p>
+                        <p>
+                          Source URL:
+                          <a href="{{ ssvc.advisory_url }}" target="_blank">
+                            {{ ssvc.advisory_url }}
+                            <i class="fa fa-external-link fa_link_custom"></i>
+                          </a>
+                        </p>
+                        <p>
+                          Source Advisory:
+                          <a href="{{ ssvc.advisory.get_absolute_url }}">
+                            {{ ssvc.advisory.avid }}
+                            <i class="fa fa-external-link fa_link_custom"></i>
+                          </a>
+                        </p>
+                          <details>
+                            <summary class="is-size-7 has-text-link" style="cursor: pointer;">
+                              View SSVC decision tree
+                            </summary>
+                            <pre>{{ ssvc.options|pprint }}</pre>
+                          </details>
+                        </div>
                     </div>
-                    <table class="table vcio-table width-100-pct mt-2">
-                        <tbody>
-                            <tr>
-                                <td class="two-col-left">
-                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                          data-tooltip="The percentile of the current score, the proportion of all scored vulnerabilities with the same or a lower EPSS score">
-                                          Percentile
-                                    </span>
-                                </td>
-                                <td class="two-col-right">{{ epss_data.percentile }}</td>
-                            </tr>
-                            <tr>
-                                <td class="two-col-left">
-                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                          data-tooltip="The EPSS score represents the probability [0-1] of exploitation in the wild in the next 30 days.">
-                                          EPSS Score
-                                    </span>
-                                </td>
-                                <td class="two-col-right">{{ epss_data.score }}</td>
-                            </tr>
-                            {% if epss_data.published_at %}
-                            <tr>
-                                <td class="two-col-left">
-                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                          data-tooltip="Date when the EPSS score was published.">
-                                          Published At
-                                    </span>
-                                </td>
-                                <td class="two-col-right">{{ epss_data.published_at }}</td>
-                            </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+                  {% endfor %}
                 {% else %}
-                    <p>No EPSS data available for this advisory.</p>
+                  <p>There are no SSVC decisions available.</p>
                 {% endif %}
-            </div>
+              </div>
 
         <!-- <div class="tab-div content" data-content="history">
             <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">

@@ -10,9 +10,11 @@
 import urllib.parse
 from datetime import datetime
 from unittest import TestCase
+from unittest.mock import patch
 
 import pytest
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from django.test import TestCase as DjangoTestCase
 from packageurl import PackageURL
 from univers import versions
@@ -22,10 +24,17 @@ from univers.version_range import VersionRange
 from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import PackageCommitPatchData
+from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
+from vulnerabilities.models import Patch
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.severity_systems import CVSSV4
 from vulnerabilities.utils import compute_content_id
 
 
@@ -647,9 +656,6 @@ class TestAdvisoryModel(DjangoTestCase):
             )
 
 
-from unittest.mock import patch
-
-
 class TestPipelineRunModel(DjangoTestCase):
     def setUp(self):
         self.schedule1 = models.PipelineSchedule.objects.create(pipeline_id="test_pipeline")
@@ -694,3 +700,73 @@ class TestPipelineScheduleModel(DjangoTestCase):
 
     def test_pipelineschedule_all_runs(self):
         self.assertEqual(self.schedule1.all_runs.count(), 2)
+
+
+class PatchConstraintTests(TestCase):
+    @pytest.mark.django_db
+    def test_constraint_none(self):
+        with self.assertRaises(IntegrityError) as raised:
+            Patch.objects.create(patch_url=None, patch_text=None)
+        self.assertIn("patch_url_or_patch_text", str(raised.exception))
+
+    @pytest.mark.django_db
+    def test_constraint_empty(self):
+        with self.assertRaises(IntegrityError) as raised:
+            Patch.objects.create(patch_url="", patch_text="")
+        self.assertIn("patch_url_or_patch_text", str(raised.exception))
+
+    @pytest.mark.django_db
+    def test_constraint_empty_none(self):
+        with self.assertRaises(IntegrityError) as raised:
+            Patch.objects.create(patch_url="", patch_text=None)
+        self.assertIn("patch_url_or_patch_text", str(raised.exception))
+
+    @pytest.mark.django_db
+    def test_constraint_none_empty(self):
+        with self.assertRaises(IntegrityError) as raised:
+            Patch.objects.create(patch_url=None, patch_text="")
+        self.assertIn("patch_url_or_patch_text", str(raised.exception))
+
+
+class TestStoreLongCVSSV4(TestCase):
+    @pytest.mark.django_db
+    def test_constraint_none(self):
+        AdvisorySeverity.objects.create(
+            scoring_system=CVSSV4,
+            scoring_elements="CVSS:4.0/AV:N/AC:L/AT:P/PR:H/UI:P/VC:N/VI:N/VA:N/SC:H/SI:H/SA:H/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+        )
+        AdvisorySeverity.objects.create(
+            scoring_system=CVSSV4,
+            scoring_elements="CVSS:4.0/AV:P/AC:H/AT:P/PR:H/UI:A/VC:L/VI:L/VA:H/SC:H/SI:L/SA:L/E:A/CR:M/IR:M/AR:M/MAV:A/MAC:L/MAT:P/MPR:L/MVC:L/MVI:L/MVA:L/MSC:H/MSI:H/MSA:H/S:P/AU:Y/R:U/V:C/RE:M/U:Amber",
+        )
+
+
+class TestAdvisoryV2Model(DjangoTestCase):
+    def setUp(self):
+        self.advisoryv2_data1 = AdvisoryData(
+            advisory_id="test_adv",
+            aliases=[],
+            summary="vulnerability description here",
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL(type="pypi", name="dummy"),
+                    affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+                    introduced_by_commit_patches=[
+                        PackageCommitPatchData(
+                            vcs_url="http://foo.bar/", commit_hash="c4eab154606e801"
+                        )
+                    ],
+                )
+            ],
+            references_v2=[ReferenceV2(url="https://example.com/with/more/info/CVE-2020-13371337")],
+            patches=[PatchData(patch_url="https://foo.bar/", patch_text="test patch")],
+            url="https://test.com",
+        )
+
+    def test_advisoryv2_to_advisory_data_patch_seralization(self):
+        from vulnerabilities.pipes.advisory import insert_advisory_v2
+
+        insert_advisory_v2(advisory=self.advisoryv2_data1, pipeline_id="test_pipeline")
+        result = models.AdvisoryV2.objects.first().to_advisory_data()
+
+        self.assertEqual(result, self.advisoryv2_data1)

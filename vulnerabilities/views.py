@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.db.models import F
 from django.db.models import Prefetch
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -188,31 +189,65 @@ class PackageV2Details(DetailView):
         context = super().get_context_data(**kwargs)
         package = self.object
         next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions()
-        fixed_pkg_details = {}
-        for impact in package.affected_in_impacts.all():
-            if impact.advisory.id not in fixed_pkg_details:
-                fixed_pkg_details[impact.advisory.id] = []
-            fixed_pkg_details[impact.advisory.id].extend(
-                [
-                    {"pkg": pkg, "affected_count": pkg.affected_in_impacts.count()}
-                    for pkg in impact.fixed_by_packages.all()
-                ]
-            )
+
+        (
+            fixed_pkg_details,
+            affected_by_advisories,
+            fixing_advisories,
+        ) = self.get_fixed_package_details(package)
+
         context["package"] = package
         context["next_non_vulnerable"] = next_non_vulnerable
         context["latest_non_vulnerable"] = latest_non_vulnerable
-        context["affected_by_advisories"] = {
-            impact.advisory for impact in package.affected_in_impacts.all()
-        }
-        context["fixing_advisories"] = {
-            impact.advisory for impact in package.fixed_in_impacts.all()
-        }
+        context["affected_by_advisories"] = affected_by_advisories
+        context["fixing_advisories"] = fixing_advisories
 
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = fixed_pkg_details
 
-        # context["history"] = list(package.history)
         return context
+
+    def get_fixed_package_details(self, package):
+        affected_impacts = package.affected_in_impacts.select_related("advisory")
+        fixed_impacts = package.fixed_in_impacts.select_related("advisory")
+
+        affected_avids = {impact.advisory.avid for impact in affected_impacts if impact.advisory_id}
+
+        fixed_avids = {impact.advisory.avid for impact in fixed_impacts if impact.advisory_id}
+
+        all_avids = affected_avids | fixed_avids
+
+        latest_advisories = models.AdvisoryV2.objects.latest_for_avids(all_avids)
+        advisory_by_avid = {adv.avid: adv for adv in latest_advisories}
+
+        fixed_pkg_details = {}
+
+        for impact in affected_impacts:
+            avid = impact.advisory.avid
+            advisory = advisory_by_avid.get(avid)
+            if not advisory:
+                continue
+            if avid not in fixed_pkg_details:
+                fixed_pkg_details[avid] = []
+            fixed_pkg_details[avid].extend(
+                [
+                    {
+                        "pkg": pkg,
+                        "affected_count": pkg.affected_in_impacts.count(),
+                    }
+                    for pkg in impact.fixed_by_packages.all()
+                ]
+            )
+
+        affected_by_advisories = {
+            advisory_by_avid[avid] for avid in affected_avids if avid in advisory_by_avid
+        }
+
+        fixing_advisories = {
+            advisory_by_avid[avid] for avid in fixed_avids if avid in advisory_by_avid
+        }
+
+        return fixed_pkg_details, affected_by_advisories, fixing_advisories
 
     def get_queryset(self):
         return (
@@ -360,6 +395,15 @@ class AdvisoryDetails(DetailView):
     slug_url_kwarg = "avid"
     slug_field = "avid"
 
+    def get_object(self, queryset=None):
+        avid = self.kwargs.get(self.slug_url_kwarg)
+        obj = models.AdvisoryV2.objects.latest_for_avid(avid)
+
+        if not obj:
+            raise Http404("Advisory not found")
+
+        return obj
+
     def get_queryset(self):
         return (
             super()
@@ -392,6 +436,26 @@ class AdvisoryDetails(DetailView):
                         "data_source", "description", "required_action", "due_date", "notes"
                     ),
                 ),
+                Prefetch(
+                    "related_ssvcs",
+                    queryset=models.SSVC.objects.select_related("source_advisory").only(
+                        "vector",
+                        "options",
+                        "decision",
+                        "source_advisory__id",
+                        "source_advisory__url",
+                    ),
+                ),
+                Prefetch(
+                    "source_ssvcs",
+                    queryset=models.SSVC.objects.select_related("source_advisory").only(
+                        "vector",
+                        "options",
+                        "decision",
+                        "source_advisory__id",
+                        "source_advisory__url",
+                    ),
+                ),
             )
         )
 
@@ -409,9 +473,23 @@ class AdvisoryDetails(DetailView):
             if weakness_object.weakness
         ]
 
-        valid_severities = self.object.severities.exclude(scoring_system=EPSS.identifier).filter(
-            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
+        valid_severities = (
+            self.object.severities.exclude(scoring_system=EPSS.identifier)
+            .filter(scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.values())
+            .exclude(scoring_elements="")
         )
+
+        epss_severity = advisory.severities.filter(scoring_system="epss").first()
+        epss_data = None
+        if epss_severity:
+            epss_data = {
+                "percentile": epss_severity.scoring_elements,
+                "score": epss_severity.value,
+                "published_at": epss_severity.published_at,
+            }
+
+        ssvc_entries = []
+        seen = set()
 
         severity_vectors = []
 
@@ -426,7 +504,6 @@ class AdvisoryDetails(DetailView):
                 vector_values = vector_values_system.get(severity.scoring_elements)
                 if vector_values:
                     severity_vectors.append({"vector": vector_values, "origin": severity.url})
-                    logging.error(f"Error processing scoring elements: {severity.scoring_elements}")
             except (
                 CVSS2MalformedError,
                 CVSS3MalformedError,
@@ -435,25 +512,37 @@ class AdvisoryDetails(DetailView):
             ):
                 logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
 
-        epss_severity = advisory.severities.filter(scoring_system="epss").first()
-        epss_data = None
-        if epss_severity:
-            epss_data = {
-                "percentile": epss_severity.scoring_elements,
-                "score": epss_severity.value,
-                "published_at": epss_severity.published_at,
-            }
-        print(severity_vectors)
+        def add_ssvc(ssvc):
+            key = (ssvc.vector, ssvc.source_advisory_id)
+            if key in seen:
+                return
+            seen.add(key)
+            ssvc_entries.append(
+                {
+                    "vector": ssvc.vector,
+                    "decision": ssvc.decision,
+                    "options": ssvc.options,
+                    "advisory_url": ssvc.source_advisory.url,
+                    "advisory": ssvc.source_advisory,
+                }
+            )
+
+        for ssvc in advisory.source_ssvcs.all():
+            add_ssvc(ssvc)
+
+        for ssvc in advisory.related_ssvcs.all():
+            add_ssvc(ssvc)
+
+        context["ssvcs"] = ssvc_entries
         context.update(
             {
                 "advisory": advisory,
                 "severities": list(advisory.severities.all()),
-                "severity_vectors": severity_vectors,
                 "references": list(advisory.references.all()),
                 "aliases": list(advisory.aliases.all()),
+                "severity_vectors": severity_vectors,
                 "weaknesses": weaknesses_present_in_db,
                 "status": advisory.get_status_label,
-                # "history": advisory.history,
                 "epss_data": epss_data,
             }
         )
@@ -603,7 +692,18 @@ class AdvisoryPackagesDetails(DetailView):
     model = models.AdvisoryV2
     template_name = "advisory_package_details.html"
     slug_url_kwarg = "avid"
-    slug_field = "avid"
+
+    def get_object(self, queryset=None):
+        avid = self.kwargs.get(self.slug_url_kwarg)
+        if not avid:
+            raise Http404("Missing advisory identifier")
+
+        advisory = models.AdvisoryV2.objects.latest_for_avid(avid)
+
+        if not advisory:
+            raise Http404(f"No advisory found for avid: {avid}")
+
+        return advisory
 
     def get_queryset(self):
         """

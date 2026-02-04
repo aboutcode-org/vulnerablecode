@@ -1,0 +1,67 @@
+{
+  "advisory_id": "PYSEC-2022-43068",
+  "aliases": [
+    "CVE-2021-3702",
+    "GHSA-772j-xvf9-qpf5"
+  ],
+  "summary": "A race condition flaw was found in ansible-runner, where an attacker could watch for rapid creation and deletion of a temporary directory, substitute their directory at that name, and then have access to ansible-runner's private_data_dir the next time ansible-runner made use of the private_data_dir. The highest Threat out of this flaw is to integrity and confidentiality.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "pypi",
+        "namespace": "",
+        "name": "ansible-runner",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:pypi/2.0.0|2.0.1|2.0.2|2.0.3|2.0.4|2.1.0.0a1|2.1.0.0a2|2.1.0.0b1",
+      "fixed_version_range": "vers:pypi/2.1.0",
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    }
+  ],
+  "references_v2": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1977965"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1977965"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1977965"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://access.redhat.com/security/cve/CVE-2021-3702"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/ansible/ansible-runner/pull/742/commits"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/ansible/ansible-runner/pull/742/commits"
+    }
+  ],
+  "patches": [],
+  "severities": [
+    {
+      "system": "cvssv3.1",
+      "value": "6.3",
+      "scoring_elements": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N"
+    }
+  ],
+  "date_published": "2022-08-23T16:15:00+00:00",
+  "weaknesses": [],
+  "url": "https://test.com"
+}

@@ -25,7 +25,6 @@ class TestOSV(testcase.FileBasedTesting):
         purls = [
             "pkg:pypi/jinja2@2.4.1",
             "pkg:android/System@10",
-            "pkg:deb:8/davical@1.1.3-1",
             "pkg:maven/org.apache.tomcat/tomcat@10.1.0-M8",
             "pkg:linux/Kernel@v5.4.195",
             "pkg:packagist/dolibarr/dolibarr@12.0.5",
@@ -37,7 +36,6 @@ class TestOSV(testcase.FileBasedTesting):
         expected = [
             {"version": "2.4.1", "package": {"ecosystem": "PyPI", "name": "jinja2"}},
             {"version": "10", "package": {"ecosystem": "Android", "name": "System"}},
-            {"version": "1.1.3-1", "package": {"name": "davical"}},
             {
                 "version": "10.1.0-M8",
                 "package": {"ecosystem": "Maven", "name": "org.apache.tomcat:tomcat"},

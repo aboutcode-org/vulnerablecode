@@ -15,6 +15,7 @@ from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.utils import get_advisory_url
 
 
@@ -47,8 +48,6 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return sum(1 for _ in advisory_dir.rglob("*.json"))
 
     def collect_advisories(self) -> Iterable[AdvisoryData]:
-        from vulnerabilities.importers.osv import parse_advisory_data_v2
-
         supported_ecosystems = [
             "pypi",
             "npm",
@@ -72,7 +71,7 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             with open(file) as f:
                 raw_data = json.load(f)
             advisory_text = file.read_text()
-            yield parse_advisory_data_v2(
+            yield parse_advisory_data_v3(
                 raw_data=raw_data,
                 supported_ecosystems=supported_ecosystems,
                 advisory_url=advisory_url,

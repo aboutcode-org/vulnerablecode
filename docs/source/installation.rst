@@ -84,6 +84,10 @@ to run on a different port than 8000.
    are several steps that may be needed to secure such a deployment.
    Currently, this is not recommendend.
 
+.. tip::
+
+    Set ``STAGING`` to ``False`` in production to disable the staging environment warning.
+
 Execute a Command
 ^^^^^^^^^^^^^^^^^
 

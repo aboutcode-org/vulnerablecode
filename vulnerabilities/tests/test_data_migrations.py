@@ -6,8 +6,10 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+from datetime import datetime
 
 from django.apps import apps
+from django.db import IntegrityError
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
 from django.test import TestCase
@@ -951,3 +953,81 @@ class TestFixAlpinePURLCreatedByField(TestMigrations):
 
         assert package.filter(type="alpine").count() == 0
         assert package.filter(type="apk").count() == 1
+
+
+class TestCodeCommitMigration(TestMigrations):
+    """
+    Tests the migration that introduces the CodeCommit model
+    and adds new ManyToMany fields to ImpactedPackage ( affecting_commits, fixed_by_commits ).
+    """
+
+    app_name = "vulnerabilities"
+    migrate_from = "0102_alter_impactedpackage_affecting_vers_and_more"
+    migrate_to = "0103_codecommit_impactedpackage_affecting_commits_and_more"
+
+    def setUpBeforeMigration(self, apps):
+        """
+        Prepare old data before migration — this should be destroyed afterward.
+        """
+        ImpactedPackage = apps.get_model("vulnerabilities", "ImpactedPackage")
+        AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+
+        date = datetime.now()
+        adv = AdvisoryV2.objects.create(
+            unique_content_id="old_adv",
+            url="https://old.example.com",
+            summary="Old advisory",
+            date_collected=date,
+            advisory_id="old_adv",
+            avid="test_pipeline/old_adv",
+            datasource_id="test_pipeline",
+        )
+        ImpactedPackage.objects.create(advisory=adv, base_purl="pkg:pypi/oldpkg")
+
+    def test_unique_constraint_on_commit_hash_and_vcs_url(self):
+        """Ensure the (commit_hash, vcs_url) uniqueness constraint works."""
+        CodeCommit = self.apps.get_model("vulnerabilities", "CodeCommit")
+
+        CodeCommit.objects.create(
+            commit_hash="abc123",
+            vcs_url="https://github.com/example/repo.git",
+            commit_rank="0",
+            commit_author="tester",
+            commit_message="message 1",
+            commit_date=datetime.now(),
+        )
+
+        with self.assertRaises(IntegrityError):
+            CodeCommit.objects.create(
+                commit_hash="abc123",
+                vcs_url="https://github.com/example/repo.git",
+            )
+
+    def test_m2m_relationships_work(self):
+        """Ensure that the new M2M relationships can store data."""
+        ImpactedPackage = self.apps.get_model("vulnerabilities", "ImpactedPackage")
+        AdvisoryV2 = self.apps.get_model("vulnerabilities", "AdvisoryV2")
+        CodeCommit = self.apps.get_model("vulnerabilities", "CodeCommit")
+
+        adv = AdvisoryV2.objects.get(
+            unique_content_id="old_adv",
+            advisory_id="old_adv",
+            avid="test_pipeline/old_adv",
+            datasource_id="test_pipeline",
+        )
+
+        impacted = ImpactedPackage.objects.get(advisory=adv, base_purl="pkg:pypi/oldpkg")
+        commit1 = CodeCommit.objects.create(
+            commit_hash="def456",
+            vcs_url="https://example.com/repo.git",
+        )
+        commit2 = CodeCommit.objects.create(
+            commit_hash="eef456",
+            vcs_url="https://example.com/repo.git",
+        )
+
+        impacted.affecting_commits.add(commit1)
+        impacted.fixed_by_commits.add(commit2)
+
+        self.assertIn(commit1, impacted.affecting_commits.all())
+        self.assertIn(commit2, impacted.fixed_by_commits.all())

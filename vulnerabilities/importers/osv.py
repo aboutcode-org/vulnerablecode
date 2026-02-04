@@ -15,6 +15,7 @@ from typing import Optional
 
 import dateparser
 from cvss.exceptions import CVSS3MalformedError
+from cvss.exceptions import CVSS4MalformedError
 from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.versions import InvalidVersion
@@ -218,19 +219,24 @@ def get_severities(raw_data) -> Iterable[VulnerabilitySeverity]:
     """
     try:
         for severity in raw_data.get("severity") or []:
+            vector = severity.get("score")
+            valid_vector = vector[:-1] if vector and vector.endswith("/") else vector
+
             if severity.get("type") == "CVSS_V3":
-                vector = severity.get("score")
-                # remove the / from the end of the vector if / exist
-                valid_vector = vector[:-1] if vector and vector[-1] == "/" else vector
                 system = SCORING_SYSTEMS["cvssv3.1"]
+                score = system.compute(valid_vector)
+                yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
+
+            elif severity.get("type") == "CVSS_V4":
+                system = SCORING_SYSTEMS["cvssv4"]
                 score = system.compute(valid_vector)
                 yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
 
             else:
                 logger.error(
-                    f"Unsupported severity type: {severity!r} for OSV id: {raw_data['id']!r}"
+                    f"Unsupported severity type: {severity!r} for OSV id: {raw_data.get('id')!r}"
                 )
-    except CVSS3MalformedError as e:
+    except (CVSS3MalformedError, CVSS4MalformedError) as e:
         logger.error(f"Invalid severity {e}")
 
     ecosystem_specific = raw_data.get("ecosystem_specific") or {}

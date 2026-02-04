@@ -9,6 +9,7 @@
 
 import csv
 import datetime
+import hashlib
 import logging
 import uuid
 import xml.etree.ElementTree as ET
@@ -16,6 +17,8 @@ from contextlib import suppress
 from functools import cached_property
 from itertools import groupby
 from operator import attrgetter
+from traceback import format_exc as traceback_format_exc
+from typing import List
 from typing import Union
 from urllib.parse import urljoin
 
@@ -39,9 +42,11 @@ from django.db import models
 from django.db import transaction
 from django.db.models import Count
 from django.db.models import Exists
+from django.db.models import F
 from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.db.models import Q
+from django.db.models import Subquery
 from django.db.models.functions import Length
 from django.db.models.functions import Trim
 from django.urls import reverse
@@ -62,6 +67,7 @@ import vulnerablecode
 from vulnerabilities import utils
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import compute_patch_checksum
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
@@ -197,7 +203,7 @@ class VulnerabilitySeverity(models.Model):
     value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
 
     scoring_elements = models.CharField(
-        max_length=150,
+        max_length=250,
         null=True,
         help_text="Supporting scoring elements used to compute the score values. "
         "For example a CVSS vector string as used to compute a CVSS score.",
@@ -1337,20 +1343,6 @@ class Alias(models.Model):
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
-class AdvisoryV2QuerySet(BaseQuerySet):
-    def search(query):
-        """
-        This function will take a string as an input, the string could be an alias or an advisory ID or
-        something in the advisory description.
-        """
-        return AdvisoryV2.objects.filter(
-            Q(advisory_id__icontains=query)
-            | Q(aliases__alias__icontains=query)
-            | Q(summary__icontains=query)
-            | Q(references__url__icontains=query)
-        ).distinct()
-
-
 class AdvisoryQuerySet(BaseQuerySet):
     def search(query):
         """
@@ -2281,6 +2273,13 @@ class PipelineSchedule(models.Model):
         ),
     )
 
+    is_run_once = models.BooleanField(
+        null=False,
+        db_index=True,
+        default=False,
+        help_text=("When set to True, this Pipeline will run only once."),
+    )
+
     live_logging = models.BooleanField(
         null=False,
         db_index=True,
@@ -2569,10 +2568,11 @@ class AdvisorySeverity(models.Model):
         ),
     )
 
-    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High")
+    # A severity value might be missing and it may just contain scoring_elements only
+    value = models.CharField(max_length=50, help_text="Example: 9.0, Important, High", null=True)
 
     scoring_elements = models.CharField(
-        max_length=150,
+        max_length=250,
         null=True,
         help_text="Supporting scoring elements used to compute the score values. "
         "For example a CVSS vector string as used to compute a CVSS score.",
@@ -2587,6 +2587,16 @@ class AdvisorySeverity(models.Model):
     class Meta:
         verbose_name_plural = "Advisory severities"
         ordering = ["url", "scoring_system", "value"]
+        unique_together = ("url", "scoring_system", "value", "scoring_elements", "published_at")
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    Q(value__isnull=False) & ~Q(value="")
+                    | Q(scoring_elements__isnull=False) & ~Q(scoring_elements="")
+                ),
+                name="scoring_elements_or_value_must_be_set",
+            )
+        ]
 
     def to_dict(self):
         return {
@@ -2608,7 +2618,7 @@ class AdvisoryWeakness(models.Model):
     A weakness is a software weakness that is associated with a vulnerability.
     """
 
-    cwe_id = models.IntegerField(help_text="CWE id")
+    cwe_id = models.IntegerField(help_text="CWE id", unique=True)
 
     cwe_by_id = {}
 
@@ -2655,11 +2665,11 @@ class AdvisoryReference(models.Model):
     url = models.URLField(
         max_length=1024,
         help_text="URL to the vulnerability reference",
-        unique=True,
     )
 
     ADVISORY = "advisory"
     EXPLOIT = "exploit"
+    COMMIT = "commit"
     MAILING_LIST = "mailing_list"
     BUG = "bug"
     OTHER = "other"
@@ -2667,6 +2677,7 @@ class AdvisoryReference(models.Model):
     REFERENCE_TYPES = [
         (ADVISORY, "Advisory"),
         (EXPLOIT, "Exploit"),
+        (COMMIT, "Commit"),
         (MAILING_LIST, "Mailing List"),
         (BUG, "Bug"),
         (OTHER, "Other"),
@@ -2683,6 +2694,7 @@ class AdvisoryReference(models.Model):
 
     class Meta:
         ordering = ["reference_id", "url", "reference_type"]
+        unique_together = ("url", "reference_type")
 
     def __str__(self):
         reference_id = f" {self.reference_id}" if self.reference_id else ""
@@ -2740,6 +2752,124 @@ class AdvisoryAlias(models.Model):
         if alias.startswith("NPM-"):
             id = alias.lstrip("NPM-")
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
+
+
+class Patch(models.Model):
+    """
+    A generic patch linked to an advisory.
+    Used for raw text patches, fallback scenarios, or unsupported VCS types.
+    """
+
+    patch_url = models.URLField(
+        null=True,
+        blank=True,
+        help_text="URL to the patch file or diff.",
+    )
+
+    patch_text = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The actual text content of the code patch/diff.",
+    )
+
+    patch_checksum = models.CharField(
+        max_length=128,
+        blank=True,
+        null=True,
+        help_text="SHA512 checksum of the patch content.",
+    )
+
+    def save(self, *args, **kwargs):
+        if self.patch_text:
+            self.patch_checksum = compute_patch_checksum(self.patch_text)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ["patch_checksum", "patch_url"]
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    Q(patch_url__isnull=False) & ~Q(patch_url="")
+                    | Q(patch_text__isnull=False) & ~Q(patch_text="")
+                ),
+                name="patch_url_or_patch_text",
+            )
+        ]
+
+    def to_dict(self):
+        return {
+            "patch_url": self.patch_url,
+            "patch_text": self.patch_text,
+            "patch_checksum": self.patch_checksum,
+        }
+
+    def to_patch_data(self):
+        """Return `PatchData` from the Patch."""
+        from vulnerabilities.importer import PatchData
+
+        return PatchData.from_dict(self.to_dict())
+
+
+class PackageCommitPatch(models.Model):
+    """
+    A specific patch implementation for structured Package/VCS data
+    """
+
+    commit_hash = models.CharField(
+        max_length=128,
+        help_text="The commit hash of the patch in the VCS.",
+    )
+
+    vcs_url = models.URLField(
+        max_length=1024,
+        help_text="The Version Control System URL (e.g., git repo URL).",
+    )
+
+    patch_text = models.TextField(blank=True, null=True)
+    patch_checksum = models.CharField(max_length=128, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.patch_text:
+            self.patch_checksum = compute_patch_checksum(self.patch_text)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ["commit_hash", "vcs_url"]
+
+    def to_dict(self):
+        return {
+            "vcs_url": self.vcs_url,
+            "commit_hash": self.commit_hash,
+            "patch_text": self.patch_text,
+            "patch_checksum": self.patch_checksum,
+        }
+
+
+class AdvisoryV2QuerySet(BaseQuerySet):
+    def latest_for_avid(self, avid: str):
+        return (
+            self.filter(avid=avid)
+            .order_by(
+                F("date_collected").desc(nulls_last=True),
+                "-id",
+            )
+            .first()
+        )
+
+    def latest_per_avid(self):
+        latest_ids = (
+            self.filter(avid=OuterRef("avid"))
+            .order_by(
+                F("date_collected").desc(nulls_last=True),
+                "-id",
+            )
+            .values("id")[:1]
+        )
+
+        return self.filter(id=Subquery(latest_ids))
+
+    def latest_for_avids(self, avids):
+        return self.filter(avid__in=avids).latest_per_avid()
 
 
 class AdvisoryV2(models.Model):
@@ -2818,13 +2948,17 @@ class AdvisoryV2(models.Model):
         related_name="advisories",
         help_text="A list of software weaknesses associated with this advisory.",
     )
+
+    patches = models.ManyToManyField(
+        Patch,
+        related_name="advisories",
+        help_text="A list of patches associated with this advisory.",
+    )
+
     date_published = models.DateTimeField(
         blank=True, null=True, help_text="UTC Date of publication of the advisory"
     )
     date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
-    date_imported = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date on which the advisory was imported"
-    )
 
     original_advisory_text = models.TextField(
         blank=True,
@@ -2865,11 +2999,17 @@ class AdvisoryV2(models.Model):
             risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
             return round(risk_score, 1)
 
-    objects = AdvisoryQuerySet.as_manager()
+    objects = AdvisoryV2QuerySet.as_manager()
 
     class Meta:
         unique_together = ["datasource_id", "advisory_id", "unique_content_id"]
         ordering = ["datasource_id", "advisory_id", "date_published", "unique_content_id"]
+        indexes = [
+            models.Index(
+                fields=["avid", "-date_collected", "-id"],
+                name="advisory_latest_by_avid_idx",
+            )
+        ]
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -2897,6 +3037,7 @@ class AdvisoryV2(models.Model):
                 impacted.to_affected_package_data() for impacted in self.impacted_packages.all()
             ],
             references_v2=[ref.to_reference_v2_data() for ref in self.references.all()],
+            patches=[patch.to_patch_data() for patch in self.patches.all()],
             date_published=self.date_published,
             weaknesses=[weak.cwe_id for weak in self.weaknesses.all()],
             severities=[sev.to_vulnerability_severity_data() for sev in self.severities.all()],
@@ -2927,17 +3068,19 @@ class ImpactedPackage(models.Model):
 
     base_purl = models.CharField(
         max_length=500,
-        blank=True,
+        blank=False,
         help_text="Version less PURL related to impacted range.",
     )
 
     affecting_vers = models.TextField(
         blank=True,
+        null=True,
         help_text="VersionRange expression for package vulnerable to this impact.",
     )
 
     fixed_vers = models.TextField(
         blank=True,
+        null=True,
         help_text="VersionRange expression for packages fixing the vulnerable package in this impact.",
     )
 
@@ -2953,6 +3096,18 @@ class ImpactedPackage(models.Model):
         help_text="Packages vulnerable to this impact.",
     )
 
+    introduced_by_package_commit_patches = models.ManyToManyField(
+        "PackageCommitPatch",
+        related_name="introduced_in_impacts",
+        help_text="PackageCommitPatches that introduce this impact.",
+    )
+
+    fixed_by_package_commit_patches = models.ManyToManyField(
+        "PackageCommitPatch",
+        related_name="fixed_in_impacts",
+        help_text="PackageCommitPatches that fix this impact.",
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
@@ -2966,6 +3121,12 @@ class ImpactedPackage(models.Model):
             "package": purl_to_dict(self.base_purl),
             "affected_version_range": self.affecting_vers,
             "fixed_version_range": self.fixed_vers,
+            "introduced_by_commit_patches": [
+                commit.to_dict() for commit in self.introduced_by_package_commit_patches.all()
+            ],
+            "fixed_by_commit_patches": [
+                commit.to_dict() for commit in self.fixed_by_package_commit_patches.all()
+            ],
         }
 
     def to_affected_package_data(self):
@@ -3064,6 +3225,41 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         package, is_created = PackageV2.objects.get_or_create(**purl_to_dict(purl=purl))
 
         return package, is_created
+
+    def bulk_get_or_create_from_purls(self, purls: List[Union[PackageURL, str]]):
+        """
+        Return new or existing Packages given ``purls`` list of PackageURL object or PURL string.
+        """
+        purl_strings = [str(p) for p in purls]
+        existing_packages = PackageV2.objects.filter(package_url__in=purl_strings)
+        existing_purls = set(existing_packages.values_list("package_url", flat=True))
+
+        all_packages = list(existing_packages)
+        packages_to_create = []
+        for purl in purls:
+            if str(purl) in existing_purls:
+                continue
+
+            purl_dict = purl_to_dict(purl)
+            purl = PackageURL(**purl_dict)
+
+            normalized = normalize_purl(purl=purl)
+            for name, value in purl_to_dict(normalized).items():
+                setattr(self, name, value)
+
+            purl_dict["package_url"] = str(normalized)
+            purl_dict["plain_package_url"] = str(utils.plain_purl(normalized))
+
+            packages_to_create.append(PackageV2(**purl_dict))
+
+        try:
+            new_packages = PackageV2.objects.bulk_create(packages_to_create)
+        except Exception as e:
+            logging.error(f"Error creating PackageV2: {e} \n {traceback_format_exc()}")
+            return []
+
+        all_packages.extend(new_packages)
+        return all_packages
 
     def only_vulnerable(self):
         return self._vulnerable(True)
@@ -3334,3 +3530,26 @@ class AdvisoryExploit(models.Model):
     @property
     def get_known_ransomware_campaign_use_type(self):
         return "Known" if self.known_ransomware_campaign_use else "Unknown"
+
+
+class SSVC(models.Model):
+    vector = models.CharField(max_length=255, help_text="The vector string representing the SSVC.")
+    options = models.JSONField(help_text="A JSON object containing the SSVC options.")
+    decision = models.CharField(max_length=255, help_text="The decision string for the SSVC.")
+    related_advisories = models.ManyToManyField(
+        AdvisoryV2,
+        related_name="related_ssvcs",
+        help_text="Advisories associated with this SSVC.",
+    )
+    source_advisory = models.ForeignKey(
+        AdvisoryV2,
+        on_delete=models.CASCADE,
+        related_name="source_ssvcs",
+        help_text="The advisory that was used to generate this SSVC decision.",
+    )
+
+    def __str__(self):
+        return f"SSVC Decision: {self.vector} -> {self.decision}"
+
+    class Meta:
+        unique_together = ("vector", "source_advisory")

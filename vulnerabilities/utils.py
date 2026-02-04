@@ -26,6 +26,7 @@ from typing import Union
 from unittest.mock import MagicMock
 from urllib.parse import urljoin
 
+import dateparser
 import requests
 import saneyaml
 import toml
@@ -47,6 +48,9 @@ cve_regex = re.compile(r"CVE-[0-9]{4}-[0-9]{4,19}", re.IGNORECASE)
 is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
 cwe_regex = r"CWE-\d+"
+
+commit_regex = re.compile(r"\b[0-9a-f]{5,40}\b", re.IGNORECASE)
+is_commit = commit_regex.fullmatch
 
 
 @dataclasses.dataclass(order=True, frozen=True)
@@ -202,28 +206,38 @@ class classproperty(object):
         return self.fget(owner_cls)
 
 
-def get_item(dictionary: dict, *attributes):
+def get_item(entity: Union[dict, list], *attributes):
     """
-    Return `item` by going through all the `attributes` present in the `dictionary`
+    Return `item` by going through all the `attributes` present in the `dictionary/list`
 
-    Do a DFS for the `item` in the `dictionary` by traversing the `attributes`
+    Do a DFS for the `item` in the `dictionary/list` by traversing the `attributes`
     and return None if can not traverse through the `attributes`
     For example:
+    >>> assert get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c') == 'd'
+    >>> assert get_item({'a': [{'b': {'c': 'd'}}]}, 'a', 0, 'b') == {'c': 'd'}
+    >>> assert get_item(['b', ['c', ['d']]], 1, 1, 0) == 'd'
     >>> get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c')
     'd'
     >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
     """
     for attribute in attributes:
-        if not dictionary:
+        if not entity:
             return
-        if not isinstance(dictionary, dict):
-            logger.error("dictionary must be of type `dict`")
+        if not isinstance(entity, (dict, list)):
+            logger.error(f"Entity must be of type `dict` or `list` not {type(entity)}")
             return
-        if attribute not in dictionary:
-            logger.error(f"Missing attribute {attribute} in {dictionary}")
+        if isinstance(entity, dict) and attribute not in entity:
+            logger.error(f"Missing attribute {attribute} in {entity}")
             return
-        dictionary = dictionary[attribute]
-    return dictionary
+        if isinstance(entity, list) and not isinstance(attribute, int):
+            logger.error(f"List indices must be integers not {type(attribute)}")
+            return
+        if isinstance(entity, list) and len(entity) <= attribute:
+            logger.error(f"Index {attribute} out of range for {entity}")
+            return
+
+        entity = entity[attribute]
+    return entity
 
 
 class GitHubTokenError(Exception):
@@ -375,10 +389,16 @@ def fetch_response(url):
     """
     Fetch and return `response` from the `url`
     """
-    response = requests.get(url)
-    if response.status_code == HTTPStatus.OK:
-        return response
-    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
+    try:
+        response = requests.get(url)
+        if response.status_code == HTTPStatus.OK:
+            return response
+        raise Exception(
+            f"Failed to fetch data from {url!r} with status code: {response.status_code!r}"
+        )
+    except Exception as e:
+        logger.error(f"Error fetching data from {url!r}: {e}")
+        return None
 
 
 # This should be a method on PackageURL
@@ -678,3 +698,124 @@ def create_registry(pipelines):
         registry[key] = pipeline
 
     return registry
+
+
+def ssvc_calculator(ssvc_data):
+    """
+    Return the ssvc vector and the decision value
+    """
+    options = ssvc_data.get("options", [])
+    timestamp = ssvc_data.get("timestamp")
+
+    # Extract the options into a dictionary
+    options_dict = {k: v.lower() for option in options for k, v in option.items()}
+
+    # We copied the table value from this link.
+    # https://www.cisa.gov/sites/default/files/publications/cisa-ssvc-guide%20508c.pdf
+
+    # Determining Mission and Well-Being Impact Value
+    mission_well_being_table = {
+        # (Mission Prevalence, Public Well-being Impact) : "Mission & Well-being"
+        ("minimal", "minimal"): "low",
+        ("minimal", "material"): "medium",
+        ("minimal", "irreversible"): "high",
+        ("support", "minimal"): "medium",
+        ("support", "material"): "medium",
+        ("support", "irreversible"): "high",
+        ("essential", "minimal"): "high",
+        ("essential", "material"): "high",
+        ("essential", "irreversible"): "high",
+    }
+
+    if "Mission Prevalence" not in options_dict:
+        options_dict["Mission Prevalence"] = "minimal"
+
+    if "Public Well-being Impact" not in options_dict:
+        options_dict["Public Well-being Impact"] = "material"
+
+    options_dict["Mission & Well-being"] = mission_well_being_table[
+        (options_dict["Mission Prevalence"], options_dict["Public Well-being Impact"])
+    ]
+
+    decision_key = (
+        options_dict.get("Exploitation"),
+        options_dict.get("Automatable"),
+        options_dict.get("Technical Impact"),
+        options_dict.get("Mission & Well-being"),
+    )
+
+    decision_points = {
+        "Exploitation": {"E": {"none": "N", "poc": "P", "active": "A"}},
+        "Automatable": {"A": {"no": "N", "yes": "Y"}},
+        "Technical Impact": {"T": {"partial": "P", "total": "T"}},
+        "Public Well-being Impact": {"B": {"minimal": "M", "material": "A", "irreversible": "I"}},
+        "Mission Prevalence": {"P": {"minimal": "M", "support": "S", "essential": "E"}},
+        "Mission & Well-being": {"M": {"low": "L", "medium": "M", "high": "H"}},
+    }
+
+    # Create the SSVC vector
+    ssvc_vector = "SSVCv2/"
+    for key, value_map in options_dict.items():
+        options_key = decision_points.get(key)
+        for lhs, rhs_map in options_key.items():
+            ssvc_vector += f"{lhs}:{rhs_map.get(value_map)}/"
+
+    # "Decision": {"D": {"Track": "T", "Track*": "R", "Attend": "A", "Act": "C"}},
+    decision_values = {"Track": "T", "Track*": "R", "Attend": "A", "Act": "C"}
+
+    decision_lookup = {
+        ("none", "no", "partial", "low"): "Track",
+        ("none", "no", "partial", "medium"): "Track",
+        ("none", "no", "partial", "high"): "Track",
+        ("none", "no", "total", "low"): "Track",
+        ("none", "no", "total", "medium"): "Track",
+        ("none", "no", "total", "high"): "Track*",
+        ("none", "yes", "partial", "low"): "Track",
+        ("none", "yes", "partial", "medium"): "Track",
+        ("none", "yes", "partial", "high"): "Attend",
+        ("none", "yes", "total", "low"): "Track",
+        ("none", "yes", "total", "medium"): "Track",
+        ("none", "yes", "total", "high"): "Attend",
+        ("poc", "no", "partial", "low"): "Track",
+        ("poc", "no", "partial", "medium"): "Track",
+        ("poc", "no", "partial", "high"): "Track*",
+        ("poc", "no", "total", "low"): "Track",
+        ("poc", "no", "total", "medium"): "Track*",
+        ("poc", "no", "total", "high"): "Attend",
+        ("poc", "yes", "partial", "low"): "Track",
+        ("poc", "yes", "partial", "medium"): "Track",
+        ("poc", "yes", "partial", "high"): "Attend",
+        ("poc", "yes", "total", "low"): "Track",
+        ("poc", "yes", "total", "medium"): "Track*",
+        ("poc", "yes", "total", "high"): "Attend",
+        ("active", "no", "partial", "low"): "Track",
+        ("active", "no", "partial", "medium"): "Track",
+        ("active", "no", "partial", "high"): "Attend",
+        ("active", "no", "total", "low"): "Track",
+        ("active", "no", "total", "medium"): "Attend",
+        ("active", "no", "total", "high"): "Act",
+        ("active", "yes", "partial", "low"): "Attend",
+        ("active", "yes", "partial", "medium"): "Attend",
+        ("active", "yes", "partial", "high"): "Act",
+        ("active", "yes", "total", "low"): "Attend",
+        ("active", "yes", "total", "medium"): "Act",
+        ("active", "yes", "total", "high"): "Act",
+    }
+
+    decision = decision_lookup.get(decision_key, "")
+
+    if decision:
+        ssvc_vector += f"D:{decision_values.get(decision)}/"
+
+    if timestamp:
+        timestamp_formatted = dateparser.parse(timestamp).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        ssvc_vector += f"{timestamp_formatted}/"
+    return ssvc_vector, decision
+
+
+def compute_patch_checksum(patch_text: str):
+    """
+    Compute SHA-512 checksum for patch text.
+    """
+    return hashlib.sha512(patch_text.encode("utf-8")).hexdigest()

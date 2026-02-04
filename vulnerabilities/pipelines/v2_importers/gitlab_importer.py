@@ -25,7 +25,9 @@ from univers.version_range import from_gitlab_native
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import get_advisory_url
 from vulnerabilities.utils import get_cwe_id
@@ -291,6 +293,31 @@ def parse_gitlab_advisory(
         fixed_version_range=fixed_version_range,
     )
 
+    cvss_v2 = gitlab_advisory.get("cvss_v2")
+    cvss_v3 = gitlab_advisory.get("cvss_v3")
+    severities = []
+    if cvss_v2:
+        severities.append(
+            VulnerabilitySeverity(
+                system=SCORING_SYSTEMS["cvssv2"],
+                scoring_elements=cvss_v2,
+                value=None,
+                url=advisory_url,
+            )
+        )
+    if cvss_v3:
+        scoring_system = SCORING_SYSTEMS["cvssv3"]
+        if cvss_v3.startswith("CVSS:3.1/"):
+            scoring_system = SCORING_SYSTEMS["cvssv3.1"]
+        severities.append(
+            VulnerabilitySeverity(
+                system=scoring_system,
+                scoring_elements=cvss_v3,
+                value=None,
+                url=advisory_url,
+            )
+        )
+
     return AdvisoryData(
         advisory_id=advisory_id,
         aliases=aliases,
@@ -299,6 +326,7 @@ def parse_gitlab_advisory(
         date_published=date_published,
         affected_packages=[affected_package],
         weaknesses=cwe_list,
+        severities=severities,
         url=advisory_url,
         original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
     )

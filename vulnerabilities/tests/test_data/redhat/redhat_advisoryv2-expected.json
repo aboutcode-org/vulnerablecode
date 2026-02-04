@@ -23,7 +23,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -35,7 +37,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -47,7 +51,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -59,7 +65,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -71,7 +79,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -83,7 +93,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -95,7 +107,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -107,7 +121,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -119,7 +135,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -131,7 +149,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -143,7 +163,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -155,7 +177,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -167,7 +191,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3"
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       }
     ],
     "references_v2": [
@@ -182,6 +208,7 @@
         "url": "https://access.redhat.com/errata/RHBA-2024:11505"
       }
     ],
+    "patches": [],
     "severities": [
       {
         "system": "rhas",
@@ -262,6 +289,7 @@
         "url": "https://access.redhat.com/errata/RHBA-2025:0409"
       }
     ],
+    "patches": [],
     "severities": [
       {
         "system": "rhas",
@@ -297,6 +325,7 @@
         "url": "https://access.redhat.com/errata/RHBA-2025:1079"
       }
     ],
+    "patches": [],
     "severities": [
       {
         "system": "rhas",
@@ -329,7 +358,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<20230808-2.20250211.1.el9_4",
-        "fixed_version_range": "vers:rpm/20230808-2.20250211.1.el9_4"
+        "fixed_version_range": "vers:rpm/20230808-2.20250211.1.el9_4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -341,7 +372,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<20230808-2.20250211.1.el9_4",
-        "fixed_version_range": "vers:rpm/20230808-2.20250211.1.el9_4"
+        "fixed_version_range": "vers:rpm/20230808-2.20250211.1.el9_4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       }
     ],
     "references_v2": [
@@ -356,6 +389,7 @@
         "url": "https://access.redhat.com/errata/RHEA-2025:2418"
       }
     ],
+    "patches": [],
     "severities": [
       {
         "system": "rhas",
@@ -384,7 +418,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -396,7 +432,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -408,7 +446,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -420,7 +460,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -432,7 +474,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -444,7 +488,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -456,7 +502,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -468,7 +516,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -480,7 +530,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -492,7 +544,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -504,7 +558,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -516,7 +572,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -528,7 +586,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -540,7 +600,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -552,7 +614,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -564,7 +628,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -576,7 +642,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -588,7 +656,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -600,7 +670,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -612,7 +684,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -624,7 +698,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -636,7 +712,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2"
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -648,7 +726,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -660,7 +740,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2"
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       }
     ],
     "references_v2": [
@@ -676,7 +758,7 @@
       },
       {
         "reference_id": "531697",
-        "reference_type": "",
+        "reference_type": "bug",
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=531697"
       },
       {
@@ -685,6 +767,7 @@
         "url": "https://access.redhat.com/errata/RHSA-2010:0002"
       }
     ],
+    "patches": [],
     "severities": [
       {
         "system": "rhas",
@@ -713,7 +796,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.3.7-30.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/1.3.7-30.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/1.3.7-30.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -725,7 +810,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -737,7 +824,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1"
+        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -749,7 +838,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<15.1.0-19.module+el8.4.0+22650+01781d50.3",
-        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3"
+        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -761,7 +852,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.10.1-2.module+el8.4.0+9657+a4b6a102",
-        "fixed_version_range": "vers:rpm/0.10.1-2.module+el8.4.0+9657+a4b6a102"
+        "fixed_version_range": "vers:rpm/0.10.1-2.module+el8.4.0+9657+a4b6a102",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -773,7 +866,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.4.0-2.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.4.0-2.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.4.0-2.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -785,7 +880,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.7-2.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/3.6.7-2.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/3.6.7-2.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -797,7 +894,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.14-12.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/0.14-12.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/0.14-12.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -809,7 +908,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.3.7-30.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/1.3.7-30.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/1.3.7-30.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -821,7 +922,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<2.2.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/2.2.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/2.2.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -833,7 +936,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<15.1.0-19.module+el8.4.0+22650+01781d50.3",
-        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3"
+        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -845,7 +950,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.31.1-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -857,7 +964,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.31.1-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -869,7 +978,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -881,7 +992,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.10.1-2.module+el8.4.0+9657+a4b6a102",
-        "fixed_version_range": "vers:rpm/0.10.1-2.module+el8.4.0+9657+a4b6a102"
+        "fixed_version_range": "vers:rpm/0.10.1-2.module+el8.4.0+9657+a4b6a102",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -893,7 +1006,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.4.0-2.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.4.0-2.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.4.0-2.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -905,7 +1020,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.7-2.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/3.6.7-2.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/3.6.7-2.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -917,7 +1034,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.14-12.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/0.14-12.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/0.14-12.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -929,7 +1048,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.3.7-30.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/1.3.7-30.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/1.3.7-30.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -941,7 +1062,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<2.2.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/2.2.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/2.2.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -953,7 +1076,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -965,7 +1090,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1"
+        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -977,7 +1104,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<15.1.0-19.module+el8.4.0+22650+01781d50.3",
-        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3"
+        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -989,7 +1118,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.31.1-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1001,7 +1132,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1013,7 +1146,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1025,7 +1160,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1037,7 +1174,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1049,7 +1188,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1061,7 +1202,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1073,7 +1216,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1085,7 +1230,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1097,7 +1244,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1109,7 +1258,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1121,7 +1272,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1133,7 +1286,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1"
+        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1145,7 +1300,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1157,7 +1314,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1169,7 +1328,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1181,7 +1342,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1193,7 +1356,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1205,7 +1370,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1217,7 +1384,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1229,7 +1398,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1241,7 +1412,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1253,7 +1426,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1265,7 +1440,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9"
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1277,7 +1454,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1289,7 +1468,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1301,7 +1482,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1"
+        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1313,7 +1496,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1325,7 +1510,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1337,7 +1524,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1"
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       },
       {
         "package": {
@@ -1349,7 +1538,9 @@
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7"
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
       }
     ],
     "references_v2": [
@@ -1365,7 +1556,7 @@
       },
       {
         "reference_id": "2328554",
-        "reference_type": "",
+        "reference_type": "bug",
         "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2328554"
       },
       {
@@ -1374,6 +1565,7 @@
         "url": "https://access.redhat.com/errata/RHSA-2025:0002"
       }
     ],
+    "patches": [],
     "severities": [
       {
         "system": "rhas",

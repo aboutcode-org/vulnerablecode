@@ -1,0 +1,22 @@
+[
+  {
+    "advisory_id": "RetireNet-1",
+    "aliases": [
+      "CVE-2019-0982"
+    ],
+    "summary": "Microsoft Security Advisory CVE-2019-0982: ASP.NET Core Denial of Service Vulnerability",
+    "affected_packages": [],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/aspnet/Announcements/issues/359"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/RetireNet/Packages/blob/master/1.json"
+  }
+]

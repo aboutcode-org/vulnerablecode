@@ -1,22 +1,107 @@
 [
   {
-    "advisory_id": "RetireNet-1",
+    "advisory_id": "RetireNet-12",
     "aliases": [
-      "CVE-2019-0982"
+      "CVE-2019-0564"
     ],
-    "summary": "Microsoft Security Advisory CVE-2019-0982: ASP.NET Core Denial of Service Vulnerability",
-    "affected_packages": [],
+    "summary": "Microsoft Security Advisory CVE-2019-0564: ASP.NET Core Denial of Service Vulnerability",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": "",
+          "name": "Microsoft.AspNetCore.All",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
+        "fixed_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": "",
+          "name": "Microsoft.AspNetCore.App",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
+        "fixed_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": "",
+          "name": "Microsoft.AspNetCore.Server.Kestrel.Core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3",
+        "fixed_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": "",
+          "name": "Microsoft.AspNetCore.WebSockets",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.2.0",
+        "fixed_version_range": "vers:nuget/2.1.0|2.1.1|2.2.0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": "",
+          "name": "Microsoft.NETCore.App",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
+        "fixed_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "nuget",
+          "namespace": "",
+          "name": "System.Net.WebSockets.WebSocketProtocol",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nuget/4.5.0|4.5.1|4.5.2",
+        "fixed_version_range": "vers:nuget/4.5.0|4.5.1|4.5.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
     "references_v2": [
       {
         "reference_id": "",
         "reference_type": "",
-        "url": "https://github.com/aspnet/Announcements/issues/359"
+        "url": "https://github.com/aspnet/Announcements/issues/334"
       }
     ],
     "patches": [],
     "severities": [],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://github.com/RetireNet/Packages/blob/master/1.json"
+    "url": "https://github.com/RetireNet/Packages/blob/master/12.json"
   }
 ]

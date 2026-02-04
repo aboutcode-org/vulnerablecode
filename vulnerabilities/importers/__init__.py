@@ -73,6 +73,7 @@ from vulnerabilities.pipelines.v2_importers import (
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
+from vulnerabilities.pipelines.v2_importers import retiredotnet_importer as retiredotnet_importer_v2
 from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
@@ -107,6 +108,7 @@ IMPORTERS_REGISTRY = create_registry(
         debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
         apache_tomcat_v2.ApacheTomcatImporterPipeline,
+        retiredotnet_importer_v2.RetireDotnetImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

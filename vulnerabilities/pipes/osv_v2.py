@@ -318,12 +318,17 @@ def get_affected_purl(affected_pkg, raw_id):
     else:
         ecosys = package.get("ecosystem")
         name = package.get("name")
+        namespace = ""
+
         if ecosys and name:
             ecosys = ecosys.lower()
             purl_type = PURL_TYPE_BY_OSV_ECOSYSTEM.get(ecosys)
+            if ecosys.startswith("ubuntu"):
+                purl_type = "deb"
+                namespace = "ubuntu"
+
             if not purl_type:
                 return
-            namespace = ""
             if purl_type == "maven":
                 namespace, _, name = name.partition(":")
 

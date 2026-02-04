@@ -132,7 +132,7 @@ class VulnerabilityQuerySet(BaseQuerySet):
 
     def for_cve(self, cve):
         """
-        Return a queryset of Vulnerability that have the the NVD CVE ``cve`` as an alias.
+        Return a queryset of Vulnerability that have the NVD CVE ``cve`` as an alias.
         """
         return self.filter(vulnerabilityreference__reference_id__exact=cve)
 

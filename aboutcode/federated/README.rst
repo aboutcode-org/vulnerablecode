@@ -28,7 +28,7 @@ repository names. A Data Cluster is akin to a table in a traditional database.
 3. **Data Repository**: A DataCluster contains of one or more Git Data Repository,
 each storing datafiles of the cluster data kind and a one PURL type, spreading
 the datafiles in multiple Data Directories. The name is data-kind +PURL-
-type+hashid. A Repository is similar to a shard or tablespace in a traditionale
+type+hashid. A Repository is similar to a shard or tablespace in a traditional
 database.
 
 4. **Data Directory**: In a Repository, a Data Directory contains the datafiles for

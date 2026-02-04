@@ -336,7 +336,7 @@ Rebalancing and splitting a DataCluster repos
 
 We can rebalance a cluster, like when we first store the data in a cluster with
 a single Git repository for a given PURL type, and later split this repo to more
-repos, without loosing the ability to address datafiles directly just knowing a
+repos, without losing the ability to address datafiles directly just knowing a
 PURL and without having to rename all the files and directories.
 
 In this design, the directory names are stable and do not change as long as we
@@ -1511,7 +1511,7 @@ def compute_purl_hash(purl: Union[PackageURL, str], max_value: int = 1024) -> st
     - Convert the PURL to a core PURL with only type, namespace and name.
     - Compute a SHA256 hash on that core PURL string encoded to bytes as UTF-8.
     - Convert that hash value to an integer.
-    - Compute a modulo on that integer with the the max value.
+    - Compute a modulo on that integer with the max value.
       With default max_value of 1024, this yields an int between 0 and 1023.
     - Convert that integer to a 4-characters string left-padded with zero.
 

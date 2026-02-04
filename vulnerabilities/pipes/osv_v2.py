@@ -69,7 +69,7 @@ def parse_advisory_data_v3(
     aliases = raw_data.get("aliases") or []
 
     date_published = get_published_date(raw_data=raw_data)
-    severities = list(get_severities(raw_data=raw_data))
+    severities = list(get_severities(raw_data=raw_data, url=advisory_url))
     references = get_references_v2(raw_data=raw_data)
 
     patches = []
@@ -236,24 +236,27 @@ def get_published_date(raw_data):
     return published and dateparser.parse(date_string=published)
 
 
-def get_severities(raw_data) -> Iterable[VulnerabilitySeverity]:
-    """
-    Yield VulnerabilitySeverity extracted from a mapping of OSV ``raw_data``
-    """
+def get_severities(raw_data, url) -> Iterable[VulnerabilitySeverity]:
+    """Yield VulnerabilitySeverity extracted from a mapping of OSV ``raw_data``"""
     try:
         for severity in raw_data.get("severity") or []:
-            vector = severity.get("score")
-            valid_vector = vector[:-1] if vector and vector.endswith("/") else vector
+            severity_type = severity.get("type")
+            score = severity.get("score")
 
-            if severity.get("type") == "CVSS_V3":
+            if severity_type == "CVSS_V3":
                 system = SCORING_SYSTEMS["cvssv3.1"]
-                score = system.compute(valid_vector)
-                yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
+                valid_vector = score[:-1] if score and score.endswith("/") else score
+                value = system.compute(valid_vector)
+                yield VulnerabilitySeverity(system=system, value=value, scoring_elements=score)
 
-            elif severity.get("type") == "CVSS_V4":
+            elif severity_type == "CVSS_V4":
                 system = SCORING_SYSTEMS["cvssv4"]
-                score = system.compute(valid_vector)
-                yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
+                valid_vector = score[:-1] if score and score.endswith("/") else score
+                value = system.compute(valid_vector)
+                yield VulnerabilitySeverity(system=system, value=value, scoring_elements=score)
+            elif severity_type.lower() in SCORING_SYSTEMS:
+                system = SCORING_SYSTEMS[severity_type.lower()]
+                yield VulnerabilitySeverity(system=system, value=score, url=url)
 
             else:
                 logger.error(

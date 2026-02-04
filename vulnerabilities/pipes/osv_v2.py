@@ -305,10 +305,11 @@ def get_affected_purl(affected_pkg, raw_id):
     data and a ``raw_id``.
     """
     package = affected_pkg.get("package") or {}
-    purl = package.get("purl")
-    if purl:
+    if purl := package.get("purl"):
         try:
-            purl = PackageURL.from_string(purl)
+            purl_dict = PackageURL.from_string(purl).to_dict()
+            del purl_dict["version"]
+            purl = PackageURL(**purl_dict)
         except ValueError:
             logger.error(
                 f"Invalid PackageURL: {purl!r} for OSV "

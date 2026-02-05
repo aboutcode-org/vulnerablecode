@@ -2,7 +2,7 @@
   {
     "advisory_id": "CVE-2021-0001",
     "aliases": [],
-    "summary": "",
+    "summary": "41b43c74bda19753c757036673ea9db74acf494a:Fixed CVE-2025-59681 -- Protected QuerySet.annotate(), alias(), aggregate(), and extra() against SQL injection in column aliases on MySQL/MariaDB.",
     "affected_packages": [
       {
         "package": {
@@ -36,7 +36,7 @@
   {
     "advisory_id": "GHSA-dead-beef-baad",
     "aliases": [],
-    "summary": "",
+    "summary": "49ff1042aa66bb25eda87e9a8ef82f3b0ad4eeba:Fixed CVE-2024-53907 -- Mitigated potential DoS in strip_tags().",
     "affected_packages": [
       {
         "package": {

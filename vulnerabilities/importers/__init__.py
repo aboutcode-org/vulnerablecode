@@ -163,7 +163,6 @@ IMPORTERS_REGISTRY = create_registry(
         collect_fix_commits_v2.CollectRustFixCommitsPipeline,
         collect_fix_commits_v2.CollectOpenjdkFixCommitsPipeline,
         collect_fix_commits_v2.CollectSwiftFixCommitsPipeline,
-        collect_fix_commits_v2.CollectOpensslFixCommitsPipeline,
         collect_fix_commits_v2.CollectDjangoFixCommitsPipeline,
         collect_fix_commits_v2.CollectRailsFixCommitsPipeline,
         collect_fix_commits_v2.CollectLaravelFixCommitsPipeline,

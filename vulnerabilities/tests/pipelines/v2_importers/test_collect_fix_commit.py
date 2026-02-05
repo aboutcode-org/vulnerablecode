@@ -15,7 +15,7 @@ from unittest.mock import patch
 
 import pytest
 
-from vulnerabilities.pipelines import CollectVCSFixCommitPipeline
+from vulnerabilities.pipes.vcs_collector_utils import CollectVCSFixCommitPipeline
 from vulnerabilities.tests import util_tests
 
 
@@ -36,7 +36,7 @@ def test_classify_commit_type_extracts_ids(pipeline):
     assert result == ["CVE-2023-1234", "GHSA-2479-qvv7-47qq"]
 
 
-@patch("vulnerabilities.pipelines.Repo")
+@patch("vulnerabilities.pipes.vcs_collector_utils.Repo")
 def test_collect_fix_commits_groups_by_vuln(mock_repo, pipeline):
     commit1 = MagicMock(message="Fix CVE-2021-0001", hexsha="abc123")
     commit2 = MagicMock(message="Patch GHSA-f72r-2h5j-7639", hexsha="def456")

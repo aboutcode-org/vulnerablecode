@@ -196,12 +196,12 @@ OPENSSL.choices = [
     "Low",
 ]
 
-UBUNTU = ScoringSystem(
-    identifier="ubuntu",
-    name="Ubuntu priority",
+UBUNTU_PRIORITY = ScoringSystem(
+    identifier="ubuntu-priority",
+    name="Ubuntu Priority",
     url="https://ubuntu.com/security/cves/about#priority",
 )
-UBUNTU.choices = [
+UBUNTU_PRIORITY.choices = [
     "Critical",
     "High",
     "Medium",
@@ -252,6 +252,6 @@ SCORING_SYSTEMS = {
         EPSS,
         SSVC,
         OPENSSL,
-        UBUNTU,
+        UBUNTU_PRIORITY,
     )
 }

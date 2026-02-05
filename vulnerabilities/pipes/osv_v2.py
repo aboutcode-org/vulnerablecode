@@ -51,6 +51,12 @@ PURL_TYPE_BY_OSV_ECOSYSTEM = {
     "crates.io": "cargo",
 }
 
+OSV_TO_VCIO_SEVERITY_MAP = {
+    "cvss_v3": "cvssv3.1",
+    "cvss_v4": "cvssv4",
+    "ubuntu": "ubuntu-priority",
+}
+
 
 def parse_advisory_data_v3(
     raw_data: dict, supported_ecosystems, advisory_url: str, advisory_text: str
@@ -242,27 +248,33 @@ def get_severities(raw_data, url) -> Iterable[VulnerabilitySeverity]:
     try:
         for severity in raw_data.get("severity") or []:
             severity_type = severity.get("type")
-            score = severity.get("score")
+            value = severity.get("score")
+            severity_type = severity_type.lower()
+            scoring_element = None
 
-            if severity_type == "CVSS_V3":
-                system = SCORING_SYSTEMS["cvssv3.1"]
-                valid_vector = score[:-1] if score and score.endswith("/") else score
-                value = system.compute(valid_vector)
-                yield VulnerabilitySeverity(system=system, value=value, scoring_elements=score)
-
-            elif severity_type == "CVSS_V4":
-                system = SCORING_SYSTEMS["cvssv4"]
-                valid_vector = score[:-1] if score and score.endswith("/") else score
-                value = system.compute(valid_vector)
-                yield VulnerabilitySeverity(system=system, value=value, scoring_elements=score)
-            elif severity_type.lower() in SCORING_SYSTEMS:
-                system = SCORING_SYSTEMS[severity_type.lower()]
-                yield VulnerabilitySeverity(system=system, value=score, url=url)
-
-            else:
+            if (
+                severity_type not in SCORING_SYSTEMS
+                and severity_type not in OSV_TO_VCIO_SEVERITY_MAP
+            ):
                 logger.error(
                     f"Unsupported severity type: {severity!r} for OSV id: {raw_data.get('id')!r}"
                 )
+                continue
+
+            severity_type = OSV_TO_VCIO_SEVERITY_MAP.get(severity_type, severity_type)
+            system = SCORING_SYSTEMS[severity_type]
+
+            if severity_type in ["cvssv3.1", "cvssv4"]:
+                scoring_element = value
+                valid_vector = value[:-1] if value and value.endswith("/") else value
+                value = system.compute(valid_vector)
+
+            yield VulnerabilitySeverity(
+                system=system,
+                value=value,
+                scoring_elements=scoring_element,
+                url=url,
+            )
     except (CVSS3MalformedError, CVSS4MalformedError) as e:
         logger.error(f"Invalid severity {e}")
 

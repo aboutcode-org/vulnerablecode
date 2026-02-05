@@ -36,9 +36,9 @@
     "patches": [],
     "severities": [
       {
-        "system": "ubuntu",
+        "system": "ubuntu-priority",
         "value": "low",
-        "scoring_elements": ""
+        "scoring_elements": null
       }
     ],
     "date_published": "2014-04-05T21:55:00+00:00",
@@ -139,9 +139,9 @@
     "patches": [],
     "severities": [
       {
-        "system": "ubuntu",
+        "system": "ubuntu-priority",
         "value": "medium",
-        "scoring_elements": ""
+        "scoring_elements": null
       }
     ],
     "date_published": "2020-05-24T00:00:00+00:00",
@@ -199,9 +199,9 @@
     "patches": [],
     "severities": [
       {
-        "system": "ubuntu",
+        "system": "ubuntu-priority",
         "value": "low",
-        "scoring_elements": ""
+        "scoring_elements": null
       }
     ],
     "date_published": "2010-04-06T16:30:00+00:00",
@@ -250,9 +250,9 @@
     "patches": [],
     "severities": [
       {
-        "system": "ubuntu",
+        "system": "ubuntu-priority",
         "value": "low",
-        "scoring_elements": ""
+        "scoring_elements": null
       }
     ],
     "date_published": "2015-03-17T00:00:00+00:00",
@@ -343,14 +343,14 @@
     "patches": [],
     "severities": [
       {
-        "system": "ubuntu",
-        "value": "medium",
-        "scoring_elements": ""
-      },
-      {
         "system": "cvssv3.1",
         "value": "9.8",
         "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      {
+        "system": "ubuntu-priority",
+        "value": "medium",
+        "scoring_elements": null
       }
     ],
     "date_published": "2020-03-23T22:15:00+00:00",
@@ -441,11 +441,6 @@
     "patches": [],
     "severities": [
       {
-        "system": "ubuntu",
-        "value": "medium",
-        "scoring_elements": ""
-      },
-      {
         "system": "cvssv3.1",
         "value": "4.2",
         "scoring_elements": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:L/A:N"
@@ -459,6 +454,11 @@
         "system": "cvssv4",
         "value": "2.3",
         "scoring_elements": "CVSS:4.0/AV:N/AC:H/AT:P/PR:L/UI:N/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N"
+      },
+      {
+        "system": "ubuntu-priority",
+        "value": "medium",
+        "scoring_elements": null
       }
     ],
     "date_published": "2025-12-09T16:17:00+00:00",

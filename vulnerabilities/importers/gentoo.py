@@ -104,11 +104,15 @@ class GentooImporter(Importer):
             safe_versions, affected_versions = GentooImporter.get_safe_and_affected_versions(pkg)
 
             for version in safe_versions:
+                # version can have a slot, which we don't support in univers
+                version = version.split(":")[0]
                 constraints.append(
                     VersionConstraint(version=GentooVersion(version), comparator="=").invert()
                 )
 
             for version in affected_versions:
+                # version can have a slot, which we don't support in univers
+                version = version.split(":")[0]
                 constraints.append(
                     VersionConstraint(version=GentooVersion(version), comparator="=")
                 )

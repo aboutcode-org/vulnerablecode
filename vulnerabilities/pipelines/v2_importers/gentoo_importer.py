@@ -61,7 +61,7 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         cves = []
         summary = ""
         xml_root = ET.parse(file).getroot()
-        id = xml_root.attrib.get("id")
+        id = xml_root.attrib.get("id", "")
         glsa = "GLSA-" + id
         vuln_references = [
             ReferenceV2(
@@ -108,9 +108,7 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             references_v2=vuln_references,
             severities=severities,
             affected_packages=affected_packages,
-            url=f"https://security.gentoo.org/glsa/{id}"
-            if id
-            else "https://security.gentoo.org/glsa",
+            url=f"https://security.gentoo.org/glsa/{id}",
             original_advisory_text=file,
         )
 

@@ -82,7 +82,7 @@ class TestRepoFixCommitPipeline(TestCase):
 
         result = [adv.to_dict() for adv in pipeline.collect_advisories()]
 
-        util_tests.check_results_against_json(result, expected_file, True)
+        util_tests.check_results_against_json(result, expected_file)
 
 
 @pytest.mark.parametrize(

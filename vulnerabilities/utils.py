@@ -389,10 +389,16 @@ def fetch_response(url):
     """
     Fetch and return `response` from the `url`
     """
-    response = requests.get(url)
-    if response.status_code == HTTPStatus.OK:
-        return response
-    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
+    try:
+        response = requests.get(url)
+        if response.status_code == HTTPStatus.OK:
+            return response
+        raise Exception(
+            f"Failed to fetch data from {url!r} with status code: {response.status_code!r}"
+        )
+    except Exception as e:
+        logger.error(f"Error fetching data from {url!r}: {e}")
+        return None
 
 
 # This should be a method on PackageURL

@@ -48,6 +48,7 @@ from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apac
 from vulnerabilities.pipelines.v2_importers import apache_tomcat_importer as apache_tomcat_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
+from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
@@ -104,6 +105,7 @@ IMPORTERS_REGISTRY = create_registry(
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
         nginx_importer_v2.NginxImporterPipeline,
+        debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
         apache_tomcat_v2.ApacheTomcatImporterPipeline,
         alpine_linux_importer_v2.AlpineLinuxImporterPipeline,

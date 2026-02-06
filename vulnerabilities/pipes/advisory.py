@@ -360,14 +360,14 @@ def insert_advisory_v2(
                 affected_package=affected_pkg,
                 logger=logger,
             )
-            affected_packages_v2 = [
-                PackageV2.objects.get_or_create_from_purl(purl=purl)[0]
-                for purl in package_affected_purls
-            ]
-            fixed_packages_v2 = [
-                PackageV2.objects.get_or_create_from_purl(purl=purl)[0]
-                for purl in package_fixed_purls
-            ]
+
+            affected_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
+                purls=package_affected_purls
+            )
+            fixed_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
+                purls=package_fixed_purls
+            )
+
             impact.affecting_packages.add(*affected_packages_v2)
             impact.fixed_by_packages.add(*fixed_packages_v2)
 

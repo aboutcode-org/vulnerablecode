@@ -51,6 +51,12 @@ PURL_TYPE_BY_OSV_ECOSYSTEM = {
     "crates.io": "cargo",
 }
 
+OSV_TO_VCIO_SEVERITY_MAP = {
+    "cvss_v3": "cvssv3.1",
+    "cvss_v4": "cvssv4",
+    "ubuntu": "ubuntu-priority",
+}
+
 
 def parse_advisory_data_v3(
     raw_data: dict, supported_ecosystems, advisory_url: str, advisory_text: str
@@ -67,9 +73,10 @@ def parse_advisory_data_v3(
     details = raw_data.get("details") or ""
     summary = build_description(summary=summary, description=details)
     aliases = raw_data.get("aliases") or []
+    aliases.extend(raw_data.get("upstream", []))
 
     date_published = get_published_date(raw_data=raw_data)
-    severities = list(get_severities(raw_data=raw_data))
+    severities = list(get_severities(raw_data=raw_data, url=advisory_url))
     references = get_references_v2(raw_data=raw_data)
 
     patches = []
@@ -236,29 +243,38 @@ def get_published_date(raw_data):
     return published and dateparser.parse(date_string=published)
 
 
-def get_severities(raw_data) -> Iterable[VulnerabilitySeverity]:
-    """
-    Yield VulnerabilitySeverity extracted from a mapping of OSV ``raw_data``
-    """
+def get_severities(raw_data, url) -> Iterable[VulnerabilitySeverity]:
+    """Yield VulnerabilitySeverity extracted from a mapping of OSV ``raw_data``"""
     try:
         for severity in raw_data.get("severity") or []:
-            vector = severity.get("score")
-            valid_vector = vector[:-1] if vector and vector.endswith("/") else vector
+            severity_type = severity.get("type")
+            value = severity.get("score")
+            severity_type = severity_type.lower()
+            scoring_element = None
 
-            if severity.get("type") == "CVSS_V3":
-                system = SCORING_SYSTEMS["cvssv3.1"]
-                score = system.compute(valid_vector)
-                yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
-
-            elif severity.get("type") == "CVSS_V4":
-                system = SCORING_SYSTEMS["cvssv4"]
-                score = system.compute(valid_vector)
-                yield VulnerabilitySeverity(system=system, value=score, scoring_elements=vector)
-
-            else:
+            if (
+                severity_type not in SCORING_SYSTEMS
+                and severity_type not in OSV_TO_VCIO_SEVERITY_MAP
+            ):
                 logger.error(
                     f"Unsupported severity type: {severity!r} for OSV id: {raw_data.get('id')!r}"
                 )
+                continue
+
+            severity_type = OSV_TO_VCIO_SEVERITY_MAP.get(severity_type, severity_type)
+            system = SCORING_SYSTEMS[severity_type]
+
+            if severity_type in ["cvssv3.1", "cvssv4"]:
+                scoring_element = value
+                valid_vector = value[:-1] if value and value.endswith("/") else value
+                value = system.compute(valid_vector)
+
+            yield VulnerabilitySeverity(
+                system=system,
+                value=value,
+                scoring_elements=scoring_element,
+                url=url,
+            )
     except (CVSS3MalformedError, CVSS4MalformedError) as e:
         logger.error(f"Invalid severity {e}")
 
@@ -302,10 +318,11 @@ def get_affected_purl(affected_pkg, raw_id):
     data and a ``raw_id``.
     """
     package = affected_pkg.get("package") or {}
-    purl = package.get("purl")
-    if purl:
+    if purl := package.get("purl"):
         try:
-            purl = PackageURL.from_string(purl)
+            purl_dict = PackageURL.from_string(purl).to_dict()
+            del purl_dict["version"]
+            purl = PackageURL(**purl_dict)
         except ValueError:
             logger.error(
                 f"Invalid PackageURL: {purl!r} for OSV "
@@ -314,12 +331,17 @@ def get_affected_purl(affected_pkg, raw_id):
     else:
         ecosys = package.get("ecosystem")
         name = package.get("name")
+        namespace = ""
+
         if ecosys and name:
             ecosys = ecosys.lower()
             purl_type = PURL_TYPE_BY_OSV_ECOSYSTEM.get(ecosys)
+            if ecosys.startswith("ubuntu"):
+                purl_type = "deb"
+                namespace = "ubuntu"
+
             if not purl_type:
                 return
-            namespace = ""
             if purl_type == "maven":
                 namespace, _, name = name.partition(":")
 

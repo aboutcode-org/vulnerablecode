@@ -12,6 +12,8 @@ from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
+import django_rq
+from rq.worker import Worker
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -755,6 +757,20 @@ class PipelineScheduleListView(ListView, FormMixin):
         context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
             is_active=False
         ).count()
+
+        queues = [django_rq.get_queue("default")]
+        workers = Worker.all(connection=django_rq.get_connection())
+        context["total_workers"] = len(workers)
+        context["idle_workers"] = len([w for w in workers if w.state == "idle"])
+        context["busy_workers"] = len([w for w in workers if w.state == "busy"])
+        context["queue_count"] = sum(q.count for q in queues)
+
+        paginator = context.get("paginator")
+        page_obj = context.get("page_obj")
+        if paginator and page_obj:
+            context["elided_page_range"] = paginator.get_elided_page_range(
+                page_obj.number, on_each_side=2, on_ends=1
+            )
         return context
 
 

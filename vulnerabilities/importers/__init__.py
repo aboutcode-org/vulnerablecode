@@ -66,6 +66,7 @@ from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
 from vulnerabilities.pipelines.v2_importers import openssl_importer as openssl_importer_v2
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
+from vulnerabilities.pipelines.v2_importers import ossa_importer_v2
 from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgresql_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
     project_kb_msr2019_importer as project_kb_msr2019_importer_v2,
@@ -113,6 +114,7 @@ IMPORTERS_REGISTRY = create_registry(
         nginx_importer_v2.NginxImporterPipeline,
         debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
+        ossa_importer_v2.OSSAImporterPipeline,
         apache_tomcat_v2.ApacheTomcatImporterPipeline,
         suse_score_importer_v2.SUSESeverityScoreImporterPipeline,
         retiredotnet_importer_v2.RetireDotnetImporterPipeline,

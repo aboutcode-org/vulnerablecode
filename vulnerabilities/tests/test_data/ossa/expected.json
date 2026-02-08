@@ -1,0 +1,967 @@
+[
+  {
+    "advisory_id": "OSSA-2017-005",
+    "aliases": [
+      "CVE-2017-16239"
+    ],
+    "summary": "Nova Filter Scheduler bypass through rebuild action\n\nGeorge Shuklin from servers.com reported a vulnerability in Nova. By rebuilding an instance, an authenticated user may be able to circumvent the Filter Scheduler bypassing imposed filters (for example, the ImagePropertiesFilter or the IsolatedHostsFilter). All setups using Nova Filter Scheduler are affected.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "nova",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<=14.0.10|>=15.0.0|<=15.0.8|>=16.0.0|<=16.0.3",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://launchpad.net/bugs/1664931"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/519662"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/521186 (errata)"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/519672"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/523212 (errata)"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/519681"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/523427 (errata)"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/519684"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/523434 (errata)"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2017-11-14T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://security.openstack.org/ossa/OSSA-2017-005.html"
+  },
+  {
+    "advisory_id": "OSSA-2019-003",
+    "aliases": [
+      "CVE-2019-14433"
+    ],
+    "summary": "Nova Server Resource Faults Leak External Exception Details\n\nDonny Davis with Intel reported a vulnerability in Nova Compute resource fault handling. If an API request from an authenticated user ends in a fault condition due to an external exception, details of the underlying environment may be leaked in the response and could include sensitive configuration or other data.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "nova",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<17.0.12|>=18.0.0|<18.2.2|>=19.0.0|<19.0.2",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://launchpad.net/bugs/1837877"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/674821"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/674828"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/674848"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/674859"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/674877"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.openstack.org/674908"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2019-08-06T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://security.openstack.org/ossa/OSSA-2019-003.html"
+  },
+  {
+    "advisory_id": "OSSA-2020-006",
+    "aliases": [
+      "CVE-2020-17376"
+    ],
+    "summary": "Live migration fails to update persistent domain XML\n\nTadayoshi Hosoya (NEC) and Lee Yarwood (Red Hat) reported a vulnerability in Nova live migration. By performing a soft reboot of an instance which has previously undergone live migration, a user may gain access to destination host devices that share the same paths as host devices previously referenced by the virtual machine on the source. This can include block devices that map to different Cinder volumes on the destination than the source. The risk is increased significantly in non-default configurations allowing untrusted users to initiate live migrations, so administrators may consider temporarily disabling this in policy if they cannot upgrade immediately. This only impacts deployments where users are allowed to perform soft reboots of server instances; it is recommended to disable soft reboots in policy (only allowing hard reboots) until the fix can be applied.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "nova",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<19.3.1|>=20.0.0|<20.3.1|21.0.0",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://launchpad.net/bugs/1890501"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/747969"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/747972"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/747973"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/747974"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/747975"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/747976"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/747978"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2020-08-25T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://security.openstack.org/ossa/OSSA-2020-006.html"
+  },
+  {
+    "advisory_id": "OSSA-2021-002",
+    "aliases": [
+      "CVE-2021-3654"
+    ],
+    "summary": "Open Redirect in noVNC proxy\n\nSwe Aung, Shahaan Ayyub, and Salman Khan with the Monash University Cyber Security team reported a vulnerability affecting Nova's noVNC proxying implementation which exposed access to a well-known redirect behavior in the Python standard library's http.server.SimpleHTTPRequestHandler and thus noVNC's WebSockifyRequestHandler which uses it. By convincing a user to follow a specially-crafted novncproxy URL, the user could be redirected to an unrelated site under control of the attacker in an attempt to convince them to divulge credentials or other sensitive data. All Nova deployments with novncproxy enabled are affected.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "nova",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<21.2.3|>=22.0.0|<22.2.3|>=23.0.0|<23.0.3",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://launchpad.net/bugs/1927677"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://bugs.python.org/issue32084"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/791297"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/805654 (errata 1)"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/791577"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/805818 (errata 1)"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/791805"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/806626 (errata 1)"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/791806"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/806628 (errata 1)"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/791807"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/806629 (errata 1)"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2021-07-29T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://security.openstack.org/ossa/OSSA-2021-002.html"
+  },
+  {
+    "advisory_id": "OSSA-2023-003",
+    "aliases": [
+      "CVE-2023-2088"
+    ],
+    "summary": "Unauthorized volume access through deleted volume attachments\n\nAn unauthorized access to a volume could occur when an iSCSI or FC\nconnection from a host is severed due to a volume being unmapped on\nthe storage system and the device is later reused for another volume\non the same host.\n\n**Scope:** Only deployments with iSCSI or FC volumes are affected.\nHowever, the fix for this issue includes a configuration change in\nNova and Cinder that may impact you on your next upgrade regardless\nof what backend storage technology you use. See the *Configuration\nchange* section below, and item 4(B) in the *Patches and Associated\nDeployment Changes* for details.\n\nThis data leak can be triggered by two different situations.\n\n**Accidental case:** If there is a problem with network connectivity\nduring a normal detach operation, OpenStack may fail to clean the\nsituation up properly. Instead of force-detaching the compute node\ndevice, Nova ignores the error, assuming the instance has already\nbeen deleted. Due to this incomplete operation OpenStack may end up\nselecting the wrong multipath device when connecting another volume\nto an instance.\n\n**Intentional case:** A regular user can create an instance with a\nvolume, and then delete the volume attachment directly in Cinder,\nwhich neglects to notify Nova. The compute node SCSI plumbing (over\niSCSI/FC) will continue trying to connect to the original\nhost/port/LUN, not knowing the attachment has been deleted. If a\nsubsequent volume attachment re-uses the host/port/LUN for a\ndifferent instance and volume, the original instance will gain\naccess to it once the SCSI plumbing reconnects.\n\nConfiguration Change\n--------------------\nTo prevent the intentional case, the Block Storage API provided by\nCinder must only accept attachment delete requests from Nova for\ninstance-attached volumes. A complicating factor is that Nova\ndeletes an attachment by making a call to the Block Storage API on\nbehalf of the user (that is, by passing the user's token), which\nmakes the request indistinguishable from the user making this\nrequest directly. The solution is to have Nova include a service\ntoken along with the user's token so that Cinder can determine that\nthe detach request is coming from Nova. The ability for Nova to pass\na service token has been supported since Ocata, but has not been\nrequired until now. Thus, deployments that are not currently sending\nservice user credentials from Nova will need to apply the relevant\ncode changes and also make configuration changes to solve the\nproblem.\n\nPatches and Associated Deployment Changes\n-----------------------------------------\nGiven the above analysis, a thorough fix must include the following\nelements:\n\n1. The os-brick library must implement the ``force`` option for\n   fibre channel, which which has only been available for iSCSI\n   until now (covered by the linked patches).\n\n2. Nova must call os-brick with the ``force`` option when\n   disconnecting volumes from deleted instances (covered by the\n   linked patches).\n\n3. In deployments where Glance uses the cinder glance_store driver,\n   glance must call os-brick with the ``force`` option when\n   disconnecting volumes (covered by the linked patches).\n\n4. Cinder must distinguish between safe and unsafe attachment delete\n   requests and reject the unsafe ones. This part of the fix has two\n   components:\n\n   a. The Block Storage API will return a 409 (Conflict) for a\n      request to delete an attachment if there is an instance\n      currently using the attachment, **unless** the request is\n      being made by a service (for example, Nova) on behalf of a\n      user (covered by the linked patches).\n\n   b. In order to recognize that a request is being made by a\n      service on behalf of a user, Nova must be configured to send a\n      service token along with the user token. If this configuration\n      change is not made, the cinder change will reject **any**\n      request to delete an attachment associated with a volume that\n      is attached to an instance. Nova must be configured to send a\n      service token to Cinder, and Cinder must be configured to\n      accept service tokens. This is described in the following\n      document and **IS NOT AUTOMATICALLY APPLIED BY THE LINKED\n      PATCHES:** (Using service tokens to prevent long-running job\n      failures)\n      https://docs.openstack.org/cinder/latest/configuration/block-storage/service-token.html\n      The Nova patch mentioned in step 2 includes a similar document\n      more focused on Nova:\n      doc/source/admin/configuration/service-user-token.rst\n\n5. The cinder glance_store driver does not attach volumes to\n   instances; instead, it attaches volumes directly to the Glance\n   node. Thus, the Cinder change in step 4 will recognize an\n   attachment-delete request coming from Glance as safe and allow\n   it. (Of course, we expect that you will have applied the patches\n   in steps 1 and 3 to your Glance nodes.)",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "cinder",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<20.2.1|>=21.0.0|<21.2.1|22.0.0",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "glance-store",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<3.0.1|>=4.0.0|<4.1.1|>=4.2.0|<4.3.1",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "nova",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<25.1.2|>=26.0.0|<26.1.2|27.0.0",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "os-brick",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<5.2.3|>=6.0.0|<6.1.1|>=6.2.0|<6.2.2",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://launchpad.net/bugs/2004555"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882835"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882834"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882847"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882852"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882840"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882876"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882836"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882851"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882858"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882859"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882843"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882837"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882853"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882860"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882861"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882844"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882838"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882854"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882863"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882864"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882846"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882839"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882855"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882867"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882868"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882848"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882869"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/882870"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2023-05-10T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://security.openstack.org/ossa/OSSA-2023-003.html"
+  },
+  {
+    "advisory_id": "OSSA-2024-001",
+    "aliases": [
+      "CVE-2024-32498"
+    ],
+    "summary": "Arbitrary file access through custom QCOW2 external data\n\nMartin Kaesberger reported a vulnerability in QCOW2 image processing for Cinder, Glance and Nova. By supplying a specially created QCOW2 image which references a specific data file path, an authenticated user may convince systems to return a copy of that file's contents from the server resulting in unauthorized access to potentially sensitive data. All Cinder deployments are affected; only Glance deployments with image conversion enabled are affected; all Nova deployments are affected.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "cinder",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<22.1.3|>=23.0.0|<23.1.1|24.0.0",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "glance",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<26.0.1|27.0.0|>=28.0.0|<28.0.2",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "nova",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<27.3.1|>=28.0.0|<28.1.1|>=29.0.0|<29.0.3",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://launchpad.net/bugs/2059809"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923244"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923245"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923246"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923247"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923248"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923249"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923250"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923251"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923252"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923253"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923254"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923259"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923260"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923261"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923262"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923263"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923264"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923265"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923266"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923267"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923268"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923269"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923270"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923271"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923272"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923277"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923278"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923279"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923280"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923281"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923282"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923283"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923255"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923256"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923257"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923258"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923273"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923274"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923275"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923276"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923284"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923285"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923286"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923287"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923288"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923289"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923290"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/923281"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2024-07-02T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://security.openstack.org/ossa/OSSA-2024-001.html"
+  },
+  {
+    "advisory_id": "OSSA-2025-002",
+    "aliases": [
+      "CVE-2025-65073"
+    ],
+    "summary": "Unauthenticated access to EC2/S3 token endpoints can grant Keystone authorization\n\nkay reported a vulnerability in Keystone\u2019s ec2tokens and s3tokens APIs. By sending those endpoints a valid AWS Signature (e.g., from a presigned S3 URL), an unauthenticated attacker may obtain Keystone authorization for the user associated with the signature (ec2tokens can yield a fully scoped token; s3tokens can reveal scope accepted by some services), resulting in unauthorized access and privilege escalation. Deployments where /v3/ec2tokens or /v3/s3tokens are reachable by unauthenticated clients (e.g., exposed on a public API) are affected.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "keystone",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/<26.0.1|27.0.0|28.0.0",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://launchpad.net/bugs/2119646"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966069"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966070"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966071"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966073"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966871"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966062"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966063"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966064"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966067"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/966068"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2025-11-04T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://security.openstack.org/ossa/OSSA-2025-002.html"
+  },
+  {
+    "advisory_id": "OSSA-2026-001",
+    "aliases": [
+      "CVE-2026-22797"
+    ],
+    "summary": "Privilege Escalation via Identity Headers in External OAuth2 Tokens\n\nGrzegorz Grasza with Red Hat reported a vulnerability in the external_oauth2_token middleware for keystonemiddleware. This middleware fails to sanitize incoming authentication headers before processing OAuth 2.0 tokens. By sending forged identity headers such as X-Is-Admin-Project, X-Roles, or X-User-Id, an authenticated attacker may escalate privileges or impersonate other users. All deployments using the external_oauth2_token middleware are affected.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "keystonemiddleware",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/>=10.5.0|<10.7.2|>=10.8.0|<10.9.1|>=10.10.0|<10.12.1",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references_v2": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://launchpad.net/bugs/2129018"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/973494"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/973495"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/973496"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/973497"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://review.opendev.org/973499"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2026-01-15T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://security.openstack.org/ossa/OSSA-2026-001.html"
+  }
+]

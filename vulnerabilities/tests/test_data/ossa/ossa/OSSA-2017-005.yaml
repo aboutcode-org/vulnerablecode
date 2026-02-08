@@ -1,0 +1,54 @@
+date: 2017-11-14
+
+id: OSSA-2017-005
+
+title: Nova Filter Scheduler bypass through rebuild action
+
+description: >
+  George Shuklin from servers.com reported a vulnerability in Nova. By
+  rebuilding an instance, an authenticated user may be able to circumvent the
+  Filter Scheduler bypassing imposed filters (for example, the
+  ImagePropertiesFilter or the IsolatedHostsFilter).
+  All setups using Nova Filter Scheduler are affected.
+
+errata: >
+  The former fix introduced regressions in the rebuild functionality.
+  Rebuild may fail depending on configured scheduler filters and environment,
+  for example, when the compute host is running at capacity or when the host
+  is disabled.
+  This update provides an additional set of fixes for these regressions.
+
+affected-products:
+  - product: nova
+    version: "<=14.0.10, >=15.0.0 <=15.0.8, >=16.0.0 <=16.0.3"
+
+vulnerabilities:
+  - cve-id: CVE-2017-16239
+
+reporters:
+  - name: George Shuklin
+    affiliation: Servers.com
+    reported:
+      - CVE-2017-16239
+
+issues:
+  links:
+    - https://launchpad.net/bugs/1664931
+
+reviews:
+  queens:
+    - https://review.openstack.org/519662
+    - https://review.openstack.org/521186 (errata)
+  pike:
+    - https://review.openstack.org/519672
+    - https://review.openstack.org/523212 (errata)
+  ocata:
+    - https://review.openstack.org/519681
+    - https://review.openstack.org/523427 (errata)
+  newton:
+    - https://review.openstack.org/519684
+    - https://review.openstack.org/523434 (errata)
+
+errata_history:
+  - 2017-12-05 - Errata 1
+  - 2017-11-14 - Original Version

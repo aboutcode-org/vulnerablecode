@@ -1,0 +1,60 @@
+date: 2019-08-06
+
+id: OSSA-2019-003
+
+title: Nova Server Resource Faults Leak External Exception Details
+
+description: >
+  Donny Davis with Intel reported a vulnerability in Nova Compute
+  resource fault handling. If an API request from an authenticated
+  user ends in a fault condition due to an external exception, details
+  of the underlying environment may be leaked in the response and
+  could include sensitive configuration or other data.
+
+affected-products:
+
+  - product: Nova
+    version: '<17.0.12, >=18.0.0 <18.2.2, >=19.0.0 <19.0.2'
+
+vulnerabilities:
+
+  - cve-id: CVE-2019-14433
+
+reporters:
+
+  - name: Donny Davis
+    affiliation: Intel
+    reported:
+      - CVE-2019-14433
+
+issues:
+
+  links:
+    - https://launchpad.net/bugs/1837877
+
+reviews:
+
+  train:
+    - https://review.openstack.org/674821
+
+  stein:
+    - https://review.openstack.org/674828
+
+  rocky:
+    - https://review.openstack.org/674848
+
+  queens:
+    - https://review.openstack.org/674859
+
+  pike:
+    - https://review.openstack.org/674877
+
+  ocata:
+    - https://review.openstack.org/674908
+
+  type: gerrit
+
+notes:
+  - The stable/ocata and stable/pike branches are under extended
+    maintenance and will receive no new point releases, but patches
+    for them are provided as a courtesy.

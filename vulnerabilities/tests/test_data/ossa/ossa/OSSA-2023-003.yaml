@@ -1,0 +1,217 @@
+date: 2023-05-10
+
+id: OSSA-2023-003
+
+title: Unauthorized volume access through deleted volume attachments
+
+description: |+
+  An unauthorized access to a volume could occur when an iSCSI or FC
+  connection from a host is severed due to a volume being unmapped on
+  the storage system and the device is later reused for another volume
+  on the same host.
+
+  **Scope:** Only deployments with iSCSI or FC volumes are affected.
+  However, the fix for this issue includes a configuration change in
+  Nova and Cinder that may impact you on your next upgrade regardless
+  of what backend storage technology you use. See the *Configuration
+  change* section below, and item 4(B) in the *Patches and Associated
+  Deployment Changes* for details.
+
+  This data leak can be triggered by two different situations.
+
+  **Accidental case:** If there is a problem with network connectivity
+  during a normal detach operation, OpenStack may fail to clean the
+  situation up properly. Instead of force-detaching the compute node
+  device, Nova ignores the error, assuming the instance has already
+  been deleted. Due to this incomplete operation OpenStack may end up
+  selecting the wrong multipath device when connecting another volume
+  to an instance.
+
+  **Intentional case:** A regular user can create an instance with a
+  volume, and then delete the volume attachment directly in Cinder,
+  which neglects to notify Nova. The compute node SCSI plumbing (over
+  iSCSI/FC) will continue trying to connect to the original
+  host/port/LUN, not knowing the attachment has been deleted. If a
+  subsequent volume attachment re-uses the host/port/LUN for a
+  different instance and volume, the original instance will gain
+  access to it once the SCSI plumbing reconnects.
+
+  Configuration Change
+  --------------------
+  To prevent the intentional case, the Block Storage API provided by
+  Cinder must only accept attachment delete requests from Nova for
+  instance-attached volumes. A complicating factor is that Nova
+  deletes an attachment by making a call to the Block Storage API on
+  behalf of the user (that is, by passing the user's token), which
+  makes the request indistinguishable from the user making this
+  request directly. The solution is to have Nova include a service
+  token along with the user's token so that Cinder can determine that
+  the detach request is coming from Nova. The ability for Nova to pass
+  a service token has been supported since Ocata, but has not been
+  required until now. Thus, deployments that are not currently sending
+  service user credentials from Nova will need to apply the relevant
+  code changes and also make configuration changes to solve the
+  problem.
+
+  Patches and Associated Deployment Changes
+  -----------------------------------------
+  Given the above analysis, a thorough fix must include the following
+  elements:
+
+  1. The os-brick library must implement the ``force`` option for
+     fibre channel, which which has only been available for iSCSI
+     until now (covered by the linked patches).
+
+  2. Nova must call os-brick with the ``force`` option when
+     disconnecting volumes from deleted instances (covered by the
+     linked patches).
+
+  3. In deployments where Glance uses the cinder glance_store driver,
+     glance must call os-brick with the ``force`` option when
+     disconnecting volumes (covered by the linked patches).
+
+  4. Cinder must distinguish between safe and unsafe attachment delete
+     requests and reject the unsafe ones. This part of the fix has two
+     components:
+
+     a. The Block Storage API will return a 409 (Conflict) for a
+        request to delete an attachment if there is an instance
+        currently using the attachment, **unless** the request is
+        being made by a service (for example, Nova) on behalf of a
+        user (covered by the linked patches).
+
+     b. In order to recognize that a request is being made by a
+        service on behalf of a user, Nova must be configured to send a
+        service token along with the user token. If this configuration
+        change is not made, the cinder change will reject **any**
+        request to delete an attachment associated with a volume that
+        is attached to an instance. Nova must be configured to send a
+        service token to Cinder, and Cinder must be configured to
+        accept service tokens. This is described in the following
+        document and **IS NOT AUTOMATICALLY APPLIED BY THE LINKED
+        PATCHES:** (Using service tokens to prevent long-running job
+        failures)
+        https://docs.openstack.org/cinder/latest/configuration/block-storage/service-token.html
+        The Nova patch mentioned in step 2 includes a similar document
+        more focused on Nova:
+        doc/source/admin/configuration/service-user-token.rst
+
+  5. The cinder glance_store driver does not attach volumes to
+     instances; instead, it attaches volumes directly to the Glance
+     node. Thus, the Cinder change in step 4 will recognize an
+     attachment-delete request coming from Glance as safe and allow
+     it. (Of course, we expect that you will have applied the patches
+     in steps 1 and 3 to your Glance nodes.)
+
+errata: >
+  An additional nova patch is required to fix a minor regression in
+  periodic tasks and some nova-manage actions (errata 1). Also a patch
+  to tempest is needed to account for behavior changes with fixes in
+  place (errata 2). The stable/wallaby branch fix for nova introduced
+  a regression which was addressed through subsequent adjustment of
+  its patches after the advisory was published (errata 3).
+
+affected-products:
+  - product: cinder
+    version: '<20.2.1, >=21.0.0 <21.2.1, ==22.0.0'
+  - product: glance_store
+    version: '<3.0.1, >=4.0.0 <4.1.1, >=4.2.0 <4.3.1'
+  - product: nova
+    version: '<25.1.2, >=26.0.0 <26.1.2, ==27.0.0'
+  - product: os-brick
+    version: '<5.2.3, >=6.0.0 <6.1.1, >=6.2.0 <6.2.2'
+
+vulnerabilities:
+  - cve-id: CVE-2023-2088
+
+reporters:
+  - name: Jan Wasilewski
+    affiliation: Atman
+    reported:
+      - CVE-2023-2088
+  - name: Gorka Eguileor
+    affiliation: Red Hat
+    reported:
+      - CVE-2023-2088
+
+issues:
+  links:
+    - https://launchpad.net/bugs/2004555
+
+reviews:
+  2023.2/bobcat cinder:
+    - https://review.opendev.org/882835
+  2023.2/bobcat glance_store:
+    - https://review.opendev.org/882834
+  2023.2/bobcat nova:
+    - https://review.opendev.org/882847
+  2023.2/bobcat nova errata 1:
+    - https://review.opendev.org/882852
+  2023.2/bobcat os-brick:
+    - https://review.opendev.org/882840
+  2023.2/bobcat tempest errata 2:
+    - https://review.opendev.org/882876
+  2023.1/antelope cinder:
+    - https://review.opendev.org/882836
+  2023.1/antelope glance_store:
+    - https://review.opendev.org/882851
+  2023.1/antelope nova:
+    - https://review.opendev.org/882858
+  2023.1/antelope nova errata 1:
+    - https://review.opendev.org/882859
+  2023.1/antelope os-brick:
+    - https://review.opendev.org/882843
+  zed cinder:
+    - https://review.opendev.org/882837
+  zed glance_store:
+    - https://review.opendev.org/882853
+  zed nova:
+    - https://review.opendev.org/882860
+  zed nova errata 1:
+    - https://review.opendev.org/882861
+  zed os-brick:
+    - https://review.opendev.org/882844
+  yoga cinder:
+    - https://review.opendev.org/882838
+  yoga glance_store:
+    - https://review.opendev.org/882854
+  yoga nova:
+    - https://review.opendev.org/882863
+  yoga nova errata 1:
+    - https://review.opendev.org/882864
+  yoga os-brick:
+    - https://review.opendev.org/882846
+  xena cinder:
+    - https://review.opendev.org/882839
+  xena glance_store:
+    - https://review.opendev.org/882855
+  xena nova:
+    - https://review.opendev.org/882867
+  xena nova errata 1:
+    - https://review.opendev.org/882868
+  xena os-brick:
+    - https://review.opendev.org/882848
+  wallaby nova:
+    - https://review.opendev.org/882869
+  wallaby nova errata 1:
+    - https://review.opendev.org/882870
+
+notes:
+  - Limited Protection Against Accidents... If you are only concerned with
+    protecting against the accidental case described earlier in this document,
+    steps 1-3 above should be sufficient. Note, however, that only applying
+    steps 1-3 leaves your cloud wide open to the intentional exploitation of
+    this vulnerability. Therefore, we recommend that the full fix be applied to
+    all deployments.
+  - Using Configuration as a Short-Term Mitigation... An alternative approach
+    to mitigation can be found in OSSN-0092
+    https://wiki.openstack.org/wiki/OSSN/OSSN-0092
+  - The stable/xena and stable/wallaby branches are under extended maintenance
+    and will receive no new point releases, but patches for them are provided
+    as a courtesy where available.
+
+errata_history:
+  - 2023-05-15 - Errata 3
+  - 2023-05-10 - Errata 2
+  - 2023-05-10 - Errata 1
+  - 2023-05-10 - Original Version

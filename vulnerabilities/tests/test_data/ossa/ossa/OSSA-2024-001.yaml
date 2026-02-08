@@ -1,0 +1,119 @@
+date: 2024-07-02
+
+id: OSSA-2024-001
+
+title: Arbitrary file access through custom QCOW2 external data
+
+description: >
+  Martin Kaesberger reported a vulnerability in QCOW2 image processing for
+  Cinder, Glance and Nova. By supplying a specially created QCOW2 image which
+  references a specific data file path, an authenticated user may convince
+  systems to return a copy of that file's contents from the server resulting in
+  unauthorized access to potentially sensitive data. All Cinder deployments are
+  affected; only Glance deployments with image conversion enabled are affected;
+  all Nova deployments are affected.
+
+affected-products:
+  - product: Cinder
+    version: '<22.1.3, >=23.0.0 <23.1.1, ==24.0.0'
+  - product: Glance
+    version: '<26.0.1, ==27.0.0, >=28.0.0 <28.0.2'
+  - product: Nova
+    version: '<27.3.1, >=28.0.0 <28.1.1, >=29.0.0 <29.0.3'
+
+vulnerabilities:
+  - cve-id: CVE-2024-32498
+
+reporters:
+  - name: Martin Kaesberger
+    affiliation: none
+    reported:
+      - CVE-2024-32498
+
+issues:
+  links:
+    - https://launchpad.net/bugs/2059809
+
+reviews:
+  2024.2/dalmatian(cinder):
+    - https://review.opendev.org/923244
+
+  2024.1/caracal(cinder):
+    - https://review.opendev.org/923245
+
+  2023.2/bobcat(cinder):
+    - https://review.opendev.org/923246
+
+  2023.1/antelope(cinder):
+    - https://review.opendev.org/923247
+
+  2024.2/dalmatian(glance):
+    - https://review.opendev.org/923248
+    - https://review.opendev.org/923249
+    - https://review.opendev.org/923250
+    - https://review.opendev.org/923251
+    - https://review.opendev.org/923252
+    - https://review.opendev.org/923253
+    - https://review.opendev.org/923254
+
+  2024.1/caracal(glance):
+    - https://review.opendev.org/923259
+    - https://review.opendev.org/923260
+    - https://review.opendev.org/923261
+    - https://review.opendev.org/923262
+    - https://review.opendev.org/923263
+    - https://review.opendev.org/923264
+    - https://review.opendev.org/923265
+
+  2023.2/bobcat(glance):
+    - https://review.opendev.org/923266
+    - https://review.opendev.org/923267
+    - https://review.opendev.org/923268
+    - https://review.opendev.org/923269
+    - https://review.opendev.org/923270
+    - https://review.opendev.org/923271
+    - https://review.opendev.org/923272
+
+  2023.1/antelope(glance):
+    - https://review.opendev.org/923277
+    - https://review.opendev.org/923278
+    - https://review.opendev.org/923279
+    - https://review.opendev.org/923280
+    - https://review.opendev.org/923281
+    - https://review.opendev.org/923282
+    - https://review.opendev.org/923283
+
+  2024.2/dalmatian(nova):
+    - https://review.opendev.org/923255
+    - https://review.opendev.org/923256
+    - https://review.opendev.org/923257
+    - https://review.opendev.org/923258
+
+  2024.1/caracal(nova):
+    - https://review.opendev.org/923273
+    - https://review.opendev.org/923274
+    - https://review.opendev.org/923275
+    - https://review.opendev.org/923276
+
+  2023.2/bobcat(nova):
+    - https://review.opendev.org/923284
+    - https://review.opendev.org/923285
+    - https://review.opendev.org/923286
+    - https://review.opendev.org/923287
+
+  2023.1/antelope(nova):
+    - https://review.opendev.org/923288
+    - https://review.opendev.org/923289
+    - https://review.opendev.org/923290
+    - https://review.opendev.org/923281
+
+notes:
+  - Due to the scope of the problem and complexity of the resulting fixes,
+    regressions and additional bypasses were reported in the original bug by
+    downstream stakeholders during the coordinated disclosure period. As a
+    result, our initially chosen publication date was rescheduled, which put
+    the advisory four days past our promised ninety day maximum embargo length.
+    Additional revised patches and regression fixes were supplied to
+    stakeholders as soon as possible, but we understand the unfortunate timing
+    of these last-minute changes resulted in a lot of additional work for
+    everyone involved.

@@ -40,7 +40,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:ebuild/<2.48.5",
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:ebuild/>=2.48.5",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -54,7 +54,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:ebuild/<2.48.5",
-        "fixed_version_range": null,
+        "fixed_version_range": "vers:ebuild/>=2.48.5",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }

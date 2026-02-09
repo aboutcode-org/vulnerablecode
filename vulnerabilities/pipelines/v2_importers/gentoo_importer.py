@@ -9,6 +9,7 @@
 
 import re
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 from pathlib import Path
 from typing import Iterable
 
@@ -81,20 +82,23 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             if child.tag == "affected":
                 affected_packages = []
-                seen_packages = set()
-
-                for purl, constraint in get_affected_and_safe_purls(child, logger=self.log):
-                    signature = (purl.to_string(), str(constraint))
-
-                    if signature not in seen_packages:
-                        seen_packages.add(signature)
-
-                        affected_package = AffectedPackageV2(
-                            package=purl,
-                            affected_version_range=EbuildVersionRange(constraints=[constraint]),
-                            fixed_version_range=None,
-                        )
-                        affected_packages.append(affected_package)
+                for purl, (affected_ranges, fixed_ranges) in get_affected_and_fixed_purls(
+                    child, logger=self.log
+                ):
+                    affected_version_constraint = build_constraints(
+                        affected_ranges, logger=self.log
+                    )
+                    fixed_version_constraint = build_constraints(fixed_ranges, logger=self.log)
+                    affected_version_range = EbuildVersionRange(
+                        constraints=affected_version_constraint
+                    )
+                    fixed_version_range = EbuildVersionRange(constraints=fixed_version_constraint)
+                    affected_package = AffectedPackageV2(
+                        package=purl,
+                        affected_version_range=affected_version_range,
+                        fixed_version_range=fixed_version_range,
+                    )
+                    affected_packages.append(affected_package)
 
             if child.tag == "impact":
                 severity_value = child.attrib.get("type")
@@ -131,61 +135,67 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return cves
 
 
-def extract_purls_and_constraints(pkg_name, pkg_ns, constraints, invert, logger):
-    for comparator, version, slot_value in constraints:
-        qualifiers = {"slot": slot_value} if slot_value else {}
-        purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns, qualifiers=qualifiers)
-
+def build_constraints(constraint_pairs, logger):
+    """
+    Build a list of VersionConstraint objects from comparators, versions pairs.
+    """
+    constraints = []
+    for comparator, version in constraint_pairs:
         try:
             constraint = VersionConstraint(version=GentooVersion(version), comparator=comparator)
-
-            if invert:
-                constraint = constraint.invert()
-
-            yield purl, constraint
+            constraints.append(constraint)
         except InvalidVersion as e:
             logger(f"InvalidVersion constraints version: {version} error:{e}")
+    return constraints
 
 
-def get_affected_and_safe_purls(affected_elem, logger):
+def get_affected_and_fixed_purls(affected_elem, logger):
+    """
+    Parses XML elements to extract PURLs associated with affected and fixed versions.
+    """
+
     for pkg in affected_elem:
         name = pkg.attrib.get("name")
         if not name:
             continue
+
         pkg_ns, _, pkg_name = name.rpartition("/")
+        # purl_components, (fixed_ranges_set, affected_ranges_set)
+        purl_ranges_map = defaultdict(lambda: {"fixed_ranges": set(), "affected_ranges": set()})
 
-        safe_constraints, affected_constraints = get_safe_and_affected_constraints(pkg)
+        for info in pkg:
+            # All possible values of info.attrib['range'] =
+            # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}
+            # rge means revision greater than equals and rgt means revision greater than
 
-        yield from extract_purls_and_constraints(
-            pkg_name, pkg_ns, affected_constraints, invert=False, logger=logger
-        )
-        yield from extract_purls_and_constraints(
-            pkg_name, pkg_ns, safe_constraints, invert=True, logger=logger
-        )
+            range_value = info.attrib.get("range")
+            slot_value = info.attrib.get("slot")
+            comparator_dict = {
+                "gt": ">",
+                "lt": "<",
+                "ge": ">=",
+                "le": "<=",
+                "eq": "=",
+                # "rle": "<=",
+                # "rge": ">=",
+                # "rgt": ">",
+            }
+            comparator = comparator_dict.get(range_value)
+            if not comparator:
+                logger(f"Unsupported range value {range_value}:{info.text}")
+                continue
 
+            if info.tag == "unaffected":
+                purl_ranges_map[(pkg_name, pkg_ns, slot_value)]["fixed_ranges"].add(
+                    (comparator, info.text)
+                )
 
-def get_safe_and_affected_constraints(pkg):
-    safe_versions = set()
-    affected_versions = set()
-    for info in pkg:
-        # All possible values of info.attrib['range'] =
-        # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}
-        range_value = info.attrib.get("range")
-        slot_value = info.attrib.get("slot")
-        comparator_dict = {
-            "gt": ">",
-            "lt": "<",
-            "ge": ">=",
-            "le": "<=",
-            "eq": "=",
-            "rle": "<=",
-            "rge": ">=",
-            "rgt": ">",
-        }
-        comparator = comparator_dict.get(range_value)
-        if info.tag == "unaffected":
-            safe_versions.add((comparator, info.text, slot_value))
+            elif info.tag == "vulnerable":
+                purl_ranges_map[(pkg_name, pkg_ns, slot_value)]["affected_ranges"].add(
+                    (comparator, info.text)
+                )
 
-        elif info.tag == "vulnerable":
-            affected_versions.add((comparator, info.text, slot_value))
-    return safe_versions, affected_versions
+        for (pkg_name, pkg_ns, slot_value), data in purl_ranges_map.items():
+            qualifiers = {"slot": slot_value} if slot_value else {}
+            purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns, qualifiers=qualifiers)
+            yield purl, (data["affected_ranges"], data["fixed_ranges"])

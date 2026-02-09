@@ -13,11 +13,15 @@ import tempfile
 from collections import defaultdict
 
 from git import Repo
+from packageurl import PackageURL
+from packageurl.contrib.purl2url import purl2url
 from packageurl.contrib.url2purl import url2purl
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
+from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 
@@ -105,20 +109,37 @@ class CollectVCSFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
                 summary += f"{commit_hash}:{commit_message}\n"
                 commit_hash_set.add(commit_hash)
 
-            affected_packages = [
-                AffectedPackageV2(
+            affected_packages = []
+            references = []
+            for commit_hash in commit_hash_set:
+                affected_package = AffectedPackageV2(
                     package=purl,
                     fixed_by_commit_patches=[
                         PackageCommitPatchData(vcs_url=self.repo_url, commit_hash=commit_hash)
-                        for commit_hash in commit_hash_set
                     ],
                 )
-            ]
+                affected_packages.append(affected_package)
+
+                purl_with_commit_hash = PackageURL(
+                    type=purl.type, namespace=purl.namespace, name=purl.name, version=commit_hash
+                )
+                ref_url = purl2url(purl=str(purl_with_commit_hash))
+                if not ref_url:
+                    continue
+
+                references.append(
+                    ReferenceV2(
+                        reference_id=commit_hash,
+                        reference_type=AdvisoryReference.COMMIT,
+                        url=ref_url,
+                    )
+                )
 
             yield AdvisoryData(
                 advisory_id=vuln_id,
                 summary=summary,
                 affected_packages=affected_packages,
+                references_v2=references,
                 url=self.repo_url,
             )
 

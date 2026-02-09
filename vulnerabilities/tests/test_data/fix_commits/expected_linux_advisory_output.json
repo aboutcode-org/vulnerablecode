@@ -26,7 +26,13 @@
         ]
       }
     ],
-    "references_v2": [],
+    "references_v2": [
+      {
+        "reference_id": "41b43c74bda19753c757036673ea9db74acf494a",
+        "reference_type": "commit",
+        "url": "https://github.com/test/repo/tree/41b43c74bda19753c757036673ea9db74acf494a"
+      }
+    ],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -60,7 +66,13 @@
         ]
       }
     ],
-    "references_v2": [],
+    "references_v2": [
+      {
+        "reference_id": "49ff1042aa66bb25eda87e9a8ef82f3b0ad4eeba",
+        "reference_type": "commit",
+        "url": "https://github.com/test/repo/tree/49ff1042aa66bb25eda87e9a8ef82f3b0ad4eeba"
+      }
+    ],
     "patches": [],
     "severities": [],
     "date_published": null,

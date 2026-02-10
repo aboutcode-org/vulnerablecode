@@ -52,14 +52,14 @@ virtualenv:
 	@${PYTHON_EXE} ${VIRTUALENV_PYZ} --download ${VENV}
 	@$(MAKE) upgrade-tools
 
+upgrade-tools:
+	@echo "-> Upgrade pip / setuptools / wheel (Python 3.12 safe)"
+	@${VENV}/bin/python -m pip install --upgrade --force-reinstall \
+		"pip>=24" "setuptools>=69" "wheel>=0.42" packaging
+
 conf: virtualenv
 	@echo "-> Install dependencies"
 	@${ACTIVATE} pip install -e . -c requirements.txt
-
-upgrade-tools:
-	@echo "-> Upgrade pip / setuptools / wheel (Python 3.12 safe)"
-	@${ACTIVATE} python -m pip install --upgrade --force-reinstall \
-		pip setuptools wheel packaging
 
 dev: virtualenv
 	@echo "-> Configure and install development dependencies"

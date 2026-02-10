@@ -64,7 +64,7 @@ class RetireDotnetImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 aliases = self.vuln_id_from_desc(description)
 
                 # group by package name `id`
-                # { pkg_id: {'affected_versions': [], 'fixed': []} }
+                # { pkg_id: {'affected_versions': set(), 'fixed': set()} }
                 grouped_packages = defaultdict(
                     lambda: {"affected_versions": set(), "fixed_versions": set()}
                 )

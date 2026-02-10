@@ -1030,6 +1030,7 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PackageV3Serializer
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = AdvisoryPackageV2FilterSet
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
     def get_queryset(self):
         return (

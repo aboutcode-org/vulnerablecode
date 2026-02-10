@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -20,7 +19,7 @@ from packageurl import PackageURL
 from univers.version_range import AlpineLinuxVersionRange
 from univers.versions import InvalidVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -28,6 +27,7 @@ from vulnerabilities.references import WireSharkReferenceV2
 from vulnerabilities.references import XsaReferenceV2
 from vulnerabilities.references import ZbxReferenceV2
 from vulnerabilities.utils import get_advisory_url
+from vulnerabilities.utils import load_json
 
 
 class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -46,12 +46,10 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         )
 
     def advisories_count(self) -> int:
+        base_path = Path(self.vcs_response.dest_dir) / "secdb"
         return sum(
             len(pkg.get("advisories", []))
-            for data in (
-                json.loads(p.read_text())
-                for p in (Path(self.vcs_response.dest_dir) / "secdb").rglob("*.json")
-            )
+            for data in (load_json(p) for p in base_path.rglob("*.json"))
             for pkg in data.get("packages", [])
         )
 
@@ -59,18 +57,16 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_path = Path(self.vcs_response.dest_dir) / "secdb"
         for file_path in base_path.glob("**/*.json"):
             advisory_url = get_advisory_url(
                 file=file_path,
                 base_path=base_path,
-                url="https://github.com/aboutcode-org/aboutcode-mirror-alpine-secdb/blob/main/",
+                url="https://secdb.alpinelinux.org/",
             )
 
-            with open(file_path) as f:
-                record = json.load(f)
-
+            record = load_json(file_path)
             if not record or not record["packages"]:
                 self.log(
                     f'"packages" not found in {advisory_url!r}',
@@ -94,35 +90,32 @@ def check_for_attributes(record, logger) -> bool:
     attributes = ["distroversion", "reponame", "archs"]
     for attribute in attributes:
         if attribute not in record:
-            if logger:
-                logger(
-                    f'"{attribute!r}" not found in {record!r}',
-                    level=logging.DEBUG,
-                )
+            logger(
+                f'"{attribute!r}" not found in {record!r}',
+                level=logging.DEBUG,
+            )
             return False
     return True
 
 
-def process_record(record: dict, url: str, logger: callable = None) -> Iterable[AdvisoryData]:
+def process_record(record: dict, url: str, logger: callable) -> Iterable[AdvisoryDataV2]:
     """
     Return a list of AdvisoryData objects by processing data
     present in that `record`
     """
     if not record.get("packages"):
-        if logger:
-            logger(
-                f'"packages" not found in this record {record!r}',
-                level=logging.DEBUG,
-            )
+        logger(
+            f'"packages" not found in this record {record!r}',
+            level=logging.DEBUG,
+        )
         return []
 
     for package in record["packages"]:
         if not package["pkg"]:
-            if logger:
-                logger(
-                    f'"pkg" not found in this package {package!r}',
-                    level=logging.DEBUG,
-                )
+            logger(
+                f'"pkg" not found in this package {package!r}',
+                level=logging.DEBUG,
+            )
             continue
         if not check_for_attributes(record, logger):
             continue
@@ -142,28 +135,26 @@ def load_advisories(
     reponame: str,
     archs: List[str],
     url: str,
-    logger: callable = None,
-) -> Iterable[AdvisoryData]:
+    logger: callable,
+) -> Iterable[AdvisoryDataV2]:
     """
     Yield AdvisoryData by mapping data from `pkg_infos`
     and form PURL for AffectedPackages by using
     `distroversion`, `reponame`, `archs`
     """
     if not pkg_infos.get("name"):
-        if logger:
-            logger(
-                f'"name" is not available in package {pkg_infos!r}',
-                level=logging.DEBUG,
-            )
+        logger(
+            f'"name" is not available in package {pkg_infos!r}',
+            level=logging.DEBUG,
+        )
         return []
 
     for version, fixed_vulns in pkg_infos["secfixes"].items():
         if not fixed_vulns:
-            if logger:
-                logger(
-                    f"No fixed vulnerabilities in version {version!r}",
-                    level=logging.DEBUG,
-                )
+            logger(
+                f"No fixed vulnerabilities in version {version!r}",
+                level=logging.DEBUG,
+            )
             continue
 
         # fixed_vulns is a list of strings and each string is a space-separated
@@ -207,11 +198,10 @@ def load_advisories(
                 )
 
             if not isinstance(archs, List):
-                if logger:
-                    logger(
-                        f"{archs!r} is not of `List` instance",
-                        level=logging.DEBUG,
-                    )
+                logger(
+                    f"{archs!r} is not of `List` instance",
+                    level=logging.DEBUG,
+                )
                 continue
 
             if archs and fixed_version_range:
@@ -246,10 +236,10 @@ def load_advisories(
                 )
 
             advisory_id = f"{pkg_infos['name']}/{qualifiers['distroversion']}/{version}/{vuln_id}"
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=advisory_id,
                 aliases=aliases,
-                references_v2=references,
+                references=references,
                 affected_packages=affected_packages,
                 url=url,
             )

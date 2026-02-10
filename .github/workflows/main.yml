@@ -43,10 +43,6 @@ jobs:
 
       - name: Install dependencies
         run: make dev envfile
-
-      - name: Upgrade pip, setuptools, wheel
-        run: |
-          python -m pip install --upgrade pip==26.0.1 setuptools==82.0.0 wheel==0.46.3 
 # Disable codestyle checks until we have cleaned up the code
 #      - name: Validate code format
 #        run: make check

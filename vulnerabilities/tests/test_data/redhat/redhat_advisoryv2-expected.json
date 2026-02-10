@@ -196,7 +196,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -232,7 +232,7 @@
     ],
     "summary": "Red Hat Developer Hub 1.4 has been released.\n\nRed Hat Developer Hub (RHDH) is Red Hat's enterprise-grade, self-managed, customizable developer portal based on Backstage.io. RHDH is supported on OpenShift and other major Kubernetes clusters (AKS, EKS, GKE). The core features of RHDH include a single pane of glass, a centralized software catalog, self-service via golden path templates, and Tech Docs. RHDH is extensible by plugins.",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -308,7 +308,7 @@
     ],
     "summary": "Red Hat Quay 3.13.4 is now available with bug fixes.\n\nRed Hat Product Security has rated this update as having a security impact of Important. A Common Vulnerability Scoring System (CVSS) base score, which gives a detailed severity rating, is available for each vulnerability from the CVE link(s) in the References section.\n\nQuay 3.13.4",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -377,7 +377,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -745,7 +745,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -1543,7 +1543,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",

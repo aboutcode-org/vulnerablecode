@@ -16,6 +16,7 @@ from packageurl import PackageURL
 from univers.version_range import DebianVersionRange
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -160,7 +161,7 @@ class DebianImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 )
             weaknesses = get_cwe_from_debian_advisory(record)
 
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=f"{pkg_name}/{record_identifier}",
                 aliases=[record_identifier],
                 summary=record.get("description", ""),

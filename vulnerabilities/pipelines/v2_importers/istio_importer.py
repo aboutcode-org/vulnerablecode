@@ -119,7 +119,7 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 aliases=cves,
                 summary=summary,
                 affected_packages=affected_packages,
-                references_v2=references,
+                references=references,
                 date_published=release_date,
                 url=advisory_url,
                 original_advisory_text=md_file.read_text(encoding="utf-8"),

@@ -253,8 +253,8 @@ class PackageCommitPatchData:
 @dataclasses.dataclass(eq=True)
 @functools.total_ordering
 class PatchData:
-    patch_url: Optional[str] = None
-    patch_text: Optional[str] = None
+    patch_url: Optional[str] = ""
+    patch_text: Optional[str] = ""
     patch_checksum: Optional[str] = dataclasses.field(init=False, default=None)
 
     def __post_init__(self):
@@ -271,9 +271,9 @@ class PatchData:
 
     def _cmp_key(self):
         return (
-            self.patch_url,
-            self.patch_text,
-            self.patch_checksum,
+            self.patch_url or "",
+            self.patch_text or "",
+            self.patch_checksum or "",
         )
 
     def to_dict(self) -> dict:
@@ -556,13 +556,6 @@ class AffectedPackageV2:
 class AdvisoryData:
     """
     This data class expresses the contract between data sources and the import runner.
-
-    If a vulnerability_id is present then:
-        summary or affected_packages or references must be present
-    otherwise
-        either affected_package or references should be present
-
-    date_published must be aware datetime
     """
 
     aliases: List[str] = dataclasses.field(default_factory=list)
@@ -613,13 +606,6 @@ class AdvisoryData:
 class AdvisoryDataV2:
     """
     This data class expresses the contract between data sources and the import runner.
-
-    If a vulnerability_id is present then:
-        summary or affected_packages or references must be present
-    otherwise
-        either affected_package or references should be present
-
-    date_published must be aware datetime
     """
 
     advisory_id: str = ""

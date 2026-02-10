@@ -249,12 +249,12 @@ def dumpy_patch_advisory(patch_source_samples):
                 references.append(patch_obj)
 
     return AdvisoryDataV2(
+        advisory_id="ADV-1234",
         summary="Test patch advisory",
         aliases=["CVE-2025-0001"],
         affected_packages=affected_packages,
         references=references,
         patches=patches,
-        advisory_id="ADV-1234",
         date_published=datetime.now() - timedelta(days=10),
         url="https://example.com/advisory/1",
     )

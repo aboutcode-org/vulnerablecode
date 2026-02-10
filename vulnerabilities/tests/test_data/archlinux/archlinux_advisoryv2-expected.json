@@ -21,7 +21,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "AVG-2781",
         "reference_type": "",
@@ -58,7 +58,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "AVG-2780",
         "reference_type": "",
@@ -94,7 +94,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "AVG-4",
         "reference_type": "",

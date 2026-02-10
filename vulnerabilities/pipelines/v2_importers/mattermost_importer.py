@@ -118,7 +118,7 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 advisory_id=vuln_id,
                 aliases=[cve_id],
                 summary=details,
-                references_v2=[reference],
+                references=[reference],
                 affected_packages=affected_packages,
                 url=self.url,
             )

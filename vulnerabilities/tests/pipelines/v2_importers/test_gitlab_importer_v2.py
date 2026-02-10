@@ -198,7 +198,7 @@ def test_parse_gitlab_advisory_with_no_purl(monkeypatch, gitlab_advisory_yaml):
         logger=dummy_logger,
     )
 
-    assert isinstance(result, AdvisoryData)
+    assert isinstance(result, AdvisoryDataV2)
     assert result.advisory_id == "pypi/django/GMS-2018-26"
     assert result.aliases == ["GMS-2018-26"]
     assert result.summary.startswith("Incorrect header")

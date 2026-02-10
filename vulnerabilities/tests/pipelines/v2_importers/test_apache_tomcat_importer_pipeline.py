@@ -14,7 +14,7 @@ from packageurl import PackageURL
 from univers.version_range import ApacheVersionRange
 from univers.version_range import MavenVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import (
     ApacheTomcatImporterPipeline,
@@ -89,7 +89,7 @@ def test_pipeline_groups_by_cve_per_page(mock_get):
     assert len(advisories) == 1
 
     advisory = advisories[0]
-    assert isinstance(advisory, AdvisoryData)
+    assert isinstance(advisory, AdvisoryDataV2)
 
     assert advisory.advisory_id == "security-10/CVE-2023-99999"
     assert advisory.url == "https://tomcat.apache.org/security-10.html"
@@ -101,7 +101,7 @@ def test_pipeline_groups_by_cve_per_page(mock_get):
 def test_affected_packages_structure():
     pipeline = ApacheTomcatImporterPipeline()
 
-    advisory = AdvisoryData(
+    advisory = AdvisoryDataV2(
         advisory_id="security-10/CVE-2023-99999",
         summary="Test",
         affected_packages=[],

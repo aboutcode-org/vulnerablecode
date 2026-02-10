@@ -26,7 +26,7 @@
         ]
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -71,7 +71,7 @@
         ]
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -231,7 +231,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -349,7 +349,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,

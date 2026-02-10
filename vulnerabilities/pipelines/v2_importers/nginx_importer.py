@@ -145,7 +145,7 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryDataV2:
         aliases=nginx_adv.aliases,
         summary=nginx_adv.summary,
         affected_packages=affected_packages,
-        references_v2=nginx_adv.references,
+        references=nginx_adv.references,
         patches=nginx_adv.patches,
         url="https://nginx.org/en/security_advisories.html",
     )

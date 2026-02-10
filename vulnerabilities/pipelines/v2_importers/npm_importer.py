@@ -130,7 +130,7 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             summary=build_description(summary=summary, description=description),
             date_published=date_published,
             affected_packages=affected_packages,
-            references_v2=references,
+            references=references,
             severities=severities,
             url=f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json",
             original_advisory_text=advisory_text,

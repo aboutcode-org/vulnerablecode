@@ -10,7 +10,7 @@
 from typing import Iterable
 
 from vulnerabilities import severity_systems
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import fetch_yaml
@@ -35,7 +35,7 @@ class SUSESeverityScoreImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self):
         return sum(1 for _ in self.score_data)
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         systems_by_version = {
             "2.0": severity_systems.CVSSV2,
             "3": severity_systems.CVSSV3,
@@ -61,10 +61,10 @@ class SUSESeverityScoreImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                     severities.append(score)
 
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=cve_id,
                 aliases=[],
                 severities=severities,
-                references_v2=[],
+                references=[],
                 url=self.url,
             )

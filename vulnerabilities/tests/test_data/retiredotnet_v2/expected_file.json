@@ -16,7 +16,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.2.0",
-        "fixed_version_range": "vers:nuget/2.1.7|2.1.7|2.2.1",
+        "fixed_version_range": "vers:nuget/2.1.7|2.2.1",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -30,7 +30,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3",
-        "fixed_version_range": "vers:nuget/2.1.7|2.1.7|2.1.7|2.1.7",
+        "fixed_version_range": "vers:nuget/2.1.7",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -44,7 +44,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nuget/4.5.0|4.5.1|4.5.2",
-        "fixed_version_range": "vers:nuget/4.5.3|4.5.3|4.5.3",
+        "fixed_version_range": "vers:nuget/4.5.3",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -58,7 +58,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
-        "fixed_version_range": "vers:nuget/2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.2.1",
+        "fixed_version_range": "vers:nuget/2.1.7|2.2.1",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -72,7 +72,7 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
-        "fixed_version_range": "vers:nuget/2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.2.1",
+        "fixed_version_range": "vers:nuget/2.1.7|2.2.1",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -86,12 +86,12 @@
           "subpath": ""
         },
         "affected_version_range": "vers:nuget/2.1.0|2.1.1|2.1.2|2.1.3|2.1.4|2.1.5|2.1.6|2.2.0",
-        "fixed_version_range": "vers:nuget/2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.1.7|2.2.1",
+        "fixed_version_range": "vers:nuget/2.1.7|2.2.1",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",

@@ -49,8 +49,8 @@ endif
 
 virtualenv:
 	@echo "-> Bootstrap the virtualenv with PYTHON_EXE=${PYTHON_EXE}"
-	@$(MAKE) upgrade-tools
 	@${PYTHON_EXE} ${VIRTUALENV_PYZ} --never-download --no-periodic-update ${VENV}
+	@$(MAKE) upgrade-tools
 
 conf: virtualenv
 	@echo "-> Install dependencies"

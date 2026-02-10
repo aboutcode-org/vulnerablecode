@@ -18,7 +18,7 @@ from univers.version_constraint import validate_comparators
 from univers.version_range import NginxVersionRange
 from univers.versions import InvalidVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import ReferenceV2
@@ -53,7 +53,7 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def collect_advisories(self):
         """
-        Yield AdvisoryData from nginx security advisories HTML
+        Yield AdvisoryDataV2 from nginx security advisories HTML
         web page.
         """
         soup = BeautifulSoup(self.advisory_data, features="lxml")
@@ -77,9 +77,9 @@ class NginxAdvisory(NamedTuple):
         return self._asdict()
 
 
-def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
+def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryDataV2:
     """
-    Return AdvisoryData from an NginxAdvisory tuple.
+    Return AdvisoryDataV2 from an NginxAdvisory tuple.
     """
     qualifiers = {}
     _, _, affected_versions = nginx_adv.vulnerable.partition(":")
@@ -140,7 +140,7 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryData:
             )
         )
 
-    return AdvisoryData(
+    return AdvisoryDataV2(
         advisory_id=nginx_adv.advisory_id,
         aliases=nginx_adv.aliases,
         summary=nginx_adv.summary,

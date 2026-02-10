@@ -18,7 +18,7 @@ from pytz import UTC
 from univers.version_constraint import validate_comparators
 from univers.version_range import GemVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -73,7 +73,7 @@ class RubyImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         base_path = Path(self.vcs_response.dest_dir)
         return sum(1 for _ in base_path.rglob("*.yml"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_path = Path(self.vcs_response.dest_dir)
         for file_path in base_path.rglob("*.yml"):
             if file_path.name.startswith("OSVDB-"):
@@ -106,7 +106,7 @@ class RubyImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
 def parse_ruby_advisory(advisory_id, record, schema_type, advisory_url):
     """
-    Parse a ruby advisory file and return an AdvisoryData or None.
+    Parse a ruby advisory file and return an AdvisoryDataV2 or None.
     Each advisory file contains the advisory information in YAML format.
     Schema: https://github.com/rubysec/ruby-advisory-db/tree/master/spec/schemas
     """
@@ -118,12 +118,12 @@ def parse_ruby_advisory(advisory_id, record, schema_type, advisory_url):
             return
 
         purl = PackageURL(type="gem", name=package_name)
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=advisory_id,
             aliases=get_aliases(record),
             summary=get_summary(record),
             affected_packages=get_affected_packages(record, purl),
-            references_v2=get_references(record),
+            references=get_references(record),
             severities=get_severities(record),
             date_published=get_publish_time(record),
             url=advisory_url,
@@ -136,7 +136,7 @@ def parse_ruby_advisory(advisory_id, record, schema_type, advisory_url):
             return
 
         purl = PackageURL(type="ruby", name=engine)
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=advisory_id,
             aliases=get_aliases(record),
             summary=get_summary(record),

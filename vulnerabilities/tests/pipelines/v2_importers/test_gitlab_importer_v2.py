@@ -13,7 +13,7 @@ from unittest.mock import patch
 import pytest
 import saneyaml
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.gitlab_importer import parse_gitlab_advisory
 
 
@@ -94,10 +94,10 @@ def test_collect_advisories(mock_gitlab_yaml, mock_vcs_response, mock_fetch_via_
     assert len(advisories) == 1
     advisory = advisories[0]
 
-    assert isinstance(advisory, AdvisoryData)
+    assert isinstance(advisory, AdvisoryDataV2)
     assert advisory.advisory_id == "pypi/package_name/CVE-2022-0001"
     assert advisory.summary == "Example vulnerability\nExample description"
-    assert advisory.references_v2[0].url == "https://example.com/advisory"
+    assert advisory.references[0].url == "https://example.com/advisory"
     assert advisory.affected_packages[0].package.name == "package-name"
     assert str(advisory.affected_packages[0].fixed_version_range) == "vers:pypi/2.0.0"
     assert advisory.weaknesses[0] == 79

@@ -14,7 +14,7 @@ from zipfile import ZipFile
 
 import requests
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 
@@ -46,8 +46,8 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             advisory_count = sum(1 for file in zip.namelist() if file.startswith("PYSEC-"))
         return advisory_count
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
-        """Yield AdvisoryData using a zipped data dump of OSV data"""
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
+        """Yield AdvisoryDataV2 using a zipped data dump of OSV data"""
 
         with ZipFile(BytesIO(self.advisory_zip)) as zip_file:
             for file_name in zip_file.namelist():

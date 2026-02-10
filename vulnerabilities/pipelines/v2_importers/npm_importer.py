@@ -18,7 +18,7 @@ from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from univers.version_range import NpmVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -57,13 +57,13 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
         return sum(1 for _ in vuln_directory.glob("*.json"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
 
         for advisory in vuln_directory.glob("*.json"):
             yield self.to_advisory_data(advisory)
 
-    def to_advisory_data(self, file: Path) -> Iterable[AdvisoryData]:
+    def to_advisory_data(self, file: Path) -> Iterable[AdvisoryDataV2]:
         if file.name == "index.json":
             self.log(f"Skipping {file.name} file")
             return
@@ -124,7 +124,7 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages.append(self.get_affected_package(data, package_name))
         advsisory_aliases = data.get("cves") or []
 
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=f"npm-{id}",
             aliases=advsisory_aliases,
             summary=build_description(summary=summary, description=description),

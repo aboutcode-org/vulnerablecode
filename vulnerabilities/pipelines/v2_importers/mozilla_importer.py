@@ -20,7 +20,7 @@ from markdown import markdown
 from packageurl import PackageURL
 from univers.version_range import GenericVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -71,7 +71,7 @@ class MozillaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         md = list((base_path / "announce").glob("**/*.md"))
         return len(yml) + len(md)
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_path = Path(self.vcs_response.dest_dir)
         advisory_dir = base_path / "announce"
 
@@ -81,7 +81,7 @@ class MozillaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             yield from parse_advisory(file_path, base_path)
 
 
-def parse_advisory(file_path: Path, base_path: Path) -> Iterable[AdvisoryData]:
+def parse_advisory(file_path: Path, base_path: Path) -> Iterable[AdvisoryDataV2]:
     advisory_url = get_advisory_url(
         file=file_path,
         base_path=base_path,
@@ -99,7 +99,7 @@ def parse_advisory(file_path: Path, base_path: Path) -> Iterable[AdvisoryData]:
             yield from parse_yml_advisory(mfsa_id, lines, advisory_url)
 
 
-def parse_yml_advisory(mfsa_id, lines, advisory_url) -> Iterable[AdvisoryData]:
+def parse_yml_advisory(mfsa_id, lines, advisory_url) -> Iterable[AdvisoryDataV2]:
     data = yaml.safe_load(lines)
 
     affected_packages = list(parse_affected_packages(data.get("fixed_in") or []))
@@ -114,7 +114,7 @@ def parse_yml_advisory(mfsa_id, lines, advisory_url) -> Iterable[AdvisoryData]:
     advisories = data.get("advisories", {})
 
     if not advisories:
-        yield AdvisoryData(
+        yield AdvisoryDataV2(
             advisory_id=mfsa_id,
             aliases=[],
             summary=mfsa_summary,
@@ -136,7 +136,7 @@ def parse_yml_advisory(mfsa_id, lines, advisory_url) -> Iterable[AdvisoryData]:
         impact = advisory.get("impact", "")
         advisory_severity = get_severity_from_impact(impact, url=reference.url)
 
-        yield AdvisoryData(
+        yield AdvisoryDataV2(
             advisory_id=f"{mfsa_id}/{cve}",
             aliases=[cve],
             summary=mfsa_summary + "\n" + advisory_summary,
@@ -149,7 +149,7 @@ def parse_yml_advisory(mfsa_id, lines, advisory_url) -> Iterable[AdvisoryData]:
         )
 
 
-def parse_md_advisory(mfsa_id, lines, advisory_url) -> Iterable[AdvisoryData]:
+def parse_md_advisory(mfsa_id, lines, advisory_url) -> Iterable[AdvisoryDataV2]:
     yamltext, mdtext = split_markdown_front_matter(lines.read())
     data = yaml.safe_load(yamltext)
 
@@ -160,7 +160,7 @@ def parse_md_advisory(mfsa_id, lines, advisory_url) -> Iterable[AdvisoryData]:
     severity = get_severity_from_impact(data.get("impact"), url=reference.url)
     description = extract_description_from_html(mdtext)
 
-    yield AdvisoryData(
+    yield AdvisoryDataV2(
         advisory_id=mfsa_id,
         aliases=[],
         summary=description,

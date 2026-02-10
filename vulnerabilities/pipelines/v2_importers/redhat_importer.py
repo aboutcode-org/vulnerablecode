@@ -23,7 +23,7 @@ from packageurl import PackageURL
 from univers.version_range import RpmVersionRange
 from univers.version_range import VersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -84,7 +84,7 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self) -> int:
         return sum(1 for _ in self.location.rglob("*.json"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for record in self.location.rglob("*.json"):
             yield self.parse_advisory(record)
 
@@ -165,11 +165,11 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         )
                     )
 
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=advisory_id,
             aliases=aliases,
             summary=summary,
-            references_v2=references,
+            references=references,
             affected_packages=affected_packages,
             severities=severities,
             weaknesses=[],

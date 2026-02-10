@@ -23,6 +23,7 @@ from univers.version_range import VersionRange
 
 from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
@@ -743,7 +744,7 @@ class TestStoreLongCVSSV4(TestCase):
 
 class TestAdvisoryV2Model(DjangoTestCase):
     def setUp(self):
-        self.advisoryv2_data1 = AdvisoryData(
+        self.advisoryv2_data1 = AdvisoryDataV2(
             advisory_id="test_adv",
             aliases=[],
             summary="vulnerability description here",
@@ -758,7 +759,7 @@ class TestAdvisoryV2Model(DjangoTestCase):
                     ],
                 )
             ],
-            references_v2=[ReferenceV2(url="https://example.com/with/more/info/CVE-2020-13371337")],
+            references=[ReferenceV2(url="https://example.com/with/more/info/CVE-2020-13371337")],
             patches=[PatchData(patch_url="https://foo.bar/", patch_text="test patch")],
             url="https://test.com",
         )

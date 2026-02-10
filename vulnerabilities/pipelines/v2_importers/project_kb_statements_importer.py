@@ -16,7 +16,7 @@ from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.versions import InvalidVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -55,7 +55,7 @@ class ProjectKBStatementsPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Estimated advisories to process: {count}")
         return count
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         self.log("Collecting fix commits from YAML statements under /statements....")
         base_path = Path(self.vcs_response.dest_dir) / "statements"
 
@@ -159,11 +159,11 @@ class ProjectKBStatementsPipeline(VulnerableCodeBaseImporterPipelineV2):
                 url="https://github.com/SAP/project-kb/blob/vulnerability-data/statements/",
             )
 
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=vulnerability_id,
                 summary=description,
                 affected_packages=affected_packages,
-                references_v2=references,
+                references=references,
                 patches=patches,
                 url=advisory_url,
             )

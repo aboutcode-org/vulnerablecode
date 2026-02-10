@@ -15,7 +15,7 @@ from urllib.parse import quote
 import dateparser
 from fetchcode.vcs import fetch_via_vcs
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.advisory import append_patch_classifications
@@ -100,13 +100,13 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     f"{quote(file_path.name)}"
                 )
 
-                yield AdvisoryData(
+                yield AdvisoryDataV2(
                     advisory_id=vulnerability_id,
                     summary=summary,
                     affected_packages=affected_packages,
                     severities=severities,
                     patches=patches,
-                    references_v2=references,
+                    references=references,
                     date_published=date_published,
                     url=url,
                 )

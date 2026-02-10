@@ -65,6 +65,7 @@ from univers.versions import Version
 
 import vulnerablecode
 from vulnerabilities import utils
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import compute_patch_checksum
@@ -2987,6 +2988,12 @@ class AdvisoryV2(models.Model):
         help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10.",
     )
 
+    # precedence = models.IntegerField(
+    #     null=True,
+    #     blank=True,
+    #     help_text="Precedence indicates the priority level of addressing a vulnerability based on its overall risk",
+    # )
+
     @property
     def risk_score(self):
         """
@@ -3026,17 +3033,17 @@ class AdvisoryV2(models.Model):
         """
         return reverse("advisory_details", args=[self.avid])
 
-    def to_advisory_data(self) -> "AdvisoryData":
-        from vulnerabilities.importer import AdvisoryData
+    def to_advisory_data(self) -> "AdvisoryDataV2":
+        from vulnerabilities.importer import AdvisoryDataV2
 
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=self.advisory_id,
             aliases=[item.alias for item in self.aliases.all()],
             summary=self.summary,
             affected_packages=[
                 impacted.to_affected_package_data() for impacted in self.impacted_packages.all()
             ],
-            references_v2=[ref.to_reference_v2_data() for ref in self.references.all()],
+            references=[ref.to_reference_v2_data() for ref in self.references.all()],
             patches=[patch.to_patch_data() for patch in self.patches.all()],
             date_published=self.date_published,
             weaknesses=[weak.cwe_id for weak in self.weaknesses.all()],

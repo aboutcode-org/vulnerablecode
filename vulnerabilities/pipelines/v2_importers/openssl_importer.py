@@ -18,7 +18,7 @@ from packageurl import PackageURL
 from univers.version_range import OpensslVersionRange
 
 from vulnerabilities import severity_systems
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -57,13 +57,13 @@ class OpenSSLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         vuln_directory = self.advisory_path / "secjson"
         return sum(1 for _ in vuln_directory.glob("CVE-*.json"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         vuln_directory = self.advisory_path / "secjson"
 
         for advisory in vuln_directory.glob("CVE-*.json"):
             yield self.to_advisory_data(advisory)
 
-    def to_advisory_data(self, file: Path) -> Iterable[AdvisoryData]:
+    def to_advisory_data(self, file: Path) -> Iterable[AdvisoryDataV2]:
         # TODO: Collect the advisory credits, see https://github.com/aboutcode-org/vulnerablecode/issues/2121
 
         affected_packages = []
@@ -158,13 +158,13 @@ class OpenSSLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         weaknesses = create_weaknesses_list([cwe_string]) if cwe_string else []
 
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=cve,
             aliases=[],
             summary=build_description(summary=title, description=description),
             date_published=date_published,
             affected_packages=affected_packages,
-            references_v2=references,
+            references=references,
             severities=severities,
             weaknesses=weaknesses,
             patches=patches,

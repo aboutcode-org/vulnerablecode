@@ -13,7 +13,7 @@ from cwe2.database import Database
 from packageurl import PackageURL
 from univers.version_range import GenericVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -47,7 +47,7 @@ class CurlImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self) -> int:
         return len(self.fetch_data())
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for entry in self.fetch_data():
             cve_id = entry.get("aliases") or []
             cve_id = cve_id[0] if cve_id else None
@@ -58,15 +58,15 @@ class CurlImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             yield parse_curl_advisory(entry)
 
 
-def parse_curl_advisory(raw_data) -> AdvisoryData:
+def parse_curl_advisory(raw_data) -> AdvisoryDataV2:
     """
-    Parse advisory data from raw JSON data and return an AdvisoryData object.
+    Parse advisory data from raw JSON data and return an AdvisoryDataV2 object.
 
     Args:
         raw_data (dict): Raw JSON data containing advisory information.
 
     Returns:
-        AdvisoryData: Parsed advisory data as an AdvisoryData object.
+        AdvisoryDataV2: Parsed advisory data as an AdvisoryDataV2 object.
     """
     affected = get_item(raw_data, "affected")[0] if len(get_item(raw_data, "affected")) > 0 else []
 
@@ -117,12 +117,12 @@ def parse_curl_advisory(raw_data) -> AdvisoryData:
     if advisory_id in aliases:
         aliases.remove(advisory_id)
 
-    return AdvisoryData(
+    return AdvisoryDataV2(
         advisory_id=advisory_id,
         aliases=aliases,
         summary=raw_data.get("summary") or "",
         affected_packages=[affected_package],
-        references_v2=references,
+        references=references,
         date_published=date_published,
         weaknesses=weaknesses,
         url=json_url,

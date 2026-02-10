@@ -25,6 +25,7 @@ from packageurl.contrib.url2purl import url2purl
 
 from aboutcode.hashid import get_core_purl
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
@@ -288,21 +289,21 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
 
 @transaction.atomic
 def insert_advisory_v2(
-    advisory: AdvisoryData,
+    advisory: AdvisoryDataV2,
     pipeline_id: str,
     logger: Callable = None,
 ):
     from vulnerabilities.models import ImpactedPackage
     from vulnerabilities.models import PackageV2
-    from vulnerabilities.utils import compute_content_id
+    from vulnerabilities.utils import compute_content_id_v2
 
     advisory_obj = None
     aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
-    references = get_or_create_advisory_references(references=advisory.references_v2)
+    references = get_or_create_advisory_references(references=advisory.references)
     severities = get_or_create_advisory_severities(severities=advisory.severities)
     patches = get_or_create_advisory_patches(patches=advisory.patches)
     weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
-    content_id = compute_content_id(advisory_data=advisory)
+    content_id = compute_content_id_v2(advisory_data=advisory)
 
     try:
         default_data = {

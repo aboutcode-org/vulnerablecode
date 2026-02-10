@@ -4,7 +4,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -29,7 +29,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -54,7 +54,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -79,7 +79,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -104,7 +104,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -129,7 +129,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -154,7 +154,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -179,7 +179,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -204,7 +204,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -229,7 +229,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -254,7 +254,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -279,7 +279,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -304,7 +304,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -329,7 +329,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -354,7 +354,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -379,7 +379,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -404,7 +404,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -429,7 +429,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -454,7 +454,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -479,7 +479,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -504,7 +504,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -529,7 +529,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -554,7 +554,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -579,7 +579,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -604,7 +604,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -629,7 +629,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -654,7 +654,7 @@
     "aliases": [],
     "summary": "",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",

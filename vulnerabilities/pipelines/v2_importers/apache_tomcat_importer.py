@@ -23,7 +23,7 @@ from univers.version_range import MavenVersionRange
 from univers.versions import MavenVersion
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
@@ -62,7 +62,7 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(cls):
         return 0
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for page_url in self.fetch_advisory_links():
             try:
                 content = requests.get(page_url).content
@@ -104,7 +104,7 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                             )
                         )
                     page_id = page_url.split("/")[-1].replace(".html", "")
-                    yield AdvisoryData(
+                    yield AdvisoryDataV2(
                         advisory_id=f"{page_id}/{cve}",
                         summary=advisory_list[0].summary,
                         affected_packages=affected_packages,

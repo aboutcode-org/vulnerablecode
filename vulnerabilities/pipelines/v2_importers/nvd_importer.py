@@ -20,7 +20,7 @@ import requests
 from dateutil import parser as dateparser
 
 from vulnerabilities import severity_systems
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -93,7 +93,7 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         advisory_count = data.get("totalResults", 0)
         return advisory_count
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for _year, cve_data in fetch_cve_data_2_0(logger=self.log):
             yield from to_advisories(cve_data=cve_data)
 
@@ -126,7 +126,7 @@ def fetch_cve_data_2_0(starting_year=2002, logger=None):
 
 def to_advisories(cve_data):
     """
-    Yield AdvisoryData objects from a CVE json feed.
+    Yield AdvisoryDataV2 objects from a CVE json feed.
     """
     for cve_item in CveItem.from_cve_data(cve_data=cve_data):
         if cve_item.is_related_to_hardware or not cve_item.cve_id:
@@ -141,7 +141,7 @@ class CveItem:
     @classmethod
     def to_advisories(cls, cve_data, skip_hardware=True):
         """
-        Yield AdvisoryData objects from ``cve_data`` data for CVE JSON 1.1feed.
+        Yield AdvisoryDataV2 objects from ``cve_data`` data for CVE JSON 1.1feed.
         Skip hardware
         """
         for cve_item in CveItem.from_cve_data(cve_data=cve_data, skip_hardware=skip_hardware):
@@ -301,13 +301,13 @@ class CveItem:
 
     def to_advisory(self):
         """
-        Return an AdvisoryData object from this CVE item
+        Return an AdvisoryDataV2 object from this CVE item
         """
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=self.cve_id,
             aliases=[],
             summary=self.summary,
-            references_v2=self.references,
+            references=self.references,
             date_published=dateparser.parse(self.cve_item["cve"].get("published")).replace(
                 tzinfo=timezone.utc
             ),

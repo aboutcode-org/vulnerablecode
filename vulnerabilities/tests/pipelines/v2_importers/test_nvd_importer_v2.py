@@ -32,7 +32,7 @@ def sorted_advisory_data(advisory_data):
     for data in advisory_data:
         data["aliases"] = sorted(data["aliases"])
         data["affected_packages"] = sorted(data["affected_packages"], key=sorter)
-        data["references_v2"] = sorted(data["references_v2"], key=sorter)
+        data["references"] = sorted(data["references"], key=sorter)
     return advisory_data
 
 

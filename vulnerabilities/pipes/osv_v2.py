@@ -24,7 +24,7 @@ from univers.version_range import build_range_from_github_advisory_constraint
 from univers.versions import InvalidVersion
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
@@ -48,7 +48,7 @@ PURL_TYPE_BY_OSV_ECOSYSTEM = {
     "rubygems": "gem",
     "go": "golang",
     "hex": "hex",
-    "crates.io": "cargo",
+    "cargo": "cargo",
 }
 
 OSV_TO_VCIO_SEVERITY_MAP = {
@@ -60,7 +60,7 @@ OSV_TO_VCIO_SEVERITY_MAP = {
 
 def parse_advisory_data_v3(
     raw_data: dict, supported_ecosystems, advisory_url: str, advisory_text: str
-) -> Optional[AdvisoryData]:
+) -> Optional[AdvisoryDataV2]:
     """
     Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
     a ``supported_ecosystem`` string.
@@ -195,11 +195,11 @@ def parse_advisory_data_v3(
     if advisory_id in aliases:
         aliases.remove(advisory_id)
     try:
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=advisory_id,
             aliases=aliases,
             summary=summary,
-            references_v2=references,
+            references=references,
             severities=severities,
             affected_packages=affected_packages,
             date_published=date_published,

@@ -12,7 +12,7 @@ from typing import Iterable
 
 from fetchcode.vcs import fetch_via_vcs
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.utils import get_advisory_url
@@ -50,7 +50,7 @@ class UbuntuOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         cve_directory = self.advisories_path / "osv" / "cve"
         return sum(1 for _ in cve_directory.rglob("*.json"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         supported_ecosystems = ["deb"]
         cve_directory = self.advisories_path / "osv" / "cve"
 

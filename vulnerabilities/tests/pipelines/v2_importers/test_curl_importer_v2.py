@@ -15,7 +15,7 @@ import pytest
 from packageurl import PackageURL
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.pipelines.v2_importers.curl_importer import CurlImporterPipeline
 from vulnerabilities.pipelines.v2_importers.curl_importer import get_cwe_from_curl_advisory
@@ -64,7 +64,7 @@ def test_collect_advisories(mock_fetch, pipeline):
     assert len(advisories) == 1
 
     advisory = advisories[0]
-    assert isinstance(advisory, AdvisoryData)
+    assert isinstance(advisory, AdvisoryDataV2)
     assert advisory.advisory_id == "CVE-2024-12345"
     assert advisory.aliases == []
     assert advisory.summary == "Sample vulnerability in curl"
@@ -80,7 +80,7 @@ def test_collect_advisories(mock_fetch, pipeline):
     assert "8.6.0" in str(pkg.affected_version_range)
 
     # References
-    urls = [ref.url for ref in advisory.references_v2]
+    urls = [ref.url for ref in advisory.references]
     assert "https://curl.se/docs/CVE-2024-12345.html" in urls
     assert "https://hackerone.com/reports/1111111" in urls
 
@@ -101,7 +101,7 @@ def test_parse_curl_advisory_minimal():
 
     assert parsed.advisory_id == "CVE-2024-99999"
     assert parsed.aliases == []
-    assert parsed.references_v2 == []
+    assert parsed.references == []
     assert parsed.severities[0].value == ""
 
 

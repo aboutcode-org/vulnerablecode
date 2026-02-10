@@ -2,23 +2,8 @@
   "advisory_id": "GHSA-wjxc-pjx9-4wvm",
   "aliases": [],
   "summary": "Nervos CKB Panic on malformed input\n### Impact\nCKB process will panic when received malformed p2p message because of snappy, which is used to compress network messages\n\n### References\nhttps://github.com/BurntSushi/rust-snappy/issues/29",
-  "affected_packages": [
-    {
-      "package": {
-        "type": "cargo",
-        "namespace": "",
-        "name": "ckb",
-        "version": "",
-        "qualifiers": "",
-        "subpath": ""
-      },
-      "affected_version_range": "vers:cargo/<=0.34.1",
-      "fixed_version_range": "vers:cargo/0.34.2",
-      "introduced_by_commit_patches": [],
-      "fixed_by_commit_patches": []
-    }
-  ],
-  "references_v2": [
+  "affected_packages": [],
+  "references": [
     {
       "reference_id": "",
       "reference_type": "",

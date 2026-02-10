@@ -13,7 +13,7 @@ from textwrap import dedent
 
 import pytest
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines.v2_importers.istio_importer import IstioImporterPipeline
 
@@ -60,13 +60,13 @@ def test_istio_advisory_parsing():
         assert len(advisories) == 1
         advisory = advisories[0]
 
-        assert isinstance(advisory, AdvisoryData)
+        assert isinstance(advisory, AdvisoryDataV2)
         assert advisory.advisory_id == "ISTIO-SECURITY-2019-002"
         assert advisory.aliases == ["CVE-2019-12995"]
         assert advisory.summary.startswith("Denial of service affecting JWT access token")
         assert advisory.date_published.isoformat() == "2019-06-28T00:00:00+00:00"
         assert advisory.url.endswith("ISTIO-SECURITY-2019-002.md")
-        assert advisory.references_v2[0] == ReferenceV2(
+        assert advisory.references[0] == ReferenceV2(
             reference_id="ISTIO-SECURITY-2019-002",
             url="https://istio.io/latest/news/security/ISTIO-SECURITY-2019-002/",
         )

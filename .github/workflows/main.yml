@@ -42,7 +42,11 @@ jobs:
       
       - name: Upgrade pip, setuptools, wheel
         run: |
-          python -m pip install --upgrade pip setuptools wheel 
+          python -m pip install --upgrade --force-reinstall \
+            pip>=24.0 \
+            setuptools>=69.0 \
+            wheel>=0.42 \
+            packaging 
 
       - name: Install dependencies
         run: make dev envfile

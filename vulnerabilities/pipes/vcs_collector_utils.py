@@ -17,7 +17,7 @@ from packageurl import PackageURL
 from packageurl.contrib.purl2url import purl2url
 from packageurl.contrib.url2purl import url2purl
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import ReferenceV2
@@ -135,11 +135,11 @@ class CollectVCSFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                 )
 
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=vuln_id,
                 summary=summary,
                 affected_packages=affected_packages,
-                references_v2=references,
+                references=references,
                 url=self.repo_url,
             )
 

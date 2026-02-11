@@ -40,10 +40,13 @@ def test_classify_commit_type_extracts_ids(pipeline):
 def test_collect_fix_commits_groups_by_vuln(mock_repo, pipeline):
     commit1 = MagicMock(message="Fix CVE-2021-0001", hexsha="abc123")
     commit2 = MagicMock(message="Patch GHSA-f72r-2h5j-7639", hexsha="def456")
-    commit3 = MagicMock(message="Unrelated change", hexsha="ghi789")
+    commit3 = MagicMock(
+        message="Patch GHSA-5w93-4g67-mm43", hexsha="Github Advisory: GHSA-5w93-4g67-mm43"
+    )
+    commit4 = MagicMock(message="Unrelated change", hexsha="ghi789")
 
     pipeline.repo = MagicMock()
-    pipeline.repo.iter_commits.return_value = [commit1, commit2, commit3]
+    pipeline.repo.iter_commits.return_value = [commit1, commit2, commit3, commit4]
 
     pipeline.classify_commit_type = MagicMock(
         side_effect=lambda c: (
@@ -59,6 +62,9 @@ def test_collect_fix_commits_groups_by_vuln(mock_repo, pipeline):
 
     expected = {
         "CVE-2021-0001": [("abc123", "Fix CVE-2021-0001")],
+        "GHSA-5w93-4g67-mm43": [
+            ("Github Advisory: GHSA-5w93-4g67-mm43", "Patch GHSA-5w93-4g67-mm43")
+        ],
         "GHSA-f72r-2h5j-7639": [("def456", "Patch GHSA-f72r-2h5j-7639")],
     }
 

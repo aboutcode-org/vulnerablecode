@@ -20,7 +20,7 @@ from univers.version_range import EbuildVersionRange
 from univers.versions import GentooVersion
 from univers.versions import InvalidVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -53,7 +53,7 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         advisory_dir = Path(self.vcs_response.dest_dir)
         return sum(1 for _ in advisory_dir.rglob("*.xml"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_path = Path(self.vcs_response.dest_dir)
         for file_path in base_path.glob("**/*.xml"):
             yield from self.process_file(file_path)
@@ -105,11 +105,11 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 if severity_value:
                     severities.append(VulnerabilitySeverity(system=GENERIC, value=severity_value))
 
-        yield AdvisoryData(
+        yield AdvisoryDataV2(
             advisory_id=glsa,
             aliases=cves,
             summary=summary,
-            references_v2=vuln_references,
+            references=vuln_references,
             severities=severities,
             affected_packages=affected_packages,
             url=f"https://security.gentoo.org/glsa/{id}",
@@ -176,9 +176,9 @@ def get_affected_and_fixed_purls(affected_elem, logger):
                 "ge": ">=",
                 "le": "<=",
                 "eq": "=",
-                # "rle": "<=",
-                # "rge": ">=",
-                # "rgt": ">",
+                "rle": "<=",
+                "rge": ">=",
+                "rgt": ">",
             }
             comparator = comparator_dict.get(range_value)
             if not comparator:
@@ -193,6 +193,13 @@ def get_affected_and_fixed_purls(affected_elem, logger):
             elif info.tag == "vulnerable":
                 purl_ranges_map[(pkg_name, pkg_ns, slot_value)]["affected_ranges"].add(
                     (comparator, info.text)
+                )
+
+            if range_value in ["rgt", "rge", "rle"]:
+                next_minor_version = GentooVersion(info.text).bump()
+                invert_comp = "<" if range_value in ["rgt", "rge"] else ">"
+                purl_ranges_map[(pkg_name, pkg_ns, slot_value)]["fixed_ranges"].add(
+                    (invert_comp, next_minor_version)
                 )
 
         for (pkg_name, pkg_ns, slot_value), data in purl_ranges_map.items():

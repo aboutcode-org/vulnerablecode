@@ -16,12 +16,12 @@
           "subpath": ""
         },
         "affected_version_range": "vers:ebuild/0.1.1|<1.9.7",
-        "fixed_version_range": "vers:ebuild/>=1.9.7",
+        "fixed_version_range": "vers:ebuild/>1.8.18|<1.9|>=1.9.7",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "GLSA-201709-09",
         "reference_type": "",

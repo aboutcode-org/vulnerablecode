@@ -19,7 +19,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "GLSA-202512-01",
         "reference_type": "",

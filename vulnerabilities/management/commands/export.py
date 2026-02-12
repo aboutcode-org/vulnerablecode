@@ -188,7 +188,7 @@ def packages_by_type_ns_name():
             "fixing_vulnerabilities__weaknesses",
             "fixing_vulnerabilities__severities",
         )
-        .iterator()
+        .iterator(chunk_size=1000)
     )
 
     for tp_ns_name, packages in groupby(qs, key=by_purl_type_ns_name):

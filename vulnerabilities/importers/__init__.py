@@ -41,6 +41,7 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpine_linux_importer_v2
 from vulnerabilities.pipelines.v2_importers import aosp_importer as aosp_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
 from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
@@ -74,6 +75,7 @@ from vulnerabilities.pipelines.v2_importers import (
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
+from vulnerabilities.pipelines.v2_importers import retiredotnet_importer as retiredotnet_importer_v2
 from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
 from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
@@ -109,7 +111,9 @@ IMPORTERS_REGISTRY = create_registry(
         debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
         apache_tomcat_v2.ApacheTomcatImporterPipeline,
+        retiredotnet_importer_v2.RetireDotnetImporterPipeline,
         ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
+        alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

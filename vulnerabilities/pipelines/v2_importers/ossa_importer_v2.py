@@ -8,7 +8,6 @@
 #
 
 import re
-from datetime import datetime
 from pathlib import Path
 from typing import Iterable
 from typing import Tuple
@@ -35,7 +34,9 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC-BY-3.0"
     license_url = "https://github.com/openstack/ossa/blob/master/LICENSE"
     repo_url = "git+https://github.com/openstack/ossa"
-    cutoff_years = 10
+
+    # Advisories published before this year are not consumed due to inconsistent schema and irrelevance
+    cutoff_year = 2016
 
     @classmethod
     def steps(cls):
@@ -50,33 +51,24 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
-    def _get_cutoff_date(self):
-        current_date = datetime.now(UTC)
-        cutoff_year = current_date.year - self.cutoff_years
-        return current_date.replace(year=cutoff_year)
-
     def fetch(self):
         ossa_dir = Path(self.vcs_response.dest_dir) / "ossa"
-        cutoff = self._get_cutoff_date()
         self.processable_advisories = []
         skipped_old = 0
 
         for file_path in sorted(ossa_dir.glob("OSSA-*.yaml")):
             data = load_yaml(str(file_path))
+
             date_str = data.get("date")
-
-            if date_str:
-                date_published = dateparser.parse(str(date_str))
-                date_published = date_published.replace(tzinfo=UTC)
-
-                if date_published < cutoff:
-                    skipped_old += 1
-                    continue
+            date_published = dateparser.parse(str(date_str)).replace(tzinfo=UTC)
+            if date_published.year < self.cutoff_year:
+                skipped_old += 1
+                continue
 
             self.processable_advisories.append(file_path)
 
         if skipped_old > 0:
-            self.log(f"Skipped {skipped_old} advisories older than {self.cutoff_years} years")
+            self.log(f"Skipped {skipped_old} advisories older than {self.cutoff_year}")
         self.log(f"Fetched {len(self.processable_advisories)} processable advisories")
 
     def advisories_count(self) -> int:
@@ -87,31 +79,26 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             advisory = self.process_file(file_path)
             yield advisory
 
-    def process_file(self, file_path):
+    def process_file(self, file_path) -> AdvisoryData:
+        """Parse a single OSSA YAML file and extract advisory data"""
         data = load_yaml(str(file_path))
         ossa_id = data.get("id")
 
-        date_published = None
         date_str = data.get("date")
-        date_published = dateparser.parse(str(date_str))
-        date_published = date_published.replace(tzinfo=UTC)
+        date_published = dateparser.parse(str(date_str)).replace(tzinfo=UTC)
 
         aliases = []
         for vulnerability in data.get("vulnerabilities"):
-            cve = vulnerability.get("cve-id", "")
+            cve = vulnerability.get("cve-id")
             aliases.append(cve)
 
         affected_packages = []
         for entry in data.get("affected-products"):
-            product = entry.get("product", "")
-            version = entry.get("version", "")
-
-            if not product:
-                self.log(f"Missing affected-product: {ossa_id}")
-                continue
+            product = entry.get("product")
+            version = entry.get("version")
 
             for package_name, version_str in self.expand_products(product, version):
-                purl = PackageURL(type="pypi", name=package_name.lower())
+                purl = PackageURL(type="pypi", name=package_name)
                 version_range = self.parse_version_range(version_str)
                 if purl and version_range:
                     affected_packages.append(
@@ -129,8 +116,8 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             for link in links:
                 references.append(ReferenceV2(url=link))
 
-        title = data.get("title", "")
-        description = data.get("description", "")
+        title = data.get("title")
+        description = data.get("description")
         summary = f"{title}\n\n{description}"
         url = f"https://security.openstack.org/ossa/{ossa_id}.html"
         return AdvisoryData(
@@ -151,6 +138,7 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         Format 2:
             product="Cinder, Glance"
             version="<1.0"
+        This function handles both formats and yields tuples of (product, version) for each affected product.
         """
         # Format 1: "Cinder <1.0; Glance <2.0"
         if ";" in version_str:
@@ -169,7 +157,10 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         yield product_str, version_str
 
-    def parse_version_range(self, version_str: str):
+    def parse_version_range(self, version_str: str) -> PypiVersionRange:
+        """
+        Normalizes the version string and extracts individual constraints to create a PypiVersionRange object.
+        """
         original_version_str = version_str
 
         if version_str.lower() == "all versions":

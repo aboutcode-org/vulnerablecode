@@ -82,6 +82,7 @@ from vulnerabilities.pipelines.v2_importers import suse_score_importer as suse_s
 from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
+from vulnerabilities.pipelines.v2_improvers import reference_collect_commits
 from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
@@ -127,6 +128,7 @@ IMPORTERS_REGISTRY = create_registry(
         nginx_importer.NginxImporterPipeline,
         pysec_importer.PyPIImporterPipeline,
         fireeye_importer_v2.FireeyeImporterPipeline,
+        reference_collect_commits.CollectReferencesFixCommitsPipeline,
         apache_tomcat.ApacheTomcatImporter,
         postgresql.PostgreSQLImporter,
         debian.DebianImporter,

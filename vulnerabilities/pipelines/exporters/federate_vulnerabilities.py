@@ -15,8 +15,11 @@ from pathlib import Path
 import saneyaml
 from aboutcode.pipeline import LoopProgress
 from django.conf import settings
+from django.db.models import Prefetch
 
 from aboutcode.federated import DataFederation
+from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes import federatedcode
@@ -25,7 +28,7 @@ from vulnerabilities.pipes import federatedcode
 class FederatePackageVulnerabilities(VulnerableCodePipeline):
     """Export package vulnerabilities and advisory to FederatedCode."""
 
-    pipeline_id = "federate_package_vulnerabilities_v2"
+    pipeline_id = "federate_vulnerabilities_v2"
 
     @classmethod
     def steps(cls):
@@ -34,7 +37,8 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
             cls.create_federatedcode_working_dir,
             cls.fetch_federation_config,
             cls.clone_vulnerabilities_repo,
-            cls.publish_vulnerabilities,
+            cls.publish_package_vulnerabilities,
+            cls.publish_advisories,
             cls.delete_working_dir,
         )
 
@@ -61,13 +65,13 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
             logger=self.log,
         )
 
-    def publish_vulnerabilities(self):
-        """Publish package vulnerabilities and advisory to FederatedCode"""
+    def publish_package_vulnerabilities(self):
+        """Publish package vulnerabilities to FederatedCode"""
         repo_path = Path(self.repo.working_dir)
         commit_count = 1
         batch_size = 2000
+        chunk_size = 1000
         files_to_commit = set()
-        exported_avids = set()
 
         distinct_packages_count = (
             PackageV2.objects.values("type", "namespace", "name")
@@ -76,44 +80,19 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
         )
         package_qs = package_prefetched_qs()
         grouped_packages = itertools.groupby(
-            package_qs.iterator(chunk_size=2000),
+            package_qs.iterator(chunk_size=chunk_size),
             key=attrgetter("type", "namespace", "name"),
         )
 
         self.log(f"Exporting vulnerabilities for {distinct_packages_count} packages.")
         progress = LoopProgress(
             total_iterations=distinct_packages_count,
-            progress_step=1,
+            progress_step=5,
             logger=self.log,
         )
         for _, packages in progress.iter(grouped_packages):
-            package_urls = []
-            package_vulnerabilities = []
-            for package in packages:
-                purl = package.package_url
-                package_urls.append(purl)
-                package_vulnerabilities.append(serialize_package_vulnerability(package))
-
-                impacts = itertools.chain(
-                    package.affected_in_impacts.all(),
-                    package.fixed_in_impacts.all(),
-                )
-                for impact in impacts:
-                    adv = impact.advisory
-                    avid = adv.avid
-                    if avid in exported_avids:
-                        continue
-
-                    exported_avids.add(avid)
-                    advisory = serialize_advisory(adv)
-                    adv_file = f"vulnerabilities/{avid}.yml"
-                    write_file(
-                        repo_path=repo_path,
-                        file_path=adv_file,
-                        data=advisory,
-                    )
-                    files_to_commit.add(adv_file)
-
+            package_urls, package_vulnerabilities = get_package_vulnerabilities(packages)
+            purl = package_urls[0]
             package_repo, datafile_path = self.data_cluster.get_datafile_repo_and_path(purl=purl)
             package_vulnerability_path = datafile_path.replace("/purls.yml", "/vulnerabilities.yml")
             package_vulnerability_path = f"packages/{package_repo}/{package_vulnerability_path}"
@@ -135,7 +114,7 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
 
             if len(files_to_commit) > batch_size:
                 if federatedcode.commit_and_push_changes(
-                    commit_message=self.commit_message(commit_count),
+                    commit_message=self.commit_message("package vulnerabilities", commit_count),
                     repo=self.repo,
                     files_to_commit=files_to_commit,
                     logger=self.log,
@@ -145,15 +124,67 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
 
         if files_to_commit:
             federatedcode.commit_and_push_changes(
-                commit_message=self.commit_message(commit_count, commit_count),
+                commit_message=self.commit_message(
+                    "package vulnerabilities",
+                    commit_count,
+                    commit_count,
+                ),
                 repo=self.repo,
                 files_to_commit=files_to_commit,
                 logger=self.log,
             )
 
-        self.log(
-            f"Federated {distinct_packages_count} package and {len(exported_avids)} vulnerabilities."
+        self.log(f"Federated {distinct_packages_count} package vulnerabilities.")
+
+    def publish_advisories(self):
+        """Publish advisory to FederatedCode"""
+        repo_path = Path(self.repo.working_dir)
+        commit_count = 1
+        batch_size = 2000
+        chunk_size = 1000
+        files_to_commit = set()
+        advisory_qs = advisory_prefetched_qs()
+        advisory_count = advisory_qs.count()
+
+        self.log(f"Exporting vulnerabilities for {advisory_count} advisory.")
+        progress = LoopProgress(
+            total_iterations=advisory_count,
+            progress_step=5,
+            logger=self.log,
         )
+        for advisory in progress.iter(advisory_qs.iterator(chunk_size=chunk_size)):
+            advisory_data = serialize_advisory(advisory)
+            adv_file = f"vulnerabilities/{advisory.avid}.yml"
+            write_file(
+                repo_path=repo_path,
+                file_path=adv_file,
+                data=advisory_data,
+            )
+            files_to_commit.add(adv_file)
+
+            if len(files_to_commit) > batch_size:
+                if federatedcode.commit_and_push_changes(
+                    commit_message=self.commit_message("advisories", commit_count),
+                    repo=self.repo,
+                    files_to_commit=files_to_commit,
+                    logger=self.log,
+                ):
+                    commit_count += 1
+                files_to_commit.clear()
+
+        if files_to_commit:
+            federatedcode.commit_and_push_changes(
+                commit_message=self.commit_message(
+                    "advisories",
+                    commit_count,
+                    commit_count,
+                ),
+                repo=self.repo,
+                files_to_commit=files_to_commit,
+                logger=self.log,
+            )
+
+        self.log(f"Successfully federated {advisory_count} vulnerabilities.")
 
     def delete_working_dir(self):
         """Remove temporary working dir."""
@@ -163,31 +194,65 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
     def on_failure(self):
         self.delete_working_dir()
 
-    def commit_message(self, commit_count, total_commit_count="many"):
+    def commit_message(
+        self,
+        item_type,
+        commit_count,
+        total_commit_count="many",
+    ):
         """Commit message for pushing Package vulnerability."""
         return federatedcode.commit_message(
+            item_type=item_type,
             commit_count=commit_count,
             total_commit_count=total_commit_count,
         )
 
 
 def package_prefetched_qs():
-    return PackageV2.objects.order_by("type", "namespace", "name", "version").prefetch_related(
-        "affected_in_impacts",
-        "affected_in_impacts__advisory",
-        "affected_in_impacts__advisory__impacted_packages",
-        "affected_in_impacts__advisory__aliases",
-        "affected_in_impacts__advisory__references",
-        "affected_in_impacts__advisory__severities",
-        "affected_in_impacts__advisory__weaknesses",
-        "fixed_in_impacts",
-        "fixed_in_impacts__advisory",
-        "fixed_in_impacts__advisory__impacted_packages",
-        "fixed_in_impacts__advisory__aliases",
-        "fixed_in_impacts__advisory__references",
-        "fixed_in_impacts__advisory__severities",
-        "fixed_in_impacts__advisory__weaknesses",
+    return (
+        PackageV2.objects.order_by("type", "namespace", "name", "version")
+        .only("id", "package_url", "type", "namespace", "name", "version")
+        .prefetch_related(
+            Prefetch(
+                "affected_in_impacts",
+                queryset=ImpactedPackage.objects.only("id", "advisory_id").prefetch_related(
+                    Prefetch(
+                        "advisory",
+                        queryset=AdvisoryV2.objects.only("id", "avid"),
+                    )
+                ),
+            ),
+            Prefetch(
+                "fixed_in_impacts",
+                queryset=ImpactedPackage.objects.only("id", "advisory_id").prefetch_related(
+                    Prefetch(
+                        "advisory",
+                        queryset=AdvisoryV2.objects.only("id", "avid"),
+                    )
+                ),
+            ),
+        )
     )
+
+
+def advisory_prefetched_qs():
+    return AdvisoryV2.objects.prefetch_related(
+        "impacted_packages",
+        "aliases",
+        "references",
+        "severities",
+        "weaknesses",
+    )
+
+
+def get_package_vulnerabilities(packages):
+    """Return list of PURLs and serialized package vulnerability"""
+    package_urls = []
+    package_vulnerabilities = []
+    for package in packages:
+        package_urls.append(package.package_url)
+        package_vulnerabilities.append(serialize_package_vulnerability(package))
+    return package_urls, package_vulnerabilities
 
 
 def serialize_package_vulnerability(package):

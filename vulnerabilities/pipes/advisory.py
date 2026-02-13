@@ -304,7 +304,7 @@ def insert_advisory_v2(
     patches = get_or_create_advisory_patches(patches=advisory.patches)
     weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
     content_id = compute_content_id_v2(advisory_data=advisory)
-
+    created = False
     try:
         default_data = {
             "datasource_id": pipeline_id,
@@ -314,11 +314,13 @@ def insert_advisory_v2(
             "date_published": advisory.date_published,
             "date_collected": datetime.now(timezone.utc),
             "original_advisory_text": advisory.original_advisory_text,
+            "url": advisory.url,
         }
 
         advisory_obj, created = AdvisoryV2.objects.get_or_create(
+            advisory_id=advisory.advisory_id,
+            datasource_id=pipeline_id,
             unique_content_id=content_id,
-            url=advisory.url,
             defaults=default_data,
         )
         related_fields = {
@@ -334,7 +336,7 @@ def insert_advisory_v2(
                 getattr(advisory_obj, field_name).add(*values)
 
     except Advisory.MultipleObjectsReturned:
-        logger.error(
+        logger(
             f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}"
         )
         raise

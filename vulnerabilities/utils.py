@@ -689,6 +689,7 @@ def compute_content_id_v2(advisory_data):
 
     elif isinstance(advisory_data, AdvisoryDataV2):
         normalized_data = {
+            "advisory_id": normalize_text(advisory_data.advisory_id),
             "aliases": normalize_list(advisory_data.aliases),
             "summary": normalize_text(advisory_data.summary),
             "affected_packages": [

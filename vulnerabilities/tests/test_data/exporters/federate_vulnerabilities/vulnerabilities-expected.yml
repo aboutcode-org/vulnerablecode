@@ -1,0 +1,16 @@
+- purl: pkg:npm/foobar@1.2.3
+  affected_by_vulnerabilities:
+    - test_pipeline_v2/ADV-123
+  fixing_vulnerabilities: []
+- purl: pkg:npm/foobar@1.2.4
+  affected_by_vulnerabilities: []
+  fixing_vulnerabilities:
+    - test_pipeline_v2/ADV-123
+- purl: pkg:npm/foobar@3.2.3
+  affected_by_vulnerabilities:
+    - test_pipeline_v2/ADV-123
+  fixing_vulnerabilities: []
+- purl: pkg:npm/foobar@3.2.4
+  affected_by_vulnerabilities: []
+  fixing_vulnerabilities:
+    - test_pipeline_v2/ADV-123

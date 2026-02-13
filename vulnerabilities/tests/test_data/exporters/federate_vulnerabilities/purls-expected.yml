@@ -1,0 +1,4 @@
+- pkg:npm/foobar@1.2.3
+- pkg:npm/foobar@1.2.4
+- pkg:npm/foobar@3.2.3
+- pkg:npm/foobar@3.2.4

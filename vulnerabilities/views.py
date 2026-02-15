@@ -221,6 +221,7 @@ class PackageV2Details(DetailView):
         advisory_by_avid = {adv.avid: adv for adv in latest_advisories}
 
         fixed_pkg_details = {}
+        seen_packages = {}  # Track seen package IDs per avid to avoid duplicates
 
         for impact in affected_impacts:
             avid = impact.advisory.avid
@@ -229,15 +230,16 @@ class PackageV2Details(DetailView):
                 continue
             if avid not in fixed_pkg_details:
                 fixed_pkg_details[avid] = []
-            fixed_pkg_details[avid].extend(
-                [
-                    {
-                        "pkg": pkg,
-                        "affected_count": pkg.affected_in_impacts.count(),
-                    }
-                    for pkg in impact.fixed_by_packages.all()
-                ]
-            )
+                seen_packages[avid] = set()
+            for pkg in impact.fixed_by_packages.all():
+                if pkg.id not in seen_packages[avid]:
+                    seen_packages[avid].add(pkg.id)
+                    fixed_pkg_details[avid].append(
+                        {
+                            "pkg": pkg,
+                            "affected_count": pkg.affected_in_impacts.count(),
+                        }
+                    )
 
         affected_by_advisories = {
             advisory_by_avid[avid] for avid in affected_avids if avid in advisory_by_avid

@@ -389,3 +389,10 @@ RQ_QUEUES = {
         "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
     }
 }
+
+import os
+
+VULNERABLECODE_USER_AGENT = os.getenv(
+    "VULNERABLECODE_USER_AGENT",
+    "VulnerableCode"
+)

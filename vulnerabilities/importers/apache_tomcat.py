@@ -266,25 +266,57 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
         )
 
 
+def extract_commit_urls_from_advisory_group(para_list):
+    """
+    Extract commit URLs from an advisory group of paragraphs.
+    Captures commit URLs from GitHub, SVN, and GitBox sources.
+    
+    Args:
+        para_list: List of BeautifulSoup paragraph elements
+        
+    Returns:
+        List of commit URLs found in the advisory
+    """
+    commit_urls = []
+    
+    for para in para_list:
+        # Find all links in the paragraph
+        links = para.find_all("a")
+        for link in links:
+            href = link.get("href", "")
+            
+            # Capture GitHub commit URLs
+            if "github.com/apache/tomcat/commit/" in href:
+                commit_urls.append(href)
+            # Capture SVN commit URLs
+            elif "svn.apache.org" in href and "rev=" in href:
+                commit_urls.append(href)
+            # Capture GitBox commit URLs
+            elif "gitbox.apache.org" in href:
+                commit_urls.append(href)
+    
+    return commit_urls
+
+
+
 def generate_advisory_data_objects(url, tomcat_advisory_data_object):
     fixed_versions = tomcat_advisory_data_object.fixed_versions
     severity_scores = ("Low:", "Moderate:", "Important:", "High:", "Critical:")
 
     for para_list in tomcat_advisory_data_object.advisory_groups:
         affected_versions = []
-        fixed_commit_list = []
         references = []
         cve_url_list = []
+        
+        # Extract commit URLs from entire advisory group
+        commit_urls = extract_commit_urls_from_advisory_group(para_list)
+        
         for para in para_list:
             if para.text.startswith("Affects:"):
                 formatted_affected_version_data = para.text.split(":")[-1].split(", ")
                 affected_versions.extend(formatted_affected_version_data)
-            elif "was fixed in" in para.text or "was fixed with" in para.text:
-                fixed_commit_list = para.find_all("a")
-                references.extend([ref_url["href"] for ref_url in fixed_commit_list])
             elif para.text.startswith(severity_scores):
                 cve_url_list = para.find_all("a")
-                cve_list = [cve_url.text for cve_url in cve_url_list]
                 severity_score = para.text.split(":")[0]
 
         for cve_url in cve_url_list:
@@ -331,8 +363,9 @@ def generate_advisory_data_objects(url, tomcat_advisory_data_object):
                 ),
             ]
 
-            for commit_url in fixed_commit_list:
-                references.append(Reference(url=commit_url["href"]))
+            # Add all commit URLs found in the advisory
+            for commit_url in commit_urls:
+                references.append(Reference(url=commit_url))
 
             affected_packages = []
 
@@ -364,6 +397,7 @@ def generate_advisory_data_objects(url, tomcat_advisory_data_object):
                 references=references,
                 url=url,
             )
+
 
 
 def to_version_ranges_apache(versions_data, fixed_versions):

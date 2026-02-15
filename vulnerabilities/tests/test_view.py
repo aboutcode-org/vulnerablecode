@@ -26,6 +26,7 @@ from vulnerabilities.templatetags.url_filters import url_quote_filter
 from vulnerabilities.utils import get_purl_version_class
 from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
+from vulnerabilities.views import render_as_yaml
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DIR = os.path.join(BASE_DIR, "test_data/package_sort")
@@ -330,3 +331,19 @@ class VulnerabilitySearchTestCaseWithPackages(TestCase):
             end_time = time.time()
             assert end_time - start_time < 0.05
             self.assertEqual(response.status_code, 200)
+
+class TestRenderAsYaml:
+    def test_render_as_yaml_with_ssvc_options(self):
+        options = [
+            {"Exploitation": "active"},
+            {"Automatable": "yes"},
+            {"Technical Impact": "total"},
+        ]
+        result = render_as_yaml(options)
+        assert result == "- Exploitation: active\n- Automatable: yes\n- Technical Impact: total\n"
+
+    def test_render_as_yaml_with_none(self):
+        assert render_as_yaml(None) is None
+
+    def test_render_as_yaml_with_empty_list(self):
+        assert render_as_yaml([]) is None

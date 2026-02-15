@@ -7,7 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
-
+import saneyaml
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
@@ -45,6 +45,9 @@ from vulnerablecode.settings import env
 
 PAGE_SIZE = 20
 
+def render_as_yaml(value):
+    if value:
+        return saneyaml.dump(value, indent=2)
 
 class PackageSearch(ListView):
     model = models.Package
@@ -522,6 +525,7 @@ class AdvisoryDetails(DetailView):
                     "vector": ssvc.vector,
                     "decision": ssvc.decision,
                     "options": ssvc.options,
+                    "options_yaml": render_as_yaml(ssvc.options),
                     "advisory_url": ssvc.source_advisory.url,
                     "advisory": ssvc.source_advisory,
                 }

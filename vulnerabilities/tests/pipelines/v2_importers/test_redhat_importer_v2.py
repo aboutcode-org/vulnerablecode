@@ -17,6 +17,7 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines.v2_importers.redhat_importer import RedHatImporterPipeline
 from vulnerabilities.tests import util_tests
+from vulnerabilities.utils import normalize_list
 
 TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "redhat" / "csaf_2_0"
 
@@ -31,5 +32,7 @@ class TestArchLinuxImporterPipeline(TestCase):
         self.assertEqual(6, AdvisoryV2.objects.count())
         self.assertEqual(93, PackageV2.objects.count())
         expected_file = TEST_DATA.parent / "redhat_advisoryv2-expected.json"
-        result = [adv.to_advisory_data().to_dict() for adv in AdvisoryV2.objects.all()]
+        result = [adv.to_advisory_data() for adv in AdvisoryV2.objects.all()]
+        result = normalize_list(result)
+        result = [adv.to_dict() for adv in result]
         util_tests.check_results_against_json(result, expected_file)

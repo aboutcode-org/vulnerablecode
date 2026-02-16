@@ -152,6 +152,8 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     base_url = "https://httpd.apache.org/security/json/"
 
+    precedence = 200
+
     links = []
 
     ignorable_versions = frozenset(

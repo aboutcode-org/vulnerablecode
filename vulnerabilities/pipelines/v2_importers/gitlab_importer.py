@@ -45,6 +45,8 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
 
+    precedence = 100
+
     @classmethod
     def steps(cls):
         return (

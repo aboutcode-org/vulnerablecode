@@ -31,6 +31,8 @@ class UbuntuOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/canonical/ubuntu-security-notices/blob/main/LICENSE"
     repo_url = "git+https://github.com/canonical/ubuntu-security-notices/"
 
+    precedence = 200
+
     progress_step = 1
 
     @classmethod

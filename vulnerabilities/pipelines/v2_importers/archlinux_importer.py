@@ -28,6 +28,8 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "MIT"
     license_url = "https://github.com/archlinux/arch-security-tracker/blob/master/LICENSE"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

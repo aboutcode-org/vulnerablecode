@@ -48,6 +48,8 @@ class ApacheKafkaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         "CVE-2021-4104",
     ]
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

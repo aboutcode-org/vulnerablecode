@@ -151,8 +151,8 @@
           "qualifiers": "",
           "subpath": ""
         },
-        "affected_version_range": "vers:openssl/>=1.0.1|<1.0.1k",
-        "fixed_version_range": "vers:openssl/1.0.1k",
+        "affected_version_range": "vers:openssl/>=1.0.0|<1.0.0p",
+        "fixed_version_range": "vers:openssl/1.0.0p",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -165,8 +165,8 @@
           "qualifiers": "",
           "subpath": ""
         },
-        "affected_version_range": "vers:openssl/>=1.0.0|<1.0.0p",
-        "fixed_version_range": "vers:openssl/1.0.0p",
+        "affected_version_range": "vers:openssl/>=1.0.1|<1.0.1k",
+        "fixed_version_range": "vers:openssl/1.0.1k",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -225,7 +225,7 @@
     "patches": [
       {
         "patch_url": "https://github.com/openssl/openssl/commit/7725e7bfe6f2ce8146b6552b44e0d226be7638e7",
-        "patch_text": null,
+        "patch_text": "",
         "patch_checksum": null
       }
     ],
@@ -256,34 +256,13 @@
           "qualifiers": "",
           "subpath": ""
         },
-        "affected_version_range": "vers:openssl/>=3.5.0|<3.5.4",
-        "fixed_version_range": "vers:openssl/3.5.4",
+        "affected_version_range": "vers:openssl/>=3.2.0|<3.2.6",
+        "fixed_version_range": "vers:openssl/3.2.6",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
             "vcs_url": "https://github.com/openssl/openssl",
-            "commit_hash": "fc47a2ec078912b3e914fab5734535e76c4820c2",
-            "patch_text": null,
-            "patch_checksum": null
-          }
-        ]
-      },
-      {
-        "package": {
-          "type": "openssl",
-          "namespace": "",
-          "name": "openssl",
-          "version": "",
-          "qualifiers": "",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:openssl/>=3.4.0|<3.4.3",
-        "fixed_version_range": "vers:openssl/3.4.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": [
-          {
-            "vcs_url": "https://github.com/openssl/openssl",
-            "commit_hash": "eed5adc9f969d77c94f213767acbb41ff923b6f4",
+            "commit_hash": "cba616c26ac8e7b37de5e77762e505ba5ca51698",
             "patch_text": null,
             "patch_checksum": null
           }
@@ -319,13 +298,34 @@
           "qualifiers": "",
           "subpath": ""
         },
-        "affected_version_range": "vers:openssl/>=3.2.0|<3.2.6",
-        "fixed_version_range": "vers:openssl/3.2.6",
+        "affected_version_range": "vers:openssl/>=3.4.0|<3.4.3",
+        "fixed_version_range": "vers:openssl/3.4.3",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": [
           {
             "vcs_url": "https://github.com/openssl/openssl",
-            "commit_hash": "cba616c26ac8e7b37de5e77762e505ba5ca51698",
+            "commit_hash": "eed5adc9f969d77c94f213767acbb41ff923b6f4",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=3.5.0|<3.5.4",
+        "fixed_version_range": "vers:openssl/3.5.4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/openssl/openssl",
+            "commit_hash": "fc47a2ec078912b3e914fab5734535e76c4820c2",
             "patch_text": null,
             "patch_checksum": null
           }

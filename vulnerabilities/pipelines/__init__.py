@@ -265,6 +265,7 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     spdx_license_expression = None
     repo_url = None
     ignorable_versions = []
+    precedence = 0
 
     # Control how often progress log is shown (range: 1–100, higher value = less frequent log)
     progress_step = 10
@@ -318,6 +319,7 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
                     advisory=advisory,
                     pipeline_id=self.pipeline_id,
                     logger=self.log,
+                    precedence=self.precedence,
                 ):
                     collected_advisory_count += 1
             except Exception as e:

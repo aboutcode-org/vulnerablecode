@@ -27,6 +27,8 @@ class OSSFuzzImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/google/oss-fuzz-vulns/blob/main/LICENSE"
     repo_url = "git+https://github.com/google/oss-fuzz-vulns"
 
+    precedence = 100
+
     @classmethod
     def steps(cls):
         return (

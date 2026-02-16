@@ -31,6 +31,8 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/quarkslab/aosp_dataset/blob/master/LICENSE"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

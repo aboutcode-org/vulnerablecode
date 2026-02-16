@@ -76,6 +76,8 @@ class DebianImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         Moritz
     """
 
+    precedence = 200
+
     api_url = "https://security-tracker.debian.org/tracker/data/json"
     response = None
 

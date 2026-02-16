@@ -38,6 +38,8 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://secdb.alpinelinux.org/license.txt"
     repo_url = "git+https://github.com/aboutcode-org/aboutcode-mirror-alpine-secdb/"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

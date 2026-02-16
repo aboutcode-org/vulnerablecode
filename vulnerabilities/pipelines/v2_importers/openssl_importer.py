@@ -40,6 +40,8 @@ class OpenSSLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/openssl/openssl/blob/master/LICENSE.txt"
     repo_url = "git+https://github.com/openssl/release-metadata/"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

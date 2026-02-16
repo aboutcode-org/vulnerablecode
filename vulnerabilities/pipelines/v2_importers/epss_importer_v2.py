@@ -30,6 +30,8 @@ class EPSSImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "unknown"
     importer_name = "EPSS Importer"
 
+    precedence = 200
+
     def advisories_count(self):
         return len(self.lines)
 

@@ -71,6 +71,8 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     """
 
+    precedence = 100
+
     @classmethod
     def steps(cls):
         return (cls.collect_and_store_advisories,)

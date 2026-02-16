@@ -37,6 +37,8 @@ class CurlImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     repo_url = "https://github.com/curl/curl-www/"
     url = "https://curl.se/docs/vuln.json"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (cls.collect_and_store_advisories,)

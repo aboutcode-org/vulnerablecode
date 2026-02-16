@@ -41,6 +41,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
+from vulnerabilities.utils import group_advisories_by_content
 
 
 class CharInFilter(filters.BaseInFilter, filters.CharFilter):
@@ -361,19 +362,39 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
         latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
         advisory_by_avid = {adv.avid: adv for adv in latest_advisories}
+        impact_by_avid = {}
 
-        result = {}
-
+        advisories = []
         for impact in impacts:
             avid = impact.advisory.avid
             advisory = advisory_by_avid.get(avid)
             if not advisory:
                 continue
-            fixed_by_packages = [pkg.purl for pkg in impact.fixed_by_packages.all()]
-            result[advisory.avid] = {
-                "advisory_id": advisory.avid,
-                "fixed_by_packages": fixed_by_packages,
-            }
+            advisories.append(advisory)
+            impact_by_avid[avid] = impact
+
+        grouped_advisories = group_advisories_by_content(advisories=advisories)
+
+        advs = []
+
+        for hash in grouped_advisories:
+            advs.append(grouped_advisories[hash])
+
+        result = []
+
+        for advisory in advs:
+            primary_advisory = advisory["primary"]
+            avid = primary_advisory.avid
+            impact = impact_by_avid.get(avid)
+            if not impact:
+                continue
+            result.append(
+                {
+                    "advisory_id": primary_advisory.avid,
+                    "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
+                    "duplicate_advisory_ids": [adv.avid for adv in advisory["secondary"]],
+                }
+            )
 
         return result
 
@@ -384,7 +405,25 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
         latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
 
-        return [adv.avid for adv in latest_advisories]
+        grouped_advisories = group_advisories_by_content(advisories=latest_advisories)
+
+        advs = []
+
+        for hash in grouped_advisories:
+            advs.append(grouped_advisories[hash])
+
+        result = []
+
+        for advisory in advs:
+            primary_advisory = advisory["primary"]
+            result.append(
+                {
+                    "advisory_id": primary_advisory.avid,
+                    "duplicate_advisory_ids": [adv.avid for adv in advisory["secondary"]],
+                }
+            )
+
+        return result
 
     def get_next_non_vulnerable_version(self, package):
         if next_non_vulnerable := package.get_non_vulnerable_versions()[0]:
@@ -1078,14 +1117,14 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
             return self.get_paginated_response(
                 {
                     "packages": serializer.data,
-                    "advisories": advisory_data,
+                    "advisories_by_id": advisory_data,
                 }
             )
 
         return Response(
             {
                 "packages": serializer.data,
-                "advisories": advisory_data,
+                "advisories_by_id": advisory_data,
             }
         )
 
@@ -1160,7 +1199,7 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(
             {
                 "packages": package_data,
-                "advisories": advisory_data,
+                "advisories_by_id": advisory_data,
             }
         )
 
@@ -1254,7 +1293,7 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
                 return Response(
                     {
                         "packages": package_data,
-                        "advisories": advisory_data,
+                        "advisories_by_id": advisory_data,
                     }
                 )
 
@@ -1308,7 +1347,7 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(
                 {
                     "packages": package_data,
-                    "advisories": advisory_data,
+                    "advisories_by_id": advisory_data,
                 }
             )
 

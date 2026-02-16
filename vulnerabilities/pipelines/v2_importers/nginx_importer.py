@@ -37,6 +37,8 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://nginx.org/LICENSE"
     url = "https://nginx.org/en/security_advisories.html"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

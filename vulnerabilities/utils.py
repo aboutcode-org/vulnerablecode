@@ -678,12 +678,16 @@ def compute_content_id_v2(advisory_data):
         normalized_data = {
             "aliases": normalize_list(advisory_data.aliases),
             "summary": normalize_text(advisory_data.summary),
-            "affected_packages": [
-                pkg for pkg in normalize_list(advisory_data.affected_packages) if pkg
-            ],
+            "impacted_packages": sorted(
+                [impact.to_dict() for impact in advisory_data.impacted_packages.all()],
+                key=lambda x: json.dumps(x, sort_keys=True),
+            ),
+            "patches": sorted(
+                [patch.to_patch_data().to_dict() for patch in advisory_data.patches.all()],
+                key=lambda x: json.dumps(x, sort_keys=True),
+            ),
             "references": [ref for ref in normalize_list(advisory_data.references) if ref],
             "weaknesses": normalize_list(advisory_data.weaknesses),
-            "patches": normalize_list(advisory_data.patches),
         }
         normalized_data["url"] = advisory_data.url
 
@@ -859,3 +863,28 @@ def compute_patch_checksum(patch_text: str):
     Compute SHA-512 checksum for patch text.
     """
     return hashlib.sha512(patch_text.encode("utf-8")).hexdigest()
+
+
+def group_advisories_by_content(advisories):
+    grouped = {}
+
+    for advisory in advisories:
+        content_hash = advisory.compute_advisory_content()
+
+        entry = grouped.setdefault(
+            content_hash,
+            {"primary": advisory, "secondary": set()},
+        )
+
+        primary = entry["primary"]
+
+        if advisory is primary:
+            continue
+
+        if advisory.precedence > primary.precedence:
+            entry["primary"] = advisory
+            entry["secondary"].add(primary)
+        else:
+            entry["secondary"].add(advisory)
+
+    return grouped

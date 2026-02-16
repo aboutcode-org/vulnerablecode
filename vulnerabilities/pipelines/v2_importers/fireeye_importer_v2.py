@@ -40,6 +40,8 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     repo_url = "git+https://github.com/mandiant/Vulnerability-Disclosures"
     pipeline_id = "fireeye_importer_v2"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

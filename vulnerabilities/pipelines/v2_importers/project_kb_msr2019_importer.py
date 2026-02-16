@@ -30,6 +30,8 @@ class ProjectKBMSR2019Pipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
     repo_url = "git+https://github.com/SAP/project-kb"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

@@ -292,6 +292,7 @@ def insert_advisory_v2(
     advisory: AdvisoryDataV2,
     pipeline_id: str,
     logger: Callable = None,
+    precedence: int = 0,
 ):
     from vulnerabilities.models import ImpactedPackage
     from vulnerabilities.models import PackageV2
@@ -315,6 +316,7 @@ def insert_advisory_v2(
             "date_collected": datetime.now(timezone.utc),
             "original_advisory_text": advisory.original_advisory_text,
             "url": advisory.url,
+            "precedence": precedence,
         }
 
         advisory_obj, created = AdvisoryV2.objects.get_or_create(

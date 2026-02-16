@@ -33,6 +33,8 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/cisagov/vulnrichment/blob/develop/LICENSE"
     repo_url = "git+https://github.com/cisagov/vulnrichment.git"
 
+    precedence = 100
+
     @classmethod
     def steps(cls):
         return (

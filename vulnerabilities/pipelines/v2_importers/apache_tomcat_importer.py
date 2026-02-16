@@ -51,6 +51,8 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     base_url = "https://tomcat.apache.org/security"
 
+    precedence = 200
+
     def fetch_advisory_links(self):
         """
         Yield the URLs of each Tomcat version security-related page.

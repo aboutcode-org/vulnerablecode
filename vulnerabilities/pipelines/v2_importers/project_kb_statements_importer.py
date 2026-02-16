@@ -37,6 +37,8 @@ class ProjectKBStatementsPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
     repo_url = "git+https://github.com/SAP/project-kb@vulnerability-data"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

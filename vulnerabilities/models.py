@@ -2344,13 +2344,14 @@ class PipelineSchedule(models.Model):
     @property
     def pipeline_class(self):
         """Return the pipeline class."""
+
         from vulnerabilities.importers import IMPORTERS_REGISTRY
         from vulnerabilities.improvers import IMPROVERS_REGISTRY
+        from vulnerabilities.pipelines.exporters import EXPORTERS_REGISTRY
 
-        if self.pipeline_id in IMPROVERS_REGISTRY:
-            return IMPROVERS_REGISTRY.get(self.pipeline_id)
-        if self.pipeline_id in IMPORTERS_REGISTRY:
-            return IMPORTERS_REGISTRY.get(self.pipeline_id)
+        pipeline_registry = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY
+
+        return pipeline_registry[self.pipeline_id]
 
     @property
     def description(self):

@@ -74,6 +74,7 @@ from vulnerabilities.pipelines.v2_importers import (
 )
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
+from vulnerabilities.pipelines.v2_importers import pysec_live_importer as pysec_live_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
 from vulnerabilities.pipelines.v2_importers import retiredotnet_importer as retiredotnet_importer_v2
 from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
@@ -189,5 +190,11 @@ IMPORTERS_REGISTRY = create_registry(
         collect_fix_commits_v2.CollectGitFixCommitsPipeline,
         collect_fix_commits_v2.CollectJenkinsFixCommitsPipeline,
         collect_fix_commits_v2.CollectGitlabFixCommitsPipeline,
+    ]
+)
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        pysec_live_importer_v2.PySecLiveImporterPipeline,
     ]
 )

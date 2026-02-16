@@ -213,6 +213,27 @@ class VulnerabilitySeverity(models.Model):
         "For example a CVSS vector string as used to compute a CVSS score.",
     )
 
+    scoring_elements_data = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Serialized scoring elements data.",
+    )
+
+    def save(self, *args, **kwargs):
+        if self.scoring_elements:
+            try:
+                scoring_system = SCORING_SYSTEMS.get(self.scoring_system)
+                if scoring_system:
+                    self.scoring_elements_data = scoring_system.get(self.scoring_elements)
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ):
+                pass
+        super().save(*args, **kwargs)
+
     published_at = models.DateTimeField(
         blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"
     )
@@ -2581,6 +2602,27 @@ class AdvisorySeverity(models.Model):
         help_text="Supporting scoring elements used to compute the score values. "
         "For example a CVSS vector string as used to compute a CVSS score.",
     )
+
+    scoring_elements_data = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Serialized scoring elements data.",
+    )
+
+    def save(self, *args, **kwargs):
+        if self.scoring_elements:
+            try:
+                scoring_system = SCORING_SYSTEMS.get(self.scoring_system)
+                if scoring_system:
+                    self.scoring_elements_data = scoring_system.get(self.scoring_elements)
+            except (
+                CVSS2MalformedError,
+                CVSS3MalformedError,
+                CVSS4MalformedError,
+                NotImplementedError,
+            ):
+                pass
+        super().save(*args, **kwargs)
 
     published_at = models.DateTimeField(
         blank=True, null=True, help_text="UTC Date of publication of the vulnerability severity"

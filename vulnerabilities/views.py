@@ -336,7 +336,7 @@ class VulnerabilityDetails(DetailView):
                 Prefetch(
                     "severities",
                     queryset=models.VulnerabilitySeverity.objects.only(
-                        "scoring_system", "value", "url", "scoring_elements", "published_at"
+                        "scoring_system", "value", "url", "scoring_elements", "scoring_elements_data", "published_at"
                     ),
                 ),
                 Prefetch(
@@ -369,21 +369,22 @@ class VulnerabilityDetails(DetailView):
         severity_vectors = []
 
         for severity in valid_severities:
-            try:
-                vector_values_system = SCORING_SYSTEMS[severity.scoring_system]
-                if not vector_values_system:
-                    logging.error(f"Unknown scoring system: {severity.scoring_system}")
-                    continue
-                vector_values = vector_values_system.get(severity.scoring_elements)
-                if vector_values:
-                    severity_vectors.append({"vector": vector_values, "origin": severity.url})
-            except (
-                CVSS2MalformedError,
-                CVSS3MalformedError,
-                CVSS4MalformedError,
-                NotImplementedError,
-            ):
-                logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
+            vector_values = severity.scoring_elements_data
+            if not vector_values and severity.scoring_elements:
+                try:
+                    vector_values_system = SCORING_SYSTEMS.get(severity.scoring_system)
+                    if vector_values_system:
+                        vector_values = vector_values_system.get(severity.scoring_elements)
+                except (
+                    CVSS2MalformedError,
+                    CVSS3MalformedError,
+                    CVSS4MalformedError,
+                    NotImplementedError,
+                ):
+                    logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
+
+            if vector_values:
+                severity_vectors.append({"vector": vector_values, "origin": severity.url})
 
         epss_severity = vulnerability.severities.filter(scoring_system="epss").first()
         epss_data = None
@@ -449,7 +450,7 @@ class AdvisoryDetails(DetailView):
                 Prefetch(
                     "severities",
                     queryset=models.AdvisorySeverity.objects.only(
-                        "scoring_system", "value", "url", "scoring_elements", "published_at"
+                        "scoring_system", "value", "url", "scoring_elements", "scoring_elements_data", "published_at"
                     ),
                 ),
                 Prefetch(
@@ -516,23 +517,27 @@ class AdvisoryDetails(DetailView):
         severity_vectors = []
 
         for severity in valid_severities:
-            try:
-                vector_values_system = SCORING_SYSTEMS.get(severity.scoring_system)
-                if not vector_values_system:
-                    logging.error(f"Unknown scoring system: {severity.scoring_system}")
-                    continue
-                if vector_values_system.identifier in ["cvssv3.1_qr"]:
-                    continue
-                vector_values = vector_values_system.get(severity.scoring_elements)
-                if vector_values:
-                    severity_vectors.append({"vector": vector_values, "origin": severity.url})
-            except (
-                CVSS2MalformedError,
-                CVSS3MalformedError,
-                CVSS4MalformedError,
-                NotImplementedError,
-            ):
-                logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
+            vector_values_system = SCORING_SYSTEMS.get(severity.scoring_system)
+            if not vector_values_system:
+                logging.error(f"Unknown scoring system: {severity.scoring_system}")
+                continue
+            if vector_values_system.identifier in ["cvssv3.1_qr"]:
+                continue
+
+            vector_values = severity.scoring_elements_data
+            if not vector_values and severity.scoring_elements:
+                try:
+                    vector_values = vector_values_system.get(severity.scoring_elements)
+                except (
+                    CVSS2MalformedError,
+                    CVSS3MalformedError,
+                    CVSS4MalformedError,
+                    NotImplementedError,
+                ):
+                    logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
+
+            if vector_values:
+                severity_vectors.append({"vector": vector_values, "origin": severity.url})
 
         def add_ssvc(ssvc):
             key = (ssvc.vector, ssvc.source_advisory_id)

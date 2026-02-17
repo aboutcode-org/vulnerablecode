@@ -53,7 +53,7 @@ class PipelineTests(unittest.TestCase):
             assert False, error_message
 
     def test_no_none_pipeline_ids(self):
-        none_pipeline_ids = [cls for cls, pid in self.pipeline_dict.items() if pid == None]
+        none_pipeline_ids = [cls for cls, pid in self.pipeline_dict.items() if pid is None]
 
         if none_pipeline_ids:
             error_messages = [f"{cls.__name__} has None pipeline_id." for cls in none_pipeline_ids]

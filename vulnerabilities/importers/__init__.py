@@ -41,24 +41,44 @@ from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
+from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpine_linux_importer_v2
 from vulnerabilities.pipelines.v2_importers import aosp_importer as aosp_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
+from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
+from vulnerabilities.pipelines.v2_importers import apache_tomcat_importer as apache_tomcat_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
+from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
+from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
+from vulnerabilities.pipelines.v2_importers import epss_importer_v2
+from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
+from vulnerabilities.pipelines.v2_importers import mattermost_importer as mattermost_importer_v2
 from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_importer_v2
+from vulnerabilities.pipelines.v2_importers import nginx_importer as nginx_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
+from vulnerabilities.pipelines.v2_importers import openssl_importer as openssl_importer_v2
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
 from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgresql_importer_v2
+from vulnerabilities.pipelines.v2_importers import (
+    project_kb_msr2019_importer as project_kb_msr2019_importer_v2,
+)
+from vulnerabilities.pipelines.v2_importers import (
+    project_kb_statements_importer as project_kb_statements_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import pypa_importer as pypa_importer_v2
 from vulnerabilities.pipelines.v2_importers import pysec_importer as pysec_importer_v2
 from vulnerabilities.pipelines.v2_importers import redhat_importer as redhat_importer_v2
+from vulnerabilities.pipelines.v2_importers import retiredotnet_importer as retiredotnet_importer_v2
+from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
+from vulnerabilities.pipelines.v2_importers import suse_score_importer as suse_score_importer_v2
+from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
@@ -66,6 +86,7 @@ from vulnerabilities.utils import create_registry
 IMPORTERS_REGISTRY = create_registry(
     [
         archlinux_importer_v2.ArchLinuxImporterPipeline,
+        apache_kafka_importer_v2.ApacheKafkaImporterPipeline,
         nvd_importer_v2.NVDImporterPipeline,
         elixir_security_importer_v2.ElixirSecurityImporterPipeline,
         npm_importer_v2.NpmImporterPipeline,
@@ -83,6 +104,18 @@ IMPORTERS_REGISTRY = create_registry(
         github_osv_importer_v2.GithubOSVImporterPipeline,
         redhat_importer_v2.RedHatImporterPipeline,
         aosp_importer_v2.AospImporterPipeline,
+        project_kb_statements_importer_v2.ProjectKBStatementsPipeline,
+        project_kb_msr2019_importer_v2.ProjectKBMSR2019Pipeline,
+        ruby_importer_v2.RubyImporterPipeline,
+        epss_importer_v2.EPSSImporterPipeline,
+        nginx_importer_v2.NginxImporterPipeline,
+        debian_importer_v2.DebianImporterPipeline,
+        mattermost_importer_v2.MattermostImporterPipeline,
+        apache_tomcat_v2.ApacheTomcatImporterPipeline,
+        suse_score_importer_v2.SUSESeverityScoreImporterPipeline,
+        retiredotnet_importer_v2.RetireDotnetImporterPipeline,
+        ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
+        alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,
@@ -91,6 +124,7 @@ IMPORTERS_REGISTRY = create_registry(
         npm_importer.NpmImporterPipeline,
         nginx_importer.NginxImporterPipeline,
         pysec_importer.PyPIImporterPipeline,
+        fireeye_importer_v2.FireeyeImporterPipeline,
         apache_tomcat.ApacheTomcatImporter,
         postgresql.PostgreSQLImporter,
         debian.DebianImporter,
@@ -101,6 +135,7 @@ IMPORTERS_REGISTRY = create_registry(
         ruby.RubyImporter,
         apache_kafka.ApacheKafkaImporter,
         openssl.OpensslImporter,
+        openssl_importer_v2.OpenSSLImporterPipeline,
         redhat.RedhatImporter,
         archlinux.ArchlinuxImporter,
         ubuntu.UbuntuImporter,
@@ -117,5 +152,42 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
+        collect_fix_commits_v2.CollectLinuxFixCommitsPipeline,
+        collect_fix_commits_v2.CollectBusyBoxFixCommitsPipeline,
+        collect_fix_commits_v2.CollectNginxFixCommitsPipeline,
+        collect_fix_commits_v2.CollectApacheTomcatFixCommitsPipeline,
+        collect_fix_commits_v2.CollectMysqlServerFixCommitsPipeline,
+        collect_fix_commits_v2.CollectPostgresqlFixCommitsPipeline,
+        collect_fix_commits_v2.CollectMongodbFixCommitsPipeline,
+        collect_fix_commits_v2.CollectRedisFixCommitsPipeline,
+        collect_fix_commits_v2.CollectSqliteFixCommitsPipeline,
+        collect_fix_commits_v2.CollectPhpFixCommitsPipeline,
+        collect_fix_commits_v2.CollectPythonCpythonFixCommitsPipeline,
+        collect_fix_commits_v2.CollectRubyFixCommitsPipeline,
+        collect_fix_commits_v2.CollectGoFixCommitsPipeline,
+        collect_fix_commits_v2.CollectNodeJsFixCommitsPipeline,
+        collect_fix_commits_v2.CollectRustFixCommitsPipeline,
+        collect_fix_commits_v2.CollectOpenjdkFixCommitsPipeline,
+        collect_fix_commits_v2.CollectSwiftFixCommitsPipeline,
+        collect_fix_commits_v2.CollectDjangoFixCommitsPipeline,
+        collect_fix_commits_v2.CollectRailsFixCommitsPipeline,
+        collect_fix_commits_v2.CollectLaravelFixCommitsPipeline,
+        collect_fix_commits_v2.CollectSpringFrameworkFixCommitsPipeline,
+        collect_fix_commits_v2.CollectReactFixCommitsPipeline,
+        collect_fix_commits_v2.CollectAngularFixCommitsPipeline,
+        collect_fix_commits_v2.CollectWordpressFixCommitsPipeline,
+        collect_fix_commits_v2.CollectDockerMobyFixCommitsPipeline,
+        collect_fix_commits_v2.CollectKubernetesFixCommitsPipeline,
+        collect_fix_commits_v2.CollectQemuFixCommitsPipeline,
+        collect_fix_commits_v2.CollectXenProjectFixCommitsPipeline,
+        collect_fix_commits_v2.CollectVirtualboxFixCommitsPipeline,
+        collect_fix_commits_v2.CollectContainerdFixCommitsPipeline,
+        collect_fix_commits_v2.CollectAnsibleFixCommitsPipeline,
+        collect_fix_commits_v2.CollectTerraformFixCommitsPipeline,
+        collect_fix_commits_v2.CollectWiresharkFixCommitsPipeline,
+        collect_fix_commits_v2.CollectTcpdumpFixCommitsPipeline,
+        collect_fix_commits_v2.CollectGitFixCommitsPipeline,
+        collect_fix_commits_v2.CollectJenkinsFixCommitsPipeline,
+        collect_fix_commits_v2.CollectGitlabFixCommitsPipeline,
     ]
 )

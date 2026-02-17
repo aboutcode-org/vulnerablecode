@@ -10,7 +10,7 @@
 import pytest
 import requests
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import ApacheHTTPDImporterPipeline
 from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import fetch_links
 from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import get_weaknesses
@@ -140,7 +140,7 @@ def test_collect_advisories_and_to_advisory(monkeypatch, pipeline):
     assert len(advisories) == 2
     # Validate first advisory
     adv1 = advisories[0]
-    assert isinstance(adv1, AdvisoryData)
+    assert isinstance(adv1, AdvisoryDataV2)
     assert adv1.advisory_id == "CVE-1"
     assert adv1.summary == "Test desc"
     assert adv1.severities and adv1.severities[0].value == "5.0"

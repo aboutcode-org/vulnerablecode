@@ -8,7 +8,6 @@
 #
 
 import dataclasses
-from datetime import datetime
 
 from cvss import CVSS2
 from cvss import CVSS3
@@ -185,6 +184,31 @@ APACHE_TOMCAT.choices = [
     "Low",
 ]
 
+OPENSSL = ScoringSystem(
+    identifier="openssl",
+    name="OpenSSL Severity",
+    url="https://openssl-library.org/policies/general/security-policy/",
+)
+OPENSSL.choices = [
+    "Critical",
+    "High",
+    "Moderate",
+    "Low",
+]
+
+UBUNTU_PRIORITY = ScoringSystem(
+    identifier="ubuntu-priority",
+    name="Ubuntu Priority",
+    url="https://ubuntu.com/security/cves/about#priority",
+)
+UBUNTU_PRIORITY.choices = [
+    "Critical",
+    "High",
+    "Medium",
+    "Low",
+    "Negligible",
+]
+
 
 @dataclasses.dataclass(order=True)
 class EPSSScoringSystem(ScoringSystem):
@@ -227,5 +251,7 @@ SCORING_SYSTEMS = {
         APACHE_TOMCAT,
         EPSS,
         SSVC,
+        OPENSSL,
+        UBUNTU_PRIORITY,
     )
 }

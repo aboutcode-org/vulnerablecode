@@ -17,6 +17,160 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
+          "name": "libreswan-debuginfo",
+          "version": "",
+          "qualifiers": "arch=aarch64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan-debuginfo",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan-debuginfo",
+          "version": "",
+          "qualifiers": "arch=s390x",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan-debuginfo",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan-debugsource",
+          "version": "",
+          "qualifiers": "arch=aarch64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan-debugsource",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan-debugsource",
+          "version": "",
+          "qualifiers": "arch=s390x",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan-debugsource",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan",
+          "version": "",
+          "qualifiers": "arch=aarch64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "libreswan",
+          "version": "",
+          "qualifiers": "arch=s390x",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
+        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
           "name": "libreswan",
           "version": "",
           "qualifiers": "arch=src",
@@ -33,161 +187,7 @@
           "namespace": "redhat",
           "name": "libreswan",
           "version": "",
-          "qualifiers": "arch=aarch64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan-debugsource",
-          "version": "",
-          "qualifiers": "arch=aarch64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan-debuginfo",
-          "version": "",
-          "qualifiers": "arch=aarch64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan-debugsource",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan-debuginfo",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan",
-          "version": "",
           "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan-debugsource",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan-debuginfo",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan",
-          "version": "",
-          "qualifiers": "arch=s390x",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan-debugsource",
-          "version": "",
-          "qualifiers": "arch=s390x",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
-        "fixed_version_range": "vers:rpm/4.6-3.el9_0.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "libreswan-debuginfo",
-          "version": "",
-          "qualifiers": "arch=s390x",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<4.6-3.el9_0.3",
@@ -196,7 +196,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -232,7 +232,7 @@
     ],
     "summary": "Red Hat Developer Hub 1.4 has been released.\n\nRed Hat Developer Hub (RHDH) is Red Hat's enterprise-grade, self-managed, customizable developer portal based on Backstage.io. RHDH is supported on OpenShift and other major Kubernetes clusters (AKS, EKS, GKE). The core features of RHDH include a single pane of glass, a centralized software catalog, self-service via golden path templates, and Tech Docs. RHDH is extensible by plugins.",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -308,7 +308,7 @@
     ],
     "summary": "Red Hat Quay 3.13.4 is now available with bug fixes.\n\nRed Hat Product Security has rated this update as having a security impact of Important. A Common Vulnerability Scoring System (CVSS) base score, which gives a detailed severity rating, is available for each vulnerability from the CVE link(s) in the References section.\n\nQuay 3.13.4",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -354,7 +354,7 @@
           "namespace": "redhat",
           "name": "microcode_ctl",
           "version": "",
-          "qualifiers": "arch=src&epoch=4",
+          "qualifiers": "arch=noarch&epoch=4",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<20230808-2.20250211.1.el9_4",
@@ -368,7 +368,7 @@
           "namespace": "redhat",
           "name": "microcode_ctl",
           "version": "",
-          "qualifiers": "arch=noarch&epoch=4",
+          "qualifiers": "arch=src&epoch=4",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<20230808-2.20250211.1.el9_4",
@@ -377,7 +377,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -414,7 +414,7 @@
           "namespace": "redhat",
           "name": "PyXML-debuginfo",
           "version": "",
-          "qualifiers": "arch=ia64",
+          "qualifiers": "arch=i386",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
@@ -426,7 +426,21 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
-          "name": "PyXML",
+          "name": "PyXML-debuginfo",
+          "version": "",
+          "qualifiers": "arch=i386",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML-debuginfo",
           "version": "",
           "qualifiers": "arch=ia64",
           "subpath": ""
@@ -440,7 +454,7 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
-          "name": "PyXML",
+          "name": "PyXML-debuginfo",
           "version": "",
           "qualifiers": "arch=ia64",
           "subpath": ""
@@ -456,7 +470,63 @@
           "namespace": "redhat",
           "name": "PyXML-debuginfo",
           "version": "",
-          "qualifiers": "arch=ia64",
+          "qualifiers": "arch=ppc",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML-debuginfo",
+          "version": "",
+          "qualifiers": "arch=ppc",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML-debuginfo",
+          "version": "",
+          "qualifiers": "arch=s390",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML-debuginfo",
+          "version": "",
+          "qualifiers": "arch=s390x",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML-debuginfo",
+          "version": "",
+          "qualifiers": "arch=s390x",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
@@ -482,34 +552,6 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
-          "name": "PyXML",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
           "name": "PyXML-debuginfo",
           "version": "",
           "qualifiers": "arch=x86_64",
@@ -517,20 +559,6 @@
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
         "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML-debuginfo",
-          "version": "",
-          "qualifiers": "arch=i386",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -566,9 +594,93 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
-          "name": "PyXML-debuginfo",
+          "name": "PyXML",
           "version": "",
-          "qualifiers": "arch=i386",
+          "qualifiers": "arch=ia64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML",
+          "version": "",
+          "qualifiers": "arch=ia64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML",
+          "version": "",
+          "qualifiers": "arch=ppc",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML",
+          "version": "",
+          "qualifiers": "arch=ppc",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
+        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML",
+          "version": "",
+          "qualifiers": "arch=s390",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML",
+          "version": "",
+          "qualifiers": "arch=s390x",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
+        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "PyXML",
+          "version": "",
+          "qualifiers": "arch=s390x",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
@@ -608,9 +720,9 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
-          "name": "PyXML-debuginfo",
+          "name": "PyXML",
           "version": "",
-          "qualifiers": "arch=ppc",
+          "qualifiers": "arch=x86_64",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
@@ -624,128 +736,16 @@
           "namespace": "redhat",
           "name": "PyXML",
           "version": "",
-          "qualifiers": "arch=ppc",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML",
-          "version": "",
-          "qualifiers": "arch=ppc",
+          "qualifiers": "arch=x86_64",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
         "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML-debuginfo",
-          "version": "",
-          "qualifiers": "arch=ppc",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML-debuginfo",
-          "version": "",
-          "qualifiers": "arch=s390x",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML",
-          "version": "",
-          "qualifiers": "arch=s390x",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML",
-          "version": "",
-          "qualifiers": "arch=s390x",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML-debuginfo",
-          "version": "",
-          "qualifiers": "arch=s390x",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.4-4.el5_4.2",
-        "fixed_version_range": "vers:rpm/0.8.4-4.el5_4.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML-debuginfo",
-          "version": "",
-          "qualifiers": "arch=s390",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "PyXML",
-          "version": "",
-          "qualifiers": "arch=s390",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.8.3-6.el4_8.2",
-        "fixed_version_range": "vers:rpm/0.8.3-6.el4_8.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -790,6 +790,62 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
+          "name": "python-PyMySQL",
+          "version": "",
+          "qualifiers": "arch=src",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.10.1-2.module+el8.4.0+9657+a4b6a102",
+        "fixed_version_range": "vers:rpm/0.10.1-2.module+el8.4.0+9657+a4b6a102",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-distro",
+          "version": "",
+          "qualifiers": "arch=src",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.4.0-2.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/1.4.0-2.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-docs",
+          "version": "",
+          "qualifiers": "arch=src",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.6.7-2.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/3.6.7-2.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-docutils",
+          "version": "",
+          "qualifiers": "arch=src",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.14-12.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/0.14-12.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
           "name": "python-nose-docs",
           "version": "",
           "qualifiers": "arch=noarch",
@@ -804,9 +860,107 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
+          "name": "python-nose",
+          "version": "",
+          "qualifiers": "arch=src",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.3.7-30.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/1.3.7-30.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-pygments",
+          "version": "",
+          "qualifiers": "arch=src",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<2.2.0-20.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/2.2.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-pymongo-debuginfo",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-pymongo-debuginfo",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-pymongo-debugsource",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-pymongo-debugsource",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
           "name": "python-pymongo-doc",
           "version": "",
           "qualifiers": "arch=noarch",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-pymongo",
+          "version": "",
+          "qualifiers": "arch=src",
           "subpath": ""
         },
         "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
@@ -832,6 +986,20 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
+          "name": "python-sqlalchemy",
+          "version": "",
+          "qualifiers": "arch=src",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
           "name": "python-virtualenv-doc",
           "version": "",
           "qualifiers": "arch=noarch",
@@ -846,6 +1014,34 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
+          "name": "python-virtualenv",
+          "version": "",
+          "qualifiers": "arch=src",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<15.1.0-19.module+el8.4.0+22650+01781d50.3",
+        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python-wheel",
+          "version": "",
+          "qualifiers": "arch=src&epoch=1",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
           "name": "python3-PyMySQL",
           "version": "",
           "qualifiers": "arch=noarch",
@@ -853,6 +1049,62 @@
         },
         "affected_version_range": "vers:rpm/<0.10.1-2.module+el8.4.0+9657+a4b6a102",
         "fixed_version_range": "vers:rpm/0.10.1-2.module+el8.4.0+9657+a4b6a102",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-bson-debuginfo",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-bson-debuginfo",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-bson",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-bson",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -930,13 +1182,13 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
-          "name": "python3-virtualenv",
+          "name": "python3-pymongo-debuginfo",
           "version": "",
-          "qualifiers": "arch=noarch",
+          "qualifiers": "arch=ppc64le",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<15.1.0-19.module+el8.4.0+22650+01781d50.3",
-        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3",
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -944,13 +1196,167 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
-          "name": "python3-wheel",
+          "name": "python3-pymongo-debuginfo",
           "version": "",
-          "qualifiers": "arch=noarch&epoch=1",
+          "qualifiers": "arch=x86_64",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<0.31.1-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-pymongo-gridfs",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-pymongo-gridfs",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-pymongo",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-pymongo",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-scipy-debuginfo",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-scipy-debuginfo",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-scipy",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-scipy",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-sqlalchemy",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-sqlalchemy",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python3-virtualenv",
+          "version": "",
+          "qualifiers": "arch=noarch",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<15.1.0-19.module+el8.4.0+22650+01781d50.3",
+        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -972,6 +1378,76 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
+          "name": "python3-wheel",
+          "version": "",
+          "qualifiers": "arch=noarch&epoch=1",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python36-debug",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python36-debug",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python36-devel",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python36-devel",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
           "name": "python36-rpm-macros",
           "version": "",
           "qualifiers": "arch=noarch",
@@ -986,139 +1462,13 @@
         "package": {
           "type": "rpm",
           "namespace": "redhat",
-          "name": "python-PyMySQL",
+          "name": "python36",
           "version": "",
-          "qualifiers": "arch=src",
+          "qualifiers": "arch=ppc64le",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<0.10.1-2.module+el8.4.0+9657+a4b6a102",
-        "fixed_version_range": "vers:rpm/0.10.1-2.module+el8.4.0+9657+a4b6a102",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-distro",
-          "version": "",
-          "qualifiers": "arch=src",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.4.0-2.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.4.0-2.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-docs",
-          "version": "",
-          "qualifiers": "arch=src",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.6.7-2.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/3.6.7-2.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-docutils",
-          "version": "",
-          "qualifiers": "arch=src",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.14-12.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/0.14-12.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-nose",
-          "version": "",
-          "qualifiers": "arch=src",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.3.7-30.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/1.3.7-30.module+el8.4.0+15040+36b018e7.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-pygments",
-          "version": "",
-          "qualifiers": "arch=src",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<2.2.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/2.2.0-20.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-pymongo",
-          "version": "",
-          "qualifiers": "arch=src",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-sqlalchemy",
-          "version": "",
-          "qualifiers": "arch=src",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-virtualenv",
-          "version": "",
-          "qualifiers": "arch=src",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<15.1.0-19.module+el8.4.0+22650+01781d50.3",
-        "fixed_version_range": "vers:rpm/15.1.0-19.module+el8.4.0+22650+01781d50.3",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-wheel",
-          "version": "",
-          "qualifiers": "arch=src&epoch=1",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<0.31.1-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/0.31.1-2.module+el8.4.0+15040+36b018e7.1",
+        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -1133,6 +1483,48 @@
         },
         "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
         "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "python36",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "scipy-debugsource",
+          "version": "",
+          "qualifiers": "arch=ppc64le",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "redhat",
+          "name": "scipy-debugsource",
+          "version": "",
+          "qualifiers": "arch=x86_64",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
+        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
@@ -1149,401 +1541,9 @@
         "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-pymongo-debuginfo",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-pymongo-debugsource",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-bson",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-bson-debuginfo",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-pymongo",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-pymongo-debuginfo",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-pymongo-gridfs",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-scipy",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-scipy-debuginfo",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-sqlalchemy",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python36",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python36-debug",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python36-devel",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "scipy-debugsource",
-          "version": "",
-          "qualifiers": "arch=ppc64le",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-pymongo-debuginfo",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python-pymongo-debugsource",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-bson",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-bson-debuginfo",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-pymongo",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-pymongo-debuginfo",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-pymongo-gridfs",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "fixed_version_range": "vers:rpm/3.7.0-1.module+el8.4.0+9670+1849b5f9",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-scipy",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-scipy-debuginfo",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python3-sqlalchemy",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "fixed_version_range": "vers:rpm/1.3.2-2.module+el8.4.0+20979+8ba06d83.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python36",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python36-debug",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "python36-devel",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "fixed_version_range": "vers:rpm/3.6.8-2.module+el8.4.0+15040+36b018e7.1",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "redhat",
-          "name": "scipy-debugsource",
-          "version": "",
-          "qualifiers": "arch=x86_64",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/<1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "fixed_version_range": "vers:rpm/1.0.0-20.module+el8.1.0+3334+5cb623d7",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",

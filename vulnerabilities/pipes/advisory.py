@@ -25,6 +25,8 @@ from packageurl.contrib.url2purl import url2purl
 
 from aboutcode.hashid import get_core_purl
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import ReferenceV2
@@ -287,22 +289,23 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
 
 @transaction.atomic
 def insert_advisory_v2(
-    advisory: AdvisoryData,
+    advisory: AdvisoryDataV2,
     pipeline_id: str,
     logger: Callable = None,
+    precedence: int = 0,
 ):
     from vulnerabilities.models import ImpactedPackage
     from vulnerabilities.models import PackageV2
-    from vulnerabilities.utils import compute_content_id
+    from vulnerabilities.utils import compute_content_id_v2
 
     advisory_obj = None
     aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
-    references = get_or_create_advisory_references(references=advisory.references_v2)
+    references = get_or_create_advisory_references(references=advisory.references)
     severities = get_or_create_advisory_severities(severities=advisory.severities)
     patches = get_or_create_advisory_patches(patches=advisory.patches)
     weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
-    content_id = compute_content_id(advisory_data=advisory)
-
+    content_id = compute_content_id_v2(advisory_data=advisory)
+    created = False
     try:
         default_data = {
             "datasource_id": pipeline_id,
@@ -312,11 +315,14 @@ def insert_advisory_v2(
             "date_published": advisory.date_published,
             "date_collected": datetime.now(timezone.utc),
             "original_advisory_text": advisory.original_advisory_text,
+            "url": advisory.url,
+            "precedence": precedence,
         }
 
         advisory_obj, created = AdvisoryV2.objects.get_or_create(
+            advisory_id=advisory.advisory_id,
+            datasource_id=pipeline_id,
             unique_content_id=content_id,
-            url=advisory.url,
             defaults=default_data,
         )
         related_fields = {
@@ -332,8 +338,9 @@ def insert_advisory_v2(
                 getattr(advisory_obj, field_name).add(*values)
 
     except AdvisoryV2.MultipleObjectsReturned:
-        logger.error(
-            f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}"
+        logger(
+            f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}",
+            level=logging.ERROR,
         )
         raise
     except Exception as e:
@@ -359,14 +366,14 @@ def insert_advisory_v2(
                 affected_package=affected_pkg,
                 logger=logger,
             )
-            affected_packages_v2 = [
-                PackageV2.objects.get_or_create_from_purl(purl=purl)[0]
-                for purl in package_affected_purls
-            ]
-            fixed_packages_v2 = [
-                PackageV2.objects.get_or_create_from_purl(purl=purl)[0]
-                for purl in package_fixed_purls
-            ]
+
+            affected_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
+                purls=package_affected_purls
+            )
+            fixed_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
+                purls=package_fixed_purls
+            )
+
             impact.affecting_packages.add(*affected_packages_v2)
             impact.fixed_by_packages.add(*fixed_packages_v2)
 
@@ -501,3 +508,27 @@ def advisories_checksum(advisories: Union[Advisory, List[Advisory]]) -> str:
 
     checksum = hashlib.sha1(combined_contents.encode())
     return checksum.hexdigest()
+
+
+def append_patch_classifications(
+    url, commit_hash, patch_text, affected_packages, patches, references
+):
+    """Classify a patch source and append the results to affected_packages, patches, or references,
+    assuming all provided commits are fixed commits."""
+
+    base_purl, patch_objs = classify_patch_source(
+        url=url, commit_hash=commit_hash, patch_text=patch_text
+    )
+
+    for patch_obj in patch_objs:
+        if isinstance(patch_obj, PackageCommitPatchData):
+            fixed_commit = patch_obj
+            affected_package = AffectedPackageV2(
+                package=base_purl,
+                fixed_by_commit_patches=[fixed_commit],
+            )
+            affected_packages.append(affected_package)
+        elif isinstance(patch_obj, PatchData):
+            patches.append(patch_obj)
+        elif isinstance(patch_obj, ReferenceV2):
+            references.append(patch_obj)

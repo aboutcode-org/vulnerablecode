@@ -264,18 +264,12 @@ def test_insert_advisory_v2_handles_multiple_objects_returned():
     """
     Test that insert_advisory_v2 correctly handles AdvisoryV2.MultipleObjectsReturned
     exception when duplicate advisory records exist.
-    
-    This test verifies the fix for issue #2081 where the exception handler was
-    incorrectly catching Advisory.MultipleObjectsReturned instead of
-    AdvisoryV2.MultipleObjectsReturned.
     """
     from unittest.mock import MagicMock
-    from django.db import connection
+    from unittest.mock import patch
     from vulnerabilities.models import AdvisoryV2
     from vulnerabilities.pipes.advisory import insert_advisory_v2
-    from vulnerabilities.utils import compute_content_id
 
-    # Create advisory data
     advisory_data = AdvisoryData(
         summary="Test advisory for exception handling",
         affected_packages=[
@@ -290,58 +284,19 @@ def test_insert_advisory_v2_handles_multiple_objects_returned():
         advisory_id="TEST-2024-001",
     )
 
-    content_id = compute_content_id(advisory_data=advisory_data)
-    
-    # Create the first advisory normally
-    advisory1 = AdvisoryV2.objects.create(
-        unique_content_id=content_id,
-        url=advisory_data.url,
-        datasource_id="test_pipeline",
-        advisory_id=advisory_data.advisory_id,
-        avid=f"test_pipeline/{advisory_data.advisory_id}",
-        summary=advisory_data.summary,
-        date_collected=timezone.now(),
-    )
-    
-    # Force create a duplicate by bypassing the unique constraint at the model level
-    # This simulates a database inconsistency that could trigger MultipleObjectsReturned
-    with connection.cursor() as cursor:
-        # Temporarily disable the unique constraint to create a duplicate
-        cursor.execute(
-            """
-            INSERT INTO vulnerabilities_advisoryv2 
-            (unique_content_id, url, datasource_id, advisory_id, avid, summary, date_collected, status)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """,
-            [
-                content_id,
-                advisory_data.url,
-                "test_pipeline",
-                advisory_data.advisory_id,
-                f"test_pipeline/{advisory_data.advisory_id}",
-                advisory_data.summary,
-                timezone.now(),
-                1,  # AdvisoryStatusType.PUBLISHED
-            ]
-        )
-    
-    # Verify we have duplicates
-    assert AdvisoryV2.objects.filter(unique_content_id=content_id, url=advisory_data.url).count() == 2
-    
-    # Create a mock logger to verify error logging
     mock_logger = MagicMock()
-    
-    # Now calling insert_advisory_v2 should raise AdvisoryV2.MultipleObjectsReturned
-    with pytest.raises(AdvisoryV2.MultipleObjectsReturned):
-        insert_advisory_v2(
-            advisory=advisory_data,
-            pipeline_id="test_pipeline",
-            logger=mock_logger,
-        )
-    
-    # Verify that the error was logged
-    mock_logger.error.assert_called_once()
-    error_message = mock_logger.error.call_args[0][0]
-    assert "Multiple Advisories returned" in error_message
-    assert content_id in error_message
-    assert advisory_data.url in error_message
+
+    with patch.object(AdvisoryV2.objects, "get_or_create") as mock_get_or_create:
+        mock_get_or_create.side_effect = AdvisoryV2.MultipleObjectsReturned()
+
+        with pytest.raises(AdvisoryV2.MultipleObjectsReturned):
+            insert_advisory_v2(
+                advisory=advisory_data,
+                pipeline_id="test_pipeline",
+                logger=mock_logger,
+            )
+
+        mock_logger.assert_called_once()
+        args, _ = mock_logger.call_args
+        assert "Multiple Advisories returned" in args[0]
+

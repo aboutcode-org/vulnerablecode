@@ -12,7 +12,7 @@ from datetime import datetime
 from django.test import TestCase
 from packageurl import PackageURL
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.models import AdvisoryAlias
@@ -24,7 +24,8 @@ from vulnerabilities.pipelines.v2_improvers.compute_advisory_todo import Compute
 
 class TestComputeToDo(TestCase):
     def setUp(self):
-        self.advisory_data1 = AdvisoryData(
+        self.advisory_data1 = AdvisoryDataV2(
+            advisory_id="test_id",
             summary="Test summary",
             affected_packages=[
                 AffectedPackageV2(
@@ -33,11 +34,12 @@ class TestComputeToDo(TestCase):
                     fixed_version_range="vers:npm/2.0.0",
                 )
             ],
-            references_v2=[ReferenceV2(url="https://example.com/vuln1")],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
             url="https://test.url/",
         )
 
-        self.advisory_data2 = AdvisoryData(
+        self.advisory_data2 = AdvisoryDataV2(
+            advisory_id="test_id_1",
             summary="Test summary",
             affected_packages=[
                 AffectedPackageV2(
@@ -45,11 +47,12 @@ class TestComputeToDo(TestCase):
                     affected_version_range="vers:npm/>=1.0.0|<2.0.0",
                 )
             ],
-            references_v2=[ReferenceV2(url="https://example.com/vuln1")],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
             url="https://test.url/",
         )
 
-        self.advisory_data3 = AdvisoryData(
+        self.advisory_data3 = AdvisoryDataV2(
+            advisory_id="test_id_2",
             summary="Test summary",
             affected_packages=[
                 AffectedPackageV2(
@@ -57,11 +60,12 @@ class TestComputeToDo(TestCase):
                     fixed_version_range="vers:npm/2.0.0",
                 )
             ],
-            references_v2=[ReferenceV2(url="https://example.com/vuln1")],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
             url="https://test.url/",
         )
 
-        self.advisory_data4 = AdvisoryData(
+        self.advisory_data4 = AdvisoryDataV2(
+            advisory_id="test_id_3",
             summary="Test summary",
             affected_packages=[
                 AffectedPackageV2(
@@ -70,7 +74,7 @@ class TestComputeToDo(TestCase):
                     fixed_version_range="vers:npm/2.0.1",
                 )
             ],
-            references_v2=[ReferenceV2(url="https://example.com/vuln1")],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
             url="https://test.url/",
         )
 
@@ -80,7 +84,6 @@ class TestComputeToDo(TestCase):
             unique_content_id="test_id",
             url=self.advisory_data1.url,
             summary="",
-            date_imported=date,
             date_collected=date,
             advisory_id="test_id",
             avid="test_pipeline/test_id",
@@ -107,7 +110,6 @@ class TestComputeToDo(TestCase):
             unique_content_id="test_id",
             url=self.advisory_data2.url,
             summary=self.advisory_data2.summary,
-            date_imported=date,
             date_collected=date,
             advisory_id="test_id",
             avid="test_pipeline/test_id",
@@ -134,7 +136,6 @@ class TestComputeToDo(TestCase):
             unique_content_id="test_id",
             url=self.advisory_data3.url,
             summary=self.advisory_data3.summary,
-            date_imported=date,
             date_collected=date,
             advisory_id="test_id",
             avid="test_pipeline/test_id",
@@ -162,7 +163,6 @@ class TestComputeToDo(TestCase):
             unique_content_id="test_id1",
             url=self.advisory_data1.url,
             summary=self.advisory_data1.summary,
-            date_imported=date,
             date_collected=date,
             advisory_id="test_id",
             avid="test_pipeline/test_id_2",
@@ -180,7 +180,6 @@ class TestComputeToDo(TestCase):
             unique_content_id="test_id2",
             url=self.advisory_data4.url,
             summary=self.advisory_data4.summary,
-            date_imported=date,
             date_collected=date,
             advisory_id="test_id",
             avid="test_pipeline/test_id_2",

@@ -13,7 +13,7 @@ from unittest.mock import patch
 import pytest
 import saneyaml
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 
 
 @pytest.fixture
@@ -89,11 +89,13 @@ def test_collect_advisories(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
     mock_vcs_response.dest_dir = str(mock_pathlib.parent)
 
     # Mock `parse_advisory_data` to return an AdvisoryData object
-    with patch("vulnerabilities.importers.osv.parse_advisory_data_v2") as mock_parse:
-        mock_parse.return_value = AdvisoryData(
+    with patch(
+        "vulnerabilities.pipelines.v2_importers.pypa_importer.parse_advisory_data_v3"
+    ) as mock_parse:
+        mock_parse.return_value = AdvisoryDataV2(
             advisory_id="CVE-2021-1234",
             summary="Sample PyPI vulnerability",
-            references_v2=[{"url": "https://pypi.org/advisory/CVE-2021-1234"}],
+            references=[{"url": "https://pypi.org/advisory/CVE-2021-1234"}],
             affected_packages=[],
             weaknesses=[],
             url="https://pypi.org/advisory/CVE-2021-1234",
@@ -149,7 +151,9 @@ def test_collect_advisories_with_invalid_yaml(mock_pathlib, mock_vcs_response, m
 
     mock_vcs_response.dest_dir = str(mock_pathlib.parent)
 
-    with patch("vulnerabilities.importers.osv.parse_advisory_data_v2") as mock_parse:
+    with patch(
+        "vulnerabilities.pipelines.v2_importers.pypa_importer.parse_advisory_data_v3"
+    ) as mock_parse:
         # Mock parse_advisory_data to raise an error on invalid YAML
         mock_parse.side_effect = saneyaml.YAMLError("Invalid YAML")
 

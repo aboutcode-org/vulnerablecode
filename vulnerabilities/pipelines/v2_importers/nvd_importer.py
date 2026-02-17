@@ -11,6 +11,7 @@ import gzip
 import json
 import logging
 from datetime import date
+from datetime import timezone
 from traceback import format_exc as traceback_format_exc
 from typing import Iterable
 
@@ -19,7 +20,7 @@ import requests
 from dateutil import parser as dateparser
 
 from vulnerabilities import severity_systems
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -70,6 +71,8 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     """
 
+    precedence = 100
+
     @classmethod
     def steps(cls):
         return (cls.collect_and_store_advisories,)
@@ -92,8 +95,8 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         advisory_count = data.get("totalResults", 0)
         return advisory_count
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
-        for _year, cve_data in fetch_cve_data_1_1(logger=self.log):
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
+        for _year, cve_data in fetch_cve_data_2_0(logger=self.log):
             yield from to_advisories(cve_data=cve_data)
 
 
@@ -111,7 +114,7 @@ def fetch(url, logger=None):
     return json.loads(data)
 
 
-def fetch_cve_data_1_1(starting_year=2025, logger=None):
+def fetch_cve_data_2_0(starting_year=2002, logger=None):
     """
     Yield tuples of (year, lists of CVE mappings) from the NVD, one for each
     year since ``starting_year`` defaulting to 2002.
@@ -119,13 +122,13 @@ def fetch_cve_data_1_1(starting_year=2025, logger=None):
     current_year = date.today().year
     # NVD json feeds start from 2002.
     for year in range(starting_year, current_year + 1):
-        download_url = f"https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-{year}.json.gz"
+        download_url = f"https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-{year}.json.gz"
         yield year, fetch(url=download_url, logger=logger)
 
 
 def to_advisories(cve_data):
     """
-    Yield AdvisoryData objects from a CVE json feed.
+    Yield AdvisoryDataV2 objects from a CVE json feed.
     """
     for cve_item in CveItem.from_cve_data(cve_data=cve_data):
         if cve_item.is_related_to_hardware or not cve_item.cve_id:
@@ -140,7 +143,7 @@ class CveItem:
     @classmethod
     def to_advisories(cls, cve_data, skip_hardware=True):
         """
-        Yield AdvisoryData objects from ``cve_data`` data for CVE JSON 1.1feed.
+        Yield AdvisoryDataV2 objects from ``cve_data`` data for CVE JSON 1.1feed.
         Skip hardware
         """
         for cve_item in CveItem.from_cve_data(cve_data=cve_data, skip_hardware=skip_hardware):
@@ -151,7 +154,7 @@ class CveItem:
         """
         Yield CVE items mapping from a cve_data list of CVE mappings from the NVD.
         """
-        for cve_item in cve_data.get("CVE_Items") or []:
+        for cve_item in cve_data.get("vulnerabilities") or []:
             if not cve_item:
                 continue
             if not isinstance(cve_item, dict):
@@ -163,7 +166,7 @@ class CveItem:
 
     @property
     def cve_id(self):
-        return self.cve_item["cve"]["CVE_data_meta"]["ID"]
+        return self.cve_item["cve"]["id"]
 
     @property
     def summary(self):
@@ -175,8 +178,8 @@ class CveItem:
         # In the remaining 1% cases this returns the longest summary.
         # FIXME: we should retun the full description WITH the summry as the first line instead
         summaries = []
-        for desc in get_item(self.cve_item, "cve", "description", "description_data") or []:
-            if desc.get("value"):
+        for desc in get_item(self.cve_item, "cve", "descriptions") or []:
+            if desc.get("value") and desc.get("lang") == "en":
                 summaries.append(desc["value"])
         return max(summaries, key=len) if summaries else None
 
@@ -187,11 +190,12 @@ class CveItem:
         """
         # FIXME: we completely ignore the configurations here
         cpes = []
-        for node in get_item(self.cve_item, "configurations", "nodes") or []:
-            for cpe_data in node.get("cpe_match") or []:
-                cpe23_uri = cpe_data.get("cpe23Uri")
-                if cpe23_uri and cpe23_uri not in cpes:
-                    cpes.append(cpe23_uri)
+        for nodes in get_item(self.cve_item, "cve", "configurations") or []:
+            for node in nodes.get("nodes") or []:
+                for cpe_data in node.get("cpeMatch") or []:
+                    cpe23_uri = cpe_data.get("criteria")
+                    if cpe23_uri and cpe23_uri not in cpes:
+                        cpes.append(cpe23_uri)
         return cpes
 
     @property
@@ -200,46 +204,32 @@ class CveItem:
         Return a list of VulnerabilitySeverity for this CVE.
         """
         severities = []
-        impact = self.cve_item.get("impact") or {}
-        base_metric_v4 = impact.get("baseMetricV4") or {}
-        if base_metric_v4:
-            cvss_v4 = base_metric_v4.get("cvssV4") or {}
-            vs = VulnerabilitySeverity(
-                system=severity_systems.CVSSV4,
-                value=str(cvss_v4.get("baseScore") or ""),
-                scoring_elements=str(cvss_v4.get("vectorString") or ""),
-                url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
-            )
-            severities.append(vs)
+        metrics = get_item(self.cve_item, "cve", "metrics") or {}
+        url = f"https://nvd.nist.gov/vuln/detail/{self.cve_id}"
+        metric_configs = [
+            ("cvssMetricV40", severity_systems.CVSSV4),
+            ("cvssMetricV31", severity_systems.CVSSV31),
+            ("cvssMetricV30", severity_systems.CVSSV3),
+            ("cvssMetricV2", severity_systems.CVSSV2),
+        ]
 
-        base_metric_v3 = impact.get("baseMetricV3") or {}
-        if base_metric_v3:
-            cvss_v3 = get_item(base_metric_v3, "cvssV3")
-            version = cvss_v3.get("version")
-            system = None
-            if version == "3.1":
-                system = severity_systems.CVSSV31
-            else:
-                system = severity_systems.CVSSV3
-            vs = VulnerabilitySeverity(
-                system=system,
-                value=str(cvss_v3.get("baseScore") or ""),
-                scoring_elements=str(cvss_v3.get("vectorString") or ""),
-                url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
-            )
-            severities.append(vs)
+        for key, default_system in metric_configs:
+            items = metrics.get(key) or []
 
-        base_metric_v2 = impact.get("baseMetricV2") or {}
-        if base_metric_v2:
-            cvss_v2 = base_metric_v2.get("cvssV2") or {}
-            vs = VulnerabilitySeverity(
-                system=severity_systems.CVSSV2,
-                value=str(cvss_v2.get("baseScore") or ""),
-                scoring_elements=str(cvss_v2.get("vectorString") or ""),
-                url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",
-            )
-            severities.append(vs)
+            for item in items:
+                cvss_data = item.get("cvssData") or {}
+                system = default_system
+                if key == "cvssMetricV31" and cvss_data.get("version") != "3.1":
+                    system = severity_systems.CVSSV3
 
+                severities.append(
+                    VulnerabilitySeverity(
+                        system=system,
+                        value=str(cvss_data.get("baseScore") or ""),
+                        scoring_elements=str(cvss_data.get("vectorString") or ""),
+                        url=url,
+                    )
+                )
         return severities
 
     @property
@@ -250,7 +240,7 @@ class CveItem:
         # FIXME: we should also collect additional data from the references such as tags and ids
 
         urls = []
-        for reference in get_item(self.cve_item, "cve", "references", "reference_data") or []:
+        for reference in get_item(self.cve_item, "cve", "references") or []:
             ref_url = reference.get("url")
             if ref_url and ref_url.startswith(("http", "ftp")) and ref_url not in urls:
                 urls.append(ref_url)
@@ -300,9 +290,7 @@ class CveItem:
         Return a list of CWE IDs like: [119, 189]
         """
         weaknesses = []
-        for weaknesses_item in (
-            get_item(self.cve_item, "cve", "problemtype", "problemtype_data") or []
-        ):
+        for weaknesses_item in get_item(self.cve_item, "cve", "weaknesses") or []:
             weaknesses_description = weaknesses_item.get("description") or []
             for weaknesses_value in weaknesses_description:
                 cwe_id = (
@@ -315,14 +303,16 @@ class CveItem:
 
     def to_advisory(self):
         """
-        Return an AdvisoryData object from this CVE item
+        Return an AdvisoryDataV2 object from this CVE item
         """
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=self.cve_id,
             aliases=[],
             summary=self.summary,
-            references_v2=self.references,
-            date_published=dateparser.parse(self.cve_item.get("publishedDate")),
+            references=self.references,
+            date_published=dateparser.parse(self.cve_item["cve"].get("published")).replace(
+                tzinfo=timezone.utc
+            ),
             weaknesses=self.weaknesses,
             severities=self.severities,
             url=f"https://nvd.nist.gov/vuln/detail/{self.cve_id}",

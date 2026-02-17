@@ -206,28 +206,38 @@ class classproperty(object):
         return self.fget(owner_cls)
 
 
-def get_item(dictionary: dict, *attributes):
+def get_item(entity: Union[dict, list], *attributes):
     """
-    Return `item` by going through all the `attributes` present in the `dictionary`
+    Return `item` by going through all the `attributes` present in the `dictionary/list`
 
-    Do a DFS for the `item` in the `dictionary` by traversing the `attributes`
+    Do a DFS for the `item` in the `dictionary/list` by traversing the `attributes`
     and return None if can not traverse through the `attributes`
     For example:
+    >>> assert get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c') == 'd'
+    >>> assert get_item({'a': [{'b': {'c': 'd'}}]}, 'a', 0, 'b') == {'c': 'd'}
+    >>> assert get_item(['b', ['c', ['d']]], 1, 1, 0) == 'd'
     >>> get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'c')
     'd'
     >>> assert(get_item({'a': {'b': {'c': 'd'}}}, 'a', 'b', 'e')) == None
     """
     for attribute in attributes:
-        if not dictionary:
+        if not entity:
             return
-        if not isinstance(dictionary, dict):
-            logger.error("dictionary must be of type `dict`")
+        if not isinstance(entity, (dict, list)):
+            logger.error(f"Entity must be of type `dict` or `list` not {type(entity)}")
             return
-        if attribute not in dictionary:
-            logger.error(f"Missing attribute {attribute} in {dictionary}")
+        if isinstance(entity, dict) and attribute not in entity:
+            logger.error(f"Missing attribute {attribute} in {entity}")
             return
-        dictionary = dictionary[attribute]
-    return dictionary
+        if isinstance(entity, list) and not isinstance(attribute, int):
+            logger.error(f"List indices must be integers not {type(attribute)}")
+            return
+        if isinstance(entity, list) and len(entity) <= attribute:
+            logger.error(f"Index {attribute} out of range for {entity}")
+            return
+
+        entity = entity[attribute]
+    return entity
 
 
 class GitHubTokenError(Exception):
@@ -379,10 +389,16 @@ def fetch_response(url):
     """
     Fetch and return `response` from the `url`
     """
-    response = requests.get(url)
-    if response.status_code == HTTPStatus.OK:
-        return response
-    raise Exception(f"Failed to fetch data from {url!r} with status code: {response.status_code!r}")
+    try:
+        response = requests.get(url)
+        if response.status_code == HTTPStatus.OK:
+            return response
+        raise Exception(
+            f"Failed to fetch data from {url!r} with status code: {response.status_code!r}"
+        )
+    except Exception as e:
+        logger.error(f"Error fetching data from {url!r}: {e}")
+        return None
 
 
 # This should be a method on PackageURL
@@ -623,35 +639,79 @@ def compute_content_id(advisory_data):
         normalized_data["url"] = advisory_data.url
 
     elif isinstance(advisory_data, AdvisoryData):
-        if advisory_data.references_v2:
-            normalized_data = {
-                "aliases": normalize_list(advisory_data.aliases),
-                "summary": normalize_text(advisory_data.summary),
-                "affected_packages": [
-                    pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
-                ],
-                "references": [
-                    ref.to_dict() for ref in normalize_list(advisory_data.references_v2) if ref
-                ],
-                "severities": [
-                    sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev
-                ],
-                "weaknesses": normalize_list(advisory_data.weaknesses),
-            }
-        elif advisory_data.references or advisory_data.references == []:
-            normalized_data = {
-                "aliases": normalize_list(advisory_data.aliases),
-                "summary": normalize_text(advisory_data.summary),
-                "affected_packages": [
-                    pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
-                ],
-                "references": [
-                    ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
-                ],
-                "weaknesses": normalize_list(advisory_data.weaknesses),
-            }
+        normalized_data = {
+            "aliases": normalize_list(advisory_data.aliases),
+            "summary": normalize_text(advisory_data.summary),
+            "affected_packages": [
+                pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+            ],
+            "references": [
+                ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
+            ],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+        }
 
         normalized_data["url"] = advisory_data.url
+
+    else:
+        raise ValueError("Unsupported advisory data type for content ID computation")
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+
+    return content_id
+
+
+def compute_content_id_v2(advisory_data):
+    """
+    Compute a unique content_id for an advisory by normalizing its data and hashing it.
+
+    :param advisory_data: An AdvisoryData object
+    :return: SHA-256 hash digest as content_id
+    """
+
+    # Normalize fields
+    from vulnerabilities.importer import AdvisoryDataV2
+    from vulnerabilities.models import AdvisoryV2
+
+    if isinstance(advisory_data, AdvisoryV2):
+        normalized_data = {
+            "aliases": normalize_list(advisory_data.aliases),
+            "summary": normalize_text(advisory_data.summary),
+            "impacted_packages": sorted(
+                [impact.to_dict() for impact in advisory_data.impacted_packages.all()],
+                key=lambda x: json.dumps(x, sort_keys=True),
+            ),
+            "patches": sorted(
+                [patch.to_patch_data().to_dict() for patch in advisory_data.patches.all()],
+                key=lambda x: json.dumps(x, sort_keys=True),
+            ),
+            "references": [ref for ref in normalize_list(advisory_data.references) if ref],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+        }
+        normalized_data["url"] = advisory_data.url
+
+    elif isinstance(advisory_data, AdvisoryDataV2):
+        normalized_data = {
+            "advisory_id": normalize_text(advisory_data.advisory_id),
+            "aliases": normalize_list(advisory_data.aliases),
+            "summary": normalize_text(advisory_data.summary),
+            "affected_packages": [
+                pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+            ],
+            "references": [
+                ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
+            ],
+            "severities": [
+                sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev
+            ],
+            "weaknesses": normalize_list(advisory_data.weaknesses),
+            "patches": [patch.to_dict() for patch in normalize_list(advisory_data.patches)],
+        }
+        normalized_data["url"] = advisory_data.url
+
+    else:
+        raise ValueError("Unsupported advisory data type for content ID computation")
 
     normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
     content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
@@ -803,3 +863,28 @@ def compute_patch_checksum(patch_text: str):
     Compute SHA-512 checksum for patch text.
     """
     return hashlib.sha512(patch_text.encode("utf-8")).hexdigest()
+
+
+def group_advisories_by_content(advisories):
+    grouped = {}
+
+    for advisory in advisories:
+        content_hash = advisory.compute_advisory_content()
+
+        entry = grouped.setdefault(
+            content_hash,
+            {"primary": advisory, "secondary": set()},
+        )
+
+        primary = entry["primary"]
+
+        if advisory is primary:
+            continue
+
+        if advisory.precedence > primary.precedence:
+            entry["primary"] = advisory
+            entry["secondary"].add(primary)
+        else:
+            entry["secondary"].add(advisory)
+
+    return grouped

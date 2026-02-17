@@ -5,7 +5,7 @@ from zipfile import ZipFile
 
 import pytest
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.pysec_importer import (
     PyPIImporterPipeline,  # Path to the PyPI Importer
 )
@@ -79,11 +79,13 @@ def test_collect_advisories(mock_requests_get, mock_zip_data):
     pipeline.fetch_zip()
 
     # Mock the `parse_advisory_data_v2` function to return a dummy AdvisoryData
-    with patch("vulnerabilities.importers.osv.parse_advisory_data_v2") as mock_parse:
-        mock_parse.return_value = AdvisoryData(
+    with patch(
+        "vulnerabilities.pipelines.v2_importers.pysec_importer.parse_advisory_data_v3"
+    ) as mock_parse:
+        mock_parse.return_value = AdvisoryDataV2(
             advisory_id="PYSEC-1234",
             summary="Sample PyPI advisory",
-            references_v2=[{"url": "https://pypi.org/advisory/PYSEC-1234"}],
+            references=[{"url": "https://pypi.org/advisory/PYSEC-1234"}],
             affected_packages=[],
             weaknesses=[],
             url="https://pypi.org/advisory/PYSEC-1234",
@@ -117,11 +119,13 @@ def test_collect_advisories_invalid_file(mock_requests_get, mock_zip_data):
     pipeline.fetch_zip()
 
     # Mock the `parse_advisory_data_v2` function
-    with patch("vulnerabilities.importers.osv.parse_advisory_data_v2") as mock_parse:
-        mock_parse.return_value = AdvisoryData(
+    with patch(
+        "vulnerabilities.pipelines.v2_importers.pysec_importer.parse_advisory_data_v3"
+    ) as mock_parse:
+        mock_parse.return_value = AdvisoryDataV2(
             advisory_id="PYSEC-1234",
             summary="Sample PyPI advisory",
-            references_v2=[{"url": "https://pypi.org/advisory/PYSEC-1234"}],
+            references=[{"url": "https://pypi.org/advisory/PYSEC-1234"}],
             affected_packages=[],
             weaknesses=[],
             url="https://pypi.org/advisory/PYSEC-1234",

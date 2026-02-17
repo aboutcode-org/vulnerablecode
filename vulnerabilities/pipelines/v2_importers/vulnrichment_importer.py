@@ -7,7 +7,7 @@ from typing import Iterable
 import dateparser
 from fetchcode.vcs import fetch_via_vcs
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.models import VulnerabilityReference
@@ -33,6 +33,8 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/cisagov/vulnrichment/blob/develop/LICENSE"
     repo_url = "git+https://github.com/cisagov/vulnrichment.git"
 
+    precedence = 100
+
     @classmethod
     def steps(cls):
         return (
@@ -49,7 +51,7 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         vuln_directory = Path(self.vcs_response.dest_dir)
         return sum(1 for _ in vuln_directory.glob("*.json"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_path = Path(self.vcs_response.dest_dir)
         for file_path in base_path.glob("**/**/*.json"):
             if not file_path.name.startswith("CVE-"):
@@ -192,11 +194,11 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     if match:
                         weaknesses.add(int(match.group(1)))
 
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=cve_id,
             aliases=[],
             summary=summary,
-            references_v2=references,
+            references=references,
             date_published=date_published,
             weaknesses=sorted(weaknesses),
             url=advisory_url,

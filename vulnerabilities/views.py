@@ -15,6 +15,8 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.db.models import Count
+from django.db.models import F
 from django.db.models import Prefetch
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -39,6 +41,7 @@ from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import group_advisories_by_content
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
@@ -188,31 +191,85 @@ class PackageV2Details(DetailView):
         context = super().get_context_data(**kwargs)
         package = self.object
         next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions()
-        fixed_pkg_details = {}
-        for impact in package.affected_in_impacts.all():
-            if impact.advisory.id not in fixed_pkg_details:
-                fixed_pkg_details[impact.advisory.id] = []
-            fixed_pkg_details[impact.advisory.id].extend(
-                [
-                    {"pkg": pkg, "affected_count": pkg.affected_in_impacts.count()}
-                    for pkg in impact.fixed_by_packages.all()
-                ]
-            )
+
+        (
+            fixed_pkg_details,
+            affected_by_advisories,
+            fixing_advisories,
+        ) = self.get_fixed_package_details(package)
+
+        affected_avid_by_hash = {}
+        fixing_avid_by_hash = {}
+
+        affected_avid_by_hash = group_advisories_by_content(affected_by_advisories)
+        fixing_avid_by_hash = group_advisories_by_content(fixing_advisories)
+
+        affecting_advs = []
+
+        for hash in affected_avid_by_hash:
+            affecting_advs.append(affected_avid_by_hash[hash])
+
+        fixing_advs = []
+
+        for hash in fixing_avid_by_hash:
+            fixing_advs.append(fixing_avid_by_hash[hash])
+
         context["package"] = package
         context["next_non_vulnerable"] = next_non_vulnerable
         context["latest_non_vulnerable"] = latest_non_vulnerable
-        context["affected_by_advisories"] = {
-            impact.advisory for impact in package.affected_in_impacts.all()
-        }
-        context["fixing_advisories"] = {
-            impact.advisory for impact in package.fixed_in_impacts.all()
-        }
+        context["affected_by_advisories_v2"] = affecting_advs
+        context["fixing_advisories_v2"] = fixing_advs
 
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = fixed_pkg_details
 
-        # context["history"] = list(package.history)
         return context
+
+    def get_fixed_package_details(self, package):
+        affected_impacts = package.affected_in_impacts.select_related("advisory").prefetch_related(
+            Prefetch(
+                "fixed_by_packages",
+                queryset=(
+                    models.PackageV2.objects.annotate(affected_count=Count("affected_in_impacts"))
+                ),
+            )
+        )
+
+        fixed_impacts = package.fixed_in_impacts.select_related("advisory")
+
+        affected_avids = {impact.advisory.avid for impact in affected_impacts if impact.advisory_id}
+
+        fixed_avids = {impact.advisory.avid for impact in fixed_impacts if impact.advisory_id}
+
+        all_avids = affected_avids | fixed_avids
+
+        advisories = models.AdvisoryV2.objects.latest_for_avids(all_avids)
+        advisory_by_avid = {adv.avid: adv for adv in advisories}
+
+        fixed_pkg_details = {}
+
+        for impact in affected_impacts:
+            advisory = advisory_by_avid.get(impact.advisory.avid)
+            if not advisory:
+                continue
+
+            fixed_pkg_details.setdefault(impact.advisory.avid, []).extend(
+                {
+                    "pkg": pkg,
+                    "affected_count": pkg.affected_count,
+                }
+                for pkg in impact.fixed_by_packages.all()
+            )
+
+        affected_by_advisories = {
+            advisory_by_avid[avid] for avid in affected_avids if avid in advisory_by_avid
+        }
+
+        fixing_advisories = {
+            advisory_by_avid[avid] for avid in fixed_avids if avid in advisory_by_avid
+        }
+
+        return fixed_pkg_details, affected_by_advisories, fixing_advisories
 
     def get_queryset(self):
         return (
@@ -359,6 +416,15 @@ class AdvisoryDetails(DetailView):
     template_name = "advisory_detail.html"
     slug_url_kwarg = "avid"
     slug_field = "avid"
+
+    def get_object(self, queryset=None):
+        avid = self.kwargs.get(self.slug_url_kwarg)
+        obj = models.AdvisoryV2.objects.latest_for_avid(avid)
+
+        if not obj:
+            raise Http404("Advisory not found")
+
+        return obj
 
     def get_queryset(self):
         return (
@@ -648,7 +714,18 @@ class AdvisoryPackagesDetails(DetailView):
     model = models.AdvisoryV2
     template_name = "advisory_package_details.html"
     slug_url_kwarg = "avid"
-    slug_field = "avid"
+
+    def get_object(self, queryset=None):
+        avid = self.kwargs.get(self.slug_url_kwarg)
+        if not avid:
+            raise Http404("Missing advisory identifier")
+
+        advisory = models.AdvisoryV2.objects.latest_for_avid(avid)
+
+        if not advisory:
+            raise Http404(f"No advisory found for avid: {avid}")
+
+        return advisory
 
     def get_queryset(self):
         """

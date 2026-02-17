@@ -1,0 +1,499 @@
+[
+  {
+    "advisory_id": "apk-tools/v3.11/2.7.2-r0/CVE-2017-9669",
+    "aliases": [
+      "CVE-2017-9669"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=aarch64&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=armhf&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=armv7&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=ppc64le&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=s390x&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=x86&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=x86_64&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2017-9669",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-9669"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://secdb.alpinelinux.org/v3.11/"
+  },
+  {
+    "advisory_id": "apk-tools/v3.11/2.7.2-r0/CVE-2017-9671",
+    "aliases": [
+      "CVE-2017-9671"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=aarch64&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=armhf&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=armv7&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=ppc64le&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=s390x&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=x86&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "apk-tools",
+          "version": "",
+          "qualifiers": "arch=x86_64&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/2.7.2-r0",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2017-9671",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-9671"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://secdb.alpinelinux.org/v3.11/"
+  },
+  {
+    "advisory_id": "xen/v3.11/4.10-1-r1/XSA-252",
+    "aliases": [
+      "XSA-252"
+    ],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "XSA-252",
+        "reference_type": "",
+        "url": "https://xenbits.xen.org/xsa/advisory-252.html"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://secdb.alpinelinux.org/v3.11/"
+  },
+  {
+    "advisory_id": "xen/v3.11/4.10.0-r1/XSA-248",
+    "aliases": [
+      "XSA-248"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=aarch64&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=armhf&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=armv7&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=ppc64le&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=s390x&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=x86&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=x86_64&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r1",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "XSA-248",
+        "reference_type": "",
+        "url": "https://xenbits.xen.org/xsa/advisory-248.html"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://secdb.alpinelinux.org/v3.11/"
+  },
+  {
+    "advisory_id": "xen/v3.11/4.10.0-r2/CVE-2018-7540",
+    "aliases": [
+      "CVE-2018-7540",
+      "XSA-252"
+    ],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=aarch64&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=armhf&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=armv7&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=ppc64le&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=s390x&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=x86&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "apk",
+          "namespace": "alpine",
+          "name": "xen",
+          "version": "",
+          "qualifiers": "arch=x86_64&distroversion=v3.11&reponame=main",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:alpine/4.10.0-r2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2018-7540",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-7540"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://secdb.alpinelinux.org/v3.11/"
+  }
+]

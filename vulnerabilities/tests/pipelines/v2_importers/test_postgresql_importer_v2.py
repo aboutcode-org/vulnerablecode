@@ -7,13 +7,12 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import pytest
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.postgresql_importer import PostgreSQLImporterPipeline
 
 HTML_PAGE_WITH_LINKS = """
@@ -82,10 +81,10 @@ def test_collect_advisories(mock_get, importer):
 
     assert len(advisories) == 1
     advisory = advisories[0]
-    assert isinstance(advisory, AdvisoryData)
+    assert isinstance(advisory, AdvisoryDataV2)
     assert advisory.advisory_id == "CVE-2022-1234"
     assert "Description of the issue" in advisory.summary
-    assert len(advisory.references_v2) > 0
+    assert len(advisory.references) > 0
     assert advisory.affected_packages[0].package.name == "postgresql"
     assert str(advisory.affected_packages[0].fixed_version_range) == "vers:generic/10.2.0"
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("10.0.0"))

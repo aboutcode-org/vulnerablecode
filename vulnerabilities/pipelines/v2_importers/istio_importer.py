@@ -23,7 +23,7 @@ from univers.version_range import GolangVersionRange
 from univers.versions import GolangVersion
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -42,6 +42,8 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/istio/istio.io/blob/master/LICENSE"
     repo_url = "git+https://github.com/istio/istio.io"
+
+    precedence = 200
 
     @classmethod
     def steps(cls):
@@ -62,7 +64,7 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_path = Path(self.vcs_response.dest_dir)
         advisories_dir = base_path / "content/en/news/security"
 
@@ -114,12 +116,12 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                 )
 
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=title,
                 aliases=cves,
                 summary=summary,
                 affected_packages=affected_packages,
-                references_v2=references,
+                references=references,
                 date_published=release_date,
                 url=advisory_url,
                 original_advisory_text=md_file.read_text(encoding="utf-8"),

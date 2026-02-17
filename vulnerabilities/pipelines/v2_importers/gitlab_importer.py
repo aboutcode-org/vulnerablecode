@@ -22,7 +22,7 @@ from packageurl import PackageURL
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import from_gitlab_native
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -44,6 +44,8 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"
+
+    precedence = 100
 
     @classmethod
     def steps(cls):
@@ -75,7 +77,7 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         root = Path(self.vcs_response.dest_dir)
         return sum(1 for _ in root.rglob("*.yml"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_path = Path(self.vcs_response.dest_dir)
 
         for file_path in base_path.rglob("*.yml"):
@@ -179,7 +181,7 @@ def parse_gitlab_advisory(
     file, base_path, gitlab_scheme_by_purl_type, purl_type_by_gitlab_scheme, logger
 ):
     """
-    Parse a Gitlab advisory file and return an AdvisoryData or None.
+    Parse a Gitlab advisory file and return an AdvisoryDataV2 or None.
     These files are YAML. There is a JSON schema documented at
     https://gitlab.com/gitlab-org/advisories-community/-/blob/main/ci/schema/schema.json
 
@@ -240,11 +242,11 @@ def parse_gitlab_advisory(
         logger(
             f"parse_yaml_file: purl is not valid: {file!r} {package_slug!r}", level=logging.ERROR
         )
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=advisory_id,
             aliases=aliases,
             summary=summary,
-            references_v2=references,
+            references=references,
             date_published=date_published,
             url=advisory_url,
             original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
@@ -318,11 +320,11 @@ def parse_gitlab_advisory(
             )
         )
 
-    return AdvisoryData(
+    return AdvisoryDataV2(
         advisory_id=advisory_id,
         aliases=aliases,
         summary=summary,
-        references_v2=references,
+        references=references,
         date_published=date_published,
         affected_packages=[affected_package],
         weaknesses=cwe_list,

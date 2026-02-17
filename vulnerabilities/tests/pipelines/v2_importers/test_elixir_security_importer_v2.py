@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 import pytest
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.elixir_security_importer import (
     ElixirSecurityImporterPipeline,
 )
@@ -71,13 +71,13 @@ def test_collect_advisories(mock_fetch_via_vcs, mock_vcs_response):
 
     assert len(advisories) == 1
 
-    advisory: AdvisoryData = advisories[0]
+    advisory: AdvisoryDataV2 = advisories[0]
     assert advisory.advisory_id == "some_package/CVE-2022-9999"
     assert advisory.summary.startswith("Cross-site scripting vulnerability")
     assert advisory.affected_packages[0].package.name == "plug"
     assert advisory.affected_packages[0].package.type == "hex"
     assert (
-        advisory.references_v2[0].url
+        advisory.references[0].url
         == "https://github.com/plug/plug/security/advisories/GHSA-xxxx-yyyy"
     )
     assert advisory.date_published.isoformat().startswith("2022-12-01")

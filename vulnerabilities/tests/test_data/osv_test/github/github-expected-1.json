@@ -1,0 +1,77 @@
+{
+  "advisory_id": "GHSA-2hjr-vmf3-xwvp",
+  "aliases": [
+    "CVE-2023-49921"
+  ],
+  "summary": "Elasticsearch Insertion of Sensitive Information into Log File\nAn issue was discovered by Elastic whereby Watcher search input logged the search query results on DEBUG log level. This could lead to raw contents of documents stored in Elasticsearch to be printed in logs. Elastic has released 8.11.2 and 7.17.16 that resolves this issue by removing this excessive logging. This issue only affects users that use Watcher and have a Watch defined that uses the search input and additionally have set the search input\u2019s logger to DEBUG or finer, for example using: org.elasticsearch.xpack.watcher.input.search, org.elasticsearch.xpack.watcher.input, org.elasticsearch.xpack.watcher, or wider, since the loggers are hierarchical.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "maven",
+        "namespace": "org.elasticsearch",
+        "name": "elasticsearch",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:maven/<7.17.16",
+      "fixed_version_range": "vers:maven/7.17.16",
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "maven",
+        "namespace": "org.elasticsearch",
+        "name": "elasticsearch",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:maven/>=8.0.0|<8.11.2",
+      "fixed_version_range": "vers:maven/8.11.2",
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-49921"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://discuss.elastic.co/t/elasticsearch-8-11-2-7-17-16-security-update-esa-2023-29/349179"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/elastic/elasticsearch"
+    }
+  ],
+  "patches": [],
+  "severities": [
+    {
+      "system": "cvssv3.1",
+      "value": "5.2",
+      "scoring_elements": "CVSS:3.1/AV:A/AC:L/PR:L/UI:R/S:U/C:H/I:N/A:N"
+    },
+    {
+      "system": "cvssv4",
+      "value": "4.1",
+      "scoring_elements": "CVSS:4.0/AV:A/AC:L/AT:P/PR:L/UI:P/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N"
+    },
+    {
+      "system": "generic_textual",
+      "value": "MODERATE",
+      "scoring_elements": ""
+    }
+  ],
+  "date_published": "2024-07-26T06:30:47+00:00",
+  "weaknesses": [
+    532
+  ],
+  "url": "https://test.com"
+}

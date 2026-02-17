@@ -169,6 +169,10 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     importer_name = None
     advisory_confidence = MAX_CONFIDENCE
 
+    # When set to true pipeline is run only once.
+    # To rerun onetime pipeline reset is_active field to True via migration.
+    run_once = False
+
     @classmethod
     def steps(cls):
         return (
@@ -261,6 +265,14 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     spdx_license_expression = None
     repo_url = None
     ignorable_versions = []
+    precedence = 0
+
+    # Control how often progress log is shown (range: 1–100, higher value = less frequent log)
+    progress_step = 10
+
+    # When set to true pipeline is run only once.
+    # To rerun onetime pipeline reset is_active field to True via migration.
+    run_once = False
 
     @classmethod
     def steps(cls):
@@ -293,7 +305,11 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
         if estimated_advisory_count > 0:
             self.log(f"Collecting {estimated_advisory_count:,d} advisories")
 
-        progress = LoopProgress(total_iterations=estimated_advisory_count, logger=self.log)
+        progress = LoopProgress(
+            total_iterations=estimated_advisory_count,
+            logger=self.log,
+            progress_step=self.progress_step,
+        )
         for advisory in progress.iter(self.collect_advisories()):
             if advisory is None:
                 self.log("Advisory is None, skipping")
@@ -303,6 +319,7 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
                     advisory=advisory,
                     pipeline_id=self.pipeline_id,
                     logger=self.log,
+                    precedence=self.precedence,
                 ):
                     collected_advisory_count += 1
             except Exception as e:

@@ -80,7 +80,11 @@ Pipeline Dashboard
                                     <div class="column is-one-quarter">{{ schedule.pipeline_id }}</div>
                                     <div class="column is-one-eighth has-text-grey">{{ schedule.is_active|yesno:"Yes,No" }}</div>
                                     <div class="column is-one-eighth has-text-grey">
-                                        {{ schedule.run_interval }} hour{{ schedule.run_interval|pluralize }}
+                                        {% if schedule.is_run_once %}
+                                            Once
+                                        {% else %}
+                                            {{ schedule.run_interval }} hour{{ schedule.run_interval|pluralize }}
+                                        {% endif %}
                                     </div>
                                     <div class="column is-one-eighth">
                                         <span class="is-flex is-align-items-center">
@@ -95,7 +99,11 @@ Pipeline Dashboard
                                         {% endif %}
                                     </div>
                                     <div class="column is-one-fifth has-text-grey">
-                                        {{ schedule.next_run_date|date:"Y-m-d" }}
+                                        {% if schedule.next_run_date %}
+                                            {{ schedule.next_run_date|date:"Y-m-d" }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
                                     </div>
                                 </div>
                             </a>

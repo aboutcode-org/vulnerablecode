@@ -14,7 +14,7 @@ from typing import Mapping
 from packageurl import PackageURL
 from univers.version_range import ArchLinuxVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -27,6 +27,8 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "archlinux_importer_v2"
     spdx_license_expression = "MIT"
     license_url = "https://github.com/archlinux/arch-security-tracker/blob/master/LICENSE"
+
+    precedence = 200
 
     @classmethod
     def steps(cls):
@@ -44,11 +46,11 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self) -> int:
         return len(self.response)
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for record in self.response:
             yield self.parse_advisory(record)
 
-    def parse_advisory(self, record) -> AdvisoryData:
+    def parse_advisory(self, record) -> AdvisoryDataV2:
         affected_packages = []
         references = []
         avg_name = record.get("name")
@@ -90,11 +92,11 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 )
             )
 
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=avg_name,
             aliases=aliases,
             summary=summary,
-            references_v2=references,
+            references=references,
             affected_packages=affected_packages,
             weaknesses=[],
             url=f"https://security.archlinux.org/{avg_name}.json",

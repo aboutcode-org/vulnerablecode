@@ -1,0 +1,376 @@
+[
+  {
+    "advisory_id": "CVE-2002-0655",
+    "aliases": [],
+    "summary": "Inproper handling of ASCII representations of integers on 64 bit platforms allowed remote attackers to cause a denial of service or possibly execute arbitrary code.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=0.9.6|<0.9.6e",
+        "fixed_version_range": "vers:openssl/0.9.6e",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "OpenSSL Advisory",
+        "reference_type": "advisory",
+        "url": "https://www.openssl.org/news/secadv/20020730.txt"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "openssl",
+        "value": "unknown",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2002-07-30T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/openssl/release-metadata/blob/main/secjson/CVE-2002-0655.json"
+  },
+  {
+    "advisory_id": "CVE-2006-2937",
+    "aliases": [],
+    "summary": "During the parsing of certain invalid ASN.1 structures an error condition is mishandled. This can result in an infinite loop which consumes system memory.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=0.9.7|<0.9.7l",
+        "fixed_version_range": "vers:openssl/0.9.7l",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=0.9.8|<0.9.8d",
+        "fixed_version_range": "vers:openssl/0.9.8d",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "OpenSSL Advisory",
+        "reference_type": "advisory",
+        "url": "https://www.openssl.org/news/secadv/20060928.txt"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "openssl",
+        "value": "unknown",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2006-09-28T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/openssl/release-metadata/blob/main/secjson/CVE-2006-2937.json"
+  },
+  {
+    "advisory_id": "CVE-2010-0433",
+    "aliases": [],
+    "summary": "A missing return value check flaw was discovered in OpenSSL, that could possibly cause OpenSSL to call a Kerberos library function with invalid arguments, resulting in a NULL pointer dereference crash in the MIT Kerberos library. In certain configurations, a remote attacker could use this flaw to crash a TLS/SSL server using OpenSSL by requesting Kerberos cipher suites during the TLS handshake.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=0.9.8|<0.9.8n",
+        "fixed_version_range": "vers:openssl/0.9.8n",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/openssl/openssl/",
+            "commit_hash": "cca1cd9a3447dd067503e4a85ebd1679ee78a48e",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "0.9.8n git commit",
+        "reference_type": "commit",
+        "url": "https://git.openssl.org/gitweb/?p=openssl.git;a=commitdiff;h=cca1cd9a3447dd067503e4a85ebd1679ee78a48e"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "openssl",
+        "value": "unknown",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2010-01-19T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/openssl/release-metadata/blob/main/secjson/CVE-2010-0433.json"
+  },
+  {
+    "advisory_id": "CVE-2015-0206",
+    "aliases": [],
+    "summary": "A memory leak can occur in the dtls1_buffer_record function under certain conditions. In particular this could occur if an attacker sent repeated DTLS records with the same sequence number but for the next epoch. The memory leak could be exploited by an attacker in a Denial of Service attack through memory exhaustion.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=1.0.0|<1.0.0p",
+        "fixed_version_range": "vers:openssl/1.0.0p",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=1.0.1|<1.0.1k",
+        "fixed_version_range": "vers:openssl/1.0.1k",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "OpenSSL Advisory",
+        "reference_type": "advisory",
+        "url": "https://www.openssl.org/news/secadv/20150108.txt"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "openssl",
+        "value": "Moderate",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2015-01-08T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/openssl/release-metadata/blob/main/secjson/CVE-2015-0206.json"
+  },
+  {
+    "advisory_id": "CVE-2022-3996",
+    "aliases": [],
+    "summary": "X.509 Policy Constraints Double Locking\nIf an X.509 certificate contains a malformed policy constraint and\npolicy processing is enabled, then a write lock will be taken twice\nrecursively.  On some operating systems (most widely: Windows) this\nresults in a denial of service when the affected process hangs.  Policy\nprocessing being enabled on a publicly facing server is not considered\nto be a common setup.\n\nPolicy processing is enabled by passing the `-policy`\nargument to the command line utilities or by calling the\n`X509_VERIFY_PARAM_set1_policies()` function.\n\nUpdate (31 March 2023): The description of the policy processing enablement\nwas corrected based on CVE-2023-0466.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=3.0.0|<=3.0.7",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "OpenSSL Advisory",
+        "reference_type": "advisory",
+        "url": "https://www.openssl.org/news/secadv/20221213.txt"
+      },
+      {
+        "reference_id": "patch",
+        "reference_type": "commit",
+        "url": "https://github.com/openssl/openssl/commit/7725e7bfe6f2ce8146b6552b44e0d226be7638e7"
+      }
+    ],
+    "patches": [
+      {
+        "patch_url": "https://github.com/openssl/openssl/commit/7725e7bfe6f2ce8146b6552b44e0d226be7638e7",
+        "patch_text": "",
+        "patch_checksum": null
+      }
+    ],
+    "severities": [
+      {
+        "system": "openssl",
+        "value": "Low",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2022-12-13T07:00:00+00:00",
+    "weaknesses": [
+      667
+    ],
+    "url": "https://github.com/openssl/release-metadata/blob/main/secjson/CVE-2022-3996.json"
+  },
+  {
+    "advisory_id": "CVE-2025-9231",
+    "aliases": [],
+    "summary": "Timing side-channel in SM2 algorithm on 64 bit ARM\nIssue summary: A timing side-channel which could potentially allow remote\nrecovery of the private key exists in the SM2 algorithm implementation on 64 bit\nARM platforms.\n\nImpact summary: A timing side-channel in SM2 signature computations on 64 bit\nARM platforms could allow recovering the private key by an attacker..\n\nWhile remote key recovery over a network was not attempted by the reporter,\ntiming measurements revealed a timing signal which may allow such an attack.\n\nOpenSSL does not directly support certificates with SM2 keys in TLS, and so\nthis CVE is not relevant in most TLS contexts.  However, given that it is\npossible to add support for such certificates via a custom provider, coupled\nwith the fact that in such a custom provider context the private key may be\nrecoverable via remote timing measurements, we consider this to be a Moderate\nseverity issue.\n\nThe FIPS modules in 3.5, 3.4, 3.3, 3.2, 3.1 and 3.0 are not affected by this\nissue, as SM2 is not an approved algorithm.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=3.2.0|<3.2.6",
+        "fixed_version_range": "vers:openssl/3.2.6",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/openssl/openssl",
+            "commit_hash": "cba616c26ac8e7b37de5e77762e505ba5ca51698",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=3.3.0|<3.3.5",
+        "fixed_version_range": "vers:openssl/3.3.5",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/openssl/openssl",
+            "commit_hash": "567f64386e43683888212226824b6a179885a0fe",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=3.4.0|<3.4.3",
+        "fixed_version_range": "vers:openssl/3.4.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/openssl/openssl",
+            "commit_hash": "eed5adc9f969d77c94f213767acbb41ff923b6f4",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      },
+      {
+        "package": {
+          "type": "openssl",
+          "namespace": "",
+          "name": "openssl",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:openssl/>=3.5.0|<3.5.4",
+        "fixed_version_range": "vers:openssl/3.5.4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/openssl/openssl",
+            "commit_hash": "fc47a2ec078912b3e914fab5734535e76c4820c2",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "3.2.6 git commit",
+        "reference_type": "commit",
+        "url": "https://github.com/openssl/openssl/commit/cba616c26ac8e7b37de5e77762e505ba5ca51698"
+      },
+      {
+        "reference_id": "3.3.5 git commit",
+        "reference_type": "commit",
+        "url": "https://github.com/openssl/openssl/commit/567f64386e43683888212226824b6a179885a0fe"
+      },
+      {
+        "reference_id": "3.4.3 git commit",
+        "reference_type": "commit",
+        "url": "https://github.com/openssl/openssl/commit/eed5adc9f969d77c94f213767acbb41ff923b6f4"
+      },
+      {
+        "reference_id": "3.5.4 git commit",
+        "reference_type": "commit",
+        "url": "https://github.com/openssl/openssl/commit/fc47a2ec078912b3e914fab5734535e76c4820c2"
+      },
+      {
+        "reference_id": "OpenSSL Advisory",
+        "reference_type": "advisory",
+        "url": "https://openssl-library.org/news/secadv/20250930.txt"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "openssl",
+        "value": "Moderate",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2025-09-30T14:00:00+00:00",
+    "weaknesses": [
+      385
+    ],
+    "url": "https://github.com/openssl/release-metadata/blob/main/secjson/CVE-2025-9231.json"
+  }
+]

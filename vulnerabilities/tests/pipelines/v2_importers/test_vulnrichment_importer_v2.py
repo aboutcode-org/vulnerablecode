@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 import pytest
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines.v2_importers.vulnrichment_importer import VulnrichImporterPipeline
 
@@ -100,10 +100,10 @@ def test_collect_advisories(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
     with patch(
         "vulnerabilities.pipelines.v2_importers.vulnrichment_importer.VulnrichImporterPipeline.parse_cve_advisory"
     ) as mock_parse:
-        mock_parse.return_value = AdvisoryData(
+        mock_parse.return_value = AdvisoryDataV2(
             advisory_id="CVE-2021-1234",
             summary="Sample PyPI vulnerability",
-            references_v2=[{"url": "https://example.com"}],
+            references=[{"url": "https://example.com"}],
             affected_packages=[],
             weaknesses=[],
             url="https://example.com",

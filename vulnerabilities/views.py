@@ -506,15 +506,15 @@ class AdvisoryDetails(DetailView):
         epss_data = None
         epss_advisory = None
         if not epss_severity:
-            related_epss_advisory = (
+            epss_advisory = (
                 advisory.related_advisory_severities.filter(
                     datasource_id=EPSSImporterPipeline.pipeline_id
                 )
                 .latest_per_avid()
                 .first()
             )
-            epss_advisory = related_epss_advisory
-            epss_severity = related_epss_advisory.severities.filter(scoring_system="epss").first()
+            if epss_advisory:
+                epss_severity = epss_advisory.severities.filter(scoring_system="epss").first()
         if epss_severity:
             # If the advisory itself does not have EPSS severity, but has a related advisory with EPSS severity, we use the related advisory's EPSS severity and URL as the source of EPSS data.
             epss_data = {

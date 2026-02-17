@@ -33,7 +33,9 @@ from vulnerabilities.models import CodeFix
 from vulnerabilities.models import CodeFixV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.models import PackageV2
+from vulnerabilities.models import Patch
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
@@ -41,6 +43,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
+from vulnerabilities.utils import get_patch_url
 from vulnerabilities.utils import group_advisories_by_content
 
 
@@ -333,6 +336,31 @@ class PackageV2Serializer(serializers.ModelSerializer):
         return [vuln.vulnerability_id for vuln in obj.fixing_vulnerabilities.all()]
 
 
+class PackageCommitPatchSerializer(serializers.ModelSerializer):
+    patch_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PackageCommitPatch
+        fields = [
+            "id",
+            "commit_hash",
+            "vcs_url",
+            "patch_url",
+        ]
+
+    def get_patch_url(self, obj):
+        return get_patch_url(obj.vcs_url, obj.commit_hash)
+
+
+class PatchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Patch
+        fields = [
+            "id",
+            "patch_url",
+        ]
+
+
 class PackageV3Serializer(serializers.ModelSerializer):
     purl = serializers.CharField(source="package_url")
     risk_score = serializers.FloatField(read_only=True)
@@ -340,6 +368,8 @@ class PackageV3Serializer(serializers.ModelSerializer):
     fixing_vulnerabilities = serializers.SerializerMethodField()
     next_non_vulnerable_version = serializers.SerializerMethodField()
     latest_non_vulnerable_version = serializers.SerializerMethodField()
+    introduced_by_package_commit_patches = serializers.SerializerMethodField()
+    fixed_by_package_commit_patches = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
@@ -347,6 +377,8 @@ class PackageV3Serializer(serializers.ModelSerializer):
             "purl",
             "affected_by_vulnerabilities",
             "fixing_vulnerabilities",
+            "introduced_by_package_commit_patches",
+            "fixed_by_package_commit_patches",
             "next_non_vulnerable_version",
             "latest_non_vulnerable_version",
             "risk_score",
@@ -420,6 +452,98 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 {
                     "advisory_id": primary_advisory.avid,
                     "duplicate_advisory_ids": [adv.avid for adv in advisory["secondary"]],
+                }
+            )
+
+        return result
+
+    def get_introduced_by_package_commit_patches(self, package):
+        impacts = package.affected_in_impacts.select_related("advisory").prefetch_related(
+            "introduced_by_package_commit_patches"
+        )
+
+        avids = {impact.advisory.avid for impact in impacts if impact.advisory_id}
+        if not avids:
+            return []
+
+        latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
+        advisory_by_avid = {adv.avid: adv for adv in latest_advisories}
+        impact_by_avid = {}
+
+        advisories = []
+        for impact in impacts:
+            avid = impact.advisory.avid
+            advisory = advisory_by_avid.get(avid)
+            if not advisory:
+                continue
+            advisories.append(advisory)
+            impact_by_avid[avid] = impact
+
+        grouped_advisories = group_advisories_by_content(advisories=advisories)
+
+        result = []
+        for advisory_group in grouped_advisories.values():
+            primary_advisory = advisory_group["primary"]
+            avid = primary_advisory.avid
+            impact = impact_by_avid.get(avid)
+
+            if not impact:
+                continue
+
+            patches = impact.introduced_by_package_commit_patches.all()
+            if not patches:
+                continue
+
+            result.append(
+                {
+                    "advisory_id": primary_advisory.avid,
+                    "duplicate_advisory_ids": [adv.avid for adv in advisory_group["secondary"]],
+                    "commit_patches": [patch.to_dict() for patch in patches],
+                }
+            )
+
+        return result
+
+    def get_fixed_by_package_commit_patches(self, package):
+        impacts = package.affected_in_impacts.select_related("advisory").prefetch_related(
+            "fixed_by_package_commit_patches"
+        )
+
+        avids = {impact.advisory.avid for impact in impacts if impact.advisory_id}
+        if not avids:
+            return []
+
+        latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
+        advisory_by_avid = {adv.avid: adv for adv in latest_advisories}
+        impact_by_avid = {}
+
+        advisories = []
+        for impact in impacts:
+            avid = impact.advisory.avid
+            if advisory := advisory_by_avid.get(avid):
+                advisories.append(advisory)
+                impact_by_avid[avid] = impact
+
+        grouped_advisories = group_advisories_by_content(advisories=advisories)
+
+        result = []
+        for advisory_group in grouped_advisories.values():
+            primary_advisory = advisory_group["primary"]
+            impact = impact_by_avid.get(primary_advisory.avid)
+
+            if not impact:
+                continue
+
+            # Query the fixing patches instead
+            patches = impact.fixed_by_package_commit_patches.all()
+            if not patches:
+                continue
+
+            result.append(
+                {
+                    "advisory_id": primary_advisory.avid,
+                    "duplicate_advisory_ids": [adv.avid for adv in advisory_group["secondary"]],
+                    "commit_patches": [patch.to_dict() for patch in patches],
                 }
             )
 
@@ -886,6 +1010,40 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(
                 affected_package_vulnerability__vulnerability__vulnerability_id=vulnerability_id
             )
+        return queryset
+
+
+class PackageCommitPatchViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows viewing PackageCommitPatch entries.
+    """
+
+    queryset = PackageCommitPatch.objects.all()
+    serializer_class = PackageCommitPatchSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+
+    def get_queryset(self):
+        queryset = PackageCommitPatch.objects.all()
+        pk = self.request.query_params.get("id")
+        if pk:
+            queryset = queryset.filter(id=pk)
+        return queryset
+
+
+class PatchViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows viewing PackageCommitPatch entries.
+    """
+
+    queryset = Patch.objects.all()
+    serializer_class = PatchSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+
+    def get_queryset(self):
+        queryset = Patch.objects.all()
+        pk = self.request.query_params.get("id")
+        if pk:
+            queryset = queryset.filter(id=pk)
         return queryset
 
 

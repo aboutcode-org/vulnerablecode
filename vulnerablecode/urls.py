@@ -22,8 +22,10 @@ from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
+from vulnerabilities.api_v2 import PackageCommitPatchViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PackageV3ViewSet
+from vulnerabilities.api_v2 import PatchViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.views import AdminLoginView
@@ -70,6 +72,11 @@ api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisor
 api_v3_router = OptionalSlashRouter()
 
 api_v3_router.register("packages", PackageV3ViewSet, basename="package-v3")
+
+api_v3_router.register(
+    "package_commit_patches", PackageCommitPatchViewSet, basename="package_commit_patch"
+)
+api_v3_router.register("patches", PatchViewSet, basename="patches")
 
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),

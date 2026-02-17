@@ -2997,6 +2997,12 @@ class AdvisoryV2(models.Model):
         help_text="Precedence indicates the priority of advisory from different datasources. It is determined based on the reliability of the datasource and how close it is to the source.",
     )
 
+    related_advisory_severities = models.ManyToManyField(
+        "AdvisoryV2",
+        related_name="related_to_advisory_severities",
+        help_text="Related advisories that are used to calculate the severity of this advisory.",
+    )
+
     @property
     def risk_score(self):
         """

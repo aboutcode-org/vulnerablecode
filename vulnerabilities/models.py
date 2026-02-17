@@ -3596,3 +3596,29 @@ class SSVC(models.Model):
 
     class Meta:
         unique_together = ("vector", "source_advisory")
+
+
+class AdvisoryPOC(models.Model):
+    """
+    An AdvisoryPOC (Proof of Concept) demonstrating how a vulnerability related to an advisory can be exploited.
+    """
+
+    advisory = models.ForeignKey(
+        "AdvisoryV2",
+        related_name="pocs",
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(
+        null=True, blank=True, help_text="The date and time when this POC was created."
+    )
+
+    updated_at = models.DateTimeField(
+        null=True, blank=True, help_text="The date and time when this POC was last updated."
+    )
+
+    url = models.URLField(help_text="The URL of the PoC, such as a repository or resource link.")
+
+    is_confirmed = models.BooleanField(
+        default=False, help_text="Indicates whether this POC has been verified or confirmed."
+    )

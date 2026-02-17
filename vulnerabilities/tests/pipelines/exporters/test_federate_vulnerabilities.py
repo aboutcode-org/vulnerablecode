@@ -37,7 +37,7 @@ class TestFederatePackageVulnerabilities(TestCase):
     def setUp(self):
         self.logger = TestLogger()
 
-        advisory = AdvisoryDataV2(
+        advisory1 = AdvisoryDataV2(
             summary="Test advisory",
             aliases=["CVE-2025-0001"],
             references=[],
@@ -51,53 +51,65 @@ class TestFederatePackageVulnerabilities(TestCase):
                     introduced_by_commit_patches=[],
                     fixed_by_commit_patches=[],
                 ),
+            ],
+            patches=[],
+            advisory_id="ADV-001",
+            date_published=datetime.now() - timedelta(days=10),
+            url="https://example.com/advisory/1",
+        )
+        advisory2 = AdvisoryDataV2(
+            summary="Test advisory2",
+            aliases=["CVE-2025-0002"],
+            references=[],
+            severities=[],
+            weaknesses=[],
+            affected_packages=[
                 AffectedPackageV2(
                     package=PackageURL.from_string("pkg:npm/foobar"),
-                    affected_version_range=VersionRange.from_string("vers:npm/<=3.2.3"),
-                    fixed_version_range=VersionRange.from_string("vers:npm/3.2.4"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.2.4"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.0"),
                     introduced_by_commit_patches=[],
                     fixed_by_commit_patches=[],
                 ),
             ],
             patches=[],
-            advisory_id="ADV-123",
+            advisory_id="ADV-002",
             date_published=datetime.now() - timedelta(days=10),
-            url="https://example.com/advisory/1",
+            url="https://example.com/advisory/2",
         )
         insert_advisory_v2(
-            advisory=advisory,
+            advisory=advisory1,
+            pipeline_id="test_pipeline_v2",
+        )
+        insert_advisory_v2(
+            advisory=advisory2,
             pipeline_id="test_pipeline_v2",
         )
 
     @patch(
-        "vulnerabilities.pipelines.exporters.federate_vulnerabilities.FederatePackageVulnerabilities.clone_vulnerabilities_repo"
+        "vulnerabilities.pipelines.exporters.federate_vulnerabilities.FederatePackageVulnerabilities.clone_federation_repository"
     )
     @patch("vulnerabilities.pipes.federatedcode.commit_and_push_changes")
     @patch("vulnerabilities.pipes.federatedcode.check_federatedcode_configured_and_available")
     def test_vulnerabilities_federation_v2(self, mock_check_fed, mock_commit, mock_clone):
         mock_check_fed.return_value = None
         mock_commit.return_value = None
-        mock_clone.__name__ = "clone_vulnerabilities_repo"
+        mock_clone.__name__ = "clone_federation_repository"
 
         working_dir = Path(tempfile.mkdtemp())
-        print(working_dir)
-
         pipeline = FederatePackageVulnerabilities()
         pipeline.repo = Repo.init(working_dir)
         pipeline.log = self.logger.write
         pipeline.execute()
-        print(self.logger.getvalue())
 
-        result_purl_yml = next(working_dir.rglob("purls.yml"))
-        result_vulnerabilities_yml = next(working_dir.rglob("vulnerabilities.yml"))
-        result_advisory_yml = next(working_dir.rglob("ADV-123.yml"))
+        result_advisories_yml = next(working_dir.rglob("1.2.4/advisories.yml"))
+        result_advisory1_yml = next(working_dir.rglob("ADV-001.yml"))
+        result_advisory2_yml = next(working_dir.rglob("ADV-002.yml"))
 
-        expected_purl_yml = TEST_DATA / "purls-expected.yml"
-        expected_vulnerabilities_yml = TEST_DATA / "vulnerabilities-expected.yml"
-        expected_advisory_yml = TEST_DATA / "ADV-123-expected.yml"
+        expected_advisories_yml = TEST_DATA / "1.2.4" / "advisories-expected.yml"
+        expected_advisory1_yml = TEST_DATA / "ADV-001-expected.yml"
+        expected_advisory2_yml = TEST_DATA / "ADV-002-expected.yml"
 
-        util_tests.check_results_and_expected_files(result_purl_yml, expected_purl_yml)
-        util_tests.check_results_and_expected_files(
-            result_vulnerabilities_yml, expected_vulnerabilities_yml
-        )
-        util_tests.check_results_and_expected_files(result_advisory_yml, expected_advisory_yml)
+        util_tests.check_results_and_expected_files(result_advisories_yml, expected_advisories_yml)
+        util_tests.check_results_and_expected_files(result_advisory1_yml, expected_advisory1_yml)
+        util_tests.check_results_and_expected_files(result_advisory2_yml, expected_advisory2_yml)

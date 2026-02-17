@@ -39,6 +39,7 @@ from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
+from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import group_advisories_by_content
@@ -503,11 +504,25 @@ class AdvisoryDetails(DetailView):
 
         epss_severity = advisory.severities.filter(scoring_system="epss").first()
         epss_data = None
+        epss_advisory = None
+        if not epss_severity:
+            related_epss_advisory = (
+                advisory.related_advisory_severities.filter(
+                    datasource_id=EPSSImporterPipeline.pipeline_id
+                )
+                .latest_per_avid()
+                .first()
+            )
+            epss_advisory = related_epss_advisory
+            epss_severity = related_epss_advisory.severities.filter(scoring_system="epss").first()
         if epss_severity:
+            # If the advisory itself does not have EPSS severity, but has a related advisory with EPSS severity, we use the related advisory's EPSS severity and URL as the source of EPSS data.
             epss_data = {
                 "percentile": epss_severity.scoring_elements,
                 "score": epss_severity.value,
                 "published_at": epss_severity.published_at,
+                "source": epss_advisory.url if epss_advisory else advisory.url,
+                "advisory": epss_advisory if epss_advisory else advisory,
             }
 
         ssvc_entries = []

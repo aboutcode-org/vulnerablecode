@@ -46,6 +46,8 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://access.redhat.com/security/data/"
     url = "https://security.access.redhat.com/data/csaf/v2/advisories/"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

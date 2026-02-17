@@ -38,6 +38,8 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     links = set()
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (cls.collect_and_store_advisories,)

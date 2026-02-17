@@ -43,6 +43,8 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/istio/istio.io/blob/master/LICENSE"
     repo_url = "git+https://github.com/istio/istio.io"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

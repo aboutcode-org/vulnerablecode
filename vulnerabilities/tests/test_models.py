@@ -30,12 +30,15 @@ from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Patch
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.severity_systems import CVSSV4
+from vulnerabilities.severity_systems import ScoringSystem
 from vulnerabilities.utils import compute_content_id
 
 
@@ -771,3 +774,47 @@ class TestAdvisoryV2Model(DjangoTestCase):
         result = models.AdvisoryV2.objects.first().to_advisory_data()
 
         self.assertEqual(result, self.advisoryv2_data1)
+
+
+class TestAdvisoryV2ModelDuplication(DjangoTestCase):
+    def setUp(self):
+        self.advisoryv2_data1 = AdvisoryDataV2(
+            advisory_id="CVE-2023-0401",
+            aliases=[],
+            summary="",
+            affected_packages=[],
+            severities=[
+                VulnerabilitySeverity(
+                    system=CVSSV3,
+                    value="7.5",
+                    scoring_elements="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                )
+            ],
+            patches=[],
+            url="https://test.com",
+        )
+
+        self.advisoryv2_data2 = AdvisoryDataV2(
+            advisory_id="CVE-2023-0662",
+            aliases=[],
+            summary="",
+            affected_packages=[],
+            severities=[
+                VulnerabilitySeverity(
+                    system=CVSSV3,
+                    value="7.5",
+                    scoring_elements="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                )
+            ],
+            patches=[],
+            url="https://test.com",
+        )
+
+    def test_advisoryv2_duplication_data(self):
+        from vulnerabilities.pipes.advisory import insert_advisory_v2
+
+        insert_advisory_v2(advisory=self.advisoryv2_data1, pipeline_id="test_pipeline")
+        insert_advisory_v2(advisory=self.advisoryv2_data2, pipeline_id="test_pipeline")
+        result = models.AdvisoryV2.objects.count()
+
+        self.assertEqual(result, 2)

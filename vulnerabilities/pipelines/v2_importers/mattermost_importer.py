@@ -40,6 +40,8 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     _cached_data = None  # Class-level cache
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (cls.collect_and_store_advisories,)

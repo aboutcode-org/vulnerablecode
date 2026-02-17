@@ -41,6 +41,8 @@ class NpmImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/nodejs/security-wg/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/nodejs/security-wg"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

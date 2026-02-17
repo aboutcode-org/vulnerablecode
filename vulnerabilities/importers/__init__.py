@@ -33,6 +33,8 @@ from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
+from vulnerabilities.pipelines import almalinux_importer
 from vulnerabilities.pipelines import alpine_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
@@ -85,6 +87,7 @@ from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
     [
+        almalinux_importer.AlmalinuxImporterPipeline,
         archlinux_importer_v2.ArchLinuxImporterPipeline,
         apache_kafka_importer_v2.ApacheKafkaImporterPipeline,
         nvd_importer_v2.NVDImporterPipeline,

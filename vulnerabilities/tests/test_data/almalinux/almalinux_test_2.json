@@ -1,0 +1,30 @@
+{
+    "id": "ALEA-2019:3314",
+    "summary": "python3-azure-sdk bug fix and enhancement update",
+    "affected": [
+    {
+        "package": {
+        "ecosystem": "AlmaLinux:8",
+        "name": "python3-azure-sdk"
+        },
+        "ranges": [
+        {
+            "type": "ECOSYSTEM",
+            "events": [
+            {
+                "introduced": "0"
+            },
+            {
+                "fixed": "4.0.0-9.el8"
+            }
+            ]
+        }
+        ]
+    }
+    ],
+    "related": [],
+    "published": "2019-11-05T17:29:24Z",
+    "modified": "2021-08-11T11:18:28Z",
+    "details": "For detailed information on changes in this release, see the AlmaLinux Release Notes linked from the References section.",
+    "references": []
+}

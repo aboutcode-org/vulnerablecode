@@ -1,0 +1,145 @@
+{
+    "aliases": [
+        "ALSA-2022:8221"
+    ],
+    "summary": "Moderate: xorg-x11-server security and bug fix update\nX.Org is an open-source implementation of the X Window System. It provides the basic low-level functionality that full-fledged graphical user interfaces are designed upon.\n\nSecurity Fix(es)n\n* xorg-x11-server: X.Org Server ProcXkbSetGeometry out-of-bounds access (CVE-2022-2319)\n* xorg-x11-server: out-of-bounds access in ProcXkbSetDeviceInfo request handler of the Xkb extension VE-2022-2320)\n\nFor more details about the security issue(s), including the impact, a CVSS score, acknowledgments, and other related information, refer to the CVE page(s) listed in the References section.\nAdditional Changes:\n\nFor detailed information on changes in this release, see the AlmaLinux Release Notes linked from the References section.",
+    "affected_packages": [
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "almalinux",
+                "name": "xorg-x11-server-Xdmx",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "1.20.11-11.el9"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "almalinux",
+                "name": "xorg-x11-server-Xephyr",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "1.20.11-11.el9"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "almalinux",
+                "name": "xorg-x11-server-Xnest",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "1.20.11-11.el9"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "almalinux",
+                "name": "xorg-x11-server-Xorg",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "1.20.11-11.el9"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "almalinux",
+                "name": "xorg-x11-server-Xvfb",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "1.20.11-11.el9"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "almalinux",
+                "name": "xorg-x11-server-common",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "1.20.11-11.el9"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "almalinux",
+                "name": "xorg-x11-server-devel",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "1.20.11-11.el9"
+        },
+        {
+            "package": {
+                "type": "rpm",
+                "namespace": "almalinux",
+                "name": "xorg-x11-server-source",
+                "version": "",
+                "qualifiers": "",
+                "subpath": ""
+            },
+            "affected_version_range": null,
+            "fixed_version": "1.20.11-11.el9"
+        }
+    ],
+    "references": [
+        {
+            "reference_id": "",
+            "reference_type": "",
+            "url": "https://access.redhat.com/errata/RHSA-2022:8221",
+            "severities": []
+        },
+        {
+            "reference_id": "",
+            "reference_type": "",
+            "url": "https://access.redhat.com/security/cve/CVE-2022-2319",
+            "severities": []
+        },
+        {
+            "reference_id": "",
+            "reference_type": "",
+            "url": "https://access.redhat.com/security/cve/CVE-2022-2320",
+            "severities": []
+        },
+        {
+            "reference_id": "",
+            "reference_type": "",
+            "url": "https://bugzilla.redhat.com/2106671",
+            "severities": []
+        },
+        {
+            "reference_id": "",
+            "reference_type": "",
+            "url": "https://bugzilla.redhat.com/2106683",
+            "severities": []
+        },
+        {
+            "reference_id": "",
+            "reference_type": "",
+            "url": "https://errata.almalinux.org/9/ALSA-2022-8221.html",
+            "severities": []
+        }
+    ],
+    "date_published": "2022-11-15T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/AlmaLinux/osv-database/blob/master/advisories/almalinux8/almalinux_test_3.json"
+}

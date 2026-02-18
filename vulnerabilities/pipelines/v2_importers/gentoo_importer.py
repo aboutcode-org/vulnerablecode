@@ -9,7 +9,6 @@
 
 import re
 import xml.etree.ElementTree as ET
-from collections import defaultdict
 from pathlib import Path
 from typing import Iterable
 
@@ -82,22 +81,23 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             if child.tag == "affected":
                 affected_packages = []
-                for purl, (affected_ranges, fixed_ranges) in get_affected_and_fixed_purls(
+                for purl, constraints, is_unaffected in get_affected_and_fixed_purls(
                     child, logger=self.log
                 ):
-                    affected_version_constraint = build_constraints(
-                        affected_ranges, logger=self.log
-                    )
-                    fixed_version_constraint = build_constraints(fixed_ranges, logger=self.log)
-                    affected_version_range = EbuildVersionRange(
-                        constraints=affected_version_constraint
-                    )
-                    fixed_version_range = EbuildVersionRange(constraints=fixed_version_constraint)
-                    affected_package = AffectedPackageV2(
-                        package=purl,
-                        affected_version_range=affected_version_range,
-                        fixed_version_range=fixed_version_range,
-                    )
+                    constraints = build_constraints(constraints, logger=self.log)
+                    version_range = EbuildVersionRange(constraints=constraints)
+
+                    if is_unaffected:
+                        affected_package = AffectedPackageV2(
+                            package=purl,
+                            fixed_version_range=version_range,
+                        )
+                    else:
+                        affected_package = AffectedPackageV2(
+                            package=purl,
+                            affected_version_range=version_range,
+                        )
+
                     affected_packages.append(affected_package)
 
             if child.tag == "impact":
@@ -160,14 +160,10 @@ def get_affected_and_fixed_purls(affected_elem, logger):
             continue
 
         pkg_ns, _, pkg_name = name.rpartition("/")
-        # purl_components, (fixed_ranges_set, affected_ranges_set)
-        purl_ranges_map = defaultdict(lambda: {"fixed_ranges": set(), "affected_ranges": set()})
-
         for info in pkg:
             # All possible values of info.attrib['range'] =
             # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}
             # rge means revision greater than equals and rgt means revision greater than
-
             range_value = info.attrib.get("range")
             slot_value = info.attrib.get("slot")
             comparator_dict = {
@@ -185,24 +181,15 @@ def get_affected_and_fixed_purls(affected_elem, logger):
                 logger(f"Unsupported range value {range_value}:{info.text}")
                 continue
 
-            if info.tag == "unaffected":
-                purl_ranges_map[(pkg_name, pkg_ns, slot_value)]["fixed_ranges"].add(
-                    (comparator, info.text)
-                )
-
-            elif info.tag == "vulnerable":
-                purl_ranges_map[(pkg_name, pkg_ns, slot_value)]["affected_ranges"].add(
-                    (comparator, info.text)
-                )
-
-            if range_value in ["rgt", "rge", "rle"]:
-                next_minor_version = GentooVersion(info.text).bump()
-                invert_comp = "<" if range_value in ["rgt", "rge"] else ">"
-                purl_ranges_map[(pkg_name, pkg_ns, slot_value)]["fixed_ranges"].add(
-                    (invert_comp, next_minor_version)
-                )
-
-        for (pkg_name, pkg_ns, slot_value), data in purl_ranges_map.items():
             qualifiers = {"slot": slot_value} if slot_value else {}
             purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns, qualifiers=qualifiers)
-            yield purl, (data["affected_ranges"], data["fixed_ranges"])
+
+            constraints = [(comparator, info.text)]
+            if range_value in ["rgt", "rge", "rle"]:
+                try:
+                    next_minor_version = str(GentooVersion(info.text).bump())
+                    invert_comp = "<" if range_value in ["rgt", "rge"] else ">"
+                    constraints.append((invert_comp, next_minor_version))
+                except Exception as e:
+                    logger(f"Invalid Gentoo version for bumping: {info.text} - {e}")
+            yield purl, constraints, (info.tag == "unaffected")

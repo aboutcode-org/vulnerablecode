@@ -15,8 +15,50 @@
           "qualifiers": "",
           "subpath": ""
         },
-        "affected_version_range": "vers:ebuild/0.1.1|<1.9.7",
-        "fixed_version_range": "vers:ebuild/>1.8.18|<1.9|>=1.9.7",
+        "affected_version_range": "vers:ebuild/0.1.1",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "dev-vcs",
+          "name": "subversion",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:ebuild/<1.9.7",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "dev-vcs",
+          "name": "subversion",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:ebuild/>1.8.18|<1.9",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "dev-vcs",
+          "name": "subversion",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:ebuild/>=1.9.7",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }

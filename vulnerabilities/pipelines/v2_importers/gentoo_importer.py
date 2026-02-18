@@ -84,7 +84,7 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 for purl, constraints, is_unaffected in get_affected_and_fixed_purls(
                     child, logger=self.log
                 ):
-                    constraints = build_constraints(constraints, logger=self.log)
+                    constraints = build_constraints([constraints], logger=self.log)
                     version_range = EbuildVersionRange(constraints=constraints)
 
                     if is_unaffected:
@@ -164,6 +164,7 @@ def get_affected_and_fixed_purls(affected_elem, logger):
             # All possible values of info.attrib['range'] =
             # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}
             # rge means revision greater than equals and rgt means revision greater than
+            # TODO Revisit issue:
             range_value = info.attrib.get("range")
             slot_value = info.attrib.get("slot")
             comparator_dict = {
@@ -183,13 +184,4 @@ def get_affected_and_fixed_purls(affected_elem, logger):
 
             qualifiers = {"slot": slot_value} if slot_value else {}
             purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns, qualifiers=qualifiers)
-
-            constraints = [(comparator, info.text)]
-            if range_value in ["rgt", "rge", "rle"]:
-                try:
-                    next_minor_version = str(GentooVersion(info.text).bump())
-                    invert_comp = "<" if range_value in ["rgt", "rge"] else ">"
-                    constraints.append((invert_comp, next_minor_version))
-                except Exception as e:
-                    logger(f"Invalid Gentoo version for bumping: {info.text} - {e}")
-            yield purl, constraints, (info.tag == "unaffected")
+            yield purl, (comparator, info.text), (info.tag == "unaffected")

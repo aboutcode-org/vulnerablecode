@@ -44,7 +44,7 @@
           "subpath": ""
         },
         "affected_version_range": null,
-        "fixed_version_range": "vers:ebuild/>1.8.18|<1.9",
+        "fixed_version_range": "vers:ebuild/>1.8.18",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },

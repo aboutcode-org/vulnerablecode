@@ -6,8 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
-
+import logging
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -17,11 +16,14 @@ from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import EbuildVersionRange
 from univers.versions import GentooVersion
+from univers.versions import InvalidVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+
+logger = logging.getLogger(__name__)
 
 
 class GentooImporter(Importer):
@@ -104,14 +106,20 @@ class GentooImporter(Importer):
             safe_versions, affected_versions = GentooImporter.get_safe_and_affected_versions(pkg)
 
             for version in safe_versions:
-                constraints.append(
-                    VersionConstraint(version=GentooVersion(version), comparator="=").invert()
-                )
+                try:
+                    constraints.append(
+                        VersionConstraint(version=GentooVersion(version), comparator="=").invert()
+                    )
+                except InvalidVersion as e:
+                    logger.error(f"Invalid safe_version {version} - error: {e}")
 
             for version in affected_versions:
-                constraints.append(
-                    VersionConstraint(version=GentooVersion(version), comparator="=")
-                )
+                try:
+                    constraints.append(
+                        VersionConstraint(version=GentooVersion(version), comparator="=")
+                    )
+                except InvalidVersion as e:
+                    logger.error(f"Invalid affected_version {version} - error: {e}")
 
             if not constraints:
                 continue

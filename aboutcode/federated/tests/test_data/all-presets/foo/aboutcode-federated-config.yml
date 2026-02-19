@@ -933,7 +933,7 @@ data_clusters:
     data_license: CC-BY-4.0
     data_maintainers: []
   - data_kind: security_advisories
-    datafile_path_template: '{/namespace}/{name}/{version}/advisories.json'
+    datafile_path_template: '{/namespace}/{name}/{version}/advisories.yml'
     purl_type_configs:
       - purl_type: default
         number_of_repos: 1

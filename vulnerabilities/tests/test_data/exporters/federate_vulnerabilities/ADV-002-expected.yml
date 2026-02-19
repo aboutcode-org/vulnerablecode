@@ -1,0 +1,13 @@
+advisory_id: ADV-002
+datasource_id: test_pipeline_v2/ADV-002
+datasource_url: https://example.com/advisory/2
+aliases:
+  - CVE-2025-0002
+summary: Test advisory2
+impacted_packages:
+  - purl: pkg:npm/foobar
+    affected_versions: vers:npm/>=1.2.4
+    fixed_versions: vers:npm/2.0.0
+severities: []
+weaknesses: []
+references: []

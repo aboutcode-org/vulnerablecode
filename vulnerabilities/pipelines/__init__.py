@@ -141,6 +141,10 @@ class BasePipelineRun:
 class VulnerableCodePipeline(PipelineDefinition, BasePipelineRun):
     pipeline_id = None  # Unique Pipeline ID
 
+    # When set to true pipeline is run only once.
+    # To rerun onetime pipeline reset is_active field to True via migration.
+    run_once = False
+
     def on_failure(self):
         """
         Tasks to run in the event that pipeline execution fails.

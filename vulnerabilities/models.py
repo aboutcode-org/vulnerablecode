@@ -2344,13 +2344,14 @@ class PipelineSchedule(models.Model):
     @property
     def pipeline_class(self):
         """Return the pipeline class."""
+
         from vulnerabilities.importers import IMPORTERS_REGISTRY
         from vulnerabilities.improvers import IMPROVERS_REGISTRY
+        from vulnerabilities.pipelines.exporters import EXPORTERS_REGISTRY
 
-        if self.pipeline_id in IMPROVERS_REGISTRY:
-            return IMPROVERS_REGISTRY.get(self.pipeline_id)
-        if self.pipeline_id in IMPORTERS_REGISTRY:
-            return IMPORTERS_REGISTRY.get(self.pipeline_id)
+        pipeline_registry = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY
+
+        return pipeline_registry[self.pipeline_id]
 
     @property
     def description(self):
@@ -2995,6 +2996,12 @@ class AdvisoryV2(models.Model):
         null=True,
         blank=True,
         help_text="Precedence indicates the priority of advisory from different datasources. It is determined based on the reliability of the datasource and how close it is to the source.",
+    )
+
+    related_advisory_severities = models.ManyToManyField(
+        "AdvisoryV2",
+        related_name="related_to_advisory_severities",
+        help_text="Related advisories that are used to calculate the severity of this advisory.",
     )
 
     @property

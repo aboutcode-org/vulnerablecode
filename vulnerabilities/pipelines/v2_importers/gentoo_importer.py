@@ -164,7 +164,7 @@ def get_affected_and_fixed_purls(affected_elem, logger):
             # All possible values of info.attrib['range'] =
             # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}
             # rge means revision greater than equals and rgt means revision greater than
-            # TODO Revisit issue:
+            # TODO Revisit issue: https://github.com/aboutcode-org/vulnerablecode/issues/2180
             range_value = info.attrib.get("range")
             slot_value = info.attrib.get("slot")
             comparator_dict = {

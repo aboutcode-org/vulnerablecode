@@ -2961,9 +2961,15 @@ class AdvisoryV2(models.Model):
     )
 
     date_published = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date of publication of the advisory"
+        blank=True,
+        null=True,
+        help_text="UTC Date of publication of the advisory",
     )
-    date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
+    date_collected = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        help_text="UTC Date on which the advisory was collected",
+    )
 
     original_advisory_text = models.TextField(
         blank=True,

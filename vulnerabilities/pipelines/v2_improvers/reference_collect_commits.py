@@ -25,7 +25,6 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "collect_ref_fix_commits_v2"
-    license_expression = None
 
     @classmethod
     def steps(cls):

@@ -12,6 +12,7 @@ import os
 from unittest.mock import patch
 
 import pytest
+from packageurl import PackageURL
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importers.apache_kafka import ApacheKafkaImporter
@@ -79,3 +80,51 @@ def to_advisory_changed_fixed_versions():
     with open(os.path.join(TEST_DATA, "cve-list-changed-fixed-versions.html")) as f:
         raw_data = f.read()
     advisories = ApacheKafkaImporter().to_advisory(raw_data)
+
+
+@pytest.fixture
+def mock_apache_kafka_advisory_page(monkeypatch):
+    test_file = os.path.join(TEST_DATA, "cve-list-2022-12-06.html")
+    with open(test_file, "rb") as f:
+        html_content = f.read()
+
+    def mock_fetch_advisory_page(self):
+        return html_content
+
+    monkeypatch.setattr(ApacheKafkaImporter, "fetch_advisory_page", mock_fetch_advisory_page)
+
+
+def test_package_first_mode_all_advisories(monkeypatch, mock_apache_kafka_advisory_page):
+    purl = PackageURL(type="apache", name="kafka")
+    importer = ApacheKafkaImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+
+    assert len(advisories) == 6
+
+
+def test_package_first_mode_version_affected(monkeypatch, mock_apache_kafka_advisory_page):
+    purl = PackageURL(type="apache", name="kafka", version="2.8.0")
+    importer = ApacheKafkaImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+
+    assert any(
+        any(
+            ap.affected_version_range and "2.8.0" in ap.affected_version_range
+            for ap in adv.affected_packages
+        )
+        for adv in advisories
+    )
+
+
+def test_package_first_mode_version_not_affected(monkeypatch, mock_apache_kafka_advisory_page):
+    purl = PackageURL(type="apache", name="kafka", version="3.3.0")
+    importer = ApacheKafkaImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert advisories == []
+
+
+def test_package_first_mode_wrong_package(monkeypatch, mock_apache_kafka_advisory_page):
+    purl = PackageURL(type="apache", name="notkafka")
+    importer = ApacheKafkaImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert advisories == []

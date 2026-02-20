@@ -7,7 +7,10 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 from aboutcode.pipeline import LoopProgress
+from django.db.models import Prefetch
+from django.db.models import Q
 
+from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
@@ -35,7 +38,15 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
     def compute_and_store_vulnerability_risk_score(self):
         affected_advisories = (
             AdvisoryV2.objects.filter(impacted_packages__affecting_packages__isnull=False)
-            .prefetch_related("references", "severities", "exploits")
+            .prefetch_related(
+                "references",
+                "severities",
+                "exploits",
+                Prefetch(
+                    "related_advisory_severities",
+                    queryset=AdvisoryV2.objects.prefetch_related("severities"),
+                ),
+            )
             .distinct()
         )
 
@@ -50,9 +61,12 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         batch_size = 5000
 
         for advisory in progress.iter(affected_advisories.iterator(chunk_size=batch_size)):
-            severities = advisory.severities.all()
             references = advisory.references.all()
             exploits = advisory.exploits.all()
+
+            severities = AdvisorySeverity.objects.filter(
+                Q(advisories=advisory) | Q(advisories__related_to_advisory_severities=advisory)
+            ).distinct()
 
             weighted_severity, exploitability = compute_vulnerability_risk_factors(
                 references=references,

@@ -21,30 +21,6 @@ from vulnerabilities.pipelines.v2_improvers.reference_collect_commits import (
 
 
 @pytest.mark.django_db
-def test_is_vcs_url_already_processed_true():
-    advisory = AdvisoryV2.objects.create(
-        advisory_id="CVE-2025-9999",
-        datasource_id="test-ds",
-        avid="test-ds/CVE-2025-9999",
-        url="https://example.com/advisory/CVE-2025-9999",
-        unique_content_id="11111",
-        date_collected=datetime.now(),
-    )
-    package = PackageV2.objects.create(
-        type="bar",
-        name="foo",
-        version="1.0",
-    )
-    impact = ImpactedPackage.objects.create(advisory=advisory)
-    impact.affecting_packages.add(package)
-    package_commit_patch = PackageCommitPatch.objects.create(
-        vcs_url="https://github.com/user/repo/commit/6bd301819f8f69331a55ae2336c8b111fc933f3d",
-        commit_hash="6bd301819f8f69331a55ae2336c8b111fc933f3d",
-    )
-    impact.fixed_by_package_commit_patches.add(package_commit_patch)
-
-
-@pytest.mark.django_db
 def test_collect_fix_commits_pipeline_creates_entry():
     advisory = AdvisoryV2.objects.create(
         advisory_id="CVE-2025-1000",

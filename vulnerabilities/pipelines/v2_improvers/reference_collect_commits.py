@@ -16,7 +16,6 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.advisory import VCS_URLS_SUPPORTED_TYPES
-from vulnerabilities.tests.test_export import package
 from vulnerabilities.utils import is_commit
 
 
@@ -73,4 +72,4 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodeBaseImporterPipelineV2):
                 package_commit_obj, _ = PackageCommitPatch.objects.get_or_create(
                     vcs_url=vcs_url, commit_hash=commit_hash
                 )
-                package_commit_obj.fixed_impacted_packages.add(*impacted_packages)
+                package_commit_obj.fixed_in_impacts.add(*impacted_packages)

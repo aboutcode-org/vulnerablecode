@@ -75,6 +75,7 @@ def test_collect_fix_commits_pipeline_creates_entry():
     fix = package_commit_patch.first()
     assert fix.commit_hash == "6bd301819f8f69331a55ae2336c8b111fc933f3d"
     assert fix.vcs_url == "https://github.com/test/testpkg"
+    assert impact.fixed_by_package_commit_patches.count() == 1
 
 
 @pytest.mark.django_db

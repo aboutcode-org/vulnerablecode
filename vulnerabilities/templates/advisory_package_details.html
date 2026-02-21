@@ -60,6 +60,67 @@ VulnerableCode Advisory Package Details - {{ advisoryv2.advisory_id }}
                 </div>
         </div>
     </section>
+    <section class="section pt-0">
+        <div class="details-container">
+            <article class="panel is-info panel-header-only">
+                <div class="panel-heading py-2 is-size-6">
+                    Vulnerable and Fixing Package Commit Patch details for Advisory:
+                    <span class="tag is-white custom">
+                        {{ advisoryv2.advisory_id }}
+                    </span>
+                </div>
+            </article>
+        
+        <div id="tab-content">
+            <table class="table vcio-table width-100-pct mt-2">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Introduced in</th>
+                        <th>Fixed by</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for impact in advisoryv2.impacted_packages.all %}
+                        
+                        {% for pkg_commit_patch in impact.introduced_by_package_commit_patches.all %}
+                            <tr>
+                                <td>
+                                    <a href="{{ pkg_commit_patch.patch_url }}" target="_self">
+                                        {{ pkg_commit_patch.vcs_url }}@{{ pkg_commit_patch.commit_hash }}
+                                    </a>
+                                    <br />
+                                    <a href="{{ pkg_commit_patch.patch_url }}" target="_self">{{ pkg_commit_patch.patch_url }}</a>
+                                </td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        
+                        {% for pkg_commit_patch in impact.fixed_by_package_commit_patches.all %}
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <a href="{{ pkg_commit_patch.commit_url }}" target="_self">
+                                        {{ impact.base_purl }}@{{ pkg_commit_patch.commit_hash }}
+                                    </a>
+                                    <br />
+                                    <a href="{{ pkg_commit_patch.patch_url }}" target="_self">{{ pkg_commit_patch.patch_url }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+        
+                    {% empty %}
+                        <tr>
+                            <td colspan="2">
+                                This vulnerability is not known to affect any package commits.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        </div>
+    </section>
 {% endif %}
 
 <script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>

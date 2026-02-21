@@ -91,7 +91,7 @@ python-dotenv==0.20.0
 pytz==2024.2
 PyYAML==6.0.1
 redis==5.0.1
-requests==2.32.0
+requests==2.32.4
 restructuredtext-lint==1.4.0
 rq==1.15.1
 saneyaml==0.6.0

@@ -80,7 +80,16 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         </a>
                     </li>
                 {% endif %}
-
+            
+                <li data-tab="patch-url">
+                    <a>
+                        <span>
+                            {% with pcp_length=package_commit_patches|length %}
+                               Patches: ({{ advisory.patches.count|add:pcp_length }})
+                            {% endwith %}
+                        </span>
+                    </a>
+                </li>
                 <!-- <li data-tab="history">
                     <a>
                         <span>
@@ -436,7 +445,6 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                     </tr>
                 {% endfor %}
             </div>
-
         
             <div class="tab-div content" data-content="epss">
                 {% if epss_data %}
@@ -503,6 +511,28 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 {% endif %}
             </div>
 
+            <div class="tab-div content" data-content="patch-url">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th style="width: 250px;"> Patch URL </th>
+                        </tr>
+                    </thead>
+                    {% for patch in patches %}
+                    <tr>
+                        <td class="wrap-strings"><a href="{{ patch.patch_url }}" target="_blank">{{ patch.patch_url }}<i
+                                    class="fa fa-external-link fa_link_custom"></i></a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2">
+                            There are no known patches.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            
             <div class="tab-div content" data-content="severities-vectors">
                 {% for severity_vector in severity_vectors %}
                     {% if severity_vector.vector.version == '2.0'  %}

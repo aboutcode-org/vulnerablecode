@@ -13,9 +13,11 @@ from unittest.mock import patch
 import pytest
 from packageurl import PackageURL
 from univers.version_range import GemVersionRange
+from univers.versions import RubygemsVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importers.ruby import RubyImporter
 from vulnerabilities.importers.ruby import get_affected_packages
 from vulnerabilities.importers.ruby import parse_ruby_advisory
 from vulnerabilities.improvers.default import DefaultImprover
@@ -94,3 +96,83 @@ def test_ruby_improver(mock_response):
 )
 def test_get_affected_packages(record, purl, result):
     assert get_affected_packages(record, purl) == result
+
+
+@pytest.fixture
+def mock_github_api(monkeypatch):
+    test_files = {
+        "gems/sinatra/CVE-2018-7212.yml": open(os.path.join(TEST_DATA, "CVE-2018-7212.yml")).read(),
+        "gems/sinatra/CVE-2018-11627.yml": open(
+            os.path.join(TEST_DATA, "CVE-2018-11627.yml")
+        ).read(),
+        "rubies/CVE-2010-1330.yml": open(os.path.join(TEST_DATA, "CVE-2010-1330.yml")).read(),
+        "rubies/CVE-2007-5770.yml": open(os.path.join(TEST_DATA, "CVE-2007-5770.yml")).read(),
+    }
+
+    dir_listing = {
+        "gems/sinatra": [
+            "gems/sinatra/CVE-2018-7212.yml",
+            "gems/sinatra/CVE-2018-11627.yml",
+        ],
+        "rubies": [
+            "rubies/CVE-2010-1330.yml",
+            "rubies/CVE-2007-5770.yml",
+        ],
+    }
+
+    def mock_fetch_github_directory_content(self, path):
+        return dir_listing.get(path, [])
+
+    def mock_fetch_github_file_content(self, path):
+        return test_files.get(path, "")
+
+    monkeypatch.setattr(
+        RubyImporter, "_fetch_github_directory_content", mock_fetch_github_directory_content
+    )
+    monkeypatch.setattr(RubyImporter, "_fetch_github_file_content", mock_fetch_github_file_content)
+
+
+def test_package_first_mode_gem_affecting(mock_github_api):
+    purl = PackageURL(type="gem", name="sinatra")
+    importer = RubyImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert len(advisories) == 2
+    assert all(a.affected_packages[0].package.name == "sinatra" for a in advisories)
+
+
+def test_package_first_mode_gem_version(mock_github_api):
+    purl = PackageURL(type="gem", name="sinatra", version="1.2.7")
+    importer = RubyImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert len(advisories) == 2
+    for adv in advisories:
+        affected = any(
+            purl.version
+            and ap.package.name == purl.name
+            and ap.affected_version_range
+            and ap.affected_version_range.contains(RubygemsVersion(purl.version))
+            for ap in adv.affected_packages
+        )
+        assert affected
+
+
+def test_package_first_mode_gem_not_affecting(mock_github_api):
+    purl = PackageURL(type="gem", name="nonexistent", version="9.9.9")
+    importer = RubyImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert advisories == []
+
+
+def test_package_first_mode_ruby_engine(mock_github_api):
+    purl = PackageURL(type="ruby", name="jruby")
+    importer = RubyImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert len(advisories) == 1
+    assert advisories[0].affected_packages[0].package.name == "jruby"
+
+
+def test_package_first_mode_ruby_engine_not_affecting(mock_github_api):
+    purl = PackageURL(type="ruby", name="nonexistent")
+    importer = RubyImporter(purl=purl)
+    advisories = list(importer.advisory_data())
+    assert advisories == []

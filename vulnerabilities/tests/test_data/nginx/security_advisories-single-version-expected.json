@@ -1,0 +1,385 @@
+[
+  {
+    "aliases": ["CVE-2022-41741"],
+    "summary": "Memory corruption in the ngx_http_mp4_module",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.23.1",
+        "fixed_version": "1.23.2"
+      },
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.23.1",
+        "fixed_version": "1.22.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2022/RBRRON6PYBJJM2XIAPQBFBVLR4Q6IHRA.html",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "medium",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-41741",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41741",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nginx.org/download/patch.2022.mp4.txt",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nginx.org/download/patch.2022.mp4.txt.asc",
+        "severities": []
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nginx.org/en/security_advisories.html"
+  },
+  {
+    "aliases": ["CVE-2022-41742"],
+    "summary": "Memory disclosure in the ngx_http_mp4_module",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.23.1",
+        "fixed_version": "1.23.2"
+      },
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.0.7|<=1.0.15|>=1.1.3|<=1.23.1",
+        "fixed_version": "1.22.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2022/RBRRON6PYBJJM2XIAPQBFBVLR4Q6IHRA.html",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "medium",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2022-41742",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-41742",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nginx.org/download/patch.2022.mp4.txt",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nginx.org/download/patch.2022.mp4.txt.asc",
+        "severities": []
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nginx.org/en/security_advisories.html"
+  },
+  {
+    "aliases": ["CVE-2021-23017"],
+    "summary": "1-byte memory overwrite in resolver",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=0.6.18|<=1.20.0",
+        "fixed_version": "1.21.0"
+      },
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=0.6.18|<=1.20.0",
+        "fixed_version": "1.20.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2021/000300.html",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "medium",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2021-23017",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-23017",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nginx.org/download/patch.2021.resolver.txt",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nginx.org/download/patch.2021.resolver.txt.asc",
+        "severities": []
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nginx.org/en/security_advisories.html"
+  },
+  {
+    "aliases": ["CVE-2019-9511"],
+    "summary": "Excessive CPU usage in HTTP/2 with small window updates",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2",
+        "fixed_version": "1.17.3"
+      },
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2",
+        "fixed_version": "1.16.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "medium",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2019-9511",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9511",
+        "severities": []
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nginx.org/en/security_advisories.html"
+  },
+  {
+    "aliases": ["CVE-2019-9513"],
+    "summary": "Excessive CPU usage in HTTP/2 with priority changes",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2",
+        "fixed_version": "1.17.3"
+      },
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2",
+        "fixed_version": "1.16.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "low",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2019-9513",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9513",
+        "severities": []
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nginx.org/en/security_advisories.html"
+  },
+  {
+    "aliases": ["CVE-2019-9516"],
+    "summary": "Excessive memory usage in HTTP/2 with zero length headers",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2",
+        "fixed_version": "1.17.3"
+      },
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/>=1.9.5|<=1.17.2",
+        "fixed_version": "1.16.1"
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://mailman.nginx.org/pipermail/nginx-announce/2019/000249.html",
+        "severities": [
+          {
+            "system": "generic_textual",
+            "value": "low",
+            "scoring_elements": ""
+          }
+        ]
+      },
+      {
+        "reference_id": "CVE-2019-9516",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9516",
+        "severities": []
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nginx.org/en/security_advisories.html"
+  },
+  {
+    "aliases": ["CVE-2009-4487"],
+    "summary": "An error log data are not sanitized",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "nginx",
+          "namespace": "",
+          "name": "nginx",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:nginx/*",
+        "fixed_version": null
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "CVE-2009-4487",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2009-4487",
+        "severities": []
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nginx.org/en/security_advisories.html"
+  }
+]

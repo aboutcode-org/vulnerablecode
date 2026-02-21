@@ -15,6 +15,7 @@ import pytest
 from bs4 import BeautifulSoup
 from commoncode import testcase
 from django.db.models.query import QuerySet
+from packageurl import PackageURL
 from univers.version_range import NginxVersionRange
 
 from vulnerabilities import models
@@ -239,3 +240,41 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
             "improver/improver-inferences-expected.json", must_exist=False
         )
         util_tests.check_results_against_json(results, expected_file)
+
+    def test_nginx_importer_package_first_mode_found(self):
+        test_file = self.get_test_loc("security_advisories.html")
+        with open(test_file) as tf:
+            test_text = tf.read()
+
+        purl = PackageURL(type="nginx", name="nginx", version="1.17.2")
+        pipeline = nginx_importer.NginxImporterPipeline(purl=purl)
+        pipeline.advisory_data = test_text
+        advisories = list(pipeline.collect_advisories())
+        expected_file = self.get_test_loc("security_advisories-single-version-expected.json")
+        advisories_dicts = [a.to_dict() for a in advisories]
+        util_tests.check_results_against_json(advisories_dicts, expected_file)
+
+    def test_nginx_importer_package_first_mode_none_found(self):
+        test_file = self.get_test_loc("security_advisories.html")
+        with open(test_file) as tf:
+            test_text = tf.read()
+
+        purl = PackageURL(type="nginx", name="nonexistent")
+        pipeline = nginx_importer.NginxImporterPipeline(purl=purl)
+        pipeline.advisory_data = test_text
+        advisories = list(pipeline.collect_advisories())
+        assert advisories == []
+
+    def test_nginx_importer_package_first_mode_with_os_qualifier(self):
+        test_file = self.get_test_loc("security_advisories.html")
+        with open(test_file) as tf:
+            test_text = tf.read()
+
+        purl = PackageURL(type="nginx", name="nginx", qualifiers={"os": "windows"})
+        pipeline = nginx_importer.NginxImporterPipeline(purl=purl)
+        pipeline.advisory_data = test_text
+        advisories = list(pipeline.collect_advisories())
+
+        for adv in advisories:
+            for pkg in adv.affected_packages:
+                assert pkg.package.qualifiers.get("os") == "windows"

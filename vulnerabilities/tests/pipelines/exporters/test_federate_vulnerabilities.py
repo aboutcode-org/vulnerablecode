@@ -99,8 +99,11 @@ class TestFederatePackageVulnerabilities(TestCase):
         working_dir = Path(tempfile.mkdtemp())
         pipeline = FederatePackageVulnerabilities()
         pipeline.repo = Repo.init(working_dir)
+        pipeline.repo_path = working_dir
         pipeline.log = self.logger.write
-        pipeline.execute()
+        exit_code, _ = pipeline.execute()
+
+        self.assertEqual(exit_code, 0)
 
         result_advisories_yml = next(working_dir.rglob("1.2.4/advisories.yml"))
         result_advisory1_yml = next(working_dir.rglob("ADV-001.yml"))

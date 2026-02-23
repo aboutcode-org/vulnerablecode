@@ -8,7 +8,9 @@
 
 
 import itertools
+import json
 import shutil
+from datetime import datetime
 from operator import attrgetter
 from pathlib import Path
 
@@ -16,17 +18,28 @@ import saneyaml
 from aboutcode.pipeline import LoopProgress
 from django.conf import settings
 from django.db.models import Prefetch
+from django.utils import timezone
 
 from aboutcode.federated import DataFederation
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import ImpactedPackageAffecting
+from vulnerabilities.models import ImpactedPackageFixedBy
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes import federatedcode
+from vulnerabilities.utils import load_json
 
 
 class FederatePackageVulnerabilities(VulnerableCodePipeline):
-    """Export package vulnerabilities and advisory to FederatedCode."""
+    """
+    Export package vulnerabilities and advisories to FederatedCode.
+
+    - Export all packages and advisories to FederatedCode.
+    - On subsequent runs, export incremental updates.
+    - Remove `checkpoint.json` file from FederatedCode git repository to
+        force a full re-export of all packages and advisories.
+    """
 
     pipeline_id = "federate_vulnerabilities_v2"
 
@@ -37,8 +50,10 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
             cls.create_federatedcode_working_dir,
             cls.fetch_federation_config,
             cls.clone_federation_repository,
+            cls.load_checkpoint,
             cls.publish_package_related_advisories,
             cls.publish_advisories,
+            cls.save_checkpoint,
             cls.delete_working_dir,
         )
 
@@ -64,29 +79,35 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
             clone_path=self.working_path / "advisories-data",
             logger=self.log,
         )
+        self.repo_path = Path(self.repo.working_dir)
+
+    def load_checkpoint(self):
+        checkpoint_file = self.repo_path / "checkpoint.json"
+        data = {}
+        self.start_time = str(timezone.now())
+        self.checkpoint = None
+        if checkpoint_file.exists():
+            data = load_json(checkpoint_file)
+
+        if last_run := data.get("last_run"):
+            self.checkpoint = datetime.fromisoformat(last_run)
 
     def publish_package_related_advisories(self):
         """Publish package advisories relations to FederatedCode"""
-        repo_path = Path(self.repo.working_dir)
         commit_count = 1
-        batch_size = 2000
+        batch_size = 4000
         chunk_size = 500
         files_to_commit = set()
 
-        distinct_packages_count = (
-            PackageV2.objects.values("type", "namespace", "name", "version")
-            .distinct("type", "namespace", "name", "version")
-            .count()
-        )
-        package_qs = package_prefetched_qs()
+        packages_count, package_qs = package_prefetched_qs(self.checkpoint)
         grouped_packages = itertools.groupby(
             package_qs.iterator(chunk_size=chunk_size),
             key=attrgetter("type", "namespace", "name", "version"),
         )
 
-        self.log(f"Exporting advisory relation for {distinct_packages_count} packages.")
+        self.log(f"Exporting advisory relation for {packages_count} packages.")
         progress = LoopProgress(
-            total_iterations=distinct_packages_count,
+            total_iterations=packages_count,
             progress_step=5,
             logger=self.log,
         )
@@ -96,7 +117,7 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
             package_vulnerability_path = f"packages/{package_repo}/{datafile_path}"
 
             write_file(
-                repo_path=repo_path,
+                repo_path=self.repo_path,
                 file_path=package_vulnerability_path,
                 data=package_vulnerabilities,
             )
@@ -104,7 +125,10 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
 
             if len(files_to_commit) > batch_size:
                 if federatedcode.commit_and_push_changes(
-                    commit_message=self.commit_message("package advisory relations", commit_count),
+                    commit_message=self.commit_message(
+                        "Add new package advisory relations",
+                        commit_count,
+                    ),
                     repo=self.repo,
                     files_to_commit=files_to_commit,
                     logger=self.log,
@@ -115,7 +139,7 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
         if files_to_commit:
             federatedcode.commit_and_push_changes(
                 commit_message=self.commit_message(
-                    "package advisory relations",
+                    "Add new package advisory relations",
                     commit_count,
                     commit_count,
                 ),
@@ -124,16 +148,15 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
                 logger=self.log,
             )
 
-        self.log(f"Federated {distinct_packages_count} package advisories.")
+        self.log(f"Federated {packages_count} package advisories.")
 
     def publish_advisories(self):
         """Publish advisory to FederatedCode"""
-        repo_path = Path(self.repo.working_dir)
         commit_count = 1
-        batch_size = 2000
+        batch_size = 4000
         chunk_size = 1000
         files_to_commit = set()
-        advisory_qs = advisory_prefetched_qs()
+        advisory_qs = advisory_prefetched_qs(self.checkpoint)
         advisory_count = advisory_qs.count()
 
         self.log(f"Exporting {advisory_count} advisory.")
@@ -146,7 +169,7 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
             advisory_data = serialize_advisory(advisory)
             adv_file = f"advisories/{advisory.avid}.yml"
             write_file(
-                repo_path=repo_path,
+                repo_path=self.repo_path,
                 file_path=adv_file,
                 data=advisory_data,
             )
@@ -154,7 +177,7 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
 
             if len(files_to_commit) > batch_size:
                 if federatedcode.commit_and_push_changes(
-                    commit_message=self.commit_message("advisories", commit_count),
+                    commit_message=self.commit_message("Add new advisories", commit_count),
                     repo=self.repo,
                     files_to_commit=files_to_commit,
                     logger=self.log,
@@ -165,7 +188,7 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
         if files_to_commit:
             federatedcode.commit_and_push_changes(
                 commit_message=self.commit_message(
-                    "advisories",
+                    "Add new advisories",
                     commit_count,
                     commit_count,
                 ),
@@ -175,6 +198,19 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
             )
 
         self.log(f"Successfully federated {advisory_count} advisories.")
+
+    def save_checkpoint(self):
+        checkpoint_file = self.repo_path / "checkpoint.json"
+        checkpoint = {"last_run": self.start_time}
+        with open(checkpoint_file, "w") as f:
+            json.dump(checkpoint, f, indent=2)
+
+        federatedcode.commit_and_push_changes(
+            commit_message=self.commit_message("Update checkpoint", 1, 1),
+            repo=self.repo,
+            files_to_commit=[checkpoint_file],
+            logger=self.log,
+        )
 
     def delete_working_dir(self):
         """Remove temporary working dir."""
@@ -186,20 +222,21 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
 
     def commit_message(
         self,
-        item_type,
+        heading,
         commit_count,
         total_commit_count="many",
     ):
         """Commit message for pushing package vulnerability."""
         return federatedcode.commit_message(
-            item_type=item_type,
+            heading=heading,
             commit_count=commit_count,
             total_commit_count=total_commit_count,
         )
 
 
-def package_prefetched_qs():
-    return (
+def package_prefetched_qs(checkpoint):
+    count = None
+    qs = (
         PackageV2.objects.order_by("type", "namespace", "name", "version")
         .only("package_url", "type", "namespace", "name", "version")
         .prefetch_related(
@@ -224,6 +261,26 @@ def package_prefetched_qs():
         )
     )
 
+    if checkpoint:
+        affected_package_ids_qs = (
+            ImpactedPackageAffecting.objects.filter(created_at__gte=checkpoint)
+            .values_list("package_id", flat=True)
+            .distinct()
+        )
+        fixing_package_ids_qs = (
+            ImpactedPackageFixedBy.objects.filter(created_at__gte=checkpoint)
+            .values_list("package_id", flat=True)
+            .distinct()
+        )
+
+        updated_packages = affected_package_ids_qs.union(fixing_package_ids_qs)
+        count = updated_packages.count()
+        qs = qs.filter(id__in=updated_packages)
+
+    count = qs.count() if not count else count
+
+    return count, qs
+
 
 def get_package_related_advisory(packages):
     package_vulnerabilities = []
@@ -243,14 +300,16 @@ def get_package_related_advisory(packages):
     return package.package_url, package_vulnerabilities
 
 
-def advisory_prefetched_qs():
-    return AdvisoryV2.objects.prefetch_related(
+def advisory_prefetched_qs(checkpoint):
+    qs = AdvisoryV2.objects.order_by("date_collected").prefetch_related(
         "impacted_packages",
         "aliases",
         "references",
         "severities",
         "weaknesses",
     )
+
+    return qs.filter(date_collected__gte=checkpoint) if checkpoint else qs
 
 
 def serialize_severity(sev):

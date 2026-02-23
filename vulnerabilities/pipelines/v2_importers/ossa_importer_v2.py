@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import re
 from pathlib import Path
 from typing import Iterable
 from typing import Tuple
@@ -16,11 +15,10 @@ from dateutil import parser as dateparser
 from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
 from pytz import UTC
-from univers.version_constraint import VersionConstraint
+from univers.version_range import InvalidVersionRange
 from univers.version_range import PypiVersionRange
-from univers.versions import PypiVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -42,7 +40,6 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def steps(cls):
         return (
             cls.clone,
-            cls.fetch,
             cls.collect_and_store_advisories,
             cls.clean_downloads,
         )
@@ -51,41 +48,33 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
-    def fetch(self):
+    def get_processable_files(self) -> Iterable[Path]:
+        """
+        Returns a list of OSSA YAML files that are eligible for processing based on the cutoff year.
+        """
         ossa_dir = Path(self.vcs_response.dest_dir) / "ossa"
-        self.processable_advisories = []
-        skipped_old = 0
-
         for file_path in sorted(ossa_dir.glob("OSSA-*.yaml")):
-            data = load_yaml(str(file_path))
-
-            date_str = data.get("date")
-            date_published = dateparser.parse(str(date_str)).replace(tzinfo=UTC)
-            if date_published.year < self.cutoff_year:
-                skipped_old += 1
-                continue
-
-            self.processable_advisories.append(file_path)
-
-        if skipped_old > 0:
-            self.log(f"Skipped {skipped_old} advisories older than {self.cutoff_year}")
-        self.log(f"Fetched {len(self.processable_advisories)} processable advisories")
+            filename = file_path.stem
+            year = int(filename.split("-")[1])
+            if year >= self.cutoff_year:
+                yield file_path
 
     def advisories_count(self) -> int:
-        return len(self.processable_advisories)
+        return sum(1 for _ in self.get_processable_files())
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
-        for file_path in self.processable_advisories:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
+        for file_path in self.get_processable_files():
             advisory = self.process_file(file_path)
             yield advisory
 
-    def process_file(self, file_path) -> AdvisoryData:
+    def process_file(self, file_path) -> AdvisoryDataV2:
         """Parse a single OSSA YAML file and extract advisory data"""
         data = load_yaml(str(file_path))
         ossa_id = data.get("id")
 
         date_str = data.get("date")
-        date_published = dateparser.parse(str(date_str)).replace(tzinfo=UTC)
+        if date_str:
+            date_published = dateparser.parse(str(date_str)).replace(tzinfo=UTC)
 
         aliases = []
         for vulnerability in data.get("vulnerabilities"):
@@ -106,7 +95,8 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
 
         references = []
-        for link in (data.get("issues")).get("links"):
+        issues = data.get("issues")
+        for link in issues.get("links", []):
             references.append(ReferenceV2(url=str(link)))
         reviews = data.get("reviews")
         for branch, links in reviews.items():
@@ -120,12 +110,12 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         description = data.get("description")
         summary = f"{title}\n\n{description}"
         url = f"https://security.openstack.org/ossa/{ossa_id}.html"
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=ossa_id,
             aliases=aliases,
             summary=summary,
             affected_packages=affected_packages,
-            references_v2=references,
+            references=references,
             date_published=date_published,
             url=url,
         )
@@ -158,55 +148,13 @@ class OSSAImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         yield product_str, version_str
 
     def parse_version_range(self, version_str: str) -> PypiVersionRange:
-        """
-        Normalizes the version string and extracts individual constraints to create a PypiVersionRange object.
-        """
-        original_version_str = version_str
+        """Parse a version string from OSSA advisories into a PypiVersionRange object."""
 
-        if version_str.lower() == "all versions":
-            self.log(f"Skipping 'all versions' - cannot parse to specific range")
+        try:
+            return PypiVersionRange.from_ossa_native(version_str)
+        except InvalidVersionRange as e:
+            self.log(f"Failed to parse version range {version_str!r}: {e}")
             return None
-
-        # Normalize "and" to comma
-        # "<=5.0.3, >=6.0.0 <=6.1.0 and ==7.0.0" -> "<=5.0.3, >=6.0.0 <=6.1.0, ==7.0.0"
-        version_str = version_str.lower().replace(" and ", ",")
-
-        # Remove spaces around operators
-        # "<=5.0.3, >=6.0.0 <=6.1.0, ==7.0.0" -> "<=5.0.3,>=6.0.0<=6.1.0,==7.0.0"
-        version_str = re.sub(r"\s+([<>=!]+)", r"\1", version_str)
-        version_str = re.sub(r"([<>=!]+)\s+", r"\1", version_str)
-
-        # Insert comma between consecutive constraints
-        # "<=5.0.3,>=6.0.0<=6.1.0,==7.0.0" -> "<=5.0.3,>=6.0.0,<=6.1.0,==7.0.0"
-        version_str = re.sub(r"(\d)([<>=!])", r"\1,\2", version_str)
-
-        constraints = []
-        for part in version_str.split(","):
-            comparator = None
-            version = part
-
-            for op in ["==", "!=", "<=", ">=", "<", ">", "="]:
-                if part.startswith(op):
-                    comparator = op
-                    version = part[len(op) :].strip()
-                    break
-
-            # Default to "=" if no comparator is found
-            # "1.16.0" -> "=1.16.0"
-            if comparator is None:
-                comparator = "="
-            # "==27.0.0" -> "=27.0.0"
-            if comparator == "==":
-                comparator = "="
-            try:
-                constraints.append(
-                    VersionConstraint(comparator=comparator, version=PypiVersion(version))
-                )
-            except ValueError as e:
-                self.log(f"Failed to parse version '{version}' from '{original_version_str}' : {e}")
-                continue
-
-        return PypiVersionRange(constraints=constraints) if constraints else None
 
     def clean_downloads(self):
         if self.vcs_response:

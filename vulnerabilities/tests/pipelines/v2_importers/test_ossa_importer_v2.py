@@ -37,7 +37,6 @@ def mock_fetch_via_vcs(mock_vcs_response):
 def test_collect_advisories(mock_fetch_via_vcs):
     pipeline = OSSAImporterPipeline()
     pipeline.clone()
-    pipeline.fetch()
     advisories = [adv.to_dict() for adv in pipeline.collect_advisories()]
     expected_file = TEST_DATA / "expected.json"
     util_tests.check_results_against_json(advisories, expected_file)

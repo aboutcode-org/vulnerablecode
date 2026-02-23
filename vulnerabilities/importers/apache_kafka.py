@@ -20,6 +20,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -99,7 +100,10 @@ class ApacheKafkaImporter(Importer):
 
     @staticmethod
     def fetch_advisory_page(self):
-        page = requests.get(self.GH_PAGE_URL)
+        page = requests.get(
+            self.GH_PAGE_URL,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        )
         return page.content
 
     def advisory_data(self):

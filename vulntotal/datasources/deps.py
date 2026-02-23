@@ -17,6 +17,8 @@ from packageurl import PackageURL
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +27,10 @@ class DepsDataSource(DataSource):
     license_url = "TODO"
 
     def fetch_json_response(self, url):
-        response = requests.get(url)
+        response = requests.get(
+            url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        )
         if response.status_code != 200 or response.text == "Not Found":
             logger.error(f"Error while fetching {url}")
             return

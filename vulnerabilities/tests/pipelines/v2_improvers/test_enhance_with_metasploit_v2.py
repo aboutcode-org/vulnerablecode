@@ -22,6 +22,8 @@ from vulnerabilities.pipelines.v2_improvers.enhance_with_metasploit import (
 )
 from vulnerabilities.utils import load_json
 
+from django.conf import settings
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(
     BASE_DIR, "../../test_data", "metasploit_improver/modules_metadata_base.json"
@@ -56,3 +58,7 @@ def test_metasploit_improver(mock_get):
     # Run metasploit Improver again when there are matching aliases.
     improver.execute()
     assert AdvisoryExploit.objects.count() == 1
+    
+    args, kwargs = mock_get.call_args
+    assert "headers" in kwargs, "Headers were not passed!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT

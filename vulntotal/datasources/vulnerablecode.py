@@ -19,6 +19,8 @@ from packageurl import PackageURL
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -139,9 +141,22 @@ def fetch_vulnerablecode_query(url: str, payload: dict):
         raise VCIOTokenError(msg)
 
     response = (
-        requests.post(url, headers={"Authorization": f"Token {vcio_token}"}, json=payload)
+        requests.post(
+            url, 
+            headers={
+                "Authorization": f"Token {vcio_token}",
+                "User-Agent": settings.VC_USER_AGENT
+            }, 
+            json=payload
+        )
         if payload is not None
-        else requests.get(url, headers={"Authorization": f"Token {vcio_token}"})
+        else requests.get(
+            url, 
+            headers={
+                "Authorization": f"Token {vcio_token}",
+                "User-Agent": settings.VC_USER_AGENT
+            }
+        )
     )
 
     if response.text.startswith('{"detail":'):

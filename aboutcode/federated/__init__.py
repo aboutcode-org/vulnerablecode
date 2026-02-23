@@ -26,6 +26,8 @@ from packageurl import normalize_qualifiers
 from packageurl import normalize_subpath
 from packageurl import normalize_version
 
+from django.conf import settings
+
 __version__ = "0.1.0"
 
 """
@@ -559,7 +561,7 @@ class DataFederation:
             federation_name=name,
             config_filename=cls.CONFIG_FILENAME,
         )
-        headers = {"User-Agent": "AboutCode/FederatedCode"}
+        headers = {"User-Agent": settings.VC_USER_AGENT}
         response = requests.get(url=rcf_url, headers=headers)
         if not response.ok:
             raise Exception(f"Failed to fetch Federation config: {rcf_url}")

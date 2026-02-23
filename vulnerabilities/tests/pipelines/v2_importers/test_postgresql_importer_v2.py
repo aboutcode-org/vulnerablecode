@@ -15,6 +15,8 @@ from univers.versions import SemverVersion
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.postgresql_importer import PostgreSQLImporterPipeline
 
+from django.conf import settings
+
 HTML_PAGE_WITH_LINKS = """
 <html>
   <body>
@@ -89,6 +91,10 @@ def test_collect_advisories(mock_get, importer):
     assert str(advisory.affected_packages[0].fixed_version_range) == "vers:generic/10.2.0"
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("10.0.0"))
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("10.1.0"))
+    
+    args, kwargs = mock_get.call_args
+    assert "headers" in kwargs, "Headers were not passed!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT
 
 
 @patch("vulnerabilities.pipelines.v2_importers.postgresql_importer.requests.get")
@@ -102,6 +108,10 @@ def test_collect_advisories_with_no_fixed_version_range(mock_get, importer):
     assert advisory.affected_packages[0].fixed_version_range is None
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("9.5"))
     assert advisory.affected_packages[0].affected_version_range.contains(SemverVersion("9.6"))
+    
+    args, kwargs = mock_get.call_args
+    assert "headers" in kwargs, "Headers were not passed!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT
 
 
 @patch("vulnerabilities.pipelines.v2_importers.postgresql_importer.requests.get")
@@ -114,6 +124,10 @@ def test_cvss_parsing(mock_get, importer):
     assert severity.system.identifier == "cvssv3"
     assert severity.value == "9.8"
     assert "AV:N/AC:L/PR:N/UI:N" in severity.scoring_elements
+    
+    args, kwargs = mock_get.call_args
+    assert "headers" in kwargs, "Headers were not passed!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT
 
 
 @patch("vulnerabilities.pipelines.v2_importers.postgresql_importer.requests.get")
@@ -124,3 +138,7 @@ def test_collect_links(mock_get, importer):
     assert len(importer.links) == 3
     assert any("advisory1.html" in link for link in importer.links)
     assert any("advisory2.html" in link for link in importer.links)
+    
+    args, kwargs = mock_get.call_args
+    assert "headers" in kwargs, "Headers were not passed!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT

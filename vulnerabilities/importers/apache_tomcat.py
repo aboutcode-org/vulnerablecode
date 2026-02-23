@@ -27,6 +27,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_TOMCAT
+from django.conf import settings
 
 LOGGER = logging.getLogger(__name__)
 
@@ -126,7 +127,10 @@ class ApacheTomcatImporter(Importer):
         """
         links = self.fetch_advisory_links("https://tomcat.apache.org/security")
         for page_url in links:
-            yield page_url, requests.get(page_url).content
+            yield page_url, requests.get(
+                page_url,
+                headers={'User-Agent': settings.VC_USER_AGENT}
+            ).content
 
     def fetch_advisory_links(self, url):
         """
@@ -134,7 +138,10 @@ class ApacheTomcatImporter(Importer):
         Each page link is in the form of `https://tomcat.apache.org/security-10.html`,
         for instance, for v10.
         """
-        data = requests.get(url).content
+        data = requests.get(
+            url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        ).content
         soup = BeautifulSoup(data, features="lxml")
         for tag in soup.find_all("a"):
             link = tag.get("href")

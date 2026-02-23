@@ -28,6 +28,7 @@ from vulnerabilities.pipes.apache_kafka import parse_range
 from vulnerabilities.pipes.apache_kafka import parse_summary
 from vulnerabilities.utils import build_description
 
+from django.conf import settings
 
 class ApacheKafkaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Import Apache Kafka Advisories"""
@@ -59,7 +60,10 @@ class ApacheKafkaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def fetch(self):
         self.log(f"Fetch `{self.url}`")
-        self.advisory_data = requests.get(self.url).text
+        self.advisory_data = requests.get(
+            self.url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        ).text
         self.soup = BeautifulSoup(self.advisory_data, features="lxml")
 
     def advisories_count(self):

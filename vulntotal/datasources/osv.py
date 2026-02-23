@@ -18,6 +18,8 @@ from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
 from vulntotal.vulntotal_utils import get_item
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -37,7 +39,11 @@ class OSVDataSource(DataSource):
             A JSON object containing the advisory information for the package, or None if an error occurs while fetching data from the OSV API.
         """
 
-        response = requests.post(self.url, data=str(payload))
+        response = requests.post(
+            self.url, 
+            headers={'User-Agent': settings.VC_USER_AGENT},
+            data=str(payload)
+        )
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:

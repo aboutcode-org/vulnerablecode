@@ -20,6 +20,8 @@ from vulnerabilities.models import AdvisoryExploit
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
+from django.conf import settings
+
 
 class MetasploitImproverPipeline(VulnerableCodePipeline):
     """
@@ -41,7 +43,10 @@ class MetasploitImproverPipeline(VulnerableCodePipeline):
         url = "https://raw.githubusercontent.com/rapid7/metasploit-framework/master/db/modules_metadata_base.json"
         self.log(f"Fetching {url}")
         try:
-            response = requests.get(url)
+            response = requests.get(
+                url,
+                headers={'User-Agent': settings.VC_USER_AGENT}
+            )
             response.raise_for_status()
         except requests.exceptions.HTTPError as http_err:
             self.log(

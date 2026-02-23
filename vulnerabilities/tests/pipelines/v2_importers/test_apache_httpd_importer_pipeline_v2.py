@@ -15,6 +15,7 @@ from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import ApacheH
 from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import fetch_links
 from vulnerabilities.pipelines.v2_importers.apache_httpd_importer import get_weaknesses
 
+from django.conf import settings
 
 # Dummy responses
 class DummyResponseContent:
@@ -53,6 +54,10 @@ def test_fetch_links_filters_and_resolves(monkeypatch):
     # Monkeypatch HTTP GET for HTML
     def fake_get(url):
         assert url == base_url
+        
+        assert "headers" in kwargs, "Headers were not passed!"
+        assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT
+        
         return DummyResponseContent(html.encode("utf-8"))
 
     monkeypatch.setattr(requests, "get", fake_get)
@@ -128,6 +133,9 @@ def test_collect_advisories_and_to_advisory(monkeypatch, pipeline):
     }
     # Monkeypatch requests.get to return JSON
     def fake_get(u):
+        assert "headers" in kwargs, "Headers were not passed!"
+        assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT
+        
         if u == "u1":
             return DummyResponseJSON(sample1)
         elif u == "u2":

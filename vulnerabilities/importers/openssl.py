@@ -25,6 +25,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,10 @@ class OpensslImporter(Importer):
     importer_name = "OpenSSL Importer"
 
     def fetch(self):
-        response = requests.get(url=self.url)
+        response = requests.get(
+            url=self.url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        )
         if not response.status_code == 200:
             logger.error(f"Error while fetching {self.url}: {response.status_code}")
             return

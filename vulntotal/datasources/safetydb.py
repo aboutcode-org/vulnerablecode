@@ -18,6 +18,8 @@ from vulntotal.validator import DataSource
 from vulntotal.validator import InvalidCVEError
 from vulntotal.validator import VendorData
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -36,7 +38,10 @@ class SafetydbDataSource(DataSource):
             A JSON object containing the advisory information for insecure packages, or None if an error occurs while fetching data from safetydb repo's URL.
         """
 
-        response = requests.get(self.url)
+        response = requests.get(
+            self.url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        )
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:

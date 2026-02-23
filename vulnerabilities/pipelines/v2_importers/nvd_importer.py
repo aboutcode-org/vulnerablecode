@@ -27,6 +27,7 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_cwe_id
 from vulnerabilities.utils import get_item
 
+from django.conf import settings
 
 class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
@@ -82,7 +83,10 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         advisory_count = 0
         try:
-            response = requests.get(url)
+            response = requests.get(
+                url,
+                headers={'User-Agent': settings.VC_USER_AGENT}
+            )
             response.raise_for_status()
             data = response.json()
         except requests.HTTPError as http_err:
@@ -104,7 +108,10 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 def fetch(url, logger=None):
     if logger:
         logger(f"Fetching `{url}`")
-    gz_file = requests.get(url)
+    gz_file = requests.get(
+        url,
+        headers={'User-Agent': settings.VC_USER_AGENT}
+    )
     data = gzip.decompress(gz_file.content)
     try:
         data = data.decode("utf-8")

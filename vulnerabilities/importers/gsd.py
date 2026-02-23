@@ -22,6 +22,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import build_description
 from vulnerabilities.utils import dedupe
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,10 @@ class GSDImporter:  # TODO inherit from Importer
     url = "https://codeload.github.com/cloudsecurityalliance/gsd-database/zip/refs/heads/main"
 
     def advisory_data(self) -> Iterable[AdvisoryData]:
-        response = requests.get(self.url).content
+        response = requests.get(
+            self.url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        ).content
         with ZipFile(BytesIO(response)) as zip_file:
             for file_name in zip_file.namelist():
                 if file_name == "gsd-database-main/allowlist.json" or not file_name.endswith(

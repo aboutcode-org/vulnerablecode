@@ -17,6 +17,7 @@ from vulnerabilities.models import Alias
 from vulnerabilities.models import Exploit
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
+from django.conf import settings
 
 class VulnerabilityKevPipeline(VulnerableCodePipeline):
     """
@@ -39,7 +40,10 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
         self.log(f"Fetching {kev_url}")
 
         try:
-            response = requests.get(kev_url)
+            response = requests.get(
+                kev_url,
+                headers={'User-Agent': settings.VC_USER_AGENT}
+            )
             response.raise_for_status()
         except requests.exceptions.HTTPError as http_err:
             self.log(

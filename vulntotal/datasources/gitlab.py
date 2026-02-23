@@ -23,6 +23,8 @@ from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
 from vulntotal.vulntotal_utils import gitlab_constraints_satisfied
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -69,14 +71,18 @@ class GitlabDataSource(DataSource):
 
 def fetch_directory_contents(package_slug):
     url = f"https://gitlab.com/api/v4/projects/12006272/repository/tree?path={package_slug}"
-    response = requests.get(url)
+    response = requests.get(
+        url,
+        headers={'User-Agent': settings.VC_USER_AGENT}
+    )
     if response.status_code == 200:
         return response.json()
 
 
 def fetch_yaml(file_path):
     response = requests.get(
-        f"https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/raw/master/{file_path}"
+        f"https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/raw/master/{file_path}",
+        headers={'User-Agent': settings.VC_USER_AGENT}
     )
     if response.status_code == 200:
         return response.text
@@ -147,7 +153,11 @@ def get_casesensitive_slug(path, package_slug):
     has_next = True
 
     while has_next:
-        response = requests.post(url, json=payload).json()
+        response = requests.post(
+            url,
+            headers={'User-Agent': settings.VC_USER_AGENT}, 
+            json=payload
+        ).json()
         paginated_tree = response[0]["data"]["project"]["repository"]["paginatedTree"]
 
         for slug in paginated_tree["nodes"][0]["trees"]["nodes"]:

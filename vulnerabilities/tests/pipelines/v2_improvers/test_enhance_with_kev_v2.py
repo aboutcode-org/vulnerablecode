@@ -20,6 +20,8 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.pipelines.v2_improvers.enhance_with_kev import VulnerabilityKevPipeline
 from vulnerabilities.utils import load_json
 
+from django.conf import settings
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA = os.path.join(BASE_DIR, "../../test_data", "kev_data.json")
 
@@ -55,3 +57,7 @@ def test_kev_improver(mock_get):
     # Run Kev Improver again when there are matching aliases.
     improver.execute()
     assert AdvisoryExploit.objects.count() == 1
+    
+    args, kwargs = mock_get.call_args
+    assert "headers" in kwargs, "Headers were not passed!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT

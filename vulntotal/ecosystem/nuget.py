@@ -8,6 +8,7 @@
 #
 
 from urllib.parse import urljoin
+from django.conf import settings
 
 import requests
 
@@ -25,7 +26,10 @@ def get_closest_nuget_package_name(query):
     url_nuget_service = "https://api.nuget.org/v3/index.json"
     url_nuget_search = ""
 
-    api_resources = requests.get(url_nuget_service).json()
+    api_resources = requests.get(
+      url_nuget_service,
+      headers={'User-Agent': settings.VC_USER_AGENT}
+    ).json()
     for resource in api_resources.get("resources") or []:
         if resource.get("@type") == "SearchQueryService":
             url_nuget_search = resource["@id"]
@@ -33,7 +37,10 @@ def get_closest_nuget_package_name(query):
 
     if url_nuget_search:
         url_query = urljoin(url_nuget_search, f"?q={query}")
-        query_response = requests.get(url_query).json()
+        query_response = requests.get(
+          url_query,
+          headers={'User-Agent': settings.VC_USER_AGENT}
+        ).json()
         if query_response.get("data"):
             return query_response["data"][0]["id"]
 
@@ -55,7 +62,10 @@ def search_closest_nuget_package_name(query):
             ...
     """
     url_query = f"https://azuresearch-usnc.nuget.org/autocomplete?q={query}"
-    query_response = requests.get(url_query).json()
+    query_response = requests.get(
+      url_query,
+      headers={'User-Agent': settings.VC_USER_AGENT}
+    ).json()
     data = query_response.get("data")
     if data:
         return data[0]

@@ -27,6 +27,7 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.utils import create_weaknesses_list
 from vulnerabilities.utils import dedupe
 from vulnerabilities.utils import get_item
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +84,10 @@ class DebianImporter(Importer):
     importer_name = "Debian Importer"
 
     def get_response(self):
-        response = requests.get(self.api_url)
+        response = requests.get(
+            self.api_url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        )
         if response.status_code == 200:
             return response.json()
         raise Exception(

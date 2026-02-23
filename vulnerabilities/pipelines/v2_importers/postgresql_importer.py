@@ -23,6 +23,7 @@ from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
+from django.conf import settings
 
 class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
@@ -50,7 +51,10 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         url = "https://www.postgresql.org/support/security/"
 
-        data = requests.get(url).content
+        data = requests.get(
+            url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        ).content
         yield from self.to_advisories(data, url)
 
     def collect_links(self):
@@ -60,7 +64,10 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         while True:
             unvisited_urls = known_urls - visited_urls
             for url in unvisited_urls:
-                data = requests.get(url).content
+                data = requests.get(
+                    url,
+                    headers={'User-Agent': settings.VC_USER_AGENT}
+                ).content
                 visited_urls.add(url)
                 known_urls.update(self.find_advisory_urls(data))
             if known_urls == visited_urls:

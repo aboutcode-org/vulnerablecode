@@ -33,6 +33,7 @@ from vulnerabilities.severity_systems import REDHAT_AGGREGATE
 from vulnerabilities.utils import load_json
 from vulntotal import vulntotal_utils
 
+from django.conf import settings
 
 class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Import RedHat Advisories (RHSA, RHEA and RHBA)
@@ -58,7 +59,10 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def fetch(self):
         archive_latest_url = urljoin(self.url, "archive_latest.txt")
-        response = requests.get(archive_latest_url)
+        response = requests.get(
+            archive_latest_url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        )
         response.raise_for_status()
         self.latest_archive_name = response.text.strip()
 
@@ -66,7 +70,11 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         archive_path = self.location / self.latest_archive_name
         archive_url = urljoin(self.url, self.latest_archive_name)
 
-        response = requests.get(archive_url, stream=True)
+        response = requests.get(
+            archive_url,
+            headers={'User-Agent': settings.VC_USER_AGENT},
+            stream=True
+        )
         response.raise_for_status()
 
         with open(archive_path, "wb") as f:

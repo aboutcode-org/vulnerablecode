@@ -113,6 +113,16 @@ def serialize_references(reference):
     }
 
 
+def serialize_commit_patches(patches):
+    return [
+        {
+            "vcs_url": p.vcs_url,
+            "commit": p.commit_hash,
+        }
+        for p in patches.all()
+    ]
+
+
 def serialize_advisory(advisory):
     """Return a plain data mapping serialized from advisory object."""
     aliases = sorted([a.alias for a in advisory.aliases.all()])
@@ -124,6 +134,12 @@ def serialize_advisory(advisory):
             "purl": impact.base_purl,
             "affected_versions": impact.affecting_vers,
             "fixed_versions": impact.fixed_vers,
+            "fixed_in_commits": serialize_commit_patches(
+                impact.fixed_by_package_commit_patches,
+            ),
+            "introduced_in_commits": serialize_commit_patches(
+                impact.introduced_by_package_commit_patches,
+            ),
         }
         for impact in advisory.impacted_packages.all()
     ]

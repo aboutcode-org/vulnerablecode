@@ -21,6 +21,7 @@ from univers.version_range import VersionRange
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.pipelines import insert_advisory_v2
 from vulnerabilities.pipelines.exporters.federate_vulnerabilities import (
     FederatePackageVulnerabilities,
@@ -68,8 +69,13 @@ class TestFederatePackageVulnerabilities(TestCase):
                     package=PackageURL.from_string("pkg:npm/foobar"),
                     affected_version_range=VersionRange.from_string("vers:npm/>=1.2.4"),
                     fixed_version_range=VersionRange.from_string("vers:npm/2.0.0"),
+                    fixed_by_commit_patches=[
+                        PackageCommitPatchData(
+                            vcs_url="https://foobar.vcs/",
+                            commit_hash="982f801f",
+                        )
+                    ],
                     introduced_by_commit_patches=[],
-                    fixed_by_commit_patches=[],
                 ),
             ],
             patches=[],

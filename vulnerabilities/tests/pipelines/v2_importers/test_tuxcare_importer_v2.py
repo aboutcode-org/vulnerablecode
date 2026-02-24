@@ -29,6 +29,7 @@ class TestTuxCareImporterPipeline(TestCase):
 
         pipeline = TuxCareImporterPipeline()
         pipeline.fetch()
+        pipeline.group_records_by_cve()
 
         advisories = [data.to_dict() for data in list(pipeline.collect_advisories())]
 
@@ -36,3 +37,31 @@ class TestTuxCareImporterPipeline(TestCase):
         util_tests.check_results_against_json(advisories, expected_file)
 
         assert len(advisories) == 14
+
+    def test_create_purl(self):
+        pipeline = TuxCareImporterPipeline()
+
+        cases = [
+            ("squid", "CloudLinux 7 ELS", "rpm", "cloudlinux", "cloudlinux-7-els"),
+            ("squid", "Oracle Linux 7 ELS", "rpm", "oracle", "oracle-linux-7-els"),
+            ("kernel", "CentOS 8.5 ELS", "rpm", "centos", "centos-8.5-els"),
+            ("squid", "CentOS Stream 8 ELS", "rpm", "centos", "centos-stream-8-els"),
+            ("libpng", "CentOS 7 ELS", "rpm", "centos", "centos-7-els"),
+            ("java-11-openjdk", "RHEL 7 ELS", "rpm", "rhel", "rhel-7-els"),
+            ("mysql", "AlmaLinux 9.2 ESU", "rpm", "almalinux", "almalinux-9.2-esu"),
+            ("linux", "Ubuntu 16.04 ELS", "deb", "ubuntu", "ubuntu-16.04-els"),
+            ("samba", "Debian 10 ELS", "deb", "debian", "debian-10-els"),
+            ("dpkg", "Alpine Linux 3.18 ELS", "apk", "alpine", "alpine-linux-3.18-els"),
+            ("kernel", "Unknown OS", "generic", "tuxcare", "unknown-os"),
+            ("webkit2gtk3", "TuxCare 9.6 ESU", "generic", "tuxcare", "tuxcare-9.6-esu"),
+        ]
+
+        for name, os_name, expected_type, expected_ns, expected_distro in cases:
+            purl = pipeline._create_purl(name, os_name)
+            assert purl is not None, f"Expected purl for os_name={os_name!r}"
+            assert purl.type == expected_type
+            assert purl.namespace == expected_ns
+            assert purl.qualifiers == {"distro": expected_distro}
+
+        # Invalid PURL
+        assert pipeline._create_purl("foo", "Foo 123") is None

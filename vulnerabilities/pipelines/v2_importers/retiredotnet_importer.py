@@ -30,6 +30,8 @@ class RetireDotnetImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "retiredotnet_importer_v2"
     run_once = True
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (

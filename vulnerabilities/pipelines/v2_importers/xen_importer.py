@@ -55,6 +55,8 @@ class XenImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
      -George
     """
 
+    precedence = 200
+
     _cached_data = None  # Class-level cache
 
     @classmethod

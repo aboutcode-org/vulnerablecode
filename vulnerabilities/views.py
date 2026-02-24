@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.db.models import F
 from django.db.models import Prefetch
 from django.http.response import Http404
@@ -38,8 +39,10 @@ from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
+from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import group_advisories_by_content
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
@@ -199,11 +202,27 @@ class PackageV2Details(DetailView):
             fixing_advisories,
         ) = self.get_fixed_package_details(package)
 
+        affected_avid_by_hash = {}
+        fixing_avid_by_hash = {}
+
+        affected_avid_by_hash = group_advisories_by_content(affected_by_advisories)
+        fixing_avid_by_hash = group_advisories_by_content(fixing_advisories)
+
+        affecting_advs = []
+
+        for hash in affected_avid_by_hash:
+            affecting_advs.append(affected_avid_by_hash[hash])
+
+        fixing_advs = []
+
+        for hash in fixing_avid_by_hash:
+            fixing_advs.append(fixing_avid_by_hash[hash])
+
         context["package"] = package
         context["next_non_vulnerable"] = next_non_vulnerable
         context["latest_non_vulnerable"] = latest_non_vulnerable
-        context["affected_by_advisories"] = affected_by_advisories
-        context["fixing_advisories"] = fixing_advisories
+        context["affected_by_advisories_v2"] = affecting_advs
+        context["fixing_advisories_v2"] = fixing_advs
 
         context["package_search_form"] = PackageSearchForm(self.request.GET)
         context["fixed_package_details"] = fixed_pkg_details
@@ -211,7 +230,15 @@ class PackageV2Details(DetailView):
         return context
 
     def get_fixed_package_details(self, package):
-        affected_impacts = package.affected_in_impacts.select_related("advisory")
+        affected_impacts = package.affected_in_impacts.select_related("advisory").prefetch_related(
+            Prefetch(
+                "fixed_by_packages",
+                queryset=(
+                    models.PackageV2.objects.annotate(affected_count=Count("affected_in_impacts"))
+                ),
+            )
+        )
+
         fixed_impacts = package.fixed_in_impacts.select_related("advisory")
 
         affected_avids = {impact.advisory.avid for impact in affected_impacts if impact.advisory_id}
@@ -220,26 +247,22 @@ class PackageV2Details(DetailView):
 
         all_avids = affected_avids | fixed_avids
 
-        latest_advisories = models.AdvisoryV2.objects.latest_for_avids(all_avids)
-        advisory_by_avid = {adv.avid: adv for adv in latest_advisories}
+        advisories = models.AdvisoryV2.objects.latest_for_avids(all_avids)
+        advisory_by_avid = {adv.avid: adv for adv in advisories}
 
         fixed_pkg_details = {}
 
         for impact in affected_impacts:
-            avid = impact.advisory.avid
-            advisory = advisory_by_avid.get(avid)
+            advisory = advisory_by_avid.get(impact.advisory.avid)
             if not advisory:
                 continue
-            if avid not in fixed_pkg_details:
-                fixed_pkg_details[avid] = []
-            fixed_pkg_details[avid].extend(
-                [
-                    {
-                        "pkg": pkg,
-                        "affected_count": pkg.affected_in_impacts.count(),
-                    }
-                    for pkg in impact.fixed_by_packages.all()
-                ]
+
+            fixed_pkg_details.setdefault(impact.advisory.avid, []).extend(
+                {
+                    "pkg": pkg,
+                    "affected_count": pkg.affected_count,
+                }
+                for pkg in impact.fixed_by_packages.all()
             )
 
         affected_by_advisories = {
@@ -484,11 +507,25 @@ class AdvisoryDetails(DetailView):
 
         epss_severity = advisory.severities.filter(scoring_system="epss").first()
         epss_data = None
+        epss_advisory = None
+        if not epss_severity:
+            epss_advisory = (
+                advisory.related_advisory_severities.filter(
+                    datasource_id=EPSSImporterPipeline.pipeline_id
+                )
+                .latest_per_avid()
+                .first()
+            )
+            if epss_advisory:
+                epss_severity = epss_advisory.severities.filter(scoring_system="epss").first()
         if epss_severity:
+            # If the advisory itself does not have EPSS severity, but has a related advisory with EPSS severity, we use the related advisory's EPSS severity and URL as the source of EPSS data.
             epss_data = {
                 "percentile": epss_severity.scoring_elements,
                 "score": epss_severity.value,
                 "published_at": epss_severity.published_at,
+                "source": epss_advisory.url if epss_advisory else advisory.url,
+                "advisory": epss_advisory if epss_advisory else advisory,
             }
 
         ssvc_entries = []

@@ -10,6 +10,7 @@
 import csv
 import datetime
 import hashlib
+import json
 import logging
 import uuid
 import xml.etree.ElementTree as ET
@@ -69,7 +70,9 @@ from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import compute_patch_checksum
+from vulnerabilities.utils import normalize_list
 from vulnerabilities.utils import normalize_purl
+from vulnerabilities.utils import normalize_text
 from vulnerabilities.utils import purl_to_dict
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import VULNERABLECODE_PIPELINE_TIMEOUT
@@ -2341,13 +2344,14 @@ class PipelineSchedule(models.Model):
     @property
     def pipeline_class(self):
         """Return the pipeline class."""
+
         from vulnerabilities.importers import IMPORTERS_REGISTRY
         from vulnerabilities.improvers import IMPROVERS_REGISTRY
+        from vulnerabilities.pipelines.exporters import EXPORTERS_REGISTRY
 
-        if self.pipeline_id in IMPROVERS_REGISTRY:
-            return IMPROVERS_REGISTRY.get(self.pipeline_id)
-        if self.pipeline_id in IMPORTERS_REGISTRY:
-            return IMPORTERS_REGISTRY.get(self.pipeline_id)
+        pipeline_registry = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY
+
+        return pipeline_registry[self.pipeline_id]
 
     @property
     def description(self):
@@ -2957,9 +2961,15 @@ class AdvisoryV2(models.Model):
     )
 
     date_published = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date of publication of the advisory"
+        blank=True,
+        null=True,
+        help_text="UTC Date of publication of the advisory",
     )
-    date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
+    date_collected = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        help_text="UTC Date on which the advisory was collected",
+    )
 
     original_advisory_text = models.TextField(
         blank=True,
@@ -2988,11 +2998,17 @@ class AdvisoryV2(models.Model):
         help_text="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10.",
     )
 
-    # precedence = models.IntegerField(
-    #     null=True,
-    #     blank=True,
-    #     help_text="Precedence indicates the priority level of addressing a vulnerability based on its overall risk",
-    # )
+    precedence = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Precedence indicates the priority of advisory from different datasources. It is determined based on the reliability of the datasource and how close it is to the source.",
+    )
+
+    related_advisory_severities = models.ManyToManyField(
+        "AdvisoryV2",
+        related_name="related_to_advisory_severities",
+        help_text="Related advisories that are used to calculate the severity of this advisory.",
+    )
 
     @property
     def risk_score(self):
@@ -3038,16 +3054,20 @@ class AdvisoryV2(models.Model):
 
         return AdvisoryDataV2(
             advisory_id=self.advisory_id,
-            aliases=[item.alias for item in self.aliases.all()],
+            aliases=normalize_list([item.alias for item in self.aliases.all()]),
             summary=self.summary,
-            affected_packages=[
-                impacted.to_affected_package_data() for impacted in self.impacted_packages.all()
-            ],
-            references=[ref.to_reference_v2_data() for ref in self.references.all()],
-            patches=[patch.to_patch_data() for patch in self.patches.all()],
+            affected_packages=normalize_list(
+                [impacted.to_affected_package_data() for impacted in self.impacted_packages.all()]
+            ),
+            references=normalize_list(
+                [ref.to_reference_v2_data() for ref in self.references.all()]
+            ),
+            patches=normalize_list([patch.to_patch_data() for patch in self.patches.all()]),
             date_published=self.date_published,
-            weaknesses=[weak.cwe_id for weak in self.weaknesses.all()],
-            severities=[sev.to_vulnerability_severity_data() for sev in self.severities.all()],
+            weaknesses=normalize_list([weak.cwe_id for weak in self.weaknesses.all()]),
+            severities=normalize_list(
+                [sev.to_vulnerability_severity_data() for sev in self.severities.all()]
+            ),
             url=self.url,
         )
 
@@ -3057,6 +3077,35 @@ class AdvisoryV2(models.Model):
         Return a queryset of all Aliases for this vulnerability.
         """
         return self.aliases.all()
+
+    def compute_advisory_content(self):
+        """
+        Compute a unique content hash for an advisory by normalizing its data and hashing it.
+
+        :param advisory: An Advisory object
+        :return: SHA-256 hash digest as content hash
+        """
+        normalized_data = {
+            "summary": normalize_text(self.summary),
+            "impacted_packages": sorted(
+                [impact.to_dict() for impact in self.impacted_packages.all()],
+                key=lambda x: json.dumps(x, sort_keys=True),
+            ),
+            "patches": sorted(
+                [patch.to_patch_data().to_dict() for patch in self.patches.all()],
+                key=lambda x: json.dumps(x, sort_keys=True),
+            ),
+            "severities": sorted(
+                [sev.to_vulnerability_severity_data().to_dict() for sev in self.severities.all()],
+                key=lambda x: (x.get("system"), x.get("value")),
+            ),
+            "weaknesses": normalize_list([weakness.cwe_id for weakness in self.weaknesses.all()]),
+        }
+
+        normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+        content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+
+        return content_hash
 
     alias = get_aliases
 
@@ -3094,13 +3143,15 @@ class ImpactedPackage(models.Model):
     affecting_packages = models.ManyToManyField(
         "PackageV2",
         related_name="affected_in_impacts",
+        through="ImpactedPackageAffecting",
         help_text="Packages vulnerable to this impact.",
     )
 
     fixed_by_packages = models.ManyToManyField(
         "PackageV2",
         related_name="fixed_in_impacts",
-        help_text="Packages vulnerable to this impact.",
+        through="ImpactedPackageFixedBy",
+        help_text="Packages fixing the vulnerable packages in this impact.",
     )
 
     introduced_by_package_commit_patches = models.ManyToManyField(
@@ -3446,6 +3497,44 @@ class PackageV2(PackageURLMixin):
     @cached_property
     def current_version(self):
         return self.version_class(self.version)
+
+
+class ImpactedPackageAffecting(models.Model):
+    impacted_package = models.ForeignKey(
+        ImpactedPackage,
+        on_delete=models.CASCADE,
+    )
+    package = models.ForeignKey(
+        PackageV2,
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+    )
+
+    class Meta:
+        unique_together = ("impacted_package", "package")
+
+
+class ImpactedPackageFixedBy(models.Model):
+    impacted_package = models.ForeignKey(
+        ImpactedPackage,
+        on_delete=models.CASCADE,
+    )
+    package = models.ForeignKey(
+        PackageV2,
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+    )
+
+    class Meta:
+        unique_together = ("impacted_package", "package")
 
 
 class AdvisoryExploit(models.Model):

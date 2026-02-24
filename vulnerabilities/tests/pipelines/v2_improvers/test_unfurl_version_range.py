@@ -8,40 +8,59 @@
 #
 
 
+from datetime import datetime
+from datetime import timedelta
 from unittest.mock import patch
 
 from django.test import TestCase
+from packageurl import PackageURL
+from univers.version_range import VersionRange
 
+from vulnerabilities.importer import AdvisoryDataV2
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.models import AdvisoryV2
-from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines.v2_improvers.unfurl_version_range import UnfurlVersionRangePipeline
+from vulnerabilities.pipes.advisory import insert_advisory_v2
 
 
 class TestUnfurlVersionRangePipeline(TestCase):
     def setUp(self):
-        self.advisory1 = AdvisoryV2.objects.create(
-            datasource_id="ghsa",
+        advisory1 = AdvisoryDataV2(
+            summary="Test advisory",
+            aliases=["CVE-2025-0001"],
+            references=[],
+            severities=[],
+            weaknesses=[],
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL.from_string("pkg:npm/foobar"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>3.2.1|<4.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/4.0.0"),
+                    introduced_by_commit_patches=[],
+                    fixed_by_commit_patches=[],
+                ),
+            ],
+            patches=[],
             advisory_id="GHSA-1234",
-            avid="ghsa/GHSA-1234",
-            unique_content_id="f" * 64,
+            date_published=datetime.now() - timedelta(days=10),
             url="https://example.com/advisory",
-            date_collected="2025-07-01T00:00:00Z",
         )
-
-        self.impact1 = ImpactedPackage.objects.create(
-            advisory=self.advisory1,
-            base_purl="pkg:npm/foobar",
-            affecting_vers="vers:npm/>3.2.1|<4.0.0",
-            fixed_vers=None,
+        insert_advisory_v2(
+            advisory=advisory1,
+            pipeline_id="test_pipeline_v2",
         )
 
     @patch("vulnerabilities.pipelines.v2_improvers.unfurl_version_range.get_purl_versions")
     def test_affecting_version_range_unfurl(self, mock_fetch):
-        self.assertEqual(0, PackageV2.objects.count())
+        self.assertEqual(1, PackageV2.objects.count())
         mock_fetch.return_value = {"3.4.1", "3.9.0", "2.1.0", "4.0.0", "4.1.0"}
         pipeline = UnfurlVersionRangePipeline()
         pipeline.execute()
 
-        self.assertEqual(2, PackageV2.objects.count())
-        self.assertEqual(2, self.impact1.affecting_packages.count())
+        advisory = AdvisoryV2.objects.first()
+        impact = advisory.impacted_packages.first()
+
+        self.assertEqual(3, PackageV2.objects.count())
+        self.assertEqual(1, impact.fixed_by_packages.count())
+        self.assertEqual(2, impact.affecting_packages.count())

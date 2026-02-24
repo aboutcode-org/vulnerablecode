@@ -40,6 +40,8 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     repo_url = "git+https://github.com/mandiant/Vulnerability-Disclosures"
     pipeline_id = "fireeye_importer_v2"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (
@@ -152,7 +154,7 @@ def matcher_url(ref) -> str:
     """
     Returns URL of the reference markup from reference url in Markdown format
     """
-    markup_regex = "\[([^\[]+)]\(\s*(http[s]?://.+)\s*\)"
+    markup_regex = r"\[([^\[]+)]\(\s*(http[s]?://.+)\s*\)"
     matched_markup = re.findall(markup_regex, ref)
     if matched_markup:
         return matched_markup[0][1]

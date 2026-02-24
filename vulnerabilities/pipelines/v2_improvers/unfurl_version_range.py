@@ -17,6 +17,7 @@ from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import VersionRange
 
 from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes.fetchcode_utils import get_versions
@@ -64,7 +65,7 @@ class UnfurlVersionRangePipeline(VulnerableCodePipeline):
             processed_affected_packages_count += bulk_create_with_m2m(
                 purls=affected_purls,
                 impact=impact,
-                relation=ImpactedPackage.affecting_packages.through,
+                relation=ImpactedPackageAffecting,
                 logger=self.log,
             )
             processed_impacted_packages_count += 1
@@ -118,7 +119,7 @@ def bulk_create_with_m2m(purls, impact, relation, logger):
     affected_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(purls=purls)
 
     relations = [
-        relation(impactedpackage=impact, packagev2=package) for package in affected_packages_v2
+        relation(impacted_package=impact, package=package) for package in affected_packages_v2
     ]
 
     try:

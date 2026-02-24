@@ -61,7 +61,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -94,7 +94,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -127,7 +127,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -160,7 +160,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -193,7 +193,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -226,7 +226,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -259,7 +259,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -292,7 +292,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -325,7 +325,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -358,7 +358,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -391,7 +391,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -424,7 +424,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [
       {
@@ -457,7 +457,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": "2025-12-22T16:58:13.189255+00:00",
@@ -484,7 +484,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": "2025-12-19T05:00:40.874276+00:00",

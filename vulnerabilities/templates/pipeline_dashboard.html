@@ -6,71 +6,100 @@ Pipeline Dashboard
 
 {% block extrahead %}
 <style>
-    thead th {
-        border-bottom: none !important;
-    }
+  thead th {
+    border-bottom: none !important;
+  }
 
-    tbody tr:hover {
-        background-color: #e0e0e0 !important;
-        cursor: pointer;
-    }
+  tbody tr:hover {
+    background-color: #e0e0e0 !important;
+    cursor: pointer;
+  }
 
-    tbody tr:nth-child(even):hover {
-        background-color: #d3d3d3 !important;
-    }
+  tbody tr:nth-child(even):hover {
+    background-color: #d3d3d3 !important;
+  }
 
-    .column {
-        word-break: break-word;
-    }
+  .column {
+    word-break: break-word;
+  }
 </style>
-{% endblock %}
-
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="columns">
-    <div class="column">
+  <div class="column"></div>
+
+  <div class="column is-four-fifths">
+    <div class="content is-normal">
+      <h1>Pipeline Dashboard</h1>
+      <hr />
+    </div>
+    <form method="get" class="box px-6 mx-0" action="">
+      <div class="field has-addons">
+        <div class="control is-expanded">{{ form.search }}</div>
+        <div class="control">
+          <button type="submit" class="button is-info">
+            <i class="fa fa-search mx-1"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="box has-background-light">
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Total Workers</p>
+            <p class="title">{{ total_workers }}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Busy</p>
+            <p class="title has-text-success">{{ busy_workers }}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Idle</p>
+            <p class="title has-text-warning">{{ idle_workers }}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Queued Jobs</p>
+            <p class="title">{{ queue_count }}</p>
+          </div>
+        </div>
+      </nav>
     </div>
 
-    <div class="column is-four-fifths">
-        <div class="content is-normal">
-            <h1>Pipeline Dashboard</h1>
-            <hr />
+    <div class="box">
+      <div class="column is-flex is-justify-content-end">
+        <div class="tags has-addons mb-0 mr-3">
+            <span class="tag is-dark">Active Pipelines</span>
+            <span class="tag is-success">{{ active_pipeline_count|default:0 }}</span>
         </div>
-        <form method="get" class="box px-6 mx-0" action="">
-            <div class="field has-addons">
-                <div class="control is-expanded">
-                    {{ form.search }}
+        <div class="tags has-addons mb-0">
+            <span class="tag is-dark">Disabled Pipelines</span>
+            <span class="tag is-light">{{ disabled_pipeline_count|default:0 }}</span>
+        </div>
+      </div>
+      <table class="table is-striped is-hoverable is-fullwidth">
+        <thead>
+          <tr>
+            <th colspan="6">
+              <div class="box is-small">
+                <div class="columns is-mobile is-vcentered">
+                  <div class="column is-one-quarter">Pipeline ID</div>
+                  <div class="column is-one-eighth">Active</div>
+                  <div class="column is-one-eighth">Interval</div>
+                  <div class="column is-one-eighth">Status</div>
+                  <div class="column is-one-fifth">Last Run End Time</div>
+                  <div class="column is-one-fifth">Next Run Start</div>
                 </div>
-                <div class="control">
-                    <button type="submit" class="button is-info"><i class="fa fa-search mx-1"></i></button>
-                </div>
-            </div>
-        </form>
-
-        <div class="box">
-            <div class="column has-text-right">
-                <p class="has-text-weight-semibold">
-                    {{ active_pipeline_count|default:0 }} active pipeline{{ active_pipeline_count|default:0|pluralize }},
-                    {{ disabled_pipeline_count|default:0 }} disabled pipeline{{ disabled_pipeline_count|default:0|pluralize }}
-                </p>
-            </div>
-            <table class="table is-striped  is-hoverable is-fullwidth">
-                <thead>
-                    <tr>
-                        <th colspan="6">
-                            <div class="box is-small">
-                                <div class="columns is-mobile is-vcentered">
-                                    <div class="column is-one-quarter">Pipeline ID</div>
-                                    <div class="column is-one-eighth">Active</div>
-                                    <div class="column is-one-eighth">Interval</div>
-                                    <div class="column is-one-eighth">Status</div>
-                                    <div class="column is-one-fifth">Last Run End Time</div>
-                                    <div class="column is-one-fifth">Next Run Start</div>
-                                </div>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
+              </div>
+            </th>
+          </tr>
+        </thead>
                 <tbody>
                     {% for schedule in schedule_list %}
                     <tr>
@@ -115,27 +144,32 @@ Pipeline Dashboard
                     </tr>
                     {% endfor %}
                 </tbody>
-                
-            </table>
-        </div>
+      </table>
+    </div>
         {% if is_paginated %}
         <nav class="pagination is-centered px-5" role="navigation" aria-label="pagination">
             {% if page_obj.has_previous %}
-            <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
             {% endif %}
 
             {% if page_obj.has_next %}
-            <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+            <a class="pagination-next" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next page</a>
             {% endif %}
+
             <ul class="pagination-list">
-                <li><a class="pagination-link" aria-label="Goto page 1" href="?page=1">1</a></li>
-                <li><span class="pagination-ellipsis">&hellip;</span></li>
-                <li><a class="pagination-link" aria-label="Goto page {{ page_obj.number }}"
-                        href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                {% for i in elided_page_range %}
+                    {% if i == page_obj.paginator.ELLIPSIS %}
+                    <li><span class="pagination-ellipsis">&hellip;</span></li>
+                    {% elif page_obj.number == i %}
+                    <li><a class="pagination-link is-current" aria-label="Page {{ i }}" aria-current="page">{{ i }}</a></li>
+                    {% else %}
+                    <li><a class="pagination-link" aria-label="Goto page {{ i }}" href="?page={{ i }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
             </ul>
         </nav>
         {% endif %}
-    </div>
-    <div class="column"></div>
+  </div>
+  <div class="column"></div>
 </div>
 {% endblock %}

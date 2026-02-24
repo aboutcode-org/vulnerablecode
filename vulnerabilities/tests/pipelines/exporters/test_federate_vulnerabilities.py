@@ -21,6 +21,7 @@ from univers.version_range import VersionRange
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.pipelines import insert_advisory_v2
 from vulnerabilities.pipelines.exporters.federate_vulnerabilities import (
     FederatePackageVulnerabilities,
@@ -68,8 +69,13 @@ class TestFederatePackageVulnerabilities(TestCase):
                     package=PackageURL.from_string("pkg:npm/foobar"),
                     affected_version_range=VersionRange.from_string("vers:npm/>=1.2.4"),
                     fixed_version_range=VersionRange.from_string("vers:npm/2.0.0"),
+                    fixed_by_commit_patches=[
+                        PackageCommitPatchData(
+                            vcs_url="https://foobar.vcs/",
+                            commit_hash="982f801f",
+                        )
+                    ],
                     introduced_by_commit_patches=[],
-                    fixed_by_commit_patches=[],
                 ),
             ],
             patches=[],
@@ -99,8 +105,11 @@ class TestFederatePackageVulnerabilities(TestCase):
         working_dir = Path(tempfile.mkdtemp())
         pipeline = FederatePackageVulnerabilities()
         pipeline.repo = Repo.init(working_dir)
+        pipeline.repo_path = working_dir
         pipeline.log = self.logger.write
-        pipeline.execute()
+        exit_code, _ = pipeline.execute()
+
+        self.assertEqual(exit_code, 0)
 
         result_advisories_yml = next(working_dir.rglob("1.2.4/advisories.yml"))
         result_advisory1_yml = next(working_dir.rglob("ADV-001.yml"))

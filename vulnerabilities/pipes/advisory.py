@@ -313,7 +313,6 @@ def insert_advisory_v2(
             "avid": f"{pipeline_id}/{advisory.advisory_id}",
             "summary": advisory.summary,
             "date_published": advisory.date_published,
-            "date_collected": datetime.now(timezone.utc),
             "original_advisory_text": advisory.original_advisory_text,
             "url": advisory.url,
             "precedence": precedence,

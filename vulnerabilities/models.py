@@ -2961,9 +2961,15 @@ class AdvisoryV2(models.Model):
     )
 
     date_published = models.DateTimeField(
-        blank=True, null=True, help_text="UTC Date of publication of the advisory"
+        blank=True,
+        null=True,
+        help_text="UTC Date of publication of the advisory",
     )
-    date_collected = models.DateTimeField(help_text="UTC Date on which the advisory was collected")
+    date_collected = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        help_text="UTC Date on which the advisory was collected",
+    )
 
     original_advisory_text = models.TextField(
         blank=True,
@@ -3137,13 +3143,15 @@ class ImpactedPackage(models.Model):
     affecting_packages = models.ManyToManyField(
         "PackageV2",
         related_name="affected_in_impacts",
+        through="ImpactedPackageAffecting",
         help_text="Packages vulnerable to this impact.",
     )
 
     fixed_by_packages = models.ManyToManyField(
         "PackageV2",
         related_name="fixed_in_impacts",
-        help_text="Packages vulnerable to this impact.",
+        through="ImpactedPackageFixedBy",
+        help_text="Packages fixing the vulnerable packages in this impact.",
     )
 
     introduced_by_package_commit_patches = models.ManyToManyField(
@@ -3489,6 +3497,44 @@ class PackageV2(PackageURLMixin):
     @cached_property
     def current_version(self):
         return self.version_class(self.version)
+
+
+class ImpactedPackageAffecting(models.Model):
+    impacted_package = models.ForeignKey(
+        ImpactedPackage,
+        on_delete=models.CASCADE,
+    )
+    package = models.ForeignKey(
+        PackageV2,
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+    )
+
+    class Meta:
+        unique_together = ("impacted_package", "package")
+
+
+class ImpactedPackageFixedBy(models.Model):
+    impacted_package = models.ForeignKey(
+        ImpactedPackage,
+        on_delete=models.CASCADE,
+    )
+    package = models.ForeignKey(
+        PackageV2,
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+    )
+
+    class Meta:
+        unique_together = ("impacted_package", "package")
 
 
 class AdvisoryExploit(models.Model):

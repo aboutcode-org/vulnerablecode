@@ -74,7 +74,8 @@ def add_vulnerability_exploit(kev_vul, logger):
     vulnerability = None
     try:
         if alias := Alias.objects.get(alias=cve_id):
-            vulnerability = alias.vulnerability
+            if alias.vulnerability:
+                vulnerability = alias.vulnerability
     except Alias.DoesNotExist:
         logger(f"No vulnerability found for aliases {cve_id}")
         return 0

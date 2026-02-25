@@ -42,3 +42,17 @@ def test_metasploit_improver(mock_get):
     # Run metasploit Improver again when there are matching aliases.
     improver.execute()
     assert Exploit.objects.count() == 1
+
+
+@pytest.mark.django_db
+@mock.patch("requests.get")
+def test_invalid_metasploit_improver(mock_get):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = load_json(TEST_DATA)
+    mock_get.return_value = mock_response
+
+    Alias.objects.create(alias="CVE-2007-4387", vulnerability=None)  # Alias without vulnerability
+    improver = MetasploitImproverPipeline()
+    status, _ = improver.execute()
+    assert status == 0
+    assert Exploit.objects.count() == 0

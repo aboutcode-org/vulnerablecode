@@ -79,7 +79,8 @@ def add_vulnerability_exploit(record, logger):
     for ref in interesting_references:
         try:
             if alias := Alias.objects.get(alias=ref):
-                vulnerabilities.add(alias.vulnerability)
+                if alias.vulnerability:
+                    vulnerabilities.add(alias.vulnerability)
         except Alias.DoesNotExist:
             continue
 

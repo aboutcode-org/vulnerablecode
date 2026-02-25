@@ -80,6 +80,10 @@ def add_vulnerability_exploit(kev_vul, logger):
         logger(f"No vulnerability found for aliases {cve_id}")
         return 0
 
+    if not vulnerability:
+        logger(f"No vulnerability found for aliases {cve_id}")
+        return 0
+
     Exploit.objects.update_or_create(
         vulnerability=vulnerability,
         data_source="KEV",

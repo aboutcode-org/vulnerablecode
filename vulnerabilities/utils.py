@@ -19,6 +19,7 @@ import urllib.request
 from collections import defaultdict
 from functools import total_ordering
 from http import HTTPStatus
+from pathlib import Path
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -559,6 +560,10 @@ def get_advisory_url(file, base_path, url):
     """
     Return the advisory URL constructed by combining the base URL with the relative file path.
     """
+    if isinstance(file, str):
+        file = Path(file)
+    if isinstance(base_path, str):
+        base_path = Path(base_path)
     relative_path = str(file.relative_to(base_path)).strip("/")
     advisory_url = urljoin(url, relative_path)
     return advisory_url

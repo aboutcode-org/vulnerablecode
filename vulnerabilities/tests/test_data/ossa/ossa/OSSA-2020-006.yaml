@@ -1,0 +1,63 @@
+date: 2020-08-25
+
+id: OSSA-2020-006
+
+title: Live migration fails to update persistent domain XML
+
+description: >
+  Tadayoshi Hosoya (NEC) and Lee Yarwood (Red Hat) reported a
+  vulnerability in Nova live migration. By performing a soft reboot of
+  an instance which has previously undergone live migration, a user
+  may gain access to destination host devices that share the same
+  paths as host devices previously referenced by the virtual machine
+  on the source. This can include block devices that map to different
+  Cinder volumes on the destination than the source. The risk is
+  increased significantly in non-default configurations allowing
+  untrusted users to initiate live migrations, so administrators may
+  consider temporarily disabling this in policy if they cannot upgrade
+  immediately. This only impacts deployments where users are allowed
+  to perform soft reboots of server instances; it is recommended to
+  disable soft reboots in policy (only allowing hard reboots) until
+  the fix can be applied.
+
+affected-products:
+  - product: Nova
+    version: '<19.3.1, >=20.0.0 <20.3.1, ==21.0.0'
+
+vulnerabilities:
+  - cve-id: CVE-2020-17376
+
+reporters:
+  - name: Tadayoshi Hosoya
+    affiliation: NEC
+    reported:
+      - CVE-2020-17376
+  - name: Lee Yarwood
+    affiliation: Red Hat
+    reported:
+      - CVE-2020-17376
+
+issues:
+  links:
+    - https://launchpad.net/bugs/1890501
+
+reviews:
+  victoria:
+    - https://review.opendev.org/747969
+  ussuri:
+    - https://review.opendev.org/747972
+  train:
+    - https://review.opendev.org/747973
+  stein:
+    - https://review.opendev.org/747974
+  rocky:
+    - https://review.opendev.org/747975
+  queens:
+    - https://review.opendev.org/747976
+  pike:
+    - https://review.opendev.org/747978
+
+notes:
+  - The stable/rocky, stable/queens, and stable/pike branches are under
+    extended maintenance and will receive no new point releases, but patches
+    for them are provided as a courtesy.

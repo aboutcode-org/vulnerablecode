@@ -1,0 +1,81 @@
+date: 2025-11-04
+
+id: OSSA-2025-002
+
+title: Unauthenticated access to EC2/S3 token endpoints can grant Keystone authorization
+
+description: >
+  kay reported a vulnerability in Keystone’s ec2tokens and s3tokens APIs. By
+  sending those endpoints a valid AWS Signature (e.g., from a presigned S3
+  URL), an unauthenticated attacker may obtain Keystone authorization
+  for the user associated with the signature
+  (ec2tokens can yield a fully scoped token; s3tokens can reveal scope accepted
+  by some services), resulting in unauthorized access and privilege escalation.
+  Deployments where /v3/ec2tokens or /v3/s3tokens are reachable by
+  unauthenticated clients (e.g., exposed on a public API) are affected.
+
+errata: >
+  CVE-2025-65073 was assigned by MITRE after publication based on a request
+  submitted 2025-09-24 (months prior); if any other CNA has assigned a CVE
+  themselves in the meantime, please reject it so that we don't end up with
+  duplicates. Further, the description has been extended to clarify token
+  ownership. Backported fixes for the unmaintained/2024.1 branches are now
+  included.
+
+affected-products:
+  - product: Keystone
+    version: '<26.0.1, ==27.0.0, ==28.0.0'
+
+vulnerabilities:
+  - cve-id: CVE-2025-65073
+
+reporters:
+  - name: kay
+    reported:
+      - CVE-2025-65073
+
+issues:
+  links:
+    - https://launchpad.net/bugs/2119646
+
+reviews:
+  2026.1/gazpacho(keystone):
+    - https://review.opendev.org/966069
+
+  2025.2/flamingo(keystone):
+    - https://review.opendev.org/966070
+
+  2025.1/epoxy(keystone):
+    - https://review.opendev.org/966071
+
+  2024.2/dalmatian(keystone):
+    - https://review.opendev.org/966073
+
+  2024.1/caracal(keystone):
+    - https://review.opendev.org/966871
+
+  2026.1/gazpacho(swift):
+    - https://review.opendev.org/966062
+
+  2025.2/flamingo(swift):
+    - https://review.opendev.org/966063
+
+  2025.1/epoxy(swift):
+    - https://review.opendev.org/966064
+
+  2024.2/dalmatian(swift):
+    - https://review.opendev.org/966067
+
+  2024.1/caracal(swift):
+    - https://review.opendev.org/966068
+
+notes:
+  - While the indicated Keystone patches are sufficient to mitigate this
+    vulnerability, corresponding changes for Swift are included which keep its
+    optional S3-like API working.
+  - The unmaintained/2024.1 branches will receive no new point releases, but
+    patches for them are provided as a courtesy.
+
+errata_history:
+  - 2025-11-17 - Errata 1
+  - 2025-11-04 - Original Version

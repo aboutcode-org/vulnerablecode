@@ -1,0 +1,67 @@
+date: 2026-01-15
+
+id: OSSA-2026-001
+
+title: Privilege Escalation via Identity Headers in External OAuth2 Tokens
+
+description: >
+  Grzegorz Grasza with Red Hat reported a vulnerability in the
+  external_oauth2_token middleware for keystonemiddleware. This middleware
+  fails to sanitize incoming authentication headers before processing OAuth 2.0
+  tokens. By sending forged identity headers such as X-Is-Admin-Project,
+  X-Roles, or X-User-Id, an authenticated attacker may escalate privileges or
+  impersonate other users. All deployments using the external_oauth2_token
+  middleware are affected.
+
+errata: >
+  The original advisory listed versions >=10.0.0 as affected based on incorrect
+  data, the code in question was not added until 10.5.0.
+
+affected-products:
+  - product: keystonemiddleware
+    version: '>=10.5.0 <10.7.2, >=10.8.0 <10.9.1, >=10.10.0 <10.12.1'
+
+vulnerabilities:
+  - cve-id: CVE-2026-22797
+
+reporters:
+  - name: Grzegorz Grasza
+    affiliation: Red Hat
+    reported:
+      - CVE-2026-22797
+
+issues:
+  links:
+    - https://launchpad.net/bugs/2129018
+
+reviews:
+  2026.1/gazpacho:
+    - https://review.opendev.org/973494
+
+  2025.2/flamingo:
+    - https://review.opendev.org/973495
+
+  2025.1/epoxy:
+    - https://review.opendev.org/973496
+
+  2024.2/dalmatian:
+    - https://review.opendev.org/973497
+
+  2024.1/caracal:
+    - https://review.opendev.org/973499
+
+notes:
+  - The unmaintained/2024.1 branches will receive no new point releases, but
+    patches for them are provided as a courtesy.
+  - This bug was possible because the middleware only conditionally set certain
+    headers (e.g., X-Is-Admin-Project was only set when the token had admin
+    privileges), leaving spoofed values intact when conditions were not met.
+  - The fix adds a call to remove_auth_headers() at the start of request
+    processing to sanitize all incoming identity headers, matching the behavior
+    of the main auth_token middleware.
+  - The affected code was introduced in keystonemiddleware 10.5.0 during the
+    OpenStack 2024.1 (Caracal) development cycle.
+
+errata_history:
+  - 2026-01-16 - Errata 1
+  - 2026-01-15 - Original Version

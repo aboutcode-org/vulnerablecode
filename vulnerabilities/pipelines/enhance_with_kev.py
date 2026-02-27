@@ -71,31 +71,29 @@ def add_vulnerability_exploit(kev_vul, logger):
     if not cve_id:
         return 0
 
-    vulnerability = None
-    try:
-        if alias := Alias.objects.get(alias=cve_id):
-            if alias.vulnerability:
-                vulnerability = alias.vulnerability
-    except Alias.DoesNotExist:
-        logger(f"No vulnerability found for aliases {cve_id}")
-        return 0
-
-    if not vulnerability:
-        logger(f"No vulnerability found for aliases {cve_id}")
-        return 0
-
-    Exploit.objects.update_or_create(
-        vulnerability=vulnerability,
-        data_source="KEV",
-        defaults={
-            "description": kev_vul["shortDescription"],
-            "date_added": kev_vul["dateAdded"],
-            "required_action": kev_vul["requiredAction"],
-            "due_date": kev_vul["dueDate"],
-            "notes": kev_vul["notes"],
-            "known_ransomware_campaign_use": True
-            if kev_vul["knownRansomwareCampaignUse"] == "Known"
-            else False,
-        },
+    vulnerabilities = (
+        Alias.objects.filter(alias=cve_id, vulnerability__isnull=False)
+        .values_list("vulnerability", flat=True)
+        .distinct()
     )
+
+    if not vulnerabilities:
+        logger(f"No vulnerability found for aliases {cve_id}")
+        return 0
+
+    for vulnerability in vulnerabilities:
+        Exploit.objects.update_or_create(
+            vulnerability_id=vulnerability,
+            data_source="KEV",
+            defaults={
+                "description": kev_vul["shortDescription"],
+                "date_added": kev_vul["dateAdded"],
+                "required_action": kev_vul["requiredAction"],
+                "due_date": kev_vul["dueDate"],
+                "notes": kev_vul["notes"],
+                "known_ransomware_campaign_use": True
+                if kev_vul["knownRansomwareCampaignUse"] == "Known"
+                else False,
+            },
+        )
     return 1

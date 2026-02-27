@@ -30,28 +30,25 @@ def test_collect_fix_commits_pipeline_creates_entry():
         unique_content_id="11111",
         date_collected=datetime.now(),
     )
-    package = PackageV2.objects.create(
-        type="foo",
-        name="testpkg",
-        version="1.0",
-    )
+
     reference = AdvisoryReference.objects.create(
         url="https://github.com/test/testpkg/commit/6bd301819f8f69331a55ae2336c8b111fc933f3d"
     )
-    impact = ImpactedPackage.objects.create(advisory=advisory)
-    impact.affecting_packages.add(package)
     advisory.references.add(reference)
 
     pipeline = CollectReferencesFixCommitsPipeline()
     pipeline.collect_and_store_fix_commits()
 
     package_commit_patch = PackageCommitPatch.objects.all()
+    impacted_packages = advisory.impacted_packages.all()
 
     assert package_commit_patch.count() == 1
+    assert impacted_packages.count() == 1
+
     fix = package_commit_patch.first()
     assert fix.commit_hash == "6bd301819f8f69331a55ae2336c8b111fc933f3d"
     assert fix.vcs_url == "https://github.com/test/testpkg"
-    assert impact.fixed_by_package_commit_patches.count() == 1
+    assert impacted_packages.first().fixed_by_package_commit_patches.count() == 1
 
 
 @pytest.mark.django_db
@@ -64,13 +61,6 @@ def test_collect_fix_commits_pipeline_skips_non_commit_urls():
         unique_content_id="11111",
         date_collected=datetime.now(),
     )
-    package = PackageV2.objects.create(
-        type="pypi",
-        name="otherpkg",
-        version="2.0",
-    )
-    impact = ImpactedPackage.objects.create(advisory=advisory)
-    impact.affecting_packages.add(package)
 
     reference = AdvisoryReference.objects.create(
         url="https://github.com/test/testpkg/issues/12"

@@ -28,6 +28,7 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.pipelines import insert_advisory_v2
 from vulnerabilities.references import XsaReferenceV2
 from vulnerabilities.references import ZbxReferenceV2
+from vulnerabilities.tests.pipelines import TestLogger
 from vulnerabilities.utils import AffectedPackage
 from vulnerabilities.utils import get_item
 from vulnerabilities.utils import get_severity_range
@@ -170,6 +171,7 @@ def test_get_severity_range():
 
 class TestComputeContentIdV2(TestCase):
     def setUp(self):
+        self.logger = TestLogger()
         self.advisory1 = AdvisoryDataV2(
             summary="Test advisory",
             aliases=["CVE-2025-0001", "CVE-2024-0001"],
@@ -239,6 +241,7 @@ class TestComputeContentIdV2(TestCase):
         insert_advisory_v2(
             advisory=self.advisory1,
             pipeline_id="test_pipeline_v2",
+            logger=self.logger.write,
         )
 
     def test_compute_content_id_v2(self):

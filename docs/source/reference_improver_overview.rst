@@ -4,7 +4,7 @@ Improver Overview
 ===================
 
 Improvers improve upon already imported data. They are responsible for creating a relational
-model for vulnerabilites and packages.
+model for vulnerabilities and packages.
 
 An Improver is intended to contain data points about a vulnerability and the relevant discrete
 affected and fixed packages (in the form of `PackageURLs
@@ -17,7 +17,7 @@ relationship is stored in the database.
 There are two categories of improvers:
 
 - **Generic**: Improve upon some imported data irrespective of any importer. These improvers are
-  defined in :file:`vulnerabilites/improvers/`.
+  defined in :file:`vulnerabilities/improvers/`.
 - **Importer Specific**: Improve upon data imported by a specific importer. These are defined in the
   corresponding importer file itself.
 
@@ -30,5 +30,5 @@ answer, which could also be ``MAX_CONFIDENCE`` in certain cases.
 The possibilities with improvers are endless; they are not restricted to take one approach. Features
 like *Time Travel* and *finding fix commits* could be implemented as well.
 
-You can find more in-code documentation about improvers in :file:`vulnerabilites/improver.py` and
-the framework responsible for invoking these improvers in :file:`vulnerabilites/improve_runner.py`.
+You can find more in-code documentation about improvers in :file:`vulnerabilities/improver.py` and
+the framework responsible for invoking these improvers in :file:`vulnerabilities/improve_runner.py`.

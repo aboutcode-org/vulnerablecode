@@ -461,7 +461,7 @@ def clean_nginx_git_tag(tag):
     Return a cleaned ``version`` string from an nginx git tag.
 
     Nginx tags git release as in `release-1.2.3`
-    This removes the the `release-` prefix.
+    This removes the `release-` prefix.
 
     For example:
     >>> clean_nginx_git_tag("release-1.2.3") == "1.2.3"

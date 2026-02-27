@@ -517,10 +517,10 @@ The summary of performance improvements include these fixes:
   that are needed in the UI
 - Do not recreate querysets from scratch but instead allow these to be chained
   for simpler and correct code.
-- Remove extra details from the vulnerability pacge: each package was further
+- Remove extra details from the vulnerability package: each package was further
   listing its related vulnerabilities creating an iceberg query.
 - Enable the django-debug-toolbar with a setting to easily profile queries on demand
-  by setting both VULNERABLECODE_DEBUG and VULNERABLECODE_DEBUG_TOOLBAR enviroment
+  by setting both VULNERABLECODE_DEBUG and VULNERABLECODE_DEBUG_TOOLBAR environment
   variables.
 
 

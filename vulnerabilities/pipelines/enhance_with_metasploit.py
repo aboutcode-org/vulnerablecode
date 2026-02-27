@@ -66,7 +66,6 @@ class MetasploitImproverPipeline(VulnerableCodePipeline):
 
 
 def add_vulnerability_exploit(record, logger):
-    vulnerabilities = set()
     references = record.get("references", [])
 
     interesting_references = [
@@ -76,12 +75,11 @@ def add_vulnerability_exploit(record, logger):
     if not interesting_references:
         return 0
 
-    for ref in interesting_references:
-        try:
-            if alias := Alias.objects.get(alias=ref):
-                vulnerabilities.add(alias.vulnerability)
-        except Alias.DoesNotExist:
-            continue
+    vulnerabilities = (
+        Alias.objects.filter(alias__in=interesting_references, vulnerability__isnull=False)
+        .values_list("vulnerability", flat=True)
+        .distinct()
+    )
 
     if not vulnerabilities:
         logger(f"No vulnerability found for aliases {interesting_references}")
@@ -107,7 +105,7 @@ def add_vulnerability_exploit(record, logger):
 
     for vulnerability in vulnerabilities:
         Exploit.objects.update_or_create(
-            vulnerability=vulnerability,
+            vulnerability_id=vulnerability,
             data_source="Metasploit",
             defaults={
                 "description": description,

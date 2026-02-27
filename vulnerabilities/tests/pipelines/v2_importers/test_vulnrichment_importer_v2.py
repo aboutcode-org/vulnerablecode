@@ -8,15 +8,16 @@
 #
 
 import json
-from pathlib import Path
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import pytest
 
 from vulnerabilities.importer import AdvisoryDataV2
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines.v2_importers.vulnrichment_importer import VulnrichImporterPipeline
+from vulnerabilities.severity_systems import Cvssv4ScoringSystem
 
 
 @pytest.fixture
@@ -58,8 +59,10 @@ def mock_pathlib(tmp_path):
                         "metrics": [
                             {
                                 "cvssV4_0": {
-                                    "baseScore": 7.5,
-                                    "vectorString": "AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                                    "version": "4.0",
+                                    "baseScore": 5.3,
+                                    "baseSeverity": "MEDIUM",
+                                    "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N",
                                 }
                             }
                         ],
@@ -103,15 +106,20 @@ def test_collect_advisories(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
         mock_parse.return_value = AdvisoryDataV2(
             advisory_id="CVE-2021-1234",
             summary="Sample PyPI vulnerability",
-            references=[{"url": "https://example.com"}],
+            references=[ReferenceV2(url="https://example.com")],
             affected_packages=[],
             weaknesses=[],
             url="https://example.com",
             severities=[
                 VulnerabilitySeverity(
-                    system="cvssv4",
-                    value=7.5,
-                    scoring_elements="AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                    system=Cvssv4ScoringSystem(
+                        identifier="cvssv4",
+                        name="CVSSv4 Base Score",
+                        url="https://www.first.org/cvss/v4-0/",
+                        notes="CVSSv4 base score and vector",
+                    ),
+                    value="5.3",
+                    scoring_elements="CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N",
                 )
             ],
         )
@@ -126,6 +134,7 @@ def test_collect_advisories(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
         assert advisory.advisory_id == "CVE-2021-1234"
         assert advisory.summary == "Sample PyPI vulnerability"
         assert advisory.url == "https://example.com"
+        assert len(advisory.severities) == 1
 
 
 def test_clean_downloads(mock_vcs_response, mock_fetch_via_vcs):
@@ -165,8 +174,10 @@ def test_parse_cve_advisory(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
                 "metrics": [
                     {
                         "cvssV4_0": {
-                            "baseScore": 7.5,
-                            "vectorString": "AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                            "version": "4.0",
+                            "baseScore": 5.3,
+                            "baseSeverity": "MEDIUM",
+                            "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:L/UI:N/VC:L/VI:L/VA:L/SC:N/SI:N/SA:N",
                         }
                     }
                 ],
@@ -185,7 +196,7 @@ def test_parse_cve_advisory(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
     assert advisory.summary == "Sample PyPI vulnerability"
     assert advisory.url == advisory_url
     assert len(advisory.severities) == 1
-    assert advisory.severities[0].value == 7.5
+    assert advisory.severities[0].value == 5.3
 
 
 def test_collect_advisories_with_invalid_json(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs):

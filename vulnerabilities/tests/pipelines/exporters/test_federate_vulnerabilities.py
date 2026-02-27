@@ -86,10 +86,12 @@ class TestFederatePackageVulnerabilities(TestCase):
         insert_advisory_v2(
             advisory=advisory1,
             pipeline_id="test_pipeline_v2",
+            logger=self.logger.write,
         )
         insert_advisory_v2(
             advisory=advisory2,
             pipeline_id="test_pipeline_v2",
+            logger=self.logger.write,
         )
 
     @patch(

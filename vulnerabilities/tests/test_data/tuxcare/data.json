@@ -1,0 +1,202 @@
+[
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "CloudLinux 7 ELS",
+    "project_name": "squid",
+    "version": "3.5.20",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "In Testing",
+    "last_updated": "2025-12-23 10:08:36.423446"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "Oracle Linux 7 ELS",
+    "project_name": "squid",
+    "version": "3.5.20",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "In Testing",
+    "last_updated": "2025-12-23 10:08:35.944749"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "CentOS 8.5 ELS",
+    "project_name": "kernel",
+    "version": "4.18.0",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Released",
+    "last_updated": "2025-05-21 01:43:28.677045"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "AlmaLinux 9.2 ESU",
+    "project_name": "squid",
+    "version": "5.5",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Not Vulnerable",
+    "last_updated": "2025-08-28 00:52:25.579518"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "RHEL 7 ELS",
+    "project_name": "squid",
+    "version": "3.5.20",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Not Vulnerable",
+    "last_updated": "2025-11-27 10:32:13.088814"
+  },
+  {
+    "cve": "CVE-2023-52922",
+    "os_name": "CentOS Stream 8 ELS",
+    "project_name": "squid",
+    "version": "4.15",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Ignored",
+    "last_updated": "2025-08-28 22:56:12.357818"
+  },
+  {
+    "cve": "CVE-2023-48161",
+    "os_name": "RHEL 7 ELS",
+    "project_name": "java-11-openjdk",
+    "version": "11.0.23",
+    "score": "7.1",
+    "severity": "HIGH",
+    "status": "In Progress",
+    "last_updated": "2025-12-23 08:55:12.096092"
+  },
+  {
+    "cve": "CVE-2024-21147",
+    "os_name": "RHEL 7 ELS",
+    "project_name": "java-11-openjdk",
+    "version": "11.0.23",
+    "score": "7.4",
+    "severity": "HIGH",
+    "status": "In Progress",
+    "last_updated": "2025-12-23 08:55:07.139188"
+  },
+  {
+    "cve": "CVE-2025-21587",
+    "os_name": "RHEL 7 ELS",
+    "project_name": "java-11-openjdk",
+    "version": "11.0.23",
+    "score": "7.4",
+    "severity": "HIGH",
+    "status": "In Progress",
+    "last_updated": "2025-12-23 08:55:06.706873"
+  },
+  {
+    "cve": "CVE-2024-39502",
+    "os_name": "Unknown OS",
+    "project_name": "kernel",
+    "version": "2.6.32",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Needs Triage",
+    "last_updated": "2025-09-20 06:03:30.551756"
+  },
+  {
+    "cve": "CVE-2024-40927",
+    "os_name": "Unknown OS",
+    "project_name": "kernel",
+    "version": "2.6.32",
+    "score": "7.8",
+    "severity": "HIGH",
+    "status": "Needs Triage",
+    "last_updated": "2025-09-20 06:03:26.132106"
+  },
+  {
+    "cve": "CVE-2025-4517",
+    "os_name": "CentOS 8.4 ELS",
+    "project_name": "python2",
+    "version": "2.7.18",
+    "score": "7.6",
+    "severity": "HIGH",
+    "status": "Not Vulnerable",
+    "last_updated": "2025-12-22 16:43:49.287021"
+  },
+  {
+    "cve": "CVE-2025-43392",
+    "os_name": "TuxCare 9.6 ESU",
+    "project_name": "webkit2gtk3",
+    "version": "2.50.1",
+    "score": "6.5",
+    "severity": "MEDIUM",
+    "status": "In Testing",
+    "last_updated": "2025-12-20 04:26:48.737089"
+  },
+  {
+    "cve": "CVE-2023-50868",
+    "os_name": "CloudLinux 7 ELS",
+    "project_name": "dhcp",
+    "version": "4.2.5",
+    "score": "7.5",
+    "severity": "HIGH",
+    "status": "Already Fixed",
+    "last_updated": "2025-12-23 01:56:28.627699"
+  },
+  {
+    "cve": "CVE-2021-33193",
+    "os_name": "Unknown OS",
+    "project_name": "httpd",
+    "version": "2.2.15",
+    "score": "7.5",
+    "severity": "HIGH",
+    "status": "Ignored",
+    "last_updated": "2025-09-19 21:21:01.425783"
+  },
+  {
+    "cve": "CVE-2025-50093",
+    "os_name": "AlmaLinux 9.2 ESU",
+    "project_name": "mysql",
+    "version": "8.0.32",
+    "score": "4.9",
+    "severity": "MEDIUM",
+    "status": "Released",
+    "last_updated": "2025-12-22 17:11:15.409148"
+  },
+  {
+    "cve": "CVE-2025-64505",
+    "os_name": "CentOS 7 ELS",
+    "project_name": "libpng",
+    "version": "1.5.13",
+    "score": "4.4",
+    "severity": "MEDIUM",
+    "status": "In Rollout",
+    "last_updated": "2025-12-20 04:34:51.112485"
+  },
+  {
+    "cve": "CVE-2022-50268",
+    "os_name": "Ubuntu 16.04 ELS",
+    "project_name": "linux",
+    "version": "4.4.0",
+    "score": "5.5",
+    "severity": "MEDIUM",
+    "status": "Needs Triage",
+    "last_updated": "2025-12-23 07:31:24.920518"
+  },
+  {
+    "cve": "CVE-2020-1472",
+    "os_name": "Debian 10 ELS",
+    "project_name": "samba",
+    "version": "4.9.5",
+    "score": "0.0",
+    "severity": "",
+    "status": "In Testing",
+    "last_updated": "2025-12-22 16:58:13.189255"
+  },
+  {
+    "cve": "CVE-2025-6297",
+    "os_name": "Alpine Linux 3.18 ELS",
+    "project_name": "dpkg",
+    "version": "1.21.21",
+    "score": "0.0",
+    "severity": "",
+    "status": "Released",
+    "last_updated": "2025-12-19 05:00:40.874276"
+  }
+]

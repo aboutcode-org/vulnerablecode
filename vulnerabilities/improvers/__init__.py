@@ -33,6 +33,7 @@ from vulnerabilities.pipelines.v2_improvers import (
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
 from vulnerabilities.pipelines.v2_improvers import relate_severities
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
+from vulnerabilities.pipelines.v2_improvers import fetch_patch_url as fetch_patch_url_v2
 from vulnerabilities.utils import create_registry
 
 IMPROVERS_REGISTRY = create_registry(
@@ -71,6 +72,7 @@ IMPROVERS_REGISTRY = create_registry(
         compute_version_rank_v2.ComputeVersionRankPipeline,
         compute_advisory_todo_v2.ComputeToDo,
         unfurl_version_range_v2.UnfurlVersionRangePipeline,
+        fetch_patch_url_v2.FetchPatchURLImproverPipeline,
         compute_advisory_todo.ComputeToDo,
         collect_ssvc_trees.CollectSSVCPipeline,
         relate_severities.RelateSeveritiesPipeline,

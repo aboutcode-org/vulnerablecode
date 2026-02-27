@@ -77,6 +77,29 @@ class PackageSearchTestCase(TestCase):
         package = PackageDetails(kwargs={"purl": "pkg:nginx/nginx@1.0.15"}).get_object()
         assert package.purl == "pkg:nginx/nginx@1.0.15"
 
+    def test_package_vulnerability_filter(self):
+        vulnerability = Vulnerability.objects.create(
+            vulnerability_id="VCID-TEST", summary="Test Vulnerability for filtering"
+        )
+        vulnerable_package = Package.objects.get(package_url="pkg:nginx/nginx@1.20.0")
+        AffectedByPackageRelatedVulnerability.objects.create(
+            vulnerability=vulnerability, package=vulnerable_package, created_by="test"
+        )
+        response = self.client.get("/packages/search?search=nginx&vulnerable_only=true")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(vulnerable_package.purl, str(response.content))
+        self.assertNotIn("pkg:nginx/nginx@1.21.0", str(response.content))
+
+        response = self.client.get("/packages/search?search=nginx&vulnerable_only=false")
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(vulnerable_package.purl, str(response.content))
+        self.assertIn("pkg:nginx/nginx@1.21.0", str(response.content))
+
+        response = self.client.get("/packages/search?search=nginx")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(vulnerable_package.purl, str(response.content))
+        self.assertIn("pkg:nginx/nginx@1.21.0", str(response.content))
+
     def test_package_view_with_purl_fragment(self):
         qs = PackageSearch().get_queryset(query="nginx@1.0.15")
         pkgs = list(qs)

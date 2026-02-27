@@ -23,6 +23,14 @@ class PackageSearchForm(forms.Form):
             attrs={"placeholder": "Package name, purl or purl fragment"},
         ),
     )
+    vulnerable_only = forms.ChoiceField(
+        required=False,
+        choices=[
+            ("", "All Packages"),
+            ("true", "Vulnerable Only"),
+            ("false", "Non-Vulnerable Only"),
+        ],
+    )
 
 
 class VulnerabilitySearchForm(forms.Form):

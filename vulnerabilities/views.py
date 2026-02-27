@@ -68,13 +68,27 @@ class PackageSearch(ListView):
         Make a best effort approach to find matching packages either based
         on exact purl, partial purl or just name and namespace.
         """
-        query = query or self.request.GET.get("search") or ""
-        return (
+        if query is not None:
+            queryset = (
+                self.model.objects.search(query)
+                .with_vulnerability_counts()
+                .prefetch_related()
+                .order_by("package_url")
+            )
+            return queryset
+        query = self.request.GET.get("search") or ""
+        queryset = (
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
             .order_by("package_url")
         )
+        vulnerable_only = self.request.GET.get("vulnerable_only", "")
+        if vulnerable_only in ["true", "false"]:
+            queryset = queryset.with_is_vulnerable()
+            queryset = queryset.filter(is_vulnerable=vulnerable_only == "true")
+
+        return queryset
 
 
 class PackageSearchV2(ListView):

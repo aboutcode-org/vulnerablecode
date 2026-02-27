@@ -22,10 +22,12 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines.v2_improvers.unfurl_version_range import UnfurlVersionRangePipeline
 from vulnerabilities.pipes.advisory import insert_advisory_v2
+from vulnerabilities.tests.pipelines import TestLogger
 
 
 class TestUnfurlVersionRangePipeline(TestCase):
     def setUp(self):
+        self.logger = TestLogger()
         advisory1 = AdvisoryDataV2(
             summary="Test advisory",
             aliases=["CVE-2025-0001"],
@@ -49,6 +51,7 @@ class TestUnfurlVersionRangePipeline(TestCase):
         insert_advisory_v2(
             advisory=advisory1,
             pipeline_id="test_pipeline_v2",
+            logger=self.logger.write,
         )
 
     @patch("vulnerabilities.pipelines.v2_improvers.unfurl_version_range.get_purl_versions")

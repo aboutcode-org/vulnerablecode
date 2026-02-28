@@ -1,0 +1,31 @@
+KDE Project Security Advisory
+=============================
+
+Title:          Smb4K: Major security issues in KAuth mount helper
+Risk rating:    Major
+CVE:            CVE-2025-66002, CVE-2025-66003
+Versions:       Smb4K < 4.0.5
+Date:           9 January 2026
+
+Overview
+========
+
+The privileged KAuth mount helper of Smb4K runs with full root privileges and implements two KAuth actions accessible via D-Bus: mounting and unmounting a network share.
+
+
+Impact
+======
+
+An attacker can exploit the shortcomings in the KAuth mount helper and perform arbitrary unmounts.
+
+
+Solution
+========
+
+Update Smb4K to version 4.0.5 or later.
+
+
+Credits
+=======
+
+Thanks to Matthias Gerstner and the SUSE security team for reporting this issue.

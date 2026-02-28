@@ -22,6 +22,8 @@ from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import (
 from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import TomcatAdvisoryData
 from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import parse_tomcat_security
 
+from django.conf import settings
+
 TOMCAT_SECURITY_HTML = """
 <html>
 <body>
@@ -96,6 +98,11 @@ def test_pipeline_groups_by_cve_per_page(mock_get):
     assert advisory.summary == "Request smuggling vulnerability"
 
     assert len(advisory.affected_packages) == 4
+    
+    # Verify the User-Agent header was passed
+    args, kwargs = mock_get.call_args
+    assert "headers" in kwargs, "Headers were not passed to requests.get!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT
 
 
 def test_affected_packages_structure():
@@ -143,3 +150,7 @@ def test_apache_and_maven_version_ranges_created(mock_get):
 
     for r in maven_ranges:
         assert isinstance(r, MavenVersionRange)
+    
+    args, kwargs = mock_get.call_args
+    assert "headers" in kwargs, "Headers were not passed to requests.get!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT

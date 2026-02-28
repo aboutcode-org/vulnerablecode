@@ -17,6 +17,7 @@ import requests
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 
+from django.conf import settings
 
 class PyPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
     """Collect advisories from PyPI."""
@@ -38,7 +39,10 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipeline):
 
     def fetch_zip(self):
         self.log(f"Fetching `{self.url}`")
-        self.advisory_zip = requests.get(self.url).content
+        self.advisory_zip = requests.get(
+            self.url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        ).content
 
     def advisories_count(self) -> int:
         with ZipFile(BytesIO(self.advisory_zip)) as zip:

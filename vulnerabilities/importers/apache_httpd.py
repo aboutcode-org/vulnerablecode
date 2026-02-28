@@ -27,6 +27,7 @@ from vulnerabilities.severity_systems import APACHE_HTTPD
 from vulnerabilities.utils import create_weaknesses_list
 from vulnerabilities.utils import cwe_regex
 from vulnerabilities.utils import get_item
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +42,10 @@ class ApacheHTTPDImporter(Importer):
     def advisory_data(self):
         links = fetch_links(self.base_url)
         for link in links:
-            data = requests.get(link).json()
+            data = requests.get(
+                link,
+                headers={'User-Agent': settings.VC_USER_AGENT}
+            ).json()
             yield self.to_advisory(data)
 
     def to_advisory(self, data):
@@ -150,7 +154,10 @@ class ApacheHTTPDImporter(Importer):
 
 def fetch_links(url):
     links = []
-    data = requests.get(url).content
+    data = requests.get(
+        url,
+        headers={'User-Agent': settings.VC_USER_AGENT}
+    ).content
     soup = BeautifulSoup(data, features="lxml")
     for tag in soup.find_all("a"):
         link = tag.get("href")

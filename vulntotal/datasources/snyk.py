@@ -22,6 +22,8 @@ from vulntotal.validator import InvalidCVEError
 from vulntotal.validator import VendorData
 from vulntotal.vulntotal_utils import snyk_constraints_satisfied
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 fixed_version_pattern = re.compile(r"\b\d[\w.-]*\b")
@@ -42,7 +44,10 @@ class SnykDataSource(DataSource):
             A string of HTML or a dictionary of JSON if the response is successful,
             or None if the response is unsuccessful.
         """
-        response = requests.get(url)
+        response = requests.get(
+            url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        )
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:

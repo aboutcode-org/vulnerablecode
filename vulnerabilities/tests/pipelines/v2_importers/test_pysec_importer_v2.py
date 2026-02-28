@@ -10,6 +10,7 @@ from vulnerabilities.pipelines.v2_importers.pysec_importer import (
     PyPIImporterPipeline,  # Path to the PyPI Importer
 )
 
+from django.conf import settings
 
 @pytest.fixture
 def mock_zip_data():
@@ -51,6 +52,11 @@ def test_fetch_zip(mock_requests_get, mock_zip_data):
 
     # Verify that the zip file content is correctly assigned
     assert pipeline.advisory_zip == mock_zip_data.read()
+    
+    # Verify the User-Agent header was passed
+    args, kwargs = mock_requests_get.call_args
+    assert "headers" in kwargs, "Headers were not passed to requests.get!"
+    assert kwargs["headers"]["User-Agent"] == settings.VC_USER_AGENT
 
 
 def test_advisories_count(mock_requests_get, mock_zip_data):

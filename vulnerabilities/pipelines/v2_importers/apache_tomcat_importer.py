@@ -27,6 +27,7 @@ from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
+from django.conf import settings
 
 class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
@@ -48,7 +49,10 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         Each page link is in the form of `https://tomcat.apache.org/security-10.html`,
         for instance, for v10.
         """
-        data = requests.get(self.base_url).content
+        data = requests.get(
+            self.base_url,
+            headers={'User-Agent': settings.VC_USER_AGENT}
+        ).content
         soup = BeautifulSoup(data, features="lxml")
         for tag in soup.find_all("a"):
             link = tag.get("href")
@@ -67,7 +71,10 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for page_url in self.fetch_advisory_links():
             try:
-                content = requests.get(page_url).content
+                content = requests.get(
+                    page_url,
+                    headers={'User-Agent': settings.VC_USER_AGENT}
+                ).content
                 tomcat_advisories = parse_tomcat_security(content)
                 self.log(f"Processing {len(tomcat_advisories)} advisories from {page_url}")
                 grouped = defaultdict(list)

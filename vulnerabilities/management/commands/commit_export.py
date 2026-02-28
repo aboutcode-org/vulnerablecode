@@ -23,6 +23,7 @@ from git import Repo
 
 from vulnerablecode.settings import ALLOWED_HOSTS
 from vulnerablecode.settings import VULNERABLECODE_VERSION
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -161,7 +162,11 @@ class Command(BaseCommand):
             raise ValueError("Invalid GitHub repo URL")
 
         url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/pulls"
-        headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json"}
+        headers = {
+            "Authorization": f"token {token}", 
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": VC_USER_AGENT  # <--- ADD THIS LINE
+        }
         data = {"title": title, "head": branch, "base": "main", "body": body}
 
         response = requests.post(url, headers=headers, json=data)

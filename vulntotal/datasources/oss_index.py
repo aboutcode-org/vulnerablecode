@@ -17,6 +17,8 @@ from packageurl import PackageURL
 from vulntotal.validator import DataSource
 from vulntotal.validator import VendorData
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -42,7 +44,10 @@ class OSSDataSource(DataSource):
         if username and token:
             auth = (username, token)
             url = self.api_authenticated
-        response = requests.post(url, auth=auth, json={"coordinates": coordinates})
+        response = requests.post(url, 
+                                 headers={'User-Agent': settings.VC_USER_AGENT},
+                                 auth=auth, 
+                                 json={"coordinates": coordinates})
         try:
             response.raise_for_status()
             return response.json()

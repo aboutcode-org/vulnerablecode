@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 import requests
 
 from vulnerabilities.importer import OvalImporter
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +78,10 @@ class UbuntuImporter(OvalImporter):
             file_url = f"{base_url}/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8
             self.data_url = file_url
             logger.info(f"Fetching Ubuntu Oval: {file_url}")
-            response = requests.get(file_url)
+            response = requests.get(
+                file_url,
+                headers={'User-Agent': settings.VC_USER_AGENT}
+            )
             if response.status_code != requests.codes.ok:
                 logger.error(
                     f"Failed to fetch Ubuntu Oval: HTTP {response.status_code} : {file_url}"

@@ -41,6 +41,7 @@ from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
 from aboutcode.hashid import build_vcid
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +76,10 @@ def load_toml(path):
 
 
 def fetch_yaml(url):
-    response = requests.get(url)
+    response = requests.get(
+        url,
+        headers={'User-Agent': settings.VC_USER_AGENT}
+    )
     return saneyaml.load(response.content)
 
 
@@ -123,6 +127,9 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     )
     adapter = requests.adapters.HTTPAdapter(max_retries=retries)
     session = requests.Session()
+    
+    session.headers.update({'User-Agent': settings.VC_USER_AGENT})
+    
     session.mount("https://", adapter)
     session.mount("http://", adapter)
     return session
@@ -284,12 +291,16 @@ def _get_gh_response(gh_token, graphql_query):
     Convenience function to easy mocking in tests
     """
     endpoint = "https://api.github.com/graphql"
-    headers = {"Authorization": f"bearer {gh_token}"}
+    
+    headers = {
+        "Authorization": f"bearer {gh_token}",
+        "User-Agent": settings.VC_USER_AGENT
+    }
+    
     try:
         return requests.post(endpoint, headers=headers, json=graphql_query).json()
     except Exception as e:
         logger.error(f"Failed to fetch data from GitHub GraphQL API: {e}")
-
 
 def dedupe(original: List) -> List:
     """
@@ -390,7 +401,8 @@ def fetch_response(url):
     Fetch and return `response` from the `url`
     """
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers={'User-Agent': settings.VC_USER_AGENT})
+        
         if response.status_code == HTTPStatus.OK:
             return response
         raise Exception(
@@ -399,7 +411,6 @@ def fetch_response(url):
     except Exception as e:
         logger.error(f"Error fetching data from {url!r}: {e}")
         return None
-
 
 # This should be a method on PackageURL
 def plain_purl(purl):
@@ -418,7 +429,12 @@ def plain_purl(purl):
 
 
 def fetch_and_read_from_csv(url):
-    response = urllib.request.urlopen(url)
+    req = urllib.request.Request(
+        url, 
+        headers={'User-Agent': settings.VC_USER_AGENT}
+    )
+    
+    response = urllib.request.urlopen(req)
     lines = [l.decode("utf-8") for l in response.readlines()]
     return csv.reader(lines)
 

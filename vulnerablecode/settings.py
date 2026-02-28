@@ -399,3 +399,7 @@ FEDERATEDCODE_VULNERABILITIES_REPO = env.str(
 FEDERATEDCODE_GIT_SERVICE_TOKEN = env.str("FEDERATEDCODE_GIT_SERVICE_TOKEN", default="")
 FEDERATEDCODE_GIT_SERVICE_NAME = env.str("FEDERATEDCODE_GIT_SERVICE_NAME", default="")
 FEDERATEDCODE_GIT_SERVICE_EMAIL = env.str("FEDERATEDCODE_GIT_SERVICE_EMAIL", default="")
+
+# Standardized User-Agent for all external network requests by Importers
+
+VC_USER_AGENT = "VulnerableCode/1.0 (+https://github.com/aboutcode-org/vulnerablecode)"

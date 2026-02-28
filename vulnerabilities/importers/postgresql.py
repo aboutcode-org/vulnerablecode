@@ -21,7 +21,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
-
+from django.conf import settings
 
 class PostgreSQLImporter(Importer):
 
@@ -37,7 +37,10 @@ class PostgreSQLImporter(Importer):
         while True:
             unvisited_urls = known_urls - visited_urls
             for url in unvisited_urls:
-                data = requests.get(url).content
+                data = requests.get(
+                    url,
+                    headers={'User-Agent': settings.VC_USER_AGENT}
+                ).content
                 data_by_url[url] = data
                 visited_urls.add(url)
                 known_urls.update(find_advisory_urls(data))

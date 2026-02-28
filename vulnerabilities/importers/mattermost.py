@@ -25,6 +25,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.package_managers import GitHubTagsAPI
+from django.conf import settings
 
 SECURITY_UPDATES_URL = "https://mattermost.com/security-updates"
 MM_REPO = {
@@ -36,13 +37,13 @@ MM_REPO = {
 
 class MattermostDataSource(Importer):
     def updated_advisories(self):
-        # FIXME: Change after this https://forum.mattermost.org/t/mattermost-website-returning-403-when-headers-contain-the-word-python/11412
         self.set_api()
         data = requests.get(
-            SECURITY_UPDATES_URL, headers={"user-agent": "aboutcode/vulnerablecode"}
+            SECURITY_UPDATES_URL, 
+            headers={"User-Agent": settings.VC_USER_AGENT},
         ).content
         return self.batch_advisories(self.to_advisories(data))
-
+    
     def set_api(self):
         self.version_api = GitHubTagsAPI()
         asyncio.run(

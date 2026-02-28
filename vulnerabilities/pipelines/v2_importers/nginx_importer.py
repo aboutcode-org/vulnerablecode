@@ -27,6 +27,7 @@ from vulnerabilities.importer import logger
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import GENERIC
 
+from django.conf import settings
 
 class NginxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect Nginx security advisories."""
@@ -48,7 +49,10 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def fetch(self):
         self.log(f"Fetch `{self.url}`")
-        self.advisory_data = requests.get(self.url).text
+        self.advisory_data = requests.get(
+            self.url, 
+            headers={'User-Agent': settings.VC_USER_AGENT},
+        ).text
 
     def advisories_count(self):
         return self.advisory_data.count("<li><p>")

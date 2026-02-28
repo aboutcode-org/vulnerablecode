@@ -16,7 +16,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 from vulnerabilities.utils import is_cve
-
+from django.conf import settings
 
 class UbuntuUSNImporter(Importer):
     db_url = "https://usn.ubuntu.com/usn-db/database-all.json.bz2"
@@ -97,7 +97,10 @@ def get_usn_reference(usn_id):
 
 
 def fetch(url):
-    response = requests.get(url).content
+    response = requests.get(
+        url,
+        headers={'User-Agent': settings.VC_USER_AGENT}
+    ).content
     raw_data = bz2.decompress(response)
 
     return json.loads(raw_data)

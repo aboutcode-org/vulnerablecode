@@ -67,13 +67,14 @@ class PackageSearch(ListView):
         Return a Package queryset for the ``query``.
         Make a best effort approach to find matching packages either based
         on exact purl, partial purl or just name and namespace.
+        Results are sorted by version rank (newest first).
         """
         query = query or self.request.GET.get("search") or ""
         return (
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
-            .order_by("package_url")
+            .order_by("-version_rank", "package_url")
         )
 
 
@@ -95,13 +96,14 @@ class PackageSearchV2(ListView):
         Return a Package queryset for the ``query``.
         Make a best effort approach to find matching packages either based
         on exact purl, partial purl or just name and namespace.
+        Results are sorted by version rank (newest first).
         """
         query = query or self.request.GET.get("search") or ""
         return (
             self.model.objects.search(query)
             .with_vulnerability_counts()
             .prefetch_related()
-            .order_by("package_url")
+            .order_by("-version_rank", "package_url")
         )
 
 
@@ -120,7 +122,7 @@ class VulnerabilitySearch(ListView):
 
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query=query).with_package_counts()
+        return self.model.objects.search(query=query).with_package_counts().order_by("-vulnerability_id")
 
 
 class AdvisorySearch(ListView):
@@ -138,7 +140,7 @@ class AdvisorySearch(ListView):
 
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query=query).with_package_counts()
+        return self.model.objects.search(query=query).with_package_counts().order_by("-advisory_id")
 
 
 class PackageDetails(DetailView):

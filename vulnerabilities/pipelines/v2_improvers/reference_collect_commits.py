@@ -7,6 +7,8 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from collections import defaultdict
+
 from aboutcode.pipeline import LoopProgress
 from django.db.models import Prefetch
 from packageurl.contrib.purl2url import purl2url
@@ -65,7 +67,7 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
 
         commit_batch = []
         updated_pkg_patch_commit_count = 0
-        batch_size = 1000
+        batch_size = 10000
         for adv in progress.iter(advisories.paginated(per_page=batch_size)):
             urls = {r.url for r in adv.references.all()} | {p.patch_url for p in adv.patches.all()}
 
@@ -90,14 +92,22 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
         impact_data = {(row[0], row[3]) for row in vcs_data_table}  # base_purl, adv_id
         commit_data = {(row[1], row[2]) for row in vcs_data_table}  # vcs_url, commit_hash
 
-        adv_ids = {aid for _, aid in impact_data}
-        existing_impacts = ImpactedPackage.objects.filter(advisory_id__in=adv_ids)
-        existing_impact_pairs = {(ip.base_purl, ip.advisory_id) for ip in existing_impacts}
+        adv_ids = {adv_id for _, adv_id in impact_data}
+        commit_hashes = {commit_hash for _, commit_hash in commit_data}
 
-        new_impacts = impact_data - existing_impact_pairs
-        if new_impacts:
+        existing_impacts = ImpactedPackage.objects.filter(advisory_id__in=adv_ids).only(
+            "base_purl", "advisory_id"
+        )
+        existing_impact_pairs = {
+            (impact_pkg.base_purl, impact_pkg.advisory_id) for impact_pkg in existing_impacts
+        }
+
+        if new_impacts := impact_data - existing_impact_pairs:
             ImpactedPackage.objects.bulk_create(
-                [ImpactedPackage(base_purl=bp, advisory_id=aid) for bp, aid in new_impacts]
+                [
+                    ImpactedPackage(base_purl=base_purl, advisory_id=adv_id)
+                    for base_purl, adv_id in new_impacts
+                ]
             )
 
         PackageCommitPatch.objects.bulk_create(
@@ -108,23 +118,28 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
             ignore_conflicts=True,
         )
 
-        adv_ids = {adv_id for _, adv_id in impact_data}
         fetched_impacts = {
             (impacted_pkg.base_purl, impacted_pkg.advisory_id): impacted_pkg
-            for impacted_pkg in ImpactedPackage.objects.filter(advisory_id__in=adv_ids)
+            for impacted_pkg in ImpactedPackage.objects.filter(advisory_id__in=adv_ids).only(
+                "base_purl", "advisory_id"
+            )
         }
 
-        commit_hashes = {commit_hash for _, commit_hash in commit_data}
-        fetched_commits = {
+        fetched_pkg_commits = {
             (pkg_commit_patch.vcs_url, pkg_commit_patch.commit_hash): pkg_commit_patch
-            for pkg_commit_patch in PackageCommitPatch.objects.filter(commit_hash__in=commit_hashes)
+            for pkg_commit_patch in PackageCommitPatch.objects.filter(
+                commit_hash__in=commit_hashes
+            ).only("vcs_url", "commit_hash")
         }
 
+        pkg_commit_add_impact_pkg = defaultdict(list)
         for base_purl, vcs_url, commit_hash, adv_id in vcs_data_table:
-            impacted_package = fetched_impacts.get((base_purl, adv_id))
-            package_commit_obj = fetched_commits.get((vcs_url, commit_hash))
+            impacted_pkg_obj = fetched_impacts.get((base_purl, adv_id))
+            pkg_commit_obj = fetched_pkg_commits.get((vcs_url, commit_hash))
+            if impacted_pkg_obj and pkg_commit_obj:
+                pkg_commit_add_impact_pkg[pkg_commit_obj].append(impacted_pkg_obj)
 
-            if impacted_package and package_commit_obj:
-                package_commit_obj.fixed_in_impacts.add(impacted_package)
+        for pkg_commit_obj, impact_pkgs in pkg_commit_add_impact_pkg.items():
+            pkg_commit_obj.fixed_in_impacts.add(*impact_pkgs)
 
         return len(vcs_data_table)

@@ -157,7 +157,7 @@ def commit_changes(repo, files_to_commit, commit_message):
     )
 
 
-def commit_message(item_type, commit_count, total_commit_count):
+def commit_message(heading, commit_count, total_commit_count):
     """Commit message for pushing Package vulnerability."""
     from vulnerablecode import __version__ as VERSION
 
@@ -167,7 +167,7 @@ def commit_message(item_type, commit_count, total_commit_count):
     tool_name = "pkg:github/aboutcode-org/vulnerablecode"
 
     return f"""\
-        Add new {item_type} ({commit_count}/{total_commit_count})
+        {heading} ({commit_count}/{total_commit_count})
 
         Tool: {tool_name}@v{VERSION}
 

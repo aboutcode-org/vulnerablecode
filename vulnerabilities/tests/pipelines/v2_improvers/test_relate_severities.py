@@ -8,7 +8,9 @@
 #
 
 import pytest
+from django.db.models import Q
 
+from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.pipelines.v2_improvers.relate_severities import RelateSeveritiesPipeline
 from vulnerabilities.severity_systems import EPSS
@@ -42,6 +44,10 @@ def test_relate_severities_by_advisory_id():
     pipeline.relate_severities()
 
     assert base.related_advisory_severities.filter(id=severity_advisory.id).exists()
+    severities = AdvisorySeverity.objects.filter(
+        Q(advisories=base) | Q(advisories__related_to_advisory_severities=base)
+    ).distinct()
+    assert severities.filter(id=severity_advisory.severities.first().id).exists()
 
 
 @pytest.mark.django_db

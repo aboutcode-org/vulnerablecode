@@ -154,7 +154,7 @@ def matcher_url(ref) -> str:
     """
     Returns URL of the reference markup from reference url in Markdown format
     """
-    markup_regex = "\[([^\[]+)]\(\s*(http[s]?://.+)\s*\)"
+    markup_regex = r"\[([^\[]+)]\(\s*(http[s]?://.+)\s*\)"
     matched_markup = re.findall(markup_regex, ref)
     if matched_markup:
         return matched_markup[0][1]

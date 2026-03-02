@@ -45,3 +45,18 @@ def test_kev_improver(mock_get):
     # Run Kev Improver again when there are matching aliases.
     improver.execute()
     assert Exploit.objects.count() == 1
+
+
+@pytest.mark.django_db
+@mock.patch("requests.get")
+def test_invalid_kev_improver(mock_get):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = load_json(TEST_DATA)
+    mock_get.return_value = mock_response
+
+    improver = VulnerabilityKevPipeline()
+    Alias.objects.create(alias="CVE-2021-38647", vulnerability=None)
+
+    status, _ = improver.execute()
+    assert status == 0
+    assert Exploit.objects.count() == 0

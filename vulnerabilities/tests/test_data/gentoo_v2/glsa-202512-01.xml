@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glsa SYSTEM "http://www.gentoo.org/dtd/glsa.dtd">
+<glsa id="202512-01">
+    <title>GnuPG: Arbitrary Code Execution</title>
+    <synopsis>A vulnerability has been discovered in GnuPG, which can lead to arbitrary code execution.</synopsis>
+    <product type="ebuild">gnupg</product>
+    <announced>2025-12-27</announced>
+    <revised count="1">2025-12-27</revised>
+    <bug>967884</bug>
+    <access>remote</access>
+    <affected>
+        <package name="app-crypt/gnupg" auto="yes" arch="*">
+            <unaffected range="ge">2.5.14</unaffected>
+            <vulnerable range="lt">2.5.14</vulnerable>
+        </package>
+    </affected>
+    <background>
+        <p>The GNU Privacy Guard, GnuPG, is a free replacement for the PGP suite of cryptographic software.</p>
+    </background>
+    <description>
+        <p>A vulnerability has been discovered in GnuPG&#39;s armor parser.</p>
+    </description>
+    <impact type="high">
+        <p>A remote attacker could entice a user or automated system to process a specially crafted signature file, possibly resulting in execution of arbitrary commands with the privileges of the process.</p>
+    </impact>
+    <workaround>
+        <p>There is no known workaround at this time.</p>
+    </workaround>
+    <resolution>
+        <p>All GnuPG users should upgrade to the latest version:</p>
+        
+        <code>
+          # emerge --sync
+          # emerge --ask --oneshot --verbose ">=app-crypt/gnupg-2.5.14"
+        </code>
+    </resolution>
+    <references>
+    </references>
+    <metadata tag="requester" timestamp="2025-12-27T21:32:04.569640Z">sam</metadata>
+    <metadata tag="submitter" timestamp="2025-12-27T21:32:04.576671Z">sam</metadata>
+</glsa>

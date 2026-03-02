@@ -7,9 +7,11 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from vulnerabilities.models import PackageCommitPatch, Patch
+from vulnerabilities.models import PackageCommitPatch
+from vulnerabilities.models import Patch
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.utils import fetch_response
+from vulnerabilities.utils import generate_patch_url
 
 
 class FetchPatchURLImproverPipeline(VulnerableCodePipeline):
@@ -20,9 +22,7 @@ class FetchPatchURLImproverPipeline(VulnerableCodePipeline):
 
     @classmethod
     def steps(cls):
-        return (
-            cls.collect_patch_text,
-        )
+        return (cls.collect_patch_text,)
 
     def fetch_patch_content(self, url):
         """
@@ -42,8 +42,8 @@ class FetchPatchURLImproverPipeline(VulnerableCodePipeline):
 
     def advisories_count(self) -> int:
         return (
-            PackageCommitPatch.objects.filter(patch_text__isnull=True).count() +
-            Patch.objects.filter(patch_text__isnull=True).count()
+            PackageCommitPatch.objects.filter(patch_text__isnull=True).count()
+            + Patch.objects.filter(patch_text__isnull=True).count()
         )
 
     def collect_patch_text(self):
@@ -62,22 +62,3 @@ class FetchPatchURLImproverPipeline(VulnerableCodePipeline):
 
             patch.patch_text = content
             patch.save()
-
-def generate_patch_url(vcs_url, commit_hash):
-    """
-    Generate patch URL from VCS URL and commit hash.
-    """
-    if not vcs_url or not commit_hash:
-        return None
-
-    vcs_url = vcs_url.rstrip("/")
-
-    if vcs_url.startswith("https://github.com"):
-        return f"{vcs_url}/commit/{commit_hash}.patch"
-    elif vcs_url.startswith("https://gitlab.com"):
-        return f"{vcs_url}/-/commit/{commit_hash}.patch"
-    elif vcs_url.startswith("https://bitbucket.org"):
-        return f"{vcs_url}/-/commit/{commit_hash}/raw"
-    elif vcs_url.startswith("https://git.kernel.org"):
-        return f"{vcs_url}.git/patch/?id={commit_hash}"
-    return

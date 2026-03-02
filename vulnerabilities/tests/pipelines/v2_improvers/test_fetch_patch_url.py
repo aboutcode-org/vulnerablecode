@@ -12,7 +12,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from vulnerabilities.models import PackageCommitPatch, Patch
+from vulnerabilities.models import PackageCommitPatch
+from vulnerabilities.models import Patch
 from vulnerabilities.pipelines.v2_improvers.fetch_patch_url import FetchPatchURLImproverPipeline
 
 
@@ -24,14 +25,11 @@ def test_collect_patch_text_success(mock_get):
     mock_get.side_effect = [res1, res2]
 
     pcp = PackageCommitPatch.objects.create(
-        vcs_url="https://github.com/nexB/vulnerablecode",
-        commit_hash="abc1234",
-        patch_text=None
+        vcs_url="https://github.com/nexB/vulnerablecode", commit_hash="abc1234", patch_text=None
     )
 
     patch = Patch.objects.create(
-        patch_url="https://gitlab.com/nexB/vulnerablecode/-/commit/def5678.patch",
-        patch_text=None
+        patch_url="https://gitlab.com/nexB/vulnerablecode/-/commit/def5678.patch", patch_text=None
     )
     pipeline = FetchPatchURLImproverPipeline()
     pipeline.collect_patch_text()
@@ -42,15 +40,14 @@ def test_collect_patch_text_success(mock_get):
     assert pcp.patch_text == "diff --git a/file1"
     assert patch.patch_text == "diff --git a/file2"
 
+
 @pytest.mark.django_db
 @mock.patch("vulnerabilities.utils.requests.get")
 def test_collect_patch_text_failure(mock_get):
     mock_get.side_effect = Exception("Connection Error")
 
     pcp = PackageCommitPatch.objects.create(
-        vcs_url="https://github.com/nexB/vulnerablecode",
-        commit_hash="abc1234",
-        patch_text=None
+        vcs_url="https://github.com/nexB/vulnerablecode", commit_hash="abc1234", patch_text=None
     )
 
     pipeline = FetchPatchURLImproverPipeline()

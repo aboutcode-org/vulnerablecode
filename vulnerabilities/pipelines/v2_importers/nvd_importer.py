@@ -176,7 +176,7 @@ class CveItem:
         # In 99% of cases len(cve_item['cve']['description']['description_data']) == 1 , so
         # this usually returns  cve_item['cve']['description']['description_data'][0]['value']
         # In the remaining 1% cases this returns the longest summary.
-        # FIXME: we should retun the full description WITH the summry as the first line instead
+        # FIXME: we should return the full description WITH the summary as the first line instead
         summaries = []
         for desc in get_item(self.cve_item, "cve", "descriptions") or []:
             if desc.get("value") and desc.get("lang") == "en":

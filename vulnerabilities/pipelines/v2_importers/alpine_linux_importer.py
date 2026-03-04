@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -244,4 +245,5 @@ def load_advisories(
                 references=references,
                 affected_packages=affected_packages,
                 url=url,
+                original_advisory_text=json.dumps(pkg_infos, indent=2, ensure_ascii=False),
             )

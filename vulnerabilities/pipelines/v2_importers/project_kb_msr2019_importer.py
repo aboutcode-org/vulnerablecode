@@ -90,6 +90,7 @@ class ProjectKBMSR2019Pipeline(VulnerableCodeBaseImporterPipelineV2):
                     patches=patches,
                     references=references,
                     url="https://github.com/SAP/project-kb/blob/main/MSR2019/dataset/vulas_db_msr2019_release.csv",
+                    original_advisory_text=",".join(row),
                 )
 
     def clean_downloads(self):

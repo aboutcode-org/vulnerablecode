@@ -26,9 +26,9 @@ from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
-from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.pipes.advisory import append_patch_classifications
 
 GITHUB_COMMIT_URL_RE = re.compile(
     r"https?://github\.com/apache/tomcat/commit/(?P<commit_hash>[0-9a-f]{5,40})"
@@ -293,8 +293,13 @@ def parse_tomcat_security(html_content):
     soup = BeautifulSoup(html_content, "lxml")
     results = []
 
-    for header in soup.find_all("h3", id=re.compile(r"Fixed_in_Apache_Tomcat")):
-        m = re.search(r"Tomcat\s+([\d\.]+)", header.get_text())
+    for header in soup.find_all("h3"):
+        header_text = header.get_text(" ", strip=True)
+        m = re.search(
+            r"(?:Tomcat\s+|Fixed\s+(?:in\s+)?)((?:\d+\.)*\d+)",
+            header_text,
+            flags=re.IGNORECASE,
+        )
         if not m:
             continue
         fixed_in = m.group(1)
@@ -327,7 +332,8 @@ def parse_tomcat_security(html_content):
             if current:
                 text = p.get_text(" ", strip=True)
 
-                if "was fixed" in text.lower():
+                lower_text = text.lower()
+                if "fixed" in lower_text and "commit" in lower_text:
                     for link in p.find_all("a", href=True):
                         href = link["href"]
                         if GITHUB_COMMIT_URL_RE.match(href) or GITBOX_COMMIT_URL_RE.match(href):
@@ -360,12 +366,20 @@ def get_commit_patches(commit_urls):
     commit_patches = []
     for url in commit_urls:
         match = GITHUB_COMMIT_URL_RE.match(url) or GITBOX_COMMIT_URL_RE.match(url)
-        if match:
-            commit_hash = match.group("commit_hash")
-            commit_patches.append(
-                PackageCommitPatchData(
-                    vcs_url=TOMCAT_VCS_URL,
-                    commit_hash=commit_hash,
-                )
-            )
+        if not match:
+            continue
+
+        commit_hash = match.group("commit_hash")
+        classified_packages = []
+        append_patch_classifications(
+            url=url,
+            commit_hash=commit_hash,
+            patch_text=None,
+            affected_packages=classified_packages,
+            patches=[],
+            references=[],
+        )
+        for package in classified_packages:
+            for patch in package.fixed_by_commit_patches:
+                commit_patches.append(patch)
     return commit_patches

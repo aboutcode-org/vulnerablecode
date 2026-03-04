@@ -13,10 +13,16 @@ Version v37.0.0
 - We have added new models AdvisoryV2, AdvisoryAlias, AdvisoryReference, AdvisorySeverity, AdvisoryWeakness, PackageV2 and CodeFixV2.
 - We are using ``avid`` as an internal advisory ID for uniquely identifying advisories.
 - We have a new route ``/v2`` which only support package search which has information on packages that are reported to be affected or fixing by advisories.
-- This version introduces ``/api/v2/advisories-packages`` which has information on packages that are reported to be affected or fixing by advisories.
+- This version introduces ``/api/v3/packages`` which has information on packages that are reported to be affected or fixing by advisories.
 - Pipeline Dashboard improvements #1920.
 - Throttle API requests based on user permissions #1909.
 - Add pipeline to compute Advisory ToDos #1764
+- Use related advisory severity to calculate exploitibility, weighted severity and risk scores
+- Migrate all importers to use the new advisory models. All new advisories have a unique AVID and all importers will use this AVID as the unique identifier for advisories instead of CVE ID or other identifiers used by the data sources #1881.
+- Handle advisories with same and related data https://github.com/aboutcode-org/vulnerablecode/issues/2099.
+- Add a pipeline for exporting VulnerableCode data to FederatedCode #2110.
+- Plan storing of exploits and EPSS based advisories #2069.
+
 
 Version v36.1.3
 ---------------------

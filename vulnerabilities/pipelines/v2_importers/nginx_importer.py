@@ -62,7 +62,7 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         vulnerability_list = soup.select("li p")
         for vulnerability_info in vulnerability_list:
             ngnix_advisory = parse_advisory_data_from_paragraph(vulnerability_info)
-            yield to_advisory_data(ngnix_advisory)
+            yield to_advisory_data(ngnix_advisory, vulnerability_info)
 
 
 class NginxAdvisory(NamedTuple):
@@ -79,7 +79,7 @@ class NginxAdvisory(NamedTuple):
         return self._asdict()
 
 
-def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryDataV2:
+def to_advisory_data(nginx_adv: NginxAdvisory, vulnerability_info) -> AdvisoryDataV2:
     """
     Return AdvisoryDataV2 from an NginxAdvisory tuple.
     """
@@ -150,6 +150,7 @@ def to_advisory_data(nginx_adv: NginxAdvisory) -> AdvisoryDataV2:
         references=nginx_adv.references,
         patches=nginx_adv.patches,
         url="https://nginx.org/en/security_advisories.html",
+        original_advisory_text=str(vulnerability_info),
     )
 
 

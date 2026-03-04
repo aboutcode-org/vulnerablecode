@@ -111,6 +111,7 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         summary=advisory_list[0].summary,
                         affected_packages=affected_packages,
                         url=page_url,
+                        original_advisory_text=str(content),
                     )
 
             except Exception as e:

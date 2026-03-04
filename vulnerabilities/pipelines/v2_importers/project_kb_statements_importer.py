@@ -168,6 +168,7 @@ class ProjectKBStatementsPipeline(VulnerableCodeBaseImporterPipelineV2):
                 references=references,
                 patches=patches,
                 url=advisory_url,
+                original_advisory_text=saneyaml.dump(yaml_data, indent=2),
             )
 
     def clean_downloads(self):

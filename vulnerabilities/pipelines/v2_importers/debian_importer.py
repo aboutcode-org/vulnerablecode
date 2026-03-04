@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import re
 from typing import Any
 from typing import Iterable
@@ -171,6 +172,7 @@ class DebianImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 references=references,
                 weaknesses=weaknesses,
                 url=f"https://security-tracker.debian.org/tracker/{record_identifier}",
+                original_advisory_text=json.dumps(record, indent=2, ensure_ascii=False),
             )
 
 

@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 from typing import Iterable
 
 from vulnerabilities import severity_systems
@@ -67,4 +68,7 @@ class SUSESeverityScoreImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 severities=severities,
                 references=[],
                 url=self.url,
+                original_advisory_text=json.dumps(
+                    self.score_data[cve_id], indent=2, ensure_ascii=False
+                ),
             )

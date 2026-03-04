@@ -136,6 +136,7 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         affected_packages=affected_packages,
                         references=references,
                         url=page_url,
+                        original_advisory_text=str(content),
                     )
 
             except Exception as e:

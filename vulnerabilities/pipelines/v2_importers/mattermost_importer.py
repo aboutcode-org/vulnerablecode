@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 from typing import Iterable
 
 from packageurl import PackageURL
@@ -122,5 +123,7 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 summary=details,
                 references=[reference],
                 affected_packages=affected_packages,
+                severities=severities,
                 url=self.url,
+                original_advisory_text=json.dumps(advisory, indent=2, ensure_ascii=False),
             )

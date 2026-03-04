@@ -1,0 +1,208 @@
+[
+  {
+    "advisory_id": "CVE-2024-43853",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-devel",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-drivers-gpu",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-drivers-sound",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-docs",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-drivers-intel-sgx",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-oprofile",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-tools",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-python3-perf",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "bpftool",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "linux-aws",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<5.10.224-3.ph4",
+        "fixed_version_range": "vers:rpm/5.10.224-3.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [],
+    "patches": [],
+    "severities": [
+      {
+        "system": "cvssv3",
+        "value": "5.5",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43853"
+  },
+  {
+    "advisory_id": "CVE-2021-45417",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "vmware",
+          "name": "aide",
+          "version": "",
+          "qualifiers": "distro=photon",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<0.16.2-3.ph4",
+        "fixed_version_range": "vers:rpm/0.16.2-3.ph4",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [],
+    "patches": [],
+    "severities": [
+      {
+        "system": "cvssv3",
+        "value": "7.8",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-45417"
+  }
+]

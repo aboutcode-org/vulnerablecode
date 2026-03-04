@@ -43,6 +43,7 @@ from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
 from aboutcode.hashid import build_vcid
+from aboutcode.hashid import get_core_purl
 
 logger = logging.getLogger(__name__)
 
@@ -871,6 +872,25 @@ def group_advisories_by_content(advisories):
     return grouped
 
 
+def generate_commit_url(vcs_url, commit_hash):
+    """
+    Generate commit URL from VCS URL and commit hash.
+    """
+    if not vcs_url or not commit_hash:
+        return
+
+    purl = url2purl(vcs_url)
+    if not purl:
+        return
+
+    base_purl = get_core_purl(str(purl))
+    purl_with_version = PackageURL(
+        type=base_purl.type, namespace=base_purl.namespace, name=base_purl.name, version=commit_hash
+    )
+    commit_url = purl2url(str(purl_with_version))
+    return commit_url
+
+
 def generate_patch_url(vcs_url, commit_hash):
     """
     Generate patch URL from VCS URL and commit hash.
@@ -884,36 +904,12 @@ def generate_patch_url(vcs_url, commit_hash):
         return f"{vcs_url}/commit/{commit_hash}.patch"
     elif vcs_url.startswith("https://gitlab.com"):
         return f"{vcs_url}/-/commit/{commit_hash}.patch"
+    elif vcs_url.startswith("https://bitbucket.org"):
+        return f"{vcs_url}/-/commit/{commit_hash}/raw"
     elif vcs_url.startswith("https://codeberg.org"):
         return f"{vcs_url}/-/commit/{commit_hash}.patch"
     elif vcs_url.startswith("https://android.googlesource.com"):
         return f"{vcs_url}/+/{commit_hash}%5E%21?format=TEXT"
-    elif vcs_url.startswith("https://bitbucket.org"):
-        return f"{vcs_url}/-/commit/{commit_hash}/raw"
-    elif vcs_url.startswith("https://git.kernel.org"):
-        return f"{vcs_url}/patch/?id={commit_hash}"
-    return
-
-
-def generate_commit_url(vcs_url, commit_hash):
-    """
-    Generate commit URL from VCS URL and commit hash.
-    """
-    if not vcs_url or not commit_hash:
-        return None
-
-    vcs_url = vcs_url.rstrip("/")
-
-    if vcs_url.startswith("https://github.com"):
-        return f"{vcs_url}/commit/{commit_hash}"
-    elif vcs_url.startswith("https://gitlab.com"):
-        return f"{vcs_url}/-/commit/{commit_hash}"
-    elif vcs_url.startswith("https://codeberg.org"):
-        return f"{vcs_url}/-/commit/{commit_hash}"
-    elif vcs_url.startswith("https://android.googlesource.com"):
-        return f"{vcs_url}/+/{commit_hash}"
-    elif vcs_url.startswith("https://bitbucket.org"):
-        return f"{vcs_url}/-/commit/{commit_hash}"
     elif vcs_url.startswith("https://git.kernel.org"):
         return f"{vcs_url}/patch/?id={commit_hash}"
     return

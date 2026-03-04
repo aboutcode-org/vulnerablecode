@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 import logging
 from pathlib import Path
 from typing import Iterable
@@ -129,6 +130,7 @@ def parse_ruby_advisory(advisory_id, record, schema_type, advisory_url):
             severities=get_severities(record),
             date_published=get_publish_time(record),
             url=advisory_url,
+            original_advisory_text=json.dumps(record, indent=2, ensure_ascii=False),
         )
 
     elif schema_type == "rubies":
@@ -147,6 +149,7 @@ def parse_ruby_advisory(advisory_id, record, schema_type, advisory_url):
             references=get_references(record),
             date_published=get_publish_time(record),
             url=advisory_url,
+            original_advisory_text=json.dumps(record, indent=2, ensure_ascii=False),
         )
 
 

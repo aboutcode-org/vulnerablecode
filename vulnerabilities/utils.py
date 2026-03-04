@@ -867,3 +867,23 @@ def group_advisories_by_content(advisories):
             entry["secondary"].add(advisory)
 
     return grouped
+
+
+def generate_patch_url(vcs_url, commit_hash):
+    """
+    Generate patch URL from VCS URL and commit hash.
+    """
+    if not vcs_url or not commit_hash:
+        return None
+
+    vcs_url = vcs_url.rstrip("/")
+
+    if vcs_url.startswith("https://github.com"):
+        return f"{vcs_url}/commit/{commit_hash}.patch"
+    elif vcs_url.startswith("https://gitlab.com"):
+        return f"{vcs_url}/-/commit/{commit_hash}.patch"
+    elif vcs_url.startswith("https://bitbucket.org"):
+        return f"{vcs_url}/-/commit/{commit_hash}/raw"
+    elif vcs_url.startswith("https://git.kernel.org"):
+        return f"{vcs_url}.git/patch/?id={commit_hash}"
+    return

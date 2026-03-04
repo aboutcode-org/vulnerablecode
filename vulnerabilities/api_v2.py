@@ -9,6 +9,7 @@
 
 
 from django.db.models import Prefetch
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
@@ -33,7 +34,9 @@ from vulnerabilities.models import CodeFix
 from vulnerabilities.models import CodeFixV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.models import PackageV2
+from vulnerabilities.models import Patch
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
@@ -41,6 +44,7 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
+from vulnerabilities.utils import generate_patch_url
 from vulnerabilities.utils import group_advisories_by_content
 
 
@@ -331,6 +335,48 @@ class PackageV2Serializer(serializers.ModelSerializer):
         if obj.is_ghost:
             return []
         return [vuln.vulnerability_id for vuln in obj.fixing_vulnerabilities.all()]
+
+
+class PackageCommitPatchSerializer(serializers.ModelSerializer):
+    introduced_in_advisories = serializers.SerializerMethodField()
+    fixed_in_advisories = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PackageCommitPatch
+        fields = [
+            "id",
+            "commit_hash",
+            "vcs_url",
+            "patch_url",
+            "introduced_in_advisories",
+            "fixed_in_advisories",
+        ]
+
+    def get_introduced_in_advisories(self, obj):
+        impacts = obj.introduced_in_impacts.all()
+        return self.serialize_impacts(impacts)
+
+    def get_fixed_in_advisories(self, obj):
+        impacts = obj.fixed_in_impacts.all()
+        return self.serialize_impacts(impacts)
+
+    @staticmethod
+    def serialize_impacts(impacts):
+        unique_pairs = set()
+        for impact in impacts:
+            unique_pairs.add((impact.base_purl, impact.advisory.avid))
+        return [{"package": base_purl, "avid": avid} for base_purl, avid in unique_pairs]
+
+
+class PatchSerializer(serializers.ModelSerializer):
+    in_advisories = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Patch
+        fields = ["id", "patch_url", "in_advisories"]
+
+    def get_in_advisories(self, obj):
+        return [{"avid": advisory.avid} for advisory in obj.advisories.all()]
 
 
 class PackageV3Serializer(serializers.ModelSerializer):
@@ -886,6 +932,65 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(
                 affected_package_vulnerability__vulnerability__vulnerability_id=vulnerability_id
             )
+        return queryset
+
+
+class PackageCommitPatchViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows viewing PackageCommitPatch entries.
+    """
+
+    serializer_class = PackageCommitPatchSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+
+    def get_queryset(self):
+        queryset = PackageCommitPatch.objects.prefetch_related(
+            "introduced_in_impacts__advisory", "fixed_in_impacts__advisory"
+        )
+
+        pk = self.request.query_params.get("id")
+        if pk:
+            queryset = queryset.filter(id=pk)
+
+        advisory_id = self.request.query_params.get("advisory_id")
+        if advisory_id:
+            queryset = queryset.filter(
+                Q(introduced_in_impacts__advisory__avid=advisory_id)
+                | Q(fixed_in_impacts__advisory__avid=advisory_id)
+            ).distinct()
+
+        purl = self.request.query_params.get("purl")
+        if purl:
+            queryset = queryset.filter(
+                Q(introduced_in_impacts__base_purl__icontains=purl)
+                | Q(fixed_in_impacts__base_purl__icontains=purl)
+            ).distinct()
+
+        return queryset.order_by("id")
+
+
+class PatchViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows viewing PackageCommitPatch entries.
+    """
+
+    serializer_class = PatchSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+
+    def get_queryset(self):
+        queryset = Patch.objects.all()
+
+        pk = self.request.query_params.get("id")
+        if pk:
+            queryset = queryset.filter(id=pk)
+
+        advisory_id = self.request.query_params.get("advisory_id")
+        if advisory_id:
+            queryset = queryset.filter(advisory__advisory_id=advisory_id).distinct()
+
+        purl = self.request.query_params.get("purl")
+        if purl:
+            queryset = queryset.filter(package__package_url__icontains=purl).distinct()
         return queryset
 
 

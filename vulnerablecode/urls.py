@@ -22,12 +22,15 @@ from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
+from vulnerabilities.api_v2 import PackageCommitPatchViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PackageV3ViewSet
+from vulnerabilities.api_v2 import PatchViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
+from vulnerabilities.views import AdvisoryPackageCommitPatchDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
@@ -71,6 +74,11 @@ api_v3_router = OptionalSlashRouter()
 
 api_v3_router.register("packages", PackageV3ViewSet, basename="package-v3")
 
+api_v3_router.register(
+    "package_commit_patches", PackageCommitPatchViewSet, basename="package_commit_patch"
+)
+api_v3_router.register("patches", PatchViewSet, basename="patches")
+
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
     path("api/v2/", include(api_v2_router.urls)),
@@ -108,6 +116,11 @@ urlpatterns = [
         "advisories/packages/<path:avid>",
         AdvisoryPackagesDetails.as_view(),
         name="advisory_package_details",
+    ),
+    path(
+        "advisories/commits/<path:avid>",
+        AdvisoryPackageCommitPatchDetails.as_view(),
+        name="advisory_package_commit_details",
     ),
     path(
         "advisories/<path:avid>",

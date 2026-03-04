@@ -10,6 +10,7 @@
 import bisect
 import csv
 import dataclasses
+import difflib
 import hashlib
 import json
 import logging
@@ -51,6 +52,8 @@ cwe_regex = r"CWE-\d+"
 
 commit_regex = re.compile(r"\b[0-9a-f]{5,40}\b", re.IGNORECASE)
 is_commit = commit_regex.fullmatch
+
+SUMMARY_SIMILARITY_THRESHOLD = 0.8
 
 
 @dataclasses.dataclass(order=True, frozen=True)
@@ -844,26 +847,109 @@ def compute_patch_checksum(patch_text: str):
     return hashlib.sha512(patch_text.encode("utf-8")).hexdigest()
 
 
+def _normalize_text(text):
+    if not text:
+        return ""
+    return " ".join(text.lower().split())
+
+
+def compute_summary_similarity(text1, text2):
+    if not text1 or not text2:
+        return 0.0
+
+    norm1 = _normalize_text(text1)
+    norm2 = _normalize_text(text2)
+
+    if not norm1 or not norm2:
+        return 0.0
+
+    if norm1 == norm2:
+        return 1.0
+
+    seq_ratio = difflib.SequenceMatcher(None, norm1, norm2).ratio()
+
+    short, long = (norm1, norm2) if len(norm1) <= len(norm2) else (norm2, norm1)
+    short_words = short.split()
+    long_words = long.split()
+
+    if len(short_words) > 0 and len(long_words) >= len(short_words):
+        if long_words[: len(short_words)] == short_words:
+            return 1.0
+
+        prefix_match_count = 0
+        for i, word in enumerate(short_words):
+            if i < len(long_words) and long_words[i] == word:
+                prefix_match_count += 1
+            else:
+                break
+        if prefix_match_count >= len(short_words) * 0.9:
+            return max(seq_ratio, 0.9)
+
+    if short in long:
+        return max(seq_ratio, 0.85)
+
+    return seq_ratio
+
+
+def _find(parent, i):
+    if parent[i] != i:
+        parent[i] = _find(parent, parent[i])
+    return parent[i]
+
+
+def _union(parent, i, j):
+    root_i = _find(parent, i)
+    root_j = _find(parent, j)
+    if root_i != root_j:
+        parent[root_j] = root_i
+
+
 def group_advisories_by_content(advisories):
+    if not advisories:
+        return {}
+
+    adv_list = list(advisories)
+    n = len(adv_list)
+    if n == 0:
+        return {}
+
+    parent = list(range(n))
+
+    content_groups = defaultdict(list)
+    for i, adv in enumerate(adv_list):
+        content_hash = adv.compute_advisory_content()
+        content_groups[content_hash].append(i)
+
+    for indices in content_groups.values():
+        for idx in indices[1:]:
+            _union(parent, indices[0], idx)
+
+    alias_groups = defaultdict(list)
+    for i, adv in enumerate(adv_list):
+        for alias_obj in adv.aliases.all():
+            alias_groups[alias_obj.alias].append(i)
+
+    for indices in alias_groups.values():
+        for idx in indices[1:]:
+            _union(parent, indices[0], idx)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if _find(parent, i) == _find(parent, j):
+                continue
+            sim = compute_summary_similarity(adv_list[i].summary, adv_list[j].summary)
+            if sim >= SUMMARY_SIMILARITY_THRESHOLD:
+                _union(parent, i, j)
+
+    final_groups = defaultdict(list)
+    for i in range(n):
+        final_groups[_find(parent, i)].append(adv_list[i])
+
     grouped = {}
-
-    for advisory in advisories:
-        content_hash = advisory.compute_advisory_content()
-
-        entry = grouped.setdefault(
-            content_hash,
-            {"primary": advisory, "secondary": set()},
-        )
-
-        primary = entry["primary"]
-
-        if advisory is primary:
-            continue
-
-        if advisory.precedence > primary.precedence:
-            entry["primary"] = advisory
-            entry["secondary"].add(primary)
-        else:
-            entry["secondary"].add(advisory)
+    for root_idx, group_advs in final_groups.items():
+        primary = max(group_advs, key=lambda a: a.precedence)
+        secondary = {a for a in group_advs if a is not primary}
+        group_key = primary.compute_advisory_content()
+        grouped[group_key] = {"primary": primary, "secondary": secondary}
 
     return grouped

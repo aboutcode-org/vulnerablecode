@@ -181,6 +181,18 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     </a>
                                 </td>
                             </tr>
+                            <tr>
+                                <td class="two-col-left"
+                                    data-tooltip="Risk expressed as a number ranging from 0 to 10. It is calculated by multiplying
+                                    the weighted severity and exploitability values, capped at a maximum of 10.
+                                    "
+                                >Introduced and Fixed Package Commit Patches</td>
+                                <td class="two-col-right wrap-strings">
+                                    <a href="/advisories/commits/{{ advisory.avid }}">
+                                         Package Commit Patches Details
+                                    </a>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <div class="has-text-weight-bold tab-nested-div ml-1 mb-1 mt-6">

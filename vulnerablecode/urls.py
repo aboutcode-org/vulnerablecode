@@ -30,6 +30,7 @@ from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
+from vulnerabilities.views import AdvisoryPackageCommitPatchDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
@@ -115,6 +116,11 @@ urlpatterns = [
         "advisories/packages/<path:avid>",
         AdvisoryPackagesDetails.as_view(),
         name="advisory_package_details",
+    ),
+    path(
+        "advisories/commits/<path:avid>",
+        AdvisoryPackageCommitPatchDetails.as_view(),
+        name="advisory_package_commit_details",
     ),
     path(
         "advisories/<path:avid>",

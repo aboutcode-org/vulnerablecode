@@ -966,7 +966,7 @@ class PackageCommitPatchViewSet(viewsets.ReadOnlyModelViewSet):
                 | Q(fixed_in_impacts__base_purl__icontains=purl)
             ).distinct()
 
-        return queryset
+        return queryset.order_by("id")
 
 
 class PatchViewSet(viewsets.ReadOnlyModelViewSet):

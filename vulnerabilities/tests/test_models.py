@@ -39,6 +39,7 @@ from vulnerabilities.models import Vulnerability
 from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.severity_systems import CVSSV4
 from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.tests.pipelines import TestLogger
 from vulnerabilities.utils import compute_content_id
 
 
@@ -747,6 +748,7 @@ class TestStoreLongCVSSV4(TestCase):
 
 class TestAdvisoryV2Model(DjangoTestCase):
     def setUp(self):
+        self.logger = TestLogger()
         self.advisoryv2_data1 = AdvisoryDataV2(
             advisory_id="test_adv",
             aliases=[],
@@ -770,7 +772,9 @@ class TestAdvisoryV2Model(DjangoTestCase):
     def test_advisoryv2_to_advisory_data_patch_seralization(self):
         from vulnerabilities.pipes.advisory import insert_advisory_v2
 
-        insert_advisory_v2(advisory=self.advisoryv2_data1, pipeline_id="test_pipeline")
+        insert_advisory_v2(
+            advisory=self.advisoryv2_data1, pipeline_id="test_pipeline", logger=self.logger.write
+        )
         result = models.AdvisoryV2.objects.first().to_advisory_data()
 
         self.assertEqual(result, self.advisoryv2_data1)
@@ -778,6 +782,7 @@ class TestAdvisoryV2Model(DjangoTestCase):
 
 class TestAdvisoryV2ModelDuplication(DjangoTestCase):
     def setUp(self):
+        self.logger = TestLogger()
         self.advisoryv2_data1 = AdvisoryDataV2(
             advisory_id="CVE-2023-0401",
             aliases=[],
@@ -813,8 +818,12 @@ class TestAdvisoryV2ModelDuplication(DjangoTestCase):
     def test_advisoryv2_duplication_data(self):
         from vulnerabilities.pipes.advisory import insert_advisory_v2
 
-        insert_advisory_v2(advisory=self.advisoryv2_data1, pipeline_id="test_pipeline")
-        insert_advisory_v2(advisory=self.advisoryv2_data2, pipeline_id="test_pipeline")
+        insert_advisory_v2(
+            advisory=self.advisoryv2_data1, pipeline_id="test_pipeline", logger=self.logger.write
+        )
+        insert_advisory_v2(
+            advisory=self.advisoryv2_data2, pipeline_id="test_pipeline", logger=self.logger.write
+        )
         result = models.AdvisoryV2.objects.count()
 
         self.assertEqual(result, 2)

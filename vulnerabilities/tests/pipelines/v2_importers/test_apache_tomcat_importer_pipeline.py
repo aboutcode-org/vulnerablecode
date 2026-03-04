@@ -20,10 +20,10 @@ from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import (
     ApacheTomcatImporterPipeline,
-    TomcatAdvisoryData,
-    get_commit_patches,
-    parse_tomcat_security,
 )
+from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import TomcatAdvisoryData
+from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import get_commit_patches
+from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import parse_tomcat_security
 
 TOMCAT_SECURITY_HTML = """
 <html>

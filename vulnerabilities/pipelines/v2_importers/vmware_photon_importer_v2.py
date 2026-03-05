@@ -46,7 +46,7 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "vmware_photon_importer_v2"
     spdx_license_expression = "CC BY-SA 4.0"
     license_url = "https://creativecommons.org/licenses/by-sa/4.0"
-    repo_url = "https://packages.vmware.com/photon/photon_cve_metadata"
+    repo_url = "https://packages.vmware.com/photon/photon_cve_metadata/"
 
     precedence = 100
 

@@ -16,7 +16,7 @@ from pytz import UTC
 from univers.version_range import GenericVersionRange
 from univers.versions import InvalidVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import logger
@@ -33,6 +33,8 @@ class GlibcImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "LGPL-2.1-only"
     license_url = "https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=LICENSES"
     repo_url = "git+https://sourceware.org/git/glibc.git"
+
+    precedence = 200
 
     @classmethod
     def steps(cls):
@@ -142,7 +144,7 @@ class GlibcImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                 )
 
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=advisory_id,
                 aliases=[cve_id] if cve_id else [],
                 summary=build_description(summary, description),

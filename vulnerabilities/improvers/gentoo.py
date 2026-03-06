@@ -99,8 +99,7 @@ class GentooBasicImprover(Improver):
     @property
     def interesting_advisories(self) -> QuerySet:
         return Advisory.objects.filter(
-            Q(created_by=GentooImporter.qualified_name)
-            | Q(created_by="gentoo_importer_v2")
+            Q(created_by=GentooImporter.qualified_name) | Q(created_by="gentoo_importer_v2")
         ).paginated()
 
     def get_package_versions(self, package_url: PackageURL) -> List[str]:

@@ -593,9 +593,9 @@ class AdvisoryData:
                 if pkg is not None
             ],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
-            "date_published": datetime.datetime.fromisoformat(date_published)
-            if date_published
-            else None,
+            "date_published": (
+                datetime.datetime.fromisoformat(date_published) if date_published else None
+            ),
             "weaknesses": advisory_data["weaknesses"],
             "url": advisory_data.get("url") or None,
         }
@@ -657,9 +657,9 @@ class AdvisoryDataV2:
             ],
             "patches": [PatchData.from_dict(patch) for patch in advisory_data.get("patches", [])],
             "references": [ReferenceV2.from_dict(ref) for ref in advisory_data["references"]],
-            "date_published": datetime.datetime.fromisoformat(date_published)
-            if date_published
-            else None,
+            "date_published": (
+                datetime.datetime.fromisoformat(date_published) if date_published else None
+            ),
             "weaknesses": advisory_data["weaknesses"],
             "severities": [
                 VulnerabilitySeverity.from_dict(sev) for sev in advisory_data.get("severities", [])
@@ -674,7 +674,7 @@ def clean_summary(summary):
     # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
     summary = summary.strip()
     if summary:
-        summary = summary.replace("\x00", "\uFFFD")
+        summary = summary.replace("\x00", "\ufffd")
     return summary
 
 

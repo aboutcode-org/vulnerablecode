@@ -25,8 +25,11 @@ from aboutcode.pipeline import LoopProgress
 from aboutcode.pipeline import PipelineDefinition
 from aboutcode.pipeline import humanize_time
 from github import Github
+from gitlab import GitlabAuthenticationError
+from gitlab import GitlabSearchError
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
@@ -389,12 +392,11 @@ class VCSCollector(VulnerableCodeBaseImporterPipeline):
         """
         self.log("Generating AdvisoryData objects from GitHub/Gitlab issues and PRs.")
         for vuln_id, refs in self.collected_items.items():
-            print(vuln_id, refs)
             references = [ReferenceV2(reference_type=ref_id, url=url) for ref_id, url in refs]
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=vuln_id,
                 aliases=[],
-                references_v2=references,
+                references=references,
                 url=self.repo_url,
             )
 

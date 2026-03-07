@@ -31,8 +31,8 @@ from vulnerabilities.pipelines.v2_improvers import (
     enhance_with_metasploit as enhance_with_metasploit_v2,
 )
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
-from vulnerabilities.pipelines.v2_improvers import sigma_rules
 from vulnerabilities.pipelines.v2_improvers import relate_severities
+from vulnerabilities.pipelines.v2_improvers import sigma_rules
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
 from vulnerabilities.utils import create_registry
 

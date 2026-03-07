@@ -347,7 +347,7 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")
 
 
-class VCSCollector(VulnerableCodeBaseImporterPipeline):
+class VCSCollector(VulnerableCodeBaseImporterPipelineV2):
     """
     Pipeline to collect GitHub/GitLab issues and PRs related to vulnerabilities.
     """
@@ -417,7 +417,8 @@ class GitHubCollector(VCSCollector):
             for item in items:
                 matches = self.CVE_PATTERN.findall(item.title + " " + (item.body or ""))
                 for match in matches:
-                    self.collected_items[match].append(("Issue", item.html_url))
+                    cve_id = match.upper()
+                    self.collected_items[cve_id].append(("Issue", item.html_url))
 
 
 class GitLabCollector(VCSCollector):
@@ -438,5 +439,6 @@ class GitLabCollector(VCSCollector):
                 description = item.get("description") or ""
                 matches = self.CVE_PATTERN.findall(title + " " + description)
                 for match in matches:
+                    cve_id = match.upper()
                     url = item.get("web_url")
-                    self.collected_items[match].append((i_type, url))
+                    self.collected_items[cve_id].append((i_type, url))

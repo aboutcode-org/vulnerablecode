@@ -33,6 +33,8 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://tuxcare.com/legal"
 
+    precedence = 100
+
     @classmethod
     def steps(cls):
         return (

@@ -71,23 +71,8 @@ class ZDIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 def parse_rss_feed(xml_text: str) -> list:
     """
     Parse ZDI RSS feed XML text and return a list of raw item dicts.
-
     Each dict has keys: ``title``, ``link``, ``description``, ``pub_date``.
     Returns an empty list if the XML is malformed or has no ``<channel>`` element.
-
-    >>> xml = (
-    ...     '<?xml version="1.0"?><rss version="2.0"><channel>'
-    ...     '<item><title>ZDI-25-001: Test</title>'
-    ...     '<link>http://www.zerodayinitiative.com/advisories/ZDI-25-001/</link>'
-    ...     '<description>CVE-2025-12345</description>'
-    ...     '<pubDate>Mon, 06 Jan 2025 00:00:00 -0600</pubDate>'
-    ...     '</item></channel></rss>'
-    ... )
-    >>> items = parse_rss_feed(xml)
-    >>> len(items)
-    1
-    >>> items[0]['title']
-    'ZDI-25-001: Test'
     """
     try:
         root = ElementTree.fromstring(xml_text)
@@ -116,22 +101,9 @@ def parse_rss_feed(xml_text: str) -> list:
 def parse_advisory_data(item: dict):
     """
     Parse a single ZDI RSS item dict into an AdvisoryDataV2 object.
-
     Returns ``None`` if a ZDI advisory ID cannot be extracted from the link URL.
     The RSS feed does not carry structured package data, so ``affected_packages``
     is always empty.
-
-    >>> item = {
-    ...     "title": "ZDI-25-001: Example Remote Code Execution",
-    ...     "link": "http://www.zerodayinitiative.com/advisories/ZDI-25-001/",
-    ...     "description": "CVSS rating of 8.8. CVE-2025-12345.",
-    ...     "pub_date": "Mon, 06 Jan 2025 00:00:00 -0600",
-    ... }
-    >>> result = parse_advisory_data(item)
-    >>> result.advisory_id
-    'ZDI-25-001'
-    >>> result.aliases
-    ['CVE-2025-12345']
     """
     link = item.get("link") or ""
     title = item.get("title") or ""

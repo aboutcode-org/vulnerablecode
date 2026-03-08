@@ -33,7 +33,9 @@ class TestZDIImporter(TestCase):
         """Each parsed item dict contains the expected keys and values."""
         items = parse_rss_feed(_load_rss())
         first = items[0]
-        self.assertEqual(first["title"], "ZDI-25-001: Example Vendor Product Remote Code Execution Vulnerability")
+        self.assertEqual(
+            first["title"], "ZDI-25-001: Example Vendor Product Remote Code Execution Vulnerability"
+        )
         self.assertEqual(first["link"], "http://www.zerodayinitiative.com/advisories/ZDI-25-001/")
         self.assertIn("CVE-2025-12345", first["description"])
         self.assertEqual(first["pub_date"], "Mon, 06 Jan 2025 00:00:00 -0600")

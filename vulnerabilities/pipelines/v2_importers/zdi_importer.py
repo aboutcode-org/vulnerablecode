@@ -47,8 +47,7 @@ class ZDIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         current_year = datetime.now(tz=timezone.utc).year
         urls = [
-            ZDI_RSS_YEAR_URL.format(year=year)
-            for year in range(ZDI_START_YEAR, current_year + 1)
+            ZDI_RSS_YEAR_URL.format(year=year) for year in range(ZDI_START_YEAR, current_year + 1)
         ]
 
         seen_ids = set()
@@ -123,9 +122,7 @@ def parse_advisory_data(item: dict):
         try:
             date_published = datetime.strptime(pub_date_str, PUBDATE_FORMAT)
         except ValueError:
-            logger.warning(
-                "Could not parse date %r for advisory %s", pub_date_str, advisory_id
-            )
+            logger.warning("Could not parse date %r for advisory %s", pub_date_str, advisory_id)
 
     references = []
     if link:

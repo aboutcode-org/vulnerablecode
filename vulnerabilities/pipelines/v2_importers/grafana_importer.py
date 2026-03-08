@@ -125,48 +125,9 @@ def fetch_grafana_advisories(
 
 def parse_advisory_data(advisory: dict, purl_type: str, purl_namespace: str):
     """
-    Parse a GitHub Security Advisory REST API response for a Grafana repo and
-    return an AdvisoryDataV2 object, or None if parsing fails.
-
+    Parse a GitHub Security Advisory REST API response for a Grafana repo and return an AdvisoryDataV2 object, or None if parsing fails.
     ``advisory_id`` is set to the GHSA ID; any CVE ID goes into ``aliases``.
-    Version ranges from the API (space-separated constraints) are normalized to
-    comma-separated format before being passed to
-    ``build_range_from_github_advisory_constraint``.
-
-    >>> advisory = {
-    ...     "ghsa_id": "GHSA-7rqg-hjwc-6mjf",
-    ...     "cve_id": "CVE-2023-22462",
-    ...     "html_url": "https://github.com/grafana/grafana/security/advisories/GHSA-7rqg-hjwc-6mjf",
-    ...     "summary": "Stored XSS in Text plugin",
-    ...     "description": "An attacker needs Editor role.",
-    ...     "severity": "medium",
-    ...     "state": "published",
-    ...     "published_at": "2023-03-01T08:59:53Z",
-    ...     "vulnerabilities": [
-    ...         {
-    ...             "package": {"ecosystem": "", "name": "github.com/grafana/grafana"},
-    ...             "vulnerable_version_range": ">=9.2.0 <9.2.10",
-    ...             "patched_versions": "9.2.10",
-    ...             "vulnerable_functions": []
-    ...         }
-    ...     ],
-    ...     "cvss_severities": {
-    ...         "cvss_v3": {"vector_string": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:N", "score": 6.4},
-    ...         "cvss_v4": {"vector_string": None, "score": None}
-    ...     },
-    ...     "cwes": [{"cwe_id": "CWE-79", "name": "Cross-site Scripting"}],
-    ...     "identifiers": [
-    ...         {"value": "GHSA-7rqg-hjwc-6mjf", "type": "GHSA"},
-    ...         {"value": "CVE-2023-22462", "type": "CVE"}
-    ...     ]
-    ... }
-    >>> result = parse_advisory_data(advisory, "golang", "github.com/grafana/grafana")
-    >>> result.advisory_id
-    'GHSA-7rqg-hjwc-6mjf'
-    >>> result.aliases
-    ['CVE-2023-22462']
-    >>> result.summary
-    'Stored XSS in Text plugin'
+    Version ranges from the API (space-separated constraints) are normalized to comma-separated format before being passed to ``build_range_from_github_advisory_constraint``.
     """
     ghsa_id = advisory.get("ghsa_id") or ""
     cve_id = advisory.get("cve_id") or ""

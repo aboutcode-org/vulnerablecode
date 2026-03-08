@@ -14,18 +14,22 @@ from datetime import timezone
 from typing import Iterable
 from xml.etree import ElementTree
 
+import dateparser
+
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.severity_systems import GENERIC
 from vulnerabilities.utils import fetch_response
+from vulnerabilities.utils import find_all_cve
 
 logger = logging.getLogger(__name__)
 
 ZDI_RSS_YEAR_URL = "https://www.zerodayinitiative.com/rss/published/{year}/"
 ZDI_START_YEAR = 2007
 ZDI_ID_RE = re.compile(r"ZDI-\d+-\d+")
-CVE_RE = re.compile(r"CVE-\d{4}-\d{4,7}")
-PUBDATE_FORMAT = "%a, %d %b %Y %H:%M:%S %z"
+CVSS_RE = re.compile(r"CVSS rating of (\d+\.?\d*)")
 
 
 class ZDIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -34,7 +38,6 @@ class ZDIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "zdi_importer"
     spdx_license_expression = "LicenseRef-scancode-proprietary-license"
     license_url = "https://www.zerodayinitiative.com"
-    repo_url = "https://www.zerodayinitiative.com"
     precedence = 200
 
     @classmethod
@@ -50,7 +53,6 @@ class ZDIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             ZDI_RSS_YEAR_URL.format(year=year) for year in range(ZDI_START_YEAR, current_year + 1)
         ]
 
-        seen_ids = set()
         for url in urls:
             self.log(f"Fetching ZDI RSS feed: {url}")
             try:
@@ -62,8 +64,7 @@ class ZDIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             for item in items:
                 advisory = parse_advisory_data(item)
-                if advisory and advisory.advisory_id not in seen_ids:
-                    seen_ids.add(advisory.advisory_id)
+                if advisory:
                     yield advisory
 
 
@@ -115,14 +116,18 @@ def parse_advisory_data(item: dict):
         return None
 
     advisory_id = match.group(0)
-    aliases = list(dict.fromkeys(CVE_RE.findall(description)))
+    aliases = list(dict.fromkeys(find_all_cve(description)))
 
     date_published = None
     if pub_date_str:
-        try:
-            date_published = datetime.strptime(pub_date_str, PUBDATE_FORMAT)
-        except ValueError:
+        date_published = dateparser.parse(pub_date_str)
+        if date_published is None:
             logger.warning("Could not parse date %r for advisory %s", pub_date_str, advisory_id)
+
+    severities = []
+    cvss_match = CVSS_RE.search(description)
+    if cvss_match:
+        severities.append(VulnerabilitySeverity(system=GENERIC, value=cvss_match.group(1)))
 
     references = []
     if link:
@@ -135,5 +140,6 @@ def parse_advisory_data(item: dict):
         affected_packages=[],
         references=references,
         date_published=date_published,
+        severities=severities,
         url=link,
     )

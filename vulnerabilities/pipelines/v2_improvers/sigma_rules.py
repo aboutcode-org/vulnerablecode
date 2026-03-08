@@ -75,10 +75,10 @@ class SigmaRulesImproverPipeline(VulnerableCodePipeline):
                 DetectionRule.objects.update_or_create(
                     rule_text=raw_text,
                     rule_type=DetectionRuleTypes.SIGMA,
-                    advisory=adv,
                     defaults={
                         "rule_metadata": rule_metadata,
                         "source_url": rule_url,
+                        "advisory": adv,
                     },
                 )
 

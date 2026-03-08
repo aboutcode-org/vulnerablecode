@@ -191,13 +191,9 @@ def parse_advisory_data(advisory: dict, purl_type: str, purl_namespace: str):
             # Example: ">=9.2.0 <9.2.10 >=9.3.0 <9.3.4" -> ">=9.2.0, <9.2.10, >=9.3.0, <9.3.4"
             normalized = re.sub(r"\s+(?=[<>!=])", ", ", raw_range.strip())
             try:
-                version_range = build_range_from_github_advisory_constraint(
-                    purl_type, normalized
-                )
+                version_range = build_range_from_github_advisory_constraint(purl_type, normalized)
             except Exception as e:
-                logger.error(
-                    "Cannot parse version range %r for %s: %s", raw_range, ghsa_id, e
-                )
+                logger.error("Cannot parse version range %r for %s: %s", raw_range, ghsa_id, e)
 
         if version_range is None:
             continue

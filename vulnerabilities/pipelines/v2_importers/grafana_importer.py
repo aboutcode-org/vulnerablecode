@@ -10,10 +10,9 @@
 import json
 import logging
 import re
-from datetime import datetime
-from datetime import timezone
 from typing import Iterable
 
+import dateparser
 from packageurl import PackageURL
 from univers.version_range import build_range_from_github_advisory_constraint
 
@@ -52,7 +51,6 @@ class GrafanaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "grafana_importer"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/grafana/grafana/blob/main/LICENSE"
-    repo_url = "https://github.com/grafana/grafana"
     precedence = 200
 
     @classmethod
@@ -145,12 +143,9 @@ def parse_advisory_data(advisory: dict, purl_type: str, purl_namespace: str):
 
     date_published = None
     if published_at:
-        try:
-            date_published = datetime.strptime(published_at, "%Y-%m-%dT%H:%M:%SZ").replace(
-                tzinfo=timezone.utc
-            )
-        except ValueError:
-            logger.error("Cannot parse date %r for %s", published_at, ghsa_id)
+        date_published = dateparser.parse(published_at)
+        if date_published is None:
+            logger.warning("Could not parse date %r for advisory %s", published_at, ghsa_id)
 
     cvss_v3 = (advisory.get("cvss_severities") or {}).get("cvss_v3") or {}
     cvss_vector = cvss_v3.get("vector_string") or ""

@@ -69,11 +69,7 @@ class ZDIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
 
 def parse_rss_feed(xml_text: str) -> list:
-    """
-    Parse ZDI RSS feed XML text and return a list of raw item dicts.
-    Each dict has keys: ``title``, ``link``, ``description``, ``pub_date``.
-    Returns an empty list if the XML is malformed or has no ``<channel>`` element.
-    """
+    """Parse ZDI RSS items from XML text; returns [] on malformed XML."""
     try:
         root = ElementTree.fromstring(xml_text)
     except ElementTree.ParseError as e:
@@ -99,12 +95,7 @@ def parse_rss_feed(xml_text: str) -> list:
 
 
 def parse_advisory_data(item: dict):
-    """
-    Parse a single ZDI RSS item dict into an AdvisoryDataV2 object.
-    Returns ``None`` if a ZDI advisory ID cannot be extracted from the link URL.
-    The RSS feed does not carry structured package data, so ``affected_packages``
-    is always empty.
-    """
+    """Parse a ZDI RSS item; return None if no ZDI ID found in the link."""
     link = item.get("link") or ""
     title = item.get("title") or ""
     description = item.get("description") or ""

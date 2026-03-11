@@ -9,7 +9,10 @@
 
 import os
 from unittest import TestCase
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
+from vulnerabilities.pipelines.v2_importers.zdi_importer import ZDIImporterPipeline
 from vulnerabilities.pipelines.v2_importers.zdi_importer import parse_advisory_data
 from vulnerabilities.pipelines.v2_importers.zdi_importer import parse_rss_feed
 from vulnerabilities.tests import util_tests
@@ -86,3 +89,23 @@ class TestZDIImporter(TestCase):
         self.assertEqual(result.advisory_id, "ZDI-25-100")
         self.assertNotIn("ZDI-25-100", result.aliases)
         self.assertIn("CVE-2025-11111", result.aliases)
+
+
+class TestZDIImporterPipeline(TestCase):
+    @patch("vulnerabilities.pipelines.v2_importers.zdi_importer.fetch_response")
+    def test_collect_advisories_yields_advisory(self, mock_fetch):
+        resp = MagicMock()
+        resp.text = _load_rss()
+        mock_fetch.return_value = resp
+        advisories = list(ZDIImporterPipeline().collect_advisories())
+        self.assertGreater(len(advisories), 0)
+        self.assertEqual(advisories[0].advisory_id, "ZDI-25-001")
+
+    @patch("vulnerabilities.pipelines.v2_importers.zdi_importer.fetch_response")
+    def test_collect_advisories_http_error_logs_and_continues(self, mock_fetch):
+        mock_fetch.side_effect = Exception("connection refused")
+        logger_name = "vulnerabilities.pipelines.v2_importers.zdi_importer"
+        with self.assertLogs(logger_name, level="ERROR") as cm:
+            advisories = list(ZDIImporterPipeline().collect_advisories())
+        self.assertEqual(advisories, [])
+        self.assertTrue(any("connection refused" in msg for msg in cm.output))

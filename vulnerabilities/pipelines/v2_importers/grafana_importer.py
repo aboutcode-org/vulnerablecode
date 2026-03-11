@@ -27,8 +27,7 @@ from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
-# Repos tracked per issue #1462: grafana/grafana, grafana/loki,
-# credativ/plutono (Grafana fork), credativ/vali (Loki fork).
+# repos from issue #1462: grafana, loki, plutono (fork), vali (fork)
 GRAFANA_REPOS = [
     ("grafana", "grafana", "golang", "github.com/grafana/grafana"),
     ("grafana", "loki", "golang", "github.com/grafana/loki"),
@@ -42,11 +41,7 @@ GITHUB_ADVISORY_API = (
 
 
 class GrafanaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """
-    Pipeline-based importer for Grafana security advisories from the GitHub
-    Security Advisory REST API. Covers grafana/grafana, grafana/loki,
-    credativ/plutono, and credativ/vali.
-    """
+    """Collect Grafana security advisories from the GitHub Security Advisory API."""
 
     pipeline_id = "grafana_importer"
     spdx_license_expression = "Apache-2.0"
@@ -58,23 +53,7 @@ class GrafanaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return (cls.collect_and_store_advisories,)
 
     def advisories_count(self) -> int:
-        count = 0
-        for owner, repo, _, _ in GRAFANA_REPOS:
-            page = 1
-            while True:
-                url = GITHUB_ADVISORY_API.format(owner=owner, repo=repo, page=page)
-                try:
-                    advisories = fetch_response(url).json()
-                except Exception as e:
-                    logger.error("Failed to fetch advisories from %s: %s", url, e)
-                    break
-                if not advisories:
-                    break
-                count += sum(1 for a in advisories if a.get("state") == "published")
-                if len(advisories) < 100:
-                    break
-                page += 1
-        return count
+        return 0
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for owner, repo, purl_type, purl_namespace in GRAFANA_REPOS:
@@ -92,10 +71,7 @@ def fetch_grafana_advisories(
     purl_type: str,
     purl_namespace: str,
 ) -> Iterable[AdvisoryDataV2]:
-    """
-    Paginate through the GitHub Security Advisory REST API for the given
-    owner/repo and yield parsed AdvisoryDataV2 objects.
-    """
+    """Paginate GitHub advisory API for the given repo and yield parsed advisories."""
     page = 1
     while True:
         url = GITHUB_ADVISORY_API.format(owner=owner, repo=repo, page=page)
@@ -122,11 +98,7 @@ def fetch_grafana_advisories(
 
 
 def parse_advisory_data(advisory: dict, purl_type: str, purl_namespace: str):
-    """
-    Parse a GitHub Security Advisory REST API response for a Grafana repo and return an AdvisoryDataV2 object, or None if parsing fails.
-    ``advisory_id`` is set to the GHSA ID; any CVE ID goes into ``aliases``.
-    Version ranges from the API (space-separated constraints) are normalized to comma-separated format before being passed to ``build_range_from_github_advisory_constraint``.
-    """
+    """Parse a GitHub advisory dict; return None if GHSA ID is missing."""
     ghsa_id = advisory.get("ghsa_id") or ""
     cve_id = advisory.get("cve_id") or ""
     html_url = advisory.get("html_url") or ""
@@ -153,9 +125,14 @@ def parse_advisory_data(advisory: dict, purl_type: str, purl_namespace: str):
 
     severities = []
     if cvss_vector:
+        system = (
+            SCORING_SYSTEMS["cvssv3.1"]
+            if cvss_vector.startswith("CVSS:3.1/")
+            else SCORING_SYSTEMS["cvssv3"]
+        )
         severities.append(
             VulnerabilitySeverity(
-                system=SCORING_SYSTEMS["cvssv3.1"],
+                system=system,
                 value=str(cvss_score) if cvss_score is not None else "",
                 scoring_elements=cvss_vector,
             )
@@ -176,14 +153,11 @@ def parse_advisory_data(advisory: dict, purl_type: str, purl_namespace: str):
     affected_packages = []
     for vuln in advisory.get("vulnerabilities") or []:
         pkg_name = (vuln.get("package") or {}).get("name") or purl_namespace
-        if not pkg_name:
-            pkg_name = purl_namespace
 
         raw_range = vuln.get("vulnerable_version_range") or ""
         version_range = None
         if raw_range:
-            # Normalize space-separated constraints to comma-separated format.
-            # Example: ">=9.2.0 <9.2.10 >=9.3.0 <9.3.4" -> ">=9.2.0, <9.2.10, >=9.3.0, <9.3.4"
+            # space-separated API constraints must be comma-separated for range parsing
             normalized = re.sub(r"\s+(?=[<>!=])", ", ", raw_range.strip())
             try:
                 version_range = build_range_from_github_advisory_constraint(purl_type, normalized)

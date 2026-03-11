@@ -9,7 +9,10 @@
 
 import os
 from unittest import TestCase
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
+from vulnerabilities.pipelines.v2_importers.grafana_importer import GrafanaImporterPipeline
 from vulnerabilities.pipelines.v2_importers.grafana_importer import parse_advisory_data
 from vulnerabilities.tests import util_tests
 from vulnerabilities.utils import load_json
@@ -20,25 +23,20 @@ TEST_DATA = os.path.join(BASE_DIR, "test_data/grafana")
 
 class TestGrafanaImporter(TestCase):
     def test_parse_advisory_with_cvss_and_cwe(self):
-        """Advisory with CVE alias, CVSS v3.1 score, CWE, and two version ranges."""
         mock_response = load_json(os.path.join(TEST_DATA, "grafana_advisory_mock1.json"))
         expected_file = os.path.join(TEST_DATA, "expected_grafana_advisory_output1.json")
         result = parse_advisory_data(mock_response, "golang", "github.com/grafana/grafana")
         self.assertIsNotNone(result)
-        result = result.to_dict()
-        util_tests.check_results_against_json(result, expected_file)
+        util_tests.check_results_against_json(result.to_dict(), expected_file)
 
     def test_parse_advisory_no_cvss_no_cwe_no_cve(self):
-        """Advisory with no CVE alias, no CVSS score, no CWE weaknesses."""
         mock_response = load_json(os.path.join(TEST_DATA, "grafana_advisory_mock2.json"))
         expected_file = os.path.join(TEST_DATA, "expected_grafana_advisory_output2.json")
         result = parse_advisory_data(mock_response, "golang", "github.com/grafana/loki")
         self.assertIsNotNone(result)
-        result = result.to_dict()
-        util_tests.check_results_against_json(result, expected_file)
+        util_tests.check_results_against_json(result.to_dict(), expected_file)
 
     def test_parse_advisory_missing_ghsa_id_returns_none(self):
-        """Advisory without a GHSA ID must be skipped (returns None)."""
         advisory = {
             "ghsa_id": "",
             "cve_id": "CVE-2023-99999",
@@ -53,7 +51,6 @@ class TestGrafanaImporter(TestCase):
         self.assertIsNone(result)
 
     def test_parse_advisory_skips_unparseable_version_range(self):
-        """Version range that cannot be parsed should produce no affected_packages."""
         advisory = {
             "ghsa_id": "GHSA-xxxx-xxxx-xxxx",
             "cve_id": None,
@@ -75,7 +72,6 @@ class TestGrafanaImporter(TestCase):
         self.assertEqual(result.affected_packages, [])
 
     def test_parse_advisory_ghsa_id_not_in_aliases(self):
-        """GHSA ID must be advisory_id only, not duplicated in aliases."""
         advisory = {
             "ghsa_id": "GHSA-7rqg-hjwc-6mjf",
             "cve_id": "CVE-2023-22462",
@@ -91,3 +87,27 @@ class TestGrafanaImporter(TestCase):
         self.assertEqual(result.advisory_id, "GHSA-7rqg-hjwc-6mjf")
         self.assertNotIn("GHSA-7rqg-hjwc-6mjf", result.aliases)
         self.assertIn("CVE-2023-22462", result.aliases)
+
+
+class TestGrafanaImporterPipeline(TestCase):
+    def _mock_response(self, data):
+        resp = MagicMock()
+        resp.json.return_value = data
+        return resp
+
+    @patch("vulnerabilities.pipelines.v2_importers.grafana_importer.fetch_response")
+    def test_collect_advisories_yields_advisory(self, mock_fetch):
+        data = load_json(os.path.join(TEST_DATA, "grafana_advisory_mock1.json"))
+        mock_fetch.return_value = self._mock_response([data])
+        advisories = list(GrafanaImporterPipeline().collect_advisories())
+        self.assertGreater(len(advisories), 0)
+        self.assertEqual(advisories[0].advisory_id, data["ghsa_id"])
+
+    @patch("vulnerabilities.pipelines.v2_importers.grafana_importer.fetch_response")
+    def test_collect_advisories_http_error_logs_and_stops(self, mock_fetch):
+        mock_fetch.side_effect = Exception("connection timeout")
+        logger_name = "vulnerabilities.pipelines.v2_importers.grafana_importer"
+        with self.assertLogs(logger_name, level="ERROR") as cm:
+            advisories = list(GrafanaImporterPipeline().collect_advisories())
+        self.assertEqual(advisories, [])
+        self.assertTrue(any("connection timeout" in msg for msg in cm.output))

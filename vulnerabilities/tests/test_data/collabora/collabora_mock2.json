@@ -1,0 +1,115 @@
+{
+  "ghsa_id": "GHSA-7582-pwfh-3pwr",
+  "cve_id": "CVE-2023-34088",
+  "url": "https://api.github.com/repos/CollaboraOnline/online/security-advisories/GHSA-7582-pwfh-3pwr",
+  "html_url": "https://github.com/CollaboraOnline/online/security/advisories/GHSA-7582-pwfh-3pwr",
+  "summary": "CVE-2023-34088 Stored Cross-Site-Scripting vulnerability in admin interface",
+  "description": "### Impact\r\nA stored XSS vulnerability was found in Collabora Online. An attacker could create a document with an XSS payload as a document name. Later, if an administrator opens the admin console and navigates to the history page the document name is injected as unescaped HTML and executed as a script inside the context of the admin console. The administrator JWT used for the websocket connection can be leaked through this flaw.\r\n\r\n### Patches\r\nUsers should upgrade to Collabora Online 22.05.13 or higher; Collabora Online 21.11.9.1 or higher; Collabora Online 6.4.27 or higher.\r\n\r\n### Credits\r\nThanks to René de Sain (@renniepak) for reporting this flaw.\r\n\r\n### For more information\r\nIf you have any questions or comments about this advisory:\r\n * Open an issue in [CollaboraOnline/online](https://github.com/CollaboraOnline/online/issues)\r\n",
+  "severity": "critical",
+  "author": null,
+  "publisher": {
+    "login": "caolanm",
+    "id": 833656,
+    "node_id": "MDQ6VXNlcjgzMzY1Ng==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/833656?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/caolanm",
+    "html_url": "https://github.com/caolanm",
+    "followers_url": "https://api.github.com/users/caolanm/followers",
+    "following_url": "https://api.github.com/users/caolanm/following{/other_user}",
+    "gists_url": "https://api.github.com/users/caolanm/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/caolanm/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/caolanm/subscriptions",
+    "organizations_url": "https://api.github.com/users/caolanm/orgs",
+    "repos_url": "https://api.github.com/users/caolanm/repos",
+    "events_url": "https://api.github.com/users/caolanm/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/caolanm/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "identifiers": [
+    {
+      "value": "GHSA-7582-pwfh-3pwr",
+      "type": "GHSA"
+    },
+    {
+      "value": "CVE-2023-34088",
+      "type": "CVE"
+    }
+  ],
+  "state": "published",
+  "created_at": null,
+  "updated_at": "2023-05-31T15:43:23Z",
+  "published_at": "2023-05-31T15:43:23Z",
+  "closed_at": null,
+  "withdrawn_at": null,
+  "submission": null,
+  "vulnerabilities": [
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "coolwsd"
+      },
+      "vulnerable_version_range": "< 22.05.13",
+      "patched_versions": "22.05.13",
+      "vulnerable_functions": [
+
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "coolwsd"
+      },
+      "vulnerable_version_range": "< 21.11.9.1",
+      "patched_versions": "21.11.9.1",
+      "vulnerable_functions": [
+
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "loolwsd"
+      },
+      "vulnerable_version_range": "< 6.4.27",
+      "patched_versions": "6.4.27",
+      "vulnerable_functions": [
+
+      ]
+    }
+  ],
+  "cvss_severities": {
+    "cvss_v3": {
+      "vector_string": "CVSS:3.0/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H",
+      "score": 9.0
+    },
+    "cvss_v4": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  "cwes": [
+    {
+      "cwe_id": "CWE-79",
+      "name": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+    }
+  ],
+  "cwe_ids": [
+    "CWE-79"
+  ],
+  "credits": [
+
+  ],
+  "credits_detailed": [
+
+  ],
+  "collaborating_users": null,
+  "collaborating_teams": null,
+  "private_fork": null,
+  "cvss": {
+    "vector_string": "CVSS:3.0/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:H",
+    "score": 9.0
+  }
+}

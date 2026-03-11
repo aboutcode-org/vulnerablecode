@@ -1,0 +1,123 @@
+{
+  "ghsa_id": "GHSA-68v6-r6qq-mmq2",
+  "cve_id": "CVE-2026-23623",
+  "url": "https://api.github.com/repos/CollaboraOnline/online/security-advisories/GHSA-68v6-r6qq-mmq2",
+  "html_url": "https://github.com/CollaboraOnline/online/security/advisories/GHSA-68v6-r6qq-mmq2",
+  "summary": "CVE-2026-23623 Authorization Bypass: ability to download read-only files in Collabora Online",
+  "description": "### Summary\r\n\r\nA user with view-only rights and no download privileges can obtain a local copy of a shared file. Although there are no corresponding buttons in the interface, pressing Ctrl+Shift+S initiates the file download process. This allows the user to bypass the access restrictions and leads to unauthorized data retrieval.\r\n\r\n### Details\r\n\r\nNextcloud 31\r\nCollabora Online Development Edition 25.04.08.1\r\n\r\n### PoC\r\n\r\nIn the Nextcloud environment with integrated Collabora Online, UserA grants access to file A (format .xlsx) to UserB with view-only rights and an explicit prohibition on downloading.\r\n\r\nFor UserB:\r\n\r\n- there is no option to download the file in the Nextcloud web interface;\r\n- there are no “Download”, “Save as” or “Print” buttons in the Collabora Online web interface;\r\n- the file is available for viewing only, as specified in the access settings.\r\n\r\nHowever, using the Ctrl + Shift + S key combination in the Collabora Online web interface initiates the process of saving (downloading) the file. As a result, UserB receives a local copy of the original file, despite not having the appropriate access rights.\r\n\r\n### Impact\r\n\r\n- Violation of access control models.\r\n- Unauthorized distribution of confidential documents.\r\n- Risk of data leakage in corporate and regulated environments.\r\n- False sense of security for file owners who rely on “view only” mode.",
+  "severity": "medium",
+  "author": null,
+  "publisher": {
+    "login": "caolanm",
+    "id": 833656,
+    "node_id": "MDQ6VXNlcjgzMzY1Ng==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/833656?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/caolanm",
+    "html_url": "https://github.com/caolanm",
+    "followers_url": "https://api.github.com/users/caolanm/followers",
+    "following_url": "https://api.github.com/users/caolanm/following{/other_user}",
+    "gists_url": "https://api.github.com/users/caolanm/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/caolanm/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/caolanm/subscriptions",
+    "organizations_url": "https://api.github.com/users/caolanm/orgs",
+    "repos_url": "https://api.github.com/users/caolanm/repos",
+    "events_url": "https://api.github.com/users/caolanm/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/caolanm/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "identifiers": [
+    {
+      "value": "GHSA-68v6-r6qq-mmq2",
+      "type": "GHSA"
+    },
+    {
+      "value": "CVE-2026-23623",
+      "type": "CVE"
+    }
+  ],
+  "state": "published",
+  "created_at": null,
+  "updated_at": "2026-02-05T11:20:00Z",
+  "published_at": "2026-02-05T11:20:00Z",
+  "closed_at": null,
+  "withdrawn_at": null,
+  "submission": null,
+  "vulnerabilities": [
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "Collabora Online Development Edition"
+      },
+      "vulnerable_version_range": "< 25.04.08.2",
+      "patched_versions": "25.04.08.2",
+      "vulnerable_functions": [
+
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "Collabora Online"
+      },
+      "vulnerable_version_range": "< 25.04.7.5",
+      "patched_versions": "25.04.7.5",
+      "vulnerable_functions": [
+
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "Collabora Online"
+      },
+      "vulnerable_version_range": "< 24.04.17.3",
+      "patched_versions": "24.04.17.3",
+      "vulnerable_functions": [
+
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "Collabora Online"
+      },
+      "vulnerable_version_range": "< 23.05.20.1",
+      "patched_versions": "23.05.20.1",
+      "vulnerable_functions": [
+
+      ]
+    }
+  ],
+  "cvss_severities": {
+    "cvss_v3": {
+      "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+      "score": 5.3
+    },
+    "cvss_v4": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  "cwes": [
+
+  ],
+  "cwe_ids": [
+
+  ],
+  "credits": [
+
+  ],
+  "credits_detailed": [
+
+  ],
+  "collaborating_users": null,
+  "collaborating_teams": null,
+  "private_fork": null,
+  "cvss": {
+    "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+    "score": 5.3
+  }
+}

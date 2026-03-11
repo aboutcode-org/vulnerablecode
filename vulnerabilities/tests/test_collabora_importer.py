@@ -10,7 +10,10 @@
 import json
 import os
 from unittest import TestCase
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
+from vulnerabilities.pipelines.v2_importers.collabora_importer import CollaboraImporterPipeline
 from vulnerabilities.pipelines.v2_importers.collabora_importer import parse_advisory
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), "test_data", "collabora")
@@ -109,3 +112,42 @@ class TestCollaboraImporter(TestCase):
         self.assertIsNotNone(advisory)
         parsed = json.loads(advisory.original_advisory_text)
         self.assertEqual(parsed["ghsa_id"], data["ghsa_id"])
+
+
+class TestCollaboraImporterPipeline(TestCase):
+    def _mock_response(self, data, next_url=None):
+        resp = MagicMock()
+        resp.json.return_value = data
+        resp.raise_for_status.return_value = None
+        resp.links = {"next": {"url": next_url}} if next_url else {}
+        return resp
+
+    @patch("vulnerabilities.pipelines.v2_importers.collabora_importer.requests.get")
+    def test_collect_advisories_single_page(self, mock_get):
+        data = load_json("collabora_mock1.json")
+        mock_get.return_value = self._mock_response([data])
+        advisories = list(CollaboraImporterPipeline().collect_advisories())
+        self.assertEqual(len(advisories), 1)
+        self.assertEqual(advisories[0].advisory_id, data["ghsa_id"])
+
+    @patch("vulnerabilities.pipelines.v2_importers.collabora_importer.requests.get")
+    def test_collect_advisories_pagination(self, mock_get):
+        data1 = load_json("collabora_mock1.json")
+        data2 = load_json("collabora_mock2.json")
+        mock_get.side_effect = [
+            self._mock_response([data1], next_url="https://api.github.com/page2"),
+            self._mock_response([data2]),
+        ]
+        advisories = list(CollaboraImporterPipeline().collect_advisories())
+        self.assertEqual(len(advisories), 2)
+        self.assertEqual(advisories[0].advisory_id, data1["ghsa_id"])
+        self.assertEqual(advisories[1].advisory_id, data2["ghsa_id"])
+
+    @patch("vulnerabilities.pipelines.v2_importers.collabora_importer.requests.get")
+    def test_collect_advisories_http_error_logs_and_stops(self, mock_get):
+        mock_get.side_effect = Exception("connection refused")
+        logger_name = "vulnerabilities.pipelines.v2_importers.collabora_importer"
+        with self.assertLogs(logger_name, level="ERROR") as cm:
+            advisories = list(CollaboraImporterPipeline().collect_advisories())
+        self.assertEqual(advisories, [])
+        self.assertTrue(any("connection refused" in msg for msg in cm.output))

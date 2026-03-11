@@ -2,23 +2,23 @@
   "CVE-2023-1234": [
     [
       "Issue",
-      "https://example.com/issue1"
+      "https://github.com/aboutcode-org/vulnerablecode/issues/1697"
     ],
     [
       "PR",
-      "https://example.com/pr1"
+      "https://github.com/aboutcode-org/vulnerablecode/pull/2163"
     ]
   ],
   "GHSA-zzz-111": [
     [
       "PR",
-      "https://example.com/pr1"
+      "https://github.com/aboutcode-org/vulnerablecode/pull/2164"
     ]
   ],
   "PYSEC-2024-5678": [
     [
       "PR",
-      "https://example.com/pr1"
+      "https://github.com/aboutcode-org/vulnerablecode/pull/2169"
     ]
   ]
 }

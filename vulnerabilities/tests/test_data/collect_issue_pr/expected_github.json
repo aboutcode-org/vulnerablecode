@@ -1,1 +1,61 @@
-[]
+[
+  {
+    "advisory_id": "CVE-2023-1234",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "Issue",
+        "url": "https://github.com/aboutcode-org/vulnerablecode/issues/1697"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "PR",
+        "url": "https://github.com/aboutcode-org/vulnerablecode/pull/2163"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  },
+  {
+    "advisory_id": "GHSA-zzz-111",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "PR",
+        "url": "https://github.com/aboutcode-org/vulnerablecode/pull/2164"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  },
+  {
+    "advisory_id": "PYSEC-2024-5678",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "PR",
+        "url": "https://github.com/aboutcode-org/vulnerablecode/pull/2169"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  }
+]

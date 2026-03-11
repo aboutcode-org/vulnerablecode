@@ -120,7 +120,7 @@ def test_collect_advisories_from_json(input_file, expected_file, repo_url, pipel
     pipeline.repo_url = repo_url
     pipeline.log = MagicMock()
 
-    pipeline.collect_items = MagicMock(return_value=issues_and_prs)
+    pipeline.collected_items = issues_and_prs
 
     result = [adv.to_dict() for adv in pipeline.collect_advisories()]
     util_tests.check_results_against_json(result, expected_file)

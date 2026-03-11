@@ -31,6 +31,7 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
 from vulnerabilities.models import CodeFix
 from vulnerabilities.models import CodeFixV2
+from vulnerabilities.models import DetectionRule
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageV2
@@ -1398,3 +1399,20 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
 
         qs = self.get_queryset().for_purls([purl]).with_is_vulnerable()
         return Response(PackageV3Serializer(qs, many=True, context={"request": request}).data)
+
+
+class DetectionRuleSerializer(serializers.ModelSerializer):
+    advisory_avid = serializers.ReadOnlyField(source='advisory.avid')
+
+    class Meta:
+        model = DetectionRule
+        fields = ["id", "rule_type", "source_url", "rule_metadata", "rule_text", "advisory_avid"]
+
+
+class DetectionRuleViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint that allows Detection Rules to be viewed or edited.
+    """
+
+    queryset = DetectionRule.objects.all()
+    serializer_class = DetectionRuleSerializer

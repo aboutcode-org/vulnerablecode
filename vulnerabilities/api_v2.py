@@ -8,7 +8,10 @@
 #
 
 
+from urllib.parse import urlencode
+
 from django.db.models import Prefetch
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
@@ -20,6 +23,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -141,7 +145,7 @@ class VulnerabilityV2Serializer(serializers.ModelSerializer):
         return [alias.alias for alias in obj.aliases.all()]
 
 
-class AdvisoryV2Serializer(serializers.ModelSerializer):
+class AdvisoryV3Serializer(serializers.ModelSerializer):
     aliases = serializers.SerializerMethodField()
     weaknesses = AdvisoryWeaknessSerializer(many=True)
     references = AdvisoryReferenceSerializer(many=True)
@@ -337,7 +341,9 @@ class PackageV3Serializer(serializers.ModelSerializer):
     purl = serializers.CharField(source="package_url")
     risk_score = serializers.FloatField(read_only=True)
     affected_by_vulnerabilities = serializers.SerializerMethodField()
+    affected_by_vulnerabilities_url = serializers.SerializerMethodField()
     fixing_vulnerabilities = serializers.SerializerMethodField()
+    fixing_vulnerabilities_url = serializers.SerializerMethodField()
     next_non_vulnerable_version = serializers.SerializerMethodField()
     latest_non_vulnerable_version = serializers.SerializerMethodField()
 
@@ -346,80 +352,118 @@ class PackageV3Serializer(serializers.ModelSerializer):
         fields = [
             "purl",
             "affected_by_vulnerabilities",
+            "affected_by_vulnerabilities_url",
             "fixing_vulnerabilities",
+            "fixing_vulnerabilities_url",
             "next_non_vulnerable_version",
             "latest_non_vulnerable_version",
             "risk_score",
         ]
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        if data.get("affected_by_vulnerabilities") is None:
+            data.pop("affected_by_vulnerabilities", None)
+        else:
+            data.pop("affected_by_vulnerabilities_url", None)
+
+        if data.get("fixing_vulnerabilities") is None:
+            data.pop("fixing_vulnerabilities", None)
+        else:
+            data.pop("fixing_vulnerabilities_url", None)
+
+        return data
+
+    def get_affected_by_vulnerabilities_url(self, obj):
+        request = self.context.get("request")
+        if not request:
+            return None
+
+        base = reverse("affected-by-advisories-list")
+        url = request.build_absolute_uri(base)
+
+        return f"{url}?{urlencode({'purl': obj.package_url})}"
+
+    def get_fixing_vulnerabilities_url(self, obj):
+        request = self.context.get("request")
+        if not request:
+            return None
+
+        base = reverse("fixing-advisories-list")
+        url = request.build_absolute_uri(base)
+
+        return f"{url}?{urlencode({'purl': obj.package_url})}"
+
     def get_affected_by_vulnerabilities(self, package):
         """Return a dictionary with advisory as keys and their details, including fixed_by_packages."""
-        impacts = package.affected_in_impacts.select_related("advisory").prefetch_related(
-            "fixed_by_packages"
+        advisories_qs = AdvisoryV2.objects.latest_affecting_advisories_for_purl(package.package_url)
+
+        advisories = list(advisories_qs[:101])
+        if len(advisories) > 100:
+            return None
+
+        advisory_by_avid = {adv.avid: adv for adv in advisories}
+        avids = advisory_by_avid.keys()
+
+        impacts = (
+            package.affected_in_impacts.filter(advisory__avid__in=avids)
+            .select_related("advisory")
+            .prefetch_related("fixed_by_packages")
         )
 
-        avids = {impact.advisory.avid for impact in impacts if impact.advisory_id}
+        impact_by_avid = {impact.advisory.avid: impact for impact in impacts}
 
-        latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
-        advisory_by_avid = {adv.avid: adv for adv in latest_advisories}
-        impact_by_avid = {}
-
-        advisories = []
-        for impact in impacts:
-            avid = impact.advisory.avid
-            advisory = advisory_by_avid.get(avid)
-            if not advisory:
-                continue
-            advisories.append(advisory)
-            impact_by_avid[avid] = impact
-
-        grouped_advisories = group_advisories_by_content(advisories=advisories)
-
-        advs = []
-
-        for hash in grouped_advisories:
-            advs.append(grouped_advisories[hash])
+        grouped = group_advisories_by_content(advisories)
 
         result = []
-
-        for advisory in advs:
-            primary_advisory = advisory["primary"]
-            avid = primary_advisory.avid
-            impact = impact_by_avid.get(avid)
+        for entry in grouped.values():
+            primary = entry["primary"]
+            impact = impact_by_avid.get(primary.avid)
             if not impact:
                 continue
+
             result.append(
                 {
-                    "advisory_id": primary_advisory.avid,
+                    "advisory_id": primary.avid,
                     "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
-                    "duplicate_advisory_ids": [adv.avid for adv in advisory["secondary"]],
+                    "duplicate_advisory_ids": [a.avid for a in entry["secondary"]],
                 }
             )
 
         return result
 
     def get_fixing_vulnerabilities(self, package):
-        impacts = package.fixed_in_impacts.select_related("advisory")
+        advisories_qs = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(package.package_url)
 
-        avids = {impact.advisory.avid for impact in impacts if impact.advisory_id}
+        advisories = list(advisories_qs[:101])
+        if len(advisories) > 100:
+            return None
 
-        latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
+        advisory_by_avid = {adv.avid: adv for adv in advisories}
+        avids = advisory_by_avid.keys()
 
-        grouped_advisories = group_advisories_by_content(advisories=latest_advisories)
+        impacts = (
+            package.fixed_in_impacts.filter(advisory__avid__in=avids)
+            .select_related("advisory")
+            .prefetch_related("fixed_by_packages")
+        )
 
-        advs = []
+        impact_by_avid = {impact.advisory.avid: impact for impact in impacts}
 
-        for hash in grouped_advisories:
-            advs.append(grouped_advisories[hash])
+        grouped = group_advisories_by_content(advisories)
 
         result = []
+        for entry in grouped.values():
+            primary = entry["primary"]
+            impact = impact_by_avid.get(primary.avid)
+            if not impact:
+                continue
 
-        for advisory in advs:
-            primary_advisory = advisory["primary"]
             result.append(
                 {
-                    "advisory_id": primary_advisory.avid,
-                    "duplicate_advisory_ids": [adv.avid for adv in advisory["secondary"]],
+                    "advisory_id": primary.avid,
+                    "duplicate_advisory_ids": [a.avid for a in entry["secondary"]],
                 }
             )
 
@@ -460,27 +504,6 @@ class PackageV2FilterSet(filters.FilterSet):
     )
     fixing_vulnerability = filters.CharFilter(field_name="fixing_vulnerabilities__vulnerability_id")
     purl = filters.CharFilter(field_name="package_url")
-
-
-class AdvisoryPackageV2FilterSet(filters.FilterSet):
-    affected_by_advisory = filters.CharFilter(
-        field_name="affected_in_impacts__advisory__avid",
-        label="Affected By Advisory ID",
-        help_text="Filter packages affected by a specific Advisory ID.",
-    )
-
-    fixing_advisory = filters.CharFilter(
-        field_name="fixed_in_impacts__advisory__avid",
-        label="Fixed By Advisory ID",
-        help_text="Filter packages fixed by a specific Advisory ID.",
-    )
-
-    purls = CharInFilter(
-        field_name="package_url",
-        lookup_expr="in",
-        label="Package URL",
-        help_text="Filter by one or more Package URLs. Multi-value supported (comma-separated).",
-    )
 
 
 class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
@@ -1064,337 +1087,149 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
         return "Pipeline Jobs"
 
 
-class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
+class PackageQuerySerializer(serializers.Serializer):
+    purls = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        default=list,
+    )
+    details = serializers.BooleanField(default=False)
+    approximate = serializers.BooleanField(default=False)
+
+    def validate(self, data):
+        if not data["purls"]:
+            if data["details"] or data["approximate"]:
+                raise serializers.ValidationError(
+                    "details and approximate must be false when purls is empty"
+                )
+        return data
+
+
+class AdvisoryQuerySerializer(serializers.Serializer):
+    purls = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        default=list,
+    )
+
+    def validate(self, data):
+        if not data["purls"]:
+            raise serializers.ValidationError("purls is required")
+        return data
+
+
+class PackageV3ViewSet(viewsets.GenericViewSet):
     queryset = PackageV2.objects.all()
     serializer_class = PackageV3Serializer
     filter_backends = [filters.DjangoFilterBackend]
-    filterset_class = AdvisoryPackageV2FilterSet
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .prefetch_related(
-                Prefetch(
-                    "affected_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory").prefetch_related(
-                        "fixed_by_packages",
-                    ),
-                ),
-                Prefetch(
-                    "fixed_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory"),
-                ),
+    def create(self, request, *args, **kwargs):
+        serializer = PackageQuerySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        purls = serializer.validated_data["purls"]
+        details = serializer.validated_data["details"]
+        approximate = serializer.validated_data["approximate"]
+
+        if not purls:
+            vulnerable_purls = (
+                PackageV2.objects.vulnerable()
+                .only("package_url")
+                .distinct()
+                .values_list("package_url", flat=True)
+                .order_by("package_url")
             )
-            .with_is_vulnerable()
-        )
+            page = self.paginate_queryset(vulnerable_purls)
+            return self.get_paginated_response(page)
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
+        plain_purls = None
 
-        packages = page if page is not None else queryset
-
-        avids = set()
-
-        for package in packages:
-            for impact in package.affected_in_impacts.all():
-                if impact.advisory_id:
-                    avids.add(impact.advisory.avid)
-
-            for impact in package.fixed_in_impacts.all():
-                if impact.advisory_id:
-                    avids.add(impact.advisory.avid)
-
-        latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
-
-        advisory_data = {adv.avid: AdvisoryV2Serializer(adv).data for adv in latest_advisories}
-
-        serializer = self.get_serializer(packages, many=True)
-
-        if page is not None:
-            return self.get_paginated_response(
-                {
-                    "packages": serializer.data,
-                    "advisories_by_id": advisory_data,
-                }
-            )
-
-        return Response(
-            {
-                "packages": serializer.data,
-                "advisories_by_id": advisory_data,
-            }
-        )
-
-    @extend_schema(
-        request=PackageurlListSerializer,
-        responses={200: PackageV2Serializer(many=True)},
-    )
-    @action(
-        detail=False,
-        methods=["post"],
-        serializer_class=PackageurlListSerializer,
-        filter_backends=[],
-        pagination_class=None,
-    )
-    def bulk_lookup(self, request):
-        """
-        Return the response for exact PackageURLs requested for.
-        """
-        serializer = self.serializer_class(data=request.data)
-        if not serializer.is_valid():
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={
-                    "error": serializer.errors,
-                    "message": "A non-empty 'purls' list of PURLs is required.",
-                },
-            )
-
-        purls = serializer.validated_data.get("purls")
-
-        packages = (
-            PackageV2.objects.for_purls(purls)
-            .prefetch_related(
-                Prefetch(
-                    "affected_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory").prefetch_related(
-                        "fixed_by_packages"
-                    ),
-                ),
-                Prefetch(
-                    "fixed_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory"),
-                ),
-            )
-            .with_is_vulnerable()
-        )
-
-        avids = set()
-
-        for package in packages:
-            for impact in package.affected_in_impacts.all():
-                if impact.advisory_id:
-                    avids.add(impact.advisory.avid)
-
-            for impact in package.fixed_in_impacts.all():
-                if impact.advisory_id:
-                    avids.add(impact.advisory.avid)
-
-        latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
-
-        advisory_data = {
-            adv.avid: AdvisoryV2Serializer(adv, context={"request": request}).data
-            for adv in latest_advisories
-        }
-
-        package_data = PackageV3Serializer(
-            packages,
-            many=True,
-            context={"request": request},
-        ).data
-
-        return Response(
-            {
-                "packages": package_data,
-                "advisories_by_id": advisory_data,
-            }
-        )
-
-    @extend_schema(
-        request=PackageBulkSearchRequestSerializer,
-        responses={200: PackageV2Serializer(many=True)},
-    )
-    @action(
-        detail=False,
-        methods=["post"],
-        serializer_class=PackageBulkSearchRequestSerializer,
-        filter_backends=[],
-        pagination_class=None,
-    )
-    def bulk_search(self, request):
-        """
-        Lookup for vulnerable packages using many Package URLs at once.
-        """
-        serializer = self.serializer_class(data=request.data)
-        if not serializer.is_valid():
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={
-                    "error": serializer.errors,
-                    "message": "A non-empty 'purls' list of PURLs is required.",
-                },
-            )
-
-        validated_data = serializer.validated_data
-        purls = validated_data.get("purls")
-        purl_only = validated_data.get("purl_only", False)
-        plain_purl = validated_data.get("plain_purl", False)
-
-        if plain_purl:
-            purl_objects = [PackageURL.from_string(purl) for purl in purls]
-            plain_purl_objects = [
-                PackageURL(
-                    type=purl.type,
-                    namespace=purl.namespace,
-                    name=purl.name,
-                    version=purl.version,
+        if approximate:
+            plain_purls = [
+                str(
+                    PackageURL(
+                        type=p.type,
+                        namespace=p.namespace,
+                        name=p.name,
+                        version=p.version,
+                    )
                 )
-                for purl in purl_objects
+                for p in map(PackageURL.from_string, purls)
             ]
-            plain_purls = [str(purl) for purl in plain_purl_objects]
 
+        if not details:
+            if approximate:
+                query = (
+                    PackageV2.objects.filter(plain_package_url__in=plain_purls)
+                    .values_list("plain_package_url", flat=True)
+                    .distinct()
+                    .order_by("plain_package_url")
+                )
+            else:
+                query = (
+                    PackageV2.objects.filter(package_url__in=purls)
+                    .values_list("package_url", flat=True)
+                    .distinct()
+                    .order_by("package_url")
+                )
+
+            page = self.paginate_queryset(query)
+            return self.get_paginated_response(page)
+
+        if approximate:
             query = (
                 PackageV2.objects.filter(plain_package_url__in=plain_purls)
                 .order_by("plain_package_url")
                 .distinct("plain_package_url")
-                .prefetch_related(
-                    Prefetch(
-                        "affected_in_impacts",
-                        queryset=ImpactedPackage.objects.select_related(
-                            "advisory"
-                        ).prefetch_related(
-                            "fixed_by_packages",
-                        ),
-                    ),
-                    Prefetch(
-                        "fixed_in_impacts",
-                        queryset=ImpactedPackage.objects.select_related("advisory"),
-                    ),
-                )
-                .with_is_vulnerable()
+            )
+        else:
+            query = (
+                PackageV2.objects.filter(package_url__in=purls)
+                .order_by("package_url")
+                .distinct("package_url")
             )
 
-            packages = query
+        page = self.paginate_queryset(query)
+        serializer = self.get_serializer(page, many=True, context={"request": request})
+        return self.get_paginated_response(serializer.data)
 
-            avids = set()
-            for package in packages:
-                for impact in package.affected_in_impacts.all():
-                    if impact.advisory_id:
-                        avids.add(impact.advisory.avid)
-                for impact in package.fixed_in_impacts.all():
-                    if impact.advisory_id:
-                        avids.add(impact.advisory.avid)
 
-            latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
-            advisory_data = {
-                adv.avid: AdvisoryV2Serializer(adv, context={"request": request}).data
-                for adv in latest_advisories
-            }
+class AdvisoryV3ViewSet(viewsets.GenericViewSet):
+    queryset = AdvisoryV2.objects.all()
+    serializer_class = AdvisoryV3Serializer
+    filter_backends = [filters.DjangoFilterBackend]
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
-            if not purl_only:
-                package_data = PackageV3Serializer(
-                    packages,
-                    many=True,
-                    context={"request": request},
-                ).data
-                return Response(
-                    {
-                        "packages": package_data,
-                        "advisories_by_id": advisory_data,
-                    }
-                )
+    def create(self, request, *args, **kwargs):
+        serializer = PackageQuerySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-            # Using order by and distinct because there will be
-            # many fully qualified purl for a single plain purl
-            vulnerable_purls = query.vulnerable().only("plain_package_url")
-            vulnerable_purls = [str(package.plain_package_url) for package in vulnerable_purls]
-            return Response(data=vulnerable_purls)
+        purls = serializer.validated_data["purls"]
 
-        query = (
-            PackageV2.objects.filter(package_url__in=purls)
-            .order_by("plain_package_url")
-            .distinct("plain_package_url")
-            .prefetch_related(
-                Prefetch(
-                    "affected_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory").prefetch_related(
-                        "fixed_by_packages",
-                    ),
-                ),
-                Prefetch(
-                    "fixed_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory"),
-                ),
-            )
-            .with_is_vulnerable()
-        )
-        packages = query
+        latest_advisories = AdvisoryV2.objects.latest_advisories_for_purls(purls=purls)
 
-        avids = set()
-        for package in packages:
-            for impact in package.affected_in_impacts.all():
-                if impact.advisory_id:
-                    avids.add(impact.advisory.avid)
-            for impact in package.fixed_in_impacts.all():
-                if impact.advisory_id:
-                    avids.add(impact.advisory.avid)
+        page = self.paginate_queryset(latest_advisories)
+        serializer = self.get_serializer(page, many=True, context={"request": request})
+        return self.get_paginated_response(serializer.data)
 
-        latest_advisories = AdvisoryV2.objects.latest_for_avids(avids)
-        advisory_data = {
-            adv.avid: AdvisoryV2Serializer(adv, context={"request": request}).data
-            for adv in latest_advisories
-        }
 
-        if not purl_only:
-            package_data = PackageV3Serializer(
-                packages,
-                many=True,
-                context={"request": request},
-            ).data
-            return Response(
-                {
-                    "packages": package_data,
-                    "advisories_by_id": advisory_data,
-                }
-            )
+class PackageAdvisoriesViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = AdvisoryV3Serializer
+    relation = None
 
-        vulnerable_purls = query.vulnerable().only("package_url")
-        vulnerable_purls = [str(package.package_url) for package in vulnerable_purls]
-        return Response(data=vulnerable_purls)
+    def get_queryset(self):
+        purl = self.request.query_params.get("purl")
 
-    @action(detail=False, methods=["get"])
-    def all(self, request):
-        """
-        Return a list of Package URLs of vulnerable packages.
-        """
-        vulnerable_purls = (
-            PackageV2.objects.vulnerable()
-            .only("package_url")
-            .order_by("package_url")
-            .distinct()
-            .values_list("package_url", flat=True)
-        )
-        return Response(vulnerable_purls)
+        if not purl:
+            return AdvisoryV2.objects.none()
 
-    @extend_schema(
-        request=LookupRequestSerializer,
-        responses={200: PackageV2Serializer(many=True)},
-    )
-    @action(
-        detail=False,
-        methods=["post"],
-        serializer_class=LookupRequestSerializer,
-        filter_backends=[],
-        pagination_class=None,
-    )
-    def lookup(self, request):
-        """
-        Return the response for exact PackageURL requested for.
-        """
-        serializer = self.serializer_class(data=request.data)
-        if not serializer.is_valid():
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={
-                    "error": serializer.errors,
-                    "message": "A 'purl' is required.",
-                },
-            )
-        validated_data = serializer.validated_data
-        purl = validated_data.get("purl")
+        return AdvisoryV2.objects.filter(**{self.relation: purl}).latest_per_avid()
 
-        qs = self.get_queryset().for_purls([purl]).with_is_vulnerable()
-        return Response(PackageV3Serializer(qs, many=True, context={"request": request}).data)
+
+class FixingAdvisoriesViewSet(PackageAdvisoriesViewSet):
+    relation = "impacted_packages__fixed_by_packages__package_url"
+
+
+class AffectedByAdvisoriesViewSet(PackageAdvisoriesViewSet):
+    relation = "impacted_packages__affecting_packages__package_url"

@@ -43,9 +43,7 @@ class ComputeAdvisoryContentHash(VulnerableCodePipeline):
         to_update = []
         batch_size = 5000
 
-        for advisory in progress.iter(
-            advisories.iterator(chunk_size=batch_size)
-        ):
+        for advisory in progress.iter(advisories.iterator(chunk_size=batch_size)):
             advisory.advisory_content_hash = compute_advisory_content(advisory)
             to_update.append(advisory)
 

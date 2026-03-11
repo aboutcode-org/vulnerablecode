@@ -3010,6 +3010,13 @@ class AdvisoryV2(models.Model):
         help_text="Related advisories that are used to calculate the severity of this advisory.",
     )
 
+    advisory_content_hash = models.CharField(
+        max_length=64,
+        blank=True,
+        null=True,
+        help_text="A unique hash computed from the content of the advisory used to identify advisories with the same content.",
+    )
+
     @property
     def risk_score(self):
         """
@@ -3077,35 +3084,6 @@ class AdvisoryV2(models.Model):
         Return a queryset of all Aliases for this vulnerability.
         """
         return self.aliases.all()
-
-    def compute_advisory_content(self):
-        """
-        Compute a unique content hash for an advisory by normalizing its data and hashing it.
-
-        :param advisory: An Advisory object
-        :return: SHA-256 hash digest as content hash
-        """
-        normalized_data = {
-            "summary": normalize_text(self.summary),
-            "impacted_packages": sorted(
-                [impact.to_dict() for impact in self.impacted_packages.all()],
-                key=lambda x: json.dumps(x, sort_keys=True),
-            ),
-            "patches": sorted(
-                [patch.to_patch_data().to_dict() for patch in self.patches.all()],
-                key=lambda x: json.dumps(x, sort_keys=True),
-            ),
-            "severities": sorted(
-                [sev.to_vulnerability_severity_data().to_dict() for sev in self.severities.all()],
-                key=lambda x: (x.get("system"), x.get("value")),
-            ),
-            "weaknesses": normalize_list([weakness.cwe_id for weakness in self.weaknesses.all()]),
-        }
-
-        normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
-        content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
-
-        return content_hash
 
     alias = get_aliases
 

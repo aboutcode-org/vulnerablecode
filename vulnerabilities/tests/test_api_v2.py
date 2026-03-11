@@ -850,55 +850,57 @@ class AdvisoriesPackageV2Tests(APITestCase):
         )
 
         self.package = PackageV2.objects.from_purl(purl="pkg:pypi/sample@1.0.0")
-        self.impact = ImpactedPackage.objects.create(advisory=self.advisory)
+        self.impact = ImpactedPackage.objects.create(
+            advisory=self.advisory, base_purl="pkg:pypi/sample"
+        )
         self.impact.affecting_packages.add(self.package)
 
         self.client = APIClient(enforce_csrf_checks=True)
 
     def test_list_with_purl_filter(self):
-        url = reverse("advisories-package-v2-list")
-        with self.assertNumQueries(19):
+        url = reverse("package-v3-list")
+        with self.assertNumQueries(29):
             response = self.client.get(url, {"purl": "pkg:pypi/sample@1.0.0"})
         assert response.status_code == 200
         assert "packages" in response.data["results"]
-        assert "advisories" in response.data["results"]
-        assert self.advisory.avid in response.data["results"]["advisories"]
+        assert "advisories_by_id" in response.data["results"]
+        assert self.advisory.avid in response.data["results"]["advisories_by_id"]
 
     def test_bulk_lookup(self):
-        url = reverse("advisories-package-v2-bulk-lookup")
-        with self.assertNumQueries(18):
+        url = reverse("package-v3-bulk-lookup")
+        with self.assertNumQueries(28):
             response = self.client.post(url, {"purls": ["pkg:pypi/sample@1.0.0"]}, format="json")
         assert response.status_code == 200
         assert "packages" in response.data
-        assert "advisories" in response.data
-        assert self.advisory.avid in response.data["advisories"]
+        assert "advisories_by_id" in response.data
+        assert self.advisory.avid in response.data["advisories_by_id"]
 
     def test_bulk_search_plain(self):
-        url = reverse("advisories-package-v2-bulk-search")
+        url = reverse("package-v3-bulk-search")
         payload = {"purls": ["pkg:pypi/sample@1.0.0"], "plain_purl": True, "purl_only": False}
-        with self.assertNumQueries(18):
+        with self.assertNumQueries(28):
             response = self.client.post(url, payload, format="json")
         assert response.status_code == 200
         assert "packages" in response.data
-        assert "advisories" in response.data
+        assert "advisories_by_id" in response.data
 
     def test_bulk_search_purl_only(self):
-        url = reverse("advisories-package-v2-bulk-search")
+        url = reverse("package-v3-bulk-search")
         payload = {"purls": ["pkg:pypi/sample@1.0.0"], "plain_purl": False, "purl_only": True}
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(17):
             response = self.client.post(url, payload, format="json")
         assert response.status_code == 200
         assert "pkg:pypi/sample@1.0.0" in response.data
 
     def test_lookup_single_package(self):
-        url = reverse("advisories-package-v2-lookup")
-        with self.assertNumQueries(12):
+        url = reverse("package-v3-lookup")
+        with self.assertNumQueries(21):
             response = self.client.post(url, {"purl": "pkg:pypi/sample@1.0.0"}, format="json")
         assert response.status_code == 200
         assert any(pkg["purl"] == "pkg:pypi/sample@1.0.0" for pkg in response.data)
 
     def test_get_all_vulnerable_purls(self):
-        url = reverse("advisories-package-v2-all")
+        url = reverse("package-v3-all")
         with self.assertNumQueries(3):
             response = self.client.get(url)
         assert response.status_code == 200

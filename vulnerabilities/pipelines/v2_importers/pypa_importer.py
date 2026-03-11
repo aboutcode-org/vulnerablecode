@@ -13,8 +13,9 @@ from typing import Iterable
 import saneyaml
 from fetchcode.vcs import fetch_via_vcs
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.utils import get_advisory_url
 
 
@@ -28,6 +29,7 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     repo_url = "git+https://github.com/pypa/advisory-database"
+    precedence = 200
 
     @classmethod
     def steps(cls):
@@ -45,9 +47,7 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         vulns_directory = Path(self.vcs_response.dest_dir) / "vulns"
         return sum(1 for _ in vulns_directory.rglob("*.yaml"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
-        from vulnerabilities.importers.osv import parse_advisory_data_v2
-
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_directory = Path(self.vcs_response.dest_dir)
         vulns_directory = base_directory / "vulns"
 
@@ -59,7 +59,7 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             )
             advisory_text = advisory.read_text()
             advisory_dict = saneyaml.load(advisory_text)
-            yield parse_advisory_data_v2(
+            yield parse_advisory_data_v3(
                 raw_data=advisory_dict,
                 supported_ecosystems=["pypi"],
                 advisory_url=advisory_url,

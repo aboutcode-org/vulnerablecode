@@ -25,6 +25,8 @@ from packageurl.contrib.url2purl import url2purl
 
 from aboutcode.hashid import get_core_purl
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import ReferenceV2
@@ -85,16 +87,17 @@ def get_or_create_advisory_severities(severities: List) -> QuerySet:
     severity_objs = []
     for severity in severities:
         published_at = str(severity.published_at) if severity.published_at else None
-        sev, _ = AdvisorySeverity.objects.get_or_create(
-            scoring_system=severity.system.identifier,
-            value=severity.value,
-            scoring_elements=severity.scoring_elements,
-            defaults={
-                "published_at": published_at,
-            },
-            url=severity.url,
-        )
-        severity_objs.append(sev)
+        if severity.scoring_elements or severity.value:
+            sev, _ = AdvisorySeverity.objects.get_or_create(
+                scoring_system=severity.system.identifier,
+                value=severity.value,
+                scoring_elements=severity.scoring_elements,
+                defaults={
+                    "published_at": published_at,
+                },
+                url=severity.url,
+            )
+            severity_objs.append(sev)
     return AdvisorySeverity.objects.filter(id__in=[severity.id for severity in severity_objs])
 
 
@@ -286,22 +289,18 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
 
 @transaction.atomic
 def insert_advisory_v2(
-    advisory: AdvisoryData,
+    advisory: AdvisoryDataV2,
     pipeline_id: str,
-    logger: Callable = None,
+    logger: Callable,
+    precedence: int = 0,
 ):
     from vulnerabilities.models import ImpactedPackage
     from vulnerabilities.models import PackageV2
-    from vulnerabilities.utils import compute_content_id
+    from vulnerabilities.utils import compute_content_id_v2
 
     advisory_obj = None
-    aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
-    references = get_or_create_advisory_references(references=advisory.references_v2)
-    severities = get_or_create_advisory_severities(severities=advisory.severities)
-    patches = get_or_create_advisory_patches(patches=advisory.patches)
-    weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
-    content_id = compute_content_id(advisory_data=advisory)
-
+    created = False
+    content_id = compute_content_id_v2(advisory_data=advisory)
     try:
         default_data = {
             "datasource_id": pipeline_id,
@@ -309,74 +308,84 @@ def insert_advisory_v2(
             "avid": f"{pipeline_id}/{advisory.advisory_id}",
             "summary": advisory.summary,
             "date_published": advisory.date_published,
-            "date_collected": datetime.now(timezone.utc),
             "original_advisory_text": advisory.original_advisory_text,
+            "url": advisory.url,
+            "precedence": precedence,
         }
 
         advisory_obj, created = AdvisoryV2.objects.get_or_create(
+            advisory_id=advisory.advisory_id,
+            datasource_id=pipeline_id,
             unique_content_id=content_id,
-            url=advisory.url,
             defaults=default_data,
         )
-        related_fields = {
-            "aliases": aliases,
-            "references": references,
-            "severities": severities,
-            "weaknesses": weaknesses,
-            "patches": patches,
-        }
-
-        for field_name, values in related_fields.items():
-            if values:
-                getattr(advisory_obj, field_name).add(*values)
-
-    except Advisory.MultipleObjectsReturned:
-        logger.error(
+    except AdvisoryV2.MultipleObjectsReturned:
+        logger(
             f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}"
         )
         raise
     except Exception as e:
-        if logger:
-            logger(
-                f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
-                level=logging.ERROR,
-            )
+        logger(
+            f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
+            level=logging.ERROR,
+        )
+        raise
 
-    if created:
-        for affected_pkg in advisory.affected_packages:
-            impact = ImpactedPackage.objects.create(
-                advisory=advisory_obj,
-                base_purl=str(affected_pkg.package),
-                affecting_vers=str(affected_pkg.affected_version_range)
-                if affected_pkg.affected_version_range
-                else None,
-                fixed_vers=str(affected_pkg.fixed_version_range)
-                if affected_pkg.fixed_version_range
-                else None,
-            )
-            package_affected_purls, package_fixed_purls = get_exact_purls_v2(
-                affected_package=affected_pkg,
-                logger=logger,
-            )
-            affected_packages_v2 = [
-                PackageV2.objects.get_or_create_from_purl(purl=purl)[0]
-                for purl in package_affected_purls
-            ]
-            fixed_packages_v2 = [
-                PackageV2.objects.get_or_create_from_purl(purl=purl)[0]
-                for purl in package_fixed_purls
-            ]
-            impact.affecting_packages.add(*affected_packages_v2)
-            impact.fixed_by_packages.add(*fixed_packages_v2)
+    if not created:
+        return advisory_obj
 
-            introduced_commit_v2 = get_or_create_advisory_package_commit_patches(
-                affected_pkg.introduced_by_commit_patches
-            )
-            fixed_commit_v2 = get_or_create_advisory_package_commit_patches(
-                affected_pkg.fixed_by_commit_patches
-            )
-            impact.introduced_by_package_commit_patches.add(*introduced_commit_v2)
-            impact.fixed_by_package_commit_patches.add(*fixed_commit_v2)
+    aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
+    references = get_or_create_advisory_references(references=advisory.references)
+    severities = get_or_create_advisory_severities(severities=advisory.severities)
+    patches = get_or_create_advisory_patches(patches=advisory.patches)
+    weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
+
+    related_fields = {
+        "aliases": aliases,
+        "references": references,
+        "severities": severities,
+        "weaknesses": weaknesses,
+        "patches": patches,
+    }
+
+    for field_name, values in related_fields.items():
+        if values:
+            getattr(advisory_obj, field_name).add(*values)
+
+    for affected_pkg in advisory.affected_packages:
+        impact = ImpactedPackage.objects.create(
+            advisory=advisory_obj,
+            base_purl=str(affected_pkg.package),
+            affecting_vers=str(affected_pkg.affected_version_range)
+            if affected_pkg.affected_version_range
+            else None,
+            fixed_vers=str(affected_pkg.fixed_version_range)
+            if affected_pkg.fixed_version_range
+            else None,
+        )
+        package_affected_purls, package_fixed_purls = get_exact_purls_v2(
+            affected_package=affected_pkg,
+            logger=logger,
+        )
+
+        affected_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
+            purls=package_affected_purls
+        )
+        fixed_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
+            purls=package_fixed_purls
+        )
+
+        impact.affecting_packages.add(*affected_packages_v2)
+        impact.fixed_by_packages.add(*fixed_packages_v2)
+
+        introduced_commit_v2 = get_or_create_advisory_package_commit_patches(
+            affected_pkg.introduced_by_commit_patches
+        )
+        fixed_commit_v2 = get_or_create_advisory_package_commit_patches(
+            affected_pkg.fixed_by_commit_patches
+        )
+        impact.introduced_by_package_commit_patches.add(*introduced_commit_v2)
+        impact.fixed_by_package_commit_patches.add(*fixed_commit_v2)
     return advisory_obj
 
 
@@ -500,3 +509,27 @@ def advisories_checksum(advisories: Union[Advisory, List[Advisory]]) -> str:
 
     checksum = hashlib.sha1(combined_contents.encode())
     return checksum.hexdigest()
+
+
+def append_patch_classifications(
+    url, commit_hash, patch_text, affected_packages, patches, references
+):
+    """Classify a patch source and append the results to affected_packages, patches, or references,
+    assuming all provided commits are fixed commits."""
+
+    base_purl, patch_objs = classify_patch_source(
+        url=url, commit_hash=commit_hash, patch_text=patch_text
+    )
+
+    for patch_obj in patch_objs:
+        if isinstance(patch_obj, PackageCommitPatchData):
+            fixed_commit = patch_obj
+            affected_package = AffectedPackageV2(
+                package=base_purl,
+                fixed_by_commit_patches=[fixed_commit],
+            )
+            affected_packages.append(affected_package)
+        elif isinstance(patch_obj, PatchData):
+            patches.append(patch_obj)
+        elif isinstance(patch_obj, ReferenceV2):
+            references.append(patch_obj)

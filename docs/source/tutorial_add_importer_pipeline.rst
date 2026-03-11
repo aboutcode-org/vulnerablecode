@@ -152,7 +152,7 @@ At this point, an example importer will look like this:
 .. code-block:: python
     :caption: vulnerabilities/pipelines/example_importer.py
     :linenos:
-    :emphasize-lines: 16-17, 20-21, 23-24
+    :emphasize-lines: 17-18, 21-22, 24-25
 
     from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 
@@ -165,6 +165,7 @@ At this point, an example importer will look like this:
         license_url = "https://exmaple.org/license/"
         spdx_license_expression = "CC-BY-4.0"
         importer_name = "Example Importer"
+        run_once = False
 
         @classmethod
         def steps(cls):
@@ -196,7 +197,7 @@ version management from `univers <https://github.com/aboutcode-org/univers>`_.
 .. code-block:: python
     :caption: vulnerabilities/pipelines/example_importer.py
     :linenos:
-    :emphasize-lines: 34-35, 37-40
+    :emphasize-lines: 35-36, 38-41
 
     from datetime import datetime
     from datetime import timezone
@@ -223,6 +224,7 @@ version management from `univers <https://github.com/aboutcode-org/univers>`_.
         license_url = "https://example.org/license/"
         spdx_license_expression = "CC-BY-4.0"
         importer_name = "Example Importer"
+        run_once = False
 
         @classmethod
         def steps(cls):
@@ -302,6 +304,17 @@ version management from `univers <https://github.com/aboutcode-org/univers>`_.
 
    Implement ``on_failure`` to handle cleanup in case of pipeline failure.
    Cleanup of downloaded archives or cloned repos is necessary to avoid potential resource leakage.
+
+.. tip::
+
+   Set ``run_once`` to ``True`` if pipeline is meant to be run once.
+
+   - To rerun onetime pipeline, reset ``is_active`` to ``True`` via a migration, pipeline will
+     run one more time and then deactivate.
+
+   - To convert a onetime pipeline to a regular pipeline, set the ``run_once`` class variable
+     to ``False`` and reset ``is_active` field to ``True`` via a migration.
+
 
 .. note::
 

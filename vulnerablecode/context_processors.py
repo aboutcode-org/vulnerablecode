@@ -7,6 +7,8 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from django.conf import settings
+
 from vulnerablecode import __version__ as vulnerablecode_version
 
 
@@ -14,3 +16,7 @@ def versions(request):
     return {
         "VULNERABLECODE_VERSION": vulnerablecode_version,
     }
+
+
+def staging(request):
+    return {"STAGING": getattr(settings, "STAGING")}

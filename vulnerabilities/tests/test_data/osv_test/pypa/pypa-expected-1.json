@@ -1,0 +1,100 @@
+{
+  "advisory_id": "PYSEC-2013-38",
+  "aliases": [
+    "CVE-2012-5484"
+  ],
+  "summary": "The client in FreeIPA 2.x and 3.x before 3.1.2 does not properly obtain the Certification Authority (CA) certificate from the server, which allows man-in-the-middle attackers to spoof a join procedure via a crafted certificate.",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "pypi",
+        "namespace": "",
+        "name": "ipa",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:pypi/4.4.0.dev1|4.5.0|4.5.2|4.5.4|4.6.2|4.6.3|4.6.4|4.6.5|4.6.7|4.7.0|4.7.1|4.7.2|4.7.4|4.7.5|4.8.0rc1|4.8.0|4.8.1|4.8.2|4.8.3|4.8.5|4.8.6|4.8.7|4.8.9|4.9.12|4.10.2|4.12.2",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.freeipa.org/page/CVE-2012-5484"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://git.fedorahosted.org/cgit/freeipa.git/commit/?id=91f4af7e6af53e1c6bf17ed36cb2161863eddae4"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://git.fedorahosted.org/cgit/freeipa.git/commit/?id=18eea90ebb24a9c22248f0b7e18646cc6e3e3e0f"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://git.fedorahosted.org/cgit/freeipa.git/commit/?id=a1991aeac19c3fec1fdd0d184c6760c90c9f9fc9"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://git.fedorahosted.org/cgit/freeipa.git/commit/?id=31e41eea6c2322689826e6065ceba82551c565aa"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://git.fedorahosted.org/cgit/freeipa.git/commit/?id=a40285c5a0288669b72f9d991508d4405885bffc"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.freeipa.org/page/Releases/3.1.2"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://rhn.redhat.com/errata/RHSA-2013-0188.html"
+    },
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://rhn.redhat.com/errata/RHSA-2013-0189.html"
+    },
+    {
+      "reference_id": "91f4af7e6af53e1c6bf17ed36cb2161863eddae4",
+      "reference_type": "commit",
+      "url": "https://fedoraproject.org/wiki/Infrastructure/Fedorahosted-retirement"
+    },
+    {
+      "reference_id": "18eea90ebb24a9c22248f0b7e18646cc6e3e3e0f",
+      "reference_type": "commit",
+      "url": "https://fedoraproject.org/wiki/Infrastructure/Fedorahosted-retirement"
+    },
+    {
+      "reference_id": "a1991aeac19c3fec1fdd0d184c6760c90c9f9fc9",
+      "reference_type": "commit",
+      "url": "https://fedoraproject.org/wiki/Infrastructure/Fedorahosted-retirement"
+    },
+    {
+      "reference_id": "31e41eea6c2322689826e6065ceba82551c565aa",
+      "reference_type": "commit",
+      "url": "https://fedoraproject.org/wiki/Infrastructure/Fedorahosted-retirement"
+    },
+    {
+      "reference_id": "a40285c5a0288669b72f9d991508d4405885bffc",
+      "reference_type": "commit",
+      "url": "https://fedoraproject.org/wiki/Infrastructure/Fedorahosted-retirement"
+    }
+  ],
+  "patches": [],
+  "severities": [],
+  "date_published": "2013-01-27T18:55:00+00:00",
+  "weaknesses": [],
+  "url": "https://test.com"
+}

@@ -1,6 +1,36 @@
-===============
+==============
 VulnerableCode
+==============
+
+VulnerableCode is a database of software package vulnerabilities with Web UI and API.
+
+Why Use VulnerableCode?
+=======================
+
+VulnerableCode provides a Web UI and API to access a database of known software package 
+vulnerabilities with comprehensive information from upstream and downstream public 
+sources including packages affected by a vulnerability and packages that fix a 
+vulnerability. 
+
+There is a `public VulnerableCode database <https://public.vulnerablecode.io/>`_ 
+and the project also provides the tools to build your own instance of the database.
+
+Getting Started
 ===============
+
+Instructions to get you up and running on your local machine are at `Getting Started <https://vulnerablecode.readthedocs.io/en/stable/>`_
+
+The VulnerableCode documentation also provides:
+
+- prerequisites for installing the software.
+- an introduction to the user interface.
+- how to use the API.
+- tutorials for adding new pipelines to import and improve advisories.
+- extensive reference information about VulnerableCode data.
+- guidelines for contributing to code development.
+
+Build and tests status
+======================
 
 |Build Status| |Code License| |Data License| |Python 3.8+| |stability-wip| |Gitter chat|
 
@@ -18,11 +48,12 @@ VulnerableCode
    :target: https://gitter.im/aboutcode-org/vulnerablecode
 
 
-VulnerableCode is a free and open database of open source software package
-vulnerabilities **because open source software vulnerabilities data and tools
-should be free and open source themselves**:
+Benefits of VulnerableCode
+==========================
 
-we are trying to change this and evolve the status quo in a few other areas!
+VulnerableCode is a free and open database of open source software package
+vulnerabilities **because open source software vulnerability data and tools
+should be free and open source themselves**.
 
 - Vulnerability databases have been **traditionally proprietary** even though they
   are mostly about free and open source software. 
@@ -31,119 +62,35 @@ we are trying to change this and evolve the status quo in a few other areas!
   means a lot of false positive signals that require extensive expert reviews.
 
 - Vulnerability databases are also mostly about vulnerabilities first and software
-  package second, making it difficult to find if and when a vulnerability applies
-  to a piece of code. VulnerableCode focus is on software package first where
-  a Package URL is a key and natural identifier for packages; this is making it
+  packages second, making it difficult to find if and when a vulnerability applies
+  to a piece of code. VulnerableCode's focus is on software packages first where
+  a Package URL (PURL) is a key and natural identifier for packages; this makes it
   easier to find a package and whether it is vulnerable.
 
-Package URL themselves were designed first in ScanCode and VulnerableCode
-and are now a de-facto standard for vulnerability management and package references.
-See https://github.com/package-url/purl-spec
+PURLs were designed initially for ScanCode and VulnerableCode. PURL is
+now a `standard <https://github.com/package-url/purl-spec>`_ for vulnerability management 
+and package references.
 
-The VulnerableCode project is a FOSS community resource to help improve the
-security of the open source software ecosystem and its users at large.
-
-VulnerableCode consists of a database and the tools to collect, refine and keep
-the database current. 
-
-
-.. pull-quote::
-   **Warning**
-
-   VulnerableCode is under active development and is not yet fully
-   usable.
-
-
-Read more about VulnerableCode https://vulnerablecode.readthedocs.org/
-
-VulnerableCode tech stack is Python, Django, PostgreSQL, nginx and Docker and
+The VulnerableCode tech stack is Python, Django, PostgreSQL, nginx and Docker and
 several libraries.
 
+Support
+=======
 
-Getting started
-===============
+If you have a specific problem, suggestion or bug, please submit a
+`GitHub issue <https://github.com/aboutcode-org/vulnerablecode/issues>`_.
 
-Run with Docker
----------------
+For quick questions or socializing, join the AboutCode community discussions on `Slack <https://join.slack.com/t/aboutcode-org/shared_invite/zt-3li3bfs78-mmtKG0Qhv~G2dSlNCZW2pA>`_.
 
-First install docker, then run
-
-.. code:: bash
-
-    git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
-    make envfile
-    docker compose build
-    docker compose up -d
-    docker compose run vulnerablecode ./manage.py import --list
-
-Then run an importer for nginx advisories (which is small)
-
-.. code:: bash
-
-    docker compose exec vulnerablecode ./manage.py import nginx_importer
-    docker compose exec vulnerablecode ./manage.py improve --all
-
-At this point, the VulnerableCode app and API should be up and running with
-some data at http://localhost
-
-
-Populate VulnerableCode database
---------------------------------
-
-VulnerableCode data collection works in two steps: importing data from multiple
-sources and then refining and improving how package and software vulnerabilities
-are related.
-
-To run all importers and improvers use this
-
-.. code:: bash
-
-   ./manage.py import --all
-
-.. code:: bash
-
-   ./manage.py improve --all
-
-
-Local development installation
-------------------------------
-
-On a Debian system, use this
-
-.. code:: bash
-
-    sudo apt-get install  python3-venv python3-dev postgresql libpq-dev build-essential
-    git clone https://github.com/nexB/vulnerablecode.git && cd vulnerablecode
-    make dev envfile postgres
-    make test
-    source venv/bin/activate
-    ./manage.py import nginx_importer
-    ./manage.py improve --all
-    make run
-
-At this point, the VulnerableCode app and API is up at http://127.0.0.1:8001/
-
+Interested in commercial suppport? Contact the `AboutCode team <mailto:hello@aboutcode.org>`_.
 
 License
-========
+=======
 
-Copyright (c) nexB Inc. and others. All rights reserved.
-
-VulnerableCode is a trademark of nexB Inc.
-
-SPDX-License-Identifier: Apache-2.0 AND CC-BY-SA-4.0
-
-VulnerableCode software is licensed under the Apache License version 2.0.
-
-VulnerableCode data is licensed collectively under CC-BY-SA-4.0.
-
-See https://www.apache.org/licenses/LICENSE-2.0 for the license text.
-
-See https://creativecommons.org/licenses/by-sa/4.0/legalcode for the license text.
-
-See https://github.com/nexB/vulnerablecode for support or download. 
-
-See https://aboutcode.org for more information about nexB OSS projects.
+* `Apache-2.0 <apache-2.0.LICENSE>`_ is the overall license.
+* `CC-BY-SA-4.0 <cc-by-sa-4.0.LICENSE>`_ applies to reference datasets.
+* There are multiple secondary permissive or copyleft licenses (LGPL, MIT,
+  BSD, GPL 2/3, etc.) for third-party components and test suite code and data.
 
 
 Acknowledgements, Funding, Support and Sponsoring

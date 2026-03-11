@@ -15,7 +15,7 @@ from packageurl import PackageURL
 from univers.version_range import NpmVersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.npm_importer import NpmImporterPipeline
 from vulnerabilities.severity_systems import CVSSV2
 from vulnerabilities.severity_systems import CVSSV3
@@ -60,8 +60,8 @@ def test_advisories_count_and_collect(tmp_path):
     p.vcs_response = SimpleNamespace(dest_dir=str(base), delete=lambda: None)
     assert p.advisories_count() == 2
     advisories = list(p.collect_advisories())
-    # Should yield None for index.json and one AdvisoryData
-    real = [a for a in advisories if isinstance(a, AdvisoryData)]
+    # Should yield None for index.json and one AdvisoryDataV2
+    real = [a for a in advisories if isinstance(a, AdvisoryDataV2)]
     assert len(real) == 1
     assert real[0].advisory_id == "npm-001"
 
@@ -91,12 +91,12 @@ def test_to_advisory_data_full(tmp_path):
     file.write_text(json.dumps(data))
     p = NpmImporterPipeline()
     adv = p.to_advisory_data(file)
-    assert isinstance(adv, AdvisoryData)
+    assert isinstance(adv, AdvisoryDataV2)
     assert adv.advisory_id == "npm-123"
     assert "ti" in adv.summary and "desc" in adv.summary
     assert adv.date_published.tzinfo == pytz.UTC
     assert len(adv.severities) == 1 and adv.severities[0].system == CVSSV3
-    urls = [r.url for r in adv.references_v2]
+    urls = [r.url for r in adv.references]
     assert "http://ref1" in urls
     assert f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/123.json" in urls
     pkg = adv.affected_packages[0]

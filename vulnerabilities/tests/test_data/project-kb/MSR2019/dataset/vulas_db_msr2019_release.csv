@@ -1,0 +1,10 @@
+CVE-2017-4971,https://github.com/spring-projects/spring-webflow,57f2ccb66946943fbf3b3f2165eac1c8eb6b1523,pos
+COLLECTIONS-580,https://github.com/apache/commons-collections,e585cd0433ae4cfbc56e58572b9869bd0c86b611,pos
+CVE-2011-1088,https://github.com/apache/tomcat,ece65c1a428094b1c6c17de3d7593f64e1bb1286,pos
+SONARQUBE-001,https://github.com/SonarSource/sonarqube,08438a2c47112f2fce1e512f6c843c908abed4c7,pos
+CVE-2018-12536,https://github.com/eclipse/jetty.project,53e8bc2a636707e896fd106fbee3596823c2cdc,pos
+PDFBOX-3341,https://github.com/apache/pdfbox,f0c0fb1af3c0419bdea2fe3d0ab1fe36a6d9dc2c,pos
+CVE-2013-2134,https://github.com/apache/struts,cfb6e9afbae320a4dd5bdd655154ab9fe5a92c1,pos
+CVE-2018-8041,https://github.com/apache/camel,4f401c09d22c45c94fa97746dc31905e06b19e3,pos
+HADOOP-12001,https://github.com/apache/hadoop,98f9d6fee112d95aab680fc7f27b815b2e698a5,pos
+CVE-2017-15695,https://github.com/apache/geode,954ccb545d24a9c9a35cbd84023a4d7e07032de0,pos

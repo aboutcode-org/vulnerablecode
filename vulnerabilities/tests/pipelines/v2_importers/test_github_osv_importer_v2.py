@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.github_osv_importer import GithubOSVImporterPipeline
 
 
@@ -60,7 +61,7 @@ def test_collect_advisories_from_github_osv(monkeypatch, sample_osv_advisory):
     assert len(advisories) == 1
 
     advisory = advisories[0]
-    assert isinstance(advisory, AdvisoryData)
+    assert isinstance(advisory, AdvisoryDataV2)
     assert advisory.advisory_id == "GHSA-xxxx-yyyy-zzzz"
     assert "CVE-2021-99999" in advisory.aliases
     assert advisory.summary.startswith("Sample")

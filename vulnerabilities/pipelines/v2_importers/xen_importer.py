@@ -12,7 +12,7 @@ from typing import Iterable
 
 from dateutil import parser
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.references import XsaReference
@@ -55,6 +55,8 @@ class XenImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
      -George
     """
 
+    precedence = 200
+
     _cached_data = None  # Class-level cache
 
     @classmethod
@@ -70,7 +72,7 @@ class XenImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         data = self.get_xsa_data()
         return len(data[0].get("xsas", [])) if data else 0
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         data = self.get_xsa_data()
         if not data:
             return
@@ -78,7 +80,7 @@ class XenImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         for xsa in data[0].get("xsas", []):
             yield from self.to_advisories(xsa)
 
-    def to_advisories(self, xsa) -> Iterable[AdvisoryData]:
+    def to_advisories(self, xsa) -> Iterable[AdvisoryDataV2]:
         xsa_id = xsa.get("xsa")
         references = []
 
@@ -90,12 +92,12 @@ class XenImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         date_published = xsa.get("public_time")
         cve = xsa.get("cve", [])
 
-        yield AdvisoryData(
+        yield AdvisoryDataV2(
             advisory_id=f"XSA-{xsa_id}",
             aliases=cve,
             url="https://xenbits.xen.org/xsa/",
             summary=title,
-            references_v2=references,
+            references=references,
             date_published=parser.parse(date_published),
             original_advisory_text=json.dumps(xsa, indent=2, ensure_ascii=False),
         )

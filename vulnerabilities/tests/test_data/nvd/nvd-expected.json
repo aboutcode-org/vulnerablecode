@@ -49,11 +49,114 @@
         "severities": []
       }
     ],
-    "date_published": "2012-07-25T19:55:00+00:00",
+    "date_published": "2012-07-25T19:55:01.273000+00:00",
     "weaknesses": [
       189
     ],
     "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-4895"
+  },
+  {
+    "aliases": [
+      "CVE-2005-4900"
+    ],
+    "summary": "SHA-1 is not collision resistant, which makes it easier for context-dependent attackers to conduct spoofing attacks, as demonstrated by attacks on the use of SHA-1 in TLS 1.2.  NOTE: this CVE exists to provide a common identifier for referencing this SHA-1 issue; the existence of an identifier is not, by itself, a technology recommendation.",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "http://ia.cr/2007/474",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "http://shattered.io/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "http://www.cwi.nl/news/2017/cwi-and-google-announce-first-collision-industry-security-standard-sha-1",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "http://www.securityfocus.com/bid/12577",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://arstechnica.com/security/2017/02/at-deaths-door-for-years-widely-used-sha1-function-is-now-dead/",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://kc.mcafee.com/corporate/index?page=content&id=SB10340",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://security.googleblog.com/2015/12/an-update-on-sha-1-certificates-in.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://sites.google.com/site/itstheshappening",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://www.schneier.com/blog/archives/2005/02/sha1_broken.html",
+        "severities": []
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://www.schneier.com/blog/archives/2005/08/new_cryptanalyt.html",
+        "severities": []
+      },
+      {
+        "reference_id": "CVE-2005-4900",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-4900",
+        "severities": [
+          {
+            "system": "cvssv2",
+            "value": "4.3",
+            "scoring_elements": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+          },
+          {
+            "system": "cvssv3",
+            "value": "5.9",
+            "scoring_elements": "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+          }
+        ]
+      },
+      {
+        "reference_id": "cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:google:chrome:*:*:*:*:*:*:*:*",
+        "severities": []
+      }
+    ],
+    "date_published": "2016-10-14T16:59:00.187000+00:00",
+    "weaknesses": [
+      326
+    ],
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2005-4900"
   },
   {
     "aliases": [

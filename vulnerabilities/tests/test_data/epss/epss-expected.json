@@ -1,0 +1,677 @@
+[
+  {
+    "advisory_id": "CVE-1999-0001",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0001"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.01151",
+        "scoring_elements": "0.7802",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-1999-0002",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0002"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.10546",
+        "scoring_elements": "0.93015",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-1999-0003",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0003"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.89352",
+        "scoring_elements": "0.99521",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-1999-0004",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0004"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.03037",
+        "scoring_elements": "0.86249",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9970",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9970"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "7e-05",
+        "scoring_elements": "0.00428",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9971",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9971"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.0024",
+        "scoring_elements": "0.47036",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9972",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9972"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00543",
+        "scoring_elements": "0.67059",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9975",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9975"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00039",
+        "scoring_elements": "0.11657",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9976",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9976"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00085",
+        "scoring_elements": "0.25184",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9977",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9977"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.06195",
+        "scoring_elements": "0.90539",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9978",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9978"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00045",
+        "scoring_elements": "0.13792",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9979",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9979"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00037",
+        "scoring_elements": "0.10925",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9980",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9980"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00031",
+        "scoring_elements": "0.08656",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9981",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9981"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00031",
+        "scoring_elements": "0.08656",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9982",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9982"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00053",
+        "scoring_elements": "0.16926",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9983",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9983"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00023",
+        "scoring_elements": "0.05543",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9984",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9984"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00055",
+        "scoring_elements": "0.17352",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9985",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9985"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.01936",
+        "scoring_elements": "0.82968",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9990",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9990"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00343",
+        "scoring_elements": "0.56418",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9991",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9991"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00343",
+        "scoring_elements": "0.56418",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9992",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9992"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00043",
+        "scoring_elements": "0.13241",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9993",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9993"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00129",
+        "scoring_elements": "0.33233",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9994",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9994"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00114",
+        "scoring_elements": "0.30855",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9996",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9996"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00241",
+        "scoring_elements": "0.47334",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9997",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9997"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00245",
+        "scoring_elements": "0.47699",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9998",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9998"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00022",
+        "scoring_elements": "0.05357",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  },
+  {
+    "advisory_id": "CVE-2025-9999",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-2025-9999"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "epss",
+        "value": "0.00044",
+        "scoring_elements": "0.13444",
+        "published_at": "2025-12-26T12:55:00+00:00"
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+  }
+]

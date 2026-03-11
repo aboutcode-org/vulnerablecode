@@ -51,6 +51,9 @@ DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)
 # SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
 
+# WARNING: Set this to False in production
+STAGING = env.bool("STAGING", default=True)
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env.str("EMAIL_HOST", default="")
 EMAIL_USE_TLS = True
@@ -139,6 +142,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.template.context_processors.static",
                 "vulnerablecode.context_processors.versions",
+                "vulnerablecode.context_processors.staging",
             ],
         },
     },
@@ -385,3 +389,13 @@ RQ_QUEUES = {
         "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
     }
 }
+
+
+# FederatedCode integration
+
+FEDERATEDCODE_VULNERABILITIES_REPO = env.str(
+    "FEDERATEDCODE_VULNERABILITIES_REPO", default=""
+).rstrip("/")
+FEDERATEDCODE_GIT_SERVICE_TOKEN = env.str("FEDERATEDCODE_GIT_SERVICE_TOKEN", default="")
+FEDERATEDCODE_GIT_SERVICE_NAME = env.str("FEDERATEDCODE_GIT_SERVICE_NAME", default="")
+FEDERATEDCODE_GIT_SERVICE_EMAIL = env.str("FEDERATEDCODE_GIT_SERVICE_EMAIL", default="")

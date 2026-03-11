@@ -977,7 +977,6 @@ class TestCodeCommitMigration(TestMigrations):
             unique_content_id="old_adv",
             url="https://old.example.com",
             summary="Old advisory",
-            date_imported=date,
             date_collected=date,
             advisory_id="old_adv",
             avid="test_pipeline/old_adv",

@@ -1,0 +1,109 @@
+[
+  {
+    "advisory_id": "GLSA-202511-02",
+    "aliases": [
+      "CVE-2024-40857",
+      "CVE-2024-40866",
+      "CVE-2024-44185",
+      "CVE-2024-44187",
+      "CVE-2024-44192",
+      "CVE-2024-44244",
+      "CVE-2024-44296",
+      "CVE-2024-54467",
+      "CVE-2024-54551",
+      "CVE-2025-24201",
+      "CVE-2025-24208",
+      "CVE-2025-24209",
+      "CVE-2025-24213",
+      "CVE-2025-24216",
+      "CVE-2025-24264",
+      "CVE-2025-30427",
+      "CVE-2025-31273",
+      "CVE-2025-31278",
+      "CVE-2025-43211",
+      "CVE-2025-43212",
+      "CVE-2025-43216",
+      "CVE-2025-43227",
+      "CVE-2025-43228",
+      "CVE-2025-43240",
+      "CVE-2025-43265"
+    ],
+    "summary": "Multiple vulnerabilities have been discovered in WebKitGTK+, the worst of which can lead to execution of arbitary code.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "net-libs",
+          "name": "webkit-gtk",
+          "version": "",
+          "qualifiers": "slot=4.1",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:ebuild/<2.48.5",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "net-libs",
+          "name": "webkit-gtk",
+          "version": "",
+          "qualifiers": "slot=6",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:ebuild/<2.48.5",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "net-libs",
+          "name": "webkit-gtk",
+          "version": "",
+          "qualifiers": "slot=4.1",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:ebuild/>=2.48.5",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "net-libs",
+          "name": "webkit-gtk",
+          "version": "",
+          "qualifiers": "slot=6",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:ebuild/>=2.48.5",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GLSA-202511-02",
+        "reference_type": "",
+        "url": "https://security.gentoo.org/glsa/202511-02"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "high",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://security.gentoo.org/glsa/202511-02"
+  }
+]

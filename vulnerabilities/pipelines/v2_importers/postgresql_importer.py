@@ -17,7 +17,7 @@ from univers.version_range import GenericVersionRange
 from univers.versions import GenericVersion
 
 from vulnerabilities import severity_systems
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -38,6 +38,8 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     links = set()
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (cls.collect_and_store_advisories,)
@@ -45,7 +47,7 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self) -> int:
         return 30
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         url = "https://www.postgresql.org/support/security/"
 
         data = requests.get(url).content
@@ -133,11 +135,11 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             if cve_id:
                 advisories.append(
-                    AdvisoryData(
+                    AdvisoryDataV2(
                         advisory_id=cve_id,
                         aliases=[],
                         summary=summary,
-                        references_v2=references,
+                        references=references,
                         severities=severities,
                         affected_packages=affected_packages,
                         url=url,

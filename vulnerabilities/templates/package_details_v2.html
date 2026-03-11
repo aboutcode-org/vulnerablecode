@@ -45,7 +45,7 @@ VulnerableCode Package Details - {{ package.purl }}
         <div id="tab-content">
             <div class="tab-div is-active" data-content="essentials">
                 <div class="tab-nested-div mb-1 pb-0">
-                        {% if affected_by_advisories|length != 0 %}
+                        {% if affected_by_advisories_v2|length != 0 %}
                         <div class="pl-3 pr-3 mb-5 floating-purl pb-0">
                             {% else %}
                         <div class="pl-3 pr-3 mb-5 floating-purl pb-2">
@@ -82,7 +82,7 @@ VulnerableCode Package Details - {{ package.purl }}
                             </tbody>
                         </table>
                     </div>
-                    {% if affected_by_advisories|length != 0 %}
+                    {% if affected_by_advisories_v2|length != 0 %}
 
                     <div class="pl-3 pr-3 mb-6 non-vuln pb-0">
                         <table class="table vcio-table width-100-pct">
@@ -129,7 +129,7 @@ VulnerableCode Package Details - {{ package.purl }}
 
                     <div class="content ml-3 mr-3 pb-1">
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
-                            Vulnerabilities affecting this package ({{ affected_by_advisories|length }})
+                            Vulnerabilities affecting this package ({{ affected_by_advisories_v2|length }})
                         </div>
 
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -144,18 +144,18 @@ VulnerableCode Package Details - {{ package.purl }}
                             </thead>
 
                             <tbody>
-                                {% for advisory in affected_by_advisories %}
+                                {% for advisory in affected_by_advisories_v2 %}
                                 <tr>
                                     <td>
-                                        <a href="{{advisory.get_absolute_url}}">
-                                            {{advisory.avid }}
+                                        <a href="{{advisory.primary.get_absolute_url}}">
+                                            {{advisory.primary.avid }}
                                         </a>
                                         <br />
-                                        {% if advisory.alias|length != 0 %}
+                                        {% if advisory.primary.alias|length != 0 %}
                                         Aliases:
                                         {% endif %}
                                         <br />
-                                        {% for alias in advisory.alias %}
+                                        {% for alias in advisory.primary.alias %}
                                         {% if alias.url %}
                                         <a href="{{ alias.url }}" target="_blank">{{ alias }}<i
                                                 class="fa fa-external-link fa_link_custom"></i></a>
@@ -165,18 +165,27 @@ VulnerableCode Package Details - {{ package.purl }}
                                         <br />
                                         {% endif %}
                                         {% endfor %}
+
+                                        {% if advisory.secondary|length != 0 %}
+                                    <p>Supporting advisories are listed below the primary advisory.</p>
+                                    {% for secondary in advisory.secondary %}
+                                            <a href="{{secondary.get_absolute_url}}">
+                                                {{secondary.avid }}
+                                            </a>
+                                    {% endfor %}
+                                    {% endif %}
                                     </td>
                                     <td style="word-wrap: break-word; word-break: break-word;">
-                                        <a href={{advisory.url}} target="_blank">{{advisory.url}}</a>
+                                        <a href={{advisory.primary.url}} target="_blank">{{advisory.primary.url}}</a>
                                     </td>
                                     <td style="word-wrap: break-word; word-break: break-word;">
-                                        {{advisory.date_published}}
+                                        {{advisory.primary.date_published}}
                                     </td>
                                     <td style="word-wrap: break-word; word-break: break-word;">
-                                        {{ advisory.summary }}
+                                        {{ advisory.primary.summary }}
                                     </td>
                                     <td style="word-wrap: break-word; word-break: break-all;">
-                                        {% with fixed=fixed_package_details|get_item:advisory.id %}
+                                        {% with fixed=fixed_package_details|get_item:advisory.primary.avid %}
                                             {% if fixed %}
                                                 {% for item in fixed %}
                                                 <section>
@@ -207,7 +216,7 @@ VulnerableCode Package Details - {{ package.purl }}
 
                     <div class="content ml-3 mr-3 pb-0 mb-0">
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
-                            Vulnerabilities fixed by this package ({{ fixing_advisories|length }})
+                            Vulnerabilities fixed by this package ({{ fixing_advisories_v2|length }})
                         </div>
 
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -221,24 +230,33 @@ VulnerableCode Package Details - {{ package.purl }}
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for advisory in fixing_advisories %}
+                                {% for advisory in fixing_advisories_v2 %}
                                 <tr>
                                     <td>
-                                        <a href="{{advisory.get_absolute_url}}">
-                                            {{advisory.avid }}
+                                        <a href="{{advisory.primary.get_absolute_url}}">
+                                            {{advisory.primary.avid }}
                                         </a>
+                                    <br />
+                                    {% if advisory.secondary|length != 0 %}
+                                    <p>Supporting advisories are listed below the primary advisory.</p>
+                                    {% for secondary in advisory.secondary %}
+                                            <a href="{{secondary.get_absolute_url}}">
+                                                {{secondary.avid }}
+                                            </a>
+                                    {% endfor %}
+                                    {% endif %}
                                     </td>
                                     <td>
-                                        <a href={{advisory.url}} target="_blank">{{advisory.url}}</a>
+                                        <a href={{advisory.primary.url}} target="_blank">{{advisory.primary.url}}</a>
                                     </td>
                                     <td>
-                                        {{advisory.date_published}}
+                                        {{advisory.primary.date_published}}
                                     </td>
                                     <td>
-                                        {{ advisory.summary }}
+                                        {{ advisory.primary.summary }}
                                     </td>
                                     <td>
-                                        {% for alias in advisory.alias %}
+                                        {% for alias in advisory.primary.alias %}
                                         {% if alias.url %}
                                         <a href="{{ alias.url }}" target="_blank">{{ alias }}<i
                                                 class="fa fa-external-link fa_link_custom"></i></a>

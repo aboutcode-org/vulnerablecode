@@ -1,0 +1,55 @@
+[
+  {
+    "advisory_id": "GLSA-202512-01",
+    "aliases": [],
+    "summary": "A vulnerability has been discovered in GnuPG, which can lead to arbitrary code execution.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "app-crypt",
+          "name": "gnupg",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:ebuild/<2.5.14",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "app-crypt",
+          "name": "gnupg",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:ebuild/>=2.5.14",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GLSA-202512-01",
+        "reference_type": "",
+        "url": "https://security.gentoo.org/glsa/202512-01"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "high",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://security.gentoo.org/glsa/202512-01"
+  }
+]

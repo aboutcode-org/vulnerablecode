@@ -43,6 +43,8 @@ def get_weighted_severity(severities):
         weight = WEIGHT_CONFIG.get(severity_source, DEFAULT_WEIGHT)
         max_weight = float(weight) / 10
         vul_score = severity.value
+        if not vul_score:
+            continue
         try:
             vul_score = float(vul_score)
             vul_score_value = vul_score * max_weight

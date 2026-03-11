@@ -8,7 +8,6 @@
 #
 
 import dataclasses
-from datetime import datetime
 
 from cvss import CVSS2
 from cvss import CVSS3
@@ -170,6 +169,14 @@ APACHE_HTTPD.choices = [
     "Low",
 ]
 
+ARCHLINUX.choices = [
+    "Critical",
+    "High",
+    "Medium",
+    "Low",
+    "Very Low",
+]
+
 # This is essentially identical to apache_http except for the addition of the "High" score,
 # which seems to be used interchangeably for "Important".
 APACHE_TOMCAT = ScoringSystem(
@@ -183,6 +190,31 @@ APACHE_TOMCAT.choices = [
     "Important",
     "Moderate",
     "Low",
+]
+
+OPENSSL = ScoringSystem(
+    identifier="openssl",
+    name="OpenSSL Severity",
+    url="https://openssl-library.org/policies/general/security-policy/",
+)
+OPENSSL.choices = [
+    "Critical",
+    "High",
+    "Moderate",
+    "Low",
+]
+
+UBUNTU_PRIORITY = ScoringSystem(
+    identifier="ubuntu-priority",
+    name="Ubuntu Priority",
+    url="https://ubuntu.com/security/cves/about#priority",
+)
+UBUNTU_PRIORITY.choices = [
+    "Critical",
+    "High",
+    "Medium",
+    "Low",
+    "Negligible",
 ]
 
 
@@ -227,5 +259,7 @@ SCORING_SYSTEMS = {
         APACHE_TOMCAT,
         EPSS,
         SSVC,
+        OPENSSL,
+        UBUNTU_PRIORITY,
     )
 }

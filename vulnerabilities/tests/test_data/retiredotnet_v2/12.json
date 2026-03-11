@@ -1,0 +1,176 @@
+{
+  "link": "https://github.com/aspnet/Announcements/issues/334",
+  "description": "Microsoft Security Advisory CVE-2019-0564: ASP.NET Core Denial of Service Vulnerability",
+  "packages": [
+    {
+      "id": "Microsoft.AspNetCore.WebSockets",
+      "affected": "2.1.0",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.WebSockets",
+      "affected": "2.1.1",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.WebSockets",
+      "affected": "2.2.0",
+      "fix": "2.2.1"
+    },
+    {
+      "id": "Microsoft.AspNetCore.Server.Kestrel.Core",
+      "affected": "2.1.0",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.Server.Kestrel.Core",
+      "affected": "2.1.1",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.Server.Kestrel.Core",
+      "affected": "2.1.2",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.Server.Kestrel.Core",
+      "affected": "2.1.3",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "System.Net.WebSockets.WebSocketProtocol",
+      "affected": "4.5.0",
+      "fix": "4.5.3"
+    },
+    {
+      "id": "System.Net.WebSockets.WebSocketProtocol",
+      "affected": "4.5.1",
+      "fix": "4.5.3"
+    },
+    {
+      "id": "System.Net.WebSockets.WebSocketProtocol",
+      "affected": "4.5.2",
+      "fix": "4.5.3"
+    },
+    {
+      "id": "Microsoft.NETCore.App",
+      "affected": "2.1.0",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.NETCore.App",
+      "affected": "2.1.1",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.NETCore.App",
+      "affected": "2.1.2",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.NETCore.App",
+      "affected": "2.1.3",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.NETCore.App",
+      "affected": "2.1.4",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.NETCore.App",
+      "affected": "2.1.5",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.NETCore.App",
+      "affected": "2.1.6",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.NETCore.App",
+      "affected": "2.2.0",
+      "fix": "2.2.1"
+    },
+    {
+      "id": "Microsoft.AspNetCore.App",
+      "affected": "2.1.0",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.App",
+      "affected": "2.1.1",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.App",
+      "affected": "2.1.2",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.App",
+      "affected": "2.1.3",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.App",
+      "affected": "2.1.4",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.App",
+      "affected": "2.1.5",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.App",
+      "affected": "2.1.6",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.App",
+      "affected": "2.2.0",
+      "fix": "2.2.1"
+    },
+    {
+      "id": "Microsoft.AspNetCore.All",
+      "affected": "2.1.0",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.All",
+      "affected": "2.1.1",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.All",
+      "affected": "2.1.2",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.All",
+      "affected": "2.1.3",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.All",
+      "affected": "2.1.4",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.All",
+      "affected": "2.1.5",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.All",
+      "affected": "2.1.6",
+      "fix": "2.1.7"
+    },
+    {
+      "id": "Microsoft.AspNetCore.All",
+      "affected": "2.2.0",
+      "fix": "2.2.1"
+    }
+  ]
+}

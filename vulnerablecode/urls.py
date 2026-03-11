@@ -20,8 +20,11 @@ from vulnerabilities.api import AliasViewSet
 from vulnerabilities.api import CPEViewSet
 from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
+from vulnerabilities.api_v2 import AdvisoryV3ViewSet
+from vulnerabilities.api_v2 import AffectedByAdvisoriesViewSet
 from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
+from vulnerabilities.api_v2 import FixingAdvisoriesViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PackageV3ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
@@ -70,6 +73,11 @@ api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisor
 api_v3_router = OptionalSlashRouter()
 
 api_v3_router.register("packages", PackageV3ViewSet, basename="package-v3")
+api_v3_router.register("advisories", AdvisoryV3ViewSet, basename="advisory-v3")
+api_v3_router.register(
+    "affected-by-advisories", AffectedByAdvisoriesViewSet, basename="affected-by-advisories"
+)
+api_v3_router.register("fixing-advisories", FixingAdvisoriesViewSet, basename="fixing-advisories")
 
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),

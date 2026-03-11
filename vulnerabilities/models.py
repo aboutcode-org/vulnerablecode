@@ -2876,6 +2876,36 @@ class AdvisoryV2QuerySet(BaseQuerySet):
     def latest_for_avids(self, avids):
         return self.filter(avid__in=avids).latest_per_avid()
 
+    def latest_affecting_advisories_for_purl(self, purl):
+        return self.filter(
+            impacted_packages__affecting_packages__package_url=purl
+        ).latest_per_avid()
+
+    def latest_affecting_advisories_for_purls(self, purls):
+        return self.filter(
+            impacted_packages__affecting_packages__package_url__in=purls
+        ).latest_per_avid()
+
+    def latest_fixed_by_advisories_for_purl(self, purl):
+        return self.filter(impacted_packages__fixed_by_packages__package_url=purl).latest_per_avid()
+
+    def latest_fixed_by_advisories_for_purls(self, purls):
+        return self.filter(
+            impacted_packages__fixed_by_packages__package_url__in=purls
+        ).latest_per_avid()
+
+    def latest_advisories_for_purl(self, purl):
+        return self.filter(
+            Q(impacted_packages__affecting_packages__package_url=purl)
+            | Q(impacted_packages__fixed_by_packages__package_url=purl)
+        ).latest_per_avid()
+
+    def latest_advisories_for_purls(self, purls):
+        return self.filter(
+            Q(impacted_packages__affecting_packages__package_url__in=purls)
+            | Q(impacted_packages__fixed_by_packages__package_url__in=purls)
+        ).latest_per_avid()
+
 
 class AdvisoryV2(models.Model):
     """

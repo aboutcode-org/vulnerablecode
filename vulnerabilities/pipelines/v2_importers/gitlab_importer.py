@@ -57,14 +57,14 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     purl_type_by_gitlab_scheme = {
         "conan": "conan",
-        # "gem": "gem",
+        "gem": "gem",
         # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
         # "go": "golang",
-        # "maven": "maven",
-        # "npm": "npm",
-        # "nuget": "nuget",
-        # "packagist": "composer",
-        # "pypi": "pypi",
+        "maven": "maven",
+        "npm": "npm",
+        "nuget": "nuget",
+        "packagist": "composer",
+        "pypi": "pypi",
     }
 
     gitlab_scheme_by_purl_type = {v: k for k, v in purl_type_by_gitlab_scheme.items()}

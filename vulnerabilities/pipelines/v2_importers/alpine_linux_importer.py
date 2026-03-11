@@ -193,7 +193,8 @@ def load_advisories(
 
             fixed_version_range = None
             try:
-                fixed_version_range = AlpineLinuxVersionRange.from_versions([version])
+                if version:
+                    fixed_version_range = AlpineLinuxVersionRange.from_versions([version])
             except InvalidVersion as e:
                 logger(
                     f"{version!r} is not a valid AlpineVersion {e!r}",

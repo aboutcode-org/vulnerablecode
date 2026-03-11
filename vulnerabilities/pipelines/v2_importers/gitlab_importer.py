@@ -57,14 +57,14 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     purl_type_by_gitlab_scheme = {
         "conan": "conan",
-        "gem": "gem",
+        # "gem": "gem",
         # Entering issue to parse go package names https://github.com/nexB/vulnerablecode/issues/742
         # "go": "golang",
-        "maven": "maven",
-        "npm": "npm",
-        "nuget": "nuget",
-        "packagist": "composer",
-        "pypi": "pypi",
+        # "maven": "maven",
+        # "npm": "npm",
+        # "nuget": "nuget",
+        # "packagist": "composer",
+        # "pypi": "pypi",
     }
 
     gitlab_scheme_by_purl_type = {v: k for k, v in purl_type_by_gitlab_scheme.items()}
@@ -252,6 +252,7 @@ def parse_gitlab_advisory(
             original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
         )
     affected_version_range = None
+    fixed_version_range = None
     fixed_versions = gitlab_advisory.get("fixed_versions") or []
     affected_range = gitlab_advisory.get("affected_range")
     gitlab_native_schemes = set(["pypi", "gem", "npm", "go", "packagist", "conan"])
@@ -285,7 +286,8 @@ def parse_gitlab_advisory(
     if affected_version_range:
         vrc = affected_version_range.__class__
 
-    fixed_version_range = vrc.from_versions(parsed_fixed_versions)
+    if parsed_fixed_versions:
+        fixed_version_range = vrc.from_versions(parsed_fixed_versions)
     if not fixed_version_range and not affected_version_range:
         return
 

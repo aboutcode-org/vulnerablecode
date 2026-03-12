@@ -18,7 +18,6 @@ class FetchPatchURLImproverPipeline(VulnerableCodePipeline):
     """FetchPatchURL Improver Pipeline"""
 
     pipeline_id = "fetch_patch_url"
-    precedence = 200
 
     @classmethod
     def steps(cls):

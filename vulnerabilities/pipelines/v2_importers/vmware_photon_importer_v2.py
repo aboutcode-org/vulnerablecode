@@ -21,14 +21,6 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.utils import fetch_response
 
-PHOTON_URLS = [
-    "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon1.0.json",
-    "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon2.0.json",
-    "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon3.0.json",
-    "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon4.0.json",
-    "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon5.0.json",
-]
-
 
 class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect advisories from Vmware Photon Advisory.
@@ -60,12 +52,18 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def fetch(self):
         self.records = []
-        for url in PHOTON_URLS:
+        base_url = self.repo_url
+
+        response = fetch_response(base_url)
+        photon_files = re.findall(r'href="(cve_data_photon[0-9.]+\.json)"', response.text)
+
+        for file_name in photon_files:
+            url = base_url + file_name
             self.log(f"Fetching `{url}`")
             response = fetch_response(url)
             if response:
                 self.records.extend(response.json())
-        self.log(f"Fetched {len(self.records):,d} total records from {len(PHOTON_URLS)} sources")
+        self.log(f"Fetched {len(self.records):,d} total records from {len(photon_files)} sources")
 
     def group_records_by_cve(self):
         """

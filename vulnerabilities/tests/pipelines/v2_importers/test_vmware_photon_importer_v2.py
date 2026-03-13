@@ -27,8 +27,14 @@ class TestVmwarePhotonImporterPipeline(TestCase):
         sample_path = TEST_DATA / "data.json"
         sample_data = json.loads(sample_path.read_text(encoding="utf-8"))
 
+        index_html = """
+        <a href="cve_data_photon4.0.json">cve_data_photon4.0.json</a>
+        """
+
         def side_effect(url):
-            if "photon4.0" in url:
+            if url == "https://packages.vmware.com/photon/photon_cve_metadata/":
+                return Mock(text=index_html)
+            if "cve_data_photon4.0.json" in url:
                 return Mock(json=lambda: sample_data)
             return None
 

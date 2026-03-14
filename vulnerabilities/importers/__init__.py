@@ -45,6 +45,7 @@ from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpi
 from vulnerabilities.pipelines.v2_importers import aosp_importer as aosp_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
 from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
+from vulnerabilities.pipelines.v2_importers import apache_log4j_importer as apache_log4j_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_tomcat_importer as apache_tomcat_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
 from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
@@ -89,6 +90,7 @@ IMPORTERS_REGISTRY = create_registry(
     [
         archlinux_importer_v2.ArchLinuxImporterPipeline,
         apache_kafka_importer_v2.ApacheKafkaImporterPipeline,
+        apache_log4j_importer_v2.ApacheLog4jImporterPipeline,
         nvd_importer_v2.NVDImporterPipeline,
         elixir_security_importer_v2.ElixirSecurityImporterPipeline,
         npm_importer_v2.NpmImporterPipeline,

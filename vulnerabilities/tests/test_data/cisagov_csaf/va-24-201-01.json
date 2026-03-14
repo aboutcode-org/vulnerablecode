@@ -1,0 +1,189 @@
+{
+  "document": {
+    "category": "csaf_vex",
+    "csaf_version": "2.0",
+    "publisher": {
+      "category": "coordinator",
+      "issuing_authority": "CISA",
+      "name": "CISA",
+      "namespace": "https://www.cisa.gov/",
+      "contact_details": "https://www.cisa.gov/report"
+    },
+    "title": "Adminer and AdminerEvo Multiple Vulnerabilities",
+    "tracking": {
+      "current_release_date": "2024-11-14T17:00:00Z",
+      "generator": {
+        "engine": {
+          "name": "Secvisogram",
+          "version": "2.5.14"
+        },
+        "date": "2024-11-14T00:33:50Z"
+      },
+      "id": "VA-24-201-01",
+      "initial_release_date": "2024-07-19T16:00:00Z",
+      "status": "final",
+      "version": "1.0.2",
+      "revision_history": [
+        {
+          "number": "1.0.0",
+          "summary": "Initial publication",
+          "date": "2024-07-19T18:37:00Z"
+        }
+      ]
+    },
+    "distribution": {
+      "tlp": {
+        "label": "WHITE"
+      }
+    },
+    "lang": "en-US",
+    "notes": [
+      {
+        "category": "summary",
+        "text": "Adminer and AdminerEvo contain multiple vulnerabilities.",
+        "title": "Risk Evaluation"
+      }
+    ],
+    "references": [
+      {
+        "summary": "Vulnerability Advisory VA-24-201-01 CSAF",
+        "url": "https://raw.githubusercontent.com/cisagov/CSAF/develop/csaf_files/IT/white/2024/va-24-201-01.json",
+        "category": "self"
+      }
+    ]
+  },
+  "product_tree": {
+    "branches": [
+      {
+        "category": "vendor",
+        "name": "Adminer",
+        "branches": [
+          {
+            "category": "product_name",
+            "name": "Adminer",
+            "branches": [
+              {
+                "category": "product_version_range",
+                "name": "vers:all/*",
+                "product": {
+                  "name": "Adminer (all versions)",
+                  "product_id": "CSAFPID-0006"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "category": "vendor",
+        "name": "AdminerEvo",
+        "branches": [
+          {
+            "category": "product_name",
+            "name": "AdminerEvo",
+            "branches": [
+              {
+                "category": "product_version",
+                "name": "4.8.4",
+                "product": {
+                  "name": "AdminerEvo 4.8.4",
+                  "product_id": "CSAFPID-0009"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "cve": "CVE-2023-45195",
+      "cwe": {
+        "id": "CWE-918",
+        "name": "Server-Side Request Forgery (SSRF)"
+      },
+      "notes": [
+        {
+          "category": "summary",
+          "text": "Adminer and AdminerEvo are vulnerable to SSRF via database connection fields.",
+          "title": "Description"
+        }
+      ],
+      "title": "Adminer and AdminerEvo SSRF",
+      "product_status": {
+        "fixed": [
+          "CSAFPID-0009"
+        ],
+        "known_affected": [
+          "CSAFPID-0006"
+        ]
+      },
+      "scores": [
+        {
+          "cvss_v3": {
+            "version": "3.1",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+            "baseScore": 5.3,
+            "baseSeverity": "MEDIUM"
+          },
+          "products": [
+            "CSAFPID-0006"
+          ]
+        }
+      ],
+      "references": [
+        {
+          "category": "external",
+          "summary": "AdminerEvo git commit 18f3167",
+          "url": "https://github.com/adminerevo/adminerevo/pull/102/commits/18f3167bbcbec3bc746f62db72e016aa99144efc"
+        }
+      ],
+      "release_date": "2024-01-25T17:00:00Z"
+    },
+    {
+      "cve": "CVE-2023-45196",
+      "cwe": {
+        "id": "CWE-400",
+        "name": "Uncontrolled Resource Consumption"
+      },
+      "notes": [
+        {
+          "category": "summary",
+          "text": "Adminer and AdminerEvo allow an unauthenticated remote attacker to cause a denial of service.",
+          "title": "Description"
+        }
+      ],
+      "title": "Adminer and AdminerEvo denial of service via HTTP redirect",
+      "product_status": {
+        "fixed": [
+          "CSAFPID-0009"
+        ],
+        "known_affected": [
+          "CSAFPID-0006"
+        ]
+      },
+      "scores": [
+        {
+          "cvss_v3": {
+            "version": "3.1",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+            "baseScore": 5.3,
+            "baseSeverity": "MEDIUM"
+          },
+          "products": [
+            "CSAFPID-0006"
+          ]
+        }
+      ],
+      "references": [
+        {
+          "category": "external",
+          "summary": "AdminerEvo git commit 23e7cdc",
+          "url": "https://github.com/adminerevo/adminerevo/pull/102/commits/23e7cdc0a32b3739e13d19ae504be0fe215142b6"
+        }
+      ],
+      "release_date": "2024-01-25T17:00:00Z"
+    }
+  ]
+}

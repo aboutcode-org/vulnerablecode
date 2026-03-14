@@ -42,6 +42,7 @@ from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
 from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpine_linux_importer_v2
+from vulnerabilities.pipelines.v2_importers import cisagov_csaf_importer as cisagov_csaf_importer_v2
 from vulnerabilities.pipelines.v2_importers import aosp_importer as aosp_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
 from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
@@ -118,6 +119,7 @@ IMPORTERS_REGISTRY = create_registry(
         retiredotnet_importer_v2.RetireDotnetImporterPipeline,
         ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
         alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
+        cisagov_csaf_importer_v2.CISAGOVCSAFImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

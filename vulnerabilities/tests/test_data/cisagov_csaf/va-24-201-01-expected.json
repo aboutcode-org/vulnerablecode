@@ -1,0 +1,68 @@
+[
+  {
+    "advisory_id": "VA-24-201-01",
+    "aliases": [
+      "CVE-2023-45195"
+    ],
+    "summary": "Adminer and AdminerEvo are vulnerable to SSRF via database connection fields.",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://raw.githubusercontent.com/cisagov/CSAF/develop/csaf_files/IT/white/2024/va-24-201-01.json"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/adminerevo/adminerevo/pull/102/commits/18f3167bbcbec3bc746f62db72e016aa99144efc"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "cvssv3.1",
+        "value": "5.3",
+        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+      }
+    ],
+    "date_published": "2024-01-25T17:00:00+00:00",
+    "weaknesses": [
+      918
+    ],
+    "url": "https://github.com/cisagov/CSAF/blob/develop/csaf_files/IT/white/2024/va-24-201-01.json"
+  },
+  {
+    "advisory_id": "VA-24-201-01",
+    "aliases": [
+      "CVE-2023-45196"
+    ],
+    "summary": "Adminer and AdminerEvo allow an unauthenticated remote attacker to cause a denial of service.",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://raw.githubusercontent.com/cisagov/CSAF/develop/csaf_files/IT/white/2024/va-24-201-01.json"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/adminerevo/adminerevo/pull/102/commits/23e7cdc0a32b3739e13d19ae504be0fe215142b6"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "cvssv3.1",
+        "value": "5.3",
+        "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      }
+    ],
+    "date_published": "2024-01-25T17:00:00+00:00",
+    "weaknesses": [
+      400
+    ],
+    "url": "https://github.com/cisagov/CSAF/blob/develop/csaf_files/IT/white/2024/va-24-201-01.json"
+  }
+]

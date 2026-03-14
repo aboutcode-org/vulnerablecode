@@ -1,0 +1,63 @@
+[
+  {
+    "advisory_id": "CVE-2024-0072",
+    "aliases": [],
+    "summary": "NVIDIA CUDA toolkit for all platforms contains a vulnerability in cuobjdump and nvdisasm where an attacker may cause a crash by tricking a user into reading a malformed ELF file. A successful exploit of this vulnerability may lead to a partial denial of service.",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "cpe:2.3:a:nvidia:cuda_toolkit:*:*:*:*:*:*:*:*",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:nvidia:cuda_toolkit:*:*:*:*:*:*:*:*"
+      },
+      {
+        "reference_id": "CVE-2024-0072",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-0072"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvidia.custhelp.com/app/answers/detail/a_id/5517"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2024-04-05T17:48:13.286000+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/anchore/nvd-data-overrides/blob/main/data/anchore/CVE-2024-0072.json"
+  },
+  {
+    "advisory_id": "CVE-2024-0082",
+    "aliases": [],
+    "summary": "NVIDIA ChatRTX for Windows contains a vulnerability in the UI, where an attacker can cause improper privilege management by sending open file requests to the application. A successful exploit of this vulnerability might lead to local escalation of privileges, information disclosure, and data tampering",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "cpe:2.3:a:nvidia:chatrtx:*:*:*:*:*:*:*:*",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:a:nvidia:chatrtx:*:*:*:*:*:*:*:*"
+      },
+      {
+        "reference_id": "cpe:2.3:o:microsoft:windows:-:*:*:*:*:*:*:*",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query=cpe:2.3:o:microsoft:windows:-:*:*:*:*:*:*:*"
+      },
+      {
+        "reference_id": "CVE-2024-0082",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-0082"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://nvidia.custhelp.com/app/answers/detail/a_id/5532"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2024-04-08T22:00:35.763000+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/anchore/nvd-data-overrides/blob/main/data/anchore/CVE-2024-0082.json"
+  }
+]

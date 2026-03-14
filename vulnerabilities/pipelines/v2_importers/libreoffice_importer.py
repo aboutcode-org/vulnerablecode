@@ -7,36 +7,25 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import json
 import logging
+import re
 from typing import Iterable
 
 import dateparser
 import requests
+from bs4 import BeautifulSoup
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
-from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
-from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import find_all_cve
-from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
 
 ADVISORIES_URL = "https://www.libreoffice.org/about-us/security/advisories/"
-CVE_API_URL = "https://cveawg.mitre.org/api/cve/{cve_id}"
-
-CVSS_KEY_MAP = {
-    "cvssV4_0": SCORING_SYSTEMS["cvssv4"],
-    "cvssV3_1": SCORING_SYSTEMS["cvssv3.1"],
-    "cvssV3_0": SCORING_SYSTEMS["cvssv3"],
-    "cvssV2_0": SCORING_SYSTEMS["cvssv2"],
-}
 
 
 class LibreOfficeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """Collect LibreOffice security advisories via the CVE API."""
+    """Collect LibreOffice security advisories from libreoffice.org."""
 
     pipeline_id = "libreoffice_importer"
     spdx_license_expression = "LicenseRef-scancode-proprietary-license"
@@ -54,101 +43,90 @@ class LibreOfficeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Fetch `{ADVISORIES_URL}`")
         resp = requests.get(ADVISORIES_URL, timeout=30)
         resp.raise_for_status()
-        self.cve_ids = parse_cve_ids(resp.text)
+        self.advisory_urls = parse_advisory_urls(resp.text)
 
     def advisories_count(self):
-        return len(self.cve_ids)
+        return len(self.advisory_urls)
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
-        for cve_id in self.cve_ids:
-            url = CVE_API_URL.format(cve_id=cve_id)
+        for url in self.advisory_urls:
             try:
                 resp = requests.get(url, timeout=30)
                 resp.raise_for_status()
             except Exception as e:
-                logger.error("Failed to fetch CVE API for %s: %s", cve_id, e)
+                logger.error("Failed to fetch %s: %s", url, e)
                 continue
-            advisory = parse_cve_advisory(resp.json(), cve_id)
+            advisory = parse_advisory(resp.text, url)
             if advisory:
                 yield advisory
 
 
-def parse_cve_ids(html: str) -> list:
-    """Return deduplicated CVE IDs from the LibreOffice advisories listing page."""
-    return list(dict.fromkeys(cve.upper() for cve in find_all_cve(html)))
+def parse_advisory_urls(html: str) -> list:
+    """Return deduplicated advisory page URLs from the listing page."""
+    slugs = re.findall(r"/about-us/security/advisories/(cve-[\d-]+)/", html)
+    seen = dict.fromkeys(slugs)
+    return [f"https://www.libreoffice.org/about-us/security/advisories/{slug}/" for slug in seen]
 
 
-def parse_cve_advisory(data: dict, cve_id: str):
-    """Parse a CVE 5.0 JSON record from cveawg.mitre.org; return None if CVE ID is absent."""
-    cve_metadata = data.get("cveMetadata") or {}
-    advisory_id = cve_metadata.get("cveId") or cve_id
-    if not advisory_id:
+def parse_advisory(html: str, url: str):
+    """Parse a LibreOffice individual advisory page; return None if advisory id is missing."""
+    soup = BeautifulSoup(html, features="lxml")
+    body = soup.find("body")
+    body_id = body.get("id", "") if body else ""
+    if not body_id.startswith("cve-"):
+        return None
+    advisory_id = body_id.upper()
+
+    content = soup.select_one("section#content1 div.margin-20")
+    if not content:
         return None
 
+    text = content.get_text(separator="\n")
+
+    title = _get_field(text, "Title")
+    date_str = _get_field(text, "Announced")
+
     date_published = None
-    raw_date = cve_metadata.get("datePublished") or ""
-    if raw_date:
+    if date_str:
         date_published = dateparser.parse(
-            raw_date,
+            date_str,
             settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": True, "TO_TIMEZONE": "UTC"},
         )
         if date_published is None:
-            logger.warning("Could not parse date %r for %s", raw_date, advisory_id)
+            logger.warning("Could not parse date %r for %s", date_str, advisory_id)
 
-    cna = (data.get("containers") or {}).get("cna") or {}
-
-    summary = ""
-    for desc in cna.get("descriptions") or []:
-        if desc.get("lang") in ("en", "en-US"):
-            summary = desc.get("value") or ""
-            break
-
-    severities = []
-    for metric in cna.get("metrics") or []:
-        for key, system in CVSS_KEY_MAP.items():
-            cvss = metric.get(key)
-            if not cvss:
-                continue
-            vector = cvss.get("vectorString") or ""
-            score = cvss.get("baseScore")
-            if vector and score is not None:
-                severities.append(
-                    VulnerabilitySeverity(
-                        system=system,
-                        value=str(score),
-                        scoring_elements=vector,
-                    )
-                )
-            break
-
-    weaknesses = []
-    for problem_type in cna.get("problemTypes") or []:
-        for desc in problem_type.get("descriptions") or []:
-            cwe_str = desc.get("cweId") or ""
-            if cwe_str.upper().startswith("CWE-"):
-                try:
-                    weaknesses.append(get_cwe_id(cwe_str))
-                except Exception:
-                    pass
-
-    advisory_url = (
-        f"https://www.libreoffice.org/about-us/security/advisories/{advisory_id.lower()}/"
+    desc_m = re.search(
+        r"Description\s*\n?\s*:\s*\n+(.*?)(?=\nCredits\b|\nReferences\b|$)",
+        text,
+        re.DOTALL,
     )
+    description = " ".join(desc_m.group(1).split()).strip() if desc_m else ""
+
     references = []
-    for ref in cna.get("references") or []:
-        url = ref.get("url") or ""
-        if url:
-            references.append(ReferenceV2(url=url))
+    in_refs = False
+    for tag in content.descendants:
+        tag_name = getattr(tag, "name", None)
+        if tag_name == "strong" and "References" in tag.get_text():
+            in_refs = True
+        if in_refs and tag_name == "a":
+            href = tag.get("href", "")
+            if href.startswith("http"):
+                references.append(ReferenceV2(url=href))
 
     return AdvisoryDataV2(
         advisory_id=advisory_id,
         aliases=[],
-        summary=summary,
+        summary=description or title,
         affected_packages=[],
         references=references,
         date_published=date_published,
-        weaknesses=weaknesses,
-        severities=severities,
-        url=advisory_url,
-        original_advisory_text=json.dumps(data, indent=2, ensure_ascii=False),
+        weaknesses=[],
+        severities=[],
+        url=url,
+        original_advisory_text=str(content),
     )
+
+
+def _get_field(text: str, label: str) -> str:
+    m = re.search(rf"{re.escape(label)}\s*:\s*\n?\s*([^\n]+)", text)
+    return m.group(1).strip() if m else ""

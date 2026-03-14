@@ -6,6 +6,8 @@
      - AVID
    * - alpine_linux_importer_v2
      - {package_name}/{distroversion}/{version}/{vulnerability_id}
+   * - anchore_importer_v2
+     - CVE ID of the record
    * - aosp_dataset_fix_commits
      - CVE ID of the record
    * - apache_httpd_importer_v2

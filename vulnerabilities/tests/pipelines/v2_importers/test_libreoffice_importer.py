@@ -19,21 +19,30 @@ from vulnerabilities.pipelines.v2_importers.libreoffice_importer import parse_cv
 
 TEST_DATA = os.path.join(os.path.dirname(__file__), "..", "..", "test_data", "libreoffice")
 
+ADVISORY_HTML = """
+<h3>Addressed in LibreOffice 24.8.5 and 25.2.1</h3>
+<ul>
+<li><a href="/about-us/security/advisories/cve-2025-1080/">CVE-2025-1080</a></li>
+</ul>
+<h3>Addressed in LibreOffice 7.4.7</h3>
+<ul>
+<li><a href="/about-us/security/advisories/cve-2023-2255/">CVE-2023-2255</a></li>
+</ul>
+<h3>Third Party Advisories</h3>
+<ul>
+<li><a href="/about-us/security/advisories/cve-2023-4863/">CVE-2023-4863</a></li>
+</ul>
+"""
+
 
 def load_json(filename):
     with open(os.path.join(TEST_DATA, filename), encoding="utf-8") as f:
         return json.load(f)
 
 
-def load_html(filename):
-    with open(os.path.join(TEST_DATA, filename), encoding="utf-8") as f:
-        return f.read()
-
-
 class TestParseCveIds(TestCase):
     def test_extracts_cve_ids_from_html(self):
-        html = load_html("advisories.html")
-        cve_ids = parse_cve_ids(html)
+        cve_ids = parse_cve_ids(ADVISORY_HTML)
         self.assertIn("CVE-2025-1080", cve_ids)
         self.assertIn("CVE-2023-2255", cve_ids)
         self.assertIn("CVE-2023-4863", cve_ids)
@@ -100,18 +109,12 @@ class TestParseCveAdvisory(TestCase):
 
 
 class TestLibreOfficeImporterPipeline(TestCase):
-    def _make_resp(self, data, status=200):
-        resp = MagicMock()
-        resp.json.return_value = data
-        resp.text = json.dumps(data)
-        resp.raise_for_status.return_value = None
-        resp.status_code = status
-        return resp
-
     @patch("vulnerabilities.pipelines.v2_importers.libreoffice_importer.requests.get")
     def test_fetch_stores_cve_ids(self, mock_get):
-        html = load_html("advisories.html")
-        mock_get.return_value = MagicMock(text=html, raise_for_status=MagicMock())
+        resp = MagicMock()
+        resp.text = ADVISORY_HTML
+        resp.raise_for_status.return_value = None
+        mock_get.return_value = resp
         pipeline = LibreOfficeImporterPipeline()
         pipeline.fetch()
         self.assertIn("CVE-2025-1080", pipeline.cve_ids)
@@ -120,18 +123,21 @@ class TestLibreOfficeImporterPipeline(TestCase):
     @patch("vulnerabilities.pipelines.v2_importers.libreoffice_importer.requests.get")
     def test_collect_advisories_yields_advisory(self, mock_get):
         cve_data = load_json("cve_2025_1080.json")
+        resp = MagicMock()
+        resp.json.return_value = cve_data
+        resp.raise_for_status.return_value = None
+        mock_get.return_value = resp
         pipeline = LibreOfficeImporterPipeline()
         pipeline.cve_ids = ["CVE-2025-1080"]
-        mock_get.return_value = self._make_resp(cve_data)
         advisories = list(pipeline.collect_advisories())
         self.assertEqual(len(advisories), 1)
         self.assertEqual(advisories[0].advisory_id, "CVE-2025-1080")
 
     @patch("vulnerabilities.pipelines.v2_importers.libreoffice_importer.requests.get")
     def test_collect_advisories_skips_on_http_error(self, mock_get):
+        mock_get.side_effect = Exception("timeout")
         pipeline = LibreOfficeImporterPipeline()
         pipeline.cve_ids = ["CVE-2025-1080"]
-        mock_get.side_effect = Exception("timeout")
         logger_name = "vulnerabilities.pipelines.v2_importers.libreoffice_importer"
         with self.assertLogs(logger_name, level="ERROR") as cm:
             advisories = list(pipeline.collect_advisories())

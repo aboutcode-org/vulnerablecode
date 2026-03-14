@@ -16,30 +16,22 @@ from vulnerabilities.pipelines.v2_importers.libreoffice_importer import parse_ad
 from vulnerabilities.pipelines.v2_importers.libreoffice_importer import parse_advisory_urls
 
 LISTING_HTML = """
-<p><a href="/about-us/security/advisories/cve-2025-1080/">CVE-2025-1080</a> Macro URL</p>
-<p><a href="/about-us/security/advisories/cve-2023-2255/">CVE-2023-2255</a> Macro URL</p>
-<p><a href="/about-us/security/advisories/cve-2023-4863/">CVE-2023-4863</a> Heap buffer overflow</p>
+<a href="/about-us/security/advisories/cve-2025-1080/">CVE-2025-1080</a>
+<a href="/about-us/security/advisories/cve-2023-2255/">CVE-2023-2255</a>
+<a href="/about-us/security/advisories/cve-2023-4863/">CVE-2023-4863</a>
 """
 
 ADVISORY_HTML = """\
 <html><body id="cve-2025-1080">
-<section id="content1"><div class="container"><article>
+<section id="content1">
 <div class="row col-sm-10 margin-20">
-<ul class="breadcrumb">
-<li><a href="/about-us/security/advisories/">Security Advisories</a></li>
-<li class="active">CVE-2025-1080</li>
-</ul>
-<h3>CVE-2025-1080</h3>
 <p><strong><span class="label">Title:</span></strong> Macro URL arbitrary script execution</p>
-<p><strong>Announced:</strong> March 4, 2025<br/><br/><strong>Fixed in:</strong> LibreOffice 24.8.5 and 25.2.1<br/><br/><strong>Description</strong>:</p>
+<p><strong>Announced:</strong> March 4, 2025<br/><strong>Description</strong>:</p>
 <p>LibreOffice supports Office URI Schemes to enable browser integration.</p>
-<p>In the affected versions a link could call internal macros with arbitrary arguments.</p>
 <p><strong>Credits</strong>:</p>
-<ul><li>Thanks to Amel Bouziane-Leblond for finding this issue.</li></ul>
-<p><strong>References</strong>:<br/><br/><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-1080" target="_blank">CVE-2025-1080</a></p>
+<p><strong>References</strong>:<br/><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-1080">CVE-2025-1080</a></p>
 </div>
-<div class="col-sm-2"><aside><nav><h3>About Us</h3></nav></aside></div>
-</article></div></section>
+</section>
 </body></html>
 """
 

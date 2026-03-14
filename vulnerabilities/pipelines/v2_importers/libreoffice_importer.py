@@ -9,7 +9,6 @@
 
 import json
 import logging
-import re
 from typing import Iterable
 
 import dateparser
@@ -20,6 +19,7 @@ from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.utils import find_all_cve
 from vulnerabilities.utils import get_cwe_id
 
 logger = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class LibreOfficeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
 def parse_cve_ids(html: str) -> list:
     """Return deduplicated CVE IDs from the LibreOffice advisories listing page."""
-    return list(dict.fromkeys(re.findall(r"CVE-\d{4}-\d+", html)))
+    return list(dict.fromkeys(cve.upper() for cve in find_all_cve(html)))
 
 
 def parse_cve_advisory(data: dict, cve_id: str):

@@ -70,12 +70,13 @@ def parse_curl_advisory(raw_data) -> AdvisoryDataV2:
     Returns:
         AdvisoryDataV2: Parsed advisory data as an AdvisoryDataV2 object.
     """
-    affected = get_item(raw_data, "affected")[0] if len(get_item(raw_data, "affected")) > 0 else []
+    affected = get_item(raw_data, "affected")[0] if len(get_item(raw_data, "affected")) > 0 else {}
 
-    ranges = get_item(affected, "ranges")[0] if len(get_item(affected, "ranges")) > 0 else []
+    ranges = get_item(affected, "ranges")[0] if len(get_item(affected, "ranges")) > 0 else {}
     events = get_item(ranges, "events")[1] if len(get_item(ranges, "events")) > 1 else {}
     version_type = get_item(ranges, "type") if get_item(ranges, "type") else ""
     fixed_version = events.get("fixed")
+    fixed_version_range = None
     if version_type == "SEMVER" and fixed_version:
         fixed_version_range = GenericVersionRange.from_versions([fixed_version])
 

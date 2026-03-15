@@ -169,6 +169,14 @@ APACHE_HTTPD.choices = [
     "Low",
 ]
 
+ARCHLINUX.choices = [
+    "Critical",
+    "High",
+    "Medium",
+    "Low",
+    "Very Low",
+]
+
 # This is essentially identical to apache_http except for the addition of the "High" score,
 # which seems to be used interchangeably for "Important".
 APACHE_TOMCAT = ScoringSystem(

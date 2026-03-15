@@ -83,4 +83,5 @@ class EPSSImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 severities=[severity],
                 references=[references],
                 url=self.advisory_url,
+                original_advisory_text=",".join(epss_row),
             )

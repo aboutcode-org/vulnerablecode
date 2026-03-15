@@ -29,8 +29,7 @@ ALPINE_SECURITY_ROOT = "https://security.alpinelinux.org/"
 BRANCH_URL = "https://security.alpinelinux.org/branch/{branch}"
 ADVISORY_HEADERS = {"Accept": "application/ld+json"}
 
-# EOL branches with data that no longer appear in the root API index.
-# 3.13 through 3.16 are omitted because the API returns 0 items for them.
+# EOL branches absent from root API index; 3.13-3.16 omitted (return 0 items)
 HISTORICAL_BRANCHES = [
     "3.22-community",
     "3.18-main",

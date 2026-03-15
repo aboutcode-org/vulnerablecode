@@ -9,7 +9,12 @@
 
 import os
 from unittest import TestCase
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
+from vulnerabilities.pipelines.v2_importers.alpine_security_importer import (
+    AlpineSecurityImporterPipeline,
+)
 from vulnerabilities.pipelines.v2_importers.alpine_security_importer import parse_advisory
 from vulnerabilities.tests import util_tests
 from vulnerabilities.utils import load_json
@@ -83,3 +88,28 @@ class TestAlpineSecurityImporter(TestCase):
         result = parse_advisory(data)
         self.assertIsNotNone(result)
         self.assertEqual(result.affected_packages, [])
+
+
+class TestAlpineSecurityImporterPipeline(TestCase):
+    @patch("vulnerabilities.pipelines.v2_importers.alpine_security_importer.get_branches")
+    @patch("vulnerabilities.pipelines.v2_importers.alpine_security_importer.requests.get")
+    def test_collect_advisories_yields_advisory(self, mock_get, mock_branches):
+        mock_branches.return_value = ["3.19-main"]
+        data = load_json(os.path.join(TEST_DATA, "alpine_security_mock1.json"))
+        resp = MagicMock()
+        resp.json.return_value = {"items": [data]}
+        resp.raise_for_status.return_value = None
+        mock_get.return_value = resp
+        advisories = list(AlpineSecurityImporterPipeline().collect_advisories())
+        self.assertGreater(len(advisories), 0)
+
+    @patch("vulnerabilities.pipelines.v2_importers.alpine_security_importer.get_branches")
+    @patch("vulnerabilities.pipelines.v2_importers.alpine_security_importer.requests.get")
+    def test_collect_advisories_http_error_logs_and_continues(self, mock_get, mock_branches):
+        mock_branches.return_value = ["3.19-main"]
+        mock_get.side_effect = Exception("timeout")
+        logger_name = "vulnerabilities.pipelines.v2_importers.alpine_security_importer"
+        with self.assertLogs(logger_name, level="ERROR") as cm:
+            advisories = list(AlpineSecurityImporterPipeline().collect_advisories())
+        self.assertEqual(advisories, [])
+        self.assertTrue(any("timeout" in msg for msg in cm.output))

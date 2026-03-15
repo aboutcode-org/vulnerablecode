@@ -48,7 +48,7 @@ def get_branches() -> list:
         data = resp.json()
         # Branch entries have dict values; scalar values indicate non-branch keys.
         active = [k for k, v in data.items() if isinstance(v, dict)]
-    except Exception as e:
+    except (requests.RequestException, ValueError) as e:
         logger.error("Failed to discover branches from root API: %s", e)
         active = []
 
@@ -76,7 +76,7 @@ class AlpineSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 resp = requests.get(url, headers=ADVISORY_HEADERS, timeout=30)
                 resp.raise_for_status()
                 data = resp.json()
-            except Exception as e:
+            except (requests.RequestException, ValueError) as e:
                 logger.error("Failed to fetch branch %s: %s", branch, e)
                 continue
             count += len(data.get("items") or [])
@@ -89,7 +89,7 @@ class AlpineSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 resp = requests.get(url, headers=ADVISORY_HEADERS, timeout=30)
                 resp.raise_for_status()
                 data = resp.json()
-            except Exception as e:
+            except (requests.RequestException, ValueError) as e:
                 logger.error("Failed to fetch branch %s: %s", branch, e)
                 continue
             for item in data.get("items") or []:
@@ -111,7 +111,17 @@ def parse_advisory(data: dict):
     for ref in data.get("ref") or []:
         ref_url = ref.get("rel") or ""
         if ref_url:
-            references.append(ReferenceV2(url=ref_url))
+            references.append(
+                ReferenceV2(
+                    url=ref_url,
+                    reference_type=ref.get("referenceType") or "",
+                )
+            )
+    for cpe_match in data.get("cpeMatch") or []:
+        cpe_uri = cpe_match.get("cpeUri") or ""
+        cpe_id = cpe_match.get("id") or ""
+        if cpe_uri and cpe_id:
+            references.append(ReferenceV2(url=cpe_id, reference_id=cpe_uri))
 
     severities = []
     cvss3 = data.get("cvss3") or {}

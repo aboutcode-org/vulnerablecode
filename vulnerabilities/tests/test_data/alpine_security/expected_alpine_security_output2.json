@@ -1,7 +1,7 @@
 {
   "advisory_id": "CVE-2024-56406",
   "aliases": [],
-  "summary": "A heap buffer overflow vulnerability was discovered in Perl. \n\nRelease branches 5.34, 5.36, 5.38 and 5.40 are affected, including development versions from 5.33.1 through 5.41.10.\n\nWhen there are non-ASCII bytes in the left-hand-side of the `tr` operator, `S_do_trans_invmap` can overflow the destination pointer `d`.\n\n\u00a0 \u00a0$ perl -e '$_ = \"\\x{FF}\" x 1000000; tr/\\xFF/\\x{100}/;' \n\u00a0 \u00a0Segmentation fault (core dumped)\n\nIt is believed that this vulnerability can enable Denial of Service and possibly Code Execution attacks on platforms that lack sufficient defenses.",
+  "summary": "A heap buffer overflow vulnerability was discovered in Perl. \n\nRelease branches 5.34, 5.36, 5.38 and 5.40 are affected, including development versions from 5.33.1 through 5.41.10.\n\nWhen there are non-ASCII bytes in the left-hand-side of the `tr` operator, `S_do_trans_invmap` can overflow the destination pointer `d`.\n\n   $ perl -e '$_ = \"\\x{FF}\" x 1000000; tr/\\xFF/\\x{100}/;' \n   Segmentation fault (core dumped)\n\nIt is believed that this vulnerability can enable Denial of Service and possibly Code Execution attacks on platforms that lack sufficient defenses.",
   "affected_packages": [
     {
       "package": {
@@ -119,33 +119,43 @@
   "references": [
     {
       "reference_id": "",
-      "reference_type": "",
+      "reference_type": "patch",
       "url": "https://github.com/Perl/perl5/commit/87f42aa0e0096e9a346c9672aa3a0bd3bef8c1dd.patch"
     },
     {
       "reference_id": "",
-      "reference_type": "",
+      "reference_type": "release-notes",
       "url": "https://metacpan.org/release/SHAY/perl-5.38.4/changes"
     },
     {
       "reference_id": "",
-      "reference_type": "",
+      "reference_type": "release-notes",
       "url": "https://metacpan.org/release/SHAY/perl-5.40.2/changes"
     },
     {
       "reference_id": "",
-      "reference_type": "",
+      "reference_type": "af854a3a-2127-422b-91ae-364da2661108",
       "url": "http://www.openwall.com/lists/oss-security/2025/04/13/3"
     },
     {
       "reference_id": "",
-      "reference_type": "",
+      "reference_type": "af854a3a-2127-422b-91ae-364da2661108",
       "url": "http://www.openwall.com/lists/oss-security/2025/04/13/4"
     },
     {
       "reference_id": "",
-      "reference_type": "",
+      "reference_type": "af854a3a-2127-422b-91ae-364da2661108",
       "url": "http://www.openwall.com/lists/oss-security/2025/04/13/5"
+    },
+    {
+      "reference_id": "cpe:2.3:a:perl:perl:*:*:*:*:*:*:*:*",
+      "reference_type": "",
+      "url": "https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/917070"
+    },
+    {
+      "reference_id": "cpe:2.3:a:perl:perl:*:*:*:*:*:*:*:*",
+      "reference_type": "",
+      "url": "https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/917071"
     }
   ],
   "patches": [],

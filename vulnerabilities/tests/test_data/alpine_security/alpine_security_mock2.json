@@ -1,1 +1,352 @@
-{"@context":"https://security.alpinelinux.org/static/context.jsonld","cpeMatch":[{"@context":"https://security.alpinelinux.org/static/context.jsonld","cpeUri":"","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/898725","maximumVersion":"5.41.10","maximumVersionOp":"<=","minimumVersion":"5.41.0","minimumVersionOp":">=","package":"https://security.alpinelinux.org/srcpkg/perl","type":"CPEMatch","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","cpeUri":"","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/898726","maximumVersion":"5.40.2-RC1","maximumVersionOp":"<","minimumVersion":"5.39.0","minimumVersionOp":">=","package":"https://security.alpinelinux.org/srcpkg/perl","type":"CPEMatch","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","cpeUri":"","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/898727","maximumVersion":"5.38.4-RC1","maximumVersionOp":"<","minimumVersion":"5.33.1","minimumVersionOp":">=","package":"https://security.alpinelinux.org/srcpkg/perl","type":"CPEMatch","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","cpeUri":"cpe:2.3:a:perl:perl:*:*:*:*:*:*:*:*","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/917070","maximumVersion":"5.38.4","maximumVersionOp":"<","minimumVersion":"5.33.1","minimumVersionOp":">=","package":"https://security.alpinelinux.org/srcpkg/perl","type":"CPEMatch","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","cpeUri":"cpe:2.3:a:perl:perl:*:*:*:*:*:*:*:*","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/917071","maximumVersion":"5.40.2","maximumVersionOp":"<","minimumVersion":"5.39.0","minimumVersionOp":">=","package":"https://security.alpinelinux.org/srcpkg/perl","type":"CPEMatch","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"}],"cvss3":{"score":0.0,"vector":null},"description":"A heap buffer overflow vulnerability was discovered in Perl. \n\nRelease branches 5.34, 5.36, 5.38 and 5.40 are affected, including development versions from 5.33.1 through 5.41.10.\n\nWhen there are non-ASCII bytes in the left-hand-side of the `tr` operator, `S_do_trans_invmap` can overflow the destination pointer `d`.\n\n\u00a0 \u00a0$ perl -e '$_ = \"\\x{FF}\" x 1000000; tr/\\xFF/\\x{100}/;' \n\u00a0 \u00a0Segmentation fault (core dumped)\n\nIt is believed that this vulnerability can enable Denial of Service and possibly Code Execution attacks on platforms that lack sufficient defenses.","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406","ref":[{"@context":"https://security.alpinelinux.org/static/context.jsonld","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569348","referenceType":"patch","rel":"https://github.com/Perl/perl5/commit/87f42aa0e0096e9a346c9672aa3a0bd3bef8c1dd.patch","type":"Reference"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569349","referenceType":"release-notes","rel":"https://metacpan.org/release/SHAY/perl-5.38.4/changes","type":"Reference"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569350","referenceType":"release-notes","rel":"https://metacpan.org/release/SHAY/perl-5.40.2/changes","type":"Reference"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569351","referenceType":"af854a3a-2127-422b-91ae-364da2661108","rel":"http://www.openwall.com/lists/oss-security/2025/04/13/3","type":"Reference"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569352","referenceType":"af854a3a-2127-422b-91ae-364da2661108","rel":"http://www.openwall.com/lists/oss-security/2025/04/13/4","type":"Reference"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569353","referenceType":"af854a3a-2127-422b-91ae-364da2661108","rel":"http://www.openwall.com/lists/oss-security/2025/04/13/5","type":"Reference"}],"state":[{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":true,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107962","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.2-r0","repo":"edge-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":true,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107917","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.1-r1","repo":"edge-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107961","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.1-r0","repo":"edge-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107960","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.0-r3","repo":"edge-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/248735","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0","repo":"edge-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/241380","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1","repo":"edge-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":true,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/125957","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.2-r0","repo":"3.22-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":true,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/110355","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.1-r1","repo":"3.22-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/257402","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0","repo":"3.22-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/257400","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1","repo":"3.22-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":true,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107919","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.1-r1","repo":"3.21-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/127670","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.1-r0","repo":"3.21-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/127511","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.40.0-r3","repo":"3.21-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/345846","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0","repo":"3.21-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/345844","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1","repo":"3.21-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":true,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107920","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.3-r1","repo":"3.20-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/128155","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.3-r0","repo":"3.20-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/127997","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.2-r0","repo":"3.20-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/364725","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0","repo":"3.20-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/364723","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1","repo":"3.20-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":true,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107921","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.3-r1","repo":"3.19-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/128623","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.3-r0","repo":"3.19-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/128450","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.2-r0","repo":"3.19-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/383512","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0","repo":"3.19-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":false,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/383510","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1","repo":"3.19-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"},{"@context":"https://security.alpinelinux.org/static/context.jsonld","fixed":true,"id":"https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107918","packageVersion":"https://security.alpinelinux.org/srcpkg/perl/5.36.2-r1","repo":"3.18-main","type":"VulnerabilityState","vuln":"https://security.alpinelinux.org/vuln/CVE-2024-56406"}],"type":"Vulnerability"}
+{
+  "@context": "https://security.alpinelinux.org/static/context.jsonld",
+  "cpeMatch": [
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "cpeUri": "",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/898725",
+      "maximumVersion": "5.41.10",
+      "maximumVersionOp": "<=",
+      "minimumVersion": "5.41.0",
+      "minimumVersionOp": ">=",
+      "package": "https://security.alpinelinux.org/srcpkg/perl",
+      "type": "CPEMatch",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "cpeUri": "",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/898726",
+      "maximumVersion": "5.40.2-RC1",
+      "maximumVersionOp": "<",
+      "minimumVersion": "5.39.0",
+      "minimumVersionOp": ">=",
+      "package": "https://security.alpinelinux.org/srcpkg/perl",
+      "type": "CPEMatch",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "cpeUri": "",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/898727",
+      "maximumVersion": "5.38.4-RC1",
+      "maximumVersionOp": "<",
+      "minimumVersion": "5.33.1",
+      "minimumVersionOp": ">=",
+      "package": "https://security.alpinelinux.org/srcpkg/perl",
+      "type": "CPEMatch",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "cpeUri": "cpe:2.3:a:perl:perl:*:*:*:*:*:*:*:*",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/917070",
+      "maximumVersion": "5.38.4",
+      "maximumVersionOp": "<",
+      "minimumVersion": "5.33.1",
+      "minimumVersionOp": ">=",
+      "package": "https://security.alpinelinux.org/srcpkg/perl",
+      "type": "CPEMatch",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "cpeUri": "cpe:2.3:a:perl:perl:*:*:*:*:*:*:*:*",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#cpeMatch/917071",
+      "maximumVersion": "5.40.2",
+      "maximumVersionOp": "<",
+      "minimumVersion": "5.39.0",
+      "minimumVersionOp": ">=",
+      "package": "https://security.alpinelinux.org/srcpkg/perl",
+      "type": "CPEMatch",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    }
+  ],
+  "cvss3": {
+    "score": 0.0,
+    "vector": null
+  },
+  "description": "A heap buffer overflow vulnerability was discovered in Perl. \n\nRelease branches 5.34, 5.36, 5.38 and 5.40 are affected, including development versions from 5.33.1 through 5.41.10.\n\nWhen there are non-ASCII bytes in the left-hand-side of the `tr` operator, `S_do_trans_invmap` can overflow the destination pointer `d`.\n\n   $ perl -e '$_ = \"\\x{FF}\" x 1000000; tr/\\xFF/\\x{100}/;' \n   Segmentation fault (core dumped)\n\nIt is believed that this vulnerability can enable Denial of Service and possibly Code Execution attacks on platforms that lack sufficient defenses.",
+  "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406",
+  "ref": [
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569348",
+      "referenceType": "patch",
+      "rel": "https://github.com/Perl/perl5/commit/87f42aa0e0096e9a346c9672aa3a0bd3bef8c1dd.patch",
+      "type": "Reference"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569349",
+      "referenceType": "release-notes",
+      "rel": "https://metacpan.org/release/SHAY/perl-5.38.4/changes",
+      "type": "Reference"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569350",
+      "referenceType": "release-notes",
+      "rel": "https://metacpan.org/release/SHAY/perl-5.40.2/changes",
+      "type": "Reference"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569351",
+      "referenceType": "af854a3a-2127-422b-91ae-364da2661108",
+      "rel": "http://www.openwall.com/lists/oss-security/2025/04/13/3",
+      "type": "Reference"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569352",
+      "referenceType": "af854a3a-2127-422b-91ae-364da2661108",
+      "rel": "http://www.openwall.com/lists/oss-security/2025/04/13/4",
+      "type": "Reference"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#ref/569353",
+      "referenceType": "af854a3a-2127-422b-91ae-364da2661108",
+      "rel": "http://www.openwall.com/lists/oss-security/2025/04/13/5",
+      "type": "Reference"
+    }
+  ],
+  "state": [
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": true,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107962",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.2-r0",
+      "repo": "edge-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": true,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107917",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.1-r1",
+      "repo": "edge-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107961",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.1-r0",
+      "repo": "edge-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107960",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.0-r3",
+      "repo": "edge-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/248735",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0",
+      "repo": "edge-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/241380",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1",
+      "repo": "edge-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": true,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/125957",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.2-r0",
+      "repo": "3.22-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": true,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/110355",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.1-r1",
+      "repo": "3.22-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/257402",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0",
+      "repo": "3.22-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/257400",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1",
+      "repo": "3.22-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": true,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107919",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.1-r1",
+      "repo": "3.21-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/127670",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.1-r0",
+      "repo": "3.21-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/127511",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.40.0-r3",
+      "repo": "3.21-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/345846",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0",
+      "repo": "3.21-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/345844",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1",
+      "repo": "3.21-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": true,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107920",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.3-r1",
+      "repo": "3.20-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/128155",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.3-r0",
+      "repo": "3.20-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/127997",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.2-r0",
+      "repo": "3.20-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/364725",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0",
+      "repo": "3.20-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/364723",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1",
+      "repo": "3.20-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": true,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107921",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.3-r1",
+      "repo": "3.19-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/128623",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.3-r0",
+      "repo": "3.19-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/128450",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.2-r0",
+      "repo": "3.19-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/383512",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.38.1-r0",
+      "repo": "3.19-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/383510",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.34.0-r1",
+      "repo": "3.19-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": true,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2024-56406#state/107918",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/perl/5.36.2-r1",
+      "repo": "3.18-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2024-56406"
+    }
+  ],
+  "type": "Vulnerability"
+}

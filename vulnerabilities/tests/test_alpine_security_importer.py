@@ -12,6 +12,8 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
+import requests
+
 from vulnerabilities.pipelines.v2_importers.alpine_security_importer import (
     AlpineSecurityImporterPipeline,
 )
@@ -107,7 +109,7 @@ class TestAlpineSecurityImporterPipeline(TestCase):
     @patch("vulnerabilities.pipelines.v2_importers.alpine_security_importer.requests.get")
     def test_collect_advisories_http_error_logs_and_continues(self, mock_get, mock_branches):
         mock_branches.return_value = ["3.19-main"]
-        mock_get.side_effect = Exception("timeout")
+        mock_get.side_effect = requests.RequestException("timeout")
         logger_name = "vulnerabilities.pipelines.v2_importers.alpine_security_importer"
         with self.assertLogs(logger_name, level="ERROR") as cm:
             advisories = list(AlpineSecurityImporterPipeline().collect_advisories())

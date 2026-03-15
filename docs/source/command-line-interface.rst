@@ -42,7 +42,8 @@ For example::
 ``$ ./manage.py import <importer-name>``
 ------------------------------------------
 
-Import vulnerability data using the given importer name.
+Import vulnerability data using the given importer name. For V2 pipelines,
+this name is the ``pipeline_id``.
 
 Other variations:
 
@@ -53,7 +54,8 @@ Other variations:
 ``$ ./manage.py improve <improver-name>``
 ------------------------------------------
 
-Improve the imported vulnerability data using the given improver name.
+Improve the imported vulnerability data using the given improver name. For V2
+pipelines, this name is the ``pipeline_id``.
 
 Other variations:
 

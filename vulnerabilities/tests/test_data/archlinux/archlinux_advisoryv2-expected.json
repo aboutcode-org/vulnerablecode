@@ -107,7 +107,13 @@
       }
     ],
     "patches": [],
-    "severities": [],
+    "severities": [
+      {
+        "system": "archlinux",
+        "value": "Low",
+        "scoring_elements": ""
+      }
+    ],
     "date_published": null,
     "weaknesses": [],
     "url": "https://security.archlinux.org/AVG-4.json"

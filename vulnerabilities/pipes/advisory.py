@@ -291,7 +291,7 @@ def insert_advisory(advisory: AdvisoryData, pipeline_id: str, logger: Callable =
 def insert_advisory_v2(
     advisory: AdvisoryDataV2,
     pipeline_id: str,
-    logger: Callable = None,
+    logger: Callable,
     precedence: int = 0,
 ):
     from vulnerabilities.models import ImpactedPackage
@@ -299,13 +299,8 @@ def insert_advisory_v2(
     from vulnerabilities.utils import compute_content_id_v2
 
     advisory_obj = None
-    aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
-    references = get_or_create_advisory_references(references=advisory.references)
-    severities = get_or_create_advisory_severities(severities=advisory.severities)
-    patches = get_or_create_advisory_patches(patches=advisory.patches)
-    weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
-    content_id = compute_content_id_v2(advisory_data=advisory)
     created = False
+    content_id = compute_content_id_v2(advisory_data=advisory)
     try:
         default_data = {
             "datasource_id": pipeline_id,
@@ -324,65 +319,73 @@ def insert_advisory_v2(
             unique_content_id=content_id,
             defaults=default_data,
         )
-        related_fields = {
-            "aliases": aliases,
-            "references": references,
-            "severities": severities,
-            "weaknesses": weaknesses,
-            "patches": patches,
-        }
-
-        for field_name, values in related_fields.items():
-            if values:
-                getattr(advisory_obj, field_name).add(*values)
-
-    except Advisory.MultipleObjectsReturned:
+    except AdvisoryV2.MultipleObjectsReturned:
         logger(
             f"Multiple Advisories returned: unique_content_id: {content_id}, url: {advisory.url}, advisory: {advisory!r}"
         )
         raise
     except Exception as e:
-        if logger:
-            logger(
-                f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
-                level=logging.ERROR,
-            )
+        logger(
+            f"Error while processing {advisory!r} with aliases {advisory.aliases!r}: {e!r} \n {traceback_format_exc()}",
+            level=logging.ERROR,
+        )
+        raise
 
-    if created:
-        for affected_pkg in advisory.affected_packages:
-            impact = ImpactedPackage.objects.create(
-                advisory=advisory_obj,
-                base_purl=str(affected_pkg.package),
-                affecting_vers=str(affected_pkg.affected_version_range)
-                if affected_pkg.affected_version_range
-                else None,
-                fixed_vers=str(affected_pkg.fixed_version_range)
-                if affected_pkg.fixed_version_range
-                else None,
-            )
-            package_affected_purls, package_fixed_purls = get_exact_purls_v2(
-                affected_package=affected_pkg,
-                logger=logger,
-            )
+    if not created:
+        return advisory_obj
 
-            affected_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
-                purls=package_affected_purls
-            )
-            fixed_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
-                purls=package_fixed_purls
-            )
+    aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
+    references = get_or_create_advisory_references(references=advisory.references)
+    severities = get_or_create_advisory_severities(severities=advisory.severities)
+    patches = get_or_create_advisory_patches(patches=advisory.patches)
+    weaknesses = get_or_create_advisory_weaknesses(weaknesses=advisory.weaknesses)
 
-            impact.affecting_packages.add(*affected_packages_v2)
-            impact.fixed_by_packages.add(*fixed_packages_v2)
+    related_fields = {
+        "aliases": aliases,
+        "references": references,
+        "severities": severities,
+        "weaknesses": weaknesses,
+        "patches": patches,
+    }
 
-            introduced_commit_v2 = get_or_create_advisory_package_commit_patches(
-                affected_pkg.introduced_by_commit_patches
-            )
-            fixed_commit_v2 = get_or_create_advisory_package_commit_patches(
-                affected_pkg.fixed_by_commit_patches
-            )
-            impact.introduced_by_package_commit_patches.add(*introduced_commit_v2)
-            impact.fixed_by_package_commit_patches.add(*fixed_commit_v2)
+    for field_name, values in related_fields.items():
+        if values:
+            getattr(advisory_obj, field_name).add(*values)
+
+    for affected_pkg in advisory.affected_packages:
+        impact = ImpactedPackage.objects.create(
+            advisory=advisory_obj,
+            base_purl=str(affected_pkg.package),
+            affecting_vers=str(affected_pkg.affected_version_range)
+            if affected_pkg.affected_version_range
+            else None,
+            fixed_vers=str(affected_pkg.fixed_version_range)
+            if affected_pkg.fixed_version_range
+            else None,
+        )
+        package_affected_purls, package_fixed_purls = get_exact_purls_v2(
+            affected_package=affected_pkg,
+            logger=logger,
+        )
+
+        affected_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
+            purls=package_affected_purls
+        )
+        fixed_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(
+            purls=package_fixed_purls
+        )
+
+        impact.affecting_packages.add(*affected_packages_v2)
+        impact.fixed_by_packages.add(*fixed_packages_v2)
+
+        introduced_commit_v2 = get_or_create_advisory_package_commit_patches(
+            affected_pkg.introduced_by_commit_patches
+        )
+        fixed_commit_v2 = get_or_create_advisory_package_commit_patches(
+            affected_pkg.fixed_by_commit_patches
+        )
+        impact.introduced_by_package_commit_patches.add(*introduced_commit_v2)
+        impact.fixed_by_package_commit_patches.add(*fixed_commit_v2)
     return advisory_obj
 
 

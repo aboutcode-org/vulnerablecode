@@ -163,14 +163,14 @@
     "patches": [],
     "severities": [
       {
-        "system": "cvssv3",
+        "system": "generic_textual",
         "value": "5.5",
         "scoring_elements": ""
       }
     ],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-43853"
+    "url": "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon4.0.json"
   },
   {
     "advisory_id": "CVE-2021-45417",
@@ -196,13 +196,13 @@
     "patches": [],
     "severities": [
       {
-        "system": "cvssv3",
+        "system": "generic_textual",
         "value": "7.8",
         "scoring_elements": ""
       }
     ],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-45417"
+    "url": "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon4.0.json"
   }
 ]

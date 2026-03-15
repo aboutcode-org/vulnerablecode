@@ -12,13 +12,15 @@ import re
 from typing import Iterable
 
 from packageurl import PackageURL
-from univers.version_range import RANGE_CLASS_BY_SCHEMES
+from univers.version_constraint import VersionConstraint
+from univers.version_range import RpmVersionRange
+from univers.versions import RpmVersion
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
-from vulnerabilities.severity_systems import CVSSV3
+from vulnerabilities.severity_systems import GENERIC
 from vulnerabilities.utils import fetch_response
 
 
@@ -62,7 +64,9 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             self.log(f"Fetching `{url}`")
             response = fetch_response(url)
             if response:
-                self.records.extend(response.json())
+                for record in response.json():
+                    record["source_url"] = url
+                    self.records.append(record)
         self.log(f"Fetched {len(self.records):,d} total records from {len(photon_files)} sources")
 
     def group_records_by_cve(self):
@@ -91,8 +95,6 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return len(self.cve_to_records)
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
-        rpm_range_cls = RANGE_CLASS_BY_SCHEMES["rpm"]
-
         for cve_id, records in self.cve_to_records.items():
             affected_packages = []
 
@@ -110,12 +112,17 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 )
 
                 ver_match = re.match(r"all versions before (.+) are vulnerable", aff_ver)
-                if ver_match:
-                    affected_version_range = rpm_range_cls.from_string(
-                        f"vers:{rpm_range_cls.scheme}/<{ver_match.group(1)}"
-                    )
 
-                fixed_version_range = rpm_range_cls.from_versions([res_ver])
+                affected_version_range = RpmVersionRange(
+                    constraints=[
+                        VersionConstraint(
+                            comparator="<",
+                            version=RpmVersion(ver_match.group(1)),
+                        )
+                    ]
+                )
+
+                fixed_version_range = RpmVersionRange.from_versions([res_ver])
 
                 affected_packages.append(
                     AffectedPackageV2(
@@ -129,9 +136,8 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             cve_score = records[0].get("cve_score")
             severities.append(
                 VulnerabilitySeverity(
-                    system=CVSSV3,
+                    system=GENERIC,
                     value=str(cve_score),
-                    scoring_elements="",
                 )
             )
 
@@ -139,6 +145,6 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 advisory_id=cve_id,
                 affected_packages=affected_packages,
                 severities=severities,
-                url=f"https://nvd.nist.gov/vuln/detail/{cve_id}",
+                url=records[0].get("source_url", self.repo_url),
                 original_advisory_text=json.dumps(records, indent=2, ensure_ascii=False),
             )

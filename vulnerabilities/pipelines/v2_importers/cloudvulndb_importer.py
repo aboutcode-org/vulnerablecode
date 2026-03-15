@@ -30,7 +30,7 @@ CLOUDVULNDB_RSS_URL = "https://www.cloudvulndb.org/rss/feed.xml"
 class CloudVulnDBImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect cloud vulnerabilities from the public CloudVulnDB RSS feed."""
 
-    pipeline_id = "cloudvulndb_importer"
+    pipeline_id = "cloudvulndb_importer_v2"
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/wiz-sec/open-cvdb/blob/main/LICENSE.md"
     repo_url = "https://github.com/wiz-sec/open-cvdb"

@@ -100,9 +100,9 @@ class PackageSearchV2(ListView):
         query = query or self.request.GET.get("search") or ""
         return (
             self.model.objects.search(query)
-            .with_vulnerability_counts()
             .prefetch_related()
             .order_by("package_url")
+            .with_is_vulnerable()
         )
 
 

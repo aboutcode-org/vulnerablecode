@@ -333,9 +333,9 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
             else:
                 query = (
                     PackageV2.objects.filter(package_url__in=purls)
-                    .values_list("package_url", flat=True)
                     .distinct()
                     .order_by("package_url")
+                    .values_list("package_url", flat=True)
                 )
 
             page = self.paginate_queryset(query)

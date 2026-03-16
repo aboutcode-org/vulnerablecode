@@ -25,15 +25,12 @@ class ComputeAdvisoryContentHash(VulnerableCodePipeline):
         return (cls.compute_advisory_content_hash,)
 
     def compute_advisory_content_hash(self):
-        """Create ToDos for missing summary, affected and fixed packages."""
+        """Compute Advisory Content Hash for Advisory."""
 
         advisories = AdvisoryV2.objects.filter(advisory_content_hash__isnull=True)
 
         advisories_count = advisories.count()
 
-        self.log(
-            f"Checking missing summary, affected and fixed packages in {advisories_count} Advisories"
-        )
         progress = LoopProgress(
             total_iterations=advisories_count,
             logger=self.log,

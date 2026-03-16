@@ -82,7 +82,7 @@ to run on a different port than 8000.
 
    Serving VulnerableCode on a network could lead to security issues and there
    are several steps that may be needed to secure such a deployment.
-   Currently, this is not recommendend.
+   Currently, this is not recommended.
 
 .. tip::
 

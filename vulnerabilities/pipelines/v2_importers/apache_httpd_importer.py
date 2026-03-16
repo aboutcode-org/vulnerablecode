@@ -330,7 +330,7 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 "=": "=",
             }
             comparator = comparator_by_range_expression.get(range_expression)
-            if comparator:
+            if comparator and version_value and version_value not in self.ignorable_versions:
                 constraints.append(
                     VersionConstraint(comparator=comparator, version=SemverVersion(version_value))
                 )
@@ -338,11 +338,12 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         for fixed_version in fixed_versions:
             # The VersionConstraint method `invert()` inverts the fixed_version's comparator,
             # enabling inclusion of multiple fixed versions with the `affected_version_range` values.
-            constraints.append(
-                VersionConstraint(
-                    comparator="=",
-                    version=SemverVersion(fixed_version),
-                ).invert()
-            )
+            if fixed_version and fixed_version not in self.ignorable_versions:
+                constraints.append(
+                    VersionConstraint(
+                        comparator="=",
+                        version=SemverVersion(fixed_version),
+                    ).invert()
+                )
 
         return ApacheVersionRange(constraints=constraints)

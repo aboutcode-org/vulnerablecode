@@ -192,9 +192,15 @@ VulnerableCode Package Details - {{ package.purl }}
                                                     <a href="/packages/v2/{{ item.pkg.purl|url_quote }}?search={{ item.pkg.purl }}"
                                                         target="_self">{{ item.pkg.version }}</a>
                                                     <br/>
-                                                    <span class="{{ item.affected_count|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
-                                                        Subject of {{ item.affected_count }} other advisories.
+                                                    {% if item.pkg.is_vulnerable %}
+                                                    <span class="{{ item.pkg.is_vulnerable|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Vulnerable
                                                     </span>
+                                                    {% else %}
+                                                    <span class="{{ item.pkg.is_vulnerable|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Not vulnerable
+                                                    </span>
+                                                    {% endif %}
                                                 </section>
                                                 {% endfor %}
                                             {% else %}

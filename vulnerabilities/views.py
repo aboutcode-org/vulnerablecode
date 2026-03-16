@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
+from collections import defaultdict
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
@@ -15,8 +16,8 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.db.models import Count
-from django.db.models import F
+from django.db.models import Exists
+from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -227,48 +228,46 @@ class PackageV2Details(DetailView):
         return context
 
     def get_fixed_package_details(self, package):
-        affected_impacts = package.affected_in_impacts.select_related("advisory").prefetch_related(
-            Prefetch(
-                "fixed_by_packages",
-                queryset=(
-                    models.PackageV2.objects.annotate(affected_count=Count("affected_in_impacts"))
-                ),
-            )
+        rows = package.affected_in_impacts.values_list(
+            "advisory__avid",
+            "fixed_by_packages",
         )
 
-        fixed_impacts = package.fixed_in_impacts.select_related("advisory")
+        pkg_ids = {pkg_id for _, pkg_id in rows if pkg_id}
 
-        affected_avids = {impact.advisory.avid for impact in affected_impacts if impact.advisory_id}
+        pkg_map = {
+            p.id: p
+            for p in models.PackageV2.objects.filter(id__in=pkg_ids).annotate(
+                is_vulnerable=Exists(
+                    models.ImpactedPackage.objects.filter(affecting_packages=OuterRef("pk"))
+                )
+            )
+        }
 
-        fixed_avids = {impact.advisory.avid for impact in fixed_impacts if impact.advisory_id}
+        fixed_pkg_details = defaultdict(list)
 
-        all_avids = affected_avids | fixed_avids
-
-        advisories = models.AdvisoryV2.objects.latest_for_avids(all_avids)
-        advisory_by_avid = {adv.avid: adv for adv in advisories}
-
-        fixed_pkg_details = {}
-
-        for impact in affected_impacts:
-            advisory = advisory_by_avid.get(impact.advisory.avid)
-            if not advisory:
+        for avid, pkg_id in rows:
+            if not pkg_id:
                 continue
 
-            fixed_pkg_details.setdefault(impact.advisory.avid, []).extend(
+            pkg = pkg_map.get(pkg_id)
+            if not pkg:
+                continue
+
+            fixed_pkg_details[avid].append(
                 {
                     "pkg": pkg,
-                    "affected_count": pkg.affected_count,
+                    "is_vulnerable": pkg.is_vulnerable,
                 }
-                for pkg in impact.fixed_by_packages.all()
             )
 
-        affected_by_advisories = {
-            advisory_by_avid[avid] for avid in affected_avids if avid in advisory_by_avid
-        }
+        affected_by_advisories = models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(
+            package.package_url
+        )
 
-        fixing_advisories = {
-            advisory_by_avid[avid] for avid in fixed_avids if avid in advisory_by_avid
-        }
+        fixing_advisories = models.AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
+            package.package_url
+        )
 
         return fixed_pkg_details, affected_by_advisories, fixing_advisories
 

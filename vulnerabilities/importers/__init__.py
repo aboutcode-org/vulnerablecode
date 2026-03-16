@@ -58,6 +58,7 @@ from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
+from vulnerabilities.pipelines.v2_importers import eclipse_importer as eclipse_importer_v2
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
 from vulnerabilities.pipelines.v2_importers import mattermost_importer as mattermost_importer_v2
 from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_importer_v2
@@ -99,6 +100,7 @@ IMPORTERS_REGISTRY = create_registry(
         xen_importer_v2.XenImporterPipeline,
         curl_importer_v2.CurlImporterPipeline,
         oss_fuzz_v2.OSSFuzzImporterPipeline,
+        eclipse_importer_v2.EclipseImporterPipeline,
         istio_importer_v2.IstioImporterPipeline,
         postgresql_importer_v2.PostgreSQLImporterPipeline,
         mozilla_importer_v2.MozillaImporterPipeline,

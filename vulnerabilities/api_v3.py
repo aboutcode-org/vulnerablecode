@@ -204,8 +204,8 @@ class PackageV3Serializer(serializers.ModelSerializer):
         advisories_qs = AdvisoryV2.objects.latest_affecting_advisories_for_purl(package.package_url)
 
         advisories = list(advisories_qs[:101])
-        if len(advisories) > 100:
-            return None
+        # if len(advisories) > 100:
+        #     return None
 
         advisory_by_avid = {adv.avid: adv for adv in advisories}
         avids = advisory_by_avid.keys()
@@ -241,8 +241,8 @@ class PackageV3Serializer(serializers.ModelSerializer):
         advisories_qs = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(package.package_url)
 
         advisories = list(advisories_qs[:101])
-        if len(advisories) > 100:
-            return None
+        # if len(advisories) > 100:
+        #     return None
 
         advisory_by_avid = {adv.avid: adv for adv in advisories}
         avids = advisory_by_avid.keys()
@@ -359,6 +359,34 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
         return self.get_paginated_response(serializer.data)
 
 
+class AffectedByAdvisoryV3Serializer(AdvisoryV3Serializer):
+    fixed_by_packages = serializers.SerializerMethodField()
+
+    def get_fixed_by_packages(self, obj):
+        return list(
+            obj.impacted_packages.values_list("fixed_by_packages__package_url", flat=True)
+            .exclude(fixed_by_packages__package_url__isnull=True)
+            .distinct()
+        )
+
+    class Meta:
+        model = AdvisoryV2
+        fields = [
+            "advisory_id",
+            "url",
+            "aliases",
+            "summary",
+            "severities",
+            "weaknesses",
+            "references",
+            "exploitability",
+            "weighted_severity",
+            "risk_score",
+            "related_ssvc_trees",
+            "fixed_by_packages",
+        ]
+
+
 class AdvisoryV3ViewSet(viewsets.GenericViewSet):
     queryset = AdvisoryV2.objects.all()
     serializer_class = AdvisoryV3Serializer
@@ -398,3 +426,4 @@ class FixingAdvisoriesViewSet(PackageAdvisoriesViewSet):
 
 class AffectedByAdvisoriesViewSet(PackageAdvisoriesViewSet):
     relation = "impacted_packages__affecting_packages__package_url"
+    serializer_class = AffectedByAdvisoryV3Serializer

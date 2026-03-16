@@ -50,6 +50,7 @@ from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlin
 from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
+from vulnerabilities.pipelines.v2_importers import eclipse_importer as eclipse_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
@@ -58,7 +59,6 @@ from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
-from vulnerabilities.pipelines.v2_importers import eclipse_importer as eclipse_importer_v2
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
 from vulnerabilities.pipelines.v2_importers import mattermost_importer as mattermost_importer_v2
 from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_importer_v2

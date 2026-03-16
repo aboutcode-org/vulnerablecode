@@ -1,0 +1,24 @@
+{
+  "CVE-2023-1234": [
+    [
+      "Issue",
+      "https://github.com/aboutcode-org/vulnerablecode/issues/1697"
+    ],
+    [
+      "PR",
+      "https://github.com/aboutcode-org/vulnerablecode/pull/2163"
+    ]
+  ],
+  "GHSA-zzz-111": [
+    [
+      "PR",
+      "https://github.com/aboutcode-org/vulnerablecode/pull/2164"
+    ]
+  ],
+  "PYSEC-2024-5678": [
+    [
+      "PR",
+      "https://github.com/aboutcode-org/vulnerablecode/pull/2169"
+    ]
+  ]
+}

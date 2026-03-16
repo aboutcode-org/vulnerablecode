@@ -48,6 +48,7 @@ from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apac
 from vulnerabilities.pipelines.v2_importers import apache_tomcat_importer as apache_tomcat_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
 from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
+from vulnerabilities.pipelines.v2_importers import collect_issue_pr as collect_issue_pr_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
@@ -191,5 +192,34 @@ IMPORTERS_REGISTRY = create_registry(
         collect_fix_commits_v2.CollectGitFixCommitsPipeline,
         collect_fix_commits_v2.CollectJenkinsFixCommitsPipeline,
         collect_fix_commits_v2.CollectGitlabFixCommitsPipeline,
+        collect_issue_pr_v2.CollectBusyBoxPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectNginxPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectApacheTomcatPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectMongodbPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectRedisPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectPhpPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectPythonCpythonPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectRubyPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectGoPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectNodeJsPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectRustPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectOpenjdkPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectSwiftPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectDjangoPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectLaravelPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectSpringFrameworkPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectRailsPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectReactPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectAngularPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectDockerMobyPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectKubernetesPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectContainerdPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectAnsiblePRSIssuesPipeline,
+        collect_issue_pr_v2.CollectTerraformPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectTcpdumpPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectJenkinsPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectGitlabPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectWiresharkPRSIssuesPipeline,
+        collect_issue_pr_v2.CollectQemuPRSIssuesPipeline,
     ]
 )

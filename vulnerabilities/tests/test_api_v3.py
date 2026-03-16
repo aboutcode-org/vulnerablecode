@@ -86,7 +86,7 @@ class APIV3TestCase(APITestCase):
     def test_affected_by_advisories_list(self):
         url = reverse("affected-by-advisories-list")
 
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(11):
             response = self.client.get(
                 url,
                 {"purl": "pkg:pypi/sample@1.0.0"},

@@ -204,8 +204,8 @@ class PackageV3Serializer(serializers.ModelSerializer):
         advisories_qs = AdvisoryV2.objects.latest_affecting_advisories_for_purl(package.package_url)
 
         advisories = list(advisories_qs[:101])
-        # if len(advisories) > 100:
-        #     return None
+        if len(advisories) > 100:
+            return None
 
         advisory_by_avid = {adv.avid: adv for adv in advisories}
         avids = advisory_by_avid.keys()
@@ -241,8 +241,8 @@ class PackageV3Serializer(serializers.ModelSerializer):
         advisories_qs = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(package.package_url)
 
         advisories = list(advisories_qs[:101])
-        # if len(advisories) > 100:
-        #     return None
+        if len(advisories) > 100:
+            return None
 
         advisory_by_avid = {adv.avid: adv for adv in advisories}
         avids = advisory_by_avid.keys()

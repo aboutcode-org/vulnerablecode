@@ -90,7 +90,6 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
             for rel in advisory.related_advisory_severities.all():
                 severities.extend(rel.severities.all())
 
-
             try:
                 weighted_severity, exploitability = compute_vulnerability_risk_factors(
                     references=references,
@@ -101,7 +100,9 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
                 advisory.weighted_severity = weighted_severity
                 advisory.exploitability = exploitability
                 if advisory.exploitability and advisory.weighted_severity:
-                    risk_score = min(float(advisory.exploitability * advisory.weighted_severity), 10.0)
+                    risk_score = min(
+                        float(advisory.exploitability * advisory.weighted_severity), 10.0
+                    )
                     advisory.risk_score = round(risk_score, 1)
                 updatables.append(advisory)
             except Exception as e:

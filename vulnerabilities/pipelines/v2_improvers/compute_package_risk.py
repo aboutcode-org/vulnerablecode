@@ -8,8 +8,9 @@
 #
 from aboutcode.pipeline import LoopProgress
 from django.db.models import Prefetch
-from django.db.models import Q
 
+from vulnerabilities.models import AdvisoryExploit
+from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
@@ -36,61 +37,92 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         )
 
     def compute_and_store_vulnerability_risk_score(self):
+
         affected_advisories = (
-            AdvisoryV2.objects.filter(impacted_packages__affecting_packages__isnull=False)
+            AdvisoryV2.objects.latest_per_avid()
+            .filter(impacted_packages__affecting_packages__isnull=False)
+            .only("id")
             .prefetch_related(
-                "references",
-                "severities",
-                "exploits",
+                Prefetch(
+                    "references", queryset=AdvisoryReference.objects.only("id", "reference_type")
+                ),
+                Prefetch(
+                    "severities",
+                    queryset=AdvisorySeverity.objects.only("id", "value", "url", "scoring_system"),
+                ),
+                Prefetch("exploits", queryset=AdvisoryExploit.objects.only("id")),
                 Prefetch(
                     "related_advisory_severities",
-                    queryset=AdvisoryV2.objects.prefetch_related("severities"),
+                    queryset=AdvisoryV2.objects.only("id").prefetch_related(
+                        Prefetch(
+                            "severities",
+                            queryset=AdvisorySeverity.objects.only(
+                                "id", "value", "url", "scoring_system"
+                            ),
+                        )
+                    ),
                 ),
             )
             .distinct()
         )
 
+        estimated_vulnerability_count = affected_advisories.count()
+
         self.log(
-            f"Calculating risk for {affected_advisories.count():,d} advisory with a affected packages records"
+            f"Calculating risk for {estimated_vulnerability_count:,d} advisory with a affected packages records"
         )
 
-        progress = LoopProgress(total_iterations=affected_advisories.count(), logger=self.log)
+        progress = LoopProgress(
+            logger=self.log, total_iterations=estimated_vulnerability_count, progress_step=5
+        )
 
         updatables = []
         updated_vulnerability_count = 0
         batch_size = 5000
 
         for advisory in progress.iter(affected_advisories.iterator(chunk_size=batch_size)):
+
             references = advisory.references.all()
             exploits = advisory.exploits.all()
 
-            severities = AdvisorySeverity.objects.filter(
-                Q(advisories=advisory) | Q(advisories__related_to_advisory_severities=advisory)
-            ).distinct()
+            severities = list(advisory.severities.all())
 
-            weighted_severity, exploitability = compute_vulnerability_risk_factors(
-                references=references,
-                severities=severities,
-                exploits=exploits,
-            )
-            advisory.weighted_severity = weighted_severity
-            advisory.exploitability = exploitability
-            updatables.append(advisory)
+            for rel in advisory.related_advisory_severities.all():
+                severities.extend(rel.severities.all())
+
+
+            try:
+                weighted_severity, exploitability = compute_vulnerability_risk_factors(
+                    references=references,
+                    severities=severities,
+                    exploits=exploits,
+                )
+
+                advisory.weighted_severity = weighted_severity
+                advisory.exploitability = exploitability
+                if advisory.exploitability and advisory.weighted_severity:
+                    risk_score = min(float(advisory.exploitability * advisory.weighted_severity), 10.0)
+                    advisory.risk_score = round(risk_score, 1)
+                updatables.append(advisory)
+            except Exception as e:
+                self.log(f"Error computing risk score for advisory {advisory.advisory_id}: {e}")
 
             if len(updatables) >= batch_size:
                 updated_vulnerability_count += bulk_update(
                     model=AdvisoryV2,
                     items=updatables,
-                    fields=["weighted_severity", "exploitability"],
+                    fields=["weighted_severity", "exploitability", "risk_score"],
                     logger=self.log,
                 )
+                updatables.clear()
 
-        updated_vulnerability_count += bulk_update(
-            model=AdvisoryV2,
-            items=updatables,
-            fields=["weighted_severity", "exploitability"],
-            logger=self.log,
-        )
+        if updatables:
+            updated_vulnerability_count += bulk_update(
+                model=AdvisoryV2,
+                items=updatables,
+                fields=["weighted_severity", "exploitability", "risk_score"],
+                logger=self.log,
+            )
 
         self.log(
             f"Successfully added risk score for {updated_vulnerability_count:,d} vulnerability"
@@ -109,16 +141,18 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
 
         updatables = []
         updated_package_count = 0
-        batch_size = 10000
+        batch_size = 1000
 
         for package in progress.iter(affected_packages.iterator(chunk_size=batch_size)):
-            risk_score = compute_package_risk_v2(package)
-
-            if not risk_score:
+            try:
+                risk_score = compute_package_risk_v2(package)
+                if not risk_score:
+                    continue
+                package.risk_score = risk_score
+                updatables.append(package)
+            except Exception as e:
+                self.log(f"Error computing risk score for package {package.purl}: {e}")
                 continue
-
-            package.risk_score = risk_score
-            updatables.append(package)
 
             if len(updatables) >= batch_size:
                 updated_package_count += bulk_update(

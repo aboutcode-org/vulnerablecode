@@ -78,7 +78,7 @@ def add_vulnerability_exploit(kev_vul, logger):
             for adv in alias.advisories.all():
                 advisories.add(adv)
         else:
-            advs = AdvisoryV2.objects.filter(advisory_id=cve_id)
+            advs = AdvisoryV2.objects.filter(advisory_id=cve_id).latest_per_avid()
             for adv in advs:
                 advisories.add(adv)
     except AdvisoryAlias.DoesNotExist:

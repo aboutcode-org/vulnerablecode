@@ -27,7 +27,7 @@ class ComputeAdvisoryContentHash(VulnerableCodePipeline):
     def compute_advisory_content_hash(self):
         """Compute Advisory Content Hash for Advisory."""
 
-        advisories = AdvisoryV2.objects.filter(advisory_content_hash__isnull=True)
+        advisories = AdvisoryV2.objects.latest_per_avid().filter(advisory_content_hash__isnull=True)
 
         advisories_count = advisories.count()
 

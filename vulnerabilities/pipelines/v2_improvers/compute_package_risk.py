@@ -130,8 +130,14 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         )
 
     def compute_and_store_package_risk_score(self):
+
+        latest_advisories = AdvisoryV2.objects.latest_per_avid()
+
         qs = (
-            PackageV2.objects.filter(affected_in_impacts__advisory__risk_score__isnull=False)
+            PackageV2.objects.filter(
+                affected_in_impacts__advisory__risk_score__isnull=False,
+                affected_in_impacts__advisory__in=latest_advisories,
+            )
             .annotate(computed_risk=Max("affected_in_impacts__advisory__risk_score"))
             .only("id")
         )

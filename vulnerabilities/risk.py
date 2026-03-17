@@ -8,11 +8,12 @@
 #
 from urllib.parse import urlparse
 
-from vulnerabilities.models import AdvisoryV2, VulnerabilityReference
-from vulnerabilities.severity_systems import EPSS
-from vulnerabilities.weight_config import WEIGHT_CONFIG
 from django.db.models import Max
 
+from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.severity_systems import EPSS
+from vulnerabilities.weight_config import WEIGHT_CONFIG
 
 DEFAULT_WEIGHT = 5
 
@@ -127,9 +128,9 @@ def compute_package_risk_v2(package):
     """
 
     max_risk = (
-        AdvisoryV2.objects
-        .latest_affecting_advisories_for_purl(package.purl)
-        .aggregate(max_risk=Max("risk_score"))
+        AdvisoryV2.objects.latest_affecting_advisories_for_purl(package.purl).aggregate(
+            max_risk=Max("risk_score")
+        )
     )["max_risk"]
 
     if max_risk is None:

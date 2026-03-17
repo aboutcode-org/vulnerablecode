@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 from aboutcode.pipeline import LoopProgress
+from django.db.models import Max
 from django.db.models import Prefetch
 
 from vulnerabilities.models import AdvisoryExploit
@@ -15,7 +16,6 @@ from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.risk import compute_package_risk_v2
 from vulnerabilities.risk import compute_vulnerability_risk_factors
 
 
@@ -130,45 +130,47 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
         )
 
     def compute_and_store_package_risk_score(self):
-        affected_packages = (PackageV2.objects.filter(affected_in_impacts__isnull=False)).distinct()
+        qs = (
+            PackageV2.objects.filter(affected_in_impacts__advisory__risk_score__isnull=False)
+            .annotate(computed_risk=Max("affected_in_impacts__advisory__risk_score"))
+            .only("id")
+        )
 
-        self.log(f"Calculating risk for {affected_packages.count():,d} affected package records")
+        estimated = qs.count()
 
         progress = LoopProgress(
-            total_iterations=affected_packages.count(),
+            total_iterations=estimated,
             logger=self.log,
             progress_step=5,
         )
 
-        updatables = []
-        updated_package_count = 0
-        batch_size = 1000
+        self.log(f"Computing risk for {estimated:,d} packages")
 
-        for package in progress.iter(affected_packages.iterator(chunk_size=batch_size)):
-            try:
-                risk_score = compute_package_risk_v2(package)
-                if not risk_score:
-                    continue
-                package.risk_score = risk_score
-                updatables.append(package)
-            except Exception as e:
-                self.log(f"Error computing risk score for package {package.purl}: {e}")
-                continue
+        batch = []
+        batch_size = 5000
+        updated = 0
 
-            if len(updatables) >= batch_size:
-                updated_package_count += bulk_update(
+        for pkg in progress.iter(qs.iterator(chunk_size=batch_size)):
+
+            pkg.risk_score = round(float(pkg.computed_risk), 1)
+            batch.append(pkg)
+
+            if len(batch) >= batch_size:
+                updated += bulk_update(
                     model=PackageV2,
-                    items=updatables,
+                    items=batch,
                     fields=["risk_score"],
                     logger=self.log,
                 )
-        updated_package_count += bulk_update(
+                batch.clear()
+
+        updated += bulk_update(
             model=PackageV2,
-            items=updatables,
+            items=batch,
             fields=["risk_score"],
             logger=self.log,
         )
-        self.log(f"Successfully added risk score for {updated_package_count:,d} package")
+        self.log(f"Successfully added risk score for {updated:,d} package")
 
 
 def bulk_update(model, items, fields, logger):

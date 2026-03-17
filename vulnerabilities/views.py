@@ -210,18 +210,19 @@ class PackageV2Details(DetailView):
         context["latest_non_vulnerable"] = latest_non_vulnerable
         context["package_search_form"] = PackageSearchForm(self.request.GET)
 
-        affected_by_advisories = models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(
+        affected_by_advisories_qs = models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(
             package.package_url
         )
 
-        fixing_advisories = models.AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
+        fixing_advisories_qs = models.AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
             package.package_url
         )
 
         affected_by_advisories_url = None
         fixing_advisories_url = None
 
-        if affected_by_advisories.count() > 100:
+        affected_by_advisories = list(affected_by_advisories_qs[:101])
+        if len(affected_by_advisories) > 100:
             affected_by_advisories_url = reverse_lazy(
                 "affected_by_advisories_v2", kwargs={"purl": package.package_url}
             )
@@ -232,7 +233,7 @@ class PackageV2Details(DetailView):
         else:
             fixed_pkg_details = get_fixed_package_details(package)
             affected_avid_by_hash = {}
-            affected_avid_by_hash = group_advisories_by_content(affected_by_advisories)
+            affected_avid_by_hash = group_advisories_by_content(affected_by_advisories_qs)
             affecting_advs = []
 
             for hash in affected_avid_by_hash:
@@ -241,7 +242,8 @@ class PackageV2Details(DetailView):
             context["fixed_package_details"] = fixed_pkg_details
             context["affected_by_advisories_v2_url"] = None
 
-        if fixing_advisories.count() > 100:
+        fixing_advisories = list(fixing_advisories_qs[:101])
+        if len(fixing_advisories) > 100:
             fixing_advisories_url = reverse_lazy(
                 "fixing_advisories_v2", kwargs={"purl": package.package_url}
             )
@@ -250,7 +252,7 @@ class PackageV2Details(DetailView):
 
         else:
             fixing_avid_by_hash = {}
-            fixing_avid_by_hash = group_advisories_by_content(fixing_advisories)
+            fixing_avid_by_hash = group_advisories_by_content(fixing_advisories_qs)
             fixing_advs = []
 
             for hash in fixing_avid_by_hash:

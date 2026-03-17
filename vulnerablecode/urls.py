@@ -32,7 +32,9 @@ from vulnerabilities.api_v3 import PackageV3ViewSet
 from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
+from vulnerabilities.views import AffectedByAdvisoriesListView
 from vulnerabilities.views import ApiUserCreateView
+from vulnerabilities.views import FixingAdvisoriesListView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2
 from vulnerabilities.views import PackageDetails
@@ -141,6 +143,16 @@ urlpatterns = [
         r"^packages/v2/(?P<purl>pkg:.+)$",
         PackageV2Details.as_view(),
         name="package_details_v2",
+    ),
+    re_path(
+        r"^fixing-advisories/v2/(?P<purl>pkg:.+)$",
+        FixingAdvisoriesListView.as_view(),
+        name="fixing_advisories_v2",
+    ),
+    re_path(
+        r"^affected-by-advisories/v2/(?P<purl>pkg:.+)$",
+        AffectedByAdvisoriesListView.as_view(),
+        name="affected_by_advisories_v2",
     ),
     path(
         "vulnerabilities/search/",

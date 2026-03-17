@@ -3047,17 +3047,13 @@ class AdvisoryV2(models.Model):
         help_text="A unique hash computed from the content of the advisory used to identify advisories with the same content.",
     )
 
-    @property
-    def risk_score(self):
-        """
-        Risk expressed as a number ranging from 0 to 10.
-        Risk is calculated from weighted severity and exploitability values.
-        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
-        Risk = min(weighted severity * exploitability, 10)
-        """
-        if self.exploitability and self.weighted_severity:
-            risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
-            return round(risk_score, 1)
+    risk_score = models.DecimalField(
+        null=True,
+        blank=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Risk expressed as a number ranging from 0 to 10. Risk is calculated from weighted severity and exploitability values. It is the maximum value of (the weighted severity multiplied by its exploitability) or 10. Risk = min(weighted severity * exploitability, 10)",
+    )
 
     objects = AdvisoryV2QuerySet.as_manager()
 

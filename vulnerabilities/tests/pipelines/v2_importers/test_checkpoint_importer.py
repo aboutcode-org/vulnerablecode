@@ -79,7 +79,6 @@ class TestParseTableRows(TestCase):
         assert SAMPLE_ROWS[0]["advisory_url"].endswith("cpai-2026-1780.html")
 
     def test_cve_id_stripped_of_extra_text(self):
-        # "CVE-2025-33603 (and 2 others)" should be stripped to "CVE-2025-33603"
         assert SAMPLE_ROWS[2]["cve_id"] == "CVE-2025-33603"
 
     def test_returns_empty_list_for_missing_table(self):
@@ -136,7 +135,6 @@ class TestParseAdvisory(TestCase):
         advisory = parse_advisory(self.row)
         parsed = json.loads(advisory.original_advisory_text)
         assert parsed["advisory_id"] == "CPAI-2026-1780"
-        # pretty-printed: should have newlines
         assert "\n" in advisory.original_advisory_text
 
     def test_missing_id_returns_none(self):

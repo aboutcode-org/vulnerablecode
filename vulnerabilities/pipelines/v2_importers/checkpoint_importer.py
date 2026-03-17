@@ -94,9 +94,6 @@ def fetch_all_advisory_rows(log_fn) -> Iterable[dict]:
 
     soup = BeautifulSoup(resp.text, features="lxml")
     years = get_available_years(soup)
-    if not years:
-        log_fn("No years found on advisories page")
-        return
 
     for year in years:
         url = f"{ADVISORY_LIST_URL}?year={year}"
@@ -132,7 +129,6 @@ def parse_table_rows(html: str) -> list:
     rows = []
     for tr in table.find_all("tr")[1:]:
         cells = tr.find_all("td")
-        # 7 cols: Severity, Date Published, Date Updated, CPAI Ref, Source, Industry Ref, Description
         if len(cells) < 7:
             continue
 
@@ -146,7 +142,6 @@ def parse_table_rows(html: str) -> list:
 
         cve_link = cells[5].find("a")
         cve_text = cve_link.get_text(strip=True) if cve_link else cells[5].get_text(strip=True)
-        # strip " (and N others)" if present
         cve_id = cve_text.split(" (")[0].strip()
 
         summary_link = cells[6].find("a")

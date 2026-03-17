@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="is-max-desktop mb-3">
+    <section class="mx-5">
+        <div class="is-flex" style="justify-content: space-between;">
+            <div>
+                {{ page_obj.paginator.count|intcomma }} results
+            </div>
+            {% if is_paginated %}
+                {% include 'includes/pagination.html' with page_obj=page_obj %}
+            {% endif %}
+        </div>
+    </section>
+</div>
+
+<section class="section pt-0">
+    <div class="content">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th style="width: 200px;">Advisory</th>
+                                    <th style="width: 225px;">Source</th>
+                                    <th style="width: 225px;">Date Published</th>
+                                    <th>Summary</th>
+                                    <th style="width: 225px;">Aliases</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for advisory in page_obj %}
+                                <tr>
+                                    <td>
+                                        <a href="{{advisory.get_absolute_url}}">
+                                            {{advisory.avid }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href={{advisory.url}} target="_blank">{{advisory.url}}</a>
+                                    </td>
+                                    <td>
+                                        {{advisory.date_published}}
+                                    </td>
+                                    <td>
+                                        {{ advisory.summary }}
+                                    </td>
+                                    <td>
+                                        {% for alias in advisory.alias %}
+                                        {% if alias.url %}
+                                        <a href="{{ alias.url }}" target="_blank">{{ alias }}<i
+                                                class="fa fa-external-link fa_link_custom"></i></a>
+                                        <br />
+                                        {% else %}
+                                        {{ alias }}
+                                        <br />
+                                        {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">
+                                        This package is not known to fix any advisories.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+    </div>
+
+{% if is_paginated %}
+    {% include 'includes/pagination.html' with page_obj=page_obj %}
+{% endif %}
+{% endblock %}
+</section>

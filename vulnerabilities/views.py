@@ -78,34 +78,6 @@ class PackageSearch(ListView):
         )
 
 
-class PackageSearchV2(ListView):
-    model = models.PackageV2
-    template_name = "packages_v2.html"
-    ordering = ["type", "namespace", "name", "version"]
-    paginate_by = PAGE_SIZE
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        request_query = self.request.GET
-        context["package_search_form"] = PackageSearchForm(request_query)
-        context["search"] = request_query.get("search")
-        return context
-
-    def get_queryset(self, query=None):
-        """
-        Return a Package queryset for the ``query``.
-        Make a best effort approach to find matching packages either based
-        on exact purl, partial purl or just name and namespace.
-        """
-        query = query or self.request.GET.get("search") or ""
-        return (
-            self.model.objects.search(query)
-            .prefetch_related()
-            .order_by("package_url")
-            .with_is_vulnerable()
-        )
-
-
 class VulnerabilitySearch(ListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
@@ -116,24 +88,6 @@ class VulnerabilitySearch(ListView):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
         context["vulnerability_search_form"] = VulnerabilitySearchForm(request_query)
-        context["search"] = request_query.get("search")
-        return context
-
-    def get_queryset(self, query=None):
-        query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query=query).with_package_counts()
-
-
-class AdvisorySearch(ListView):
-    model = models.AdvisoryV2
-    template_name = "vulnerabilities.html"
-    ordering = ["advisory_id"]
-    paginate_by = PAGE_SIZE
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        request_query = self.request.GET
-        context["advisory_search_form"] = VulnerabilitySearchForm(request_query)
         context["search"] = request_query.get("search")
         return context
 
@@ -183,6 +137,62 @@ class PackageDetails(DetailView):
         return package
 
 
+class PackageSearchV2(ListView):
+    model = models.PackageV2
+    template_name = "packages_v2.html"
+    ordering = ["type", "namespace", "name", "version"]
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["package_search_form"] = PackageSearchForm(request_query)
+        context["search"] = request_query.get("search")
+        return context
+
+    def get_queryset(self, query=None):
+        """
+        Return a Package queryset for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
+        query = query or self.request.GET.get("search") or ""
+        return (
+            self.model.objects.search(query)
+            .prefetch_related()
+            .order_by("package_url")
+            .with_is_vulnerable()
+        )
+
+
+class AffectedByAdvisoriesListView(ListView):
+    model = models.AdvisoryV2
+    template_name = "affected_by_advisories.html"
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        purl = self.kwargs.get("purl")
+        package = models.PackageV2.objects.for_purl(purl).first()
+        context["fixed_package_details"] = get_fixed_package_details(package)
+        return context
+
+    def get_queryset(self):
+        purl = self.kwargs.get("purl")
+        print(purl)
+        return models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(purl)
+
+
+class FixingAdvisoriesListView(ListView):
+    model = models.AdvisoryV2
+    template_name = "fixing_advisories.html"
+    paginate_by = PAGE_SIZE
+
+    def get_queryset(self):
+        purl = self.kwargs.get("purl")
+        return models.AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(purl)
+
+
 class PackageV2Details(DetailView):
     model = models.PackageV2
     template_name = "package_details_v2.html"
@@ -192,74 +202,13 @@ class PackageV2Details(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         package = self.object
+
         next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions()
-
-        (
-            fixed_pkg_details,
-            affected_by_advisories,
-            fixing_advisories,
-        ) = self.get_fixed_package_details(package)
-
-        affected_avid_by_hash = {}
-        fixing_avid_by_hash = {}
-
-        affected_avid_by_hash = group_advisories_by_content(affected_by_advisories)
-        fixing_avid_by_hash = group_advisories_by_content(fixing_advisories)
-
-        affecting_advs = []
-
-        for hash in affected_avid_by_hash:
-            affecting_advs.append(affected_avid_by_hash[hash])
-
-        fixing_advs = []
-
-        for hash in fixing_avid_by_hash:
-            fixing_advs.append(fixing_avid_by_hash[hash])
 
         context["package"] = package
         context["next_non_vulnerable"] = next_non_vulnerable
         context["latest_non_vulnerable"] = latest_non_vulnerable
-        context["affected_by_advisories_v2"] = affecting_advs
-        context["fixing_advisories_v2"] = fixing_advs
-
         context["package_search_form"] = PackageSearchForm(self.request.GET)
-        context["fixed_package_details"] = fixed_pkg_details
-
-        return context
-
-    def get_fixed_package_details(self, package):
-        rows = package.affected_in_impacts.values_list(
-            "advisory__avid",
-            "fixed_by_packages",
-        )
-
-        pkg_ids = {pkg_id for _, pkg_id in rows if pkg_id}
-
-        pkg_map = {
-            p.id: p
-            for p in models.PackageV2.objects.filter(id__in=pkg_ids).annotate(
-                is_vulnerable=Exists(
-                    models.ImpactedPackage.objects.filter(affecting_packages=OuterRef("pk"))
-                )
-            )
-        }
-
-        fixed_pkg_details = defaultdict(list)
-
-        for avid, pkg_id in rows:
-            if not pkg_id:
-                continue
-
-            pkg = pkg_map.get(pkg_id)
-            if not pkg:
-                continue
-
-            fixed_pkg_details[avid].append(
-                {
-                    "pkg": pkg,
-                    "is_vulnerable": pkg.is_vulnerable,
-                }
-            )
 
         affected_by_advisories = models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(
             package.package_url
@@ -269,7 +218,47 @@ class PackageV2Details(DetailView):
             package.package_url
         )
 
-        return fixed_pkg_details, affected_by_advisories, fixing_advisories
+        affected_by_advisories_url = None
+        fixing_advisories_url = None
+
+        if affected_by_advisories.count() > 100:
+            affected_by_advisories_url = reverse_lazy(
+                "affected_by_advisories_v2", kwargs={"purl": package.package_url}
+            )
+            context["affected_by_advisories_v2_url"] = affected_by_advisories_url
+            context["affected_by_advisories_v2"] = []
+            context["fixed_package_details"] = {}
+
+        else:
+            fixed_pkg_details = get_fixed_package_details(package)
+            affected_avid_by_hash = {}
+            affected_avid_by_hash = group_advisories_by_content(affected_by_advisories)
+            affecting_advs = []
+
+            for hash in affected_avid_by_hash:
+                affecting_advs.append(affected_avid_by_hash[hash])
+            context["affected_by_advisories_v2"] = affecting_advs
+            context["fixed_package_details"] = fixed_pkg_details
+            context["affected_by_advisories_v2_url"] = None
+
+        if fixing_advisories.count() > 100:
+            fixing_advisories_url = reverse_lazy(
+                "fixing_advisories_v2", kwargs={"purl": package.package_url}
+            )
+            context["fixing_advisories_v2_url"] = fixing_advisories_url
+            context["fixing_advisories_v2"] = []
+
+        else:
+            fixing_avid_by_hash = {}
+            fixing_avid_by_hash = group_advisories_by_content(fixing_advisories)
+            fixing_advs = []
+
+            for hash in fixing_avid_by_hash:
+                fixing_advs.append(fixing_avid_by_hash[hash])
+            context["fixing_advisories_v2"] = fixing_advs
+            context["fixing_advisories_v2_url"] = None
+
+        return context
 
     def get_queryset(self):
         return (
@@ -305,6 +294,43 @@ class PackageV2Details(DetailView):
         except queryset.model.DoesNotExist:
             raise Http404(f"No Package found for purl: {purl}")
         return package
+
+
+def get_fixed_package_details(package):
+    rows = package.affected_in_impacts.values_list(
+        "advisory__avid",
+        "fixed_by_packages",
+    )
+
+    pkg_ids = {pkg_id for _, pkg_id in rows if pkg_id}
+
+    pkg_map = {
+        p.id: p
+        for p in models.PackageV2.objects.filter(id__in=pkg_ids).annotate(
+            is_vulnerable=Exists(
+                models.ImpactedPackage.objects.filter(affecting_packages=OuterRef("pk"))
+            )
+        )
+    }
+
+    fixed_pkg_details = defaultdict(list)
+
+    for avid, pkg_id in rows:
+        if not pkg_id:
+            continue
+
+        pkg = pkg_map.get(pkg_id)
+        if not pkg:
+            continue
+
+        fixed_pkg_details[avid].append(
+            {
+                "pkg": pkg,
+                "is_vulnerable": pkg.is_vulnerable,
+            }
+        )
+
+    return fixed_pkg_details
 
 
 class VulnerabilityDetails(DetailView):

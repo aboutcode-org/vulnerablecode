@@ -2862,37 +2862,58 @@ class AdvisoryV2QuerySet(BaseQuerySet):
         )
 
     def latest_per_avid(self):
-        latest_ids = (
-            self.filter(avid=OuterRef("avid"))
-            .order_by(
-                F("date_collected").desc(nulls_last=True),
-                "-id",
-            )
-            .values("id")[:1]
-        )
-
-        return self.filter(id=Subquery(latest_ids))
+        return self.order_by(
+            "avid",
+            F("date_collected").desc(nulls_last=True),
+            "-id",
+        ).distinct("avid")
 
     def latest_for_avids(self, avids):
         return self.filter(avid__in=avids).latest_per_avid()
 
     def latest_affecting_advisories_for_purl(self, purl):
-        return self.filter(
-            impacted_packages__affecting_packages__package_url=purl
-        ).latest_per_avid()
+        affecting_exists = ImpactedPackageAffecting.objects.filter(
+            impacted_package__advisory_id=OuterRef("pk"),
+            package__package_url=purl,
+        )
+
+        return (
+            self.annotate(has_affecting=Exists(affecting_exists))
+            .filter(has_affecting=True)
+            .latest_per_avid()
+        )
 
     def latest_affecting_advisories_for_purls(self, purls):
-        return self.filter(
-            impacted_packages__affecting_packages__package_url__in=purls
-        ).latest_per_avid()
+        affecting_exists = ImpactedPackageAffecting.objects.filter(
+            impacted_package__advisory_id=OuterRef("pk"),
+            package__package_url__in=purls,
+        )
+
+        return (
+            self.annotate(has_affecting=Exists(affecting_exists))
+            .filter(has_affecting=True)
+            .latest_per_avid()
+        )
 
     def latest_fixed_by_advisories_for_purl(self, purl):
-        return self.filter(impacted_packages__fixed_by_packages__package_url=purl).latest_per_avid()
+        fixed_exists = ImpactedPackageFixedBy.objects.filter(
+            impacted_package__advisory_id=OuterRef("pk"),
+            package__package_url=purl,
+        )
+
+        return (
+            self.annotate(has_fixed=Exists(fixed_exists)).filter(has_fixed=True).latest_per_avid()
+        )
 
     def latest_fixed_by_advisories_for_purls(self, purls):
-        return self.filter(
-            impacted_packages__fixed_by_packages__package_url__in=purls
-        ).latest_per_avid()
+        fixed_exists = ImpactedPackageFixedBy.objects.filter(
+            impacted_package__advisory_id=OuterRef("pk"),
+            package__package_url__in=purls,
+        )
+
+        return (
+            self.annotate(has_fixed=Exists(fixed_exists)).filter(has_fixed=True).latest_per_avid()
+        )
 
     def latest_advisories_for_purl(self, purl):
         return self.filter(

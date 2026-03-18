@@ -1,0 +1,103 @@
+{
+  "@context": "https://security.alpinelinux.org/static/context.jsonld",
+  "cpeMatch": [
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "cpeUri": "",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#cpeMatch/940449",
+      "maximumVersion": "2.10",
+      "maximumVersionOp": "<=",
+      "minimumVersion": "0",
+      "minimumVersionOp": ">=",
+      "package": "https://security.alpinelinux.org/srcpkg/net-tools",
+      "type": "CPEMatch",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2025-46836"
+    }
+  ],
+  "cvss3": {
+    "score": 6.6,
+    "vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:H"
+  },
+  "description": "net-tools is a collection of programs that form the base set of the NET-3 networking distribution for the Linux operating system. Inn versions up to and including 2.10, the Linux network utilities (like ifconfig) from the net-tools package do not properly validate the structure of /proc files when showing interfaces. `get_name()` in `interface.c` copies interface labels from `/proc/net/dev` into a fixed 16-byte stack buffer without bounds checking, leading to possible arbitrary code execution or crash. The known attack path does not require privilege but also does not provide privilege escalation in this scenario. A patch is available and expected to be part of version 2.20.",
+  "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836",
+  "ref": [
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#ref/588613",
+      "referenceType": "MISC",
+      "rel": "https://github.com/ecki/net-tools/commit/7a8f42fb20013a1493d8cae1c43436f85e656f2d",
+      "type": "Reference"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#ref/588614",
+      "referenceType": "CONFIRM",
+      "rel": "https://github.com/ecki/net-tools/security/advisories/GHSA-pfwf-h6m3-63wf",
+      "type": "Reference"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#ref/593944",
+      "referenceType": "af854a3a-2127-422b-91ae-364da2661108",
+      "rel": "https://lists.debian.org/debian-lts-announce/2025/05/msg00053.html",
+      "type": "Reference"
+    }
+  ],
+  "state": [
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#state/108203",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/net-tools/2.10-r3",
+      "repo": "edge-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2025-46836"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#state/415014",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/net-tools/2.10-r3",
+      "repo": "3.23-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2025-46836"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#state/125956",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/net-tools/2.10-r3",
+      "repo": "3.22-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2025-46836"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#state/127510",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/net-tools/2.10-r3",
+      "repo": "3.21-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2025-46836"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#state/127996",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/net-tools/2.10-r3",
+      "repo": "3.20-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2025-46836"
+    },
+    {
+      "@context": "https://security.alpinelinux.org/static/context.jsonld",
+      "fixed": false,
+      "id": "https://security.alpinelinux.org/vuln/CVE-2025-46836#state/128449",
+      "packageVersion": "https://security.alpinelinux.org/srcpkg/net-tools/2.10-r3",
+      "repo": "3.19-main",
+      "type": "VulnerabilityState",
+      "vuln": "https://security.alpinelinux.org/vuln/CVE-2025-46836"
+    }
+  ],
+  "type": "Vulnerability"
+}

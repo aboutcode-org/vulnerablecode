@@ -3387,7 +3387,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages that are vulnerable.
         """
-        return self.filter(affected_in_impacts__isnull=False)
+        return self.filter(id__in=ImpactedPackageAffecting.objects.values("package_id").distinct())
 
     def with_is_vulnerable(self):
         """

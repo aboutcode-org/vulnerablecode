@@ -179,7 +179,11 @@ class AffectedByAdvisoriesListView(ListView):
 
     def get_queryset(self):
         purl = self.kwargs.get("purl")
-        return models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(purl).only("advisory_id", "summary", "url", "date_published").prefetch_related("aliases")
+        return (
+            models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(purl)
+            .only("advisory_id", "summary", "url", "date_published")
+            .prefetch_related("aliases")
+        )
 
 
 class FixingAdvisoriesListView(ListView):
@@ -189,7 +193,11 @@ class FixingAdvisoriesListView(ListView):
 
     def get_queryset(self):
         purl = self.kwargs.get("purl")
-        return models.AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(purl).only("advisory_id", "summary", "url", "date_published").prefetch_related("aliases")
+        return (
+            models.AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(purl)
+            .only("advisory_id", "summary", "url", "date_published")
+            .prefetch_related("aliases")
+        )
 
 
 class PackageV2Details(DetailView):

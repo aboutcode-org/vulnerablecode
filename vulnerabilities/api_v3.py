@@ -207,11 +207,13 @@ class PackageV3Serializer(serializers.ModelSerializer):
         """Return a dictionary with advisory as keys and their details, including fixed_by_packages."""
         advisories_qs = AdvisoryV2.objects.latest_affecting_advisories_for_purl(package.package_url)
 
-        advisories = list(advisories_qs[:101])
-        if len(advisories) > 100:
+        advisories_ids = advisories_qs.only("id")
+
+        advisories_ids = list(advisories_ids[:101])
+        if len(advisories_ids) > 100:
             return None
 
-        advisory_by_avid = {adv.avid: adv for adv in advisories}
+        advisory_by_avid = {adv.avid: adv for adv in advisories_qs}
         avids = advisory_by_avid.keys()
 
         impacts = (
@@ -222,7 +224,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
         impact_by_avid = {impact.advisory.avid: impact for impact in impacts}
 
-        grouped = group_advisories_by_content(advisories)
+        grouped = group_advisories_by_content(advisories_qs)
 
         result = []
         for entry in grouped.values():
@@ -244,30 +246,17 @@ class PackageV3Serializer(serializers.ModelSerializer):
     def get_fixing_vulnerabilities(self, package):
         advisories_qs = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(package.package_url)
 
-        advisories = list(advisories_qs[:101])
-        if len(advisories) > 100:
+        advisories_ids = advisories_qs.only("id")
+
+        advisories_ids = list(advisories_ids[:101])
+        if len(advisories_ids) > 100:
             return None
 
-        advisory_by_avid = {adv.avid: adv for adv in advisories}
-        avids = advisory_by_avid.keys()
-
-        impacts = (
-            package.fixed_in_impacts.filter(advisory__avid__in=avids)
-            .select_related("advisory")
-            .prefetch_related("fixed_by_packages")
-        )
-
-        impact_by_avid = {impact.advisory.avid: impact for impact in impacts}
-
-        grouped = group_advisories_by_content(advisories)
+        grouped = group_advisories_by_content(advisories_qs)
 
         result = []
         for entry in grouped.values():
             primary = entry["primary"]
-            impact = impact_by_avid.get(primary.avid)
-            if not impact:
-                continue
-
             result.append(
                 {
                     "advisory_id": primary.avid,
@@ -301,14 +290,24 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
         approximate = serializer.validated_data["approximate"]
 
         if not purls:
-            vulnerable_purls = (
-                PackageV2.objects.vulnerable()
-                .only("package_url")
-                .distinct()
+            pkg_ids = (
+                PackageV2.objects.vulnerable().values_list("id", flat=True)
+                # .distinct()
+            )
+
+            # vulnerable_purls = (
+            #     PackageV2.objects.vulnerable()
+            #     .only("package_url")
+            #     .values_list("package_url", flat=True)
+            #     .distinct()
+            #     .order_by("package_url")
+            # )
+            query = (
+                PackageV2.objects.filter(id__in=pkg_ids)
                 .values_list("package_url", flat=True)
                 .order_by("package_url")
             )
-            page = self.paginate_queryset(vulnerable_purls)
+            page = self.paginate_queryset(query)
             return self.get_paginated_response(page)
 
         plain_purls = None

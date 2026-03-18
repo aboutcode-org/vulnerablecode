@@ -53,7 +53,7 @@ class APIV3TestCase(APITestCase):
     def test_packages_post_with_details(self):
         url = reverse("package-v3-list")
 
-        with self.assertNumQueries(21):
+        with self.assertNumQueries(23):
             response = self.client.post(
                 url,
                 data={
@@ -174,7 +174,7 @@ class APIV3TestCaseOnePackageMultipleAdvisories(APITestCase):
     def test_packages_post_purl_with_many_advisories(self):
         url = reverse("package-v3-list")
 
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(12):
             response = self.client.post(
                 url,
                 data={

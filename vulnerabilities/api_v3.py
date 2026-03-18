@@ -9,6 +9,7 @@
 
 from urllib.parse import urlencode
 
+from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from packageurl import PackageURL
 from rest_framework import serializers
@@ -90,7 +91,11 @@ class AdvisoryWeaknessSerializer(serializers.ModelSerializer):
 
 
 class AdvisoryV3Serializer(serializers.ModelSerializer):
-    aliases = serializers.SerializerMethodField()
+    aliases = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field="alias",
+    )
     weaknesses = AdvisoryWeaknessSerializer(many=True)
     references = AdvisoryReferenceSerializer(many=True)
     severities = AdvisorySeveritySerializer(many=True)
@@ -98,13 +103,12 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
     related_ssvc_trees = serializers.SerializerMethodField()
 
     def get_related_ssvc_trees(self, obj):
-        related_ssvcs = obj.related_ssvcs.all().select_related("source_advisory")
-        source_ssvcs = obj.source_ssvcs.all().select_related("source_advisory")
-
         seen = set()
         result = []
 
-        for ssvc in list(related_ssvcs) + list(source_ssvcs):
+        all_ssvcs = list(obj.related_ssvcs.all()) + list(obj.source_ssvcs.all())
+
+        for ssvc in all_ssvcs:
             key = (ssvc.vector, ssvc.source_advisory_id)
             if key in seen:
                 continue
@@ -399,7 +403,34 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
 
         purls = serializer.validated_data["purls"]
 
-        latest_advisories = AdvisoryV2.objects.latest_advisories_for_purls(purls=purls)
+        latest_advisories = AdvisoryV2.objects.latest_advisories_for_purls(
+            purls=purls
+        ).prefetch_related(
+            Prefetch(
+                "references",
+                queryset=AdvisoryReference.objects.only(
+                    "id",
+                    "url",
+                    "reference_type",
+                    "reference_id",
+                ),
+            ),
+            Prefetch(
+                "severities",
+                queryset=AdvisorySeverity.objects.only(
+                    "id",
+                    "url",
+                    "value",
+                    "scoring_system",
+                    "scoring_elements",
+                    "published_at",
+                ),
+            ),
+            "weaknesses",
+            "aliases",
+            "related_ssvcs__source_advisory",
+            "source_ssvcs__source_advisory",
+        )
 
         page = self.paginate_queryset(latest_advisories)
         serializer = self.get_serializer(page, many=True, context={"request": request})

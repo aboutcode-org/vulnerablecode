@@ -24,6 +24,17 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import Reference
 
 logger = logging.getLogger(__name__)
+RANGE_TO_COMPARATOR = {
+    "lt": "<",
+    "gt": ">",
+    "le": "<=",
+    "ge": ">=",
+    "eq": "=",
+    "rlt": "<",
+    "rgt": ">",
+    "rle": "<=",
+    "rge": ">=",
+}
 
 
 class GentooImporter(Importer):
@@ -69,18 +80,17 @@ class GentooImporter(Importer):
 
             if child.tag == "affected":
                 affected_packages = list(self.affected_and_safe_purls(child))
-
-        # It is very inefficient, to create new Advisory for each CVE
-        # this way, but there seems no alternative.
         for cve in cves:
             yield AdvisoryData(
                 aliases=[cve],
                 summary=summary,
                 references=vuln_references,
                 affected_packages=affected_packages,
-                url=f"https://security.gentoo.org/glsa/{id}"
-                if id
-                else "https://security.gentoo.org/glsa",
+                url=(
+                    f"https://security.gentoo.org/glsa/{id}"
+                    if id
+                    else "https://security.gentoo.org/glsa"
+                ),
             )
 
     @staticmethod
@@ -96,69 +106,49 @@ class GentooImporter(Importer):
 
     @staticmethod
     def affected_and_safe_purls(affected_elem):
-        constraints = []
+        skip_versions = {"1.3*", "7.3*", "7.4*"}
         for pkg in affected_elem:
             name = pkg.attrib.get("name")
             if not name:
                 continue
             pkg_ns, _, pkg_name = name.rpartition("/")
             purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns)
-            safe_versions, affected_versions = GentooImporter.get_safe_and_affected_versions(pkg)
 
-            for version in safe_versions:
-                try:
-                    constraints.append(
-                        VersionConstraint(version=GentooVersion(version), comparator="=").invert()
-                    )
-                except InvalidVersion as e:
-                    logger.error(f"Invalid safe_version {version} - error: {e}")
+            constraints = []
+            for info in pkg:
+                if info.tag not in ("unaffected", "vulnerable"):
+                    continue
 
-            for version in affected_versions:
+                version_str = info.text.strip() if info.text else ""
+                if not version_str or version_str in skip_versions:
+                    continue
+
+                range_op = info.attrib.get("range")
+                if not range_op:
+                    continue
+
+                comparator = RANGE_TO_COMPARATOR.get(range_op)
+                if not comparator:
+                    logger.error(f"Unknown Gentoo range operator: {range_op!r}")
+                    continue
+
                 try:
-                    constraints.append(
-                        VersionConstraint(version=GentooVersion(version), comparator="=")
-                    )
+                    version = GentooVersion(version_str)
                 except InvalidVersion as e:
-                    logger.error(f"Invalid affected_version {version} - error: {e}")
+                    logger.error(f"Invalid version {version_str!r}: {e}")
+                    continue
+
+                constraint = VersionConstraint(version=version, comparator=comparator)
+
+                if info.tag == "unaffected":
+                    constraint = constraint.invert()
+
+                constraints.append(constraint)
 
             if not constraints:
                 continue
 
             yield AffectedPackage(
-                package=purl, affected_version_range=EbuildVersionRange(constraints=constraints)
+                package=purl,
+                affected_version_range=EbuildVersionRange(constraints=constraints),
             )
-
-    @staticmethod
-    def get_safe_and_affected_versions(pkg):
-        # TODO : Revisit why we are skipping some versions in gentoo importer
-        skip_versions = {"1.3*", "7.3*", "7.4*"}
-        safe_versions = set()
-        affected_versions = set()
-        for info in pkg:
-            if info.text in skip_versions:
-                continue
-
-            if info.attrib.get("range"):
-                if len(info.attrib.get("range")) > 2:
-                    continue
-
-            if info.tag == "unaffected":
-                # quick hack, to know whether this
-                # version lies in this range, 'e' stands for
-                # equal, which is paired with 'greater' or 'less'.
-                # All possible values of info.attrib['range'] =
-                # {'gt', 'lt', 'rle', 'rge', 'rgt', 'le', 'ge', 'eq'}, out of
-                # which ('rle', 'rge', 'rgt') are ignored, because they compare
-                # 'release' not the 'version'.
-                if "e" in info.attrib["range"]:
-                    safe_versions.add(info.text)
-                else:
-                    affected_versions.add(info.text)
-
-            elif info.tag == "vulnerable":
-                if "e" in info.attrib["range"]:
-                    affected_versions.add(info.text)
-                else:
-                    safe_versions.add(info.text)
-
-        return safe_versions, affected_versions

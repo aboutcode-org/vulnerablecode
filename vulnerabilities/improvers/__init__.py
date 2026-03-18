@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from vulnerabilities.improvers import gentoo
 from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import add_cvss31_to_CVEs
@@ -55,6 +56,7 @@ IMPROVERS_REGISTRY = create_registry(
         valid_versions.GithubOSVImprover,
         vulnerability_status.VulnerabilityStatusImprover,
         valid_versions.CurlImprover,
+        gentoo.GentooBasicImprover,
         flag_ghost_packages.FlagGhostPackagePipeline,
         enhance_with_kev.VulnerabilityKevPipeline,
         enhance_with_metasploit.MetasploitImproverPipeline,

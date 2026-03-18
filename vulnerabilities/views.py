@@ -18,6 +18,7 @@ from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import F
 from django.db.models import Prefetch
+from django.db.models import Q
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -33,6 +34,7 @@ from vulnerabilities import models
 from vulnerabilities.forms import AdminLoginForm
 from vulnerabilities.forms import AdvisorySearchForm
 from vulnerabilities.forms import ApiUserCreationForm
+from vulnerabilities.forms import DetectionRuleSearchForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
@@ -139,6 +141,37 @@ class AdvisorySearch(ListView):
     def get_queryset(self, query=None):
         query = query or self.request.GET.get("search") or ""
         return self.model.objects.search(query=query).with_package_counts()
+
+
+class DetectionRuleSearch(ListView):
+    model = models.DetectionRule
+    template_name = "detection_rules.html"
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["detection_search_form"] = DetectionRuleSearchForm(request_query)
+        context["search"] = request_query.get("search")
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = DetectionRuleSearchForm(self.request.GET)
+        if form.is_valid():
+            rule_type = form.cleaned_data.get("rule_type")
+            advisory_avid = form.cleaned_data.get("advisory_avid")
+            rule_text = form.cleaned_data.get("rule_text_contains")
+
+            if rule_type:
+                queryset = queryset.filter(rule_type=rule_type)
+
+            if advisory_avid:
+                queryset = queryset.filter(advisory__avid=advisory_avid)
+
+            if rule_text:
+                queryset = queryset.filter(rule_text__icontains=rule_text)
+        return queryset
 
 
 class PackageDetails(DetailView):

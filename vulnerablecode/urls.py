@@ -31,6 +31,7 @@ from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import ApiUserCreateView
+from vulnerabilities.views import DetectionRuleSearch
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2
 from vulnerabilities.views import PackageDetails
@@ -116,6 +117,11 @@ urlpatterns = [
         "advisories/<path:avid>",
         AdvisoryDetails.as_view(),
         name="advisory_details",
+    ),
+    path(
+        "rules/search/",
+        DetectionRuleSearch.as_view(),
+        name="detection_rule_search",
     ),
     path(
         "packages/search/",

@@ -1401,18 +1401,27 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(PackageV3Serializer(qs, many=True, context={"request": request}).data)
 
 
-class DetectionRuleSerializer(serializers.ModelSerializer):
-    advisory_avid = serializers.ReadOnlyField(source='advisory.avid')
+class DetectionRuleFilter(filters.FilterSet):
+    advisory_avid = filters.CharFilter(field_name="advisory__avid", lookup_expr="exact")
+
+    rule_text_contains = filters.CharFilter(field_name="rule_text", lookup_expr="icontains")
 
     class Meta:
         model = DetectionRule
-        fields = ["id", "rule_type", "source_url", "rule_metadata", "rule_text", "advisory_avid"]
+        fields = ["rule_type"]
+
+
+class DetectionRuleSerializer(serializers.ModelSerializer):
+    advisory_avid = serializers.ReadOnlyField(source="advisory.avid", allow_null=True)
+
+    class Meta:
+        model = DetectionRule
+        fields = ["rule_type", "source_url", "rule_metadata", "rule_text", "advisory_avid"]
 
 
 class DetectionRuleViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint that allows Detection Rules to be viewed or edited.
-    """
-
     queryset = DetectionRule.objects.all()
     serializer_class = DetectionRuleSerializer
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = DetectionRuleFilter

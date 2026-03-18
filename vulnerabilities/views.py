@@ -179,7 +179,6 @@ class AffectedByAdvisoriesListView(ListView):
 
     def get_queryset(self):
         purl = self.kwargs.get("purl")
-        print(purl)
         return models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(purl)
 
 
@@ -261,22 +260,6 @@ class PackageV2Details(DetailView):
             context["fixing_advisories_v2_url"] = None
 
         return context
-
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .prefetch_related(
-                Prefetch(
-                    "affected_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory"),
-                ),
-                Prefetch(
-                    "fixed_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory"),
-                ),
-            )
-        )
 
     def get_object(self, queryset=None):
         if queryset is None:

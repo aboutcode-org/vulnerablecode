@@ -193,7 +193,7 @@ class APIV3TestCaseOnePackageMultipleAdvisories(APITestCase):
     def test_advisories_post(self):
         url = reverse("advisory-v3-list")
 
-        with self.assertNumQueries(64):
+        with self.assertNumQueries(10):
             response = self.client.post(
                 url,
                 data={"purls": ["pkg:pypi/sample@1.0.0"]},

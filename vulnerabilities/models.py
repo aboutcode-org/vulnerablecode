@@ -2901,10 +2901,25 @@ class AdvisoryV2QuerySet(BaseQuerySet):
         ).latest_per_avid()
 
     def latest_advisories_for_purls(self, purls):
-        return self.filter(
-            Q(impacted_packages__affecting_packages__package_url__in=purls)
-            | Q(impacted_packages__fixed_by_packages__package_url__in=purls)
-        ).latest_per_avid()
+
+        affecting = ImpactedPackageAffecting.objects.filter(
+            impacted_package__advisory_id=OuterRef("pk"),
+            package__package_url__in=purls,
+        )
+
+        fixed = ImpactedPackageFixedBy.objects.filter(
+            impacted_package__advisory_id=OuterRef("pk"),
+            package__package_url__in=purls,
+        )
+
+        return (
+            self.annotate(
+                has_affecting=Exists(affecting),
+                has_fixed=Exists(fixed),
+            )
+            .filter(Q(has_affecting=True) | Q(has_fixed=True))
+            .latest_per_avid()
+        )
 
 
 class AdvisoryV2(models.Model):

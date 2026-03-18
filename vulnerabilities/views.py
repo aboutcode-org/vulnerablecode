@@ -47,7 +47,7 @@ from vulnerabilities.utils import group_advisories_by_content
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
-PAGE_SIZE = 20
+PAGE_SIZE = 10
 
 
 class PackageSearch(ListView):

@@ -9,6 +9,8 @@
 
 from urllib.parse import urlencode
 
+from django.db.models import Exists
+from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
 from packageurl import PackageURL
@@ -21,6 +23,7 @@ from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
+from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import PackageV2
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
 from vulnerabilities.utils import group_advisories_by_content
@@ -290,20 +293,11 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
         approximate = serializer.validated_data["approximate"]
 
         if not purls:
-            pkg_ids = (
-                PackageV2.objects.vulnerable().values_list("id", flat=True)
-                # .distinct()
-            )
+            impacted = ImpactedPackageAffecting.objects.filter(package_id=OuterRef("id"))
 
-            # vulnerable_purls = (
-            #     PackageV2.objects.vulnerable()
-            #     .only("package_url")
-            #     .values_list("package_url", flat=True)
-            #     .distinct()
-            #     .order_by("package_url")
-            # )
             query = (
-                PackageV2.objects.filter(id__in=pkg_ids)
+                PackageV2.objects.annotate(has_vuln=Exists(impacted))
+                .filter(has_vuln=True)
                 .values_list("package_url", flat=True)
                 .order_by("package_url")
             )

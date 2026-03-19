@@ -1,0 +1,38 @@
+{
+    "affected": [
+        {
+            "package": {
+                "ecosystem": "Photon OS:3.0",
+                "name": "libsoup",
+                "purl": "pkg:rpm/vmware/libsoup?distro=photon-3"
+            },
+            "ranges": [
+                {
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "2.64.0-13.ph3"
+                        }
+                    ],
+                    "type": "ECOSYSTEM"
+                }
+            ]
+        }
+    ],
+    "id": "PHSA-2025-3.0-0815",
+    "modified": "2025-02-10T09:08:46Z",
+    "published": "2025-01-21T00:00:00Z",
+    "references": [
+        {
+            "type": "ADVISORY",
+            "url": "https://github.com/vmware/photon/wiki/Security-Update-3.0-815"
+        }
+    ],
+    "related": [
+        "CVE-2024-52530",
+        "CVE-2024-52531",
+        "CVE-2024-52532"
+    ]
+}

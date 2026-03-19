@@ -1,0 +1,23 @@
+{
+    "affected": [
+        {
+            "package": {
+                "ecosystem": "Photon OS:5.0",
+                "name": "open-vm-tools",
+                "purl": "pkg:rpm/vmware/open-vm-tools?distro=photon-5"
+            }
+        }
+    ],
+    "id": "PHSA-2026-5.0-0785",
+    "modified": "2026-03-17T06:24:46Z",
+    "published": "2026-03-14T00:00:00Z",
+    "references": [
+        {
+            "type": "ADVISORY",
+            "url": "https://github.com/vmware/photon/wiki/Security-Update-5.0-785"
+        }
+    ],
+    "related": [
+        "CVE-2026-1234"
+    ]
+}

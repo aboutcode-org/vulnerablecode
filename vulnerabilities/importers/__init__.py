@@ -39,6 +39,7 @@ from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
 from vulnerabilities.pipelines import nvd_importer
+from vulnerabilities.pipelines import photon_os_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
 from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpine_linux_importer_v2
@@ -86,6 +87,7 @@ from vulnerabilities.utils import create_registry
 
 IMPORTERS_REGISTRY = create_registry(
     [
+        photon_os_importer.PhotonOSImporterPipeline,
         archlinux_importer_v2.ArchLinuxImporterPipeline,
         apache_kafka_importer_v2.ApacheKafkaImporterPipeline,
         nvd_importer_v2.NVDImporterPipeline,

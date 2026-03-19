@@ -2872,65 +2872,52 @@ class AdvisoryV2QuerySet(BaseQuerySet):
         return self.filter(avid__in=avids).latest_per_avid()
 
     def latest_affecting_advisories_for_purl(self, purl):
-        affecting_exists = ImpactedPackageAffecting.objects.filter(
-            impacted_package__advisory_id=OuterRef("pk"),
-            package__package_url=purl,
+        adv_ids = ImpactedPackageAffecting.objects.filter(package__package_url=purl).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
         )
-
-        return (
-            self.annotate(has_affecting=Exists(affecting_exists))
-            .filter(has_affecting=True)
-            .latest_per_avid()
-        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
 
     def latest_affecting_advisories_for_purls(self, purls):
-        affecting_exists = ImpactedPackageAffecting.objects.filter(
-            impacted_package__advisory_id=OuterRef("pk"),
-            package__package_url__in=purls,
-        )
-
-        return (
-            self.annotate(has_affecting=Exists(affecting_exists))
-            .filter(has_affecting=True)
-            .latest_per_avid()
-        )
-
-    def latest_fixed_by_advisories_for_purl(self, purl):
-        fixed_exists = ImpactedPackageFixedBy.objects.filter(
-            impacted_package__advisory_id=OuterRef("pk"),
-            package__package_url=purl,
-        )
-
-        return (
-            self.annotate(has_fixed=Exists(fixed_exists)).filter(has_fixed=True).latest_per_avid()
-        )
-
-    def latest_fixed_by_advisories_for_purls(self, purls):
-        fixed_exists = ImpactedPackageFixedBy.objects.filter(
-            impacted_package__advisory_id=OuterRef("pk"),
-            package__package_url__in=purls,
-        )
-
-        return (
-            self.annotate(has_fixed=Exists(fixed_exists)).filter(has_fixed=True).latest_per_avid()
-        )
-
-    def latest_advisories_for_purls(self, purls):
         adv_ids = ImpactedPackageAffecting.objects.filter(
             package__package_url__in=purls
         ).values_list(
             "impacted_package__advisory_id",
             flat=True,
-        ).union(
-            ImpactedPackageFixedBy.objects.filter(
-                package__package_url__in=purls
-            ).values_list(
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_fixed_by_advisories_for_purl(self, purl):
+        adv_ids = ImpactedPackageFixedBy.objects.filter(package__package_url=purl).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_fixed_by_advisories_for_purls(self, purls):
+        adv_ids = ImpactedPackageFixedBy.objects.filter(package__package_url__in=purls).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_advisories_for_purls(self, purls):
+        adv_ids = (
+            ImpactedPackageAffecting.objects.filter(package__package_url__in=purls)
+            .values_list(
                 "impacted_package__advisory_id",
                 flat=True,
             )
+            .union(
+                ImpactedPackageFixedBy.objects.filter(package__package_url__in=purls).values_list(
+                    "impacted_package__advisory_id",
+                    flat=True,
+                )
+            )
         )
 
-        qs = AdvisoryV2.objects.filter(id__in=Subquery(adv_ids))
+        qs = self.filter(id__in=Subquery(adv_ids))
         return qs.latest_per_avid()
 
 

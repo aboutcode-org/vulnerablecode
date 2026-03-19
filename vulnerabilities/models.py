@@ -2915,32 +2915,23 @@ class AdvisoryV2QuerySet(BaseQuerySet):
             self.annotate(has_fixed=Exists(fixed_exists)).filter(has_fixed=True).latest_per_avid()
         )
 
-    def latest_advisories_for_purl(self, purl):
-        return self.filter(
-            Q(impacted_packages__affecting_packages__package_url=purl)
-            | Q(impacted_packages__fixed_by_packages__package_url=purl)
-        ).latest_per_avid()
-
     def latest_advisories_for_purls(self, purls):
-
-        affecting = ImpactedPackageAffecting.objects.filter(
-            impacted_package__advisory_id=OuterRef("pk"),
-            package__package_url__in=purls,
-        )
-
-        fixed = ImpactedPackageFixedBy.objects.filter(
-            impacted_package__advisory_id=OuterRef("pk"),
-            package__package_url__in=purls,
-        )
-
-        return (
-            self.annotate(
-                has_affecting=Exists(affecting),
-                has_fixed=Exists(fixed),
+        adv_ids = ImpactedPackageAffecting.objects.filter(
+            package__package_url__in=purls
+        ).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        ).union(
+            ImpactedPackageFixedBy.objects.filter(
+                package__package_url__in=purls
+            ).values_list(
+                "impacted_package__advisory_id",
+                flat=True,
             )
-            .filter(Q(has_affecting=True) | Q(has_fixed=True))
-            .latest_per_avid()
         )
+
+        qs = AdvisoryV2.objects.filter(id__in=Subquery(adv_ids))
+        return qs.latest_per_avid()
 
 
 class AdvisoryV2(models.Model):

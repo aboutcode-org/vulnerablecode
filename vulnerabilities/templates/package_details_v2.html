@@ -45,7 +45,7 @@ VulnerableCode Package Details - {{ package.purl }}
         <div id="tab-content">
             <div class="tab-div is-active" data-content="essentials">
                 <div class="tab-nested-div mb-1 pb-0">
-                        {% if affected_by_advisories_v2|length != 0 %}
+                        {% if affected_by_advisories_v2|length != 0 or affected_by_advisories_v2_url %}
                         <div class="pl-3 pr-3 mb-5 floating-purl pb-0">
                             {% else %}
                         <div class="pl-3 pr-3 mb-5 floating-purl pb-2">
@@ -82,7 +82,7 @@ VulnerableCode Package Details - {{ package.purl }}
                             </tbody>
                         </table>
                     </div>
-                    {% if affected_by_advisories_v2|length != 0 %}
+                    {% if affected_by_advisories_v2|length != 0 or affected_by_advisories_v2_url %}
 
                     <div class="pl-3 pr-3 mb-6 non-vuln pb-0">
                         <table class="table vcio-table width-100-pct">
@@ -128,10 +128,10 @@ VulnerableCode Package Details - {{ package.purl }}
                     {% endif %}
 
                     <div class="content ml-3 mr-3 pb-1">
+                        {% if affected_by_advisories_v2|length != 0 %}
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
                             Vulnerabilities affecting this package ({{ affected_by_advisories_v2|length }})
                         </div>
-
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                             <thead>
                                 <tr>
@@ -192,9 +192,15 @@ VulnerableCode Package Details - {{ package.purl }}
                                                     <a href="/packages/v2/{{ item.pkg.purl|url_quote }}?search={{ item.pkg.purl }}"
                                                         target="_self">{{ item.pkg.version }}</a>
                                                     <br/>
-                                                    <span class="{{ item.affected_count|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
-                                                        Subject of {{ item.affected_count }} other advisories.
+                                                    {% if item.pkg.is_vulnerable %}
+                                                    <span class="{{ item.pkg.is_vulnerable|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Vulnerable
                                                     </span>
+                                                    {% else %}
+                                                    <span class="{{ item.pkg.is_vulnerable|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Not vulnerable
+                                                    </span>
+                                                    {% endif %}
                                                 </section>
                                                 {% endfor %}
                                             {% else %}
@@ -212,9 +218,20 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% endfor %}
                             </tbody>
                         </table>
+                        {% elif affected_by_advisories_v2_url %}
+                        <div class="has-text-weight-bold ml-1 mb-0 pb-0">
+                            This package is subject to more than 100 advisories. Please refer to the following
+                            URL for vulnerabilities affecting this package: <a href="{{ affected_by_advisories_v2_url }}" target="_blank"> Advisories </a>
+                        </div>
+                        {% else %}
+                        <div class="has-text-weight-bold ml-1 mb-0 pb-0">
+                            This package is not known to be subject of any advisories.
+                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="content ml-3 mr-3 pb-0 mb-0">
+                        {% if fixing_advisories_v2|length != 0 %}
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
                             Vulnerabilities fixed by this package ({{ fixing_advisories_v2|length }})
                         </div>
@@ -279,6 +296,16 @@ VulnerableCode Package Details - {{ package.purl }}
                         </table>
 
                         <br />
+                        {% elif fixing_advisories_v2_url %}
+                        <div class="has-text-weight-bold ml-1 mb-0 pb-0">
+                            This package is known to fix more than 100 advisories. Please refer to the following
+                            URL for vulnerabilities fixed by this package: <a href="{{ fixing_advisories_v2_url }}" target="_blank"> Advisories </a>
+                        </div>
+                        {% else %}
+                        <div class="has-text-weight-bold ml-1 mb-0 pb-0">
+                            This package is not known to fix any advisories.
+                        </div>
+                    {% endif %}
                     </div>
                 </div>
             </div>

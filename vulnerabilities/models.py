@@ -2862,19 +2862,63 @@ class AdvisoryV2QuerySet(BaseQuerySet):
         )
 
     def latest_per_avid(self):
-        latest_ids = (
-            self.filter(avid=OuterRef("avid"))
-            .order_by(
-                F("date_collected").desc(nulls_last=True),
-                "-id",
-            )
-            .values("id")[:1]
-        )
-
-        return self.filter(id=Subquery(latest_ids))
+        return self.order_by(
+            "avid",
+            F("date_collected").desc(nulls_last=True),
+            "-id",
+        ).distinct("avid")
 
     def latest_for_avids(self, avids):
         return self.filter(avid__in=avids).latest_per_avid()
+
+    def latest_affecting_advisories_for_purl(self, purl):
+        adv_ids = ImpactedPackageAffecting.objects.filter(package__package_url=purl).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_affecting_advisories_for_purls(self, purls):
+        adv_ids = ImpactedPackageAffecting.objects.filter(
+            package__package_url__in=purls
+        ).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_fixed_by_advisories_for_purl(self, purl):
+        adv_ids = ImpactedPackageFixedBy.objects.filter(package__package_url=purl).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_fixed_by_advisories_for_purls(self, purls):
+        adv_ids = ImpactedPackageFixedBy.objects.filter(package__package_url__in=purls).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_advisories_for_purls(self, purls):
+        adv_ids = (
+            ImpactedPackageAffecting.objects.filter(package__package_url__in=purls)
+            .values_list(
+                "impacted_package__advisory_id",
+                flat=True,
+            )
+            .union(
+                ImpactedPackageFixedBy.objects.filter(package__package_url__in=purls).values_list(
+                    "impacted_package__advisory_id",
+                    flat=True,
+                )
+            )
+        )
+
+        qs = self.filter(id__in=Subquery(adv_ids))
+        return qs.latest_per_avid()
 
 
 class AdvisoryV2(models.Model):
@@ -3017,17 +3061,13 @@ class AdvisoryV2(models.Model):
         help_text="A unique hash computed from the content of the advisory used to identify advisories with the same content.",
     )
 
-    @property
-    def risk_score(self):
-        """
-        Risk expressed as a number ranging from 0 to 10.
-        Risk is calculated from weighted severity and exploitability values.
-        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
-        Risk = min(weighted severity * exploitability, 10)
-        """
-        if self.exploitability and self.weighted_severity:
-            risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
-            return round(risk_score, 1)
+    risk_score = models.DecimalField(
+        null=True,
+        blank=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Risk expressed as a number ranging from 0 to 10. Risk is calculated from weighted severity and exploitability values. It is the maximum value of (the weighted severity multiplied by its exploitability) or 10. Risk = min(weighted severity * exploitability, 10)",
+    )
 
     objects = AdvisoryV2QuerySet.as_manager()
 
@@ -3325,7 +3365,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages that are vulnerable.
         """
-        return self.filter(affected_in_impacts__isnull=False)
+        return self.filter(id__in=ImpactedPackageAffecting.objects.values("package_id").distinct())
 
     def with_is_vulnerable(self):
         """

@@ -68,14 +68,14 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
         )
 
     def clone_repos(self):
-        for url in self.repo_urls:
-            self.log(f"Cloning `{url}`")
+        for repo_url in self.repo_urls:
+            self.log(f"Cloning `{repo_url}`")
             try:
-                response = fetch_via_vcs(url)
+                response = fetch_via_vcs(repo_url)
                 if response:
-                    self.vcs_responses.append((response, url))
+                    self.vcs_responses.append((response, repo_url))
             except Exception as e:
-                self.log(f"Failed to clone {url}: {e}")
+                self.log(f"Failed to clone {repo_url}: {e}")
 
     def collect_and_store_rules(self):
         for vcs_response, repo_url in self.vcs_responses:
@@ -103,12 +103,13 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
                     continue
                 raw_text = raw_text.replace("\x00", "")
 
-                repo_url = repo_url[4::]
+                repo_url = repo_url.strip("git+")
                 rule_url = get_advisory_url(
                     file=file_path,
                     base_path=base_directory,
                     url=f"{repo_url}/blob/master/",
                 )
+                print(rule_url)
 
                 DetectionRule.objects.update_or_create(
                     rule_text=raw_text,

@@ -19,6 +19,7 @@ from django.db.models import Count
 from django.db.models import F
 from django.db.models import Prefetch
 from django.db.models import Q
+from django.http import QueryDict
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -152,7 +153,10 @@ class DetectionRuleSearch(ListView):
         context = super().get_context_data(**kwargs)
         request_query = self.request.GET
         context["detection_search_form"] = DetectionRuleSearchForm(request_query)
-        context["search"] = request_query.get("search")
+        page_obj = context["page_obj"]
+        context["elided_page_range"] = page_obj.paginator.get_elided_page_range(
+            page_obj.number, on_each_side=2, on_ends=1
+        )
         return context
 
     def get_queryset(self):

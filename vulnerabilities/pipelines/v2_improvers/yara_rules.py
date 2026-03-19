@@ -14,6 +14,7 @@ from fetchcode.vcs import fetch_via_vcs
 from vulnerabilities.models import DetectionRule
 from vulnerabilities.models import DetectionRuleTypes
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.utils import get_advisory_url
 
 
 class YaraRulesImproverPipeline(VulnerableCodePipeline):
@@ -100,11 +101,20 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
                 raw_text = file_path.read_text(encoding="utf-8", errors="ignore")
                 if not raw_text:
                     continue
+                raw_text = raw_text.replace("\x00", "")
+
+                repo_url = repo_url[4::]
+                rule_url = get_advisory_url(
+                    file=file_path,
+                    base_path=base_directory,
+                    url=f"{repo_url}/blob/master/",
+                )
 
                 DetectionRule.objects.update_or_create(
                     rule_text=raw_text,
                     rule_type=DetectionRuleTypes.YARA,
                     advisory=None,
+                    source_url=rule_url,
                 )
 
     def clean_downloads(self):

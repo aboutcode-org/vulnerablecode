@@ -41,8 +41,11 @@ class ComputeAdvisoryContentHash(VulnerableCodePipeline):
         batch_size = 5000
 
         for advisory in progress.iter(advisories.iterator(chunk_size=batch_size)):
-            advisory.advisory_content_hash = compute_advisory_content(advisory)
-            to_update.append(advisory)
+            try:
+                advisory.advisory_content_hash = compute_advisory_content(advisory)
+                to_update.append(advisory)
+            except Exception as e:
+                self.log(f"Error computing advisory_content_hash for {advisory.avid}: {e}")
 
             if len(to_update) >= batch_size:
                 AdvisoryV2.objects.bulk_update(

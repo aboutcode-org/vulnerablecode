@@ -8,7 +8,6 @@
 #
 
 import datetime
-import json
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import MagicMock
@@ -22,6 +21,7 @@ from vulnerabilities.pipelines.v2_importers.checkpoint_importer import get_avail
 from vulnerabilities.pipelines.v2_importers.checkpoint_importer import get_total_pages
 from vulnerabilities.pipelines.v2_importers.checkpoint_importer import parse_advisory
 from vulnerabilities.pipelines.v2_importers.checkpoint_importer import parse_table_rows
+from vulnerabilities.tests import util_tests
 
 TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "checkpoint"
 
@@ -85,72 +85,20 @@ class TestParseTableRows(TestCase):
         assert parse_table_rows("<html></html>") == []
 
 
-class TestParseAdvisory(TestCase):
-    def setUp(self):
-        self.row = SAMPLE_ROWS[0]
-
-    def test_advisory_id(self):
-        advisory = parse_advisory(self.row)
-        assert advisory.advisory_id == "CPAI-2026-1780"
-
-    def test_cve_in_aliases(self):
-        advisory = parse_advisory(self.row)
-        assert "CVE-2026-20122" in advisory.aliases
-
-    def test_date_parsed(self):
-        advisory = parse_advisory(self.row)
-        assert advisory.date_published is not None
-        assert advisory.date_published.year == 2026
-
-    def test_severity_stored(self):
-        advisory = parse_advisory(self.row)
-        assert len(advisory.severities) == 1
-        assert advisory.severities[0].value == "Medium"
-
-    def test_references_include_advisory_url(self):
-        advisory = parse_advisory(self.row)
-        urls = [r.url for r in advisory.references]
-        assert any("cpai-2026-1780.html" in u for u in urls)
-
-    def test_references_include_nvd_url(self):
-        advisory = parse_advisory(self.row)
-        urls = [r.url for r in advisory.references]
-        assert any("nvd.nist.gov" in u for u in urls)
-
-    def test_reference_ids_set(self):
-        advisory = parse_advisory(self.row)
-        ref_ids = [r.reference_id for r in advisory.references]
-        assert "CPAI-2026-1780" in ref_ids
-        assert "CVE-2026-20122" in ref_ids
-
-    def test_affected_packages_empty(self):
-        advisory = parse_advisory(self.row)
-        assert advisory.affected_packages == []
-
-    def test_weaknesses_empty(self):
-        advisory = parse_advisory(self.row)
-        assert advisory.weaknesses == []
-
-    def test_original_advisory_text_is_pretty_json(self):
-        advisory = parse_advisory(self.row)
-        parsed = json.loads(advisory.original_advisory_text)
-        assert parsed["advisory_id"] == "CPAI-2026-1780"
-        assert "\n" in advisory.original_advisory_text
-
-    def test_missing_id_returns_none(self):
-        assert parse_advisory({}) is None
-        assert parse_advisory({"advisory_id": ""}) is None
-        assert parse_advisory({"advisory_id": "INVALID-123"}) is None
-
-    def test_no_cve_yields_empty_aliases(self):
-        row = dict(self.row)
-        row["cve_id"] = ""
+def test_parse_advisories():
+    results = []
+    for row in SAMPLE_ROWS:
         advisory = parse_advisory(row)
-        assert advisory.aliases == []
+        if advisory:
+            results.append(advisory.to_dict())
+    expected_file = TEST_DATA / "advisories_2026-expected.json"
+    util_tests.check_results_against_json(results, expected_file)
 
-    def test_critical_severity(self):
-        advisory = parse_advisory(SAMPLE_ROWS[1])
-        assert advisory.severities[0].value == "Critical"
+
+def test_missing_id_returns_none():
+    assert parse_advisory({}) is None
+    assert parse_advisory({"advisory_id": ""}) is None
+    assert parse_advisory({"advisory_id": "INVALID-123"}) is None
 
 
 class TestCheckPointImporterPipeline(TestCase):

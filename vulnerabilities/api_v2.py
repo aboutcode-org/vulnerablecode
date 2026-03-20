@@ -1064,6 +1064,83 @@ class PipelineScheduleV2ViewSet(CreateListRetrieveUpdateViewSet):
         return "Pipeline Jobs"
 
 
+class AdvisoryV2FilterSet(filters.FilterSet):
+    alias = CharInFilter(
+        field_name="aliases__alias",
+        lookup_expr="in",
+        label="Alias",
+        help_text="Filter by one or more aliases (e.g. CVE-2021-1234). Multi-value supported (comma-separated).",
+    )
+    advisory_id = CharInFilter(
+        field_name="avid",
+        lookup_expr="in",
+        label="Advisory ID",
+        help_text="Filter by one or more advisory IDs (avid). Multi-value supported (comma-separated).",
+    )
+    datasource_id = filters.CharFilter(
+        field_name="datasource_id",
+        label="Datasource ID",
+        help_text="Filter by datasource ID (e.g. nginx_importer_v2).",
+    )
+
+    class Meta:
+        model = AdvisoryV2
+        fields = ["alias", "advisory_id", "datasource_id"]
+
+
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="alias",
+                description="Filter by one or more aliases (e.g. CVE-2021-1234). Comma-separated.",
+                required=False,
+                type={"type": "array", "items": {"type": "string"}},
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="advisory_id",
+                description="Filter by one or more advisory IDs (avid). Comma-separated.",
+                required=False,
+                type={"type": "array", "items": {"type": "string"}},
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="datasource_id",
+                description="Filter by datasource ID.",
+                required=False,
+                type=str,
+                location=OpenApiParameter.QUERY,
+            ),
+        ]
+    )
+)
+class AdvisoryV2ViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Lookup for advisories by advisory ID, alias, or datasource.
+    """
+
+    queryset = (
+        AdvisoryV2.objects.prefetch_related(
+            "aliases",
+            "references",
+            "severities",
+            "weaknesses",
+            "related_ssvcs",
+            "source_ssvcs",
+        )
+        .order_by("datasource_id", "advisory_id")
+        .distinct()
+    )
+    serializer_class = AdvisoryV2Serializer
+    lookup_field = "avid"
+    # avid contains slashes (e.g. nginx_importer_v2/CVE-2021-1234)
+    lookup_value_regex = r"[^/]+/[^/]+"
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = AdvisoryV2FilterSet
+    throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+
+
 class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = PackageV2.objects.all()
     serializer_class = PackageV3Serializer

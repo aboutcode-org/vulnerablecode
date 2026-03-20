@@ -8,7 +8,9 @@
 #
 
 
+import difflib
 import json
+from itertools import combinations
 
 from aboutcode.pipeline import LoopProgress
 from django.utils import timezone
@@ -19,6 +21,8 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ToDoRelatedAdvisoryV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes.advisory import advisories_checksum
+
+SUMMARY_SIMILARITY_THRESHOLD = 0.8
 
 
 class ComputeToDo(VulnerableCodePipeline):
@@ -31,6 +35,8 @@ class ComputeToDo(VulnerableCodePipeline):
         return (
             cls.compute_individual_advisory_todo,
             cls.detect_conflicting_advisories,
+            cls.relate_advisories_by_aliases,
+            cls.detect_similar_summaries,
         )
 
     def compute_individual_advisory_todo(self):
@@ -142,6 +148,115 @@ class ComputeToDo(VulnerableCodePipeline):
 
         self.log(
             f"Successfully created {new_todos_count} ToDos for conflicting affected and fixed packages"
+        )
+
+    def relate_advisories_by_aliases(self):
+        """
+        Create ToDos for advisories from different datasources that share the same alias.
+        """
+        aliases = AdvisoryAlias.objects.prefetch_related("advisories")
+        aliases_count = aliases.count()
+        advisory_relation_to_create = {}
+        todo_to_create = []
+        new_todos_count = 0
+        batch_size = 5000
+
+        self.log(f"Checking alias-based relations across {aliases_count} aliases")
+
+        progress = LoopProgress(
+            total_iterations=aliases_count,
+            logger=self.log,
+            progress_step=1,
+        )
+        for alias in progress.iter(aliases.iterator(chunk_size=2000)):
+            advisories = list(
+                alias.advisories.values("id", "datasource_id", "unique_content_id")
+            )
+
+            datasources = {a["datasource_id"] for a in advisories}
+            if len(datasources) < 2:
+                continue
+
+            advisory_objs = list(alias.advisories.all())
+            check_potentially_related_by_aliases(
+                advisories=advisory_objs,
+                alias=alias,
+                todo_to_create=todo_to_create,
+                advisory_relation_to_create=advisory_relation_to_create,
+            )
+
+            if len(todo_to_create) > batch_size:
+                new_todos_count += bulk_create_with_m2m(
+                    todos=todo_to_create,
+                    advisories=advisory_relation_to_create,
+                    logger=self.log,
+                )
+                advisory_relation_to_create.clear()
+                todo_to_create.clear()
+
+        new_todos_count += bulk_create_with_m2m(
+            todos=todo_to_create,
+            advisories=advisory_relation_to_create,
+            logger=self.log,
+        )
+
+        self.log(
+            f"Successfully created {new_todos_count} ToDos for potentially related advisories by aliases"
+        )
+
+    def detect_similar_summaries(self):
+        """
+        Create ToDos for advisories from different datasources that share the same alias
+        and have summaries with similarity above SUMMARY_SIMILARITY_THRESHOLD.
+        """
+        aliases = AdvisoryAlias.objects.prefetch_related("advisories")
+        aliases_count = aliases.count()
+        advisory_relation_to_create = {}
+        todo_to_create = []
+        new_todos_count = 0
+        batch_size = 5000
+
+        self.log(f"Checking summary similarity across {aliases_count} aliases")
+
+        progress = LoopProgress(
+            total_iterations=aliases_count,
+            logger=self.log,
+            progress_step=1,
+        )
+        for alias in progress.iter(aliases.iterator(chunk_size=2000)):
+            advisory_objs = list(
+                alias.advisories.exclude(summary="").only(
+                    "id", "datasource_id", "summary", "unique_content_id"
+                )
+            )
+
+            datasources = {a.datasource_id for a in advisory_objs}
+            if len(datasources) < 2:
+                continue
+
+            check_similar_summaries(
+                advisories=advisory_objs,
+                todo_to_create=todo_to_create,
+                advisory_relation_to_create=advisory_relation_to_create,
+            )
+
+            if len(todo_to_create) > batch_size:
+                new_todos_count += bulk_create_with_m2m(
+                    todos=todo_to_create,
+                    advisories=advisory_relation_to_create,
+                    logger=self.log,
+                )
+                advisory_relation_to_create.clear()
+                todo_to_create.clear()
+
+        new_todos_count += bulk_create_with_m2m(
+            todos=todo_to_create,
+            advisories=advisory_relation_to_create,
+            logger=self.log,
+        )
+
+        self.log(
+            f"Successfully created {new_todos_count} ToDos for advisories with similar summaries"
         )
 
 
@@ -351,3 +466,60 @@ def bulk_create_with_m2m(todos, advisories, logger):
         logger(f"Error creating Advisory ToDo relations: {e}")
 
     return new_todos.count()
+
+
+def check_potentially_related_by_aliases(
+    advisories,
+    alias,
+    todo_to_create,
+    advisory_relation_to_create,
+):
+    """
+    Create a POTENTIALLY_RELATED_BY_ALIASES ToDo for advisories from different
+    datasources that share the same alias.
+    """
+    todo_id = advisories_checksum(advisories)
+    todo = AdvisoryToDoV2(
+        related_advisories_id=todo_id,
+        issue_type="POTENTIALLY_RELATED_BY_ALIASES",
+        issue_detail=json.dumps({"shared_alias": str(alias)}),
+    )
+    todo_to_create.append(todo)
+    advisory_relation_to_create[todo_id] = advisories
+
+
+def check_similar_summaries(
+    advisories,
+    todo_to_create,
+    advisory_relation_to_create,
+):
+    """
+    Create SIMILAR_SUMMARIES ToDos for pairs of advisories from different datasources
+    whose summaries have a similarity ratio above SUMMARY_SIMILARITY_THRESHOLD.
+    """
+    for advisory_a, advisory_b in combinations(advisories, 2):
+        if advisory_a.datasource_id == advisory_b.datasource_id:
+            continue
+
+        ratio = difflib.SequenceMatcher(
+            None, advisory_a.summary, advisory_b.summary
+        ).ratio()
+
+        if ratio < SUMMARY_SIMILARITY_THRESHOLD:
+            continue
+
+        pair = [advisory_a, advisory_b]
+        todo_id = advisories_checksum(pair)
+        todo = AdvisoryToDoV2(
+            related_advisories_id=todo_id,
+            issue_type="SIMILAR_SUMMARIES",
+            issue_detail=json.dumps(
+                {
+                    "similarity_score": round(ratio, 4),
+                    "datasource_a": advisory_a.datasource_id,
+                    "datasource_b": advisory_b.datasource_id,
+                }
+            ),
+        )
+        todo_to_create.append(todo)
+        advisory_relation_to_create[todo_id] = pair

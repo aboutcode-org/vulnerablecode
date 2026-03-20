@@ -26,7 +26,7 @@ class TestOpenSSLImporterPipeline(TestCase):
         self.logger = TestLogger()
 
     @patch("vulnerabilities.pipelines.v2_importers.openssl_importer.OpenSSLImporterPipeline.clone")
-    def test_redhat_advisories_v2(self, mock_clone):
+    def test_openssl_advisories_v2(self, mock_clone):
         mock_clone.__name__ = "clone"
         pipeline = OpenSSLImporterPipeline()
         pipeline.advisory_path = TEST_DATA

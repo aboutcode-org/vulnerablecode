@@ -49,7 +49,13 @@ endif
 
 virtualenv:
 	@echo "-> Bootstrap the virtualenv with PYTHON_EXE=${PYTHON_EXE}"
-	@${PYTHON_EXE} ${VIRTUALENV_PYZ} --never-download --no-periodic-update ${VENV}
+	@${PYTHON_EXE} -m venv ${VENV}
+	@$(MAKE) upgrade-tools
+
+upgrade-tools:
+	@echo "-> Upgrade pip / setuptools / wheel (Python 3.12 safe)"
+	@${VENV}/bin/python -m pip install --upgrade --force-reinstall \
+		"pip>=24" "setuptools>=69" "wheel>=0.42" packaging
 
 conf: virtualenv
 	@echo "-> Install dependencies"

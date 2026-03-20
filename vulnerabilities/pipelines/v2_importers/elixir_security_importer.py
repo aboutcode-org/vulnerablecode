@@ -16,7 +16,7 @@ from packageurl import PackageURL
 from univers.version_constraint import VersionConstraint
 from univers.version_range import HexVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -35,6 +35,9 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC0-1.0"
     license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
     repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
+    run_once = True
+
+    precedence = 200
 
     @classmethod
     def steps(cls):
@@ -54,7 +57,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         count = len(list((base_path / "packages").glob("**/*.yml")))
         return count
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         try:
             base_path = Path(self.vcs_response.dest_dir)
             vuln = base_path / "packages"
@@ -67,7 +70,7 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def on_failure(self):
         self.clean_downloads()
 
-    def process_file(self, file, base_path) -> Iterable[AdvisoryData]:
+    def process_file(self, file, base_path) -> Iterable[AdvisoryDataV2]:
         relative_path = str(file.relative_to(base_path)).strip("/")
         path_segments = str(file).split("/")
         # use the last two segments as the advisory ID
@@ -127,11 +130,11 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         if yaml_file.get("disclosure_date"):
             date_published = dateparser.parse(yaml_file.get("disclosure_date"))
 
-        yield AdvisoryData(
+        yield AdvisoryDataV2(
             advisory_id=advisory_id,
             aliases=[cve_id],
             summary=summary,
-            references_v2=references,
+            references=references,
             affected_packages=affected_packages,
             url=advisory_url,
             date_published=date_published,

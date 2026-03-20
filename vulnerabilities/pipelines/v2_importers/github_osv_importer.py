@@ -13,7 +13,7 @@ from typing import Iterable
 
 from fetchcode.vcs import fetch_via_vcs
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.utils import get_advisory_url
@@ -31,6 +31,8 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/github/advisory-database/"
 
+    precedence = 100
+
     @classmethod
     def steps(cls):
         return (
@@ -47,7 +49,7 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         advisory_dir = Path(self.vcs_response.dest_dir) / "advisories/github-reviewed"
         return sum(1 for _ in advisory_dir.rglob("*.json"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         supported_ecosystems = [
             "pypi",
             "npm",

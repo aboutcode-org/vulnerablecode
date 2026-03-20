@@ -13,7 +13,7 @@ from typing import Iterable
 
 from fetchcode.vcs import fetch_via_vcs
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
@@ -40,6 +40,8 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     repo_url = "git+https://github.com/mandiant/Vulnerability-Disclosures"
     pipeline_id = "fireeye_importer_v2"
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (
@@ -60,7 +62,7 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         base_path = Path(self.vcs_response.dest_dir)
         for file_path in base_path.glob("**/*"):
             if file_path.suffix.lower() != ".md":
@@ -86,9 +88,9 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         self.clean_downloads()
 
 
-def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryData:
+def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryDataV2:
     """
-    Parse a fireeye advisory repo and return an AdvisoryData or None.
+    Parse a fireeye advisory repo and return an AdvisoryDataV2 or None.
     These files are in Markdown format.
     """
     raw_data = raw_data.replace("\n\n", "\n")
@@ -118,11 +120,11 @@ def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryData:
         url="https://github.com/mandiant/Vulnerability-Disclosures/blob/master/",
     )
 
-    return AdvisoryData(
+    return AdvisoryDataV2(
         advisory_id=advisory_id,
         aliases=aliases,
         summary=build_description(" ".join(summary), " ".join(description)),
-        references_v2=get_references(references),
+        references=get_references(references),
         severities=get_severities(impact),
         weaknesses=get_weaknesses(cwe_data),
         url=advisory_url,
@@ -152,7 +154,7 @@ def matcher_url(ref) -> str:
     """
     Returns URL of the reference markup from reference url in Markdown format
     """
-    markup_regex = "\[([^\[]+)]\(\s*(http[s]?://.+)\s*\)"
+    markup_regex = r"\[([^\[]+)]\(\s*(http[s]?://.+)\s*\)"
     matched_markup = re.findall(markup_regex, ref)
     if matched_markup:
         return matched_markup[0][1]

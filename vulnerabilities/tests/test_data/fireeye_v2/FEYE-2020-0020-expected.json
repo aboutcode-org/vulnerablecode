@@ -6,7 +6,7 @@
     ],
     "summary": "Digi International's ConnectPort X2e is susceptible to a local privilege escalation vulnerable to the privileged user `root`.",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",

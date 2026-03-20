@@ -253,8 +253,8 @@ class PackageCommitPatchData:
 @dataclasses.dataclass(eq=True)
 @functools.total_ordering
 class PatchData:
-    patch_url: Optional[str] = None
-    patch_text: Optional[str] = None
+    patch_url: Optional[str] = ""
+    patch_text: Optional[str] = ""
     patch_checksum: Optional[str] = dataclasses.field(init=False, default=None)
 
     def __post_init__(self):
@@ -271,9 +271,9 @@ class PatchData:
 
     def _cmp_key(self):
         return (
-            self.patch_url,
-            self.patch_text,
-            self.patch_checksum,
+            self.patch_url or "",
+            self.patch_text or "",
+            self.patch_checksum or "",
         )
 
     def to_dict(self) -> dict:
@@ -556,66 +556,21 @@ class AffectedPackageV2:
 class AdvisoryData:
     """
     This data class expresses the contract between data sources and the import runner.
-
-    If a vulnerability_id is present then:
-        summary or affected_packages or references must be present
-    otherwise
-        either affected_package or references should be present
-
-    date_published must be aware datetime
     """
 
-    advisory_id: str = ""
     aliases: List[str] = dataclasses.field(default_factory=list)
     summary: Optional[str] = ""
-    affected_packages: Union[List[AffectedPackage], List[AffectedPackageV2]] = dataclasses.field(
-        default_factory=list
-    )
+    affected_packages: List[AffectedPackage] = dataclasses.field(default_factory=list)
     references: List[Reference] = dataclasses.field(default_factory=list)
-    references_v2: List[ReferenceV2] = dataclasses.field(default_factory=list)
-    patches: List[PatchData] = dataclasses.field(default_factory=list)
     date_published: Optional[datetime.datetime] = None
     weaknesses: List[int] = dataclasses.field(default_factory=list)
-    severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
     url: Optional[str] = None
-    original_advisory_text: Optional[str] = None
 
     def __post_init__(self):
-        if self.advisory_id and self.advisory_id in self.aliases:
-            raise ValueError(
-                f"advisory_id {self.advisory_id} should not be present in aliases {self.aliases}"
-            )
         if self.summary:
-            self.summary = self.clean_summary(self.summary)
-
-    def clean_summary(self, summary):
-        # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
-        # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
-        summary = summary.strip()
-        if summary:
-            summary = summary.replace("\x00", "\uFFFD")
-        return summary
+            self.summary = clean_summary(self.summary)
 
     def to_dict(self):
-        is_adv_v2 = (
-            self.advisory_id
-            or self.severities
-            or self.references_v2
-            or (self.affected_packages and isinstance(self.affected_packages[0], AffectedPackageV2))
-        )
-        if is_adv_v2:
-            return {
-                "advisory_id": self.advisory_id,
-                "aliases": self.aliases,
-                "summary": self.summary,
-                "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
-                "references_v2": [ref.to_dict() for ref in self.references_v2],
-                "patches": [patch.to_dict() for patch in self.patches],
-                "severities": [sev.to_dict() for sev in self.severities],
-                "date_published": self.date_published.isoformat() if self.date_published else None,
-                "weaknesses": self.weaknesses,
-                "url": self.url if self.url else "",
-            }
         return {
             "aliases": self.aliases,
             "summary": self.summary,
@@ -629,21 +584,14 @@ class AdvisoryData:
     @classmethod
     def from_dict(cls, advisory_data):
         date_published = advisory_data["date_published"]
-        affected_packages = advisory_data["affected_packages"]
-        affected_package_cls = AffectedPackage
-        if affected_packages:
-            affected_package_cls = (
-                AffectedPackageV2
-                if "fixed_version_range" in affected_packages[0]
-                else AffectedPackage
-            )
         transformed = {
             "aliases": advisory_data["aliases"],
             "summary": advisory_data["summary"],
             "affected_packages": [
-                affected_package_cls.from_dict(pkg) for pkg in affected_packages if pkg is not None
+                AffectedPackage.from_dict(pkg)
+                for pkg in advisory_data["affected_packages"]
+                if pkg is not None
             ],
-            "patches": [PatchData.from_dict(patch) for patch in advisory_data.get("patches", [])],
             "references": [Reference.from_dict(ref) for ref in advisory_data["references"]],
             "date_published": datetime.datetime.fromisoformat(date_published)
             if date_published
@@ -652,6 +600,82 @@ class AdvisoryData:
             "url": advisory_data.get("url") or None,
         }
         return cls(**transformed)
+
+
+@dataclasses.dataclass(order=True)
+class AdvisoryDataV2:
+    """
+    This data class expresses the contract between data sources and the import runner.
+    """
+
+    advisory_id: str = ""
+    aliases: List[str] = dataclasses.field(default_factory=list)
+    summary: Optional[str] = ""
+    affected_packages: List[AffectedPackageV2] = dataclasses.field(default_factory=list)
+    references: List[ReferenceV2] = dataclasses.field(default_factory=list)
+    patches: List[PatchData] = dataclasses.field(default_factory=list)
+    date_published: Optional[datetime.datetime] = None
+    weaknesses: List[int] = dataclasses.field(default_factory=list)
+    severities: List[VulnerabilitySeverity] = dataclasses.field(default_factory=list)
+    url: Optional[str] = None
+    original_advisory_text: Optional[str] = None
+
+    def __post_init__(self):
+        if not self.advisory_id:
+            raise ValueError("advisory_id is required for AdvisoryDataV2")
+        if self.advisory_id and self.advisory_id in self.aliases:
+            raise ValueError(
+                f"advisory_id {self.advisory_id} should not be present in aliases {self.aliases}"
+            )
+        if self.summary:
+            self.summary = clean_summary(self.summary)
+
+    def to_dict(self):
+        return {
+            "advisory_id": self.advisory_id,
+            "aliases": self.aliases,
+            "summary": self.summary,
+            "affected_packages": [pkg.to_dict() for pkg in self.affected_packages],
+            "references": [ref.to_dict() for ref in self.references],
+            "patches": [patch.to_dict() for patch in self.patches],
+            "severities": [sev.to_dict() for sev in self.severities],
+            "date_published": self.date_published.isoformat() if self.date_published else None,
+            "weaknesses": self.weaknesses,
+            "url": self.url if self.url else "",
+        }
+
+    @classmethod
+    def from_dict(cls, advisory_data):
+        date_published = advisory_data["date_published"]
+        transformed = {
+            "aliases": advisory_data["aliases"],
+            "summary": advisory_data["summary"],
+            "affected_packages": [
+                AffectedPackageV2.from_dict(pkg)
+                for pkg in advisory_data["affected_packages"]
+                if pkg is not None
+            ],
+            "patches": [PatchData.from_dict(patch) for patch in advisory_data.get("patches", [])],
+            "references": [ReferenceV2.from_dict(ref) for ref in advisory_data["references"]],
+            "date_published": datetime.datetime.fromisoformat(date_published)
+            if date_published
+            else None,
+            "weaknesses": advisory_data["weaknesses"],
+            "severities": [
+                VulnerabilitySeverity.from_dict(sev) for sev in advisory_data.get("severities", [])
+            ],
+            "url": advisory_data.get("url") or None,
+        }
+        return cls(**transformed)
+
+
+def clean_summary(summary):
+    # https://nvd.nist.gov/vuln/detail/CVE-2013-4314
+    # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
+    summary = summary.strip()
+    if summary:
+        summary = summary.replace("\x00", "\uFFFD")
+    return summary
 
 
 class NoLicenseError(Exception):

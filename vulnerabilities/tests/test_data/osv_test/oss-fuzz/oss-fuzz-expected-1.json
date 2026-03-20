@@ -3,7 +3,7 @@
   "aliases": [],
   "summary": "Security exception in java.base/java.util.stream.AbstractPipeline.evaluate\nOSS-Fuzz report: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=66703\n\n```\nCrash type: Security exception\nCrash state:\njava.base/java.util.stream.AbstractPipeline.evaluate\njava.base/java.util.stream.ReferencePipeline.collect\norg.apache.commons.configuration2.AbstractYAMLBasedConfiguration.parseCollection\n```",
   "affected_packages": [],
-  "references_v2": [
+  "references": [
     {
       "reference_id": "",
       "reference_type": "",

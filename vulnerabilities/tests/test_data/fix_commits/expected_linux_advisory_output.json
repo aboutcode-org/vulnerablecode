@@ -1,0 +1,82 @@
+[
+  {
+    "advisory_id": "CVE-2021-0001",
+    "aliases": [],
+    "summary": "41b43c74bda19753c757036673ea9db74acf494a:Fixed CVE-2025-59681 -- Protected QuerySet.annotate(), alias(), aggregate(), and extra() against SQL injection in column aliases on MySQL/MariaDB.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "github",
+          "namespace": "test",
+          "name": "repo",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/test/repo",
+            "commit_hash": "41b43c74bda19753c757036673ea9db74acf494a",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "41b43c74bda19753c757036673ea9db74acf494a",
+        "reference_type": "commit",
+        "url": "https://github.com/test/repo/tree/41b43c74bda19753c757036673ea9db74acf494a"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  },
+  {
+    "advisory_id": "GHSA-dead-beef-baad",
+    "aliases": [],
+    "summary": "49ff1042aa66bb25eda87e9a8ef82f3b0ad4eeba:Fixed CVE-2024-53907 -- Mitigated potential DoS in strip_tags().",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "github",
+          "namespace": "test",
+          "name": "repo",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": [
+          {
+            "vcs_url": "https://github.com/test/repo",
+            "commit_hash": "49ff1042aa66bb25eda87e9a8ef82f3b0ad4eeba",
+            "patch_text": null,
+            "patch_checksum": null
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "49ff1042aa66bb25eda87e9a8ef82f3b0ad4eeba",
+        "reference_type": "commit",
+        "url": "https://github.com/test/repo/tree/49ff1042aa66bb25eda87e9a8ef82f3b0ad4eeba"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://github.com/test/repo"
+  }
+]

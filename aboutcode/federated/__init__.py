@@ -1028,7 +1028,7 @@ class PurlTypeConfig:
             "mlflow": 16,
             "pub": 16,
             "rpm": 16,
-            # Small Ecosystem all use the defaul
+            # Small Ecosystem all use the default
             "default": 1,
         }
         return [
@@ -1069,7 +1069,7 @@ class PurlTypeConfig:
             "mlflow": 8,
             "pub": 8,
             "rpm": 8,
-            # Small Ecosystem all use the defaul
+            # Small Ecosystem all use the default
             "default": 1,
         }
         return [
@@ -1110,7 +1110,7 @@ class PurlTypeConfig:
             "mlflow": 4,
             "pub": 4,
             "rpm": 4,
-            # Small Ecosystem all use the defaul
+            # Small Ecosystem all use the default
             "default": 1,
         }
         return [
@@ -1181,7 +1181,7 @@ def cluster_preset():
         DataCluster(
             data_kind="security_advisories",
             description="VulnerableCode security advisories for each package version.",
-            datafile_path_template="{/namespace}/{name}/{version}/advisories.json",
+            datafile_path_template="{/namespace}/{name}/{version}/advisories.yml",
             purl_type_configs=[PurlTypeConfig.default_config()],
             data_schema_url="",
             documentation_url="",

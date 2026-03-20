@@ -16,7 +16,7 @@ import pytest
 from packageurl import PackageURL
 from univers.version_range import VersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
@@ -47,10 +47,10 @@ class DummyImporter(VulnerableCodeBaseImporterPipelineV2):
 
 @pytest.fixture
 def dummy_advisory():
-    return AdvisoryData(
+    return AdvisoryDataV2(
         summary="Test advisory",
         aliases=["CVE-2025-0001"],
-        references_v2=[],
+        references=[],
         severities=[],
         weaknesses=[],
         affected_packages=[
@@ -248,13 +248,13 @@ def dumpy_patch_advisory(patch_source_samples):
             elif isinstance(patch_obj, ReferenceV2):
                 references.append(patch_obj)
 
-    return AdvisoryData(
+    return AdvisoryDataV2(
+        advisory_id="ADV-1234",
         summary="Test patch advisory",
         aliases=["CVE-2025-0001"],
         affected_packages=affected_packages,
-        references_v2=references,
+        references=references,
         patches=patches,
-        advisory_id="ADV-1234",
         date_published=datetime.now() - timedelta(days=10),
         url="https://example.com/advisory/1",
     )

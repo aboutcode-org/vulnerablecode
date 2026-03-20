@@ -12,7 +12,7 @@ from unittest.mock import patch
 import pytest
 from dateutil.parser import parse as date_parse
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines.v2_importers.xen_importer import XenImporterPipeline
 
@@ -64,11 +64,11 @@ def test_collect_advisories(mock_fetch, pipeline):
     assert len(advisories) == 2
 
     first = advisories[0]
-    assert isinstance(first, AdvisoryData)
+    assert isinstance(first, AdvisoryDataV2)
     assert first.advisory_id == "XSA-123"
     assert first.aliases == ["CVE-2022-12345"]
     assert first.summary == "Sample Xen Advisory"
-    assert isinstance(first.references_v2[0], ReferenceV2)
+    assert isinstance(first.references[0], ReferenceV2)
     assert first.date_published == date_parse("2022-09-15T00:00:00Z")
 
 

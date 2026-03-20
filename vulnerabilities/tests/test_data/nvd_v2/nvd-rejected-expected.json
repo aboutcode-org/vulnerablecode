@@ -4,7 +4,7 @@
     "aliases": [],
     "summary": "Rejected reason: DO NOT USE THIS CANDIDATE NUMBER. ConsultIDs: none. Reason: This candidate is unused by its CNA. Notes: none.",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2022-0094",
         "reference_type": "",

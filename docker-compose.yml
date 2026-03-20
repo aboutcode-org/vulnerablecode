@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: postgres:13
+    image: postgres:15
     command: -c config_file=/etc/postgresql/postgresql.conf
     env_file:
       - docker.env

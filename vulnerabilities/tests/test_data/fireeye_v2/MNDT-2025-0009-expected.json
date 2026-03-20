@@ -1,10 +1,12 @@
 [
   {
     "advisory_id": "MNDT-2025-0009",
-    "aliases": ["CVE-2025-64740"],
+    "aliases": [
+      "CVE-2025-64740"
+    ],
     "summary": "Improper verification of cryptographic signature in the installer for Zoom Workplace VDI Client for Windows may allow an authenticated user to conduct an escalation of privilege via local access.",
     "affected_packages": [],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",

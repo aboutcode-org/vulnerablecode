@@ -1,0 +1,5 @@
+- purl: pkg:npm/foobar@1.2.4
+  affected_by_advisories:
+    - test_pipeline_v2/ADV-002
+  fixing_advisories:
+    - test_pipeline_v2/ADV-001

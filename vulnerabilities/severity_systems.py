@@ -169,6 +169,14 @@ APACHE_HTTPD.choices = [
     "Low",
 ]
 
+ARCHLINUX.choices = [
+    "Critical",
+    "High",
+    "Medium",
+    "Low",
+    "Very Low",
+]
+
 # This is essentially identical to apache_http except for the addition of the "High" score,
 # which seems to be used interchangeably for "Important".
 APACHE_TOMCAT = ScoringSystem(
@@ -194,6 +202,19 @@ OPENSSL.choices = [
     "High",
     "Moderate",
     "Low",
+]
+
+UBUNTU_PRIORITY = ScoringSystem(
+    identifier="ubuntu-priority",
+    name="Ubuntu Priority",
+    url="https://ubuntu.com/security/cves/about#priority",
+)
+UBUNTU_PRIORITY.choices = [
+    "Critical",
+    "High",
+    "Medium",
+    "Low",
+    "Negligible",
 ]
 
 
@@ -239,5 +260,6 @@ SCORING_SYSTEMS = {
         EPSS,
         SSVC,
         OPENSSL,
+        UBUNTU_PRIORITY,
     )
 }

@@ -17,8 +17,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 
+from vulnerabilities.api_v2 import AdvisoryV2Serializer
 from vulnerabilities.api_v2 import PackageV2Serializer
 from vulnerabilities.api_v2 import VulnerabilityListSerializer
+from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
@@ -905,3 +907,130 @@ class AdvisoriesPackageV2Tests(APITestCase):
             response = self.client.get(url)
         assert response.status_code == 200
         assert "pkg:pypi/sample@1.0.0" in response.data
+
+
+class AdvisoryV2ViewSetTest(APITestCase):
+    def setUp(self):
+        self.advisory1 = AdvisoryV2.objects.create(
+            datasource_id="nginx_importer_v2",
+            advisory_id="CVE-2021-1234",
+            avid="nginx_importer_v2/CVE-2021-1234",
+            unique_content_id="a" * 64,
+            url="https://example.com/advisory1",
+            date_collected="2024-01-01T00:00:00Z",
+            summary="Test advisory 1",
+        )
+        self.advisory2 = AdvisoryV2.objects.create(
+            datasource_id="pypa_importer_v2",
+            advisory_id="PYSEC-2022-5678",
+            avid="pypa_importer_v2/PYSEC-2022-5678",
+            unique_content_id="b" * 64,
+            url="https://example.com/advisory2",
+            date_collected="2024-01-01T00:00:00Z",
+            summary="Test advisory 2",
+        )
+
+        self.alias1 = AdvisoryAlias.objects.create(alias="CVE-2021-1234")
+        self.advisory1.aliases.add(self.alias1)
+
+        self.alias2 = AdvisoryAlias.objects.create(alias="GHSA-xxxx-yyyy-zzzz")
+        self.advisory2.aliases.add(self.alias2)
+
+        cache.clear()
+        self.client = APIClient(enforce_csrf_checks=True)
+
+    def test_list_advisories(self):
+        """
+        Test listing all advisories without filters.
+        """
+        url = reverse("advisory-v2-list")
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("results", response.data)
+        self.assertEqual(response.data["count"], 2)
+
+    def test_retrieve_advisory_by_avid(self):
+        """
+        Test retrieving a specific advisory by its avid.
+        The avid contains a slash, handled by lookup_value_regex.
+        """
+        url = reverse("advisory-v2-detail", kwargs={"avid": self.advisory1.avid})
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["advisory_id"], self.advisory1.avid)
+        self.assertEqual(response.data["url"], self.advisory1.url)
+        self.assertIn("CVE-2021-1234", response.data["aliases"])
+
+    def test_retrieve_nonexistent_advisory_returns_404(self):
+        """
+        Test that a non-existent advisory returns 404.
+        """
+        url = reverse("advisory-v2-detail", kwargs={"avid": "fake_source/FAKE-0000"})
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_filter_by_alias(self):
+        """
+        Test filtering advisories by alias returns only matching advisory.
+        """
+        url = reverse("advisory-v2-list")
+        response = self.client.get(url, {"alias": "CVE-2021-1234"}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        result = response.data["results"][0]
+        self.assertIn("CVE-2021-1234", result["aliases"])
+
+    def test_filter_by_advisory_id(self):
+        """
+        Test filtering advisories by advisory_id (avid).
+        """
+        url = reverse("advisory-v2-list")
+        response = self.client.get(
+            url, {"advisory_id": "nginx_importer_v2/CVE-2021-1234"}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["advisory_id"], self.advisory1.avid)
+
+    def test_filter_by_datasource_id(self):
+        """
+        Test filtering advisories by datasource_id returns only that source's advisories.
+        """
+        url = reverse("advisory-v2-list")
+        response = self.client.get(url, {"datasource_id": "nginx_importer_v2"}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["advisory_id"], self.advisory1.avid)
+
+    def test_filter_by_nonexistent_alias_returns_empty(self):
+        """
+        Test that filtering by a non-existent alias returns an empty list.
+        """
+        url = reverse("advisory-v2-list")
+        response = self.client.get(url, {"alias": "CVE-9999-9999"}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 0)
+
+    def test_advisory_serializer_fields(self):
+        """
+        Test that AdvisoryV2Serializer returns all required fields.
+        """
+        serializer = AdvisoryV2Serializer(self.advisory1)
+        data = serializer.data
+        expected_fields = [
+            "advisory_id",
+            "url",
+            "aliases",
+            "summary",
+            "severities",
+            "weaknesses",
+            "references",
+            "exploitability",
+            "weighted_severity",
+            "risk_score",
+            "related_ssvc_trees",
+        ]
+        for field in expected_fields:
+            self.assertIn(field, data)
+        self.assertEqual(data["advisory_id"], self.advisory1.avid)
+        self.assertIn("CVE-2021-1234", data["aliases"])

@@ -848,7 +848,11 @@ def group_advisories_by_content(advisories):
     grouped = {}
 
     for advisory in advisories:
-        content_hash = advisory.compute_advisory_content()
+        content_hash = (
+            advisory.advisory_content_hash
+            if advisory.advisory_content_hash
+            else compute_advisory_content(advisory)
+        )
 
         entry = grouped.setdefault(
             content_hash,
@@ -867,3 +871,30 @@ def group_advisories_by_content(advisories):
             entry["secondary"].add(advisory)
 
     return grouped
+
+
+def compute_advisory_content(advisory_data):
+    """
+    Compute a unique content hash for an advisory by normalizing its data and hashing it.
+
+    :param advisory_data: An AdvisoryData object
+    :return: SHA-256 hash digest as content hash
+    """
+    from vulnerabilities.models import AdvisoryV2
+
+    if isinstance(advisory_data, AdvisoryV2):
+        advisory_data = advisory_data.to_advisory_data()
+    normalized_data = {
+        "summary": normalize_text(advisory_data.summary),
+        "affected_packages": [
+            pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
+        ],
+        "severities": [sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev],
+        "weaknesses": normalize_list(advisory_data.weaknesses),
+        "patches": [patch.to_dict() for patch in normalize_list(advisory_data.patches)],
+    }
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+
+    return content_hash

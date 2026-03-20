@@ -48,6 +48,7 @@ from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.pipes.univers_utils import get_exact_purls_v2
+from vulnerabilities.utils import compute_advisory_content
 
 
 def get_or_create_aliases(aliases: List) -> QuerySet:
@@ -301,6 +302,7 @@ def insert_advisory_v2(
     advisory_obj = None
     created = False
     content_id = compute_content_id_v2(advisory_data=advisory)
+    advisory_content_hash = compute_advisory_content(advisory_data=advisory)
     try:
         default_data = {
             "datasource_id": pipeline_id,
@@ -311,6 +313,7 @@ def insert_advisory_v2(
             "original_advisory_text": advisory.original_advisory_text,
             "url": advisory.url,
             "precedence": precedence,
+            "advisory_content_hash": advisory_content_hash,
         }
 
         advisory_obj, created = AdvisoryV2.objects.get_or_create(

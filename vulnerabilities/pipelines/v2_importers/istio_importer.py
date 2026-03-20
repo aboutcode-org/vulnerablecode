@@ -42,6 +42,7 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/istio/istio.io/blob/master/LICENSE"
     repo_url = "git+https://github.com/istio/istio.io"
+    run_once = True
 
     precedence = 200
 

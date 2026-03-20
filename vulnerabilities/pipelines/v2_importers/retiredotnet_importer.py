@@ -118,6 +118,7 @@ class RetireDotnetImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     affected_packages=affected_packages,
                     references=vuln_reference,
                     url=advisory_url,
+                    original_advisory_text=json.dumps(json_doc, indent=2, ensure_ascii=False),
                 )
 
     @staticmethod

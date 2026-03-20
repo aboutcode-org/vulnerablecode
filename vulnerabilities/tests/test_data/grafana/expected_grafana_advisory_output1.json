@@ -1,0 +1,57 @@
+{
+  "advisory_id": "GHSA-7rqg-hjwc-6mjf",
+  "aliases": [
+    "CVE-2023-22462"
+  ],
+  "summary": "Stored XSS in Text plugin",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "golang",
+        "namespace": "",
+        "name": "github.com/grafana/grafana",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:golang/>=9.2.0|<9.2.10",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "golang",
+        "namespace": "",
+        "name": "github.com/grafana/grafana",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:golang/>=9.3.0|<9.3.4",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/grafana/grafana/security/advisories/GHSA-7rqg-hjwc-6mjf"
+    }
+  ],
+  "patches": [],
+  "severities": [
+    {
+      "system": "cvssv3.1",
+      "value": "6.4",
+      "scoring_elements": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:N"
+    }
+  ],
+  "date_published": "2023-03-01T08:59:53+00:00",
+  "weaknesses": [
+    79
+  ],
+  "url": "https://github.com/grafana/grafana/security/advisories/GHSA-7rqg-hjwc-6mjf"
+}

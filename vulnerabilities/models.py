@@ -2675,6 +2675,12 @@ class AdvisoryReference(models.Model):
         help_text="URL to the vulnerability reference",
     )
 
+    archive_url = models.URLField(
+        max_length=1024,
+        null=True,
+        help_text="URL to the backup vulnerability reference",
+    )
+
     ADVISORY = "advisory"
     EXPLOIT = "exploit"
     COMMIT = "commit"

@@ -857,3 +857,116 @@ class AdminLoginView(LoginView):
         context["site_title"] = "VulnerableCode site admin"
         context["site_header"] = "VulnerableCode Administration"
         return context
+
+
+from django import forms
+
+from vulnerabilities.models import AdvisoryToDoV2
+
+# class AdvisorySelectedView(View):
+#     def post(self, request):
+#         selected_ids = request.POST.getlist("selected_items")
+
+#         # redirect with IDs in URL
+#         ids_str = ",".join(selected_ids)
+#         return redirect(f"/advisory/v2/selected/?ids={ids_str}")
+
+#     def get(self, request):
+#         ids = request.GET.get("ids", "")
+#         selected_ids = ids.split(",") if ids else []
+
+#         return render(request, "selected_page.html", {
+#             "selected_ids": selected_ids
+#         })
+
+from django.views.generic import DetailView
+from vulnerabilities.pipes.export import serialize_advisory
+import saneyaml
+
+class AdvisoryCurationDetailView(DetailView):
+    model = AdvisoryToDoV2
+    template_name = "curation_detail.html"
+    context_object_name = "todo"
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+
+    #     advisories = list(
+    #         self.object.advisories.all()
+    #         .prefetch_related("aliases", "references", "severities")
+    #     )
+
+    #     # get selected advisory from URL
+    #     selected_id = self.request.GET.get("advisory")
+
+    #     selected = None
+    #     if selected_id:
+    #         selected = next((a for a in advisories if str(a.id) == selected_id), None)
+
+    #     if not selected:
+    #         selected = advisories[0] if advisories else None
+
+    #     context["advisories"] = advisories
+    #     context["selected_advisory"] = selected
+
+    #     # index for navigation
+    #     if selected:
+    #         idx = advisories.index(selected)
+    #         context["prev_advisory"] = advisories[idx - 1] if idx > 0 else None
+    #         context["next_advisory"] = (
+    #             advisories[idx + 1] if idx < len(advisories) - 1 else None
+    #         )
+
+    #     return context
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        advisories = self.object.advisories.all().prefetch_related(
+            "aliases", "references", "severities", "weaknesses"
+        )
+
+        context["advisories"] = [saneyaml.dump(serialize_advisory(i)) for i in advisories]
+
+        return context
+
+
+class AdvisoryCurationForm(forms.Form):
+    search = forms.CharField(
+        required=True,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search ToDos...",
+                "class": "input ",
+            },
+        ),
+    )
+
+
+class AdvisoryCurationView(ListView, FormMixin):
+    model = AdvisoryToDoV2
+    context_object_name = "schedule_list"
+    template_name = "curation_home.html"
+    paginate_by = 20
+    form_class = AdvisoryCurationForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["data"] = self.request.GET
+        return kwargs
+
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        qs = super().get_queryset().order_by("-created_at")
+        if form.is_valid() and (search := form.cleaned_data.get("search")):
+            return qs.filter(advisories__aliases__alias__icontains=search)
+        return qs
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["active_pipeline_count"] = PipelineSchedule.objects.filter(is_active=True).count()
+    #     context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
+    #         is_active=False
+    #     ).count()
+    #     return context

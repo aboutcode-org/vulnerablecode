@@ -39,3 +39,15 @@ def active_item(context, url_name):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+
+@register.simple_tag
+def querystring(request, **kwargs):
+    query = request.GET.copy()
+
+    for key, value in kwargs.items():
+        if not value:
+            continue
+        query[key] = value
+
+    return query.urlencode()

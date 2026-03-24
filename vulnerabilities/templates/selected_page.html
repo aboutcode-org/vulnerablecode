@@ -1,0 +1,11 @@
+<h2>Selected IDs</h2>
+
+{% if selected_ids %}
+    <ul>
+        {% for id in selected_ids %}
+            <li>{{ id }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No items selected</p>
+{% endif %}

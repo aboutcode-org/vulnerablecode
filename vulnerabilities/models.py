@@ -2515,7 +2515,7 @@ class AdvisoryToDoV2(models.Model):
         help_text="Advisory/ies where this TODO is applicable.",
     )
 
-    issue_type = models.CharField(
+    issue_type  = models.CharField(
         max_length=50,
         choices=ISSUE_TYPE_CHOICES,
         db_index=True,
@@ -2551,6 +2551,8 @@ class AdvisoryToDoV2(models.Model):
 
     class Meta:
         unique_together = ("related_advisories_id", "issue_type")
+
+    #todo add index!
 
 
 class AdvisorySeverity(models.Model):
@@ -2980,6 +2982,8 @@ class AdvisoryV2(models.Model):
     status = models.IntegerField(
         choices=AdvisoryStatusType.choices, default=AdvisoryStatusType.PUBLISHED
     )
+
+    # Note: Fields and relations below are not part of original upstream advisory.
 
     exploitability = models.DecimalField(
         null=True,

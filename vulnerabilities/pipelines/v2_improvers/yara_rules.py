@@ -35,6 +35,22 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
         "git+https://github.com/mikesxrs/Open-Source-YARA-rules",
         "git+https://github.com/fboldewin/YARA-rules",
         "git+https://github.com/h3x2b/yara-rules",
+        "git+https://github.com/roadwy/DefenderYara",
+        "git+https://github.com/mthcht/ThreatHunting-Keywords-yara-rules",
+        "git+https://github.com/Neo23x0/signature-base",
+        "git+https://github.com/malpedia/signator-rules",
+        "git+https://github.com/baderj/yara",
+        "git+https://github.com/deadbits/yara-rules",  # archived
+        "git+https://github.com/pmelson/yara_rules",
+        "git+https://github.com/sbousseaden/YaraHunts",
+        "git+https://github.com/embee-research/Yara-detection-rules",
+        "git+https://github.com/RussianPanda95/Yara-Rules",
+        "git+https://github.com/ail-project/ail-yara-rules",
+        "git+https://github.com/MalGamy/YARA_Rules",
+        "git+https://github.com/elceef/yara-rulz",
+        "git+https://github.com/tenable/yara-rules",
+        "git+https://github.com/dr4k0nia/yara-rules",
+        "git+https://github.com/umair9747/yara-rules",
     ]
 
     license_urls = """
@@ -49,10 +65,25 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
     https://github.com/jeFF0Falltrades/YARA-Signatures/blob/master/LICENSE.md
     https://github.com/tjnel/yara_repo/blob/master/LICENSE
     https://github.com/JPCERTCC/jpcert-yara/blob/main/LICENSE
-        
+    https://github.com/mthcht/ThreatHunting-Keywords-yara-rules/blob/main/LICENSE
+    https://github.com/malpedia/signator-rules -> https://creativecommons.org/licenses/by-sa/4.0/
+    https://github.com/baderj/yara/blob/main/LICENSE
+    https://github.com/deadbits/yara-rules/blob/master/UNLICENSE
+    https://github.com/embee-research/Yara-detection-rules/tree/main?tab=readme-ov-file#detection-rule-license-drl-11
+    https://github.com/ail-project/ail-yara-rules?tab=AGPL-3.0-1-ov-file
+    https://github.com/MalGamy/YARA_Rules/blob/main/LICENSE.md
+    https://github.com/elceef/yara-rulz/tree/main?tab=MIT-1-ov-file
+    https://github.com/tenable/yara-rules/tree/master?tab=BSD-3-Clause-1-ov-file
+    https://github.com/dr4k0nia/yara-rules/blob/main/LICENSE.md
+    https://github.com/umair9747/yara-rules?tab=GPL-3.0-1-ov-file
+    
     NO-LICENSE: https://github.com/mikesxrs/Open-Source-YARA-rules/
     NO-LICENSE: https://github.com/fboldewin/YARA-rules
     NO-LICENSE: https://github.com/h3x2b/yara-rules
+    NO-LICENSE: https://github.com/roadwy/DefenderYara
+    NO-LICENSE: https://github.com/pmelson/yara_rules
+    NO-LICENSE: https://github.com/sbousseaden/YaraHunts
+    NO-LICENSE: https://github.com/RussianPanda95/Yara-Rules
     """
 
     def __init__(self, *args, **kwargs):
@@ -109,7 +140,6 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
                     base_path=base_directory,
                     url=f"{repo_url}/blob/master/",
                 )
-                print(rule_url)
 
                 DetectionRule.objects.update_or_create(
                     rule_text=raw_text,

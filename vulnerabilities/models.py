@@ -2920,6 +2920,53 @@ class AdvisoryV2QuerySet(BaseQuerySet):
         qs = self.filter(id__in=Subquery(adv_ids))
         return qs.latest_per_avid()
 
+    def latest_advisories_for_purl(self, purl):
+        adv_ids = (
+            ImpactedPackageAffecting.objects.filter(package__package_url=purl)
+            .values_list(
+                "impacted_package__advisory_id",
+                flat=True,
+            )
+            .union(
+                ImpactedPackageFixedBy.objects.filter(package__package_url=purl).values_list(
+                    "impacted_package__advisory_id",
+                    flat=True,
+                )
+            )
+        )
+
+        qs = self.filter(id__in=Subquery(adv_ids))
+        return qs.latest_per_avid()
+
+
+class AdvisorySet(models.Model):
+
+    RELATION_TYPE_CHOICES = [
+        ("affecting", "Affecting"),
+        ("fixing", "Fixing"),
+    ]
+
+    package = models.ForeignKey("PackageV2", on_delete=models.CASCADE)
+    relation_type = models.CharField(max_length=20, choices=RELATION_TYPE_CHOICES)
+
+    identifiers = models.JSONField()
+
+    primary_advisory = models.ForeignKey("AdvisoryV2", on_delete=models.PROTECT)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class AdvisorySetMember(models.Model):
+
+    advisory_set = models.ForeignKey(
+        AdvisorySet,
+        on_delete=models.CASCADE,
+        related_name="members",
+    )
+
+    advisory = models.ForeignKey("AdvisoryV2", on_delete=models.CASCADE)
+    is_primary = models.BooleanField(default=False)
+
 
 class AdvisoryV2(models.Model):
     """
@@ -3084,6 +3131,9 @@ class AdvisoryV2(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.avid
 
     @property
     def get_status_label(self):

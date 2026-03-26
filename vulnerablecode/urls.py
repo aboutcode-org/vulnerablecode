@@ -29,7 +29,7 @@ from vulnerabilities.api_v3 import AdvisoryV3ViewSet
 from vulnerabilities.api_v3 import AffectedByAdvisoriesViewSet
 from vulnerabilities.api_v3 import FixingAdvisoriesViewSet
 from vulnerabilities.api_v3 import PackageV3ViewSet
-from vulnerabilities.views import AdminLoginView
+from vulnerabilities.views import AdminLoginView, PackageV3Details
 from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import AffectedByAdvisoriesListView
@@ -141,7 +141,7 @@ urlpatterns = [
     ),
     re_path(
         r"^packages/v2/(?P<purl>pkg:.+)$",
-        PackageV2Details.as_view(),
+        PackageV3Details.as_view(),
         name="package_details_v2",
     ),
     re_path(

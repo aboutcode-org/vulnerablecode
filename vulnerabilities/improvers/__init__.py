@@ -32,6 +32,7 @@ from vulnerabilities.pipelines.v2_improvers import (
     enhance_with_metasploit as enhance_with_metasploit_v2,
 )
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
+from vulnerabilities.pipelines.v2_improvers import group_advisories_for_packages
 from vulnerabilities.pipelines.v2_improvers import relate_severities
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
 from vulnerabilities.utils import create_registry
@@ -76,5 +77,6 @@ IMPROVERS_REGISTRY = create_registry(
         collect_ssvc_trees.CollectSSVCPipeline,
         relate_severities.RelateSeveritiesPipeline,
         compute_advisory_content_hash.ComputeAdvisoryContentHash,
+        group_advisories_for_packages.GroupAdvisoriesForPackages,
     ]
 )

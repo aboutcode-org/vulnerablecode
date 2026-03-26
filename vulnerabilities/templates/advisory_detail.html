@@ -451,6 +451,28 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                 <td class="two-col-right">{{ epss_data.published_at }}</td>
                             </tr>
                             {% endif %}
+                            {% if epss_data.source %}
+                            <tr>
+                                <td class="two-col-left">
+                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                          data-tooltip="Source URL of the EPSS Score.">
+                                          Source
+                                    </span>
+                                </td>
+                                <td class="two-col-right"> <a href="{{ epss_data.source }}" target="_blank">{{ epss_data.source }}</a></td>
+                            </tr>
+                            {% endif %}
+                            {% if epss_data.advisory %}
+                            <tr>
+                                <td class="two-col-left">
+                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                          data-tooltip="Advisory of the EPSS Score.">
+                                          Advisory
+                                    </span>
+                                </td>
+                                <td class="two-col-right"> <a href="{{ epss_data.advisory.get_absolute_url }}">{{ epss_data.advisory.avid }}</a></td>
+                            </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 {% else %}

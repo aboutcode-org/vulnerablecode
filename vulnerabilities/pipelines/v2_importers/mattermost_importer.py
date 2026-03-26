@@ -7,13 +7,14 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 from typing import Iterable
 
 from packageurl import PackageURL
 from univers.version_range import GitHubVersionRange
 
 from vulnerabilities import severity_systems
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -40,6 +41,8 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     _cached_data = None  # Class-level cache
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (cls.collect_and_store_advisories,)
@@ -53,7 +56,7 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         data = self.get_mattermost_data()
         return len(data) if data else 0
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         data = self.get_mattermost_data()
         if not data:
             return
@@ -114,11 +117,13 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 url="https://mattermost.com/security-updates/",
             )
 
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=vuln_id,
                 aliases=[cve_id],
                 summary=details,
-                references_v2=[reference],
+                references=[reference],
                 affected_packages=affected_packages,
+                severities=severities,
                 url=self.url,
+                original_advisory_text=json.dumps(advisory, indent=2, ensure_ascii=False),
             )

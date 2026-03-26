@@ -12,6 +12,7 @@ from packageurl import PackageURL
 from univers.version_range import GitHubVersionRange
 
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.mattermost_importer import MattermostImporterPipeline
 
 
@@ -60,7 +61,7 @@ def test_collect_advisories_happy_path(importer):
     assert len(advisories) == 1
     advisory = advisories[0]
 
-    assert isinstance(advisory, AdvisoryData)
+    assert isinstance(advisory, AdvisoryDataV2)
     assert advisory.advisory_id == "MMSA-2024-001"
     assert advisory.aliases == ["CVE-2024-1234"]
     assert "Test vulnerability" in advisory.summary

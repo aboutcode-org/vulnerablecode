@@ -21,7 +21,7 @@ from univers.version_constraint import VersionConstraint
 from univers.version_range import ApacheVersionRange
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
@@ -152,6 +152,8 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     base_url = "https://httpd.apache.org/security/json/"
 
+    precedence = 200
+
     links = []
 
     ignorable_versions = frozenset(
@@ -223,7 +225,7 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def steps(cls):
         return (cls.collect_and_store_advisories,)
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         if not self.links:
             self.links = fetch_links(self.base_url)
         for link in self.links:
@@ -301,12 +303,12 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         weaknesses = get_weaknesses(data)
 
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=alias,
             aliases=[],
             summary=description or "",
             affected_packages=affected_packages,
-            references_v2=[reference],
+            references=[reference],
             weaknesses=weaknesses,
             url=reference.url,
             severities=severities,
@@ -328,7 +330,7 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 "=": "=",
             }
             comparator = comparator_by_range_expression.get(range_expression)
-            if comparator:
+            if comparator and version_value and version_value not in self.ignorable_versions:
                 constraints.append(
                     VersionConstraint(comparator=comparator, version=SemverVersion(version_value))
                 )
@@ -336,11 +338,12 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         for fixed_version in fixed_versions:
             # The VersionConstraint method `invert()` inverts the fixed_version's comparator,
             # enabling inclusion of multiple fixed versions with the `affected_version_range` values.
-            constraints.append(
-                VersionConstraint(
-                    comparator="=",
-                    version=SemverVersion(fixed_version),
-                ).invert()
-            )
+            if fixed_version and fixed_version not in self.ignorable_versions:
+                constraints.append(
+                    VersionConstraint(
+                        comparator="=",
+                        version=SemverVersion(fixed_version),
+                    ).invert()
+                )
 
         return ApacheVersionRange(constraints=constraints)

@@ -13,7 +13,7 @@ from typing import Iterable
 
 from fetchcode.vcs import fetch_via_vcs
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes.advisory import append_patch_classifications
 
@@ -29,6 +29,8 @@ class ProjectKBMSR2019Pipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
     repo_url = "git+https://github.com/SAP/project-kb"
+
+    precedence = 200
 
     @classmethod
     def steps(cls):
@@ -53,7 +55,7 @@ class ProjectKBMSR2019Pipeline(VulnerableCodeBaseImporterPipelineV2):
         self.log(f"Estimated advisories to process: {count}")
         return count
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         self.log("Collecting fix commits from ProjectKB ( vulas_db_msr2019_release )...")
         csv_path = Path(self.vcs_response.dest_dir) / "MSR2019/dataset/vulas_db_msr2019_release.csv"
 
@@ -82,12 +84,13 @@ class ProjectKBMSR2019Pipeline(VulnerableCodeBaseImporterPipelineV2):
                     patches=patches,
                 )
 
-                yield AdvisoryData(
+                yield AdvisoryDataV2(
                     advisory_id=vuln_id,
                     affected_packages=affected_packages,
                     patches=patches,
-                    references_v2=references,
+                    references=references,
                     url="https://github.com/SAP/project-kb/blob/main/MSR2019/dataset/vulas_db_msr2019_release.csv",
+                    original_advisory_text=",".join(row),
                 )
 
     def clean_downloads(self):

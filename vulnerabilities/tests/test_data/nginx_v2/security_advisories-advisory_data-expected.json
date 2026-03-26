@@ -19,7 +19,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -57,7 +57,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -95,7 +95,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -133,7 +133,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -171,7 +171,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -209,7 +209,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -247,7 +247,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -296,7 +296,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -345,7 +345,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -394,7 +394,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -432,7 +432,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -470,7 +470,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -508,7 +508,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -546,7 +546,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -584,7 +584,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -633,7 +633,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -682,7 +682,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -741,7 +741,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -779,7 +779,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -817,7 +817,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -855,7 +855,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -893,7 +893,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -942,7 +942,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -991,7 +991,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -1040,7 +1040,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -1089,7 +1089,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -1148,7 +1148,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -1197,7 +1197,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -1235,7 +1235,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -1284,7 +1284,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "",
         "reference_type": "",
@@ -1333,7 +1333,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2011-4315",
         "reference_type": "",
@@ -1366,7 +1366,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2010-2266",
         "reference_type": "",
@@ -1399,7 +1399,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2010-2263",
         "reference_type": "",
@@ -1432,7 +1432,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1459,7 +1459,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2009-4487",
         "reference_type": "",
@@ -1494,7 +1494,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2009-3555",
         "reference_type": "",
@@ -1538,7 +1538,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2009-3898",
         "reference_type": "",
@@ -1573,7 +1573,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2009-2629",
         "reference_type": "",
@@ -1617,7 +1617,7 @@
         "fixed_by_commit_patches": []
       }
     ],
-    "references_v2": [
+    "references": [
       {
         "reference_id": "CVE-2009-3896",
         "reference_type": "",

@@ -14,10 +14,13 @@ from typing import Mapping
 from packageurl import PackageURL
 from univers.version_range import ArchLinuxVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities import severity_systems
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import fetch_response
 
 
@@ -27,6 +30,8 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "archlinux_importer_v2"
     spdx_license_expression = "MIT"
     license_url = "https://github.com/archlinux/arch-security-tracker/blob/master/LICENSE"
+
+    precedence = 200
 
     @classmethod
     def steps(cls):
@@ -44,14 +49,16 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self) -> int:
         return len(self.response)
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for record in self.response:
             yield self.parse_advisory(record)
 
-    def parse_advisory(self, record) -> AdvisoryData:
+    def parse_advisory(self, record) -> AdvisoryDataV2:
         affected_packages = []
         references = []
+        severities = []
         avg_name = record.get("name")
+        severity = record.get("severity")
         aliases = record.get("issues", [])
         aliases.extend(record.get("advisories", []))
         summary = record.get("type", "")
@@ -90,13 +97,26 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 )
             )
 
-        return AdvisoryData(
+        if severity not in severity_systems.ARCHLINUX.choices:
+            self.log(f"Unknown severity {severity} for {avg_name}")
+            severity = None
+        if severity:
+            severities = [
+                VulnerabilitySeverity(
+                    system=severity_systems.ARCHLINUX,
+                    value=severity,
+                    url="https://security.archlinux.org/{avg_name}.json",
+                )
+            ]
+
+        return AdvisoryDataV2(
             advisory_id=avg_name,
             aliases=aliases,
             summary=summary,
-            references_v2=references,
+            references=references,
             affected_packages=affected_packages,
+            severities=severities,
             weaknesses=[],
             url=f"https://security.archlinux.org/{avg_name}.json",
-            original_advisory_text=json.dumps(record),
+            original_advisory_text=json.dumps(record, indent=2, ensure_ascii=False),
         )

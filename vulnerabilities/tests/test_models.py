@@ -23,18 +23,23 @@ from univers.version_range import VersionRange
 
 from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import Reference
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
 from vulnerabilities.models import Patch
 from vulnerabilities.models import Vulnerability
+from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.severity_systems import CVSSV4
+from vulnerabilities.severity_systems import ScoringSystem
+from vulnerabilities.tests.pipelines import TestLogger
 from vulnerabilities.utils import compute_content_id
 
 
@@ -743,7 +748,8 @@ class TestStoreLongCVSSV4(TestCase):
 
 class TestAdvisoryV2Model(DjangoTestCase):
     def setUp(self):
-        self.advisoryv2_data1 = AdvisoryData(
+        self.logger = TestLogger()
+        self.advisoryv2_data1 = AdvisoryDataV2(
             advisory_id="test_adv",
             aliases=[],
             summary="vulnerability description here",
@@ -758,7 +764,7 @@ class TestAdvisoryV2Model(DjangoTestCase):
                     ],
                 )
             ],
-            references_v2=[ReferenceV2(url="https://example.com/with/more/info/CVE-2020-13371337")],
+            references=[ReferenceV2(url="https://example.com/with/more/info/CVE-2020-13371337")],
             patches=[PatchData(patch_url="https://foo.bar/", patch_text="test patch")],
             url="https://test.com",
         )
@@ -766,7 +772,58 @@ class TestAdvisoryV2Model(DjangoTestCase):
     def test_advisoryv2_to_advisory_data_patch_seralization(self):
         from vulnerabilities.pipes.advisory import insert_advisory_v2
 
-        insert_advisory_v2(advisory=self.advisoryv2_data1, pipeline_id="test_pipeline")
+        insert_advisory_v2(
+            advisory=self.advisoryv2_data1, pipeline_id="test_pipeline", logger=self.logger.write
+        )
         result = models.AdvisoryV2.objects.first().to_advisory_data()
 
         self.assertEqual(result, self.advisoryv2_data1)
+
+
+class TestAdvisoryV2ModelDuplication(DjangoTestCase):
+    def setUp(self):
+        self.logger = TestLogger()
+        self.advisoryv2_data1 = AdvisoryDataV2(
+            advisory_id="CVE-2023-0401",
+            aliases=[],
+            summary="",
+            affected_packages=[],
+            severities=[
+                VulnerabilitySeverity(
+                    system=CVSSV3,
+                    value="7.5",
+                    scoring_elements="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                )
+            ],
+            patches=[],
+            url="https://test.com",
+        )
+
+        self.advisoryv2_data2 = AdvisoryDataV2(
+            advisory_id="CVE-2023-0662",
+            aliases=[],
+            summary="",
+            affected_packages=[],
+            severities=[
+                VulnerabilitySeverity(
+                    system=CVSSV3,
+                    value="7.5",
+                    scoring_elements="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+                )
+            ],
+            patches=[],
+            url="https://test.com",
+        )
+
+    def test_advisoryv2_duplication_data(self):
+        from vulnerabilities.pipes.advisory import insert_advisory_v2
+
+        insert_advisory_v2(
+            advisory=self.advisoryv2_data1, pipeline_id="test_pipeline", logger=self.logger.write
+        )
+        insert_advisory_v2(
+            advisory=self.advisoryv2_data2, pipeline_id="test_pipeline", logger=self.logger.write
+        )
+        result = models.AdvisoryV2.objects.count()
+
+        self.assertEqual(result, 2)

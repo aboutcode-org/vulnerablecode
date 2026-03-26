@@ -18,7 +18,7 @@ from dateutil.parser import parse
 from packageurl import PackageURL
 from univers.version_range import ApacheVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.models import AdvisoryReference
@@ -48,6 +48,8 @@ class ApacheKafkaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         "CVE-2021-4104",
     ]
 
+    precedence = 200
+
     @classmethod
     def steps(cls):
         return (
@@ -63,11 +65,11 @@ class ApacheKafkaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self):
         return sum(1 for _ in self.soup.find(class_="td-content").find_all("table"))
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for table in self.soup.find(class_="td-content").find_all("table"):
             yield self.to_advisory_data(table)
 
-    def to_advisory_data(self, table) -> Iterable[AdvisoryData]:
+    def to_advisory_data(self, table) -> Iterable[AdvisoryDataV2]:
         affected_constraints = None
         fixed_constraints = None
         affected_packages = []
@@ -124,13 +126,13 @@ class ApacheKafkaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             )
         )
 
-        return AdvisoryData(
+        return AdvisoryDataV2(
             advisory_id=cve,
             aliases=[],
             summary=build_description(summary=title, description=description),
             date_published=date_published,
             affected_packages=affected_packages,
-            references_v2=references,
+            references=references,
             url=f"{self.url}#{cve}",
             original_advisory_text=original_advisory,
         )

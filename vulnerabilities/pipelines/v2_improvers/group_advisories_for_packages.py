@@ -7,6 +7,8 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import hashlib
+import json
 from collections import defaultdict
 
 from django.db import transaction
@@ -16,7 +18,7 @@ from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.utils import compute_advisory_content
+from vulnerabilities.utils import normalize_list
 
 
 class GroupAdvisoriesForPackages(VulnerableCodePipeline):
@@ -42,15 +44,26 @@ def merge_advisories(advisories):
     result_groups = []
 
     for adv in advisories:
-        print(adv.avid)
-        if adv.advisory_content_hash:
-            content_hash_map[adv.advisory_content_hash].append(adv)
+        affected = []
+        fixed = []
+
+        for impact in adv.impacted_packages.all():
+            affected.extend([pkg.package_url for pkg in impact.affecting_packages.all()])
+
+            fixed.extend([pkg.package_url for pkg in impact.fixed_by_packages.all()])
+
+        normalized_data = {
+            "affected_packages": normalize_list(affected),
+            "fixed_packages": normalize_list(fixed),
+        }
+
+        normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+        content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+
+        if content_hash:
+            content_hash_map[content_hash].append(adv)
         else:
-            content_hash = compute_advisory_content(advisory_data=adv)
-            if content_hash:
-                content_hash_map[content_hash].append(adv)
-            else:
-                result_groups.append([adv])
+            result_groups.append([adv])
 
     final_groups = []
 

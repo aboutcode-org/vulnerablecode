@@ -11,9 +11,12 @@ from pathlib import Path
 from aboutcode.pipeline import LoopProgress
 from fetchcode.vcs import fetch_via_vcs
 
+from vulnerabilities.models import AdvisoryAlias
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import DetectionRule
 from vulnerabilities.models import DetectionRuleTypes
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.utils import find_all_cve
 from vulnerabilities.utils import get_advisory_url
 
 
@@ -119,7 +122,6 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
 
             rules_count = len(yara_files)
             self.log(f"Processing {rules_count:,d} rules from {repo_url}")
-
             progress = LoopProgress(total_iterations=rules_count, logger=self.log)
             for file_path in progress.iter(yara_files):
                 if not file_path.exists() or not file_path.is_file():
@@ -141,12 +143,29 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
                     url=f"{repo_url}/blob/master/",
                 )
 
-                DetectionRule.objects.update_or_create(
-                    rule_text=raw_text,
+                cve_ids = find_all_cve(f"{file_path}\n{raw_text}")
+
+                advisories = set()
+                for cve_id in cve_ids:
+                    alias = AdvisoryAlias.objects.filter(alias=cve_id).first()
+                    if alias:
+                        for adv in alias.advisories.all():
+                            advisories.add(adv)
+                    else:
+                        advs = AdvisoryV2.objects.filter(advisory_id=cve_id)
+                        for adv in advs:
+                            advisories.add(adv)
+
+                detection_rule, _ = DetectionRule.objects.update_or_create(
                     rule_type=DetectionRuleTypes.YARA,
-                    advisory=None,
                     source_url=rule_url,
+                    defaults={
+                        "rule_text": raw_text,
+                    },
                 )
+
+                for adv in advisories:
+                    detection_rule.related_advisories.add(adv)
 
     def clean_downloads(self):
         for vcs_response, _ in self.vcs_responses:

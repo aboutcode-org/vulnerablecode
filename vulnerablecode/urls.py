@@ -29,7 +29,7 @@ from vulnerabilities.api_v3 import AdvisoryV3ViewSet
 from vulnerabilities.api_v3 import AffectedByAdvisoriesViewSet
 from vulnerabilities.api_v3 import FixingAdvisoriesViewSet
 from vulnerabilities.api_v3 import PackageV3ViewSet
-from vulnerabilities.views import AdminLoginView, PackageV3Details
+from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import AffectedByAdvisoriesListView
@@ -41,6 +41,7 @@ from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import PackageSearchV2
 from vulnerabilities.views import PackageV2Details
+from vulnerabilities.views import PackageV3Details
 from vulnerabilities.views import PipelineRunDetailView
 from vulnerabilities.views import PipelineRunListView
 from vulnerabilities.views import PipelineScheduleListView

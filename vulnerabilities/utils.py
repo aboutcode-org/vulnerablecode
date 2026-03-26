@@ -611,6 +611,7 @@ def normalize_text(text):
 
 def normalize_list(lst):
     """Sort a list to ensure consistent ordering."""
+    lst = [x for x in lst if x]
     return sorted(lst) if lst else []
 
 
@@ -885,13 +886,9 @@ def compute_advisory_content(advisory_data):
     if isinstance(advisory_data, AdvisoryV2):
         advisory_data = advisory_data.to_advisory_data()
     normalized_data = {
-        "summary": normalize_text(advisory_data.summary),
         "affected_packages": [
             pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
         ],
-        "severities": [sev.to_dict() for sev in normalize_list(advisory_data.severities) if sev],
-        "weaknesses": normalize_list(advisory_data.weaknesses),
-        "patches": [patch.to_dict() for patch in normalize_list(advisory_data.patches)],
     }
 
     normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)

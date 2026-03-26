@@ -34,34 +34,23 @@ class GroupAdvisoriesForPackages(VulnerableCodePipeline):
         group_advisoris_for_packages(logger=self.log)
 
 
+CONTENT_HASH_CACHE = {}
+
+
 def merge_advisories(advisories):
 
     advisories = list(advisories)
 
     content_hash_map = defaultdict(list)
-    result_groups = []
 
     for adv in advisories:
-        affected = []
-        fixed = []
-
-        for impact in adv.impacted_packages.all():
-            affected.extend([pkg.package_url for pkg in impact.affecting_packages.all()])
-
-            fixed.extend([pkg.package_url for pkg in impact.fixed_by_packages.all()])
-
-        normalized_data = {
-            "affected_packages": normalize_list(affected),
-            "fixed_packages": normalize_list(fixed),
-        }
-
-        normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
-        content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
-
-        if content_hash:
-            content_hash_map[content_hash].append(adv)
+        if adv.avid in CONTENT_HASH_CACHE:
+            content_hash = CONTENT_HASH_CACHE[adv.avid]
         else:
-            result_groups.append([adv])
+            content_hash = compute_advisory_content_hash(adv)
+            CONTENT_HASH_CACHE[adv.avid] = content_hash
+
+        content_hash_map[content_hash].append(adv)
 
     final_groups = []
 
@@ -70,6 +59,25 @@ def merge_advisories(advisories):
         final_groups.extend(groups)
 
     return final_groups
+
+
+def compute_advisory_content_hash(adv):
+    affected = []
+    fixed = []
+
+    for impact in adv.impacted_packages.all():
+        affected.extend([pkg.package_url for pkg in impact.affecting_packages.all()])
+
+        fixed.extend([pkg.package_url for pkg in impact.fixed_by_packages.all()])
+
+    normalized_data = {
+        "affected_packages": normalize_list(affected),
+        "fixed_packages": normalize_list(fixed),
+    }
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+    return content_hash
 
 
 def get_merged_identifier_groups(advisories):
@@ -130,24 +138,20 @@ def get_merged_identifier_groups(advisories):
 def group_advisoris_for_packages(logger=None):
     for package in PackageV2.objects.iterator():
         print(package)
-        affecting_advisories = (
-            AdvisoryV2.objects
-            .latest_affecting_advisories_for_purl(purl=package.purl)
-            .prefetch_related(
-                "aliases",
-                "impacted_packages__affecting_packages",
-                "impacted_packages__fixed_by_packages",
-            )
+        affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
+            purl=package.purl
+        ).prefetch_related(
+            "aliases",
+            "impacted_packages__affecting_packages",
+            "impacted_packages__fixed_by_packages",
         )
 
-        fixed_by_advisories = (
-            AdvisoryV2.objects
-            .latest_fixed_by_advisories_for_purl(purl=package.purl)
-            .prefetch_related(
-                "aliases",
-                "impacted_packages__affecting_packages",
-                "impacted_packages__fixed_by_packages",
-            )
+        fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
+            purl=package.purl
+        ).prefetch_related(
+            "aliases",
+            "impacted_packages__affecting_packages",
+            "impacted_packages__fixed_by_packages",
         )
 
         try:

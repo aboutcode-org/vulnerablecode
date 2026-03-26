@@ -15,12 +15,13 @@ from packageurl import PackageURL
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Importer
 from vulnerabilities.utils import create_etag
+from vulnerabilities.utils import get_http_headers
 
 
 class SUSEBackportsImporter(Importer):
     @staticmethod
     def get_all_urls_of_backports(url):
-        r = requests.get(url)
+        r = requests.get(url, headers=get_http_headers())
         soup = BeautifulSoup(r.content, "lxml")
         for a_tag in soup.find_all("a", href=True):
             if a_tag["href"].endswith(".yaml") and a_tag["href"].startswith("backports"):
@@ -38,7 +39,7 @@ class SUSEBackportsImporter(Importer):
     def _fetch_yaml(self, url):
 
         try:
-            resp = requests.get(url)
+            resp = requests.get(url, headers=get_http_headers())
             resp.raise_for_status()
             return saneyaml.load(resp.content)
 

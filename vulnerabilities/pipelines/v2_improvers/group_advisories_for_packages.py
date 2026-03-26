@@ -38,8 +38,6 @@ def merge_advisories(advisories):
 
     advisories = list(advisories)
 
-    print(len(advisories))
-
     content_hash_map = defaultdict(list)
     result_groups = []
 
@@ -77,18 +75,15 @@ def merge_advisories(advisories):
 def get_merged_identifier_groups(advisories):
 
     identifier_groups = defaultdict(set)
-    advisory_to_identifiers = defaultdict(set)
 
     advisories = list(advisories)
 
     for adv in advisories:
 
         identifier_groups[adv.advisory_id].add(adv)
-        advisory_to_identifiers[adv].add(adv.advisory_id)
 
-        for alias in adv.aliases.all():
-            identifier_groups[alias.alias].add(adv)
-            advisory_to_identifiers[adv].add(alias.alias)
+        for alias in adv.aliases.values_list("alias", flat=True):
+            identifier_groups[alias].add(adv)
 
     groups = [set(advs) for advs in identifier_groups.values() if len(advs) > 1]
 
@@ -134,13 +129,26 @@ def get_merged_identifier_groups(advisories):
 
 def group_advisoris_for_packages(logger=None):
     for package in PackageV2.objects.iterator():
-        affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
-            purl=package.purl
-        ).prefetch_related("aliases")
+        print(package)
+        affecting_advisories = (
+            AdvisoryV2.objects
+            .latest_affecting_advisories_for_purl(purl=package.purl)
+            .prefetch_related(
+                "aliases",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+        )
 
-        fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
-            purl=package.purl
-        ).prefetch_related("aliases")
+        fixed_by_advisories = (
+            AdvisoryV2.objects
+            .latest_fixed_by_advisories_for_purl(purl=package.purl)
+            .prefetch_related(
+                "aliases",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+        )
 
         try:
             delete_and_save_advisory_set(package, affecting_advisories, relation="affecting")

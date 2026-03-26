@@ -45,6 +45,7 @@ from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.tests.pipelines.v2_improvers.test_collect_ssvc_trees import related_advisory
 from vulnerabilities.utils import group_advisories_by_content
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
@@ -160,18 +161,18 @@ class DetectionRuleSearch(ListView):
         return context
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().prefetch_related("related_advisories")
         form = DetectionRuleSearchForm(self.request.GET)
         if form.is_valid():
             rule_type = form.cleaned_data.get("rule_type")
-            advisory_avid = form.cleaned_data.get("advisory_avid")
+            advisory_id = form.cleaned_data.get("advisory_id")
             rule_text = form.cleaned_data.get("rule_text_contains")
 
             if rule_type:
                 queryset = queryset.filter(rule_type=rule_type)
 
-            if advisory_avid:
-                queryset = queryset.filter(advisory__avid=advisory_avid)
+            if advisory_id:
+                queryset = queryset.filter(related_advisories__advisory_id__in=advisory_id)
 
             if rule_text:
                 queryset = queryset.filter(rule_text__icontains=rule_text)

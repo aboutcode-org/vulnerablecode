@@ -3684,10 +3684,8 @@ class DetectionRule(models.Model):
 
     rule_text = models.TextField(help_text="The content of the detection signature.")
 
-    advisory = models.ForeignKey(
+    related_advisories = models.ManyToManyField(
         AdvisoryV2,
         related_name="detection_rules",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        help_text="Advisories associated with this DetectionRule.",
     )

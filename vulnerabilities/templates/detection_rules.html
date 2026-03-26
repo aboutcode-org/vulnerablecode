@@ -33,7 +33,7 @@ Detection Rule Search
                         <th>Metadata</th>
                         <th>Text</th>
                         <th>Source URL</th>
-                        <th>Advisory ID</th>
+                        <th>Advisory IDs</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,7 +43,12 @@ Detection Rule Search
                             <td>{{ detection_rule.rule_metadata }}</td>
                             <td>{{ detection_rule.rule_text|truncatewords:10 }}</td>
                             <td><a href="{{ detection_rule.source_url }}">{{ detection_rule.source_url }}</a></td>
-                            <td>{{ detection_rule.advisory.avid }}</td>
+                            <td>
+                                {% for advisory in detection_rule.related_advisories.all %}
+                                    <a href="{% url "advisory_details" advisory.avid %}">{{ advisory.avid }}</a>
+                                    <br/>
+                                {% endfor %}
+                            </td>
                         </tr>
                     {% empty %}
                         <tr class="is-clipped-list">

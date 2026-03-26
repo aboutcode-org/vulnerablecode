@@ -1412,7 +1412,9 @@ class DetectionRuleFilter(filters.FilterSet):
 
 
 class DetectionRuleSerializer(serializers.ModelSerializer):
-    advisory_avid = serializers.ReadOnlyField(source="advisory.avid", allow_null=True)
+    advisory_avid = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="avid", source="related_advisories"
+    )
 
     class Meta:
         model = DetectionRule
@@ -1420,7 +1422,7 @@ class DetectionRuleSerializer(serializers.ModelSerializer):
 
 
 class DetectionRuleViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = DetectionRule.objects.all()
+    queryset = DetectionRule.objects.prefetch_related("related_advisories")
     serializer_class = DetectionRuleSerializer
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
     filter_backends = [filters.DjangoFilterBackend]

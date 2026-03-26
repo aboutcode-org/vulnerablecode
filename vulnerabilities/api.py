@@ -22,6 +22,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework_api_key.permissions import HasAPIKey
 
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Exploit
@@ -471,6 +472,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = PackageFilterSet
     throttle_classes = [PermissionBasedUserRateThrottle]
+    permission_classes = [HasAPIKey]
 
     def get_queryset(self):
         return super().get_queryset().with_is_vulnerable()

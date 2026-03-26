@@ -39,6 +39,7 @@ docopt==0.6.2
 docutils==0.17.1
 drf-spectacular==0.24.2
 drf-spectacular-sidecar==2022.10.1
+djangorestframework-api-key>=3.0.0
 executing==0.8.3
 fetchcode==0.8.2
 freezegun==1.2.1

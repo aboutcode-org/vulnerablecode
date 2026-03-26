@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     "django_filters",
     "rest_framework",
     "rest_framework.authtoken",
+    'rest_framework_api_key',
     "widget_tweaks",
     "crispy_forms",
     "crispy_bootstrap4",

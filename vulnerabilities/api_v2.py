@@ -43,6 +43,7 @@ from vulnerabilities.models import Weakness
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
 from vulnerabilities.utils import group_advisories_by_content
 
+from rest_framework_api_key.permissions import HasAPIKey
 
 class CharInFilter(filters.BaseInFilter, filters.CharFilter):
     pass
@@ -1070,6 +1071,7 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = AdvisoryPackageV2FilterSet
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    permission_classes = [HasAPIKey]
 
     def get_queryset(self):
         return (

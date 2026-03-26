@@ -118,7 +118,7 @@ def get_merged_identifier_groups(advisories):
 
 
 def group_advisoris_for_packages(logger=None):
-    for package in PackageV2.objects.iterator():
+    for package in PackageV2.objects.filter(package_url="pkg:pypi/django@1.5.2").iterator():
         affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
             purl=package.purl
         ).prefetch_related("aliases")

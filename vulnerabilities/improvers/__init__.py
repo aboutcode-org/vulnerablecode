@@ -34,6 +34,7 @@ from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_g
 from vulnerabilities.pipelines.v2_improvers import relate_severities
 from vulnerabilities.pipelines.v2_improvers import sigma_rules
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
+from vulnerabilities.pipelines.v2_improvers import yara_rules
 from vulnerabilities.utils import create_registry
 
 IMPROVERS_REGISTRY = create_registry(
@@ -75,9 +76,6 @@ IMPROVERS_REGISTRY = create_registry(
         compute_advisory_todo.ComputeToDo,
         collect_ssvc_trees.CollectSSVCPipeline,
         relate_severities.RelateSeveritiesPipeline,
-        sigma_rules.SigmaHQImproverPipeline,
-        sigma_rules.SigmaSamuraiMDRImproverPipeline,
-        sigma_rules.SigmaMbabinskiImproverPipeline,
-        sigma_rules.P4T12ICKSigmaImproverPipeline,
+        yara_rules.YaraRulesImproverPipeline,
     ]
 )

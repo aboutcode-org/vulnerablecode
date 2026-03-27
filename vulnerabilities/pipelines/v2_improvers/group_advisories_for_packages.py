@@ -41,6 +41,9 @@ def merge_advisories(advisories):
 
     advisories = list(advisories)
 
+    if len(advisories) > 1000:
+        return
+
     content_hash_map = defaultdict(list)
 
     for adv in advisories:
@@ -136,7 +139,9 @@ def get_merged_identifier_groups(advisories):
 
 
 def group_advisoris_for_packages(logger=None):
-    for package in PackageV2.objects.iterator():
+    for package in PackageV2.objects.filter(
+        type__in=["npm", "pypi", "nuget", "maven", "composer"]
+    ).iterator():
         print(package)
         affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
             purl=package.purl

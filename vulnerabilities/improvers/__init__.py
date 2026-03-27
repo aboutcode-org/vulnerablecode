@@ -34,6 +34,8 @@ from vulnerabilities.pipelines.v2_improvers import (
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
 from vulnerabilities.pipelines.v2_improvers import relate_severities
 from vulnerabilities.pipelines.v2_improvers import sigma_rules
+from vulnerabilities.pipelines.v2_improvers import sigma_rules
+from vulnerabilities.pipelines.v2_improvers import suricata_rules
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
 from vulnerabilities.pipelines.v2_improvers import yara_rules
 from vulnerabilities.utils import create_registry
@@ -114,5 +116,6 @@ IMPROVERS_REGISTRY = create_registry(
         yara_rules.Dr4k0niaYaraRules,
         yara_rules.Umair9747YaraRules,
         clamav_rules.ClamVRulesImproverPipeline,
+        suricata_rules.SuricataRulesImproverPipeline,
     ]
 )

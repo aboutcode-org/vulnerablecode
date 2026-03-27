@@ -75,6 +75,9 @@ IMPROVERS_REGISTRY = create_registry(
         compute_advisory_todo.ComputeToDo,
         collect_ssvc_trees.CollectSSVCPipeline,
         relate_severities.RelateSeveritiesPipeline,
-        sigma_rules.SigmaRulesImproverPipeline,
+        sigma_rules.SigmaHQImproverPipeline,
+        sigma_rules.SigmaSamuraiMDRImproverPipeline,
+        sigma_rules.SigmaMbabinskiImproverPipeline,
+        sigma_rules.P4T12ICKSigmaImproverPipeline,
     ]
 )

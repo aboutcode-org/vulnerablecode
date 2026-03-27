@@ -867,3 +867,24 @@ def group_advisories_by_content(advisories):
             entry["secondary"].add(advisory)
 
     return grouped
+
+
+def find_all_cve_rule(raw_text):
+    """
+    Find all CVE in a rule text
+    ex:
+    >>> find_all_cve_rule("rule LOG_SUSP_EXPL_POC_VMWare_Workspace_ONE_CVE_2022_22954_Apr22_")
+    {'CVE-2022-22954'}
+
+    >>> find_all_cve_rule("Detects payload as seen in PoC code to exploit Workspace ONE Access freemarker server-side template injection CVE-2022-22954")
+    {'CVE-2022-22954'}
+
+    >>> find_all_cve_rule("Detects suspicious file writes ... such as CVE-2025-49704, CVE-2025-49706 or CVE-2025-53770. ")
+    {"CVE-2025-49704", "CVE-2025-49706", "CVE-2025-53770"}
+
+    >>> find_all_cve_rule("No valid CVE- in this text")
+    set()
+    """
+    cve_regex = re.compile(r"CVE[-_]\d{4}[-_]\d{4,19}", re.IGNORECASE)
+    matches = cve_regex.findall(raw_text)
+    return set([cve.upper().replace("_", "-") for cve in matches])

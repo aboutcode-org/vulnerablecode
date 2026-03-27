@@ -17,7 +17,7 @@ import pytest
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import DetectionRule
-from vulnerabilities.pipelines.v2_improvers.sigma_rules import SigmaRulesImproverPipeline
+from vulnerabilities.pipelines.v2_improvers.sigma_rules import CollectSigmaRulesPipeline
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -64,7 +64,7 @@ def test_sigma_rules_db_improver(mock_fetch_via_vcs):
     adv2.aliases.add(alias2)
     adv3.aliases.add(alias3)
 
-    improver = SigmaRulesImproverPipeline()
+    improver = CollectSigmaRulesPipeline()
     improver.execute()
 
     assert len(DetectionRule.objects.all()) == 3
@@ -77,7 +77,7 @@ def test_sigma_rules_db_improver(mock_fetch_via_vcs):
         "status": "experimental",
         "title": "Potential Exploitation of RCE Vulnerability CVE-2025-33053 - Image " "Load",
     }
-    assert sigma_rule.advisory == adv1
+    assert list(sigma_rule.related_advisories.all()) == [adv1]
     assert (
         sigma_rule.rule_text
         == "title: Potential Exploitation of RCE Vulnerability CVE-2025-33053 - Image Load\nid: 04fc4b22-91a6-495a-879d-0144fec5ec03\nrelated:\n    - id: abe06362-a5b9-4371-8724-ebd00cd48a04\n      type: similar\n    - id: 9a2d8b3e-f5a1-4c68-9e21-7d9e1cf8a123\n      type: similar\nstatus: experimental\ndescription: |\n    Detects potential exploitation of remote code execution vulnerability CVE-2025-33053\n    by monitoring suspicious image loads from WebDAV paths. The exploit involves malicious executables from\n    attacker-controlled WebDAV servers loading the Windows system DLLs like gdi32.dll, netapi32.dll, etc.\nreferences:\n    - https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2025-33053\n    - https://research.checkpoint.com/2025/stealth-falcon-zero-day/\nauthor: Swachchhanda Shrawan Poudel (Nextron Systems)\ndate: 2025-06-13\ntags:\n    - attack.command-and-control\n    - attack.execution\n    - attack.defense-evasion\n    - attack.t1218\n    - attack.lateral-movement\n    - attack.t1105\n    - detection.emerging-threats\n    - cve.2025-33053\nlogsource:\n    category: image_load\n    product: windows\ndetection:\n    selection_img_path:\n        Image|startswith: '\\\\\\\\'\n        Image|contains: '\\DavWWWRoot\\'\n    selection_img_bin:\n        Image|endswith:\n            - '\\route.exe'\n            - '\\netsh.exe'\n            - '\\makecab.exe'\n            - '\\dxdiag.exe'\n            - '\\ipconfig.exe'\n            - '\\explorer.exe'\n    condition: all of selection_*\nfalsepositives:\n    - Unknown\nlevel: high"

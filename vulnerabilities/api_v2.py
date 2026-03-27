@@ -1402,7 +1402,7 @@ class PackageV3ViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class DetectionRuleFilter(filters.FilterSet):
-    advisory_avid = filters.CharFilter(field_name="advisory__avid", lookup_expr="exact")
+    advisory_avid = filters.CharFilter(field_name="related_advisories__avid", lookup_expr="exact")
 
     rule_text_contains = filters.CharFilter(field_name="rule_text", lookup_expr="icontains")
 

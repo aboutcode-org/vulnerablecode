@@ -34,10 +34,10 @@ classifiers = [
 ]
 
 dependencies = [
-    "packageurl_python >= 0.15.6",
-    "saneyaml",
-    "requests",
-    "uritemplate",
+    "packageurl_python == 0.15.6",
+    "saneyaml == 0.6.0",
+    "requests == 2.25.1",
+    "uritemplate == 4.2.0",
 ]
 
 urls = { Homepage = "https://github.com/aboutcode-org/vulnerablecode" }

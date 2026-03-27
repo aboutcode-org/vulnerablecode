@@ -41,9 +41,6 @@ def merge_advisories(advisories):
 
     advisories = list(advisories)
 
-    if len(advisories) > 1000:
-        return
-
     content_hash_map = defaultdict(list)
 
     for adv in advisories:

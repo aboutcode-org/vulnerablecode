@@ -19,6 +19,7 @@ from vulnerabilities.pipelines import enhance_with_metasploit
 from vulnerabilities.pipelines import flag_ghost_packages
 from vulnerabilities.pipelines import populate_vulnerability_summary_pipeline
 from vulnerabilities.pipelines import remove_duplicate_advisories
+from vulnerabilities.pipelines.v2_improvers import clamav_rules
 from vulnerabilities.pipelines.v2_improvers import collect_ssvc_trees
 from vulnerabilities.pipelines.v2_improvers import compute_advisory_todo as compute_advisory_todo_v2
 from vulnerabilities.pipelines.v2_improvers import compute_package_risk as compute_package_risk_v2
@@ -112,5 +113,6 @@ IMPROVERS_REGISTRY = create_registry(
         yara_rules.TenableYaraRules,
         yara_rules.Dr4k0niaYaraRules,
         yara_rules.Umair9747YaraRules,
+        clamav_rules.ClamVRulesImproverPipeline,
     ]
 )

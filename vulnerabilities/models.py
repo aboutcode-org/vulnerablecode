@@ -3689,3 +3689,13 @@ class DetectionRule(models.Model):
         related_name="detection_rules",
         help_text="Advisories associated with this DetectionRule.",
     )
+
+
+class DetectionRuleTypes(models.TextChoices):
+    """Defines the supported formats for security detection rules."""
+
+    YARA = "yara", "Yara"
+    YARA_X = "yara-x", "Yara-X"
+    SIGMA = "sigma", "Sigma"
+    CLAMAV = "clamav", "CLAMAV"
+    SURICATA = "suricata", "Suricata"

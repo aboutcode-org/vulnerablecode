@@ -895,3 +895,103 @@ def compute_advisory_content(advisory_data):
     content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
 
     return content_hash
+
+
+def merge_advisories(advisories, package):
+
+    advisories = list(advisories)
+
+    content_hash_map = defaultdict(list)
+
+    for adv in advisories:
+        content_hash = compute_advisory_content_hash(adv, package)
+        content_hash_map[content_hash].append(adv)
+
+    final_groups = []
+
+    for group in content_hash_map.values():
+        groups = get_merged_identifier_groups(group)
+        final_groups.extend(groups)
+
+    return final_groups
+
+
+def compute_advisory_content_hash(adv, package):
+    affected = []
+    fixed = []
+
+    version_less_purl = PackageURL(
+        type=package.type,
+        namespace=package.namespace,
+        name=package.name,
+        qualifiers=package.qualifiers,
+        subpath=package.subpath,
+    )
+
+    for impact in adv.impacted_packages.filter(base_purl=str(version_less_purl)):
+        affected.extend([pkg.package_url for pkg in impact.affecting_packages.all()])
+        fixed.extend([pkg.package_url for pkg in impact.fixed_by_packages.all()])
+
+    normalized_data = {
+        "affected_packages": normalize_list(affected),
+        "fixed_packages": normalize_list(fixed),
+    }
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+    return content_hash
+
+
+def get_merged_identifier_groups(advisories):
+
+    identifier_groups = defaultdict(set)
+
+    advisories = list(advisories)
+
+    for adv in advisories:
+
+        identifier_groups[adv.advisory_id].add(adv)
+
+        for alias in adv.aliases.values_list("alias", flat=True):
+            identifier_groups[alias].add(adv)
+
+    groups = [set(advs) for advs in identifier_groups.values() if len(advs) > 1]
+
+    merged = []
+
+    for group in groups:
+        group = set(group)
+
+        i = 0
+        while i < len(merged):
+            if group & merged[i]:
+                group |= merged[i]
+                merged.pop(i)
+            else:
+                i += 1
+
+        merged.append(group)
+
+    all_grouped = set()
+    for g in merged:
+        all_grouped |= g
+
+    for adv in advisories:
+        if adv not in all_grouped:
+            merged.append({adv})
+
+    final_groups = []
+
+    for group in merged:
+        identifiers = set()
+        for adv in group:
+            for alias in adv.aliases.all():
+                identifiers.add(alias)
+
+        primary = max(group, key=lambda a: a.precedence if a.precedence is not None else -1)
+
+        secondary = [a for a in group if a != primary]
+
+        final_groups.append((identifiers, primary, secondary))
+
+    return final_groups

@@ -142,7 +142,7 @@ urlpatterns = [
     ),
     re_path(
         r"^packages/v2/(?P<purl>pkg:.+)$",
-        PackageV3Details.as_view(),
+        PackageV2Details.as_view(),
         name="package_details_v2",
     ),
     re_path(

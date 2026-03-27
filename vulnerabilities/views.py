@@ -38,6 +38,7 @@ from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import AdvisorySetMember
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
@@ -45,6 +46,7 @@ from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporter
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import group_advisories_by_content
+from vulnerabilities.utils import merge_advisories
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
@@ -218,22 +220,30 @@ class PackageV2Details(DetailView):
         context["latest_non_vulnerable"] = latest_non_vulnerable
         context["package_search_form"] = PackageSearchForm(self.request.GET)
 
-        affected_by_advisories_qs = models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(
-            package.package_url
+        affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
+            purl=package.purl
+        ).prefetch_related(
+            "aliases",
+            "impacted_packages__affecting_packages",
+            "impacted_packages__fixed_by_packages",
         )
 
-        fixing_advisories_qs = models.AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
-            package.package_url
+        fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
+            purl=package.purl
+        ).prefetch_related(
+            "aliases",
+            "impacted_packages__affecting_packages",
+            "impacted_packages__fixed_by_packages",
         )
 
         affected_by_advisories_url = None
         fixing_advisories_url = None
 
-        affected_by_advisories_qs_ids = affected_by_advisories_qs.only("id")
-        fixing_advisories_qs_ids = fixing_advisories_qs.only("id")
+        affected_by_advisories_qs_ids = affecting_advisories.only("id")
+        fixing_advisories_qs_ids = fixed_by_advisories.only("id")
 
-        affected_by_advisories = list(affected_by_advisories_qs_ids[:101])
-        if len(affected_by_advisories) > 100:
+        affected_by_advisories = list(affected_by_advisories_qs_ids[:1001])
+        if len(affected_by_advisories) > 1001:
             affected_by_advisories_url = reverse_lazy(
                 "affected_by_advisories_v2", kwargs={"purl": package.package_url}
             )
@@ -242,19 +252,25 @@ class PackageV2Details(DetailView):
             context["fixed_package_details"] = {}
 
         else:
-            fixed_pkg_details = get_fixed_package_details(package)
-            affected_avid_by_hash = {}
-            affected_avid_by_hash = group_advisories_by_content(affected_by_advisories_qs)
-            affecting_advs = []
+            advisories = []
 
-            for hash in affected_avid_by_hash:
-                affecting_advs.append(affected_avid_by_hash[hash])
-            context["affected_by_advisories_v2"] = affecting_advs
+            fixed_pkg_details = get_fixed_package_details(package)
+            groups = merge_advisories(affecting_advisories, package)
+            for aliases, primary, _ in groups:
+                identifier = primary.advisory_id.split("/")[-1]
+
+                filtered_aliases = [alias for alias in aliases if alias.alias != identifier]
+
+                advisories.append(
+                    {"aliases": filtered_aliases, "advisory": primary, "identifier": identifier}
+                )
+
+            context["affected_by_advisories_v2"] = advisories
             context["fixed_package_details"] = fixed_pkg_details
             context["affected_by_advisories_v2_url"] = None
 
-        fixing_advisories = list(fixing_advisories_qs_ids[:101])
-        if len(fixing_advisories) > 100:
+        fixing_advisories = list(fixing_advisories_qs_ids[:1001])
+        if len(fixing_advisories) > 1001:
             fixing_advisories_url = reverse_lazy(
                 "fixing_advisories_v2", kwargs={"purl": package.package_url}
             )
@@ -262,13 +278,20 @@ class PackageV2Details(DetailView):
             context["fixing_advisories_v2"] = []
 
         else:
-            fixing_avid_by_hash = {}
-            fixing_avid_by_hash = group_advisories_by_content(fixing_advisories_qs)
-            fixing_advs = []
+            advisories = []
 
-            for hash in fixing_avid_by_hash:
-                fixing_advs.append(fixing_avid_by_hash[hash])
-            context["fixing_advisories_v2"] = fixing_advs
+            fixed_pkg_details = get_fixed_package_details(package)
+            groups = merge_advisories(fixing_advisories, package)
+            for aliases, primary, _ in groups:
+                identifier = primary.advisory_id.split("/")[-1]
+
+                filtered_aliases = [alias for alias in aliases if alias.alias != identifier]
+
+                advisories.append(
+                    {"aliases": filtered_aliases, "advisory": primary, "identifier": identifier}
+                )
+
+            context["fixing_advisories_v2"] = advisories
             context["fixing_advisories_v2_url"] = None
 
         return context

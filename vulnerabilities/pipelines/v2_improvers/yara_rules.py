@@ -6,8 +6,8 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-from pathlib import Path
 
+from pathlib import Path
 from aboutcode.pipeline import LoopProgress
 from fetchcode.vcs import fetch_via_vcs
 
@@ -19,79 +19,9 @@ from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.utils import find_all_cve
 from vulnerabilities.utils import get_advisory_url
 
-
 class YaraRulesImproverPipeline(VulnerableCodePipeline):
-    pipeline_id = "yara_rules"
-
-    repo_urls = [
-        "git+https://github.com/elastic/protections-artifacts",
-        "git+https://github.com/Yara-Rules/rules",
-        "git+https://github.com/Xumeiquer/yara-forensics",
-        "git+https://github.com/reversinglabs/reversinglabs-yara-rules",
-        "git+https://github.com/advanced-threat-research/Yara-Rules",
-        "git+https://github.com/bartblaze/Yara-rules",
-        "git+https://github.com/godaddy/yara-rules",  # archived
-        "git+https://github.com/SupportIntelligence/Icewater",
-        "git+https://github.com/jeFF0Falltrades/YARA-Signatures",
-        "git+https://github.com/tjnel/yara_repo",
-        "git+https://github.com/JPCERTCC/jpcert-yara",
-        "git+https://github.com/mikesxrs/Open-Source-YARA-rules",
-        "git+https://github.com/fboldewin/YARA-rules",
-        "git+https://github.com/h3x2b/yara-rules",
-        "git+https://github.com/roadwy/DefenderYara",
-        "git+https://github.com/mthcht/ThreatHunting-Keywords-yara-rules",
-        "git+https://github.com/Neo23x0/signature-base",
-        "git+https://github.com/malpedia/signator-rules",
-        "git+https://github.com/baderj/yara",
-        "git+https://github.com/deadbits/yara-rules",  # archived
-        "git+https://github.com/pmelson/yara_rules",
-        "git+https://github.com/sbousseaden/YaraHunts",
-        "git+https://github.com/embee-research/Yara-detection-rules",
-        "git+https://github.com/RussianPanda95/Yara-Rules",
-        "git+https://github.com/ail-project/ail-yara-rules",
-        "git+https://github.com/MalGamy/YARA_Rules",
-        "git+https://github.com/elceef/yara-rulz",
-        "git+https://github.com/tenable/yara-rules",
-        "git+https://github.com/dr4k0nia/yara-rules",
-        "git+https://github.com/umair9747/yara-rules",
-    ]
-
-    license_urls = """
-    https://github.com/elastic/protections-artifacts/blob/main/LICENSE.txt
-    https://github.com/Yara-Rules/rules/blob/master/LICENSE
-    https://github.com/Xumeiquer/yara-forensics/blob/master/LICENSE
-    https://github.com/reversinglabs/reversinglabs-yara-rules/blob/develop/LICENSE
-    https://github.com/advanced-threat-research/Yara-Rules/blob/master/LICENSE
-    https://github.com/bartblaze/Yara-rules/blob/master/LICENSE
-    https://github.com/godaddy/yara-rules/blob/master/LICENSE.md
-    https://github.com/SupportIntelligence/Icewater/blob/master/LICENSE
-    https://github.com/jeFF0Falltrades/YARA-Signatures/blob/master/LICENSE.md
-    https://github.com/tjnel/yara_repo/blob/master/LICENSE
-    https://github.com/JPCERTCC/jpcert-yara/blob/main/LICENSE
-    https://github.com/mthcht/ThreatHunting-Keywords-yara-rules/blob/main/LICENSE
-    https://github.com/malpedia/signator-rules -> https://creativecommons.org/licenses/by-sa/4.0/
-    https://github.com/baderj/yara/blob/main/LICENSE
-    https://github.com/deadbits/yara-rules/blob/master/UNLICENSE
-    https://github.com/embee-research/Yara-detection-rules/tree/main?tab=readme-ov-file#detection-rule-license-drl-11
-    https://github.com/ail-project/ail-yara-rules?tab=AGPL-3.0-1-ov-file
-    https://github.com/MalGamy/YARA_Rules/blob/main/LICENSE.md
-    https://github.com/elceef/yara-rulz/tree/main?tab=MIT-1-ov-file
-    https://github.com/tenable/yara-rules/tree/master?tab=BSD-3-Clause-1-ov-file
-    https://github.com/dr4k0nia/yara-rules/blob/main/LICENSE.md
-    https://github.com/umair9747/yara-rules?tab=GPL-3.0-1-ov-file
-    
-    NO-LICENSE: https://github.com/mikesxrs/Open-Source-YARA-rules/
-    NO-LICENSE: https://github.com/fboldewin/YARA-rules
-    NO-LICENSE: https://github.com/h3x2b/yara-rules
-    NO-LICENSE: https://github.com/roadwy/DefenderYara
-    NO-LICENSE: https://github.com/pmelson/yara_rules
-    NO-LICENSE: https://github.com/sbousseaden/YaraHunts
-    NO-LICENSE: https://github.com/RussianPanda95/Yara-Rules
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.vcs_responses = []
+    repo_url = None
+    rglob_patterns = ["**/*.yml"]
 
     @classmethod
     def steps(cls):
@@ -102,78 +32,187 @@ class YaraRulesImproverPipeline(VulnerableCodePipeline):
         )
 
     def clone_repos(self):
-        for repo_url in self.repo_urls:
-            self.log(f"Cloning `{repo_url}`")
-            try:
-                response = fetch_via_vcs(repo_url)
-                if response:
-                    self.vcs_responses.append((response, repo_url))
-            except Exception as e:
-                self.log(f"Failed to clone {repo_url}: {e}")
+        self.log(f"Cloning `{self.repo_url}`")
+        self.vcs_response = fetch_via_vcs(f"git+{self.repo_url}")
 
     def collect_and_store_rules(self):
-        for vcs_response, repo_url in self.vcs_responses:
-            base_directory = Path(vcs_response.dest_dir)
-            yara_files = [
-                p
-                for p in base_directory.rglob("*")
-                if p.suffix in (".yar", ".yara") and p.is_file()
-            ]
+        base_directory = Path(self.vcs_response.dest_dir)
+        yara_files = set()
+        for pattern in self.rglob_patterns:
+            for p in base_directory.glob(pattern):
+                if p.is_file():
+                    yara_files.add(p)
 
-            rules_count = len(yara_files)
-            self.log(f"Processing {rules_count:,d} rules from {repo_url}")
-            progress = LoopProgress(total_iterations=rules_count, logger=self.log)
-            for file_path in progress.iter(yara_files):
-                if not file_path.exists() or not file_path.is_file():
-                    self.log(
-                        f"Skipping file as it no longer exists or is not a file: {file_path}",
-                        level="warning",
-                    )
-                    continue
-
-                raw_text = file_path.read_text(encoding="utf-8", errors="ignore")
-                if not raw_text:
-                    continue
-                raw_text = raw_text.replace("\x00", "")
-
-                repo_url = repo_url.strip("git+")
-                rule_url = get_advisory_url(
-                    file=file_path,
-                    base_path=base_directory,
-                    url=f"{repo_url}/blob/master/",
+        rules_count = len(yara_files)
+        self.log(f"Processing {rules_count:,d} rules from {self.repo_url}")
+        progress = LoopProgress(total_iterations=rules_count, logger=self.log)
+        for file_path in progress.iter(yara_files):
+            if not file_path.exists() or not file_path.is_file():
+                self.log(
+                    f"Skipping file as it no longer exists or is not a file: {file_path}",
+                    level="warning",
                 )
+                continue
 
-                cve_ids = find_all_cve(f"{file_path}\n{raw_text}")
+            raw_text = file_path.read_text(encoding="utf-8", errors="ignore")
+            if not raw_text:
+                continue
+            raw_text = raw_text.replace("\x00", "")
+            rule_url = get_advisory_url(
+                file=file_path,
+                base_path=base_directory,
+                url=f"{self.repo_url}/blob/master/",
+            )
 
-                advisories = set()
-                for cve_id in cve_ids:
-                    alias = AdvisoryAlias.objects.filter(alias=cve_id).first()
-                    if alias:
-                        for adv in alias.advisories.all():
-                            advisories.add(adv)
-                    else:
-                        advs = AdvisoryV2.objects.filter(advisory_id=cve_id)
-                        for adv in advs:
-                            advisories.add(adv)
+            cve_ids = find_all_cve(f"{file_path}\n{raw_text}")
 
-                detection_rule, _ = DetectionRule.objects.update_or_create(
-                    rule_type=DetectionRuleTypes.YARA,
-                    source_url=rule_url,
-                    defaults={
-                        "rule_text": raw_text,
-                    },
-                )
+            advisories = set()
+            for cve_id in cve_ids:
+                alias = AdvisoryAlias.objects.filter(alias=cve_id).first()
+                if alias:
+                    for adv in alias.advisories.all():
+                        advisories.add(adv)
+                else:
+                    advs = AdvisoryV2.objects.filter(advisory_id=cve_id)
+                    for adv in advs:
+                        advisories.add(adv)
 
-                for adv in advisories:
-                    detection_rule.related_advisories.add(adv)
+            detection_rule, _ = DetectionRule.objects.update_or_create(
+                rule_type=DetectionRuleTypes.YARA,
+                source_url=rule_url,
+                defaults={
+                    "rule_text": raw_text,
+                },
+            )
+
+            for adv in advisories:
+                detection_rule.related_advisories.add(adv)
 
     def clean_downloads(self):
-        for vcs_response, _ in self.vcs_responses:
-            if vcs_response:
-                self.log(f"Removing cloned repository: {vcs_response.dest_dir}")
-                vcs_response.delete()
-
-        self.vcs_responses = []
+        if self.vcs_response:
+            self.log(f"Removing cloned repository: {self.vcs_response.dest_dir}")
+            self.vcs_response.delete()
 
     def on_failure(self):
         self.clean_downloads()
+
+
+class ProtectionsArtifactsYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/elastic/protections-artifacts"
+    license_urls = "https://github.com/elastic/protections-artifacts/blob/main/LICENSE.txt"
+
+class YaraRulesYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/Yara-Rules/rules"
+    license_urls = "https://github.com/Yara-Rules/rules/blob/master/LICENSE"
+
+class XumeiquerForensicsYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/Xumeiquer/yara-forensics"
+    license_urls = "https://github.com/Xumeiquer/yara-forensics/blob/master/LICENSE"
+
+class ReversinglabsYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/reversinglabs/reversinglabs-yara-rules"
+    license_urls = "https://github.com/reversinglabs/reversinglabs-yara-rules/blob/develop/LICENSE"
+
+class AdvancedThreatResearchYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/advanced-threat-research/Yara-Rules"
+    license_urls = "https://github.com/advanced-threat-research/Yara-Rules/blob/master/LICENSE"
+
+class BartblazeYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/bartblaze/Yara-rules"
+    license_urls = "https://github.com/bartblaze/Yara-rules/blob/master/LICENSE"
+
+class GodaddyYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/godaddy/yara-rules"  # archived
+    license_urls = "https://github.com/godaddy/yara-rules/blob/master/LICENSE.md"
+
+class SupportIntelligenceIcewaterYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/SupportIntelligence/Icewater"
+    license_urls = "https://github.com/SupportIntelligence/Icewater/blob/master/LICENSE"
+
+class Jeff0FalltradesSignaturesYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/jeFF0Falltrades/YARA-Signatures"
+    license_urls = "https://github.com/jeFF0Falltrades/YARA-Signatures/blob/master/LICENSE.md"
+
+class TjnelRepoYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/tjnel/yara_repo"
+    license_urls = "https://github.com/tjnel/yara_repo/blob/master/LICENSE"
+
+class JpcertccJpcertYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/JPCERTCC/jpcert-yara"
+    license_urls = "https://github.com/JPCERTCC/jpcert-yara/blob/main/LICENSE"
+
+class MikesxrsOpenSourceYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/mikesxrs/Open-Source-YARA-rules"
+    license_urls = None
+
+class FboldewinYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/fboldewin/YARA-rules"
+    license_urls = None
+
+class H3x2bYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/h3x2b/yara-rules"
+    license_urls = None
+
+class RoadwyDefenderYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/roadwy/DefenderYara"
+    license_urls = None
+
+class MthchtThreatHuntingKeywordsYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/mthcht/ThreatHunting-Keywords-yara-rules"
+    license_urls = "https://github.com/mthcht/ThreatHunting-Keywords-yara-rules/blob/main/LICENSE"
+
+class Neo23x0SignatureBaseYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/Neo23x0/signature-base"
+    license_urls = None
+
+class MalpediaSignatorRulesYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/malpedia/signator-rules"
+    license_urls = "https://creativecommons.org/licenses/by-sa/4.0/"
+
+class BaderjYara(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/baderj/yara"
+    license_urls = "https://github.com/baderj/yara/blob/main/LICENSE"
+
+class DeadbitsYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/deadbits/yara-rules"
+    license_urls = "https://github.com/deadbits/yara-rules/blob/master/UNLICENSE"
+
+class PmelsonYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/pmelson/yara_rules"
+    license_urls = None
+
+class SbousseadenYaraHunts(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/sbousseaden/YaraHunts"
+    license_urls = None
+
+class EmbeeResearchYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/embee-research/Yara-detection-rules"
+    license_urls = "https://github.com/embee-research/Yara-detection-rules/tree/main?tab=readme-ov-file#detection-rule-license-drl-11"
+
+class RussianPanda95YaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/RussianPanda95/Yara-Rules"
+    license_urls = None
+
+class AilProjectAilYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/ail-project/ail-yara-rules"
+    license_urls = "https://github.com/ail-project/ail-yara-rules?tab=AGPL-3.0-1-ov-file"
+
+class MalgamyYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/MalGamy/YARA_Rules"
+    license_urls = "https://github.com/MalGamy/YARA_Rules/blob/main/LICENSE.md"
+
+class ElceefYaraRulz(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/elceef/yara-rulz"
+    license_urls = "https://github.com/elceef/yara-rulz/tree/main?tab=MIT-1-ov-file"
+
+class TenableYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/tenable/yara-rules"
+    license_urls = "https://github.com/tenable/yara-rules/tree/master?tab=BSD-3-Clause-1-ov-file"
+
+class Dr4k0niaYaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/dr4k0nia/yara-rules"
+    license_urls = "https://github.com/dr4k0nia/yara-rules/blob/main/LICENSE.md"
+
+class Umair9747YaraRules(YaraRulesImproverPipeline):
+    repo_urls = "https://github.com/umair9747/yara-rules"
+    license_urls = "https://github.com/umair9747/yara-rules?tab=GPL-3.0-1-ov-file"

@@ -11,7 +11,6 @@ import datetime
 import json
 from pathlib import Path
 
-import jsonschema
 import yaml
 from aboutcode.pipeline import LoopProgress
 from fetchcode.vcs import fetch_via_vcs

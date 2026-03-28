@@ -47,6 +47,7 @@ from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apac
 from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_tomcat_importer as apache_tomcat_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
+from vulnerabilities.pipelines.v2_importers import collabora_importer as collabora_importer_v2
 from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
@@ -118,6 +119,7 @@ IMPORTERS_REGISTRY = create_registry(
         retiredotnet_importer_v2.RetireDotnetImporterPipeline,
         ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
         alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
+        collabora_importer_v2.CollaboraImporterPipeline,
         nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,

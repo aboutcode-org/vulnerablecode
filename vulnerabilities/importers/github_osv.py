@@ -50,7 +50,9 @@ class GithubOSVImporter(Importer):
                 )
                 with open(file) as f:
                     raw_data = json.load(f)
-                yield parse_advisory_data(raw_data, supported_ecosystems, advisory_url)
+                advisory = parse_advisory_data(raw_data, supported_ecosystems, advisory_url)
+                if advisory:
+                    yield advisory
         finally:
             if self.vcs_response:
                 self.vcs_response.delete()

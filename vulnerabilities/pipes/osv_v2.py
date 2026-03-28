@@ -65,6 +65,9 @@ def parse_advisory_data_v3(
     Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
     a ``supported_ecosystem`` string.
     """
+    if raw_data.get("withdrawn"):
+        logger.info(f"Skipping withdrawn advisory: {raw_data.get('id')!r}")
+        return None
     advisory_id = raw_data.get("id") or ""
     if not advisory_id:
         logger.error(f"Missing advisory id in OSV data: {raw_data}")

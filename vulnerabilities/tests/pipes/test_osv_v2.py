@@ -23,6 +23,51 @@ from vulnerabilities.pipes.osv_v2 import get_version_ranges_constraints
 from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.tests import util_tests
 
+
+def test_parse_advisory_data_v3_withdrawn_returns_none():
+    raw_data = {
+        "id": "GHSA-w596-4wvx-j9j6",
+        "published": "2022-10-16T12:00:23Z",
+        "withdrawn": "2025-08-01T20:34:11Z",
+        "aliases": ["CVE-2022-42969"],
+        "summary": "Withdrawn Advisory: ReDoS in py library",
+        "affected": [
+            {
+                "package": {"ecosystem": "PyPI", "name": "py"},
+                "ranges": [
+                    {
+                        "type": "ECOSYSTEM",
+                        "events": [{"introduced": "0"}, {"last_affected": "1.11.0"}],
+                    }
+                ],
+            }
+        ],
+    }
+    result = parse_advisory_data_v3(
+        raw_data,
+        supported_ecosystems=["pypi"],
+        advisory_url="https://github.com/github/advisory-database/blob/main/advisories/GHSA-w596-4wvx-j9j6.json",
+        advisory_text="",
+    )
+    assert result is None
+
+
+def test_parse_advisory_data_v3_not_withdrawn_returns_advisory():
+    raw_data = {
+        "id": "GHSA-j3f7-7rmc-6wqj",
+        "published": "2022-01-10T14:12:00Z",
+        "aliases": ["CVE-2022-0001"],
+        "summary": "Some valid advisory",
+        "affected": [],
+    }
+    result = parse_advisory_data_v3(
+        raw_data,
+        supported_ecosystems=["pypi"],
+        advisory_url="https://github.com/github/advisory-database/blob/main/advisories/GHSA-j3f7-7rmc-6wqj.json",
+        advisory_text="",
+    )
+    assert result is not None
+
 TEST_DATA = Path(__file__).parent.parent / "test_data" / "osv_test"
 
 

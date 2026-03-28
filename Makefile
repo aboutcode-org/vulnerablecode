@@ -63,7 +63,7 @@ conf: virtualenv
 
 dev: virtualenv
 	@echo "-> Configure and install development dependencies"
-	@${ACTIVATE} pip install -e .[dev] -c requirements.txt
+	@${ACTIVATE} pip install -e .[dev] -c requirements-dev.txt
 
 envfile:
 	@echo "-> Create the .env file and generate a secret key"
@@ -121,11 +121,11 @@ sqlite:
 	@$(MAKE) migrate
 
 run:
-	${MANAGE} runserver 8001 --insecure
+	DJANGO_RUNSERVER_HIDE_WARNING=true ${MANAGE} runserver 8001 --insecure
 
 test:
 	@echo "-> Run the test suite"
-	${ACTIVATE} ${PYTHON_EXE} -m pytest -vvs -m "not webtest"
+	${ACTIVATE} ${PYTHON_EXE} -m pytest -vvs -m "not webtest" --disable-warnings
 
 webtest:
 	@echo "-> Run web tests"

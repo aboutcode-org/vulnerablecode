@@ -8,6 +8,7 @@
 #
 
 from datetime import datetime
+from datetime import timezone
 
 from django.test import TestCase
 from packageurl import PackageURL
@@ -206,3 +207,171 @@ class TestComputeToDo(TestCase):
         )
         self.assertEqual(2, todo.advisories.count())
         self.assertEqual(todo, adv2.advisory_todos.first())
+
+    def test_relate_advisories_by_aliases_creates_todo(self):
+        """Two advisories from different datasources sharing an alias get flagged."""
+        alias = AdvisoryAlias.objects.create(alias="CVE-2021-9999")
+        date = datetime.now(timezone.utc)
+
+        adv1 = AdvisoryV2.objects.create(
+            unique_content_id="alias_test_id1",
+            url="https://example.com/1",
+            summary="A vulnerability in foo",
+            date_collected=date,
+            advisory_id="CVE-2021-9999",
+            avid="nvd_importer/CVE-2021-9999",
+            datasource_id="nvd_importer",
+        )
+        adv1.aliases.add(alias)
+
+        adv2 = AdvisoryV2.objects.create(
+            unique_content_id="alias_test_id2",
+            url="https://example.com/2",
+            summary="A vulnerability in foo package",
+            date_collected=date,
+            advisory_id="CVE-2021-9999",
+            avid="github_osv_importer/CVE-2021-9999",
+            datasource_id="github_osv_importer",
+        )
+        adv2.aliases.add(alias)
+
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todos = AdvisoryToDoV2.objects.filter(issue_type="POTENTIALLY_RELATED_BY_ALIASES")
+        self.assertEqual(1, todos.count())
+        self.assertEqual(2, todos.first().advisories.count())
+
+    def test_relate_advisories_by_aliases_same_datasource_not_flagged(self):
+        """Two advisories from the same datasource sharing an alias are not flagged."""
+        alias = AdvisoryAlias.objects.create(alias="CVE-2021-8888")
+        date = datetime.now(timezone.utc)
+
+        adv1 = AdvisoryV2.objects.create(
+            unique_content_id="same_ds_id1",
+            url="https://example.com/1",
+            summary="Vulnerability in bar",
+            date_collected=date,
+            advisory_id="CVE-2021-8888",
+            avid="nvd_importer/CVE-2021-8888-1",
+            datasource_id="nvd_importer",
+        )
+        adv1.aliases.add(alias)
+
+        adv2 = AdvisoryV2.objects.create(
+            unique_content_id="same_ds_id2",
+            url="https://example.com/2",
+            summary="Vulnerability in bar package",
+            date_collected=date,
+            advisory_id="CVE-2021-8888",
+            avid="nvd_importer/CVE-2021-8888-2",
+            datasource_id="nvd_importer",
+        )
+        adv2.aliases.add(alias)
+
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todos = AdvisoryToDoV2.objects.filter(issue_type="POTENTIALLY_RELATED_BY_ALIASES")
+        self.assertEqual(0, todos.count())
+
+    def test_detect_similar_summaries_creates_todo(self):
+        """Two advisories from different datasources with similar summaries get flagged."""
+        alias = AdvisoryAlias.objects.create(alias="CVE-2021-7777")
+        date = datetime.now(timezone.utc)
+
+        adv1 = AdvisoryV2.objects.create(
+            unique_content_id="sim_sum_id1",
+            url="https://example.com/1",
+            summary="Buffer overflow in nginx version 1.2 allows remote code execution",
+            date_collected=date,
+            advisory_id="CVE-2021-7777",
+            avid="nvd_importer/CVE-2021-7777",
+            datasource_id="nvd_importer",
+        )
+        adv1.aliases.add(alias)
+
+        adv2 = AdvisoryV2.objects.create(
+            unique_content_id="sim_sum_id2",
+            url="https://example.com/2",
+            summary="Buffer overflow in nginx version 1.2 allows remote code execution.",
+            date_collected=date,
+            advisory_id="CVE-2021-7777",
+            avid="debian_importer_v2/CVE-2021-7777",
+            datasource_id="debian_importer_v2",
+        )
+        adv2.aliases.add(alias)
+
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todos = AdvisoryToDoV2.objects.filter(issue_type="SIMILAR_SUMMARIES")
+        self.assertEqual(1, todos.count())
+        self.assertEqual(2, todos.first().advisories.count())
+        self.assertIn("similarity_score", todos.first().issue_detail)
+
+    def test_detect_similar_summaries_below_threshold_not_flagged(self):
+        """Two advisories with very different summaries are not flagged."""
+        alias = AdvisoryAlias.objects.create(alias="CVE-2021-6666")
+        date = datetime.now(timezone.utc)
+
+        adv1 = AdvisoryV2.objects.create(
+            unique_content_id="diff_sum_id1",
+            url="https://example.com/1",
+            summary="Buffer overflow in nginx allows remote code execution",
+            date_collected=date,
+            advisory_id="CVE-2021-6666",
+            avid="nvd_importer/CVE-2021-6666",
+            datasource_id="nvd_importer",
+        )
+        adv1.aliases.add(alias)
+
+        adv2 = AdvisoryV2.objects.create(
+            unique_content_id="diff_sum_id2",
+            url="https://example.com/2",
+            summary="SQL injection vulnerability in Django ORM affects all versions before 3.2",
+            date_collected=date,
+            advisory_id="CVE-2021-6666",
+            avid="debian_importer_v2/CVE-2021-6666",
+            datasource_id="debian_importer_v2",
+        )
+        adv2.aliases.add(alias)
+
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todos = AdvisoryToDoV2.objects.filter(issue_type="SIMILAR_SUMMARIES")
+        self.assertEqual(0, todos.count())
+
+    def test_detect_similar_summaries_empty_summary_skipped(self):
+        """Advisories with empty summaries are not compared for similarity."""
+        alias = AdvisoryAlias.objects.create(alias="CVE-2021-5555")
+        date = datetime.now(timezone.utc)
+
+        adv1 = AdvisoryV2.objects.create(
+            unique_content_id="empty_sum_id1",
+            url="https://example.com/1",
+            summary="",
+            date_collected=date,
+            advisory_id="CVE-2021-5555",
+            avid="nvd_importer/CVE-2021-5555",
+            datasource_id="nvd_importer",
+        )
+        adv1.aliases.add(alias)
+
+        adv2 = AdvisoryV2.objects.create(
+            unique_content_id="empty_sum_id2",
+            url="https://example.com/2",
+            summary="Buffer overflow in nginx",
+            date_collected=date,
+            advisory_id="CVE-2021-5555",
+            avid="debian_importer_v2/CVE-2021-5555",
+            datasource_id="debian_importer_v2",
+        )
+        adv2.aliases.add(alias)
+
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todos = AdvisoryToDoV2.objects.filter(issue_type="SIMILAR_SUMMARIES")
+        self.assertEqual(0, todos.count())

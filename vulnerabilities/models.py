@@ -2438,6 +2438,11 @@ ISSUE_TYPE_CHOICES = [
         "Advisories have conflicting affected and fixed-by packages",
     ),
     ("CONFLICTING_SEVERITY_SCORES", "Advisories have conflicting severity scores"),
+    (
+        "POTENTIALLY_RELATED_BY_ALIASES",
+        "Advisories are potentially related by shared aliases",
+    ),
+    ("SIMILAR_SUMMARIES", "Advisories have similar summaries"),
 ]
 
 

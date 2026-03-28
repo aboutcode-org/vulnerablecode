@@ -17,8 +17,7 @@ import pydoc
 
 import click
 
-# TODO: use saneyaml
-import yaml
+import saneyaml
 from fetchcode import package_versions
 from packageurl import PackageURL
 from texttable import Texttable
@@ -313,7 +312,7 @@ def noop(self, *args, **kw):
     pass
 
 
-yaml.emitter.Emitter.process_tag = noop
+saneyaml.emitter.Emitter.process_tag = noop
 
 
 def write_yaml_output(purl, datasources, yaml_output, no_threading, no_group, no_compare):
@@ -327,7 +326,7 @@ def write_yaml_output(purl, datasources, yaml_output, no_threading, no_group, no
         serialize_version_range(grouped_by_cve, no_compare)
         results.update(grouped_by_cve)
 
-    return yaml.dump(results, yaml_output, default_flow_style=False, indent=2, sort_keys=False)
+    return saneyaml.dump(results, yaml_output, default_flow_style=False, indent=2, sort_keys=False)
 
 
 def serialize_version_range(grouped_by_cve, no_compare):

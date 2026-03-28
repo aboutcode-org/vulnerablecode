@@ -7,12 +7,14 @@ on:
 jobs:
   nix-check-and-import:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           fetch-depth: 0
-      - uses: cachix/install-nix-action@v11
+      - uses: cachix/install-nix-action@95a8068e317b8def9482980abe762f36c77ccc99 # v11
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         with:

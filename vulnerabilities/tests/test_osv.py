@@ -24,6 +24,7 @@ from vulnerabilities.importers.osv import get_fixed_versions
 from vulnerabilities.importers.osv import get_published_date
 from vulnerabilities.importers.osv import get_references
 from vulnerabilities.importers.osv import get_severities
+from vulnerabilities.importers.osv import parse_advisory_data
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 
@@ -397,3 +398,44 @@ class TestOSVImporter(TestCase):
         )
 
         assert results == [SemverVersion("6.5.4")]
+
+    def test_parse_advisory_data_withdrawn_returns_none(self):
+        raw_data = {
+            "id": "GHSA-w596-4wvx-j9j6",
+            "published": "2022-10-16T12:00:23Z",
+            "withdrawn": "2025-08-01T20:34:11Z",
+            "aliases": ["CVE-2022-42969"],
+            "summary": "Withdrawn Advisory: ReDoS in py library",
+            "affected": [
+                {
+                    "package": {"ecosystem": "PyPI", "name": "py"},
+                    "ranges": [
+                        {
+                            "type": "ECOSYSTEM",
+                            "events": [{"introduced": "0"}, {"last_affected": "1.11.0"}],
+                        }
+                    ],
+                }
+            ],
+        }
+        result = parse_advisory_data(
+            raw_data,
+            supported_ecosystems=["pypi"],
+            advisory_url="https://github.com/github/advisory-database/blob/main/advisories/GHSA-w596-4wvx-j9j6.json",
+        )
+        assert result is None
+
+    def test_parse_advisory_data_not_withdrawn_returns_advisory(self):
+        raw_data = {
+            "id": "GHSA-j3f7-7rmc-6wqj",
+            "published": "2022-01-10T14:12:00Z",
+            "aliases": ["CVE-2022-0001"],
+            "summary": "Some valid advisory",
+            "affected": [],
+        }
+        result = parse_advisory_data(
+            raw_data,
+            supported_ecosystems=["pypi"],
+            advisory_url="https://github.com/github/advisory-database/blob/main/advisories/GHSA-j3f7-7rmc-6wqj.json",
+        )
+        assert result is not None

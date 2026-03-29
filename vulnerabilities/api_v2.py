@@ -230,7 +230,7 @@ class VulnerabilityListSerializer(serializers.ModelSerializer):
     )
 )
 class VulnerabilityV2ViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Vulnerability.objects.all()
+    queryset = Vulnerability.objects.all().order_by('-vulnerability_id')
     serializer_class = VulnerabilityV2Serializer
     lookup_field = "vulnerability_id"
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
@@ -487,7 +487,7 @@ class PackageV2ViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.all().prefetch_related(
         Prefetch(
             "affected_by_vulnerabilities",
-            queryset=Vulnerability.objects.prefetch_related("fixed_by_packages"),
+            queryset=Vulnerability.objects.prefetch_related("fixed_by_packages").order_by("-vulnerability_id"),
             to_attr="prefetched_affected_vulnerabilities",
         )
     )

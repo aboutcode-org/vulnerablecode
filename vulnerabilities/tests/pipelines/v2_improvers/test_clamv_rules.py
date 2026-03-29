@@ -71,9 +71,14 @@ def test_clamav_rules_db_improver(mock_requests_get, mock_extract_cvd):
     improver.execute()
 
     assert DetectionRule.objects.count() == 14
-    assert DetectionRule.objects.get(advisory=adv1)
-    assert DetectionRule.objects.get(advisory=adv2)
-    assert DetectionRule.objects.get(advisory=adv3)
+    assert (
+        len(
+            DetectionRule.objects.get(
+                rule_text="{'name': 'Win.Exploit.CVE_2020_0722-7583689-1', 'target_type': '1', 'offset': '*', 'hex_signature': '488B555033C9FF15A1F100004889057AB10000488B0D73B10000FF1575F10000EB86', 'line_num': 3}"
+            ).related_advisories.all()
+        )
+        == 1
+    )
     assert [
         (detection_rule.rule_type, detection_rule.rule_text, detection_rule.source_url)
         for detection_rule in DetectionRule.objects.all()

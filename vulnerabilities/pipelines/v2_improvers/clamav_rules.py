@@ -19,10 +19,11 @@ from typing import List
 import requests
 
 from vulnerabilities.models import AdvisoryAlias
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import DetectionRule
 from vulnerabilities.models import DetectionRuleTypes
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
-from vulnerabilities.utils import find_all_cve
+from vulnerabilities.utils import find_all_cve_rule
 
 
 def extract_cvd(cvd_path, output_dir):
@@ -93,13 +94,6 @@ def parse_hdb_file(hdb_path: Path) -> List[dict]:
     return signatures
 
 
-def extract_cve_id(name: str):
-    """Normalize underscores and extract the first CVE ID from a string, or None."""
-    normalized = name.replace("_", "-")
-    cves = [cve.upper() for cve in find_all_cve(normalized)]
-    return cves[0] if cves else None
-
-
 class ClamVRulesImproverPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
     Pipeline that downloads ClamAV database (main.cvd), extracts signatures,
@@ -159,36 +153,27 @@ class ClamVRulesImproverPipeline(VulnerableCodeBaseImporterPipelineV2):
             self.extract_cvd_dir / "main.ndb"
         ):
             name = rule_entry.get("name", "")
-            cve_id = extract_cve_id(name)
-            found_advisories = set()
+            cve_ids = find_all_cve_rule(name)
 
-            if cve_id:
-                try:
-                    if alias := AdvisoryAlias.objects.get(alias=cve_id):
-                        for adv in alias.advisories.all():
-                            found_advisories.add(adv)
-                except AdvisoryAlias.DoesNotExist:
-                    self.log(f"Advisory {cve_id} not found.")
+            advisories = set()
+            for cve_id in cve_ids:
+                alias = AdvisoryAlias.objects.filter(alias=cve_id).first()
+                if alias:
+                    for adv in alias.advisories.all():
+                        advisories.add(adv)
+                else:
+                    advs = AdvisoryV2.objects.filter(advisory_id=cve_id)
+                    for adv in advs:
+                        advisories.add(adv)
 
-            for adv in found_advisories:
-                DetectionRule.objects.update_or_create(
-                    rule_text=str(rule_entry),
-                    rule_type=DetectionRuleTypes.CLAMAV,
-                    advisory=adv,
-                    defaults={
-                        "source_url": self.MAIN_DATABASE_URL,
-                    },
-                )
+            detection_rule, _ = DetectionRule.objects.get_or_create(
+                rule_text=str(rule_entry),
+                rule_type=DetectionRuleTypes.CLAMAV,
+                source_url=self.MAIN_DATABASE_URL,
+            )
 
-            if not found_advisories:
-                DetectionRule.objects.update_or_create(
-                    rule_text=str(rule_entry),
-                    rule_type=DetectionRuleTypes.CLAMAV,
-                    advisory=None,
-                    defaults={
-                        "source_url": self.MAIN_DATABASE_URL,
-                    },
-                )
+            for adv in advisories:
+                detection_rule.related_advisories.add(adv)
 
     def clean_downloads(self):
         """Clean up downloaded files."""

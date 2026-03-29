@@ -13,20 +13,22 @@ from unittest.mock import MagicMock
 import pytest
 
 from vulnerabilities.models import DetectionRule
-from vulnerabilities.pipelines.v2_improvers.yara_rules import YaraRulesImproverPipeline
+from vulnerabilities.pipelines.v2_improvers.suricata_rules import SuricataRulesImproverPipeline
 
 BASE_DIR = Path(__file__).resolve().parent
-TEST_REPO_DIR = (BASE_DIR / "../../test_data/yara").resolve()
+TEST_REPO_DIR = (BASE_DIR / "../../test_data/suricata").resolve()
 
 
 @pytest.mark.django_db
-def test_collect_and_store_rules_from_test_repo_dir():
+def test_collect_and_store_suricata_rules():
     mock_vcs_response = MagicMock()
     mock_vcs_response.dest_dir = str(TEST_REPO_DIR)
 
-    improver = YaraRulesImproverPipeline()
-    improver.vcs_responses = [(mock_vcs_response, "https://github.com/mock/repo")]
+    improver = SuricataRulesImproverPipeline()
+    improver.pipeline_id = "test-suricata-rules"
+    improver.repo_url = "https://github.com/aboutcode-org/repo"
+    improver.vcs_response = mock_vcs_response
     improver.collect_and_store_rules()
 
     assert DetectionRule.objects.exists()
-    assert DetectionRule.objects.count() == 4
+    assert DetectionRule.objects.count() == 2

@@ -39,6 +39,7 @@ from vulnerabilities.forms import DetectionRuleSearchForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
@@ -161,18 +162,22 @@ class DetectionRuleSearch(ListView):
         return context
 
     def get_queryset(self):
-        queryset = super().get_queryset().prefetch_related("related_advisories")
+        advisories_prefetch = Prefetch(
+            "related_advisories", queryset=AdvisoryV2.objects.only("id", "avid")
+        )
+
+        queryset = super().get_queryset().prefetch_related(advisories_prefetch)
         form = DetectionRuleSearchForm(self.request.GET)
         if form.is_valid():
             rule_type = form.cleaned_data.get("rule_type")
-            advisory_id = form.cleaned_data.get("advisory_id")
+            advisory_avid = form.cleaned_data.get("advisory_avid")
             rule_text = form.cleaned_data.get("rule_text_contains")
 
             if rule_type:
                 queryset = queryset.filter(rule_type=rule_type)
 
-            if advisory_id:
-                queryset = queryset.filter(related_advisories__advisory_id__in=advisory_id)
+            if advisory_avid:
+                queryset = queryset.filter(related_advisories__avid=advisory_avid)
 
             if rule_text:
                 queryset = queryset.filter(rule_text__icontains=rule_text)

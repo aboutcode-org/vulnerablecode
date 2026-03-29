@@ -45,8 +45,10 @@ Detection Rule Search
                             <td><a href="{{ detection_rule.source_url }}">{{ detection_rule.source_url }}</a></td>
                             <td>
                                 {% for advisory in detection_rule.related_advisories.all %}
+                                    {% ifchanged advisory.avid %}
                                     <a href="{% url "advisory_details" advisory.avid %}">{{ advisory.avid }}</a>
                                     <br/>
+                                    {% endifchanged %}
                                 {% endfor %}
                             </td>
                         </tr>

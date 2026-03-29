@@ -25,7 +25,7 @@ TEST_REPO_DIR = os.path.join(BASE_DIR, "../../test_data/sigma")
 
 
 @pytest.mark.django_db
-@mock.patch("vulnerabilities.pipelines.v2_improvers.sigma_rules.fetch_via_vcs")
+@mock.patch("vulnerabilities.pipes.rules.fetch_via_vcs")
 def test_sigma_rules_db_improver(mock_fetch_via_vcs):
     mock_vcs = MagicMock()
     mock_vcs.dest_dir = TEST_REPO_DIR
@@ -68,15 +68,16 @@ def test_sigma_rules_db_improver(mock_fetch_via_vcs):
     improver.execute()
 
     assert len(DetectionRule.objects.all()) == 3
-    sigma_rule = DetectionRule.objects.first()
+    sigma_rule = DetectionRule.objects.get(
+        rule_metadata={
+            "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
+            "date": "2025-06-13",
+            "id": "04fc4b22-91a6-495a-879d-0144fec5ec03",
+            "status": "experimental",
+            "title": "Potential Exploitation of RCE Vulnerability CVE-2025-33053 - Image " "Load",
+        }
+    )
     assert sigma_rule.rule_type == "sigma"
-    assert sigma_rule.rule_metadata == {
-        "author": "Swachchhanda Shrawan Poudel (Nextron Systems)",
-        "date": "2025-06-13",
-        "id": "04fc4b22-91a6-495a-879d-0144fec5ec03",
-        "status": "experimental",
-        "title": "Potential Exploitation of RCE Vulnerability CVE-2025-33053 - Image " "Load",
-    }
     assert list(sigma_rule.related_advisories.all()) == [adv1]
     assert (
         sigma_rule.rule_text

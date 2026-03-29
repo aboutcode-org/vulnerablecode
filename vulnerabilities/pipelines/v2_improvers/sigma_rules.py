@@ -8,58 +8,22 @@
 #
 
 import datetime
-import json
 from pathlib import Path
 
 import yaml
 from aboutcode.pipeline import LoopProgress
-from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import DetectionRule
 from vulnerabilities.models import DetectionRuleTypes
-from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipes.rules import BaseRuleImproverPipeline
 from vulnerabilities.utils import find_all_cve_rule
 from vulnerabilities.utils import get_advisory_url
 
-current_dir = Path(__file__).parent
-schema_path = current_dir / "sigma-schema.json"
 
-class CollectSigmaRulesPipeline(VulnerableCodePipeline):
-    repo_url = None
+class CollectSigmaRulesPipeline(BaseRuleImproverPipeline):
     rglob_patterns = ["**/*.yml"]
-
-    @classmethod
-    def steps(cls):
-        return (
-            cls.clone_repo,
-            cls.collect_and_store_rules,
-            cls.clean_downloads,
-        )
-
-    def clone_repo(self):
-        self.log(f"Cloning `{self.repo_url}`")
-        self.vcs_response = fetch_via_vcs(f"git+{self.repo_url}")
-
-    def is_valid_sigma_rule(self, rule_documents, sigma_schema):
-        """Validate Sigma rule documents against the JSON schema."""
-        # if not rule_documents:
-        #     return False
-        #
-        # for doc in rule_documents:
-        #     if doc is None:
-        #         continue
-        #
-        #     json_compatible_doc = json.loads(json.dumps(doc, default=str))
-        #
-        #     try:
-        #         jsonschema.validate(instance=json_compatible_doc, schema=sigma_schema)
-        #     except jsonschema.exceptions.ValidationError as e:
-        #         self.log(f"Schema validation failed: {e.message}")
-        #         return False
-
-        return True
 
     def collect_and_store_rules(self):
         """
@@ -73,9 +37,6 @@ class CollectSigmaRulesPipeline(VulnerableCodePipeline):
                     yaml_files.add(p)
 
         rules_count = len(yaml_files)
-        with open(schema_path) as schema_file:
-            sigma_schema = json.load(schema_file)
-
         self.log(
             f"Enhancing the vulnerability with {rules_count:,d} rule records from {self.repo_url}"
         )
@@ -87,10 +48,6 @@ class CollectSigmaRulesPipeline(VulnerableCodePipeline):
                 rule_documents = list(yaml.safe_load_all(raw_text))
             except yaml.YAMLError as e:
                 self.log(f"Skipping malformed YAML in {file_path.name}: {e}")
-                continue
-
-            if not self.is_valid_sigma_rule(rule_documents, sigma_schema):
-                self.log(f"Skipping Invalid sigma rule {file_path}")
                 continue
 
             rule_metadata = extract_sigma_metadata(rule_documents)
@@ -156,6 +113,7 @@ def extract_sigma_metadata(rule_documents):
 
     return metadata
 
+
 class SigmaHQImproverPipeline(CollectSigmaRulesPipeline):
     pipeline_id = "sigmaHQ-sigma"
     repo_url = "https://github.com/SigmaHQ/sigma"
@@ -168,15 +126,18 @@ class SigmaHQImproverPipeline(CollectSigmaRulesPipeline):
         "rules-compliance/**/*.yml",
     ]
 
+
 class SigmaSamuraiMDRImproverPipeline(CollectSigmaRulesPipeline):
     pipeline_id = "samuraiMDR-sigma-rules"
     repo_url = "https://github.com/SamuraiMDR/sigma-rules"
     license_urls = "https://github.com/SamuraiMDR/sigma-rules/blob/main/LICENSE"
 
+
 class SigmaMbabinskiImproverPipeline(CollectSigmaRulesPipeline):
     pipeline_id = "mbabinski-sigma-rules"
     repo_url = "https://github.com/mbabinski/Sigma-Rules"
     license_urls = "https://github.com/mbabinski/Sigma-Rules/blob/main/LICENSE"
+
 
 class P4T12ICKSigmaImproverPipeline(CollectSigmaRulesPipeline):
     pipeline_id = "P4T12ICK-sigma-rules"

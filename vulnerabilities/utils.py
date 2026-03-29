@@ -879,8 +879,8 @@ def find_all_cve_rule(raw_text):
     >>> find_all_cve_rule("Detects payload as seen in PoC code to exploit Workspace ONE Access freemarker server-side template injection CVE-2022-22954")
     {'CVE-2022-22954'}
 
-    >>> find_all_cve_rule("Detects suspicious file writes ... such as CVE-2025-49704, CVE-2025-49706 or CVE-2025-53770. ")
-    {"CVE-2025-49704", "CVE-2025-49706", "CVE-2025-53770"}
+    >>> sorted(find_all_cve_rule("Detects suspicious file writes ... such as CVE-2025-49704, CVE-2025-49706 or CVE-2025-53770. "))
+    ['CVE-2025-49704', 'CVE-2025-49706', 'CVE-2025-53770']
 
     >>> find_all_cve_rule("No valid CVE- in this text")
     set()

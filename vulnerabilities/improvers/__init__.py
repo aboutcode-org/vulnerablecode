@@ -34,7 +34,6 @@ from vulnerabilities.pipelines.v2_improvers import (
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
 from vulnerabilities.pipelines.v2_improvers import relate_severities
 from vulnerabilities.pipelines.v2_improvers import sigma_rules
-from vulnerabilities.pipelines.v2_improvers import sigma_rules
 from vulnerabilities.pipelines.v2_improvers import suricata_rules
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
 from vulnerabilities.pipelines.v2_improvers import yara_rules
@@ -78,13 +77,11 @@ IMPROVERS_REGISTRY = create_registry(
         unfurl_version_range_v2.UnfurlVersionRangePipeline,
         compute_advisory_todo.ComputeToDo,
         collect_ssvc_trees.CollectSSVCPipeline,
-
         relate_severities.RelateSeveritiesPipeline,
         sigma_rules.SigmaHQImproverPipeline,
         sigma_rules.SigmaSamuraiMDRImproverPipeline,
         sigma_rules.SigmaMbabinskiImproverPipeline,
         sigma_rules.P4T12ICKSigmaImproverPipeline,
-
         yara_rules.ProtectionsArtifactsYara,
         yara_rules.YaraRulesYara,
         yara_rules.XumeiquerForensicsYara,
@@ -116,6 +113,7 @@ IMPROVERS_REGISTRY = create_registry(
         yara_rules.Dr4k0niaYaraRules,
         yara_rules.Umair9747YaraRules,
         clamav_rules.ClamVRulesImproverPipeline,
-        suricata_rules.SuricataRulesImproverPipeline,
+        suricata_rules.SudohyakSuricataImproverPipeline,
+        suricata_rules.OISFSuricataImproverPipeline,
     ]
 )

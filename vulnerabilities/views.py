@@ -234,7 +234,7 @@ class PackageV2Details(DetailView):
             fixing_advisories_qs_ids = fixed_by_advisories.only("id")
 
             affected_by_advisories = list(affected_by_advisories_qs_ids[:101])
-            if len(affected_by_advisories) > 101:
+            if len(affected_by_advisories) > 100:
                 affected_by_advisories_url = reverse_lazy(
                     "affected_by_advisories_v2", kwargs={"purl": package.package_url}
                 )
@@ -247,7 +247,7 @@ class PackageV2Details(DetailView):
                 context["affected_by_advisories_v2_url"] = None
 
             fixing_advisories = list(fixing_advisories_qs_ids[:101])
-            if len(fixing_advisories) > 101:
+            if len(fixing_advisories) > 100:
                 fixing_advisories_url = reverse_lazy(
                     "fixing_advisories_v2", kwargs={"purl": package.package_url}
                 )

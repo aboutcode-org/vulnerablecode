@@ -75,7 +75,7 @@ api_v3_router = OptionalSlashRouter()
 api_v3_router.register("packages", PackageV3ViewSet, basename="package-v3")
 
 api_v3_router.register(
-    "package_commit_patches", PackageCommitPatchViewSet, basename="package_commit_patch"
+    "package-commit-patches", PackageCommitPatchViewSet, basename="package-commit-patch"
 )
 api_v3_router.register("patches", PatchViewSet, basename="patches")
 

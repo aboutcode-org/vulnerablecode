@@ -347,6 +347,7 @@ class PackageCommitPatchSerializer(serializers.ModelSerializer):
             "id",
             "commit_hash",
             "vcs_url",
+            "commit_url",
             "patch_url",
             "introduced_in_advisories",
             "fixed_in_advisories",
@@ -365,7 +366,7 @@ class PackageCommitPatchSerializer(serializers.ModelSerializer):
         unique_pairs = set()
         for impact in impacts:
             unique_pairs.add((impact.base_purl, impact.advisory.avid))
-        return [{"package": base_purl, "avid": avid} for base_purl, avid in unique_pairs]
+        return [{"purl": base_purl, "avid": avid} for base_purl, avid in unique_pairs]
 
 
 class PatchSerializer(serializers.ModelSerializer):
@@ -376,7 +377,7 @@ class PatchSerializer(serializers.ModelSerializer):
         fields = ["id", "patch_url", "in_advisories"]
 
     def get_in_advisories(self, obj):
-        return [{"avid": advisory.avid} for advisory in obj.advisories.all()]
+        return [advisory.avid for advisory in obj.advisories.all()]
 
 
 class PackageV3Serializer(serializers.ModelSerializer):
@@ -935,63 +936,65 @@ class CodeFixViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
+class PackageCommitPatchFilter(filters.FilterSet):
+    advisory_avid = filters.CharFilter(method="filter_by_advisory", label="Advisory ID")
+    purl = filters.CharFilter(method="filter_by_purl", label="Purl")
+    commit_hash = filters.CharFilter(lookup_expr="exact", label="Commit Hash")
+    vcs_url = filters.CharFilter(lookup_expr="icontains", label="VCS URL")
+
+    class Meta:
+        model = PackageCommitPatch
+        fields = ["id", "advisory_avid", "purl", "commit_hash", "vcs_url"]
+
+    def filter_by_advisory(self, queryset, name, value):
+        return queryset.filter(
+            Q(introduced_in_impacts__advisory__avid=value)
+            | Q(fixed_in_impacts__advisory__avid=value)
+        ).distinct()
+
+    def filter_by_purl(self, queryset, name, value):
+        return queryset.filter(
+            Q(introduced_in_impacts__base_purl__icontains=value)
+            | Q(fixed_in_impacts__base_purl__icontains=value)
+        ).distinct()
+
+
 class PackageCommitPatchViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    API endpoint that allows viewing PackageCommitPatch entries.
+    API endpoint that allows viewing PackageCommitPatch entries
     """
 
     serializer_class = PackageCommitPatchSerializer
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = PackageCommitPatchFilter
 
     def get_queryset(self):
-        queryset = PackageCommitPatch.objects.prefetch_related(
+        return PackageCommitPatch.objects.prefetch_related(
             "introduced_in_impacts__advisory", "fixed_in_impacts__advisory"
-        )
+        ).order_by("id")
 
-        pk = self.request.query_params.get("id")
-        if pk:
-            queryset = queryset.filter(id=pk)
 
-        advisory_id = self.request.query_params.get("advisory_id")
-        if advisory_id:
-            queryset = queryset.filter(
-                Q(introduced_in_impacts__advisory__avid=advisory_id)
-                | Q(fixed_in_impacts__advisory__avid=advisory_id)
-            ).distinct()
+class PatchFilter(filters.FilterSet):
+    advisory_avid = filters.CharFilter(field_name="advisories__avid", label="Advisory ID")
 
-        purl = self.request.query_params.get("purl")
-        if purl:
-            queryset = queryset.filter(
-                Q(introduced_in_impacts__base_purl__icontains=purl)
-                | Q(fixed_in_impacts__base_purl__icontains=purl)
-            ).distinct()
-
-        return queryset.order_by("id")
+    class Meta:
+        model = Patch
+        fields = ["id", "advisory_avid"]
 
 
 class PatchViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    API endpoint that allows viewing PackageCommitPatch entries.
+    API endpoint that allows viewing Patch entries
     """
 
     serializer_class = PatchSerializer
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = PatchFilter
 
     def get_queryset(self):
-        queryset = Patch.objects.all()
-
-        pk = self.request.query_params.get("id")
-        if pk:
-            queryset = queryset.filter(id=pk)
-
-        advisory_id = self.request.query_params.get("advisory_id")
-        if advisory_id:
-            queryset = queryset.filter(advisory__advisory_id=advisory_id).distinct()
-
-        purl = self.request.query_params.get("purl")
-        if purl:
-            queryset = queryset.filter(package__package_url__icontains=purl).distinct()
-        return queryset
+        return Patch.objects.all()
 
 
 class CodeFixV2ViewSet(viewsets.ReadOnlyModelViewSet):

@@ -34,6 +34,7 @@ import urllib3
 from cwe2.database import Database
 from cwe2.database import InvalidCWEError
 from packageurl import PackageURL
+from packageurl.contrib import purl2url
 from packageurl.contrib.django.utils import without_empty_values
 from packageurl.contrib.purl2url import purl2url
 from packageurl.contrib.url2purl import url2purl
@@ -914,33 +915,35 @@ def generate_commit_url(vcs_url, commit_hash):
     if not purl:
         return
 
-    base_purl = get_core_purl(str(purl))
-    purl_with_version = PackageURL(
-        type=base_purl.type, namespace=base_purl.namespace, name=base_purl.name, version=commit_hash
+    new_purl = PackageURL(
+        type=purl.type,
+        namespace=purl.namespace,
+        name=purl.name,
+        version=commit_hash,
+        qualifiers=purl.qualifiers,
     )
-    commit_url = purl2url(str(purl_with_version))
-    return commit_url
+
+    return purl2url.get_commit_url(str(new_purl))
 
 
 def generate_patch_url(vcs_url, commit_hash):
     """
     Generate patch URL from VCS URL and commit hash.
     """
+
     if not vcs_url or not commit_hash:
-        return None
+        return
 
-    vcs_url = vcs_url.rstrip("/")
+    purl = url2purl(vcs_url)
+    if not purl:
+        return
 
-    if vcs_url.startswith("https://github.com"):
-        return f"{vcs_url}/commit/{commit_hash}.patch"
-    elif vcs_url.startswith("https://gitlab.com"):
-        return f"{vcs_url}/-/commit/{commit_hash}.patch"
-    elif vcs_url.startswith("https://bitbucket.org"):
-        return f"{vcs_url}/-/commit/{commit_hash}/raw"
-    elif vcs_url.startswith("https://codeberg.org"):
-        return f"{vcs_url}/-/commit/{commit_hash}.patch"
-    elif vcs_url.startswith("https://android.googlesource.com"):
-        return f"{vcs_url}/+/{commit_hash}%5E%21?format=TEXT"
-    elif vcs_url.startswith("https://git.kernel.org"):
-        return f"{vcs_url}/patch/?id={commit_hash}"
-    return
+    new_purl = PackageURL(
+        type=purl.type,
+        namespace=purl.namespace,
+        name=purl.name,
+        version=commit_hash,
+        qualifiers=purl.qualifiers,
+    )
+
+    return purl2url.get_patch_url(str(new_purl))

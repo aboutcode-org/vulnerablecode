@@ -49,6 +49,26 @@ is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
 cwe_regex = r"CWE-\d+"
 
+
+def extract_cve_ids(text):
+    """
+    Extract deduplicated, normalized CVE identifiers from unstructured text.
+
+    Returns a sorted list of unique CVE IDs found in the text, normalized to
+    uppercase. Handles CVE IDs embedded in URLs, surrounded by punctuation,
+    or appearing multiple times.
+
+    >>> extract_cve_ids("Fixed CVE-2023-1234 and cve-2023-5678.")
+    ['CVE-2023-1234', 'CVE-2023-5678']
+    >>> extract_cve_ids("See https://nvd.nist.gov/vuln/detail/CVE-2021-44228")
+    ['CVE-2021-44228']
+    >>> extract_cve_ids("No vulnerabilities here.")
+    []
+    """
+    if not text:
+        return []
+    return sorted(set(cve.upper() for cve in find_all_cve(text)))
+
 commit_regex = re.compile(r"\b[0-9a-f]{5,40}\b", re.IGNORECASE)
 is_commit = commit_regex.fullmatch
 

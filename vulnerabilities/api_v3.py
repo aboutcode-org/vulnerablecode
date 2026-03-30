@@ -215,6 +215,45 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
         advisories = []
 
+        if package.type not in TYPES_WITH_MULTIPLE_IMPORTERS:
+            advisories_ids = advisories_qs.only("id")
+
+            advisories_ids = list(advisories_ids[:101])
+            if len(advisories_ids) > 100:
+                return None
+
+            advisory_by_avid = {adv.avid: adv for adv in advisories_qs}
+            avids = advisory_by_avid.keys()
+
+            impacts = (
+                package.affected_in_impacts.filter(advisory__avid__in=avids)
+                .select_related("advisory")
+                .prefetch_related("fixed_by_packages")
+            )
+
+            impact_by_avid = {impact.advisory.avid: impact for impact in impacts}
+
+            result = []
+
+            for advisory in advisories_qs:
+                impact = impact_by_avid.get(advisory.avid)
+                if not impact:
+                    continue
+
+                result.append(
+                    {
+                        "advisory_id": advisory.advisory_id.split("/")[-1],
+                        "aliases": [alias.alias for alias in advisory.aliases.all()],
+                        "summary": advisory.summary,
+                        "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
+                        "severity": advisory.weighted_severity,
+                        "exploitability": advisory.exploitability,
+                        "risk_score": advisory.risk_score,
+                    }
+                )
+
+            return result
+
         is_grouped = AdvisorySet.objects.filter(package=package, relation_type="affecting").exists()
 
         if is_grouped:
@@ -239,43 +278,25 @@ class PackageV3Serializer(serializers.ModelSerializer):
             advisories = merge_and_save_grouped_advisories(package, advisories_qs, "affecting")
             return self.return_advisories_data(package, advisories_qs, advisories)
 
-        advisories_ids = advisories_qs.only("id")
-
-        advisories_ids = list(advisories_ids[:101])
-        if len(advisories_ids) > 100:
-            return None
-
-        advisory_by_avid = {adv.avid: adv for adv in advisories_qs}
-        avids = advisory_by_avid.keys()
-
-        impacts = (
-            package.affected_in_impacts.filter(advisory__avid__in=avids)
-            .select_related("advisory")
-            .prefetch_related("fixed_by_packages")
-        )
-
-        impact_by_avid = {impact.advisory.avid: impact for impact in impacts}
-
-        result = []
-
-        for advisory in advisories_qs:
-            impact = impact_by_avid.get(advisory.avid)
-            if not impact:
-                continue
-
-            result.append(
-                {
-                    "advisory_id": advisory.advisory_id.split("/")[-1],
-                    "aliases": [alias.alias for alias in advisory.aliases.all()],
-                    "summary": advisory.summary,
-                    "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
-                }
-            )
-
-        return result
-
     def get_fixing_vulnerabilities(self, package):
         advisories_qs = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(package.package_url)
+
+        if not package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            advisories_ids = advisories_qs.only("id")
+
+            advisories_ids = list(advisories_ids[:101])
+            if len(advisories_ids) > 100:
+                return None
+
+            results = []
+
+            for advisory in advisories_qs:
+                results.append(
+                    {
+                        "advisory_id": advisory.advisory_id.split("/")[-1],
+                    }
+                )
+            return results
 
         advisories = []
 
@@ -301,22 +322,6 @@ class PackageV3Serializer(serializers.ModelSerializer):
             )
             advisories = merge_and_save_grouped_advisories(package, advisories_qs, "fixing")
             return self.return_fixing_advisories_data(advisories)
-
-        advisories_ids = advisories_qs.only("id")
-
-        advisories_ids = list(advisories_ids[:101])
-        if len(advisories_ids) > 100:
-            return None
-
-        results = []
-
-        for advisory in advisories_qs:
-            results.append(
-                {
-                    "advisory_id": advisory.advisory_id.split("/")[-1],
-                }
-            )
-        return results
 
     def return_fixing_advisories_data(self, advisories):
         result = []

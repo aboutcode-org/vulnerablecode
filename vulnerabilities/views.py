@@ -216,6 +216,41 @@ class PackageV2Details(DetailView):
         context["latest_non_vulnerable"] = latest_non_vulnerable
         context["package_search_form"] = PackageSearchForm(self.request.GET)
 
+        if not package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            context["grouped"] = False
+
+            affected_by_advisories_url = None
+            fixing_advisories_url = None
+
+            affected_by_advisories_qs_ids = affecting_advisories.only("id")
+            fixing_advisories_qs_ids = fixed_by_advisories.only("id")
+
+            affected_by_advisories = list(affected_by_advisories_qs_ids[:101])
+            if len(affected_by_advisories) > 101:
+                affected_by_advisories_url = reverse_lazy(
+                    "affected_by_advisories_v2", kwargs={"purl": package.package_url}
+                )
+                context["affected_by_advisories_v2_url"] = affected_by_advisories_url
+
+            else:
+                fixed_pkg_details = get_fixed_package_details(package)
+                context["fixed_package_details"] = fixed_pkg_details
+                context["affected_by_advisories_v2"] = affecting_advisories
+                context["affected_by_advisories_v2_url"] = None
+
+            fixing_advisories = list(fixing_advisories_qs_ids[:101])
+            if len(fixing_advisories) > 101:
+                fixing_advisories_url = reverse_lazy(
+                    "fixing_advisories_v2", kwargs={"purl": package.package_url}
+                )
+                context["fixing_advisories_v2_url"] = fixing_advisories_url
+                context["fixing_advisories_v2"] = []
+
+            else:
+                context["fixing_advisories_v2"] = fixed_by_advisories
+
+            return context
+
         is_grouped = models.AdvisorySet.objects.filter(package=package).exists()
 
         if is_grouped:
@@ -283,40 +318,6 @@ class PackageV2Details(DetailView):
             context["affected_by_advisories_v2"] = affected_by_advisories
             context["fixing_advisories_v2"] = fixing_advisories
             return context
-
-        context["grouped"] = False
-
-        affected_by_advisories_url = None
-        fixing_advisories_url = None
-
-        affected_by_advisories_qs_ids = affecting_advisories.only("id")
-        fixing_advisories_qs_ids = fixed_by_advisories.only("id")
-
-        affected_by_advisories = list(affected_by_advisories_qs_ids[:101])
-        if len(affected_by_advisories) > 101:
-            affected_by_advisories_url = reverse_lazy(
-                "affected_by_advisories_v2", kwargs={"purl": package.package_url}
-            )
-            context["affected_by_advisories_v2_url"] = affected_by_advisories_url
-
-        else:
-            fixed_pkg_details = get_fixed_package_details(package)
-            context["fixed_package_details"] = fixed_pkg_details
-            context["affected_by_advisories_v2"] = affecting_advisories
-            context["affected_by_advisories_v2_url"] = None
-
-        fixing_advisories = list(fixing_advisories_qs_ids[:101])
-        if len(fixing_advisories) > 101:
-            fixing_advisories_url = reverse_lazy(
-                "fixing_advisories_v2", kwargs={"purl": package.package_url}
-            )
-            context["fixing_advisories_v2_url"] = fixing_advisories_url
-            context["fixing_advisories_v2"] = []
-
-        else:
-            context["fixing_advisories_v2"] = fixed_by_advisories
-
-        return context
 
     def get_object(self, queryset=None):
         if queryset is None:

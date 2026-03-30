@@ -217,6 +217,14 @@ class PackageV2Details(DetailView):
         context["package_search_form"] = PackageSearchForm(self.request.GET)
 
         if not package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
+            purl=package.purl
+            )
+
+            fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
+                purl=package.purl
+            )
+
             context["grouped"] = False
 
             affected_by_advisories_url = None
@@ -282,15 +290,14 @@ class PackageV2Details(DetailView):
 
             return context
 
-        affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
-            purl=package.purl
-        )
-
-        fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
-            purl=package.purl
-        )
-
         if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
+            purl=package.purl
+            )
+
+            fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
+                purl=package.purl
+            )
             fixed_pkg_details = get_fixed_package_details(package)
             context["fixed_package_details"] = fixed_pkg_details
             context["grouped"] = True

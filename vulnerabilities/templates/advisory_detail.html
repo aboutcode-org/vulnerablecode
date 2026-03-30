@@ -137,7 +137,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     applications, or networks. This metric is determined automatically based on the discovery of known exploits.">
                                     Exploitability</td>
                                 <td class="two-col-right wrap-strings">
-                                    {{ advisory.exploitability }}
+                                    {% if advisory.exploitability is not None %}
+                                        {{ advisory.exploitability }}
+                                    {% else %}
+                                        {{ "" }}
+                                    {% endif %}
                                 </td>
                             </tr>
 
@@ -146,7 +150,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     data-tooltip="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10."
                                 >Weighted Severity</td>
                                 <td class="two-col-right wrap-strings">
-                                    {{ advisory.weighted_severity }}
+                                    {% if advisory.weighted_severity is not None %}
+                                        {{ advisory.weighted_severity }}
+                                    {% else %}
+                                        {{ "" }}
+                                    {% endif %}
                                 </td>
                             </tr>
 
@@ -157,7 +165,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     "
                                 >Risk</td>
                                 <td class="two-col-right wrap-strings">
-                                    {{ advisory.risk_score }}
+                                    {% if advisory.risk_score is not None %}
+                                        {{ advisory.risk_score }}
+                                    {% else %}
+                                        {{ "" }}
+                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>

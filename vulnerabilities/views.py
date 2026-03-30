@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
+from datetime import datetime
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
@@ -363,12 +364,19 @@ class VulnerabilityDetails(DetailView):
             if weakness_object.weakness
         ]
 
-        valid_severities = self.object.severities.exclude(scoring_system=EPSS.identifier).filter(
-            scoring_elements__isnull=False, scoring_system__in=SCORING_SYSTEMS.keys()
-        )
+        all_severities = list(self.object.severities.all().order_by("-published_at"))
+
+        valid_severities = [
+            s
+            for s in all_severities
+            if s.scoring_system != EPSS.identifier
+            and s.scoring_elements is not None
+            and s.scoring_system in SCORING_SYSTEMS
+        ]
+
+        epss_severities = [s for s in all_severities if s.scoring_system == EPSS.identifier]
 
         severity_vectors = []
-
         for severity in valid_severities:
             try:
                 vector_values_system = SCORING_SYSTEMS[severity.scoring_system]
@@ -386,27 +394,18 @@ class VulnerabilityDetails(DetailView):
             ):
                 logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
 
-        epss_severity = vulnerability.severities.filter(scoring_system="epss").first()
-        epss_data = None
-        if epss_severity:
-            epss_data = {
-                "percentile": epss_severity.scoring_elements,
-                "score": epss_severity.value,
-                "published_at": epss_severity.published_at,
-            }
-
         context.update(
             {
                 "vulnerability": vulnerability,
                 "vulnerability_search_form": VulnerabilitySearchForm(self.request.GET),
-                "severities": list(vulnerability.severities.all()),
+                "severities": list(self.object.severities.exclude(scoring_system=EPSS.identifier)),
                 "severity_vectors": severity_vectors,
+                "epss_severities": epss_severities,
                 "references": list(vulnerability.references.all()),
                 "aliases": list(vulnerability.aliases.all()),
                 "weaknesses": weaknesses_present_in_db,
                 "status": vulnerability.get_status_label,
                 "history": vulnerability.history,
-                "epss_data": epss_data,
             }
         )
         return context

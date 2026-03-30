@@ -960,13 +960,34 @@ def get_advisories_from_groups(groups):
     Return a list of advisories from the merged groups of advisories.
     """
     advisories = []
-    for aliases, primary, _ in groups:
+    weighted_severity = None
+    exploitability = None
+    risk_score = None
+    for aliases, primary, secondaries in groups:
+        severity_scores = []
+        exploitability_scores = []
         identifier = primary.advisory_id.split("/")[-1]
-
         filtered_aliases = [alias for alias in aliases if alias.alias != identifier]
-
+        severity_scores.extend([adv.weighted_severity for adv in secondaries])
+        exploitability_scores.extend([adv.exploitability for adv in secondaries])
+        severity_scores.append(primary.weighted_severity)
+        exploitability_scores.append(primary.exploitability)
+        if severity_scores:
+            weighted_severity = round(max(severity_scores), 1)
+        if exploitability_scores:
+            exploitability = max(exploitability_scores)
+        if exploitability and weighted_severity:
+            risk_score = min(float(exploitability * weighted_severity), 10.0)
+            risk_score = round(risk_score, 1)
         advisories.append(
-            {"aliases": filtered_aliases, "advisory": primary, "identifier": identifier}
+            {
+                "aliases": filtered_aliases,
+                "advisory": primary,
+                "identifier": identifier,
+                "weighted_severity": weighted_severity,
+                "exploitability": exploitability,
+                "risk_score": risk_score,
+            }
         )
 
     return advisories

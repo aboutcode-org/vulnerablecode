@@ -356,6 +356,9 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 {
                     "advisory_id": advisory["identifier"],
                     "aliases": [alias.alias for alias in advisory["aliases"]],
+                    "weighted_severity": advisory["weighted_severity"],
+                    "exploitability": advisory["exploitability"],
+                    "risk_score": advisory["risk_score"],
                     "summary": advisory["advisory"].summary,
                     "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
                 }

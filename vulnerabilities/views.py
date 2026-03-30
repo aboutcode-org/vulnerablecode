@@ -218,7 +218,7 @@ class PackageV2Details(DetailView):
 
         if not package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
             affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
-            purl=package.purl
+                purl=package.purl
             )
 
             fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
@@ -292,7 +292,7 @@ class PackageV2Details(DetailView):
 
         if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
             affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
-            purl=package.purl
+                purl=package.purl
             )
 
             fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(

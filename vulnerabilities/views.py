@@ -42,7 +42,6 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
-from vulnerabilities.pipes.group_advisories import delete_and_save_advisory_set
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
@@ -266,20 +265,49 @@ class PackageV2Details(DetailView):
             fixed_pkg_details = get_fixed_package_details(package)
             context["fixed_package_details"] = fixed_pkg_details
 
-            affected_by_advisories_qs = models.AdvisorySet.objects.filter(
-                package=package, relation_type="affecting"
-            ).select_related("primary_advisory")
+            affected_by_advisories_qs = (
+                models.AdvisorySet.objects.filter(package=package, relation_type="affecting")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
 
-            fixing_advisories_qs = models.AdvisorySet.objects.filter(
-                package=package, relation_type="fixing"
-            ).select_related("primary_advisory")
+            fixing_advisories_qs = (
+                models.AdvisorySet.objects.filter(package=package, relation_type="fixing")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
 
             affected_groups = [
-                (list(adv.aliases.all()), adv.primary_advisory, "")
+                (
+                    list(adv.aliases.all()),
+                    adv.primary_advisory,
+                    [a.advisory for a in adv.secondary_members],
+                )
                 for adv in affected_by_advisories_qs
             ]
             fixing_groups = [
-                (list(adv.aliases.all()), adv.primary_advisory, "") for adv in fixing_advisories_qs
+                (
+                    list(adv.aliases.all()),
+                    adv.primary_advisory,
+                    [a.advisory for a in adv.secondary_members],
+                )
+                for adv in fixing_advisories_qs
             ]
 
             affected_advisories = get_advisories_from_groups(affected_groups)

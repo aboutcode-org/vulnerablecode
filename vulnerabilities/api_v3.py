@@ -21,6 +21,7 @@ from rest_framework.throttling import AnonRateThrottle
 
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySet
+from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
@@ -257,12 +258,26 @@ class PackageV3Serializer(serializers.ModelSerializer):
         is_grouped = AdvisorySet.objects.filter(package=package, relation_type="affecting").exists()
 
         if is_grouped:
-            affected_by_advisories_qs = AdvisorySet.objects.filter(
-                package=package, relation_type="affecting"
-            ).select_related("primary_advisory")
+            affected_by_advisories_qs = (
+                AdvisorySet.objects.filter(package=package, relation_type="affecting")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
 
             affected_groups = [
-                (list(adv.aliases.all()), adv.primary_advisory, "")
+                (
+                    list(adv.aliases.all()),
+                    adv.primary_advisory,
+                    [member.advisory for member in adv.secondary_members],
+                )
                 for adv in affected_by_advisories_qs
             ]
 
@@ -303,12 +318,27 @@ class PackageV3Serializer(serializers.ModelSerializer):
         is_grouped = AdvisorySet.objects.filter(package=package, relation_type="fixing").exists()
 
         if is_grouped:
-            fixing_advisories_qs = AdvisorySet.objects.filter(
-                package=package, relation_type="fixing"
-            ).select_related("primary_advisory")
+            fixing_advisories_qs = (
+                AdvisorySet.objects.filter(package=package, relation_type="fixing")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
 
             fixing_groups = [
-                (list(adv.aliases.all()), adv.primary_advisory, "") for adv in fixing_advisories_qs
+                (
+                    list(adv.aliases.all()),
+                    adv.primary_advisory,
+                    [member.advisory for member in adv.secondary_members],
+                )
+                for adv in fixing_advisories_qs
             ]
 
             advisories = get_advisories_from_groups(fixing_groups)
@@ -360,7 +390,9 @@ class PackageV3Serializer(serializers.ModelSerializer):
                     "exploitability": advisory["exploitability"],
                     "risk_score": advisory["risk_score"],
                     "summary": advisory["advisory"].summary,
-                    "fixed_by_packages": list(set([pkg.purl for pkg in impact.fixed_by_packages.all()])),
+                    "fixed_by_packages": list(
+                        set([pkg.purl for pkg in impact.fixed_by_packages.all()])
+                    ),
                 }
             )
 

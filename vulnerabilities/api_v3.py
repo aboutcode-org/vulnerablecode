@@ -360,7 +360,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
                     "exploitability": advisory["exploitability"],
                     "risk_score": advisory["risk_score"],
                     "summary": advisory["advisory"].summary,
-                    "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
+                    "fixed_by_packages": list(set([pkg.purl for pkg in impact.fixed_by_packages.all()])),
                 }
             )
 

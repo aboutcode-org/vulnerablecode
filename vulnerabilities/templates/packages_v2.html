@@ -62,7 +62,13 @@ VulnerableCode Package Search
                                     target="_self">{{ package.purl }}</a>
                             </td>
                             <td>{{ package.is_vulnerable|yesno:"Yes,No" }}</td>
-                            <td>{{ package.risk_score }}</td>
+                            <td>
+                                {% if package.risk_score is not None %}
+                                {{ package.risk_score }}
+                                {% else %}
+                                {{ "" }}
+                                {% endif %}
+                            </td>
                         </tr>
                     {% empty %}
                         <tr>

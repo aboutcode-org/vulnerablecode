@@ -214,9 +214,20 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                     {% for severity in severities %}
                     <tr>
                         <td class="wrap-strings">{{ severity.scoring_system }}</td>
-                        <td class="wrap-strings">{{ severity.value }}</td>
-                        <td class="wrap-strings"><a href="{{ severity.url }}" target="_blank">
+                        <td class="wrap-strings">
+                            {% if severity.value is not None %}
+                            {{ severity.value }}
+                            {% else %}
+                            {{ "" }}
+                            {% endif %}
+                        </td>
+                        <td class="wrap-strings">
+                            {% if severity.url is not None %}
+                            <a href="{{ severity.url }}" target="_blank">
                                 {{ severity.url }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                            {% else %}
+                            {{ "" }}
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}
@@ -483,7 +494,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
             <div class="tab-div content" data-content="severities-vectors">
                 {% for severity_vector in severity_vectors %}
                     {% if severity_vector.vector.version == '2.0'  %}
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
+                        Vector: {{ severity_vector.vector.vectorString }} 
+                        {% if severity_vector.origin %}
+                        Found at 
+                        <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
+                        {% endif %}
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
                           <tr>
                             <th>Exploitability (E)</th>

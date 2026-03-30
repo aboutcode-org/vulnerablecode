@@ -118,7 +118,11 @@ VulnerableCode Package Details - {{ package.purl }}
                                         Risk score
                                     </td>
                                     <td class="two-col-right">
+                                        {% if package.risk_score is not None %}
                                         {{package.risk_score}}
+                                        {% else %}
+                                        {{""}}
+                                        {% endif %}
                                     </td>
                                 </tr>
                             </tbody>

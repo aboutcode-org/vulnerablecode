@@ -29,7 +29,7 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/pypa/advisory-database/blob/main/LICENSE"
     repo_url = "git+https://github.com/pypa/advisory-database"
-    precedence = 200
+    precedence = 500
 
     @classmethod
     def steps(cls):

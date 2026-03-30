@@ -39,14 +39,15 @@ from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisoryV2
-from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
+from vulnerabilities.pipes.group_advisories import delete_and_save_advisory_set
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import group_advisories_by_content
-from vulnerabilities.utils import merge_advisories
+from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
+from vulnerabilities.utils import get_advisories_from_groups
+from vulnerabilities.utils import merge_and_save_grouped_advisories
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
@@ -160,12 +161,7 @@ class PackageSearchV2(ListView):
         on exact purl, partial purl or just name and namespace.
         """
         query = query or self.request.GET.get("search") or ""
-        return (
-            self.model.objects.search(query)
-            .prefetch_related()
-            .order_by("package_url")
-            .with_is_vulnerable()
-        )
+        return self.model.objects.search(query).prefetch_related().with_is_vulnerable()
 
 
 class AffectedByAdvisoriesListView(ListView):
@@ -220,21 +216,75 @@ class PackageV2Details(DetailView):
         context["latest_non_vulnerable"] = latest_non_vulnerable
         context["package_search_form"] = PackageSearchForm(self.request.GET)
 
+        is_grouped = models.AdvisorySet.objects.filter(package=package).exists()
+
+        if is_grouped:
+            context["grouped"] = True
+            fixed_pkg_details = get_fixed_package_details(package)
+            context["fixed_package_details"] = fixed_pkg_details
+
+            affected_by_advisories_qs = models.AdvisorySet.objects.filter(
+                package=package, relation_type="affecting"
+            ).select_related("primary_advisory")
+
+            fixing_advisories_qs = models.AdvisorySet.objects.filter(
+                package=package, relation_type="fixing"
+            ).select_related("primary_advisory")
+
+            affected_groups = [
+                (list(adv.aliases.all()), adv.primary_advisory, "")
+                for adv in affected_by_advisories_qs
+            ]
+            fixing_groups = [
+                (list(adv.aliases.all()), adv.primary_advisory, "") for adv in fixing_advisories_qs
+            ]
+
+            affected_advisories = get_advisories_from_groups(affected_groups)
+            fixing_advisories = get_advisories_from_groups(fixing_groups)
+
+            context["affected_by_advisories_v2"] = affected_advisories
+            context["fixing_advisories_v2"] = fixing_advisories
+
+            return context
+
         affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
             purl=package.purl
-        ).prefetch_related(
-            "aliases",
-            "impacted_packages__affecting_packages",
-            "impacted_packages__fixed_by_packages",
         )
 
         fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
             purl=package.purl
-        ).prefetch_related(
-            "aliases",
-            "impacted_packages__affecting_packages",
-            "impacted_packages__fixed_by_packages",
         )
+
+        if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            fixed_pkg_details = get_fixed_package_details(package)
+            context["fixed_package_details"] = fixed_pkg_details
+            context["grouped"] = True
+
+            affecting_advisories = affecting_advisories.prefetch_related(
+                "aliases",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+
+            affected_by_advisories = merge_and_save_grouped_advisories(
+                package, affecting_advisories, "affecting"
+            )
+
+            fixed_by_advisories = fixed_by_advisories.prefetch_related(
+                "aliases",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+
+            fixing_advisories = merge_and_save_grouped_advisories(
+                package, fixed_by_advisories, "fixing"
+            )
+
+            context["affected_by_advisories_v2"] = affected_by_advisories
+            context["fixing_advisories_v2"] = fixing_advisories
+            return context
+
+        context["grouped"] = False
 
         affected_by_advisories_url = None
         fixing_advisories_url = None
@@ -242,35 +292,21 @@ class PackageV2Details(DetailView):
         affected_by_advisories_qs_ids = affecting_advisories.only("id")
         fixing_advisories_qs_ids = fixed_by_advisories.only("id")
 
-        affected_by_advisories = list(affected_by_advisories_qs_ids[:1001])
-        if len(affected_by_advisories) > 1001:
+        affected_by_advisories = list(affected_by_advisories_qs_ids[:101])
+        if len(affected_by_advisories) > 101:
             affected_by_advisories_url = reverse_lazy(
                 "affected_by_advisories_v2", kwargs={"purl": package.package_url}
             )
             context["affected_by_advisories_v2_url"] = affected_by_advisories_url
-            context["affected_by_advisories_v2"] = []
-            context["fixed_package_details"] = {}
 
         else:
-            advisories = []
-
             fixed_pkg_details = get_fixed_package_details(package)
-            groups = merge_advisories(affecting_advisories, package)
-            for aliases, primary, _ in groups:
-                identifier = primary.advisory_id.split("/")[-1]
-
-                filtered_aliases = [alias for alias in aliases if alias.alias != identifier]
-
-                advisories.append(
-                    {"aliases": filtered_aliases, "advisory": primary, "identifier": identifier}
-                )
-
-            context["affected_by_advisories_v2"] = advisories
             context["fixed_package_details"] = fixed_pkg_details
+            context["affected_by_advisories_v2"] = affecting_advisories
             context["affected_by_advisories_v2_url"] = None
 
-        fixing_advisories = list(fixing_advisories_qs_ids[:1001])
-        if len(fixing_advisories) > 1001:
+        fixing_advisories = list(fixing_advisories_qs_ids[:101])
+        if len(fixing_advisories) > 101:
             fixing_advisories_url = reverse_lazy(
                 "fixing_advisories_v2", kwargs={"purl": package.package_url}
             )
@@ -278,21 +314,7 @@ class PackageV2Details(DetailView):
             context["fixing_advisories_v2"] = []
 
         else:
-            advisories = []
-
-            fixed_pkg_details = get_fixed_package_details(package)
-            groups = merge_advisories(fixing_advisories, package)
-            for aliases, primary, _ in groups:
-                identifier = primary.advisory_id.split("/")[-1]
-
-                filtered_aliases = [alias for alias in aliases if alias.alias != identifier]
-
-                advisories.append(
-                    {"aliases": filtered_aliases, "advisory": primary, "identifier": identifier}
-                )
-
-            context["fixing_advisories_v2"] = advisories
-            context["fixing_advisories_v2_url"] = None
+            context["fixing_advisories_v2"] = fixed_by_advisories
 
         return context
 
@@ -430,7 +452,7 @@ def get_fixed_package_details(package):
 
     pkg_map = {
         p.id: p
-        for p in models.PackageV2.objects.filter(id__in=pkg_ids).annotate(
+        for p in models.PackageV2.objects.filter(id__in=pkg_ids, is_ghost=False).annotate(
             is_vulnerable=Exists(
                 models.ImpactedPackage.objects.filter(affecting_packages=OuterRef("pk"))
             )

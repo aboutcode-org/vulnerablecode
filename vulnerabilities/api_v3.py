@@ -20,13 +20,16 @@ from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 
 from vulnerabilities.models import AdvisoryReference
+from vulnerabilities.models import AdvisorySet
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
 from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import PackageV2
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
-from vulnerabilities.utils import group_advisories_by_content
+from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
+from vulnerabilities.utils import get_advisories_from_groups
+from vulnerabilities.utils import merge_and_save_grouped_advisories
 
 
 class PackageQuerySerializer(serializers.Serializer):
@@ -210,6 +213,32 @@ class PackageV3Serializer(serializers.ModelSerializer):
         """Return a dictionary with advisory as keys and their details, including fixed_by_packages."""
         advisories_qs = AdvisoryV2.objects.latest_affecting_advisories_for_purl(package.package_url)
 
+        advisories = []
+
+        is_grouped = AdvisorySet.objects.filter(package=package, relation_type="affecting").exists()
+
+        if is_grouped:
+            affected_by_advisories_qs = AdvisorySet.objects.filter(
+                package=package, relation_type="affecting"
+            ).select_related("primary_advisory")
+
+            affected_groups = [
+                (list(adv.aliases.all()), adv.primary_advisory, "")
+                for adv in affected_by_advisories_qs
+            ]
+
+            advisories = get_advisories_from_groups(affected_groups)
+            return self.return_advisories_data(package, advisories_qs, advisories)
+
+        if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            advisories_qs = advisories_qs.prefetch_related(
+                "aliases",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+            advisories = merge_and_save_grouped_advisories(package, advisories_qs, "affecting")
+            return self.return_advisories_data(package, advisories_qs, advisories)
+
         advisories_ids = advisories_qs.only("id")
 
         advisories_ids = list(advisories_ids[:101])
@@ -227,20 +256,19 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
         impact_by_avid = {impact.advisory.avid: impact for impact in impacts}
 
-        grouped = group_advisories_by_content(advisories_qs)
-
         result = []
-        for entry in grouped.values():
-            primary = entry["primary"]
-            impact = impact_by_avid.get(primary.avid)
+
+        for advisory in advisories_qs:
+            impact = impact_by_avid.get(advisory.avid)
             if not impact:
                 continue
 
             result.append(
                 {
-                    "advisory_id": primary.avid,
+                    "advisory_id": advisory.advisory_id.split("/")[-1],
+                    "aliases": [alias.alias for alias in advisory.aliases.all()],
+                    "summary": advisory.summary,
                     "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
-                    "duplicate_advisory_ids": [a.avid for a in entry["secondary"]],
                 }
             )
 
@@ -249,21 +277,82 @@ class PackageV3Serializer(serializers.ModelSerializer):
     def get_fixing_vulnerabilities(self, package):
         advisories_qs = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(package.package_url)
 
+        advisories = []
+
+        is_grouped = AdvisorySet.objects.filter(package=package, relation_type="fixing").exists()
+
+        if is_grouped:
+            fixing_advisories_qs = AdvisorySet.objects.filter(
+                package=package, relation_type="fixing"
+            ).select_related("primary_advisory")
+
+            fixing_groups = [
+                (list(adv.aliases.all()), adv.primary_advisory, "") for adv in fixing_advisories_qs
+            ]
+
+            advisories = get_advisories_from_groups(fixing_groups)
+            return self.return_fixing_advisories_data(advisories)
+
+        if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            advisories_qs = advisories_qs.prefetch_related(
+                "aliases",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+            advisories = merge_and_save_grouped_advisories(package, advisories_qs, "fixing")
+            return self.return_fixing_advisories_data(advisories)
+
         advisories_ids = advisories_qs.only("id")
 
         advisories_ids = list(advisories_ids[:101])
         if len(advisories_ids) > 100:
             return None
 
-        grouped = group_advisories_by_content(advisories_qs)
+        results = []
 
+        for advisory in advisories_qs:
+            results.append(
+                {
+                    "advisory_id": advisory.advisory_id.split("/")[-1],
+                }
+            )
+        return results
+
+    def return_fixing_advisories_data(self, advisories):
         result = []
-        for entry in grouped.values():
-            primary = entry["primary"]
+        for advisory in advisories:
             result.append(
                 {
-                    "advisory_id": primary.avid,
-                    "duplicate_advisory_ids": [a.avid for a in entry["secondary"]],
+                    "advisory_id": advisory["identifier"],
+                }
+            )
+
+        return result
+
+    def return_advisories_data(self, package, advisories_qs, advisories):
+        advisory_by_avid = {adv.avid: adv for adv in advisories_qs}
+        avids = advisory_by_avid.keys()
+
+        impacts = (
+            package.affected_in_impacts.filter(advisory__avid__in=avids)
+            .select_related("advisory")
+            .prefetch_related("fixed_by_packages")
+        )
+
+        impact_by_avid = {impact.advisory.avid: impact for impact in impacts}
+
+        result = []
+        for advisory in advisories:
+            impact = impact_by_avid.get(advisory["advisory"].avid)
+            if not impact:
+                continue
+
+            result.append(
+                {
+                    "advisory_id": advisory["identifier"],
+                    "aliases": [alias.alias for alias in advisory["aliases"]],
+                    "summary": advisory["advisory"].summary,
+                    "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
                 }
             )
 

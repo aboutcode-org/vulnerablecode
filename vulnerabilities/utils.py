@@ -41,6 +41,7 @@ from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
 from aboutcode.hashid import build_vcid
+from vulnerabilities.pipes.group_advisories import delete_and_save_advisory_set
 
 logger = logging.getLogger(__name__)
 
@@ -845,59 +846,10 @@ def compute_patch_checksum(patch_text: str):
     return hashlib.sha512(patch_text.encode("utf-8")).hexdigest()
 
 
-def group_advisories_by_content(advisories):
-    grouped = {}
-
-    for advisory in advisories:
-        content_hash = (
-            advisory.advisory_content_hash
-            if advisory.advisory_content_hash
-            else compute_advisory_content(advisory)
-        )
-
-        entry = grouped.setdefault(
-            content_hash,
-            {"primary": advisory, "secondary": set()},
-        )
-
-        primary = entry["primary"]
-
-        if advisory is primary:
-            continue
-
-        if advisory.precedence > primary.precedence:
-            entry["primary"] = advisory
-            entry["secondary"].add(primary)
-        else:
-            entry["secondary"].add(advisory)
-
-    return grouped
-
-
-def compute_advisory_content(advisory_data):
-    """
-    Compute a unique content hash for an advisory by normalizing its data and hashing it.
-
-    :param advisory_data: An AdvisoryData object
-    :return: SHA-256 hash digest as content hash
-    """
-    from vulnerabilities.models import AdvisoryV2
-
-    if isinstance(advisory_data, AdvisoryV2):
-        advisory_data = advisory_data.to_advisory_data()
-    normalized_data = {
-        "affected_packages": [
-            pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
-        ],
-    }
-
-    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
-    content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
-
-    return content_hash
-
-
 def merge_advisories(advisories, package):
+    """
+    Merge advisories based on their content hash and identifiers.
+    """
 
     advisories = list(advisories)
 
@@ -917,6 +869,8 @@ def merge_advisories(advisories, package):
 
 
 def compute_advisory_content_hash(adv, package):
+    """Compute a content hash for an advisory based on its affected and fixed packages for a given package.
+    This is used to determine if two advisories are the same based on their content."""
     affected = []
     fixed = []
 
@@ -943,6 +897,10 @@ def compute_advisory_content_hash(adv, package):
 
 
 def get_merged_identifier_groups(advisories):
+    """
+    Merge advisories based on their identifiers (advisory_id and aliases).
+    Example: If two advisories share ``advisory_id`` or share an alias, they will be merged together.
+    """
 
     identifier_groups = defaultdict(set)
 
@@ -985,7 +943,7 @@ def get_merged_identifier_groups(advisories):
     for group in merged:
         identifiers = set()
         for adv in group:
-            for alias in adv.aliases.all():
+            for alias in adv.aliases.all().order_by("alias"):
                 identifiers.add(alias)
 
         primary = max(group, key=lambda a: a.precedence if a.precedence is not None else -1)
@@ -995,3 +953,45 @@ def get_merged_identifier_groups(advisories):
         final_groups.append((identifiers, primary, secondary))
 
     return final_groups
+
+
+def get_advisories_from_groups(groups):
+    """
+    Return a list of advisories from the merged groups of advisories.
+    """
+    advisories = []
+    for aliases, primary, _ in groups:
+        identifier = primary.advisory_id.split("/")[-1]
+
+        filtered_aliases = [alias for alias in aliases if alias.alias != identifier]
+
+        advisories.append(
+            {"aliases": filtered_aliases, "advisory": primary, "identifier": identifier}
+        )
+
+    return advisories
+
+
+def merge_and_save_grouped_advisories(package, advisories, relation):
+    """
+    Merge advisories based on their content and identifiers and save the merged advisories to the database.
+    """
+    groups = merge_advisories(advisories, package)
+    delete_and_save_advisory_set(groups, package, relation)
+    advisories = get_advisories_from_groups(groups)
+
+    return advisories
+
+
+TYPES_WITH_MULTIPLE_IMPORTERS = [
+    "pypi",
+    "maven",
+    "nuget",
+    "golang",
+    "npm",
+    "composer",
+    "hex",
+    "cargo",
+    "gem",
+    "conan",
+]

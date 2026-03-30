@@ -2949,7 +2949,11 @@ class AdvisorySet(models.Model):
     package = models.ForeignKey("PackageV2", on_delete=models.CASCADE)
     relation_type = models.CharField(max_length=20, choices=RELATION_TYPE_CHOICES)
 
-    identifiers = models.JSONField()
+    aliases = models.ManyToManyField(
+        AdvisoryAlias,
+        related_name="advisory_sets",
+        help_text="A list of serializable Alias objects",
+    )
 
     primary_advisory = models.ForeignKey("AdvisoryV2", on_delete=models.PROTECT)
 
@@ -3099,13 +3103,6 @@ class AdvisoryV2(models.Model):
         "AdvisoryV2",
         related_name="related_to_advisory_severities",
         help_text="Related advisories that are used to calculate the severity of this advisory.",
-    )
-
-    advisory_content_hash = models.CharField(
-        max_length=64,
-        blank=True,
-        null=True,
-        help_text="A unique hash computed from the content of the advisory used to identify advisories with the same content.",
     )
 
     risk_score = models.DecimalField(
@@ -3311,7 +3308,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         except ValueError:
             # otherwise use query as a plain string
             qs = qs.filter(package_url__icontains=query)
-        return qs.order_by("package_url")
+        return qs.order_by("package_url").order_by("-version_rank")
 
     def with_vulnerability_counts(self):
         return self.annotate(

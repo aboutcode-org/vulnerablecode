@@ -141,6 +141,7 @@ VulnerableCode Package Details - {{ package.purl }}
                                 </tr>
                             </thead>
 
+                            {% if grouped %}
                             <tbody>
                                 {% for advisory in affected_by_advisories_v2 %}
                                 <tr>
@@ -201,6 +202,68 @@ VulnerableCode Package Details - {{ package.purl }}
                                 </tr>
                                 {% endfor %}
                             </tbody>
+                            {% else %}
+                            <tbody>
+                                {% for advisory in affected_by_advisories_v2 %}
+                                <tr>
+                                    <td>
+                                        <a href="{{advisory.get_absolute_url}}">
+                                            {{advisory.advisory_id }}
+                                        </a>
+                                        <br />
+                                        {% if advisory.aliases.all|length != 0 %}
+                                        Aliases:
+                                        {% endif %}
+                                        <br />
+                                        {% for alias in advisory.aliases.all %}
+                                        {% if alias.url %}
+                                        <a href="{{ alias.url }}" target="_blank">{{ alias }}<i
+                                                class="fa fa-external-link fa_link_custom"></i></a>
+                                        <br />
+                                        {% else %}
+                                        {{ alias }}
+                                        <br />
+                                        {% endif %}
+                                        {% endfor %}
+
+                                    </td>
+                                    <td style="word-wrap: break-word; word-break: break-word;">
+                                        {{ advisory.summary|truncatewords:20 }}
+                                    </td>
+                                    <td style="word-wrap: break-word; word-break: break-all;">
+                                        {% with fixed=fixed_package_details|get_item:advisory.avid %}
+                                            {% if fixed %}
+                                                {% for item in fixed %}
+                                                <section>
+                                                    <a href="/packages/v2/{{ item.pkg.purl|url_quote }}?search={{ item.pkg.purl }}"
+                                                        target="_self">{{ item.pkg.version }}</a>
+                                                    <br/>
+                                                    {% if item.pkg.is_vulnerable %}
+                                                    <span class="{{ item.pkg.is_vulnerable|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Vulnerable
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="{{ item.pkg.is_vulnerable|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Not vulnerable
+                                                    </span>
+                                                    {% endif %}
+                                                </section>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">
+                                        <span class="emphasis-not-vulnerable">This package is not known to be subject of any advisories.</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        {% endif %}
                         </table>
                         {% elif affected_by_advisories_v2_url %}
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">
@@ -228,6 +291,8 @@ VulnerableCode Package Details - {{ package.purl }}
                                     <th style="width: 225px;">Aliases</th>
                                 </tr>
                             </thead>
+
+                            {% if grouped %}
                             <tbody>
                                 {% for advisory in fixing_advisories_v2 %}
                                 <tr>
@@ -261,8 +326,43 @@ VulnerableCode Package Details - {{ package.purl }}
                                 </tr>
                                 {% endfor %}
                             </tbody>
-                        </table>
 
+                            {% else %}
+                            <tbody>
+                                {% for advisory in fixing_advisories_v2 %}
+                                <tr>
+                                    <td>
+                                        <a href="{{advisory.get_absolute_url}}">
+                                            {{advisory.advisory_id }}
+                                        </a>
+                                    <br />
+                                    </td>
+                                    <td>
+                                        {{ advisory.summary|truncatewords:20 }}
+                                    </td>
+                                    <td>
+                                        {% for alias in advisory.aliases.all %}
+                                        {% if alias.url %}
+                                        <a href="{{ alias.url }}" target="_blank">{{ alias }}<i
+                                                class="fa fa-external-link fa_link_custom"></i></a>
+                                        <br />
+                                        {% else %}
+                                        {{ alias }}
+                                        <br />
+                                        {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">
+                                        This package is not known to fix any advisories.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
                         <br />
                         {% elif fixing_advisories_v2_url %}
                         <div class="has-text-weight-bold ml-1 mb-0 pb-0">

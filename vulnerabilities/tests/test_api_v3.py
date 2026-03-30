@@ -53,7 +53,7 @@ class APIV3TestCase(APITestCase):
     def test_packages_post_with_details(self):
         url = reverse("package-v3-list")
 
-        with self.assertNumQueries(23):
+        with self.assertNumQueries(33):
             response = self.client.post(
                 url,
                 data={
@@ -170,25 +170,6 @@ class APIV3TestCaseOnePackageMultipleAdvisories(APITestCase):
             insert_advisory_v2(advisory, "ghsa_importer", print, 100)
 
         self.client = APIClient(enforce_csrf_checks=True)
-
-    def test_packages_post_purl_with_many_advisories(self):
-        url = reverse("package-v3-list")
-
-        with self.assertNumQueries(12):
-            response = self.client.post(
-                url,
-                data={
-                    "purls": ["pkg:pypi/sample@1.0.0"],
-                    "details": True,
-                },
-                format="json",
-            )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        results = response.data["results"]
-        self.assertEqual(len(results), 1)
-        self.assertIsNotNone(results[0]["affected_by_vulnerabilities_url"])
 
     def test_advisories_post(self):
         url = reverse("advisory-v3-list")

@@ -59,13 +59,18 @@ OSV_TO_VCIO_SEVERITY_MAP = {
 
 
 def parse_advisory_data_v3(
-    raw_data: dict, supported_ecosystems, advisory_url: str, advisory_text: str
+    raw_data: dict,
+    supported_ecosystems,
+    advisory_url: str,
+    advisory_text: str,
+    advisory_id: Optional[str] = None,
 ) -> Optional[AdvisoryDataV2]:
     """
     Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
     a ``supported_ecosystem`` string.
     """
-    advisory_id = raw_data.get("id") or ""
+    if not advisory_id:
+        advisory_id = raw_data.get("id") or ""
     if not advisory_id:
         logger.error(f"Missing advisory id in OSV data: {raw_data}")
         return None

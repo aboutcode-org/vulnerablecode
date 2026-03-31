@@ -59,11 +59,14 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             )
             advisory_text = advisory.read_text()
             advisory_dict = saneyaml.load(advisory_text)
+            advisory_path = advisory.relative_to(base_directory)
+            advisory_id = advisory_path.parent.stem + "/" + advisory_path.stem
             yield parse_advisory_data_v3(
                 raw_data=advisory_dict,
                 supported_ecosystems=["pypi"],
                 advisory_url=advisory_url,
                 advisory_text=advisory_text,
+                advisory_id=advisory_id,
             )
 
     def clean_downloads(self):

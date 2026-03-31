@@ -251,7 +251,7 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "vulnerabilities.throttling.throttled_exception_handler",
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
-    "PAGE_SIZE": 10,
+    "PAGE_SIZE": 100,
     # for API docs
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%SZ",

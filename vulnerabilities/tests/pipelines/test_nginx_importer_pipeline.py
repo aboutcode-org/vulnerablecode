@@ -196,7 +196,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
 
     @mock.patch("fetchcode.utils.github_response")
     def test_NginxBasicImprover_fetch_nginx_version_from_git_tags(self, mock_fetcher):
-        reponse_files = [
+        response_files = [
             "github-nginx-nginx-0.json",
             "github-nginx-nginx-1.json",
             "github-nginx-nginx-2.json",
@@ -205,7 +205,7 @@ class TestNginxImporterAndImprover(testcase.FileBasedTesting):
             "github-nginx-nginx-5.json",
         ]
         side_effects = []
-        for response_file in reponse_files:
+        for response_file in response_files:
             with open(self.get_test_loc(f"improver/{response_file}")) as f:
                 side_effects.append(json.load(f))
         mock_fetcher.side_effect = side_effects

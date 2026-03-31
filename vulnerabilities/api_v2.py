@@ -344,7 +344,6 @@ class PackageCommitPatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageCommitPatch
         fields = [
-            "id",
             "commit_hash",
             "vcs_url",
             "commit_url",
@@ -374,7 +373,7 @@ class PatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Patch
-        fields = ["id", "patch_url", "in_advisories"]
+        fields = ["patch_url", "in_advisories"]
 
     def get_in_advisories(self, obj):
         return [advisory.avid for advisory in obj.advisories.all()]
@@ -944,7 +943,7 @@ class PackageCommitPatchFilter(filters.FilterSet):
 
     class Meta:
         model = PackageCommitPatch
-        fields = ["id", "advisory_avid", "purl", "commit_hash", "vcs_url"]
+        fields = ["advisory_avid", "purl", "commit_hash", "vcs_url"]
 
     def filter_by_advisory(self, queryset, name, value):
         return queryset.filter(
@@ -980,7 +979,7 @@ class PatchFilter(filters.FilterSet):
 
     class Meta:
         model = Patch
-        fields = ["id", "advisory_avid"]
+        fields = ["advisory_avid"]
 
 
 class PatchViewSet(viewsets.ReadOnlyModelViewSet):

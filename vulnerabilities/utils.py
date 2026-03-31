@@ -34,9 +34,7 @@ import urllib3
 from cwe2.database import Database
 from cwe2.database import InvalidCWEError
 from packageurl import PackageURL
-from packageurl.contrib import purl2url
 from packageurl.contrib.django.utils import without_empty_values
-from packageurl.contrib.purl2url import purl2url
 from packageurl.contrib.url2purl import url2purl
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
@@ -908,6 +906,8 @@ def generate_commit_url(vcs_url, commit_hash):
     """
     Generate commit URL from VCS URL and commit hash.
     """
+    from packageurl.contrib import purl2url
+
     if not vcs_url or not commit_hash:
         return
 
@@ -930,6 +930,7 @@ def generate_patch_url(vcs_url, commit_hash):
     """
     Generate patch URL from VCS URL and commit hash.
     """
+    from packageurl.contrib import purl2url
 
     if not vcs_url or not commit_hash:
         return

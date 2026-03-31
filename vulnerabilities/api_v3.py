@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from typing import List
 from urllib.parse import urlencode
 
 from django.db.models import Exists
@@ -25,6 +26,8 @@ from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
+from vulnerabilities.models import Group
+from vulnerabilities.models import GroupedAdvisory
 from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import PackageV2
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
@@ -273,15 +276,15 @@ class PackageV3Serializer(serializers.ModelSerializer):
             )
 
             affected_groups = [
-                (
-                    list(adv.aliases.all()),
-                    adv.primary_advisory,
-                    [member.advisory for member in adv.secondary_members],
+                Group(
+                    aliases=list(adv.aliases.all()),
+                    primary_advisory=adv.primary_advisory,
+                    secondaries=[member.advisory for member in adv.secondary_members],
                 )
                 for adv in affected_by_advisories_qs
             ]
 
-            advisories = get_advisories_from_groups(affected_groups)
+            advisories: List[GroupedAdvisory] = get_advisories_from_groups(affected_groups)
             return self.return_advisories_data(package, advisories_qs, advisories)
 
         if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
@@ -290,7 +293,9 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 "impacted_packages__affecting_packages",
                 "impacted_packages__fixed_by_packages",
             )
-            advisories = merge_and_save_grouped_advisories(package, advisories_qs, "affecting")
+            advisories: List[GroupedAdvisory] = merge_and_save_grouped_advisories(
+                package, advisories_qs, "affecting"
+            )
             return self.return_advisories_data(package, advisories_qs, advisories)
 
     def get_fixing_vulnerabilities(self, package):
@@ -333,15 +338,15 @@ class PackageV3Serializer(serializers.ModelSerializer):
             )
 
             fixing_groups = [
-                (
-                    list(adv.aliases.all()),
-                    adv.primary_advisory,
-                    [member.advisory for member in adv.secondary_members],
+                Group(
+                    aliases=list(adv.aliases.all()),
+                    primary_advisory=adv.primary_advisory,
+                    secondaries=[member.advisory for member in adv.secondary_members],
                 )
                 for adv in fixing_advisories_qs
             ]
 
-            advisories = get_advisories_from_groups(fixing_groups)
+            advisories: List[GroupedAdvisory] = get_advisories_from_groups(fixing_groups)
             return self.return_fixing_advisories_data(advisories)
 
         if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
@@ -350,15 +355,18 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 "impacted_packages__affecting_packages",
                 "impacted_packages__fixed_by_packages",
             )
-            advisories = merge_and_save_grouped_advisories(package, advisories_qs, "fixing")
+            advisories: List[GroupedAdvisory] = merge_and_save_grouped_advisories(
+                package, advisories_qs, "fixing"
+            )
             return self.return_fixing_advisories_data(advisories)
 
     def return_fixing_advisories_data(self, advisories):
         result = []
         for advisory in advisories:
+            assert isinstance(advisory, GroupedAdvisory)
             result.append(
                 {
-                    "advisory_id": advisory["identifier"],
+                    "advisory_id": advisory.identifier,
                 }
             )
 
@@ -378,18 +386,19 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
         result = []
         for advisory in advisories:
-            impact = impact_by_avid.get(advisory["advisory"].avid)
+            assert isinstance(advisory, GroupedAdvisory)
+            impact = impact_by_avid.get(advisory.advisory.avid)
             if not impact:
                 continue
 
             result.append(
                 {
-                    "advisory_id": advisory["identifier"],
-                    "aliases": [alias.alias for alias in advisory["aliases"]],
-                    "weighted_severity": advisory["weighted_severity"],
-                    "exploitability": advisory["exploitability"],
-                    "risk_score": advisory["risk_score"],
-                    "summary": advisory["advisory"].summary,
+                    "advisory_id": advisory.identifier,
+                    "aliases": [alias.alias for alias in advisory.aliases],
+                    "weighted_severity": advisory.weighted_severity,
+                    "exploitability": advisory.exploitability,
+                    "risk_score": advisory.risk_score,
+                    "summary": advisory.advisory.summary,
                     "fixed_by_packages": list(
                         set([pkg.purl for pkg in impact.fixed_by_packages.all()])
                     ),

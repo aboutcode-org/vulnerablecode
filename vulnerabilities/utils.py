@@ -20,7 +20,9 @@ from collections import defaultdict
 from functools import total_ordering
 from http import HTTPStatus
 from typing import List
+from typing import NamedTuple
 from typing import Optional
+from typing import Set
 from typing import Tuple
 from typing import Union
 from unittest.mock import MagicMock
@@ -850,6 +852,7 @@ def merge_advisories(advisories, package):
     """
     Merge advisories based on their content hash and identifiers.
     """
+    from vulnerabilities.models import Group
 
     advisories = list(advisories)
 
@@ -859,7 +862,7 @@ def merge_advisories(advisories, package):
         content_hash = compute_advisory_content_hash(adv, package)
         content_hash_map[content_hash].append(adv)
 
-    final_groups = []
+    final_groups: List[Group] = []
 
     for group in content_hash_map.values():
         groups = get_merged_identifier_groups(group)
@@ -901,6 +904,7 @@ def get_merged_identifier_groups(advisories):
     Merge advisories based on their identifiers (advisory_id and aliases).
     Example: If two advisories share ``advisory_id`` or share an alias, they will be merged together.
     """
+    from vulnerabilities.models import Group
 
     identifier_groups = defaultdict(set)
 
@@ -938,7 +942,7 @@ def get_merged_identifier_groups(advisories):
         if adv not in all_grouped:
             merged.append({adv})
 
-    final_groups = []
+    final_groups: List[Group] = []
 
     for group in merged:
         identifiers = set()
@@ -950,7 +954,7 @@ def get_merged_identifier_groups(advisories):
 
         secondary = [a for a in group if a != primary]
 
-        final_groups.append((identifiers, primary, secondary))
+        final_groups.append(Group(aliases=identifiers, primary=primary, secondaries=secondary))
 
     return final_groups
 
@@ -959,35 +963,48 @@ def get_advisories_from_groups(groups):
     """
     Return a list of advisories from the merged groups of advisories.
     """
+    from vulnerabilities.models import Group
+    from vulnerabilities.models import GroupedAdvisory
+
     advisories = []
-    weighted_severity = None
-    exploitability = None
-    risk_score = None
-    for aliases, primary, secondaries in groups:
+
+    for group in groups:
+
+        assert isinstance(group, Group)
+        weighted_severity = None
+        exploitability = None
+        risk_score = None
+
         severity_scores = []
-        exploitability_scores = []
-        identifier = primary.advisory_id.split("/")[-1]
-        filtered_aliases = [alias for alias in aliases if alias.alias != identifier]
-        severity_scores.extend([adv.weighted_severity for adv in secondaries])
-        exploitability_scores.extend([adv.exploitability for adv in secondaries])
-        severity_scores.append(primary.weighted_severity)
-        exploitability_scores.append(primary.exploitability)
+        severity_scores.append(group.primary.weighted_severity or 0.0)
+        severity_scores.extend([adv.weighted_severity or 0.0 for adv in group.secondaries])
+
         if severity_scores:
             weighted_severity = round(max(severity_scores), 1)
+
+        exploitability_scores = []
+        exploitability_scores.append(group.primary.exploitability or 0.0)
+        exploitability_scores.extend([adv.exploitability or 0.0 for adv in group.secondaries])
+
         if exploitability_scores:
             exploitability = max(exploitability_scores)
+
         if exploitability and weighted_severity:
             risk_score = min(float(exploitability * weighted_severity), 10.0)
             risk_score = round(risk_score, 1)
+
+        identifier = group.primary.advisory_id.split("/")[-1]
+        filtered_aliases = [alias for alias in group.aliases if alias.alias != identifier]
+
         advisories.append(
-            {
-                "aliases": filtered_aliases,
-                "advisory": primary,
-                "identifier": identifier,
-                "weighted_severity": weighted_severity,
-                "exploitability": exploitability,
-                "risk_score": risk_score,
-            }
+            GroupedAdvisory(
+                aliases=filtered_aliases,
+                advisory=group.primary,
+                identifier=identifier,
+                weighted_severity=weighted_severity,
+                exploitability=exploitability,
+                risk_score=risk_score,
+            )
         )
 
     return advisories

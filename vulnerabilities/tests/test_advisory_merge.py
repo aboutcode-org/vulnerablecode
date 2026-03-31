@@ -15,6 +15,7 @@ from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisorySet
 from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import Group
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PackageV2
 from vulnerabilities.utils import compute_advisory_content_hash
@@ -136,8 +137,8 @@ class TestAdvisoryMerge:
         groups = get_merged_identifier_groups([adv])
         result = get_advisories_from_groups(groups)
 
-        assert result[0]["identifier"] == "GHSA-ABC-123"
-        assert len(result[0]["aliases"]) == 1
+        assert result[0].identifier == "GHSA-ABC-123"
+        assert len(result[0].aliases) == 1
 
     def test_delete_and_save_advisory_set(self):
         package = PackageV2.objects.from_purl("pkg:pypi/sample@1.0.0")
@@ -147,7 +148,7 @@ class TestAdvisoryMerge:
 
         adv1.aliases.create(alias="CVE-1")
 
-        groups = [(set(adv1.aliases.all()), adv1, [adv2])]
+        groups = [Group(aliases=set(adv1.aliases.all()), primary=adv1, secondaries=[adv2])]
 
         delete_and_save_advisory_set(groups, package, relation="affecting")
 

@@ -14,31 +14,33 @@ from django.db import transaction
 def delete_and_save_advisory_set(groups, package, relation=None):
     from vulnerabilities.models import AdvisorySet
     from vulnerabilities.models import AdvisorySetMember
+    from vulnerabilities.models import Group
 
     AdvisorySet.objects.filter(package=package, relation_type=relation).delete()
 
     membership_to_create = []
 
-    for identifiers, primary, secondary in groups:
+    for group in groups:
 
+        assert isinstance(group, Group)
         advisory_set = AdvisorySet.objects.create(
             package=package,
             relation_type=relation,
-            primary_advisory=primary,
+            primary_advisory=group.primary,
         )
 
-        advisory_set.aliases.add(*identifiers)
+        advisory_set.aliases.add(*group.aliases)
         advisory_set.save()
 
         membership_to_create.append(
             AdvisorySetMember(
                 advisory_set=advisory_set,
-                advisory=primary,
+                advisory=group.primary,
                 is_primary=True,
             )
         )
 
-        for adv in secondary:
+        for adv in group.secondaries:
             membership_to_create.append(
                 AdvisorySetMember(
                     advisory_set=advisory_set,

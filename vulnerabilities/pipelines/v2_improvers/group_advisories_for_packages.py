@@ -7,7 +7,10 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from typing import List
+
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import Group
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes.group_advisories import delete_and_save_advisory_set
@@ -48,8 +51,8 @@ def group_advisoris_for_packages(logger=None):
         )
 
         try:
-            affected_groups = merge_advisories(affecting_advisories, package)
-            fixed_by_groups = merge_advisories(fixed_by_advisories, package)
+            affected_groups: List[Group] = merge_advisories(affecting_advisories, package)
+            fixed_by_groups: List[Group] = merge_advisories(fixed_by_advisories, package)
             delete_and_save_advisory_set(affected_groups, package, relation="affecting")
             delete_and_save_advisory_set(fixed_by_groups, package, relation="fixing")
         except Exception as e:

@@ -8,6 +8,7 @@
 #
 import logging
 from collections import defaultdict
+from typing import List
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
@@ -39,6 +40,8 @@ from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
 from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import Group
+from vulnerabilities.models import GroupedAdvisory
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
@@ -295,23 +298,27 @@ class PackageV2Details(DetailView):
 
             affected_groups = [
                 (
-                    list(adv.aliases.all()),
-                    adv.primary_advisory,
-                    [a.advisory for a in adv.secondary_members],
+                    Group(
+                        aliases=list(adv.aliases.all()),
+                        primary=adv.primary_advisory,
+                        secondaries=[a.advisory for a in adv.secondary_members],
+                    )
                 )
                 for adv in affected_by_advisories_qs
             ]
             fixing_groups = [
                 (
-                    list(adv.aliases.all()),
-                    adv.primary_advisory,
-                    [a.advisory for a in adv.secondary_members],
+                    Group(
+                        aliases=list(adv.aliases.all()),
+                        primary=adv.primary_advisory,
+                        secondaries=[a.advisory for a in adv.secondary_members],
+                    )
                 )
                 for adv in fixing_advisories_qs
             ]
 
-            affected_advisories = get_advisories_from_groups(affected_groups)
-            fixing_advisories = get_advisories_from_groups(fixing_groups)
+            affected_advisories: List[GroupedAdvisory] = get_advisories_from_groups(affected_groups)
+            fixing_advisories: List[GroupedAdvisory] = get_advisories_from_groups(fixing_groups)
 
             context["affected_by_advisories_v2"] = affected_advisories
             context["fixing_advisories_v2"] = fixing_advisories
@@ -336,7 +343,7 @@ class PackageV2Details(DetailView):
                 "impacted_packages__fixed_by_packages",
             )
 
-            affected_by_advisories = merge_and_save_grouped_advisories(
+            affected_by_advisories: List[GroupedAdvisory] = merge_and_save_grouped_advisories(
                 package, affecting_advisories, "affecting"
             )
 
@@ -346,7 +353,7 @@ class PackageV2Details(DetailView):
                 "impacted_packages__fixed_by_packages",
             )
 
-            fixing_advisories = merge_and_save_grouped_advisories(
+            fixing_advisories: List[GroupedAdvisory] = merge_and_save_grouped_advisories(
                 package, fixed_by_advisories, "fixing"
             )
 

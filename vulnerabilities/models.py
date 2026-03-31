@@ -20,6 +20,9 @@ from itertools import groupby
 from operator import attrgetter
 from traceback import format_exc as traceback_format_exc
 from typing import List
+from typing import NamedTuple
+from typing import Optional
+from typing import Set
 from typing import Union
 from urllib.parse import urljoin
 
@@ -3714,3 +3717,26 @@ class SSVC(models.Model):
 
     class Meta:
         unique_together = ("vector", "source_advisory")
+
+
+class Group(NamedTuple):
+    """
+    A Group of advisories that have been merged together based on their content and identifiers.
+    """
+
+    aliases: Set[AdvisoryAlias]
+    primary: AdvisoryV2
+    secondaries: List[AdvisoryV2]
+
+
+class GroupedAdvisory(NamedTuple):
+    """
+    A GroupedAdvisory represents a single advisory that has been grouped with its aliases and related advisories.
+    """
+
+    aliases: Set[AdvisoryAlias]
+    advisory: AdvisoryV2
+    identifier: str
+    weighted_severity: Optional[float]
+    exploitability: Optional[float]
+    risk_score: Optional[float]

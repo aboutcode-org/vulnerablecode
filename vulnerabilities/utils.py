@@ -35,12 +35,14 @@ from cwe2.database import Database
 from cwe2.database import InvalidCWEError
 from packageurl import PackageURL
 from packageurl.contrib.django.utils import without_empty_values
+from packageurl.contrib.url2purl import url2purl
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
 from univers.version_range import AlpineLinuxVersionRange
 from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
 from aboutcode.hashid import build_vcid
+from aboutcode.hashid import get_core_purl
 
 logger = logging.getLogger(__name__)
 
@@ -898,3 +900,51 @@ def compute_advisory_content(advisory_data):
     content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
 
     return content_hash
+
+
+def generate_commit_url(vcs_url, commit_hash):
+    """
+    Generate commit URL from VCS URL and commit hash.
+    """
+    from packageurl.contrib import purl2url
+
+    if not vcs_url or not commit_hash:
+        return
+
+    purl = url2purl(vcs_url)
+    if not purl:
+        return
+
+    new_purl = PackageURL(
+        type=purl.type,
+        namespace=purl.namespace,
+        name=purl.name,
+        version=commit_hash,
+        qualifiers=purl.qualifiers,
+    )
+
+    return purl2url.get_commit_url(str(new_purl))
+
+
+def generate_patch_url(vcs_url, commit_hash):
+    """
+    Generate patch URL from VCS URL and commit hash.
+    """
+    from packageurl.contrib import purl2url
+
+    if not vcs_url or not commit_hash:
+        return
+
+    purl = url2purl(vcs_url)
+    if not purl:
+        return
+
+    new_purl = PackageURL(
+        type=purl.type,
+        namespace=purl.namespace,
+        name=purl.name,
+        version=commit_hash,
+        qualifiers=purl.qualifiers,
+    )
+
+    return purl2url.get_patch_url(str(new_purl))

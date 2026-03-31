@@ -18,6 +18,7 @@ from django.core.mail import send_mail
 from django.db.models import Count
 from django.db.models import F
 from django.db.models import Prefetch
+from django.db.models import Q
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -428,6 +429,7 @@ class AdvisoryDetails(DetailView):
         return obj
 
     def get_queryset(self):
+
         return (
             super()
             .get_queryset()
@@ -571,11 +573,13 @@ class AdvisoryDetails(DetailView):
             add_ssvc(ssvc)
 
         context["ssvcs"] = ssvc_entries
+
         context.update(
             {
                 "advisory": advisory,
                 "severities": list(advisory.severities.all()),
                 "references": list(advisory.references.all()),
+                "patches": list(advisory.patches.all()),
                 "aliases": list(advisory.aliases.all()),
                 "severity_vectors": severity_vectors,
                 "weaknesses": weaknesses_present_in_db,
@@ -752,7 +756,7 @@ class AdvisoryPackagesDetails(DetailView):
             .prefetch_related(
                 Prefetch(
                     "impacted_packages",
-                    queryset=models.ImpactedPackage.objects.prefetch_related(
+                    queryset=models.ImpactedPackage.objects.order_by("base_purl").prefetch_related(
                         Prefetch(
                             "affecting_packages",
                             queryset=models.PackageV2.objects.only(
@@ -763,6 +767,69 @@ class AdvisoryPackagesDetails(DetailView):
                             "fixed_by_packages",
                             queryset=models.PackageV2.objects.only(
                                 "type", "namespace", "name", "version"
+                            ),
+                        ),
+                        Prefetch(
+                            "introduced_by_package_commit_patches",
+                            queryset=models.PackageCommitPatch.objects.only(
+                                "commit_hash", "vcs_url", "patch_url", "commit_url"
+                            ),
+                        ),
+                        Prefetch(
+                            "fixed_by_package_commit_patches",
+                            queryset=models.PackageCommitPatch.objects.only(
+                                "commit_hash", "vcs_url", "patch_url", "commit_url"
+                            ),
+                        ),
+                    ),
+                )
+            )
+        )
+
+
+class AdvisoryPackageCommitPatchDetails(DetailView):
+    """
+    View to display all packages introduce by or fixing a specific vulnerability.
+    URL: /advisories/{id}/commits
+    """
+
+    model = models.AdvisoryV2
+    template_name = "advisory_package_commit_details.html"
+    slug_url_kwarg = "avid"
+
+    def get_object(self, queryset=None):
+        avid = self.kwargs.get(self.slug_url_kwarg)
+        if not avid:
+            raise Http404("Missing advisory identifier")
+
+        advisory = models.AdvisoryV2.objects.latest_for_avid(avid)
+
+        if not advisory:
+            raise Http404(f"No advisory found for avid: {avid}")
+
+        return advisory
+
+    def get_queryset(self):
+        """
+        Prefetch and optimize related data to minimize database hits.
+        """
+        return (
+            super()
+            .get_queryset()
+            .prefetch_related(
+                Prefetch(
+                    "impacted_packages",
+                    queryset=models.ImpactedPackage.objects.order_by("base_purl").prefetch_related(
+                        Prefetch(
+                            "introduced_by_package_commit_patches",
+                            queryset=models.PackageCommitPatch.objects.only(
+                                "commit_hash", "vcs_url", "patch_url", "commit_url"
+                            ),
+                        ),
+                        Prefetch(
+                            "fixed_by_package_commit_patches",
+                            queryset=models.PackageCommitPatch.objects.only(
+                                "commit_hash", "vcs_url", "patch_url", "commit_url"
                             ),
                         ),
                     ),

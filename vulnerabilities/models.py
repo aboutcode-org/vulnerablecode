@@ -70,6 +70,8 @@ from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import compute_patch_checksum
+from vulnerabilities.utils import generate_commit_url
+from vulnerabilities.utils import generate_patch_url
 from vulnerabilities.utils import normalize_list
 from vulnerabilities.utils import normalize_purl
 from vulnerabilities.utils import normalize_text
@@ -2832,6 +2834,20 @@ class PackageCommitPatch(models.Model):
 
     patch_text = models.TextField(blank=True, null=True)
     patch_checksum = models.CharField(max_length=128, blank=True, null=True)
+
+    @property
+    def commit_url(self):
+        """
+        Generates Commit URL using the VCS URL and Commit Hash.
+        """
+        return generate_commit_url(self.vcs_url, self.commit_hash)
+
+    @property
+    def patch_url(self):
+        """
+        Generates Patch URL using the VCS URL and Commit Hash.
+        """
+        return generate_patch_url(self.vcs_url, self.commit_hash)
 
     def save(self, *args, **kwargs):
         if self.patch_text:

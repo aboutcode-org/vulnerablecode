@@ -278,7 +278,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
             affected_groups = [
                 Group(
                     aliases=list(adv.aliases.all()),
-                    primary_advisory=adv.primary_advisory,
+                    primary=adv.primary_advisory,
                     secondaries=[member.advisory for member in adv.secondary_members],
                 )
                 for adv in affected_by_advisories_qs
@@ -340,7 +340,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
             fixing_groups = [
                 Group(
                     aliases=list(adv.aliases.all()),
-                    primary_advisory=adv.primary_advisory,
+                    primary=adv.primary_advisory,
                     secondaries=[member.advisory for member in adv.secondary_members],
                 )
                 for adv in fixing_advisories_qs

@@ -261,69 +261,69 @@ class PackageV2Details(DetailView):
 
             return context
 
-        # is_grouped = models.AdvisorySet.objects.filter(package=package).exists()
+        is_grouped = models.AdvisorySet.objects.filter(package=package).exists()
 
-        # if is_grouped:
-        #     context["grouped"] = True
-        #     fixed_pkg_details = get_fixed_package_details(package)
-        #     context["fixed_package_details"] = fixed_pkg_details
+        if is_grouped:
+            context["grouped"] = True
+            fixed_pkg_details = get_fixed_package_details(package)
+            context["fixed_package_details"] = fixed_pkg_details
 
-        #     affected_by_advisories_qs = (
-        #         models.AdvisorySet.objects.filter(package=package, relation_type="affecting")
-        #         .select_related("primary_advisory")
-        #         .prefetch_related(
-        #             Prefetch(
-        #                 "members",
-        #                 queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
-        #                     "advisory"
-        #                 ),
-        #                 to_attr="secondary_members",
-        #             )
-        #         )
-        #     )
+            affected_by_advisories_qs = (
+                models.AdvisorySet.objects.filter(package=package, relation_type="affecting")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
 
-        #     fixing_advisories_qs = (
-        #         models.AdvisorySet.objects.filter(package=package, relation_type="fixing")
-        #         .select_related("primary_advisory")
-        #         .prefetch_related(
-        #             Prefetch(
-        #                 "members",
-        #                 queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
-        #                     "advisory"
-        #                 ),
-        #                 to_attr="secondary_members",
-        #             )
-        #         )
-        #     )
+            fixing_advisories_qs = (
+                models.AdvisorySet.objects.filter(package=package, relation_type="fixing")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
 
-        #     affected_groups = [
-        #         (
-        #             Group(
-        #                 aliases=list(adv.aliases.all()),
-        #                 primary=adv.primary_advisory,
-        #                 secondaries=[a.advisory for a in adv.secondary_members],
-        #             )
-        #         )
-        #         for adv in affected_by_advisories_qs
-        #     ]
-        #     fixing_groups = [
-        #         (
-        #             Group(
-        #                 aliases=list(adv.aliases.all()),
-        #                 primary=adv.primary_advisory,
-        #                 secondaries=[a.advisory for a in adv.secondary_members],
-        #             )
-        #         )
-        #         for adv in fixing_advisories_qs
-        #     ]
+            affected_groups = [
+                (
+                    Group(
+                        aliases=list(adv.aliases.all()),
+                        primary=adv.primary_advisory,
+                        secondaries=[a.advisory for a in adv.secondary_members],
+                    )
+                )
+                for adv in affected_by_advisories_qs
+            ]
+            fixing_groups = [
+                (
+                    Group(
+                        aliases=list(adv.aliases.all()),
+                        primary=adv.primary_advisory,
+                        secondaries=[a.advisory for a in adv.secondary_members],
+                    )
+                )
+                for adv in fixing_advisories_qs
+            ]
 
-        #     affected_advisories: List[GroupedAdvisory] = get_advisories_from_groups(affected_groups)
-        #     fixing_advisories: List[GroupedAdvisory] = get_advisories_from_groups(fixing_groups)
+            affected_advisories: List[GroupedAdvisory] = get_advisories_from_groups(affected_groups)
+            fixing_advisories: List[GroupedAdvisory] = get_advisories_from_groups(fixing_groups)
 
-        #     context["affected_by_advisories_v2"] = affected_advisories
-        #     context["fixing_advisories_v2"] = fixing_advisories
+            context["affected_by_advisories_v2"] = affected_advisories
+            context["fixing_advisories_v2"] = fixing_advisories
 
-        #     return context
+            return context
 
         if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
             affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(

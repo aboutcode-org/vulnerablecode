@@ -258,34 +258,34 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
             return result
 
-        # is_grouped = AdvisorySet.objects.filter(package=package, relation_type="affecting").exists()
+        is_grouped = AdvisorySet.objects.filter(package=package, relation_type="affecting").exists()
 
-        # if is_grouped:
-        #     affected_by_advisories_qs = (
-        #         AdvisorySet.objects.filter(package=package, relation_type="affecting")
-        #         .select_related("primary_advisory")
-        #         .prefetch_related(
-        #             Prefetch(
-        #                 "members",
-        #                 queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
-        #                     "advisory"
-        #                 ),
-        #                 to_attr="secondary_members",
-        #             )
-        #         )
-        #     )
+        if is_grouped:
+            affected_by_advisories_qs = (
+                AdvisorySet.objects.filter(package=package, relation_type="affecting")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
 
-        #     affected_groups = [
-        #         Group(
-        #             aliases=list(adv.aliases.all()),
-        #             primary=adv.primary_advisory,
-        #             secondaries=[member.advisory for member in adv.secondary_members],
-        #         )
-        #         for adv in affected_by_advisories_qs
-        #     ]
+            affected_groups = [
+                Group(
+                    aliases=list(adv.aliases.all()),
+                    primary=adv.primary_advisory,
+                    secondaries=[member.advisory for member in adv.secondary_members],
+                )
+                for adv in affected_by_advisories_qs
+            ]
 
-        #     advisories: List[GroupedAdvisory] = get_advisories_from_groups(affected_groups)
-        #     return self.return_advisories_data(package, advisories_qs, advisories)
+            advisories: List[GroupedAdvisory] = get_advisories_from_groups(affected_groups)
+            return self.return_advisories_data(package, advisories_qs, advisories)
 
         if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
             advisories_qs = advisories_qs.prefetch_related(
@@ -320,34 +320,34 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
         advisories = []
 
-        # is_grouped = AdvisorySet.objects.filter(package=package, relation_type="fixing").exists()
+        is_grouped = AdvisorySet.objects.filter(package=package, relation_type="fixing").exists()
 
-        # if is_grouped:
-        #     fixing_advisories_qs = (
-        #         AdvisorySet.objects.filter(package=package, relation_type="fixing")
-        #         .select_related("primary_advisory")
-        #         .prefetch_related(
-        #             Prefetch(
-        #                 "members",
-        #                 queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
-        #                     "advisory"
-        #                 ),
-        #                 to_attr="secondary_members",
-        #             )
-        #         )
-        #     )
+        if is_grouped:
+            fixing_advisories_qs = (
+                AdvisorySet.objects.filter(package=package, relation_type="fixing")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
 
-        #     fixing_groups = [
-        #         Group(
-        #             aliases=list(adv.aliases.all()),
-        #             primary=adv.primary_advisory,
-        #             secondaries=[member.advisory for member in adv.secondary_members],
-        #         )
-        #         for adv in fixing_advisories_qs
-        #     ]
+            fixing_groups = [
+                Group(
+                    aliases=list(adv.aliases.all()),
+                    primary=adv.primary_advisory,
+                    secondaries=[member.advisory for member in adv.secondary_members],
+                )
+                for adv in fixing_advisories_qs
+            ]
 
-        #     advisories: List[GroupedAdvisory] = get_advisories_from_groups(fixing_groups)
-        #     return self.return_fixing_advisories_data(advisories)
+            advisories: List[GroupedAdvisory] = get_advisories_from_groups(fixing_groups)
+            return self.return_fixing_advisories_data(advisories)
 
         if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
             advisories_qs = advisories_qs.prefetch_related(

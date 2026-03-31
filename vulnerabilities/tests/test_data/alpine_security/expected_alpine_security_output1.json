@@ -2,7 +2,92 @@
   "advisory_id": "CVE-2025-46836",
   "aliases": [],
   "summary": "net-tools is a collection of programs that form the base set of the NET-3 networking distribution for the Linux operating system. Inn versions up to and including 2.10, the Linux network utilities (like ifconfig) from the net-tools package do not properly validate the structure of /proc files when showing interfaces. `get_name()` in `interface.c` copies interface labels from `/proc/net/dev` into a fixed 16-byte stack buffer without bounds checking, leading to possible arbitrary code execution or crash. The known attack path does not require privilege but also does not provide privilege escalation in this scenario. A patch is available and expected to be part of version 2.20.",
-  "affected_packages": [],
+  "affected_packages": [
+    {
+      "package": {
+        "type": "apk",
+        "namespace": "alpine",
+        "name": "net-tools",
+        "version": "",
+        "qualifiers": "distroversion=edge&reponame=main",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:alpine/<=2.10-r3",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "apk",
+        "namespace": "alpine",
+        "name": "net-tools",
+        "version": "",
+        "qualifiers": "distroversion=v3.23&reponame=main",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:alpine/<=2.10-r3",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "apk",
+        "namespace": "alpine",
+        "name": "net-tools",
+        "version": "",
+        "qualifiers": "distroversion=v3.22&reponame=main",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:alpine/<=2.10-r3",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "apk",
+        "namespace": "alpine",
+        "name": "net-tools",
+        "version": "",
+        "qualifiers": "distroversion=v3.21&reponame=main",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:alpine/<=2.10-r3",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "apk",
+        "namespace": "alpine",
+        "name": "net-tools",
+        "version": "",
+        "qualifiers": "distroversion=v3.20&reponame=main",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:alpine/<=2.10-r3",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    },
+    {
+      "package": {
+        "type": "apk",
+        "namespace": "alpine",
+        "name": "net-tools",
+        "version": "",
+        "qualifiers": "distroversion=v3.19&reponame=main",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:alpine/<=2.10-r3",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    }
+  ],
   "references": [
     {
       "reference_id": "",

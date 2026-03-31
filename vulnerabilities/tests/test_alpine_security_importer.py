@@ -72,8 +72,8 @@ class TestAlpineSecurityImporter(TestCase):
         self.assertIsNotNone(result)
         self.assertEqual(result.affected_packages, [])
 
-    def test_parse_advisory_skips_unfixed_states(self):
-        """State entries with fixed=False must not produce affected_packages."""
+    def test_parse_advisory_unfixed_state_produces_affected_version_range(self):
+        """Unfixed state with no fix in the same repo produces an affected_version_range."""
         data = {
             "id": "https://security.alpinelinux.org/vuln/CVE-2099-00002",
             "description": "test",
@@ -89,7 +89,38 @@ class TestAlpineSecurityImporter(TestCase):
         }
         result = parse_advisory(data)
         self.assertIsNotNone(result)
-        self.assertEqual(result.affected_packages, [])
+        self.assertEqual(len(result.affected_packages), 1)
+        pkg = result.affected_packages[0]
+        self.assertIsNotNone(pkg.affected_version_range)
+        self.assertIsNone(pkg.fixed_version_range)
+        self.assertIn("<=8.0.0-r0", str(pkg.affected_version_range))
+
+    def test_parse_advisory_skips_unfixed_state_when_fixed_exists_in_same_repo(self):
+        """fixed=False states are skipped when a fixed=True state exists in the same repo."""
+        data = {
+            "id": "https://security.alpinelinux.org/vuln/CVE-2099-00003",
+            "description": "test",
+            "cvss3": {"score": 0.0, "vector": None},
+            "ref": [],
+            "state": [
+                {
+                    "fixed": True,
+                    "packageVersion": "https://security.alpinelinux.org/srcpkg/curl/8.1.0-r0",
+                    "repo": "edge-main",
+                },
+                {
+                    "fixed": False,
+                    "packageVersion": "https://security.alpinelinux.org/srcpkg/curl/8.0.0-r0",
+                    "repo": "edge-main",
+                },
+            ],
+        }
+        result = parse_advisory(data)
+        self.assertIsNotNone(result)
+        self.assertEqual(len(result.affected_packages), 1)
+        pkg = result.affected_packages[0]
+        self.assertIsNone(pkg.affected_version_range)
+        self.assertIsNotNone(pkg.fixed_version_range)
 
 
 class TestAlpineSecurityImporterPipeline(TestCase):

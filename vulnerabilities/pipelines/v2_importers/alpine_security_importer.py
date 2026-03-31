@@ -13,7 +13,9 @@ from typing import Iterable
 
 import requests
 from packageurl import PackageURL
+from univers.version_constraint import VersionConstraint
 from univers.version_range import AlpineLinuxVersionRange
+from univers.versions import AlpineLinuxVersion
 from univers.versions import InvalidVersion
 
 from vulnerabilities.importer import AdvisoryDataV2
@@ -140,12 +142,16 @@ def parse_advisory(data: dict):
             )
         )
 
+    states = data.get("state") or []
+    fixed_repos = {state.get("repo") or "" for state in states if state.get("fixed")}
+
     affected_packages = []
-    for state in data.get("state") or []:
-        if not state.get("fixed"):
+    for state in states:
+        is_fixed = state.get("fixed")
+        repo = state.get("repo") or ""
+        if not is_fixed and repo in fixed_repos:
             continue
         pkg_version_url = state.get("packageVersion") or ""
-        repo = state.get("repo") or ""
         parts = pkg_version_url.rstrip("/").split("/")
         if len(parts) < 2:
             continue
@@ -164,17 +170,34 @@ def parse_advisory(data: dict):
             name=pkg_name,
             qualifiers={"distroversion": distroversion, "reponame": reponame},
         )
-        try:
-            fixed_version_range = AlpineLinuxVersionRange.from_versions([version])
-        except InvalidVersion:
-            logger.warning("Cannot parse Alpine version %r in %s", version, cve_id)
-            continue
-        affected_packages.append(
-            AffectedPackageV2(
-                package=purl,
-                fixed_version_range=fixed_version_range,
+        if is_fixed:
+            try:
+                fixed_version_range = AlpineLinuxVersionRange.from_versions([version])
+            except InvalidVersion:
+                logger.warning("Cannot parse Alpine version %r in %s", version, cve_id)
+                continue
+            affected_packages.append(
+                AffectedPackageV2(
+                    package=purl,
+                    fixed_version_range=fixed_version_range,
+                )
             )
-        )
+        else:
+            try:
+                constraint = VersionConstraint(
+                    comparator="<=",
+                    version=AlpineLinuxVersion(version),
+                )
+                affected_version_range = AlpineLinuxVersionRange(constraints=(constraint,))
+            except InvalidVersion:
+                logger.warning("Cannot parse Alpine version %r in %s", version, cve_id)
+                continue
+            affected_packages.append(
+                AffectedPackageV2(
+                    package=purl,
+                    affected_version_range=affected_version_range,
+                )
+            )
 
     return AdvisoryDataV2(
         advisory_id=cve_id,

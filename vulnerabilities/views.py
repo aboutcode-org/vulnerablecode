@@ -245,7 +245,15 @@ class PackageV2Details(DetailView):
             else:
                 fixed_pkg_details = get_fixed_package_details(package)
                 context["fixed_package_details"] = fixed_pkg_details
-                context["affected_by_advisories_v2"] = affecting_advisories
+                affecting_advs = []
+                for adv in affecting_advisories:
+                    affecting_advs.append(
+                        {
+                            "advisory_id": adv.advisory_id.split("/")[-1],
+                            "advisory": adv,
+                        }
+                    )
+                context["affected_by_advisories_v2"] = affecting_advs
                 context["affected_by_advisories_v2_url"] = None
 
             fixing_advisories = list(fixing_advisories_qs_ids[:101])
@@ -257,7 +265,17 @@ class PackageV2Details(DetailView):
                 context["fixing_advisories_v2"] = []
 
             else:
-                context["fixing_advisories_v2"] = fixed_by_advisories
+                fixed_by_advisories = fixed_by_advisories.prefetch_related(
+                    "aliases",
+                )
+                fixed_by_advisories = list(fixed_by_advisories)
+                fix_advs = []
+                for fixed_by_adv in fixed_by_advisories:
+                    fix_advs.append(
+                        {"advisory_id": fixed_by_adv.advisory_id.split("/")[-1], "advisory": fixed_by_adv}
+                    )
+
+                context["fixing_advisories_v2"] = fix_advs
 
             return context
 

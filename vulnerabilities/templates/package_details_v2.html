@@ -211,15 +211,15 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% for advisory in affected_by_advisories_v2 %}
                                 <tr>
                                     <td>
-                                        <a href="{{advisory.get_absolute_url}}">
+                                        <a href="{{advisory.advisory.get_absolute_url}}">
                                             {{advisory.advisory_id }}
                                         </a>
                                         <br />
-                                        {% if advisory.aliases.all|length != 0 %}
+                                        {% if advisory.advisory.aliases.all|length != 0 %}
                                         Aliases:
                                         {% endif %}
                                         <br />
-                                        {% for alias in advisory.aliases.all %}
+                                        {% for alias in advisory.advisory.aliases.all %}
                                         {% if alias.url %}
                                         <a href="{{ alias.url }}" target="_blank">{{ alias }}<i
                                                 class="fa fa-external-link fa_link_custom"></i></a>
@@ -232,10 +232,10 @@ VulnerableCode Package Details - {{ package.purl }}
 
                                     </td>
                                     <td style="word-wrap: break-word; word-break: break-word;">
-                                        {{ advisory.summary|truncatewords:20 }}
+                                        {{ advisory.advisory.summary|truncatewords:20 }}
                                     </td>
                                     <td style="word-wrap: break-word; word-break: break-all;">
-                                        {% with fixed=fixed_package_details|get_item:advisory.avid %}
+                                        {% with fixed=fixed_package_details|get_item:advisory.advisory.avid %}
                                             {% if fixed %}
                                                 {% for item in fixed %}
                                                 <section>
@@ -336,16 +336,16 @@ VulnerableCode Package Details - {{ package.purl }}
                                 {% for advisory in fixing_advisories_v2 %}
                                 <tr>
                                     <td>
-                                        <a href="{{advisory.get_absolute_url}}">
+                                        <a href="{{advisory.advisory.get_absolute_url}}">
                                             {{advisory.advisory_id }}
                                         </a>
                                     <br />
                                     </td>
                                     <td>
-                                        {{ advisory.summary|truncatewords:20 }}
+                                        {{ advisory.advisory.summary|truncatewords:20 }}
                                     </td>
                                     <td>
-                                        {% for alias in advisory.aliases.all %}
+                                        {% for alias in advisory.advisory.aliases.all %}
                                         {% if alias.url %}
                                         <a href="{{ alias.url }}" target="_blank">{{ alias }}<i
                                                 class="fa fa-external-link fa_link_custom"></i></a>

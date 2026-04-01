@@ -43,13 +43,13 @@ class PackageQuerySerializer(serializers.Serializer):
         default=list,
     )
     details = serializers.BooleanField(default=False)
-    approximate = serializers.BooleanField(default=False)
+    ignore_qualifiers_subpath = serializers.BooleanField(default=False)
 
     def validate(self, data):
         if not data["purls"]:
-            if data["details"] or data["approximate"]:
+            if data["details"] or data["ignore_qualifiers_subpath"]:
                 raise serializers.ValidationError(
-                    "details and approximate must be false when purls is empty"
+                    "``details`` and ``ignore_qualifiers_subpath`` must be false when purls is empty"
                 )
         return data
 
@@ -428,7 +428,7 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
 
         purls = serializer.validated_data["purls"]
         details = serializer.validated_data["details"]
-        approximate = serializer.validated_data["approximate"]
+        ignore_qualifiers_subpath = serializer.validated_data["ignore_qualifiers_subpath"]
 
         if not purls:
             impacted = ImpactedPackageAffecting.objects.filter(package_id=OuterRef("id"))
@@ -444,7 +444,7 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
 
         plain_purls = None
 
-        if approximate:
+        if ignore_qualifiers_subpath:
             plain_purls = [
                 str(
                     PackageURL(
@@ -458,7 +458,7 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
             ]
 
         if not details:
-            if approximate:
+            if ignore_qualifiers_subpath:
                 query = (
                     PackageV2.objects.filter(plain_package_url__in=plain_purls)
                     .values_list("plain_package_url", flat=True)
@@ -476,7 +476,7 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
             page = self.paginate_queryset(query)
             return self.get_paginated_response(page)
 
-        if approximate:
+        if ignore_qualifiers_subpath:
             query = (
                 PackageV2.objects.filter(plain_package_url__in=plain_purls)
                 .order_by("plain_package_url")

@@ -83,7 +83,7 @@ Parameters:
 
 - ``purls`` — list of package URLs to query
 - ``details`` — boolean (default: ``false``)
-- ``approximate`` — boolean (default: ``false``)
+- ``ignore_qualifiers_subpath`` — boolean (default: ``false``)
 
 The ``approximate`` flag replaces the previous ``plain_purl`` parameter.  
 When set to ``true``, qualifiers and subpaths in PURLs are ignored.

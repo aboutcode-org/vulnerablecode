@@ -85,7 +85,7 @@ Parameters:
 - ``details`` — boolean (default: ``false``)
 - ``ignore_qualifiers_subpath`` — boolean (default: ``false``)
 
-The ``approximate`` flag replaces the previous ``plain_purl`` parameter.  
+The ``ignore_qualifiers_subpath`` flag replaces the previous ``plain_purl`` parameter.  
 When set to ``true``, qualifiers and subpaths in PURLs are ignored.
 
 
@@ -140,12 +140,16 @@ Example response:
                 "purl": "pkg:npm/atob@2.0.3",
                 "affected_by_vulnerabilities": [
                     {
-                        "advisory_id": "nodejs_security_wg/npm-403",
-                        "fixed_by_packages": [
-                            "pkg:npm/atob@2.1.0"
-                        ],
-                        "duplicate_advisory_ids": []
-                    }
+                    "advisory_id": "GHSA-g5vw-3h65-2q3v",
+                    "aliases": [],
+                    "weighted_severity": null,
+                    "exploitability_score": null,
+                    "risk_score": null,
+                    "summary": "Access control vulnerable to user data",
+                    "fixed_by_packages": [
+                        "pkg:pypi/accesscontrol@7.2"
+                    ],
+                },
                 ],
                 "fixing_vulnerabilities": [],
                 "next_non_vulnerable_version": "2.1.0",
@@ -165,7 +169,7 @@ Using Approximate Matching
 
     {
         "purls": ["pkg:npm/atob@2.0.3?foo=bar"],
-        "approximate": true,
+        "ignore_qualifiers_subpath": true,
         "details": true
     }
 
@@ -181,13 +185,17 @@ Example response:
             {
                 "purl": "pkg:npm/atob@2.0.3",
                 "affected_by_vulnerabilities": [
-                    {
-                        "advisory_id": "nodejs_security_wg/npm-403",
-                        "fixed_by_packages": [
-                            "pkg:npm/atob@2.1.0"
-                        ],
-                        "duplicate_advisory_ids": []
-                    }
+                {
+                    "advisory_id": "GHSA-g5vw-3h65-2q3v",
+                    "aliases": [],
+                    "weighted_severity": null,
+                    "exploitability_score": null,
+                    "risk_score": null,
+                    "summary": "Access control vulnerable to user data",
+                    "fixed_by_packages": [
+                        "pkg:pypi/accesscontrol@7.2"
+                    ],
+                }
                 ],
                 "fixing_vulnerabilities": [],
                 "next_non_vulnerable_version": "2.1.0",

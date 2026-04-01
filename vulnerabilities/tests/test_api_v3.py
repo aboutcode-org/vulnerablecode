@@ -126,14 +126,14 @@ class APIV3TestCase(APITestCase):
         self.assertIn("results", response.data)
         self.assertIn("next", response.data)
 
-    def test_packages_approximate(self):
+    def test_packages_ignore_qualifiers_subpath(self):
         url = reverse("package-v3-list")
 
         response = self.client.post(
             url,
             data={
                 "purls": ["pkg:pypi/sample@1.0.0?foo=bar"],
-                "approximate": True,
+                "ignore_qualifiers_subpath": True,
                 "details": False,
             },
             format="json",

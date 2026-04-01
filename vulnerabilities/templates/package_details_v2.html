@@ -142,7 +142,6 @@ VulnerableCode Package Details - {{ package.purl }}
                                     <th style="width: 200px;">Advisory</th>
                                     <th>Summary</th>
                                     <th style="width: 310px;">Fixed in package version</th>
-                                    <th>Risk score</th>
                                 </tr>
                             </thead>
 
@@ -197,13 +196,6 @@ VulnerableCode Package Details - {{ package.purl }}
                                                 <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
                                             {% endif %}
                                         {% endwith %}
-                                    </td>
-                                    <td>
-                                        {% if advisory.risk_score is not None %}
-                                            {{ advisory.risk_score }}
-                                        {% else %}
-                                            {{ "" }}
-                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -265,13 +257,6 @@ VulnerableCode Package Details - {{ package.purl }}
                                                 <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
                                             {% endif %}
                                         {% endwith %}
-                                    </td>
-                                    <td>
-                                        {% if advisory.risk_score is not None %}
-                                            {{ advisory.risk_score }}
-                                        {% else %}
-                                            {{ "" }}
-                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% empty %}

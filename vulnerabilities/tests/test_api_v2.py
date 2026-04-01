@@ -185,8 +185,8 @@ class VulnerabilityV2ViewSetTest(APITestCase):
         self.assertIn("previous", response.data)
         # The 'vulnerabilities' dictionary should contain vulnerabilities up to the page limit
         self.assertEqual(
-            len(response.data["results"]["vulnerabilities"]), 10
-        )  # Assuming default page size is 10
+            len(response.data["results"]["vulnerabilities"]), 14
+        )  # Assuming default page size is 100
 
 
 class PackageV2ViewSetTest(APITestCase):
@@ -346,8 +346,8 @@ class PackageV2ViewSetTest(APITestCase):
         self.assertIn("next", response.data)
         self.assertIn("previous", response.data)
         self.assertEqual(
-            len(response.data["results"]["packages"]), 10
-        )  # Assuming default page size is 10
+            len(response.data["results"]["packages"]), 14
+        )  # Assuming default page size is 100
 
     def test_invalid_vulnerability_filter(self):
         """

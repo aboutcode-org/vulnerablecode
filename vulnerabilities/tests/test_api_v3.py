@@ -182,7 +182,7 @@ class APIV3TestCaseOnePackageMultipleAdvisories(APITestCase):
             )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data["results"]), 10)
+        self.assertEqual(len(response.data["results"]), 100)
         advisory = response.data["results"][0]
         self.assertEqual(advisory["advisory_id"], "ghsa_importer/GHSA-12341")
 
@@ -229,5 +229,5 @@ class APIV3TestCaseOneAdvisoryMultiplePackages(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         results = response.data["results"]
-        self.assertEqual(len(results), 10)
+        self.assertEqual(len(results), 100)
         self.assertIn("next", response.data)

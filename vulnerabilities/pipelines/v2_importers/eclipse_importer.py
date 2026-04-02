@@ -58,8 +58,6 @@ class EclipseImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
 def parse_advisory(entry: dict):
     advisory_id = entry.get("id") or ""
-    if not advisory_id:
-        return None
 
     date_published = None
     raw_date = entry.get("date_published") or ""
@@ -71,8 +69,8 @@ def parse_advisory(entry: dict):
         if date_published is None:
             logger.warning("Could not parse date %r for %s", raw_date, advisory_id)
 
-    summary_obj = entry.get("summary")
-    summary = summary_obj.get("content") or "" if isinstance(summary_obj, dict) else ""
+    summary_obj = entry.get("summary") or {}
+    summary = summary_obj.get("content") or ""
 
     references = []
     for url in [
@@ -85,7 +83,7 @@ def parse_advisory(entry: dict):
 
     severities = []
     cvss = entry.get("cvss")
-    if cvss is not None:
+    if cvss:
         severities.append(VulnerabilitySeverity(system=GENERIC, value=str(cvss)))
 
     advisory_url = entry.get("live_link") or ""

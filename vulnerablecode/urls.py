@@ -26,11 +26,13 @@ from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PackageV3ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
-from vulnerabilities.views import AdminLoginView, AdvisoryCurationDetailView
-from vulnerabilities.views import AdvisoryCurationView
+
+# from vulnerabilities.views import AdvisorySelectedView
+from vulnerabilities.views import AdminLoginView
+from vulnerabilities.views import AdvisoryCurationDetailView
+from vulnerabilities.views import AdvisoryToDoView
 from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
-# from vulnerabilities.views import AdvisorySelectedView
 from vulnerabilities.views import ApiUserCreateView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2
@@ -92,12 +94,16 @@ urlpatterns = [
         name="dashboard",
     ),
     path(
-        "advisory/v2/curation/",
-        AdvisoryCurationView.as_view(),
-        name="curation-home",
+        "advisories/todos/",
+        AdvisoryToDoView.as_view(),
+        name="todo-list",
     ),
     # path("advisory/v2/selected/", AdvisorySelectedView.as_view(), name="advisory-curation-selected"),
-    path("todos/<int:pk>/", AdvisoryCurationDetailView.as_view(), name="todo-detail"),
+    path(
+        "advisories/todos/<int:pk>/curate/",
+        AdvisoryCurationDetailView.as_view(),
+        name="todo-detail",
+    ),
     path(
         "pipelines/<str:pipeline_id>/runs/",
         PipelineRunListView.as_view(),

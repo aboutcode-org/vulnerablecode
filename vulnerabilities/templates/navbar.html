@@ -35,6 +35,9 @@
         </div>
     </div>
     <div class="navbar-end mr-3">
+        <a class="navbar-item  {% active_item 'todo-list' %}" href="{% url 'todo-list' %}">
+            To-Dos
+        </a>
         <a class="navbar-item  {% active_item 'dashboard' %}" href="{% url 'dashboard' %}">
             Pipeline Dashboard
         </a>

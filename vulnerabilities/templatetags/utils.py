@@ -46,7 +46,8 @@ def querystring(request, **kwargs):
     query = request.GET.copy()
 
     for key, value in kwargs.items():
-        if not value:
+        if value in [None, ""]:
+            query.pop(key, None)
             continue
         query[key] = value
 

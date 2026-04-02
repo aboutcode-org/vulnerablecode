@@ -1,0 +1,65 @@
+{% load utils %}
+
+{% if page_obj.has_other_pages %}
+<nav class="pagination is-centered px-5" role="navigation" aria-label="pagination">
+
+    {% if page_obj.has_previous %}
+        <a class="pagination-previous"
+           href="?{% querystring request page=page_obj.previous_page_number %}">
+            Previous
+        </a>
+    {% else %}
+        <a class="pagination-previous" disabled>Previous</a>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+        <a class="pagination-next"
+           href="?{% querystring request page=page_obj.next_page_number %}">
+            Next
+        </a>
+    {% else %}
+        <a class="pagination-next" disabled>Next</a>
+    {% endif %}
+
+    <ul class="pagination-list">
+
+        {% if page_obj.number > 3 %}
+            <li>
+                <a class="pagination-link"
+                   href="?{% querystring request page=1 %}">1</a>
+            </li>
+            {% if page_obj.number > 4 %}
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+            {% endif %}
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+            {% if i >= page_obj.number|add:-2 and i <= page_obj.number|add:2 %}
+                {% if i == page_obj.number %}
+                    <li><a class="pagination-link is-current">{{ i }}</a></li>
+                {% else %}
+                    <li>
+                        <a class="pagination-link"
+                           href="?{% querystring request page=i %}">
+                            {{ i }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.number < page_obj.paginator.num_pages|add:-2 %}
+            {% if page_obj.number < page_obj.paginator.num_pages|add:-3 %}
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+            {% endif %}
+            <li>
+                <a class="pagination-link"
+                   href="?{% querystring request page=page_obj.paginator.num_pages %}">
+                    {{ page_obj.paginator.num_pages }}
+                </a>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
+{% endif %}

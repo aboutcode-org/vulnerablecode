@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load utils %}
+
+{% block title %}
+Curation Dashboard
+{% endblock %}
+
+{% block extrahead %}
+<style>
+pre {
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.advisory-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="columns">
+
+  <!-- LEFT: Advisory Accordion -->
+  <div class="column is-6">
+    <div class="box" style="height: 80vh; overflow-y: auto;">
+
+      <div class="buttons is-right mb-3">
+        <button class="button is-small is-light" onclick="expandAll()">Expand All</button>
+        <button class="button is-small is-light" onclick="collapseAll()">Collapse All</button>
+      </div>
+
+      {% for adv in advisories %}
+      <div class="card mb-3 advisory-card">
+
+        <!-- Header -->
+        <header class="card-header is-clickable"
+                onclick="toggleAdvisory({{ forloop.counter0 }})">
+
+          <span class="card-header-icon">
+            <span class="icon">
+              <i class="fa fa-angle-down" id="icon-{{ forloop.counter0 }}"></i>
+            </span>
+          </span>
+
+          <p class="card-header-title wrap-strings">
+            <a href="{% url 'advisory_details' avid=adv.adv.avid %}" target="_blank">
+              {{ adv.adv.avid }}
+              <i class="fa fa-external-link fa_link_custom"></i>
+            </a>
+          </p>
+
+        </header>
+
+        <!-- Content -->
+        <div id="content-{{ forloop.counter0 }}" class="card-content is-hidden">
+          <div class="content">
+
+            <div class="is-relative">
+              <button class="button is-small is-dark copy-btn"
+                      id="copy-btn-{{ forloop.counter0 }}"
+                      onclick="copyCode('adv-{{ forloop.counter0 }}', 'copy-btn-{{ forloop.counter0 }}')">
+                <span class="icon">
+                  <i class="fa fa-copy"></i>
+                </span>
+              </button>
+
+              <pre class="has-background-light">
+<code id="adv-{{ forloop.counter0 }}" class="language-python">{{ adv.yml }}</code>
+              </pre>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+
+  <!-- RIGHT: Editor -->
+<div class="column is-6">
+  <div class="box">
+
+    <h2 class="title is-6">YAML Editor</h2>
+
+    <form method="post" id="yaml-form">
+      {% csrf_token %}
+
+      <div class="field">
+        <label class="label">YAML</label>
+        <div class="control">
+          <textarea class="textarea" name="yaml" id="yaml-input" rows="15"
+                    placeholder="advisory_id: CVE-2023-47663
+datasource_id: vulnrichment_importer_v2/CVE-2023-47663
+datasource_url: https://github.com/cisagov/vulnrichment/blob/develop/2023/47xxx/CVE-2023-47663.json
+aliases: []
+summary:
+impacted_packages: []
+severities: []
+weaknesses: []
+references: []
+"></textarea>
+        </div>
+        <p class="help is-danger is-hidden" id="yaml-error"></p>
+      </div>
+
+      <hr>
+
+      <div class="buttons is-right">
+        <button class="button is-info" type="button" onclick="validateYAML()">
+          Validate
+        </button>
+
+        <button class="button is-primary" type="submit" id="submit-btn" disabled>
+          Submit
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  function toggleAdvisory(index) {
+    const content = document.getElementById(`content-${index}`);
+    const icon = document.getElementById(`icon-${index}`);
+
+    content.classList.toggle("is-hidden");
+
+    icon.classList.toggle("fa-angle-down");
+    icon.classList.toggle("fa-angle-up");
+  }
+
+  function expandAll() {
+    document.querySelectorAll("[id^='content-']").forEach(el => {
+      el.classList.remove("is-hidden");
+    });
+
+    document.querySelectorAll("[id^='icon-']").forEach(icon => {
+      icon.classList.remove("fa-angle-down");
+      icon.classList.add("fa-angle-up");
+    });
+  }
+
+  function collapseAll() {
+    document.querySelectorAll("[id^='content-']").forEach(el => {
+      el.classList.add("is-hidden");
+    });
+
+    document.querySelectorAll("[id^='icon-']").forEach(icon => {
+      icon.classList.remove("fa-angle-up");
+      icon.classList.add("fa-angle-down");
+    });
+  }
+
+  function copyCode(target, button) {
+    const code = document.getElementById(target).textContent;
+
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById(button);
+      btn.classList.add("is-success");
+      btn.innerHTML = '<span class="icon is-small"><i class="fa fa-check"></i></span>';
+
+      setTimeout(() => {
+        btn.classList.remove("is-success");
+        btn.innerHTML = '<span class="icon is-small"><i class="fa fa-copy"></i></span>';
+      }, 1500);
+    });
+  }
+</script>
+{% endblock %}

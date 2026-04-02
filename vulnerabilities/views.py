@@ -859,9 +859,13 @@ class AdminLoginView(LoginView):
         return context
 
 
+import saneyaml
 from django import forms
+from django.views.generic import DetailView
 
 from vulnerabilities.models import AdvisoryToDoV2
+from vulnerabilities.pipes.export import serialize_advisory
+from vulnerabilities.models import ISSUE_TYPE_CHOICES
 
 # class AdvisorySelectedView(View):
 #     def post(self, request):
@@ -879,13 +883,10 @@ from vulnerabilities.models import AdvisoryToDoV2
 #             "selected_ids": selected_ids
 #         })
 
-from django.views.generic import DetailView
-from vulnerabilities.pipes.export import serialize_advisory
-import saneyaml
 
 class AdvisoryCurationDetailView(DetailView):
     model = AdvisoryToDoV2
-    template_name = "curation_detail.html"
+    template_name = "todo_curation.html"
     context_object_name = "todo"
 
     # def get_context_data(self, **kwargs):
@@ -926,30 +927,47 @@ class AdvisoryCurationDetailView(DetailView):
             "aliases", "references", "severities", "weaknesses"
         )
 
-        context["advisories"] = [saneyaml.dump(serialize_advisory(i)) for i in advisories]
+        context["advisories"] = [
+            {"adv": i, "yml": saneyaml.dump(serialize_advisory(i))} for i in advisories
+        ]
 
         return context
 
 
-class AdvisoryCurationForm(forms.Form):
+class AdvisoryToDoForm(forms.Form):
     search = forms.CharField(
-        required=True,
+        required=False,
         label=False,
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Search ToDos...",
-                "class": "input ",
+                "class": "input",
             },
         ),
     )
 
+    resolved = forms.ChoiceField(
+        required=False,
+        choices=[
+            ("", "All"),
+            ("True", "Yes"),
+            ("False", "No"),
+        ],
+        widget=forms.Select(attrs={"class": "select"}),
+    )
 
-class AdvisoryCurationView(ListView, FormMixin):
+    issue_type = forms.ChoiceField(
+        required=False,
+        choices=[("", "All")] + ISSUE_TYPE_CHOICES,
+        widget=forms.Select(attrs={"class": "select"}),
+    )
+
+class AdvisoryToDoView(ListView, FormMixin):
     model = AdvisoryToDoV2
-    context_object_name = "schedule_list"
-    template_name = "curation_home.html"
+    context_object_name = "todo_list"
+    template_name = "advisory_todos.html"
     paginate_by = 20
-    form_class = AdvisoryCurationForm
+    form_class = AdvisoryToDoForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -958,15 +976,42 @@ class AdvisoryCurationView(ListView, FormMixin):
 
     def get_queryset(self):
         form = self.form_class(self.request.GET)
+        resolved = self.request.GET.get("resolved")
+        issue_type = self.request.GET.get("issue_type")
+
         qs = super().get_queryset().order_by("-created_at")
+        if resolved in ["True", "False"]:
+            qs = qs.filter(is_resolved=(resolved == "True"))
+
+        if issue_type:
+            qs = qs.filter(issue_type=issue_type)
+
+        qs.prefetch_related("advisories__aliases")
         if form.is_valid() and (search := form.cleaned_data.get("search")):
             return qs.filter(advisories__aliases__alias__icontains=search)
+
         return qs
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context["active_pipeline_count"] = PipelineSchedule.objects.filter(is_active=True).count()
-    #     context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
-    #         is_active=False
-    #     ).count()
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page = context["page_obj"]
+        todos = page.object_list
+        identifiers = {}
+        for todo in todos:
+            advisories = list(todo.advisories.all())
+            identifier = advisories[0].advisory_id
+            aliases = [ alias.alias for alias in advisories[0].aliases.all()]
+            if len(advisories)>1:
+                aliases = [ [ alias.alias for alias in adv.aliases.all()] for adv in advisories]
+                commons = list(set(aliases[0]).intersection(*aliases[1:]))
+                all_unique = list(set(aliases[0]).union(*aliases[1:]))
+                cve_item = next((s for s in commons if s.lower().startswith("cve")), None)
+                identifier = cve_item if cve_item else commons[0]
+                all_unique.remove(identifier)
+                aliases = all_unique[:5] if all_unique else None
+            identifiers[todo.id] = {"identifier": identifier, "aliases": aliases}
+
+        context["identifiers"] = identifiers
+        context['issue_choices'] = ISSUE_TYPE_CHOICES
+
+        return context

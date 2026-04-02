@@ -272,7 +272,10 @@ class PackageV2Details(DetailView):
                 fix_advs = []
                 for fixed_by_adv in fixed_by_advisories:
                     fix_advs.append(
-                        {"advisory_id": fixed_by_adv.advisory_id.split("/")[-1], "advisory": fixed_by_adv}
+                        {
+                            "advisory_id": fixed_by_adv.advisory_id.split("/")[-1],
+                            "advisory": fixed_by_adv,
+                        }
                     )
 
                 context["fixing_advisories_v2"] = fix_advs
@@ -378,110 +381,6 @@ class PackageV2Details(DetailView):
             context["affected_by_advisories_v2"] = affected_by_advisories
             context["fixing_advisories_v2"] = fixing_advisories
             return context
-
-    def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.get_queryset()
-
-        purl = self.kwargs.get(self.slug_url_kwarg)
-        if purl:
-            queryset = queryset.for_purl(purl)
-        else:
-            cls = self.__class__.__name__
-            raise AttributeError(
-                f"Package details view {cls} must be called with a purl, " f"but got: {purl!r}"
-            )
-
-        try:
-            package = queryset.get()
-        except queryset.model.DoesNotExist:
-            raise Http404(f"No Package found for purl: {purl}")
-        return package
-
-
-class PackageV3Details(DetailView):
-    model = models.PackageV2
-    template_name = "package_details_v3.html"
-    slug_url_kwarg = "purl"
-    slug_field = "purl"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        package = self.object
-
-        next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions()
-
-        context["package"] = package
-        context["next_non_vulnerable"] = next_non_vulnerable
-        context["latest_non_vulnerable"] = latest_non_vulnerable
-        context["package_search_form"] = PackageSearchForm(self.request.GET)
-
-        affected_by_advisories_qs = (
-            models.AdvisorySet.objects.filter(package=package, relation_type="affecting")
-            .select_related("primary_advisory")
-            .prefetch_related(
-                Prefetch(
-                    "members",
-                    queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
-                        "advisory"
-                    ),
-                    to_attr="secondary_members",
-                )
-            )
-        )
-
-        fixing_advisories_qs = (
-            models.AdvisorySet.objects.filter(package=package, relation_type="fixing")
-            .select_related("primary_advisory")
-            .prefetch_related(
-                Prefetch(
-                    "members",
-                    queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
-                        "advisory"
-                    ),
-                    to_attr="secondary_members",
-                )
-            )
-        )
-
-        print(affected_by_advisories_qs)
-        print(fixing_advisories_qs)
-
-        affected_by_advisories_url = None
-        fixing_advisories_url = None
-
-        affected_by_advisories_qs_ids = affected_by_advisories_qs.only("id")
-        fixing_advisories_qs_ids = fixing_advisories_qs.only("id")
-
-        # affected_by_advisories = list(affected_by_advisories_qs_ids[:101])
-        # if len(affected_by_advisories) > 100:
-        #     affected_by_advisories_url = reverse_lazy(
-        #         "affected_by_advisories_v2", kwargs={"purl": package.package_url}
-        #     )
-        #     context["affected_by_advisories_v2_url"] = affected_by_advisories_url
-        #     context["affected_by_advisories_v2"] = []
-        #     context["fixed_package_details"] = {}
-
-        # else:
-        fixed_pkg_details = get_fixed_package_details(package)
-
-        context["affected_by_advisories_v2"] = affected_by_advisories_qs
-        context["fixed_package_details"] = fixed_pkg_details
-        context["affected_by_advisories_v2_url"] = None
-
-        # fixing_advisories = list(fixing_advisories_qs_ids[:101])
-        # if len(fixing_advisories) > 100:
-        #     fixing_advisories_url = reverse_lazy(
-        #         "fixing_advisories_v2", kwargs={"purl": package.package_url}
-        #     )
-        #     context["fixing_advisories_v2_url"] = fixing_advisories_url
-        #     context["fixing_advisories_v2"] = []
-
-        # else:
-        context["fixing_advisories_v2"] = fixing_advisories_qs
-        context["fixing_advisories_v2_url"] = None
-
-        return context
 
     def get_object(self, queryset=None):
         if queryset is None:

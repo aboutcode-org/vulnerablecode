@@ -41,7 +41,6 @@ from vulnerabilities.views import PackageDetails
 from vulnerabilities.views import PackageSearch
 from vulnerabilities.views import PackageSearchV2
 from vulnerabilities.views import PackageV2Details
-from vulnerabilities.views import PackageV3Details
 from vulnerabilities.views import PipelineRunDetailView
 from vulnerabilities.views import PipelineRunListView
 from vulnerabilities.views import PipelineScheduleListView

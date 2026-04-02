@@ -118,6 +118,8 @@ def bulk_create_with_m2m(purls, impact, relation, logger):
 
     affected_packages_v2 = PackageV2.objects.bulk_get_or_create_from_purls(purls=purls)
 
+    affected_packages_v2[-1].calculate_version_rank
+
     relations = [
         relation(impacted_package=impact, package=package) for package in affected_packages_v2
     ]

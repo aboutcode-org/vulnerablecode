@@ -33,7 +33,7 @@ class GroupAdvisoriesForPackages(VulnerableCodePipeline):
 
 def group_advisoris_for_packages(logger=None):
     for package in PackageV2.objects.filter(type__in=TYPES_WITH_MULTIPLE_IMPORTERS).iterator():
-        print(f"Grouping advisories for package {package.purl}")
+        logger(f"Grouping advisories for package {package.purl}")
         affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
             purl=package.purl
         ).prefetch_related(
@@ -56,5 +56,5 @@ def group_advisoris_for_packages(logger=None):
             delete_and_save_advisory_set(affected_groups, package, relation="affecting")
             delete_and_save_advisory_set(fixed_by_groups, package, relation="fixing")
         except Exception as e:
-            print(f"Failed rebuilding advisory sets for package {package.purl}: {e!r}")
+            logger(f"Failed rebuilding advisory sets for package {package.purl}: {e!r}")
             continue

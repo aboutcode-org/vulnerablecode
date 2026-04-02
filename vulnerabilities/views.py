@@ -20,6 +20,7 @@ from django.core.mail import send_mail
 from django.db.models import Exists
 from django.db.models import OuterRef
 from django.db.models import Prefetch
+from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -47,6 +48,7 @@ from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.throttling import AnonUserUIThrottle
 from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
 from vulnerabilities.utils import get_advisories_from_groups
 from vulnerabilities.utils import merge_and_save_grouped_advisories
@@ -56,7 +58,47 @@ from vulnerablecode.settings import env
 PAGE_SIZE = 10
 
 
-class PackageSearch(ListView):
+class VulnerableCodeView(View):
+    """
+    Base ListView for VulnerableCode views that includes throttling.
+    """
+
+    throttle_classes = [AnonUserUIThrottle]
+
+    def dispatch(self, request, *args, **kwargs):
+        throttle = AnonUserUIThrottle()
+
+        if not throttle.allow_request(request, self):
+            return HttpResponse("Rate limit exceeded", status=429)
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+class VulnerableCodeDetailView(DetailView, VulnerableCodeView):
+    """
+    Base DetailView for VulnerableCode views that includes throttling.
+    """
+
+    pass
+
+
+class VulnerableCodeListView(ListView, VulnerableCodeView):
+    """
+    Base ListView for VulnerableCode views that includes throttling.
+    """
+
+    pass
+
+
+class VulnerableCodeCreateView(generic.CreateView, VulnerableCodeView):
+    """
+    Base CreateView for VulnerableCode views that includes throttling.
+    """
+
+    pass
+
+
+class PackageSearch(VulnerableCodeListView):
     model = models.Package
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
@@ -84,7 +126,7 @@ class PackageSearch(ListView):
         )
 
 
-class VulnerabilitySearch(ListView):
+class VulnerabilitySearch(VulnerableCodeListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
     ordering = ["vulnerability_id"]
@@ -102,7 +144,7 @@ class VulnerabilitySearch(ListView):
         return self.model.objects.search(query=query).with_package_counts()
 
 
-class PackageDetails(DetailView):
+class PackageDetails(VulnerableCodeDetailView):
     model = models.Package
     template_name = "package_details.html"
     slug_url_kwarg = "purl"
@@ -143,7 +185,7 @@ class PackageDetails(DetailView):
         return package
 
 
-class PackageSearchV2(ListView):
+class PackageSearchV2(VulnerableCodeListView):
     model = models.PackageV2
     template_name = "packages_v2.html"
     ordering = ["type", "namespace", "name", "version"]
@@ -166,7 +208,7 @@ class PackageSearchV2(ListView):
         return self.model.objects.search(query).prefetch_related().with_is_vulnerable()
 
 
-class AffectedByAdvisoriesListView(ListView):
+class AffectedByAdvisoriesListView(VulnerableCodeListView):
     model = models.AdvisoryV2
     template_name = "affected_by_advisories.html"
     paginate_by = PAGE_SIZE
@@ -187,7 +229,7 @@ class AffectedByAdvisoriesListView(ListView):
         )
 
 
-class FixingAdvisoriesListView(ListView):
+class FixingAdvisoriesListView(VulnerableCodeListView):
     model = models.AdvisoryV2
     template_name = "fixing_advisories.html"
     paginate_by = PAGE_SIZE
@@ -201,7 +243,7 @@ class FixingAdvisoriesListView(ListView):
         )
 
 
-class PackageV2Details(DetailView):
+class PackageV2Details(VulnerableCodeDetailView):
     model = models.PackageV2
     template_name = "package_details_v2.html"
     slug_url_kwarg = "purl"
@@ -439,7 +481,7 @@ def get_fixed_package_details(package):
     return fixed_pkg_details
 
 
-class VulnerabilityDetails(DetailView):
+class VulnerabilityDetails(VulnerableCodeDetailView):
     model = models.Vulnerability
     template_name = "vulnerability_details.html"
     slug_url_kwarg = "vulnerability_id"
@@ -543,7 +585,7 @@ class VulnerabilityDetails(DetailView):
         return context
 
 
-class AdvisoryDetails(DetailView):
+class AdvisoryDetails(VulnerableCodeDetailView):
     model = models.AdvisoryV2
     template_name = "advisory_detail.html"
     slug_url_kwarg = "avid"
@@ -717,7 +759,7 @@ class AdvisoryDetails(DetailView):
         return context
 
 
-class HomePage(View):
+class HomePage(VulnerableCodeView):
     template_name = "index.html"
 
     def get(self, request):
@@ -730,7 +772,7 @@ class HomePage(View):
         return render(request=request, template_name=self.template_name, context=context)
 
 
-class HomePageV2(View):
+class HomePageV2(VulnerableCodeView):
     template_name = "index_v2.html"
 
     def get(self, request):
@@ -770,7 +812,7 @@ Source code and issues at https://github.com/nexB/vulnerablecode
 """
 
 
-class ApiUserCreateView(generic.CreateView):
+class ApiUserCreateView(VulnerableCodeCreateView):
     model = models.ApiUser
     form_class = ApiUserCreationForm
     template_name = "api_user_creation_form.html"
@@ -800,7 +842,7 @@ class ApiUserCreateView(generic.CreateView):
         return reverse_lazy("api_user_request")
 
 
-class VulnerabilityPackagesDetails(DetailView):
+class VulnerabilityPackagesDetails(VulnerableCodeDetailView):
     """
     View to display all packages affected by or fixing a specific vulnerability.
     URL: /vulnerabilities/{vulnerability_id}/packages
@@ -851,7 +893,7 @@ class VulnerabilityPackagesDetails(DetailView):
         return context
 
 
-class AdvisoryPackagesDetails(DetailView):
+class AdvisoryPackagesDetails(VulnerableCodeDetailView):
     """
     View to display all packages affected by or fixing a specific vulnerability.
     URL: /advisories/{id}/packages
@@ -902,7 +944,7 @@ class AdvisoryPackagesDetails(DetailView):
         )
 
 
-class PipelineScheduleListView(ListView, FormMixin):
+class PipelineScheduleListView(VulnerableCodeListView, FormMixin):
     model = PipelineSchedule
     context_object_name = "schedule_list"
     template_name = "pipeline_dashboard.html"
@@ -926,7 +968,7 @@ class PipelineScheduleListView(ListView, FormMixin):
         return context
 
 
-class PipelineRunListView(ListView):
+class PipelineRunListView(VulnerableCodeListView):
     model = PipelineRun
     context_object_name = "run_list"
     template_name = "pipeline_run_list.html"
@@ -952,7 +994,7 @@ class PipelineRunListView(ListView):
         return context
 
 
-class PipelineRunDetailView(DetailView):
+class PipelineRunDetailView(VulnerableCodeDetailView):
     model = PipelineRun
     template_name = "pipeline_run_details.html"
     context_object_name = "run"

@@ -51,6 +51,19 @@ class PermissionBasedUserRateThrottle(UserRateThrottle):
             raise ImproperlyConfigured(msg)
 
 
+class AnonUserUIThrottle(UserRateThrottle):
+    scope = "ui"
+
+    def allow_request(self, request, view):
+        self.rate = self.THROTTLE_RATES.get("ui")
+        self.num_requests, self.duration = self.parse_rate(self.rate)
+        return super().allow_request(request, view)
+
+    def get_cache_key(self, request, view):
+        ident = self.get_ident(request)
+        return f"throttle_ui_{ident}"
+
+
 def throttled_exception_handler(exception, context):
     """
     Return this response whenever a request has been throttled

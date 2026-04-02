@@ -10,7 +10,6 @@
 from vulnerabilities.improvers import valid_versions
 from vulnerabilities.improvers import vulnerability_status
 from vulnerabilities.pipelines import add_cvss31_to_CVEs
-from vulnerabilities.pipelines import compute_advisory_todo
 from vulnerabilities.pipelines import compute_package_risk
 from vulnerabilities.pipelines import compute_package_version_rank
 from vulnerabilities.pipelines import enhance_with_exploitdb
@@ -70,7 +69,6 @@ IMPROVERS_REGISTRY = create_registry(
         compute_package_risk_v2.ComputePackageRiskPipeline,
         compute_version_rank_v2.ComputeVersionRankPipeline,
         unfurl_version_range_v2.UnfurlVersionRangePipeline,
-        compute_advisory_todo.ComputeToDo,
         collect_ssvc_trees.CollectSSVCPipeline,
         relate_severities.RelateSeveritiesPipeline,
         group_advisories_for_packages.GroupAdvisoriesForPackages,

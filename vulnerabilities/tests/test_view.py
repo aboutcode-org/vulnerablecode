@@ -11,8 +11,10 @@ import os
 import time
 
 import pytest
+from django.core.cache import cache
 from django.test import Client
 from django.test import TestCase
+from django.urls import reverse
 from packageurl import PackageURL
 from univers import versions
 
@@ -330,3 +332,33 @@ class VulnerabilitySearchTestCaseWithPackages(TestCase):
             end_time = time.time()
             assert end_time - start_time < 0.05
             self.assertEqual(response.status_code, 200)
+
+
+class ThrottleTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        cache.clear()
+
+    def test_throttle_after_15_requests(self):
+        url = reverse("home")
+
+        responses = []
+
+        for i in range(16):
+            response = self.client.get(
+                url,
+                HTTP_USER_AGENT="test-agent",
+            )
+            responses.append(response.status_code)
+
+        assert all(code == 200 for code in responses[:15])
+
+        assert responses[15] == 429
+
+        url = reverse("package_search")
+
+        response = self.client.get(
+            url,
+            HTTP_USER_AGENT="test-agent",
+        )
+        assert response.status_code == 429

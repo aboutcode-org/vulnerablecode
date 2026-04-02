@@ -19,7 +19,7 @@ from vulnerabilities.utils import merge_advisories
 
 
 class GroupAdvisoriesForPackages(VulnerableCodePipeline):
-    """Detect and flag packages that do not exist upstream."""
+    """Group advisories for packages that have multiple importers"""
 
     pipeline_id = "group_advisories_for_packages"
 

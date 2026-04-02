@@ -20,8 +20,6 @@ from vulnerabilities.pipelines import flag_ghost_packages
 from vulnerabilities.pipelines import populate_vulnerability_summary_pipeline
 from vulnerabilities.pipelines import remove_duplicate_advisories
 from vulnerabilities.pipelines.v2_improvers import collect_ssvc_trees
-from vulnerabilities.pipelines.v2_improvers import compute_advisory_content_hash
-from vulnerabilities.pipelines.v2_improvers import compute_advisory_todo as compute_advisory_todo_v2
 from vulnerabilities.pipelines.v2_improvers import compute_package_risk as compute_package_risk_v2
 from vulnerabilities.pipelines.v2_improvers import (
     computer_package_version_rank as compute_version_rank_v2,
@@ -32,6 +30,7 @@ from vulnerabilities.pipelines.v2_improvers import (
     enhance_with_metasploit as enhance_with_metasploit_v2,
 )
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
+from vulnerabilities.pipelines.v2_improvers import group_advisories_for_packages
 from vulnerabilities.pipelines.v2_improvers import relate_severities
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
 from vulnerabilities.utils import create_registry
@@ -70,11 +69,10 @@ IMPROVERS_REGISTRY = create_registry(
         enhance_with_metasploit_v2.MetasploitImproverPipeline,
         compute_package_risk_v2.ComputePackageRiskPipeline,
         compute_version_rank_v2.ComputeVersionRankPipeline,
-        compute_advisory_todo_v2.ComputeToDo,
         unfurl_version_range_v2.UnfurlVersionRangePipeline,
         compute_advisory_todo.ComputeToDo,
         collect_ssvc_trees.CollectSSVCPipeline,
         relate_severities.RelateSeveritiesPipeline,
-        compute_advisory_content_hash.ComputeAdvisoryContentHash,
+        group_advisories_for_packages.GroupAdvisoriesForPackages,
     ]
 )

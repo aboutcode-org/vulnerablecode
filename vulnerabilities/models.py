@@ -20,6 +20,9 @@ from itertools import groupby
 from operator import attrgetter
 from traceback import format_exc as traceback_format_exc
 from typing import List
+from typing import NamedTuple
+from typing import Optional
+from typing import Set
 from typing import Union
 from urllib.parse import urljoin
 
@@ -2862,19 +2865,114 @@ class AdvisoryV2QuerySet(BaseQuerySet):
         )
 
     def latest_per_avid(self):
-        latest_ids = (
-            self.filter(avid=OuterRef("avid"))
-            .order_by(
-                F("date_collected").desc(nulls_last=True),
-                "-id",
-            )
-            .values("id")[:1]
-        )
-
-        return self.filter(id=Subquery(latest_ids))
+        return self.order_by(
+            "avid",
+            F("date_collected").desc(nulls_last=True),
+            "-id",
+        ).distinct("avid")
 
     def latest_for_avids(self, avids):
         return self.filter(avid__in=avids).latest_per_avid()
+
+    def latest_affecting_advisories_for_purl(self, purl):
+        adv_ids = ImpactedPackageAffecting.objects.filter(package__package_url=purl).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_affecting_advisories_for_purls(self, purls):
+        adv_ids = ImpactedPackageAffecting.objects.filter(
+            package__package_url__in=purls
+        ).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_fixed_by_advisories_for_purl(self, purl):
+        adv_ids = ImpactedPackageFixedBy.objects.filter(package__package_url=purl).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_fixed_by_advisories_for_purls(self, purls):
+        adv_ids = ImpactedPackageFixedBy.objects.filter(package__package_url__in=purls).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
+    def latest_advisories_for_purls(self, purls):
+        adv_ids = (
+            ImpactedPackageAffecting.objects.filter(package__package_url__in=purls)
+            .values_list(
+                "impacted_package__advisory_id",
+                flat=True,
+            )
+            .union(
+                ImpactedPackageFixedBy.objects.filter(package__package_url__in=purls).values_list(
+                    "impacted_package__advisory_id",
+                    flat=True,
+                )
+            )
+        )
+
+        qs = self.filter(id__in=Subquery(adv_ids))
+        return qs.latest_per_avid()
+
+    def latest_advisories_for_purl(self, purl):
+        adv_ids = (
+            ImpactedPackageAffecting.objects.filter(package__package_url=purl)
+            .values_list(
+                "impacted_package__advisory_id",
+                flat=True,
+            )
+            .union(
+                ImpactedPackageFixedBy.objects.filter(package__package_url=purl).values_list(
+                    "impacted_package__advisory_id",
+                    flat=True,
+                )
+            )
+        )
+
+        qs = self.filter(id__in=Subquery(adv_ids))
+        return qs.latest_per_avid()
+
+
+class AdvisorySet(models.Model):
+
+    RELATION_TYPE_CHOICES = [
+        ("affecting", "Affecting"),
+        ("fixing", "Fixing"),
+    ]
+
+    package = models.ForeignKey("PackageV2", on_delete=models.CASCADE)
+    relation_type = models.CharField(max_length=20, choices=RELATION_TYPE_CHOICES)
+
+    aliases = models.ManyToManyField(
+        AdvisoryAlias,
+        related_name="advisory_sets",
+        help_text="A list of serializable Alias objects",
+    )
+
+    primary_advisory = models.ForeignKey("AdvisoryV2", on_delete=models.PROTECT)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class AdvisorySetMember(models.Model):
+
+    advisory_set = models.ForeignKey(
+        AdvisorySet,
+        on_delete=models.CASCADE,
+        related_name="members",
+    )
+
+    advisory = models.ForeignKey("AdvisoryV2", on_delete=models.CASCADE)
+    is_primary = models.BooleanField(default=False)
 
 
 class AdvisoryV2(models.Model):
@@ -3010,24 +3108,13 @@ class AdvisoryV2(models.Model):
         help_text="Related advisories that are used to calculate the severity of this advisory.",
     )
 
-    advisory_content_hash = models.CharField(
-        max_length=64,
-        blank=True,
+    risk_score = models.DecimalField(
         null=True,
-        help_text="A unique hash computed from the content of the advisory used to identify advisories with the same content.",
+        blank=True,
+        max_digits=3,
+        decimal_places=1,
+        help_text="Risk expressed as a number ranging from 0 to 10. Risk is calculated from weighted severity and exploitability values. It is the maximum value of (the weighted severity multiplied by its exploitability) or 10. Risk = min(weighted severity * exploitability, 10)",
     )
-
-    @property
-    def risk_score(self):
-        """
-        Risk expressed as a number ranging from 0 to 10.
-        Risk is calculated from weighted severity and exploitability values.
-        It is the maximum value of (the weighted severity multiplied by its exploitability) or 10
-        Risk = min(weighted severity * exploitability, 10)
-        """
-        if self.exploitability and self.weighted_severity:
-            risk_score = min(float(self.exploitability * self.weighted_severity), 10.0)
-            return round(risk_score, 1)
 
     objects = AdvisoryV2QuerySet.as_manager()
 
@@ -3044,6 +3131,9 @@ class AdvisoryV2(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.avid
 
     @property
     def get_status_label(self):
@@ -3221,7 +3311,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         except ValueError:
             # otherwise use query as a plain string
             qs = qs.filter(package_url__icontains=query)
-        return qs.order_by("package_url")
+        return qs.order_by("package_url").order_by("-version_rank")
 
     def with_vulnerability_counts(self):
         return self.annotate(
@@ -3325,7 +3415,7 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         """
         Return only packages that are vulnerable.
         """
-        return self.filter(affected_in_impacts__isnull=False)
+        return self.filter(id__in=ImpactedPackageAffecting.objects.values("package_id").distinct())
 
     def with_is_vulnerable(self):
         """
@@ -3627,3 +3717,26 @@ class SSVC(models.Model):
 
     class Meta:
         unique_together = ("vector", "source_advisory")
+
+
+class Group(NamedTuple):
+    """
+    A Group of advisories that have been merged together based on their content and identifiers.
+    """
+
+    aliases: Set[AdvisoryAlias]
+    primary: AdvisoryV2
+    secondaries: List[AdvisoryV2]
+
+
+class GroupedAdvisory(NamedTuple):
+    """
+    A GroupedAdvisory represents a single advisory that has been grouped with its aliases and related advisories.
+    """
+
+    aliases: Set[AdvisoryAlias]
+    advisory: AdvisoryV2
+    identifier: str
+    weighted_severity: Optional[float]
+    exploitability: Optional[float]
+    risk_score: Optional[float]

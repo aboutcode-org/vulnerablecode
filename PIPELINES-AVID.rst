@@ -55,7 +55,7 @@
    * - project-kb-statements_v2
      - Vulnerability ID of the record
    * - pypa_importer_v2
-     - ID of the OSV record
+     - {package_name}/{ID of the OSV record}
    * - pysec_importer_v2
      - ID of the OSV record
    * - redhat_importer_v2

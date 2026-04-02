@@ -36,7 +36,8 @@ class CollectSSVCPipeline(VulnerableCodePipeline):
 
     def collect_ssvc_data(self):
         vulnrichment_advisories = (
-            AdvisoryV2.objects.filter(
+            AdvisoryV2.objects.latest_per_avid()
+            .filter(
                 severities__scoring_system=SCORING_SYSTEMS["ssvc"],
             )
             .distinct()

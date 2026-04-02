@@ -83,7 +83,7 @@ def add_advisory_exploit(record, logger):
                 for adv in alias.advisories.all():
                     advisories.add(adv)
             else:
-                advs = AdvisoryV2.objects.filter(advisory_id=ref)
+                advs = AdvisoryV2.objects.filter(advisory_id=ref).latest_per_avid()
                 for adv in advs:
                     advisories.add(adv)
         except AdvisoryAlias.DoesNotExist:

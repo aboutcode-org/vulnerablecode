@@ -1,6 +1,12 @@
 Release notes
 =============
 
+Version v38.0.0
+---------------------
+
+- This is a major version, we have changed our V3 API, refer to ``api_v3_usage.rst`` for details.
+- We have started grouping advisories which have aliases or identifiers in common and also affect same set of packages together.
+
 Version v37.0.0
 ---------------------
 

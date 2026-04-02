@@ -52,7 +52,7 @@ class UnfurlVersionRangePipeline(VulnerableCodePipeline):
             if purl.type not in RANGE_CLASS_BY_SCHEMES:
                 continue
 
-            versions = get_purl_versions(purl, cached_versions)
+            versions = get_purl_versions(purl, cached_versions) or []
             affected_purls = get_affected_purls(
                 versions=versions,
                 affecting_vers=impact.affecting_vers,
@@ -79,6 +79,8 @@ def get_affected_purls(versions, affecting_vers, base_purl, logger):
     version_class = affecting_version_range.version_class
 
     try:
+        if not versions:
+            return []
         versions = [version_class(v) for v in versions]
     except Exception as e:
         logger(
@@ -107,8 +109,10 @@ def get_affected_purls(versions, affecting_vers, base_purl, logger):
 
 def get_purl_versions(purl, cached_versions):
     if not purl in cached_versions:
-        cached_versions[purl] = get_versions(purl)
-    return cached_versions[purl]
+        purls = get_versions(purl)
+        if purls is not None:
+            cached_versions[purl] = purls
+    return cached_versions.get(purl) or []
 
 
 def bulk_create_with_m2m(purls, impact, relation, logger):

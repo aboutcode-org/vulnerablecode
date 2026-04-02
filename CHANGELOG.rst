@@ -1,6 +1,14 @@
 Release notes
 =============
 
+Version v38.1.0
+---------------------
+
+- Throttle UI to 15 requests per minute to avoid abuse and improve performance.
+- Handle errors in unfurl_version_range pipeline.
+- Remove Todo pipeline from v1 pipelines.
+- Add openAPI documentation for Package and Advisory viewset.
+
 Version v38.0.0
 ---------------------
 

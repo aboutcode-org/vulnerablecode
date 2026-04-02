@@ -14,6 +14,7 @@ from django.db.models import Exists
 from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from packageurl import PackageURL
 from rest_framework import serializers
 from rest_framework import viewsets
@@ -422,6 +423,7 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
+    @extend_schema(request=PackageQuerySerializer)
     def create(self, request, *args, **kwargs):
         serializer = PackageQuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -528,8 +530,9 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
+    @extend_schema(request=AdvisoryQuerySerializer)
     def create(self, request, *args, **kwargs):
-        serializer = PackageQuerySerializer(data=request.data)
+        serializer = AdvisoryQuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         purls = serializer.validated_data["purls"]

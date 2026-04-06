@@ -41,7 +41,7 @@ class VSCCollectorPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def clone(self):
         """Clone the repository."""
-        self.repo_url = "git+https://github.com/ziadhany/vulnerablecode-vcs-collector"
+        self.repo_url = "git+https://github.com/aboutcode-data/vulnerablecode-vcs-collector"
         self.log(f"Cloning `{self.repo_url}`")
         self.vcs_response = fetch_via_vcs(self.repo_url)
 

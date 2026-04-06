@@ -119,7 +119,6 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
         alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
         vcs_collector_importer_v2.VSCCollectorPipeline,
-        nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,
         github_osv.GithubOSVImporter,

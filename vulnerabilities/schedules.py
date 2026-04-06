@@ -95,10 +95,21 @@ def update_pipeline_schedule():
     PipelineSchedule.objects.exclude(pipeline_id__in=pipelines.keys()).delete()
     for id, pipeline_class in pipelines.items():
         run_once = getattr(pipeline_class, "run_once", False)
+        run_interval = getattr(pipeline_class, "run_interval", 24)
+        run_priority = getattr(
+            pipeline_class, "run_priority", PipelineSchedule.ExecutionPriority.DEFAULT
+        )
 
-        PipelineSchedule.objects.get_or_create(
+        pipeline, created = PipelineSchedule.objects.get_or_create(
             pipeline_id=id,
             defaults={
                 "is_run_once": run_once,
+                "run_interval": run_interval,
+                "run_priority": run_priority,
             },
         )
+
+        if not created:
+            pipeline.run_priority = run_priority
+            pipeline.run_interval = run_interval
+            pipeline.save()

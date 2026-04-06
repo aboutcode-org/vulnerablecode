@@ -45,7 +45,6 @@ from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apac
 from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_tomcat_importer as apache_tomcat_v2
 from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlinux_importer_v2
-from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
@@ -80,6 +79,9 @@ from vulnerabilities.pipelines.v2_importers import retiredotnet_importer as reti
 from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
 from vulnerabilities.pipelines.v2_importers import suse_score_importer as suse_score_importer_v2
 from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu_osv_importer_v2
+from vulnerabilities.pipelines.v2_importers import (
+    vcs_collector_importer as vcs_collector_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
@@ -120,6 +122,7 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
         alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
         linux_kernel_importer_v2.LinuxKernelPipeline,
+        vcs_collector_importer_v2.VSCCollectorPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,
         github_osv.GithubOSVImporter,
@@ -153,43 +156,6 @@ IMPORTERS_REGISTRY = create_registry(
         ubuntu_usn.UbuntuUSNImporter,
         fireeye.FireyeImporter,
         oss_fuzz.OSSFuzzImporter,
-        collect_fix_commits_v2.CollectLinuxFixCommitsPipeline,
-        collect_fix_commits_v2.CollectBusyBoxFixCommitsPipeline,
-        collect_fix_commits_v2.CollectNginxFixCommitsPipeline,
-        collect_fix_commits_v2.CollectApacheTomcatFixCommitsPipeline,
-        collect_fix_commits_v2.CollectMysqlServerFixCommitsPipeline,
-        collect_fix_commits_v2.CollectPostgresqlFixCommitsPipeline,
-        collect_fix_commits_v2.CollectMongodbFixCommitsPipeline,
-        collect_fix_commits_v2.CollectRedisFixCommitsPipeline,
-        collect_fix_commits_v2.CollectSqliteFixCommitsPipeline,
-        collect_fix_commits_v2.CollectPhpFixCommitsPipeline,
-        collect_fix_commits_v2.CollectPythonCpythonFixCommitsPipeline,
-        collect_fix_commits_v2.CollectRubyFixCommitsPipeline,
-        collect_fix_commits_v2.CollectGoFixCommitsPipeline,
-        collect_fix_commits_v2.CollectNodeJsFixCommitsPipeline,
-        collect_fix_commits_v2.CollectRustFixCommitsPipeline,
-        collect_fix_commits_v2.CollectOpenjdkFixCommitsPipeline,
-        collect_fix_commits_v2.CollectSwiftFixCommitsPipeline,
-        collect_fix_commits_v2.CollectDjangoFixCommitsPipeline,
-        collect_fix_commits_v2.CollectRailsFixCommitsPipeline,
-        collect_fix_commits_v2.CollectLaravelFixCommitsPipeline,
-        collect_fix_commits_v2.CollectSpringFrameworkFixCommitsPipeline,
-        collect_fix_commits_v2.CollectReactFixCommitsPipeline,
-        collect_fix_commits_v2.CollectAngularFixCommitsPipeline,
-        collect_fix_commits_v2.CollectWordpressFixCommitsPipeline,
-        collect_fix_commits_v2.CollectDockerMobyFixCommitsPipeline,
-        collect_fix_commits_v2.CollectKubernetesFixCommitsPipeline,
-        collect_fix_commits_v2.CollectQemuFixCommitsPipeline,
-        collect_fix_commits_v2.CollectXenProjectFixCommitsPipeline,
-        collect_fix_commits_v2.CollectVirtualboxFixCommitsPipeline,
-        collect_fix_commits_v2.CollectContainerdFixCommitsPipeline,
-        collect_fix_commits_v2.CollectAnsibleFixCommitsPipeline,
-        collect_fix_commits_v2.CollectTerraformFixCommitsPipeline,
-        collect_fix_commits_v2.CollectWiresharkFixCommitsPipeline,
-        collect_fix_commits_v2.CollectTcpdumpFixCommitsPipeline,
-        collect_fix_commits_v2.CollectGitFixCommitsPipeline,
-        collect_fix_commits_v2.CollectJenkinsFixCommitsPipeline,
-        collect_fix_commits_v2.CollectGitlabFixCommitsPipeline,
     ]
 )
 

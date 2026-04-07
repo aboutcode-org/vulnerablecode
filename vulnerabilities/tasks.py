@@ -118,7 +118,7 @@ def set_run_failure(job, connection, type, value, traceback):
 
 def enqueue_pipeline(pipeline_id):
     pipeline_schedule = models.PipelineSchedule.objects.get(pipeline_id=pipeline_id)
-    queue = queues.get(pipeline_schedule.get_priority_display())
+    queue = queues.get(pipeline_schedule.get_run_priority_display())
 
     if pipeline_schedule.status in [
         models.PipelineRun.Status.RUNNING,

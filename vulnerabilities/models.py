@@ -3252,6 +3252,13 @@ class ImpactedPackage(models.Model):
         help_text="Timestamp indicating when this impact was added.",
     )
 
+    last_range_unfurl_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text="Timestamp of the last vers range unfurl.",
+    )
+
     def to_dict(self):
         from vulnerabilities.utils import purl_to_dict
 

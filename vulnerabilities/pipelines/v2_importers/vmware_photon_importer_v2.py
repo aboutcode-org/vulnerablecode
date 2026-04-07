@@ -53,20 +53,20 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         )
 
     def fetch(self):
+        """
+        Fetches all JSON files from the repository index and extracts records. Each record is enriched with the source URL(contains the  photon version) for traceability.
+        """
         self.records = []
-        base_url = self.repo_url
-
-        response = fetch_response(base_url)
+        response = fetch_response(self.repo_url)
         photon_files = re.findall(r'href="(cve_data_photon[0-9.]+\.json)"', response.text)
 
         for file_name in photon_files:
-            url = base_url + file_name
-            self.log(f"Fetching `{url}`")
-            response = fetch_response(url)
-            if response:
-                for record in response.json():
-                    record["source_url"] = url
-                    self.records.append(record)
+            source_url = self.repo_url + file_name
+            self.log(f"Fetching `{source_url}`")
+            response = fetch_response(source_url)
+            for record in response.json():
+                record["source_url"] = source_url
+                self.records.append(record)
         self.log(f"Fetched {len(self.records):,d} total records from {len(photon_files)} sources")
 
     def group_records_by_cve(self):
@@ -113,11 +113,16 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
                 ver_match = re.match(r"all versions before (.+) are vulnerable", aff_ver)
 
+                if not ver_match:
+                    self.log(f"Could not extract affected version from aff_ver: {aff_ver!r}")
+                    continue
+
+                aff_ver = ver_match.group(1)
                 affected_version_range = RpmVersionRange(
                     constraints=[
                         VersionConstraint(
                             comparator="<",
-                            version=RpmVersion(ver_match.group(1)),
+                            version=RpmVersion(aff_ver),
                         )
                     ]
                 )

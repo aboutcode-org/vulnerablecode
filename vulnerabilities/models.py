@@ -2958,6 +2958,12 @@ class AdvisoryV2QuerySet(BaseQuerySet):
         qs = self.filter(id__in=Subquery(adv_ids))
         return qs.latest_per_avid()
 
+    def todo_excluded(self):
+        """Exclude advisory ineligible for ToDo computation."""
+        from vulnerabilities.importers import TODO_EXCLUDED_PIPELINES
+
+        return self.exclude(datasource_id__in=TODO_EXCLUDED_PIPELINES)
+
 
 class AdvisorySet(models.Model):
 

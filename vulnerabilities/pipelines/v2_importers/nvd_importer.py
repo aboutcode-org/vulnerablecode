@@ -71,6 +71,8 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     """
 
+    exclude_from_package_todo = True
+
     precedence = 100
 
     @classmethod

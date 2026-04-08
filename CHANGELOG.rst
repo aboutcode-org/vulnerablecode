@@ -1,7 +1,7 @@
 Release notes
 =============
 
-Version v38.2.0
+Version v38.3.0
 ---------------------
 
 - feat: add high priority queue and run version range unfurling pipeline more frequently (https://github.com/aboutcode-org/vulnerablecode/pull/2256)

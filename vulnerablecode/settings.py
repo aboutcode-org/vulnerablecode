@@ -392,7 +392,13 @@ RQ_QUEUES = {
         "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
         "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
         "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
-    }
+    },
+    "high": {
+        "HOST": env.str("VULNERABLECODE_REDIS_HOST", default="localhost"),
+        "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
+        "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
+        "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
+    },
 }
 
 

@@ -2262,6 +2262,10 @@ class PipelineRun(models.Model):
 class PipelineSchedule(models.Model):
     """The Database representation of a pipeline schedule."""
 
+    class ExecutionPriority(models.IntegerChoices):
+        HIGH = 1, "high"
+        DEFAULT = 2, "default"
+
     pipeline_id = models.CharField(
         max_length=600,
         help_text=("Identify a registered Pipeline class."),
@@ -2304,6 +2308,14 @@ class PipelineSchedule(models.Model):
         ],
         default=24,
         help_text=("Number of hours to wait between run of this pipeline."),
+    )
+
+    run_priority = models.IntegerField(
+        null=False,
+        blank=False,
+        choices=ExecutionPriority.choices,
+        default=ExecutionPriority.DEFAULT,
+        help_text=("Select the pipeline execution priority"),
     )
 
     schedule_work_id = models.CharField(
@@ -3238,6 +3250,20 @@ class ImpactedPackage(models.Model):
         auto_now_add=True,
         db_index=True,
         help_text="Timestamp indicating when this impact was added.",
+    )
+
+    last_range_unfurl_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text="Timestamp of the last vers range unfurl.",
+    )
+
+    last_successful_range_unfurl_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text="Timestamp of the last successful vers range unfurl.",
     )
 
     def to_dict(self):

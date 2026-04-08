@@ -1,0 +1,85 @@
+# Configuration file for `prek`, a git hook framework written in Rust.
+# See https://prek.j178.dev for more information.
+#:schema https://www.schemastore.org/prek.json
+
+default_language_version.python = "3.13"
+default_install_hook_types = ["pre-commit", "commit-msg"]
+
+[[repos]]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+hooks = [
+  { id = "trailing-whitespace" },
+  { id = "end-of-file-fixer" },
+  { id = "check-yaml" },
+  { id = "check-added-large-files" },
+  { id = "check-symlinks" },
+  {
+    id = "mixed-line-ending",
+    args = ["--fix=lf"]
+  }
+]
+
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.9"
+hooks = [
+  {
+    id = "ruff",
+    args = ["--fix"]
+  },
+  { id = "ruff-format" }
+]
+
+[[repos]]
+repo = "https://github.com/compilerla/conventional-pre-commit"
+rev = "v4.4.0"
+hooks = [
+  {
+    id = "conventional-pre-commit",
+    stages = ["commit-msg"]
+  }
+]
+
+[[repos]]
+repo = "https://github.com/astral-sh/uv-pre-commit"
+rev = "0.11.3"
+hooks = [
+  { id = "uv-lock" }
+]
+
+[[repos]]
+repo = "https://github.com/codespell-project/codespell"
+rev = "v2.4.2"
+hooks = [
+  { id = "codespell" }
+]
+
+[[repos]]
+repo = "https://github.com/allganize/ty-pre-commit"
+rev = "v0.0.29"
+hooks = [
+  {
+    id = "ty-check",
+    args = [
+      "--output-format=full"
+    ],
+    additional_dependencies = [
+      "click",
+      "deprecated",
+      "jira",
+      "python-magic",
+      "pyartifactory",
+      "pydantic",
+      "pytest",
+      "python-optima",
+      "pyyaml",
+      "rich",
+      "tenacity",
+      "toml",
+      "slack_sdk",
+      "jinja2",
+      "requests"
+    ]
+  }
+]

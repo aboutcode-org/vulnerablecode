@@ -1,38 +1,36 @@
 name: generate Documentation
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
 
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.12]
+        python-version: [ 3.13 ]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0
         with:
+          activate-environment: true
           python-version: ${{ matrix.python-version }}
+          cache: true
 
-      - name: Give permission to run scripts
-        run: chmod +x ./docs/scripts/doc8_style_check.sh
-
-      - name: Install Dependencies
-        working-directory: ./docs
-        run:  pip install -r requirements.txt
+      - shell: bash
+        run: |
+          uv sync
 
       - name: Check Sphinx Documentation build minimally
-        working-directory: ./docs
-        run: sphinx-build -b linkcheck -EW source build
+        working-directory: docs
+        run: |
+          hatch run check_build
 
       - name: Check for documentation style errors
-        working-directory: ./docs
-        run: ./scripts/doc8_style_check.sh
+        working-directory: docs
+        run: |
+            hatch run docs:check_style

@@ -32,6 +32,7 @@ from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipelines import alpine_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
@@ -189,3 +190,9 @@ IMPORTERS_REGISTRY = create_registry(
         collect_fix_commits_v2.CollectGitlabFixCommitsPipeline,
     ]
 )
+
+TODO_EXCLUDED_PIPELINES = [
+    key
+    for key, value in IMPORTERS_REGISTRY.items()
+    if issubclass(value, VulnerableCodeBaseImporterPipelineV2) and value.exclude_from_package_todo
+]

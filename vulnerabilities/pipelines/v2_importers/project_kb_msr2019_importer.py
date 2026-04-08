@@ -30,6 +30,8 @@ class ProjectKBMSR2019Pipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
     repo_url = "git+https://github.com/SAP/project-kb"
 
+    exclude_from_package_todo = True
+
     precedence = 200
 
     @classmethod

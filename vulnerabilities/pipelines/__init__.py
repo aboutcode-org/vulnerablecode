@@ -278,6 +278,11 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     ignorable_versions = []
     precedence = 0
 
+    # Set this to True if computing fixed/affected package ToDo is not fruitful for this source.
+    # An example of such advisory would be pipeline dedicated to collecting issues,
+    # pull requests, commit messages, EPSS, exploits, etc.
+    exclude_from_package_todo = False
+
     # Control how often progress log is shown (range: 1–100, higher value = less frequent log)
     progress_step = 10
 

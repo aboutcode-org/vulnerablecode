@@ -52,20 +52,25 @@ class UnfurlVersionRangePipeline(VulnerableCodePipeline):
         processed_impacted_packages_count = 0
         processed_affected_packages_count = 0
         cached_versions = {}
-        impacts_to_update = []
-        update_batch_size = 5
+        update_unfurl_date = []
+        update_successful_unfurl_date = []
+        update_batch_size = 5000
+        chunk_size = 5000
 
         impacted_packages = impacted_package_qs(cutoff_day=self.reunfurl_after_days)
         impacted_packages_count = impacted_packages.count()
         self.log(f"Unfurl affected vers range for {impacted_packages_count:,d} ImpactedPackage.")
 
-        progress = LoopProgress(total_iterations=impacted_packages_count, logger=self.log)
-        for impact in progress.iter(impacted_packages.iterator(chunk_size=5000)):
-            impacts_to_update.append(impact.pk)
+        progress = LoopProgress(
+            total_iterations=impacted_packages_count, progress_step=5, logger=self.log
+        )
+        for impact in progress.iter(impacted_packages.iterator(chunk_size=chunk_size)):
+            update_unfurl_date.append(impact.pk)
             purl = PackageURL.from_string(impact.base_purl)
             if not impact.affecting_vers or not any(
                 c in impact.affecting_vers for c in ("<", ">", "!")
             ):
+                update_successful_unfurl_date.append(impact.pk)
                 continue
             if purl.type not in FETCHCODE_SUPPORTED_ECOSYSTEMS:
                 continue
@@ -87,16 +92,24 @@ class UnfurlVersionRangePipeline(VulnerableCodePipeline):
                 relation=ImpactedPackageAffecting,
                 logger=self.log,
             )
+            update_successful_unfurl_date.append(impact.pk)
             processed_impacted_packages_count += 1
 
-            if len(impacts_to_update) > update_batch_size:
-                ImpactedPackage.objects.filter(pk__in=impacts_to_update).update(
+            if len(update_unfurl_date) > update_batch_size:
+                ImpactedPackage.objects.filter(pk__in=update_unfurl_date).update(
                     last_range_unfurl_at=timezone.now()
                 )
-                impacts_to_update.clear()
+                ImpactedPackage.objects.filter(pk__in=update_successful_unfurl_date).update(
+                    last_successful_range_unfurl_at=timezone.now()
+                )
+                update_unfurl_date.clear()
+                update_successful_unfurl_date.clear()
 
-        ImpactedPackage.objects.filter(pk__in=impacts_to_update).update(
+        ImpactedPackage.objects.filter(pk__in=update_unfurl_date).update(
             last_range_unfurl_at=timezone.now()
+        )
+        ImpactedPackage.objects.filter(pk__in=update_successful_unfurl_date).update(
+            last_successful_range_unfurl_at=timezone.now()
         )
         self.log(f"Successfully processed {processed_impacted_packages_count:,d} ImpactedPackage.")
         self.log(f"{processed_affected_packages_count:,d} new Impact-Package relation created.")

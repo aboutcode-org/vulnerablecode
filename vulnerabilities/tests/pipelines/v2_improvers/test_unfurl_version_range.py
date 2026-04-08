@@ -111,6 +111,8 @@ class TestUnfurlVersionRangePipeline(TestCase):
         self.assertEqual(3, PackageV2.objects.count())
         self.assertEqual(1, impact.fixed_by_packages.count())
         self.assertEqual(2, impact.affecting_packages.count())
+        self.assertNotEqual(None, impact.last_range_unfurl_at)
+        self.assertNotEqual(None, impact.last_successful_range_unfurl_at)
 
     def test_impacted_package_qs_dont_process_empty_vers(self):
         insert_advisory_v2(

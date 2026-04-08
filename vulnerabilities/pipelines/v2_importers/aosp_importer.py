@@ -32,6 +32,7 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/quarkslab/aosp_dataset/blob/master/LICENSE"
 
     precedence = 200
+    exclude_from_package_todo = True
 
     @classmethod
     def steps(cls):

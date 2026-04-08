@@ -334,6 +334,13 @@ def insert_advisory_v2(
     if not created:
         return advisory_obj
 
+    AdvisoryV2.objects.filter(
+        avid=f"{pipeline_id}/{advisory.advisory_id}",
+        is_latest=True,
+    ).update(is_latest=False)
+    advisory_obj.is_latest = True
+    advisory_obj.save()
+
     aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
     references = get_or_create_advisory_references(references=advisory.references)
     severities = get_or_create_advisory_severities(severities=advisory.severities)

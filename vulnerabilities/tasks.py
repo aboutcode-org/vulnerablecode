@@ -20,7 +20,13 @@ from vulnerabilities.improver import Improver
 
 logger = logging.getLogger(__name__)
 
-queue = django_rq.get_queue("default")
+default_queue = django_rq.get_queue("default")
+high_queue = django_rq.get_queue("high")
+
+queues = {
+    "default": django_rq.get_queue("default"),
+    "high": django_rq.get_queue("high"),
+}
 
 
 def execute_pipeline(pipeline_id, run_id):
@@ -112,6 +118,8 @@ def set_run_failure(job, connection, type, value, traceback):
 
 def enqueue_pipeline(pipeline_id):
     pipeline_schedule = models.PipelineSchedule.objects.get(pipeline_id=pipeline_id)
+    queue = queues.get(pipeline_schedule.get_run_priority_display())
+
     if pipeline_schedule.status in [
         models.PipelineRun.Status.RUNNING,
         models.PipelineRun.Status.QUEUED,
@@ -139,5 +147,7 @@ def enqueue_pipeline(pipeline_id):
 
 def dequeue_job(job_id):
     """Remove a job from queue if it hasn't been executed yet."""
-    if job_id in queue.jobs:
-        queue.remove(job_id)
+
+    for queue in queues.values():
+        if job_id in queue.jobs:
+            queue.remove(job_id)

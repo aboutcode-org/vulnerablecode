@@ -62,6 +62,7 @@ Pipeline Dashboard
                                 <div class="columns is-mobile is-vcentered">
                                     <div class="column is-one-quarter">Pipeline ID</div>
                                     <div class="column is-one-eighth">Active</div>
+                                    <div class="column is-one-eighth">Priority</div>
                                     <div class="column is-one-eighth">Interval</div>
                                     <div class="column is-one-eighth">Status</div>
                                     <div class="column is-one-fifth">Last Run End Time</div>
@@ -79,6 +80,7 @@ Pipeline Dashboard
                                 <div class="columns px-1 is-mobile is-vcentered">
                                     <div class="column is-one-quarter">{{ schedule.pipeline_id }}</div>
                                     <div class="column is-one-eighth has-text-grey">{{ schedule.is_active|yesno:"Yes,No" }}</div>
+                                    <div class="column is-one-eighth has-text-grey">{{ schedule.get_run_priority_display|capfirst}}</div>
                                     <div class="column is-one-eighth has-text-grey">
                                         {% if schedule.is_run_once %}
                                             Once

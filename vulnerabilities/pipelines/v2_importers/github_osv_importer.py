@@ -31,7 +31,7 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/github/advisory-database/"
 
-    precedence = 100
+    precedence = 200
 
     @classmethod
     def steps(cls):

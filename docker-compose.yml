@@ -57,6 +57,17 @@ services:
       - db
       - vulnerablecode
 
+  vulnerablecode_rqworker_high:
+    build: .
+    command: wait-for-it web:8000 -- python ./manage.py rqworker high
+    env_file:
+      - docker.env
+    volumes:
+      - /etc/vulnerablecode/:/etc/vulnerablecode/
+    depends_on:
+      - vulnerablecode_redis
+      - db
+      - vulnerablecode
 
   nginx:
     image: nginx

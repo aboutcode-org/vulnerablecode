@@ -1,0 +1,548 @@
+{
+  "vcs_url": "https://github.com/nodejs/node",
+  "vulnerabilities": {
+    "CVE-2024-21538": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/58242"
+      ],
+      "PRs": []
+    },
+    "CVE-2025-59466": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/62125"
+      ],
+      "PRs": []
+    },
+    "CVE-2025-15467": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/61887",
+        "https://github.com/nodejs/node/issues/61755"
+      ],
+      "PRs": []
+    },
+    "CVE-2025-64756": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/61085",
+        "https://github.com/nodejs/node/issues/60792"
+      ],
+      "PRs": []
+    },
+    "CVE-2025-9230": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/60193"
+      ],
+      "PRs": []
+    },
+    "CVE-2025-5889": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/59253"
+      ],
+      "PRs": []
+    },
+    "CVE-2023-46809": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/55628",
+        "https://github.com/nodejs/node/issues/52196"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/55629"
+      ]
+    },
+    "CVE-2024-13176": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/59548"
+      ],
+      "PRs": []
+    },
+    "CVE-2023-39331": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/50469"
+      ],
+      "PRs": []
+    },
+    "CVE-2024-28863": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/53214"
+      ],
+      "PRs": []
+    },
+    "CVE-2019-13050": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/29531"
+      ],
+      "PRs": []
+    },
+    "CVE-2023-44487": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/50342",
+        "https://github.com/nodejs/node/issues/51074"
+      ],
+      "PRs": []
+    },
+    "CVE-2022-25883": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/48835"
+      ],
+      "PRs": []
+    },
+    "CVE-2022-32215": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/43946",
+        "https://github.com/nodejs/node/issues/43893"
+      ],
+      "PRs": []
+    },
+    "CVE-2023-0464": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/47443"
+      ],
+      "PRs": []
+    },
+    "CVE-2022-38900": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/46026"
+      ],
+      "PRs": []
+    },
+    "CVE-2022-25881": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/46555"
+      ],
+      "PRs": []
+    },
+    "CVE-2016-7055": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/12691",
+        "https://github.com/nodejs/node/issues/9594"
+      ],
+      "PRs": []
+    },
+    "CVE-2021-3807": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/41039",
+        "https://github.com/nodejs/node/issues/40853"
+      ],
+      "PRs": []
+    },
+    "CVE-2021-44906": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/42451"
+      ],
+      "PRs": []
+    },
+    "CVE-2022-21824": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/42282"
+      ],
+      "PRs": []
+    },
+    "CVE-2022-0778": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/42441"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/42385",
+        "https://github.com/nodejs/node/pull/42363",
+        "https://github.com/nodejs/node/pull/42381",
+        "https://github.com/nodejs/node/pull/42371"
+      ]
+    },
+    "CVE-2021-22930": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/40306"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/39500",
+        "https://github.com/nodejs/node/pull/39534",
+        "https://github.com/nodejs/node/pull/39466"
+      ]
+    },
+    "CVE-2021-44228": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/41191"
+      ],
+      "PRs": []
+    },
+    "CVE-2021-3672": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/40231"
+      ],
+      "PRs": []
+    },
+    "CVE-2018-7159": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/25514"
+      ],
+      "PRs": []
+    },
+    "CVE-2020-7598": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/32296"
+      ],
+      "PRs": []
+    },
+    "CVE-2018-12121": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/24692",
+        "https://github.com/nodejs/node/issues/24990"
+      ],
+      "PRs": []
+    },
+    "CVE-2018-0735": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/24370"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/23950"
+      ]
+    },
+    "CVE-2018-12122": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/24760"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/24803"
+      ]
+    },
+    "CVE-2018-6341": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/24735"
+      ],
+      "PRs": []
+    },
+    "CVE-2018-0732": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/22187"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/21344",
+        "https://github.com/nodejs/node/pull/21343",
+        "https://github.com/nodejs/node/pull/21282",
+        "https://github.com/nodejs/node/pull/21400"
+      ]
+    },
+    "CVE-2018-0737": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/20090"
+      ],
+      "PRs": []
+    },
+    "CVE-2017-14919": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/16547"
+      ],
+      "PRs": []
+    },
+    "CVE-2016-2216": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/5754"
+      ],
+      "PRs": []
+    },
+    "CVE-2012-5568": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/13449"
+      ],
+      "PRs": []
+    },
+    "CVE-2016-5180": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/12532",
+        "https://github.com/nodejs/node/issues/11728"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/9037",
+        "https://github.com/nodejs/node/pull/8849",
+        "https://github.com/nodejs/node/pull/9153",
+        "https://github.com/nodejs/node/pull/9147",
+        "https://github.com/nodejs/node/pull/9154"
+      ]
+    },
+    "CVE-2015-8027": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/4029"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/4156",
+        "https://github.com/nodejs/node/pull/4155",
+        "https://github.com/nodejs/node/pull/4154"
+      ]
+    },
+    "CVE-2015-7384": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/3138"
+      ],
+      "PRs": []
+    },
+    "CVE-2015-1793": {
+      "Issues": [
+        "https://github.com/nodejs/node/issues/2178"
+      ],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/2141"
+      ]
+    },
+    "CVE-2026-1525": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/62250",
+        "https://github.com/nodejs/node/pull/62247"
+      ]
+    },
+    "CVE-2025-59465": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/61661"
+      ]
+    },
+    "CVE-2020-7774": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/37918"
+      ]
+    },
+    "CVE-2025-23085": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/57644"
+      ]
+    },
+    "CVE-2024-4947": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/54793",
+        "https://github.com/nodejs/node/pull/54795"
+      ]
+    },
+    "CVE-2024-4761": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/54598",
+        "https://github.com/nodejs/node/pull/54597"
+      ]
+    },
+    "CVE-2025-32955": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/58109"
+      ]
+    },
+    "CVE-2024-27980": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/52543",
+        "https://github.com/nodejs/node/pull/52505"
+      ]
+    },
+    "CVE-2023-3420": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/50077"
+      ]
+    },
+    "CVE-2024-24806": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/51737",
+        "https://github.com/nodejs/node/pull/51702"
+      ]
+    },
+    "CVE-2023-43804": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/51647"
+      ]
+    },
+    "CVE-2022-23491": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/51613"
+      ]
+    },
+    "CVE-2023-4807": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/49879"
+      ]
+    },
+    "CVE-2023-45143": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/50153"
+      ]
+    },
+    "CVE-2023-5363": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/50395"
+      ]
+    },
+    "CVE-2022-32222": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/46150"
+      ]
+    },
+    "CVE-2007-4559": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/44823"
+      ]
+    },
+    "CVE-2021-33503": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/45570"
+      ]
+    },
+    "CVE-2022-21449": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/42863"
+      ]
+    },
+    "CVE-2021-22940": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/40308",
+        "https://github.com/nodejs/node/pull/40319"
+      ]
+    },
+    "CVE-2019-9518": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/37875"
+      ]
+    },
+    "CVE-2021-4044": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/41167"
+      ]
+    },
+    "CVE-2019-9511": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/29133",
+        "https://github.com/nodejs/node/pull/29151",
+        "https://github.com/nodejs/node/pull/29148",
+        "https://github.com/nodejs/node/pull/29152",
+        "https://github.com/nodejs/node/pull/29150"
+      ]
+    },
+    "CVE-2021-3450": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/38082",
+        "https://github.com/nodejs/node/pull/38085",
+        "https://github.com/nodejs/node/pull/38083",
+        "https://github.com/nodejs/node/pull/38084"
+      ]
+    },
+    "CVE-2021-21148": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/37074"
+      ]
+    },
+    "CVE-2019-9636": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/38631"
+      ]
+    },
+    "CVE-2020-10531": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/33572"
+      ]
+    },
+    "CVE-2019-1552": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/29455"
+      ]
+    },
+    "CVE-2018-7166": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/27298"
+      ]
+    },
+    "CVE-2018-0734": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/24353",
+        "https://github.com/nodejs/node/pull/23965"
+      ]
+    },
+    "CVE-2016-8625": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/25679"
+      ]
+    },
+    "CVE-2018-5407": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/24352"
+      ]
+    },
+    "CVE-2017-1000381": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/19939",
+        "https://github.com/nodejs/node/pull/13897"
+      ]
+    },
+    "CVE-2017-15896": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/17533",
+        "https://github.com/nodejs/node/pull/17534",
+        "https://github.com/nodejs/node/pull/17531",
+        "https://github.com/nodejs/node/pull/17532"
+      ]
+    },
+    "CVE-2017-3737": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/17526"
+      ]
+    },
+    "CVE-2016-7052": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/8790",
+        "https://github.com/nodejs/node/pull/8789",
+        "https://github.com/nodejs/node/pull/8786"
+      ]
+    },
+    "CVE-2017-3736": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/16691"
+      ]
+    },
+    "CVE-2017-3732": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/11021"
+      ]
+    },
+    "CVE-2016-2107": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/6622",
+        "https://github.com/nodejs/node/pull/6621"
+      ]
+    },
+    "CVE-2015-3194": {
+      "Issues": [],
+      "PRs": [
+        "https://github.com/nodejs/node/pull/4133",
+        "https://github.com/nodejs/node/pull/4132"
+      ]
+    }
+  }
+}

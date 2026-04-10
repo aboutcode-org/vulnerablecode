@@ -2351,7 +2351,11 @@ class PipelineSchedule(models.Model):
         if not self.pk:
             self.schedule_work_id = self.create_new_job(execute_now=True)
         elif self.pk and (existing := PipelineSchedule.objects.get(pk=self.pk)):
-            if existing.is_active != self.is_active or existing.run_interval != self.run_interval:
+            if (
+                existing.is_active != self.is_active
+                or existing.run_interval != self.run_interval
+                or existing.run_priority != self.run_priority
+            ):
                 self.schedule_work_id = self.create_new_job()
         self.full_clean()
         return super().save(*args, **kwargs)

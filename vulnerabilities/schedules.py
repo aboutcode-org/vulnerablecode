@@ -24,6 +24,7 @@ def schedule_execution(pipeline_schedule, execute_now=False):
     Takes a `PackageSchedule` object as input and schedule a
     recurring job using `rq_scheduler` to execute the pipeline.
     """
+    queue_name = pipeline_schedule.get_run_priority_display()
     first_execution = datetime.datetime.now(tz=datetime.timezone.utc)
     if not execute_now:
         first_execution = pipeline_schedule.next_run_date
@@ -36,6 +37,7 @@ def schedule_execution(pipeline_schedule, execute_now=False):
         args=[pipeline_schedule.pipeline_id],
         interval=interval_in_seconds,
         repeat=None,
+        queue_name=queue_name,
     )
     return job._id
 

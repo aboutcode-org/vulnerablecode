@@ -13,6 +13,7 @@ import urllib
 from collections import defaultdict
 from collections import namedtuple
 from typing import Iterable
+from typing import List
 
 import requests
 from bs4 import BeautifulSoup
@@ -25,7 +26,17 @@ from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.pipes.advisory import append_patch_classifications
+
+GITHUB_COMMIT_URL_RE = re.compile(
+    r"https?://github\.com/apache/tomcat/commit/(?P<commit_hash>[0-9a-f]{5,40})"
+)
+GITBOX_COMMIT_URL_RE = re.compile(
+    r"https?://gitbox\.apache\.org/repos/asf\?p=tomcat\.git;a=commit;h=(?P<commit_hash>[0-9a-f]{5,40})"
+)
+TOMCAT_VCS_URL = "https://github.com/apache/tomcat"
 
 
 class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -75,6 +86,9 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     grouped[advisory.cve].append(advisory)
                 for cve, advisory_list in grouped.items():
                     affected_packages = []
+                    references = []
+                    all_commit_patches = []
+
                     for advisory in advisory_list:
                         self.log(f"Processing advisory {advisory.cve}")
                         apache_range = to_version_ranges_apache(
@@ -88,10 +102,19 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                             advisory.fixed_in,
                         )
 
+                        commit_patches = get_commit_patches(
+                            advisory.commit_urls,
+                        )
+                        all_commit_patches.extend(commit_patches)
+
+                        for ref_url in advisory.reference_urls:
+                            references.append(ReferenceV2(url=ref_url))
+
                         affected_packages.append(
                             AffectedPackageV2(
                                 package=PackageURL(type="apache", name="tomcat"),
                                 affected_version_range=apache_range,
+                                fixed_by_commit_patches=commit_patches,
                             )
                         )
 
@@ -103,6 +126,7 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                                     name="tomcat",
                                 ),
                                 affected_version_range=maven_range,
+                                fixed_by_commit_patches=commit_patches,
                             )
                         )
                     page_id = page_url.split("/")[-1].replace(".html", "")
@@ -110,6 +134,7 @@ class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                         advisory_id=f"{page_id}/{cve}",
                         summary=advisory_list[0].summary,
                         affected_packages=affected_packages,
+                        references=references,
                         url=page_url,
                         original_advisory_text=str(content),
                     )
@@ -261,14 +286,21 @@ class TomcatAdvisoryData:
     summary: str
     fixed_in: str
     affected_versions: str
+    commit_urls: List[str] = dataclasses.field(default_factory=list)
+    reference_urls: List[str] = dataclasses.field(default_factory=list)
 
 
 def parse_tomcat_security(html_content):
     soup = BeautifulSoup(html_content, "lxml")
     results = []
 
-    for header in soup.find_all("h3", id=re.compile(r"Fixed_in_Apache_Tomcat")):
-        m = re.search(r"Tomcat\s+([\d\.]+)", header.get_text())
+    for header in soup.find_all("h3"):
+        header_text = header.get_text(" ", strip=True)
+        m = re.search(
+            r"(?:Tomcat\s+|Fixed\s+(?:in\s+)?)((?:\d+\.)*\d+)",
+            header_text,
+            flags=re.IGNORECASE,
+        )
         if not m:
             continue
         fixed_in = m.group(1)
@@ -286,36 +318,69 @@ def parse_tomcat_security(html_content):
 
             if strong and cve_link:
                 if current:
-                    results.append(current)
+                    results.append(_finalize_advisory(current))
 
                 current = {
                     "cve": cve_link.get_text(strip=True),
                     "summary": strong.get_text(" ", strip=True),
                     "affected_versions": None,
                     "fixed_in": fixed_in,
+                    "commit_urls": [],
+                    "reference_urls": [],
                 }
                 continue
 
             if current:
                 text = p.get_text(" ", strip=True)
+
+                lower_text = text.lower()
+                if "fixed" in lower_text and "commit" in lower_text:
+                    for link in p.find_all("a", href=True):
+                        href = link["href"]
+                        if GITHUB_COMMIT_URL_RE.match(href) or GITBOX_COMMIT_URL_RE.match(href):
+                            current["commit_urls"].append(href)
+                        current["reference_urls"].append(href)
+
                 if text.startswith("Affects:"):
                     current["affected_versions"] = text.replace("Affects:", "").strip()
-                    current = TomcatAdvisoryData(
-                        cve=current["cve"],
-                        summary=current["summary"],
-                        affected_versions=current["affected_versions"],
-                        fixed_in=current["fixed_in"],
-                    )
-                    results.append(current)
+                    results.append(_finalize_advisory(current))
                     current = None
 
         if current:
-            current = TomcatAdvisoryData(
-                cve=current["cve"],
-                summary=current["summary"],
-                affected_versions=current["affected_versions"],
-                fixed_in=current["fixed_in"],
-            )
-            results.append(current)
+            results.append(_finalize_advisory(current))
 
     return results
+
+
+def _finalize_advisory(current):
+    return TomcatAdvisoryData(
+        cve=current["cve"],
+        summary=current["summary"],
+        affected_versions=current["affected_versions"],
+        fixed_in=current["fixed_in"],
+        commit_urls=current.get("commit_urls", []),
+        reference_urls=current.get("reference_urls", []),
+    )
+
+
+def get_commit_patches(commit_urls):
+    commit_patches = []
+    for url in commit_urls:
+        match = GITHUB_COMMIT_URL_RE.match(url) or GITBOX_COMMIT_URL_RE.match(url)
+        if not match:
+            continue
+
+        commit_hash = match.group("commit_hash")
+        classified_packages = []
+        append_patch_classifications(
+            url=url,
+            commit_hash=commit_hash,
+            patch_text=None,
+            affected_packages=classified_packages,
+            patches=[],
+            references=[],
+        )
+        for package in classified_packages:
+            for patch in package.fixed_by_commit_patches:
+                commit_patches.append(patch)
+    return commit_patches

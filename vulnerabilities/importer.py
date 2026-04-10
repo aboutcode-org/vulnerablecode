@@ -674,7 +674,7 @@ def clean_summary(summary):
     # https://github.com/cms-dev/cms/issues/888#issuecomment-516977572
     summary = summary.strip()
     if summary:
-        summary = summary.replace("\x00", "\uFFFD")
+        summary = summary.replace("\x00", "\ufffd")
     return summary
 
 

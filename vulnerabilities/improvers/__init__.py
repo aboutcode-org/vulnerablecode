@@ -36,6 +36,7 @@ from vulnerabilities.utils import create_registry
 
 IMPROVERS_REGISTRY = create_registry(
     [
+        valid_versions.AlmaImprover,
         valid_versions.GitHubBasicImprover,
         valid_versions.GitLabBasicImprover,
         valid_versions.NginxBasicImprover,

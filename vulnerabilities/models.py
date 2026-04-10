@@ -899,6 +899,13 @@ class Package(PackageURLMixin):
         db_index=True,
     )
 
+    release_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="Date when this package version was released by the upstream package source.",
+    )
+
     objects = PackageQuerySet.as_manager()
 
     class Meta:
@@ -3502,6 +3509,13 @@ class PackageV2(PackageURLMixin):
         "zero means the rank has not been defined yet",
         default=0,
         db_index=True,
+    )
+
+    release_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="Date when this package version was released by the upstream package source.",
     )
 
     def __str__(self):

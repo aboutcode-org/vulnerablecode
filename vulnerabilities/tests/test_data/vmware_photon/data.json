@@ -1,0 +1,106 @@
+[
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-devel",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-drivers-gpu",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-drivers-sound",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-docs",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-drivers-intel-sgx",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-oprofile",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-tools",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-python3-perf",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "bpftool",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-4.ph4 are vulnerable",
+    "res_ver": "5.10.224-4.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2024-43853",
+    "pkg": "linux-aws",
+    "cve_score": 5.5,
+    "aff_ver": "all versions before 5.10.224-3.ph4 are vulnerable",
+    "res_ver": "5.10.224-3.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2021-45417",
+    "pkg": "aide",
+    "cve_score": 7.8,
+    "aff_ver": "all versions before 0.16.2-3.ph4 are vulnerable",
+    "res_ver": "0.16.2-3.ph4",
+    "status": "Fixed"
+  },
+  {
+    "cve_id": "CVE-2018-1085",
+    "pkg": "ansible",
+    "cve_score": 9.8,
+    "aff_ver": "NA",
+    "res_ver": "NA",
+    "status": "Not Affected"
+  }
+]

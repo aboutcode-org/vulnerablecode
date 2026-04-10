@@ -26,6 +26,7 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.severity_systems import APACHE_HTTPD
 from vulnerabilities.utils import create_weaknesses_list
 from vulnerabilities.utils import cwe_regex
+from vulnerabilities.utils import get_http_headers
 from vulnerabilities.utils import get_item
 
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class ApacheHTTPDImporter(Importer):
     def advisory_data(self):
         links = fetch_links(self.base_url)
         for link in links:
-            data = requests.get(link).json()
+            data = requests.get(link, headers=get_http_headers()).json()
             yield self.to_advisory(data)
 
     def to_advisory(self, data):
@@ -150,7 +151,7 @@ class ApacheHTTPDImporter(Importer):
 
 def fetch_links(url):
     links = []
-    data = requests.get(url).content
+    data = requests.get(url, headers=get_http_headers()).content
     soup = BeautifulSoup(data, features="lxml")
     for tag in soup.find_all("a"):
         link = tag.get("href")

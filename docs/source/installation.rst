@@ -194,6 +194,13 @@ production servers.
     <https://docs.djangoproject.com/en/dev/ref/databases/#sqlite-notes>`_
     for more details.
 
+    SQLite is suitable for quick local development and running the development
+    server as a single user. However, the full test suite is not fully compatible
+    with SQLite because some tests rely on PostgreSQL-specific database features,
+    including ``DISTINCT ON`` queries and JSON containment lookups.
+
+    Use PostgreSQL when running the complete test suite with ``make test``.
+
 
 Tests
 ^^^^^

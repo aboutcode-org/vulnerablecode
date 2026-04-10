@@ -1,6 +1,12 @@
 Release notes
 =============
 
+Version v38.4.0
+---------------------
+
+- fix: run pipeline scheduling jobs in respective queues (https://github.com/aboutcode-org/vulnerablecode/pull/2263)
+- feat: show queue load factors on the pipeline dashboard (https://github.com/aboutcode-org/vulnerablecode/pull/2264)
+
 Version v38.3.0
 ---------------------
 

@@ -170,6 +170,13 @@ def compute_queue_load_factor():
     load_per_queue = {}
     seconds_in_24_hr = 86400
 
+    with suppress(ConnectionError):
+        redis_conn = django_rq.get_connection()
+        queue_names = [
+            w.queue_names()[0] for w in Worker.all(connection=redis_conn) if w.queue_names()
+        ]
+        worker_per_queue = dict(Counter(queue_names))
+
     for queue in RQ_QUEUES.keys():
         total_compute_seconds_per_queue[queue] = sum(
             (p.latest_successful_run.runtime / (p.run_interval / 24))
@@ -178,17 +185,13 @@ def compute_queue_load_factor():
             )
             if p.latest_successful_run
         )
-
-    with suppress(ConnectionError):
-        redis_conn = django_rq.get_connection()
-        queue_names = [
-            w.queue_names()[0] for w in Worker.all(connection=redis_conn) if w.queue_names()
-        ]
-        worker_per_queue = dict(Counter(queue_names))
+        if queue not in worker_per_queue:
+            worker_per_queue[queue] = 0
 
     for queue_name, worker_count in worker_per_queue.items():
+        net_load_on_queue = "no_worker"
         total_compute = total_compute_seconds_per_queue.get(queue_name, 0)
-        if worker_count == 0 or total_compute == 0:
+        if total_compute == 0:
             continue
 
         unit_load_on_queue = total_compute / seconds_in_24_hr
@@ -196,7 +199,8 @@ def compute_queue_load_factor():
         num_of_worker_for_balanced_queue = round(unit_load_on_queue)
         addition_worker_needed = max(num_of_worker_for_balanced_queue - worker_count, 0)
 
-        net_load_on_queue = unit_load_on_queue / worker_count
+        if worker_count > 0:
+            net_load_on_queue = unit_load_on_queue / worker_count
 
         load_per_queue[queue_name] = {
             "load_factor": net_load_on_queue,

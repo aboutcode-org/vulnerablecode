@@ -15,6 +15,7 @@ from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Exists
@@ -48,6 +49,7 @@ from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
+from vulnerabilities.tasks import compute_queue_load_factor
 from vulnerabilities.throttling import AnonUserUIThrottle
 from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
 from vulnerabilities.utils import get_advisories_from_groups
@@ -56,6 +58,8 @@ from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 10
+
+CACHE_TIMEOUT = 60 * 5
 
 
 class VulnerableCodeView(View):
@@ -961,6 +965,13 @@ class PipelineScheduleListView(VulnerableCodeListView, FormMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        load_per_queue = cache.get("load_per_queue")
+
+        if load_per_queue is None:
+            load_per_queue = compute_queue_load_factor()
+            cache.set("load_per_queue", load_per_queue, CACHE_TIMEOUT)
+
+        context["load_per_queue"] = load_per_queue
         context["active_pipeline_count"] = PipelineSchedule.objects.filter(is_active=True).count()
         context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
             is_active=False

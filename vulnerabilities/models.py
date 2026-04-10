@@ -2388,6 +2388,11 @@ class PipelineSchedule(models.Model):
         return self.pipelineruns.first() if self.pipelineruns.exists() else None
 
     @property
+    def latest_successful_run(self):
+        successful_runs = self.pipelineruns.filter(run_end_date__isnull=False, run_exitcode=0)
+        return successful_runs.first() if successful_runs.exists() else None
+
+    @property
     def earliest_run(self):
         return self.pipelineruns.earliest("run_start_date") if self.pipelineruns.exists() else None
 

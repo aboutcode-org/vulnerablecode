@@ -1,0 +1,68 @@
+{
+  "ghsa_id": "GHSA-7rqg-hjwc-6mjf",
+  "cve_id": "CVE-2023-22462",
+  "url": "https://api.github.com/repos/grafana/grafana/security-advisories/GHSA-7rqg-hjwc-6mjf",
+  "html_url": "https://github.com/grafana/grafana/security/advisories/GHSA-7rqg-hjwc-6mjf",
+  "summary": "Stored XSS in Text plugin",
+  "description": "An attacker needs Editor role in order to change a text panel to include a script that will execute malicious code.",
+  "severity": "medium",
+  "author": null,
+  "publisher": null,
+  "identifiers": [
+    {
+      "value": "GHSA-7rqg-hjwc-6mjf",
+      "type": "GHSA"
+    },
+    {
+      "value": "CVE-2023-22462",
+      "type": "CVE"
+    }
+  ],
+  "state": "published",
+  "created_at": "2023-03-01T08:45:00Z",
+  "updated_at": "2023-05-09T18:31:28Z",
+  "published_at": "2023-03-01T08:59:53Z",
+  "closed_at": null,
+  "withdrawn_at": null,
+  "submission": null,
+  "vulnerabilities": [
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "github.com/grafana/grafana"
+      },
+      "vulnerable_version_range": ">=9.2.0 <9.2.10",
+      "patched_versions": "9.2.10",
+      "vulnerable_functions": []
+    },
+    {
+      "package": {
+        "ecosystem": "",
+        "name": "github.com/grafana/grafana"
+      },
+      "vulnerable_version_range": ">=9.3.0 <9.3.4",
+      "patched_versions": "9.3.4",
+      "vulnerable_functions": []
+    }
+  ],
+  "cvss_severities": {
+    "cvss_v3": {
+      "vector_string": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:H/A:N",
+      "score": 6.4
+    },
+    "cvss_v4": {
+      "vector_string": null,
+      "score": null
+    }
+  },
+  "cwes": [
+    {
+      "cwe_id": "CWE-79",
+      "name": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+    }
+  ],
+  "credits": [],
+  "permalink": "https://github.com/grafana/grafana/security/advisories/GHSA-7rqg-hjwc-6mjf",
+  "cve_id_url": "https://www.cve.org/CVERecord?id=CVE-2023-22462",
+  "private_fork": null
+}

@@ -12,6 +12,7 @@ from django.apps import apps
 from django.db import IntegrityError
 from django.db import connection
 from django.db.migrations.executor import MigrationExecutor
+from django.db.models import Count
 from django.test import TestCase
 from django.utils import timezone
 from packageurl import PackageURL
@@ -1031,3 +1032,59 @@ class TestCodeCommitMigration(TestMigrations):
 
         self.assertIn(commit1, impacted.affecting_commits.all())
         self.assertIn(commit2, impacted.fixed_by_commits.all())
+
+
+class TestLatestAdvisoryV2Migration(TestMigrations):
+    """Tests is_latest field population on existing v2 advisory."""
+
+    app_name = "vulnerabilities"
+    migrate_from = "0120_impactedpackage_last_range_unfurl_at_and_more"
+    migrate_to = "0121_advisoryv2_is_latest_alter_advisoryv2_advisory_id_and_more"
+
+    def setUpBeforeMigration(self, apps):
+        AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+
+        AdvisoryV2.objects.create(
+            unique_content_id="content_id_old",
+            url="https://old.example.com",
+            summary="Old advisory",
+            advisory_id="test_adv",
+            avid="test_pipeline/test_adv",
+            datasource_id="test_pipeline",
+        )
+
+        AdvisoryV2.objects.create(
+            unique_content_id="content_id_old2",
+            url="https://old.example.com",
+            summary="Old 2 advisory",
+            advisory_id="test_adv",
+            avid="test_pipeline/test_adv",
+            datasource_id="test_pipeline",
+        )
+
+        AdvisoryV2.objects.create(
+            unique_content_id="content_id_new",
+            url="https://old.example.com",
+            summary="New advisory",
+            advisory_id="test_adv",
+            avid="test_pipeline/test_adv",
+            datasource_id="test_pipeline",
+        )
+
+    def test_no_duplicate_is_latest_for_avid(self):
+        AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+
+        duplicate = (
+            AdvisoryV2.objects.filter(is_latest=True)
+            .values("avid")
+            .annotate(cnt=Count("id"))
+            .filter(cnt__gt=1)
+        )
+
+        self.assertFalse(duplicate.exists())
+
+    def test_latest_is_actually_recent(self):
+        AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+
+        latest = AdvisoryV2.objects.get(avid="test_pipeline/test_adv", is_latest=True)
+        self.assertEqual("New advisory", latest.summary)

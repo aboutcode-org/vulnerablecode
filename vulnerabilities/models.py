@@ -3013,6 +3013,7 @@ class AdvisoryV2(models.Model):
         blank=False,
         null=False,
         unique=False,
+        db_index=True,
         help_text="An advisory is a unique vulnerability identifier in some database, "
         "such as PYSEC-2020-2233",
     )

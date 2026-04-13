@@ -25,6 +25,7 @@ def test_relate_severities_by_advisory_id():
         unique_content_id="ab1",
         url="https://example.com/advisory/CVE-2024-0001",
         date_collected="2024-01-01",
+        is_latest=True,
     )
 
     severity_advisory = AdvisoryV2.objects.create(
@@ -34,6 +35,7 @@ def test_relate_severities_by_advisory_id():
         unique_content_id="ab2",
         url="https://example.com/epss/CVE-2024-0001",
         date_collected="2024-01-02",
+        is_latest=True,
     )
     severity_advisory.severities.create(
         scoring_system=EPSS.identifier,
@@ -59,6 +61,7 @@ def test_relate_severities_via_alias():
         unique_content_id="ab3",
         url="https://example.com/advisory/CVE-2024-0002",
         date_collected="2024-01-01",
+        is_latest=True,
     )
 
     base.aliases.create(alias="CVE-2024-ALIAS")
@@ -70,6 +73,7 @@ def test_relate_severities_via_alias():
         unique_content_id="ab4",
         url="https://example.com/epss/CVE-2024-ALIAS",
         date_collected="2024-01-02",
+        is_latest=True,
     )
     severity_advisory.severities.create(
         scoring_system=EPSS.identifier,
@@ -91,6 +95,7 @@ def test_no_self_relation_created():
         url="https://example.com/advisory/CVE-2024-0003",
         date_collected="2024-01-03",
         avid="epss/CVE-2024-0003",
+        is_latest=True,
     )
     advisory.severities.create(
         scoring_system=EPSS.identifier,
@@ -112,6 +117,7 @@ def test_unsupported_severity_system_is_ignored():
         url="https://example.com/advisory/CVE-2024-0004",
         date_collected="2024-01-01",
         avid="nvd/CVE-2024-0004",
+        is_latest=True,
     )
 
     severity_advisory = AdvisoryV2.objects.create(
@@ -121,6 +127,7 @@ def test_unsupported_severity_system_is_ignored():
         url="https://example.com/epss/CVE-2024-0004",
         date_collected="2024-01-02",
         avid="epss/CVE-2024-0004",
+        is_latest=True,
     )
     severity_advisory.severities.create(
         scoring_system="UNKNOWN_SYSTEM",
@@ -142,6 +149,7 @@ def test_pipeline_is_idempotent():
         url="https://example.com/advisory/CVE-2024-0005",
         date_collected="2024-01-01",
         avid="nvd/CVE-2024-0005",
+        is_latest=True,
     )
 
     severity = AdvisoryV2.objects.create(
@@ -150,6 +158,7 @@ def test_pipeline_is_idempotent():
         unique_content_id="ab9",
         url="https://example.com/epss/CVE-2024-0005",
         date_collected="2024-01-02",
+        is_latest=True,
         avid="epss/CVE-2024-0005",
     )
     severity.severities.create(

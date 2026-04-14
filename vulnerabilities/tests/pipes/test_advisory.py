@@ -18,12 +18,15 @@ from univers.version_range import VersionRange
 
 from vulnerabilities import models
 from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackage
+from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import Reference
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
 from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.pipes.advisory import get_or_create_advisory_aliases
@@ -33,6 +36,8 @@ from vulnerabilities.pipes.advisory import get_or_create_advisory_severities
 from vulnerabilities.pipes.advisory import get_or_create_advisory_weaknesses
 from vulnerabilities.pipes.advisory import get_or_create_aliases
 from vulnerabilities.pipes.advisory import import_advisory
+from vulnerabilities.pipes.advisory import insert_advisory_v2
+from vulnerabilities.tests.pipelines import TestLogger
 from vulnerabilities.utils import compute_content_id
 
 
@@ -257,3 +262,76 @@ def test_get_or_create_advisory_commit(advisory_commit):
         assert isinstance(commit, PackageCommitPatch)
         assert commit.commit_hash in [c.commit_hash for c in advisory_commit]
         assert commit.vcs_url in [c.vcs_url for c in advisory_commit]
+
+
+class TestLatestAdvisoryV2(TestCase):
+    def setUp(self):
+        self.logger = TestLogger()
+        self.advisory1 = AdvisoryDataV2(
+            summary="Test advisory old",
+            aliases=["CVE-2025-0001"],
+            references=[],
+            severities=[],
+            weaknesses=[],
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL.from_string("pkg:npm/foobar"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>3.2.1|<4.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/4.0.0"),
+                    introduced_by_commit_patches=[],
+                    fixed_by_commit_patches=[],
+                ),
+            ],
+            patches=[],
+            advisory_id="GHSA-1234",
+            url="https://example.com/advisory",
+        )
+
+        self.advisory2 = AdvisoryDataV2(
+            summary="Test advisory new",
+            aliases=["CVE-2025-0001"],
+            references=[],
+            severities=[],
+            weaknesses=[],
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL.from_string("pkg:npm/foobar"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>3.2.1|<4.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/4.0.0"),
+                    introduced_by_commit_patches=[],
+                    fixed_by_commit_patches=[],
+                ),
+                AffectedPackageV2(
+                    package=PackageURL.from_string("pkg:npm/foobar"),
+                    affected_version_range=None,
+                    fixed_version_range=None,
+                    introduced_by_commit_patches=[],
+                    fixed_by_commit_patches=[
+                        PackageCommitPatchData(
+                            vcs_url="https://foobar.vcs/",
+                            commit_hash="982f801f",
+                        ),
+                    ],
+                ),
+            ],
+            patches=[],
+            advisory_id="GHSA-1234",
+            url="https://example.com/advisory",
+        )
+
+        insert_advisory_v2(
+            advisory=self.advisory1,
+            pipeline_id="test_pipeline_v2",
+            logger=self.logger.write,
+        )
+
+    def test_latest_advisory_update_on_advisory_insert(self):
+        adv_old = AdvisoryV2.objects.get(avid="test_pipeline_v2/GHSA-1234", is_latest=True)
+        insert_advisory_v2(
+            advisory=self.advisory2,
+            pipeline_id="test_pipeline_v2",
+            logger=self.logger.write,
+        )
+        adv_new = AdvisoryV2.objects.get(avid="test_pipeline_v2/GHSA-1234", is_latest=True)
+        self.assertEqual("Test advisory old", adv_old.summary)
+        self.assertEqual("Test advisory new", adv_new.summary)

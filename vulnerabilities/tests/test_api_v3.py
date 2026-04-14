@@ -14,22 +14,26 @@ from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from univers.version_range import PypiVersionRange
 
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipes.advisory import insert_advisory_v2
+from vulnerabilities.tests.pipelines import TestLogger
 
 
 class APIV3TestCase(APITestCase):
     def setUp(self):
         from vulnerabilities.models import ImpactedPackage
 
-        self.advisory = AdvisoryV2.objects.create(
-            datasource_id="ghsa",
-            advisory_id="GHSA-1234",
-            avid="ghsa/GHSA-1234",
-            unique_content_id="f" * 64,
-            url="https://example.com/advisory",
-            date_collected="2025-07-01T00:00:00Z",
+        self.logger = TestLogger()
+        self.advisory = insert_advisory_v2(
+            advisory=AdvisoryDataV2(
+                summary="summary",
+                advisory_id="GHSA-1234",
+                url="https://example.com/advisory",
+            ),
+            pipeline_id="ghsa",
+            logger=self.logger.write,
         )
 
         self.package = PackageV2.objects.from_purl(purl="pkg:pypi/sample@1.0.0")

@@ -34,6 +34,7 @@ def test_simple_risk_pipeline():
         unique_content_id="ajkef",
         url="https://test.com",
         date_collected=datetime.now(),
+        is_latest=True,
     )
     adv.save()
 

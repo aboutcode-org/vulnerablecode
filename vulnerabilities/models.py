@@ -2907,6 +2907,13 @@ class AdvisoryV2QuerySet(BaseQuerySet):
         )
         return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
 
+    def latest_affecting_advisories_for_packages(self, purls):
+        adv_ids = ImpactedPackageAffecting.objects.filter(package__in=purls).values_list(
+            "impacted_package__advisory_id",
+            flat=True,
+        )
+        return self.filter(id__in=Subquery(adv_ids)).latest_per_avid()
+
     def latest_fixed_by_advisories_for_purl(self, purl):
         adv_ids = ImpactedPackageFixedBy.objects.filter(package__package_url=purl).values_list(
             "impacted_package__advisory_id",
@@ -3577,25 +3584,36 @@ class PackageV2(PackageURLMixin):
             PackageV2.objects.bulk_update(sorted_packages, fields=["version_rank"])
         return self.version_rank
 
-    def get_non_vulnerable_versions(self):
+    @cached_property
+    def _non_vulnerable_versions(self):
         """
-        Return a tuple of the next and latest non-vulnerable versions as Package instance.
-        Return a tuple of (None, None) if there is no non-vulnerable version.
+        Cached computation to avoid duplicate queries.
+        Returns (next, latest)
         """
         if self.version_rank == 0:
             self.calculate_version_rank
-        non_vulnerable_versions = PackageV2.objects.get_fixed_by_package_versions(
-            self, fix=False
-        ).only_non_vulnerable()
 
-        later_non_vulnerable = non_vulnerable_versions.filter(
-            version_rank__gte=self.version_rank
-        ).order_by("version_rank")
+        qs = (
+            PackageV2.objects.get_fixed_by_package_versions(self, fix=False)
+            .only_non_vulnerable()
+            .filter(version_rank__gt=self.version_rank)
+            .order_by("version_rank")
+        )
 
-        if later_non_vulnerable.exists():
-            return later_non_vulnerable.first(), later_non_vulnerable.last()
+        next_non_vulnerable = qs.first()
+        latest_non_vulnerable = qs.last()
 
-        return None, None
+        return next_non_vulnerable, latest_non_vulnerable
+
+    @property
+    def next_non_vulnerable_version(self):
+        next_nv, _ = self._non_vulnerable_versions
+        return next_nv if next_nv else None
+
+    @property
+    def latest_non_vulnerable_version(self):
+        _, latest_nv = self._non_vulnerable_versions
+        return latest_nv if latest_nv else None
 
     @cached_property
     def version_class(self):

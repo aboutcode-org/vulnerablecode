@@ -66,7 +66,7 @@ class APIV3TestCase(APITestCase):
     def test_packages_post_with_details(self):
         url = reverse("package-v3-list")
 
-        with self.assertNumQueries(33):
+        with self.assertNumQueries(34):
             response = self.client.post(
                 url,
                 data={

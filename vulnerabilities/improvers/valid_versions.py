@@ -40,6 +40,8 @@ from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
 from vulnerabilities.models import Advisory
+from vulnerabilities.models import Package
+from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
 from vulnerabilities.pipelines.gitlab_importer import GitLabImporterPipeline
@@ -73,14 +75,44 @@ class ValidVersionImprover(Improver):
         """
         Return a list of versions published before `until` for the `package_url`
         """
-        versions = package_versions.versions(str(package_url))
+        versions = list(package_versions.versions(str(package_url)) or [])
+        self.store_package_release_dates(package_url=package_url, versions=versions)
         versions_before_until = []
-        for version in versions or []:
+        for version in versions:
             if until and version.release_date and version.release_date > until:
                 continue
             versions_before_until.append(version.value)
 
         return versions_before_until
+
+    def store_package_release_dates(self, package_url: PackageURL, versions: List) -> None:
+        """
+        Persist release dates for known package versions in both Package and PackageV2.
+        """
+        releases_by_version = {
+            version.value: version.release_date
+            for version in versions
+            if getattr(version, "value", None) and getattr(version, "release_date", None)
+        }
+        if not releases_by_version:
+            return
+
+        filters = {
+            "type": package_url.type,
+            "namespace": package_url.namespace,
+            "name": package_url.name,
+            "version__in": list(releases_by_version),
+        }
+
+        for model in (Package, PackageV2):
+            packages_to_update = []
+            for package in model.objects.filter(**filters).only("id", "version", "release_date"):
+                release_date = releases_by_version.get(package.version)
+                if release_date and package.release_date != release_date:
+                    package.release_date = release_date
+                    packages_to_update.append(package)
+            if packages_to_update:
+                model.objects.bulk_update(packages_to_update, fields=["release_date"])
 
     def get_inferences(self, advisory_data: AdvisoryData) -> Iterable[Inference]:
         """

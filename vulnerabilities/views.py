@@ -62,6 +62,25 @@ PAGE_SIZE = 10
 CACHE_TIMEOUT = 60 * 5
 
 
+def get_latest_epss_severity(severities):
+    """
+    Return the latest EPSS severity by publication date.
+    """
+    return (
+        severities.filter(scoring_system=EPSS.identifier)
+        .order_by(
+            F("published_at").desc(nulls_last=True),
+            F("id").desc(),
+        )
+        .first()
+    )
+
+
+class PackageSearch(ListView):
+    model = models.Package
+    template_name = "packages.html"
+    ordering = ["type", "namespace", "name", "version"]
+    paginate_by = PAGE_SIZE
 class VulnerableCodeView(View):
     """
     Base ListView for VulnerableCode views that includes throttling.
@@ -563,7 +582,7 @@ class VulnerabilityDetails(VulnerableCodeDetailView):
             ):
                 logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
 
-        epss_severity = vulnerability.severities.filter(scoring_system="epss").first()
+        epss_severity = get_latest_epss_severity(vulnerability.severities)
         epss_data = None
         if epss_severity:
             epss_data = {
@@ -679,7 +698,7 @@ class AdvisoryDetails(VulnerableCodeDetailView):
             .exclude(scoring_elements="")
         )
 
-        epss_severity = advisory.severities.filter(scoring_system="epss").first()
+        epss_severity = get_latest_epss_severity(advisory.severities)
         epss_data = None
         epss_advisory = None
         if not epss_severity:
@@ -691,7 +710,7 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                 .first()
             )
             if epss_advisory:
-                epss_severity = epss_advisory.severities.filter(scoring_system="epss").first()
+                epss_severity = get_latest_epss_severity(epss_advisory.severities)
         if epss_severity:
             # If the advisory itself does not have EPSS severity, but has a related advisory with EPSS severity, we use the related advisory's EPSS severity and URL as the source of EPSS data.
             epss_data = {

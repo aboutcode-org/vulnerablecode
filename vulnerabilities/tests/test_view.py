@@ -9,6 +9,8 @@
 
 import os
 import time
+from datetime import datetime
+from datetime import timezone as dt_timezone
 
 import pytest
 from django.core.cache import cache
@@ -183,6 +185,33 @@ class VulnerabilitySearchTestCase(TestCase):
     def test_vulnerabilties_search_view_can_find_alias(self):
         response = self.client.get(f"/vulnerabilities/search/?search=TEST-2022")
         self.assertEqual(response.status_code, 200)
+
+    def test_vulnerability_details_epss_uses_latest_published_score(self):
+        older_epss = VulnerabilitySeverity.objects.create(
+            url="https://api.first.org/data/v1/epss?cve=CVE-2024-39689",
+            scoring_system="epss",
+            value="0.00045",
+            scoring_elements="0.16709",
+            published_at=datetime(2024, 11, 1, tzinfo=dt_timezone.utc),
+        )
+        latest_epss = VulnerabilitySeverity.objects.create(
+            url="https://api.first.org/data/v1/epss?cve=CVE-2024-39689",
+            scoring_system="epss",
+            value="0.21233",
+            scoring_elements="0.95432",
+            published_at=datetime(2025, 8, 14, tzinfo=dt_timezone.utc),
+        )
+
+        self.vulnerability.severities.add(older_epss)
+        self.vulnerability.severities.add(latest_epss)
+
+        response = self.client.get(f"/vulnerabilities/{self.vulnerability.vulnerability_id}")
+        self.assertEqual(response.status_code, 200)
+
+        epss_data = response.context["epss_data"]
+        self.assertEqual(epss_data["score"], "0.21233")
+        self.assertEqual(epss_data["percentile"], "0.95432")
+        self.assertEqual(epss_data["published_at"], datetime(2025, 8, 14, tzinfo=dt_timezone.utc))
 
 
 class CheckRobotsTxtTestCase(TestCase):

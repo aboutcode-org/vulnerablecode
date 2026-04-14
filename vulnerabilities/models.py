@@ -2876,14 +2876,7 @@ class PackageCommitPatch(models.Model):
 
 class AdvisoryV2QuerySet(BaseQuerySet):
     def latest_for_avid(self, avid: str):
-        return (
-            self.filter(avid=avid)
-            .order_by(
-                F("date_collected").desc(nulls_last=True),
-                "-id",
-            )
-            .first()
-        )
+        return self.get(avid=avid, is_latest=True)
 
     def latest_per_avid(self):
         return self.filter(is_latest=True)

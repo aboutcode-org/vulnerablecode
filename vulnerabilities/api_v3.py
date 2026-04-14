@@ -459,7 +459,12 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(
             page,
             many=True,
-            context={"request": request, "advisory_map": affected_advisory_map, "impact_map": impact_map, "fixing_advisory_map": fixing_advisory_map},
+            context={
+                "request": request,
+                "advisory_map": affected_advisory_map,
+                "impact_map": impact_map,
+                "fixing_advisory_map": fixing_advisory_map,
+            },
         )
         return self.get_paginated_response(serializer.data)
 
@@ -675,8 +680,7 @@ def get_fixing_advisories_bulk(packages):
         AdvisorySet.objects.filter(
             package_id__in=package_ids,
             relation_type="fixing",
-        )
-        .only(
+        ).only(
             "id",
             "package_id",
             "primary_advisory__advisory_id",
@@ -695,9 +699,7 @@ def get_fixing_advisories_bulk(packages):
         grouped = []
 
         for adv_id in groups:
-            grouped.append(
-                {"advisory_id": adv_id.split("/")[-1]}
-            )
+            grouped.append({"advisory_id": adv_id.split("/")[-1]})
 
         result[package.id] = grouped
 

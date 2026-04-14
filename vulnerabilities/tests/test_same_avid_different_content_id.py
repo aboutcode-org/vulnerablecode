@@ -7,13 +7,14 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import uuid
-from datetime import timedelta
-
 import pytest
-from django.utils.timezone import now
 
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.pipes.advisory import insert_advisory_v2
+from vulnerabilities.tests.pipelines import TestLogger
+
+logger = TestLogger()
 
 
 @pytest.fixture
@@ -22,45 +23,29 @@ def advisory_factory(db):
     Factory to create AdvisoryV2 objects with minimal required fields.
     """
 
-    def _create(*, avid, advisory_id, collected_at):
-        return AdvisoryV2.objects.create(
-            datasource_id="test_source",
-            advisory_id=advisory_id,
-            avid=avid,
-            unique_content_id=str(uuid.uuid4()),
-            url="https://example.com/advisory",
-            date_collected=collected_at,
+    def _create(*, advisory_id, summary):
+
+        return insert_advisory_v2(
+            advisory=AdvisoryDataV2(
+                summary=summary,
+                advisory_id=advisory_id,
+                url="https://example.com/advisory",
+            ),
+            pipeline_id="source",
+            logger=logger.write,
         )
 
     return _create
 
 
-@pytest.fixture
-def timestamps():
-    now_ts = now()
-    return {
-        "old": now_ts - timedelta(days=3),
-        "mid": now_ts - timedelta(days=1),
-        "new": now_ts,
-    }
-
-
 @pytest.mark.django_db
 def test_latest_for_avid_returns_latest_by_date_collected(
-    advisory_factory, timestamps, django_assert_num_queries
+    advisory_factory, django_assert_num_queries
 ):
     avid = "source/ADV-1"
 
-    older = advisory_factory(
-        avid=avid,
-        advisory_id="ADV-1",
-        collected_at=timestamps["old"],
-    )
-    newer = advisory_factory(
-        avid=avid,
-        advisory_id="ADV-1",
-        collected_at=timestamps["new"],
-    )
+    older = advisory_factory(advisory_id="ADV-1", summary="old advisory")
+    newer = advisory_factory(advisory_id="ADV-1", summary="new advisory")
 
     with django_assert_num_queries(1):
         result = AdvisoryV2.objects.latest_for_avid(avid)
@@ -70,20 +55,11 @@ def test_latest_for_avid_returns_latest_by_date_collected(
 
 
 @pytest.mark.django_db
-def test_latest_for_avid_tie_breaks_by_id(advisory_factory, timestamps, django_assert_num_queries):
+def test_latest_for_avid_tie_breaks_by_id(advisory_factory, django_assert_num_queries):
     avid = "source/ADV-2"
-    ts = timestamps["mid"]
 
-    first = advisory_factory(
-        avid=avid,
-        advisory_id="ADV-2",
-        collected_at=ts,
-    )
-    second = advisory_factory(
-        avid=avid,
-        advisory_id="ADV-2",
-        collected_at=ts,
-    )
+    first = advisory_factory(advisory_id="ADV-2", summary="old advisory")
+    second = advisory_factory(advisory_id="ADV-2", summary="new advisory")
 
     with django_assert_num_queries(1):
         result = AdvisoryV2.objects.latest_for_avid(avid)
@@ -92,25 +68,11 @@ def test_latest_for_avid_tie_breaks_by_id(advisory_factory, timestamps, django_a
 
 
 @pytest.mark.django_db
-def test_latest_per_avid_returns_one_row_per_avid(
-    advisory_factory, timestamps, django_assert_num_queries
-):
-    advisory_factory(
-        avid="source/A",
-        advisory_id="A",
-        collected_at=timestamps["old"],
-    )
-    latest_a = advisory_factory(
-        avid="source/A",
-        advisory_id="A",
-        collected_at=timestamps["new"],
-    )
+def test_latest_per_avid_returns_one_row_per_avid(advisory_factory, django_assert_num_queries):
+    advisory_factory(advisory_id="A", summary="old advisory")
+    latest_a = advisory_factory(advisory_id="A", summary="new advisory")
 
-    latest_b = advisory_factory(
-        avid="source/B",
-        advisory_id="B",
-        collected_at=timestamps["mid"],
-    )
+    latest_b = advisory_factory(advisory_id="B", summary="new advisory")
 
     with django_assert_num_queries(1):
         qs = AdvisoryV2.objects.latest_per_avid()
@@ -122,19 +84,11 @@ def test_latest_per_avid_returns_one_row_per_avid(
 
 
 @pytest.mark.django_db
-def test_latest_per_avid_excludes_older_versions(advisory_factory, timestamps):
+def test_latest_per_avid_excludes_older_versions(advisory_factory):
     avid = "source/C"
 
-    older = advisory_factory(
-        avid=avid,
-        advisory_id="C",
-        collected_at=timestamps["old"],
-    )
-    latest = advisory_factory(
-        avid=avid,
-        advisory_id="C",
-        collected_at=timestamps["new"],
-    )
+    older = advisory_factory(advisory_id="C", summary="old advisory")
+    latest = advisory_factory(advisory_id="C", summary="new advisory")
 
     results = list(AdvisoryV2.objects.latest_per_avid())
 
@@ -144,30 +98,14 @@ def test_latest_per_avid_excludes_older_versions(advisory_factory, timestamps):
 
 @pytest.mark.django_db
 def test_latest_for_avids_filters_and_collapses_correctly(
-    advisory_factory, timestamps, django_assert_num_queries
+    advisory_factory, django_assert_num_queries
 ):
-    advisory_factory(
-        avid="source/A",
-        advisory_id="A",
-        collected_at=timestamps["old"],
-    )
-    latest_a = advisory_factory(
-        avid="source/A",
-        advisory_id="A",
-        collected_at=timestamps["new"],
-    )
 
-    latest_b = advisory_factory(
-        avid="source/B",
-        advisory_id="B",
-        collected_at=timestamps["mid"],
-    )
+    advisory_factory(advisory_id="A", summary="old advisory")
+    latest_a = advisory_factory(advisory_id="A", summary="new advisory")
 
-    advisory_factory(
-        avid="source/C",
-        advisory_id="C",
-        collected_at=timestamps["new"],
-    )
+    advisory_factory(advisory_id="B", summary="old advisory")
+    latest_b = advisory_factory(advisory_id="B", summary="new advisory")
 
     with django_assert_num_queries(1):
         qs = AdvisoryV2.objects.latest_for_avids({"source/A", "source/B"})

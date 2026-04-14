@@ -2358,7 +2358,11 @@ class PipelineSchedule(models.Model):
         if not self.pk:
             self.schedule_work_id = self.create_new_job(execute_now=True)
         elif self.pk and (existing := PipelineSchedule.objects.get(pk=self.pk)):
-            if existing.is_active != self.is_active or existing.run_interval != self.run_interval:
+            if (
+                existing.is_active != self.is_active
+                or existing.run_interval != self.run_interval
+                or existing.run_priority != self.run_priority
+            ):
                 self.schedule_work_id = self.create_new_job()
         self.full_clean()
         return super().save(*args, **kwargs)
@@ -2389,6 +2393,11 @@ class PipelineSchedule(models.Model):
     @property
     def latest_run(self):
         return self.pipelineruns.first() if self.pipelineruns.exists() else None
+
+    @property
+    def latest_successful_run(self):
+        successful_runs = self.pipelineruns.filter(run_end_date__isnull=False, run_exitcode=0)
+        return successful_runs.first() if successful_runs.exists() else None
 
     @property
     def earliest_run(self):
@@ -2874,21 +2883,10 @@ class PackageCommitPatch(models.Model):
 
 class AdvisoryV2QuerySet(BaseQuerySet):
     def latest_for_avid(self, avid: str):
-        return (
-            self.filter(avid=avid)
-            .order_by(
-                F("date_collected").desc(nulls_last=True),
-                "-id",
-            )
-            .first()
-        )
+        return self.get(avid=avid, is_latest=True)
 
     def latest_per_avid(self):
-        return self.order_by(
-            "avid",
-            F("date_collected").desc(nulls_last=True),
-            "-id",
-        ).distinct("avid")
+        return self.filter(is_latest=True)
 
     def latest_for_avids(self, avids):
         return self.filter(avid__in=avids).latest_per_avid()
@@ -3005,6 +3003,7 @@ class AdvisoryV2(models.Model):
         max_length=200,
         blank=False,
         null=False,
+        db_index=True,
         help_text="Unique ID for the datasource used for this advisory ." "e.g.: nginx_importer_v2",
     )
 
@@ -3014,6 +3013,7 @@ class AdvisoryV2(models.Model):
         blank=False,
         null=False,
         unique=False,
+        db_index=True,
         help_text="An advisory is a unique vulnerability identifier in some database, "
         "such as PYSEC-2020-2233",
     )
@@ -3088,6 +3088,14 @@ class AdvisoryV2(models.Model):
         help_text="UTC Date on which the advisory was collected",
     )
 
+    is_latest = models.BooleanField(
+        default=False,
+        blank=False,
+        null=False,
+        db_index=True,
+        help_text="Indicates whether this is the latest version of the advisory identified by its AVID.",
+    )
+
     original_advisory_text = models.TextField(
         blank=True,
         null=True,
@@ -3140,6 +3148,11 @@ class AdvisoryV2(models.Model):
     class Meta:
         unique_together = ["datasource_id", "advisory_id", "unique_content_id"]
         ordering = ["datasource_id", "advisory_id", "date_published", "unique_content_id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["avid"], condition=Q(is_latest=True), name="unique_latest_per_avid"
+            )
+        ]
         indexes = [
             models.Index(
                 fields=["avid", "-date_collected", "-id"],

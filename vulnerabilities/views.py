@@ -257,7 +257,7 @@ class PackageV2Details(VulnerableCodeDetailView):
         context = super().get_context_data(**kwargs)
         package = self.object
 
-        next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions()
+        next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions
 
         context["package"] = package
         context["next_non_vulnerable"] = next_non_vulnerable

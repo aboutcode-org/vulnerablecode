@@ -3585,7 +3585,7 @@ class PackageV2(PackageURLMixin):
         return self.version_rank
 
     @cached_property
-    def _non_vulnerable_versions(self):
+    def get_non_vulnerable_versions(self):
         """
         Cached computation to avoid duplicate queries.
         Returns (next, latest)
@@ -3607,12 +3607,12 @@ class PackageV2(PackageURLMixin):
 
     @property
     def next_non_vulnerable_version(self):
-        next_nv, _ = self._non_vulnerable_versions
+        next_nv, _ = self.get_non_vulnerable_versions
         return next_nv if next_nv else None
 
     @property
     def latest_non_vulnerable_version(self):
-        _, latest_nv = self._non_vulnerable_versions
+        _, latest_nv = self.get_non_vulnerable_versions
         return latest_nv if latest_nv else None
 
     @cached_property

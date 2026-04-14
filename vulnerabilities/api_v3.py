@@ -12,6 +12,7 @@ from typing import List
 from urllib.parse import urlencode
 
 from django.db.models import Exists
+from django.db.models import Max
 from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django_filters import rest_framework as filters
@@ -226,8 +227,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
             for adv in advisories:
                 fixed = impact_map.get(adv["avid"])
-                if not fixed:
-                    continue
+                adv.pop("avid", None)
 
                 result.append(
                     {
@@ -294,12 +294,9 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 return self.return_advisories_data(package, advisories_qs, advisories)
 
     def get_fixing_vulnerabilities(self, package):
-        fixing_advisories = AdvisorySet.objects.filter(
-            package=package, relation_type="fixing"
-        ).values_list("primary_advisory__advisory_id", flat=True)
-
-        if fixing_advisories:
-            return [{"advisory_id": adv_id.split("/")[-1]} for adv_id in fixing_advisories]
+        advisories = self.context["fixing_advisory_map"].get(package.id, [])
+        if advisories:
+            return advisories
 
         advisories_qs = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(package.package_url)
 
@@ -326,6 +323,8 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 "impacted_packages__affecting_packages",
                 "impacted_packages__fixed_by_packages",
             )
+            if not advisories_qs.exists():
+                return []
             advisories: List[GroupedAdvisory] = merge_and_save_grouped_advisories(
                 package, advisories_qs, "fixing"
             )
@@ -454,12 +453,13 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
             query = PackageV2.objects.filter(package_url__in=purls).order_by("package_url")
 
         page = self.paginate_queryset(query)
-        advisory_map = get_grouped_advisories_bulk(page)
+        affected_advisory_map = get_affected_advisories_bulk(page)
+        fixing_advisory_map = get_fixing_advisories_bulk(page)
         impact_map = get_impacts_bulk(page)
         serializer = self.get_serializer(
             page,
             many=True,
-            context={"request": request, "advisory_map": advisory_map, "impact_map": impact_map},
+            context={"request": request, "advisory_map": affected_advisory_map, "impact_map": impact_map, "fixing_advisory_map": fixing_advisory_map},
         )
         return self.get_paginated_response(serializer.data)
 
@@ -562,7 +562,7 @@ class AffectedByAdvisoriesViewSet(PackageAdvisoriesViewSet):
     serializer_class = AffectedByAdvisoryV3Serializer
 
 
-def get_grouped_advisories_bulk(packages):
+def get_affected_advisories_bulk(packages):
     package_ids = [p.id for p in packages]
 
     advisory_sets = list(
@@ -570,19 +570,14 @@ def get_grouped_advisories_bulk(packages):
             package_id__in=package_ids,
             relation_type="affecting",
         )
-        .select_related("primary_advisory", "package")
-        .prefetch_related(
-            Prefetch("aliases", queryset=AdvisoryAlias.objects.only("alias")),
-            Prefetch(
-                "members",
-                queryset=AdvisorySetMember.objects.filter(is_primary=False)
-                .select_related("advisory")
-                .only(
-                    "advisory__avid",
-                    "advisory__weighted_severity",
-                    "advisory__exploitability",
-                ),
-                to_attr="secondary_members",
+        .select_related("primary_advisory")
+        .prefetch_related(Prefetch("aliases", queryset=AdvisoryAlias.objects.only("alias")))
+        .annotate(
+            max_severity=Max(
+                "members__advisory__weighted_severity",
+            ),
+            max_exploitability=Max(
+                "members__advisory__exploitability",
             ),
         )
         .only(
@@ -590,13 +585,12 @@ def get_grouped_advisories_bulk(packages):
             "package_id",
             "primary_advisory__avid",
             "primary_advisory__summary",
-            "primary_advisory__weighted_severity",
-            "primary_advisory__exploitability",
             "primary_advisory__advisory_id",
         )
     )
 
     package_map = defaultdict(list)
+
     for adv in advisory_sets:
         adv._aliases_cache = [a.alias for a in adv.aliases.all()]
         package_map[adv.package_id].append(adv)
@@ -609,23 +603,14 @@ def get_grouped_advisories_bulk(packages):
 
         for adv in groups:
             primary = adv.primary_advisory
-            secondaries = [m.advisory for m in adv.secondary_members]
 
-            max_sev = primary.weighted_severity or 0.0
-            max_exp = primary.exploitability or 0.0
-
-            for sec in secondaries:
-                if sec.weighted_severity:
-                    max_sev = max(max_sev, sec.weighted_severity)
-                if sec.exploitability:
-                    max_exp = max(max_exp, sec.exploitability)
+            max_sev = adv.max_severity or 0.0
+            max_exp = adv.max_exploitability or 0.0
 
             weighted_severity = round(max_sev, 1) if max_sev else None
             exploitability = max_exp or None
 
-            risk_score = None
-            if exploitability and weighted_severity:
-                risk_score = round(min(exploitability * weighted_severity, 10.0), 1)
+            risk_score = round(min(max_exp * max_sev, 10.0), 1) if max_exp and max_sev else None
 
             identifier = primary.advisory_id.split("/")[-1]
 
@@ -681,3 +666,39 @@ def get_impacts_bulk(packages):
         impact_map[impact.package_id][avid] = fixed_cache[ip.id]
 
     return impact_map
+
+
+def get_fixing_advisories_bulk(packages):
+    package_ids = [p.id for p in packages]
+
+    advisory_sets = list(
+        AdvisorySet.objects.filter(
+            package_id__in=package_ids,
+            relation_type="fixing",
+        )
+        .only(
+            "id",
+            "package_id",
+            "primary_advisory__advisory_id",
+        )
+    )
+
+    package_map = defaultdict(list)
+
+    for adv in advisory_sets:
+        package_map[adv.package_id].append(adv.primary_advisory.advisory_id)
+
+    result = {}
+
+    for package in packages:
+        groups = package_map.get(package.id, [])
+        grouped = []
+
+        for adv_id in groups:
+            grouped.append(
+                {"advisory_id": adv_id.split("/")[-1]}
+            )
+
+        result[package.id] = grouped
+
+    return result

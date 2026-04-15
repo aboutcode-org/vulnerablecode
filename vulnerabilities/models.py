@@ -3490,7 +3490,7 @@ class PackageV2(PackageURLMixin):
         null=False,
         help_text="The Package URL for this package.",
         db_index=True,
-        unique=True
+        unique=True,
     )
 
     plain_package_url = models.CharField(

@@ -1,6 +1,11 @@
 Release notes
 =============
 
+Version v38.5.0
+---------------------
+
+- fix: Make package_url field unique for PackageV2
+
 Version v38.4.0
 ---------------------
 

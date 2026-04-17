@@ -260,7 +260,7 @@ PARENTHESES_RE = re.compile(r"\(.*?\)")
 
 def parse_vuln_ids(vuln_ids_string, logger=print):
     """
-    Parses a raw vulnerability ids, removes parentheses and returns the advisory_id and a list of all valid aliases.
+    Parses a raw vulnerability ids, removes parentheses and returns the vuln_id and a list of all valid aliases.
     """
     vuln_ids = PARENTHESES_RE.sub("", vuln_ids_string)
     if not vuln_ids_string:

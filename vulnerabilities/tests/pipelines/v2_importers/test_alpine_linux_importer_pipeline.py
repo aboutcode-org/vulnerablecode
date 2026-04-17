@@ -99,7 +99,7 @@ def test_load_advisories_package_with_invalid_alpine_version(test_case):
 
 
 @pytest.mark.parametrize(
-    "raw_input, expected_advisory_id, expected_aliases",
+    "raw_input, expected_vuln_id, expected_aliases",
     [
         ("CVE-2022-42332 XSA-427", "CVE-2022-42332", ["CVE-2022-42332", "XSA-427"]),
         (
@@ -171,7 +171,7 @@ def test_load_advisories_package_with_invalid_alpine_version(test_case):
         ("CVE-46838", None, []),  # invalid CVE
     ],
 )
-def test_parse_vuln_ids(raw_input, expected_advisory_id, expected_aliases):
-    advisory_id, aliases = parse_vuln_ids(raw_input)
-    assert advisory_id == expected_advisory_id
+def test_parse_vuln_ids(raw_input, expected_vuln_id, expected_aliases):
+    vuln_id, aliases = parse_vuln_ids(raw_input)
+    assert vuln_id == expected_vuln_id
     assert aliases == expected_aliases

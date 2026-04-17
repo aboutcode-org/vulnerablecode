@@ -6,6 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+
 from datetime import datetime
 
 from django.apps import apps
@@ -1088,3 +1089,98 @@ class TestLatestAdvisoryV2Migration(TestMigrations):
 
         latest = AdvisoryV2.objects.get(avid="test_pipeline/test_adv", is_latest=True)
         self.assertEqual("New advisory", latest.summary)
+
+
+class TestMalformedAliasesAVIDMigration(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0121_advisoryv2_is_latest_alter_advisoryv2_advisory_id_and_more"
+    migrate_to = "0122_advisoryv2_remove_malformed_aliases_and_dvisory_id"
+    raw_alias_inputs = [
+        ("CVE-2023-1111", True),
+        ("GHSA-abcd-1234", True),
+        ("", False),
+        ("(not", False),
+        ("applicable)", False),
+        ("(BABEL)", False),
+        ("(was", False),
+        ("--with-systemd)", False),
+        ("fixed", False),
+        ("printing", False),
+        ("(AFS/RX)", False),
+        ("unreliably", False),
+        ("(ICMP)", False),
+        ("CVE", False),
+        ("(Not", False),
+        ("(RSVP)", False),
+        ("libpcap)", False),
+        ("(SMB", False),
+        ("fix)", False),
+        ("(DCCP)", False),
+        ("(HNCP)", False),
+        ("(+", False),
+        ("(IKEv1)", False),
+        ("(FrameRelay)", False),
+        ("XPTI", False),
+        ("CVE_2019-2426", False),
+        ("(BGP)", False),
+        ("disabled)", False),
+        ("(RPL)", False),
+        ("regression", False),
+        ("actually", False),
+        ("(VRRP)", False),
+        ("-V)", False),
+        ("2025-48379", False),
+        ("fixed,", False),
+        ("(802.11)", False),
+        ("affected,", False),
+        ("SMB", False),
+        ("(OSPF6)", False),
+        ("too", False),
+        ("partially", False),
+        ("in", False),
+        ("(SMB)", False),
+        ("but", False),
+        ("-", False),
+        ("(LDP)", False),
+        ("reproduced,", False),
+        ("N/A", False),
+        ("(tcpdump", False),
+        ("requires", False),
+        ("(AoE)", False),
+        ("(LMP)", False),
+        (" CVE-2025-55070", False),
+        ("n/a", False),
+        ("No CVE assigned", False),
+        ("- CVE-2026-26365", False),
+    ]
+
+    def setUpBeforeMigration(self, apps):
+        AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+        AdvisoryAlias = apps.get_model("vulnerabilities", "AdvisoryAlias")
+
+        for i, (raw_input, _) in enumerate(self.raw_alias_inputs):
+            adv = AdvisoryV2.objects.create(
+                unique_content_id=f"content_{i}",
+                url="https://example.com",
+                summary=f"Advisory for {raw_input}",
+                advisory_id=raw_input,
+                avid=f"test_pipeline/{raw_input}",
+                datasource_id="test_pipeline",
+            )
+            alias = AdvisoryAlias.objects.create(alias=raw_input)
+            adv.aliases.add(alias)
+
+    def test_migration_processes_malformed_aliases(self):
+        AdvisoryV2 = self.apps.get_model("vulnerabilities", "AdvisoryV2")
+        AdvisoryAlias = self.apps.get_model("vulnerabilities", "AdvisoryAlias")
+
+        for i, (raw_input, expected_to_survive) in enumerate(self.raw_alias_inputs):
+            adv_exists = AdvisoryV2.objects.filter(unique_content_id=f"content_{i}").exists()
+            alias_exists = AdvisoryAlias.objects.filter(alias=raw_input).exists()
+
+            if expected_to_survive:
+                assert adv_exists == True
+                assert alias_exists == True
+            else:
+                assert adv_exists == False
+                assert alias_exists == False

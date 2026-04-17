@@ -109,6 +109,9 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 )
 
             title = data.get("title") or ""
+            if not title.startswith("ISTIO-"):
+                self.log(f"Invalid advisory_id: {title}")
+
             summary = data.get("description") or ""
             references = []
             if title:

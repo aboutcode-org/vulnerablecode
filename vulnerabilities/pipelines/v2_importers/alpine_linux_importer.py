@@ -166,7 +166,7 @@ def load_advisories(
         # fixed_vulns is a list of strings and each string is a space-separated
         # list of aliases and CVES
         for vuln_ids in fixed_vulns:
-            vuln_id, aliases = parse_vuln_ids(vuln_ids)
+            vuln_id, aliases = parse_vuln_ids(vuln_ids, logger=logger)
 
             if not vuln_id:
                 continue
@@ -258,7 +258,7 @@ def load_advisories(
 PARENTHESES_RE = re.compile(r"\(.*?\)")
 
 
-def parse_vuln_ids(vuln_ids_string):
+def parse_vuln_ids(vuln_ids_string, logger=print):
     """
     Parses a raw vulnerability ids, removes parentheses and returns the advisory_id and a list of all valid aliases.
     """
@@ -271,13 +271,30 @@ def parse_vuln_ids(vuln_ids_string):
         clean_alias = alias.replace("_", "-").replace(".patch", "")
         cleaned_vuln_ids.append(clean_alias)
 
-    aliases = [
-        alias
-        for alias in cleaned_vuln_ids
-        if alias
-        and alias not in ["N/A", "CVE"]
-        and not (alias.startswith("CVE") and not is_cve(alias))
-    ]
+    aliases = []
+    valid_prefixes = (
+        "XSA-",
+        "GHSL-",
+        "TALOS-",
+        "RUSTSEC-",
+        "GHSA-",
+        "GNUTLS-",
+        "VSV",
+        "ZDI-CAN-",
+        "DW",
+        "YSA-",
+        "ZBX-",
+        "ALPINE-",
+        "TS-",
+        "wnpa-sec-",
+    )
+    for alias in cleaned_vuln_ids:
+        if alias and (
+            (alias.startswith("CVE-") and is_cve(alias)) or alias.startswith(valid_prefixes)
+        ):
+            aliases.append(alias)
+        else:
+            logger(f"Malformed aliases found: {alias}")
 
     if not aliases:
         return None, []

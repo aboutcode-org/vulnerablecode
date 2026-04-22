@@ -618,6 +618,22 @@ def normalize_list(lst):
     return sorted(lst) if lst else []
 
 
+def canonical_value(value):
+    """
+    Return a canonical, order independent tuple for hashing/deduplication.
+
+    >>> canonical_value({"b": ["k", "j"], "a": 2})
+    (('a', 2), ('b', ('j', 'k')))
+    >>> canonical_value([2, 1])
+    (1, 2)
+    """
+    if isinstance(value, dict):
+        return tuple(sorted((k, canonical_value(v)) for k, v in value.items()))
+    if isinstance(value, (list, set, tuple)):
+        return tuple(sorted(canonical_value(v) for v in value))
+    return value
+
+
 def compute_content_id(advisory_data):
     """
     Compute a unique content_id for an advisory by normalizing its data and hashing it.

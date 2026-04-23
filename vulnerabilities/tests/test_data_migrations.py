@@ -1164,8 +1164,8 @@ class TestMalformedAliasesAVIDMigration(TestMigrations):
                 url="https://example.com",
                 summary=f"Advisory for {raw_input}",
                 advisory_id=raw_input,
-                avid=f"test_pipeline/{raw_input}",
-                datasource_id="test_pipeline",
+                avid=f"alpine_linux_importer_v2/{raw_input}",
+                datasource_id="alpine_linux_importer_v2",
             )
             alias = AdvisoryAlias.objects.create(alias=raw_input)
             adv.aliases.add(alias)

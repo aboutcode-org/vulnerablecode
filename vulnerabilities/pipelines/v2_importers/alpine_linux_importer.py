@@ -285,8 +285,10 @@ def parse_vuln_ids(vuln_ids_string, logger=print):
         "ZBX-",
         "ALPINE-",
         "TS-",
+        "OSEC-",
         "wnpa-sec-",
     )
+
     for alias in cleaned_vuln_ids:
         if alias and (
             (alias.startswith("CVE-") and is_cve(alias)) or alias.startswith(valid_prefixes)

@@ -120,6 +120,7 @@ def test_load_advisories_package_with_invalid_alpine_version(test_case):
         ),
         ("CVE-2023-44441 ZDI-CAN-22093", "CVE-2023-44441", ["CVE-2023-44441", "ZDI-CAN-22093"]),
         ("CVE-2022-45059 VSV00010", "CVE-2022-45059", ["CVE-2022-45059", "VSV00010"]),
+        ("OSEC-2026-03", "OSEC-2026-03", ["OSEC-2026-03"]),
         ("CVE-2021-35940.patch", "CVE-2021-35940", ["CVE-2021-35940"]),
         ("XSA-207", "XSA-207", ["XSA-207"]),
         ("ALPINE-13661", "ALPINE-13661", ["ALPINE-13661"]),

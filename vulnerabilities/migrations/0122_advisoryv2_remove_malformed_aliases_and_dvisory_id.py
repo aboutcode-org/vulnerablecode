@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
             query |= Q(alias__istartswith=alias_prefix)
 
         malformed_aliases = AdvisoryAlias.objects.exclude(query)
-        AdvisoryV2.objects.filter(aliases__in=malformed_aliases).delete()
+        AdvisoryV2.objects.filter(aliases__in=malformed_aliases, datasource_id__in=["alpine_linux_importer_v2", "fireeye_importer_v2", "istio_importer_v2", "mattermost_importer_v2"]).delete()
         malformed_aliases.delete()
 
     operations = [

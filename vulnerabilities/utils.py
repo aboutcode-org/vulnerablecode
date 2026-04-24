@@ -47,6 +47,20 @@ from vulnerabilities.pipes.group_advisories import delete_and_save_advisory_set
 
 logger = logging.getLogger(__name__)
 
+# User-Agent string for all HTTP requests made by VulnerableCode
+VULNERABLECODE_USER_AGENT = "VulnerableCode/37.0.0 (https://github.com/aboutcode-org/vulnerablecode)"
+
+
+def get_http_headers(extra_headers=None):
+    """
+    Return HTTP headers with the VulnerableCode User-Agent.
+    Optionally merge with extra_headers if provided.
+    """
+    headers = {"User-Agent": VULNERABLECODE_USER_AGENT}
+    if extra_headers:
+        headers.update(extra_headers)
+    return headers
+
 cve_regex = re.compile(r"CVE-[0-9]{4}-[0-9]{4,19}", re.IGNORECASE)
 is_cve = cve_regex.match
 find_all_cve = cve_regex.findall
@@ -78,7 +92,7 @@ def load_toml(path):
 
 
 def fetch_yaml(url):
-    response = requests.get(url)
+    response = requests.get(url, headers=get_http_headers())
     return saneyaml.load(response.content)
 
 
@@ -116,7 +130,7 @@ def contains_alpha(string):
 def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     """
     Returns a requests sessions which retries on 5xx errors with
-    a backoff_factor
+    a backoff_factor. The session includes the VulnerableCode User-Agent header.
     """
     retries = urllib3.Retry(
         total=max_retries,
@@ -126,6 +140,7 @@ def requests_with_5xx_retry(max_retries=5, backoff_factor=0.5):
     )
     adapter = requests.adapters.HTTPAdapter(max_retries=retries)
     session = requests.Session()
+    session.headers.update(get_http_headers())
     session.mount("https://", adapter)
     session.mount("http://", adapter)
     return session
@@ -287,7 +302,7 @@ def _get_gh_response(gh_token, graphql_query):
     Convenience function to easy mocking in tests
     """
     endpoint = "https://api.github.com/graphql"
-    headers = {"Authorization": f"bearer {gh_token}"}
+    headers = get_http_headers({"Authorization": f"bearer {gh_token}"})
     try:
         return requests.post(endpoint, headers=headers, json=graphql_query).json()
     except Exception as e:
@@ -393,7 +408,7 @@ def fetch_response(url):
     Fetch and return `response` from the `url`
     """
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers=get_http_headers())
         if response.status_code == HTTPStatus.OK:
             return response
         raise Exception(

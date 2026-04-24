@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 import requests
 
 from vulnerabilities.importer import OvalImporter
+from vulnerabilities.utils import get_http_headers
 
 
 class DebianOvalImporter(OvalImporter):
@@ -68,7 +69,7 @@ class DebianOvalImporter(OvalImporter):
         for release in releases:
             file_url = f"https://www.debian.org/security/oval/oval-definitions-{release}.xml.bz2"
             self.data_url = file_url
-            resp = requests.get(file_url).content
+            resp = requests.get(file_url, headers=get_http_headers()).content
             extracted = bz2.decompress(resp)
             yield (
                 {"type": "deb", "namespace": "debian", "qualifiers": {"distro": release}},

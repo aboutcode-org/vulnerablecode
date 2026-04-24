@@ -1,0 +1,33 @@
+{
+  "advisory_id": "GHSA-cvm3-pp85-m5vm",
+  "aliases": [],
+  "summary": "Loki unintentionally exposes Grafana Labs error tracking endpoint",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "golang",
+        "namespace": "",
+        "name": "github.com/grafana/loki",
+        "version": "",
+        "qualifiers": "",
+        "subpath": ""
+      },
+      "affected_version_range": "vers:golang/>=2.6.0|<2.6.6",
+      "fixed_version_range": null,
+      "introduced_by_commit_patches": [],
+      "fixed_by_commit_patches": []
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://github.com/grafana/loki/security/advisories/GHSA-cvm3-pp85-m5vm"
+    }
+  ],
+  "patches": [],
+  "severities": [],
+  "date_published": "2023-01-15T12:00:00+00:00",
+  "weaknesses": [],
+  "url": "https://github.com/grafana/loki/security/advisories/GHSA-cvm3-pp85-m5vm"
+}

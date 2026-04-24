@@ -162,7 +162,7 @@ At this point, an example importer will look like this:
         pipeline_id = "example_importer"
 
         root_url = "https://example.org/path/to/advisories/"
-        license_url = "https://exmaple.org/license/"
+        license_url = "https://example.org/license/"
         spdx_license_expression = "CC-BY-4.0"
         importer_name = "Example Importer"
         run_once = False

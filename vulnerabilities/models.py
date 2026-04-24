@@ -3477,7 +3477,8 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         """
         Return a new Package given a ``purl`` PackageURL object or PURL string.
         """
-        return PackageV2.objects.create(**purl_to_dict(purl=purl))
+        package, _ = PackageV2.objects.get_or_create(**purl_to_dict(purl=purl))
+        return package
 
 
 class PackageV2(PackageURLMixin):

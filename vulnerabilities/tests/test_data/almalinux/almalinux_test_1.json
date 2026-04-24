@@ -1,0 +1,35 @@
+{
+  "id": "ALBA-2019:3336",
+  "summary": "nss-altfiles bug fix and enhancement update",
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "AlmaLinux:8",
+        "name": "nss-altfiles"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "2.18.1-12.el8"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "related": [],
+  "published": "2019-11-05T17:32:18Z",
+  "modified": "2021-11-12T10:20:54Z",
+  "details": "For detailed information on changes in this release, see the AlmaLinux Release Notes linked from the References section.",
+  "references": [
+    {
+      "url": "https://errata.almalinux.org/8/ALBA-2019-3336.html",
+      "type": "ADVISORY"
+    }
+  ]
+}

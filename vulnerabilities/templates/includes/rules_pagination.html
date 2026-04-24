@@ -1,0 +1,37 @@
+<nav class="pagination is-centered is-small" aria-label="pagination">
+  {% if page_obj.has_previous %}
+    <a href="{% querystring page=page_obj.previous_page_number %}" class="pagination-previous">Previous</a>
+  {% else %}
+    <a class="pagination-previous">Previous</a>
+  {% endif %}
+
+  {% if page_obj.has_next %}
+    <a href="{% querystring page=page_obj.next_page_number %}" class="pagination-next">Next</a>
+  {% else %}
+    <a class="pagination-next">Next</a>
+  {% endif %}
+
+  <ul class="pagination-list">
+    {% for page_num in elided_page_range %}
+      {% if page_num == page_obj.paginator.ELLIPSIS %}
+        <li>
+            <span class="pagination-ellipsis">&hellip;</span>
+        </li>
+      {% elif page_num == page_obj.number %}
+        <li>
+          <a class="pagination-link is-current"
+             aria-label="Page {{ page_num }}"
+             aria-current="page">{{ page_num }}
+          </a>
+        </li>
+      {% else %}
+        <li>
+          <a href="{% querystring page=page_num %}"
+             class="pagination-link"
+             aria-label="Goto page {{ page_num }}">{{ page_num }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+
+</nav>

@@ -82,6 +82,7 @@ from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vuln
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
 
+from vulnerabilities.pipelines.v2_importers import zyxel_importer as zyxel_importer_v2
 IMPORTERS_REGISTRY = create_registry(
     [
         archlinux_importer_v2.ArchLinuxImporterPipeline,
@@ -187,5 +188,6 @@ IMPORTERS_REGISTRY = create_registry(
         collect_fix_commits_v2.CollectGitFixCommitsPipeline,
         collect_fix_commits_v2.CollectJenkinsFixCommitsPipeline,
         collect_fix_commits_v2.CollectGitlabFixCommitsPipeline,
+        zyxel_importer_v2.ZyxelImporterPipeline,
     ]
 )

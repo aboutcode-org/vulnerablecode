@@ -1,0 +1,41 @@
+[
+  {
+    "id": "CVE-2017-7649",
+    "date_published": "2017-04-14",
+    "project": "iot.kura",
+    "request_link": "https://bugs.eclipse.org/bugs/show_bug.cgi?id=514681",
+    "cve_pull_request": "",
+    "status": "PUBLIC",
+    "summary": {
+      "content": "The network enabled distribution of Kura before 2.1.0 takes control over the device's firewall...",
+      "source": "https://api.github.com/advisories?cve_id=CVE-2017-7649"
+    },
+    "cvss": 9.8,
+    "live_link": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-7649"
+  },
+  {
+    "id": "CVE-2018-12537",
+    "date_published": "2018-06-19",
+    "project": "rt.vertx",
+    "request_link": "https://bugs.eclipse.org/bugs/show_bug.cgi?id=536038",
+    "cve_pull_request": "https://github.com/CVEProject/cvelist/pull/932",
+    "status": "PUBLIC",
+    "summary": {
+      "content": "Moderate severity vulnerability that affects io.vertx:vertx-core",
+      "source": "https://api.github.com/advisories?cve_id=CVE-2018-12537"
+    },
+    "cvss": null,
+    "live_link": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-12537"
+  },
+  {
+    "id": "CVE-2024-2212",
+    "date_published": "2024-03-06",
+    "project": "iot.threadx",
+    "request_link": "https://github.com/eclipse-threadx/threadx/security/advisories/GHSA-v9jj-7qjg-h6g6",
+    "cve_pull_request": "",
+    "status": "PUBLIC",
+    "summary": null,
+    "cvss": null,
+    "live_link": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2212"
+  }
+]

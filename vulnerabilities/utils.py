@@ -618,6 +618,29 @@ def normalize_list(lst):
     return sorted(lst) if lst else []
 
 
+def canonical_value(value):
+    """
+    Return a canonical, order independent tuple for hashing/deduplication.
+
+    >>> canonical_value({"b": ["k", "j"], "a": 2})
+    (('a', 2), ('b', ('j', 'k')))
+    >>> canonical_value([2, 1])
+    (1, 2)
+    """
+    if isinstance(value, dict):
+        return tuple(sorted((k, canonical_value(v)) for k, v in value.items()))
+    if isinstance(value, (list, set, tuple)):
+        return tuple(sorted(canonical_value(v) for v in value))
+    return value
+
+
+def sha256_digest(normalized_data):
+    """Return SHA256 digest from normalized data."""
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    return hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+
+
 def compute_content_id(advisory_data):
     """
     Compute a unique content_id for an advisory by normalizing its data and hashing it.
@@ -696,10 +719,7 @@ def compute_content_id_v2(advisory_data):
     }
     normalized_data["url"] = advisory_data.url
 
-    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
-    content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
-
-    return content_id
+    return sha256_digest(normalized_data)
 
 
 def create_registry(pipelines):

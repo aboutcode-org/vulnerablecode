@@ -105,7 +105,7 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 VulnerabilitySeverity(
                     system=severity_systems.ARCHLINUX,
                     value=severity,
-                    url="https://security.archlinux.org/{avg_name}.json",
+                    url=f"https://security.archlinux.org/{avg_name}.json",
                 )
             ]
 

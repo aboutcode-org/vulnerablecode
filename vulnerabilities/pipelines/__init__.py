@@ -24,6 +24,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import PipelineRun
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
 from vulnerabilities.pipes.advisory import insert_advisory_v2
@@ -144,6 +145,9 @@ class VulnerableCodePipeline(PipelineDefinition, BasePipelineRun):
     # When set to true pipeline is run only once.
     # To rerun onetime pipeline reset is_active field to True via migration.
     run_once = False
+    # Interval between runs in hour.
+    run_interval = 24
+    run_priority = PipelineSchedule.ExecutionPriority.DEFAULT
 
     def on_failure(self):
         """
@@ -176,6 +180,9 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     # When set to true pipeline is run only once.
     # To rerun onetime pipeline reset is_active field to True via migration.
     run_once = False
+    # Interval between runs in hour.
+    run_interval = 24
+    run_priority = PipelineSchedule.ExecutionPriority.DEFAULT
 
     @classmethod
     def steps(cls):
@@ -277,6 +284,9 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     # When set to true pipeline is run only once.
     # To rerun onetime pipeline reset is_active field to True via migration.
     run_once = False
+    # Interval between runs in hour.
+    run_interval = 24
+    run_priority = PipelineSchedule.ExecutionPriority.DEFAULT
 
     @classmethod
     def steps(cls):

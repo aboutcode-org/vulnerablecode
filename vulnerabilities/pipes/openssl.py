@@ -89,9 +89,7 @@ def get_reference(reference_name, tag, reference_url):
     ref_type = (
         AdvisoryReference.COMMIT
         if "commit" in name or tag == "patch"
-        else AdvisoryReference.ADVISORY
-        if "advisory" in name
-        else AdvisoryReference.OTHER
+        else AdvisoryReference.ADVISORY if "advisory" in name else AdvisoryReference.OTHER
     )
 
     return ReferenceV2(

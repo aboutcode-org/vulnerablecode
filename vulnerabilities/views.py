@@ -7,17 +7,21 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 import logging
+from collections import defaultdict
+from typing import List
 
 from cvss.exceptions import CVSS2MalformedError
 from cvss.exceptions import CVSS3MalformedError
 from cvss.exceptions import CVSS4MalformedError
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.db.models import Count
-from django.db.models import F
+from django.db.models import Exists
+from django.db.models import OuterRef
 from django.db.models import Prefetch
+from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -36,20 +40,69 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
-from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import AdvisorySetMember
+from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import Group
+from vulnerabilities.models import GroupedAdvisory
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
-from vulnerabilities.utils import group_advisories_by_content
+from vulnerabilities.tasks import compute_queue_load_factor
+from vulnerabilities.throttling import AnonUserUIThrottle
+from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
+from vulnerabilities.utils import get_advisories_from_groups
+from vulnerabilities.utils import merge_and_save_grouped_advisories
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import env
 
-PAGE_SIZE = 20
+PAGE_SIZE = 10
+
+CACHE_TIMEOUT = 60 * 5
 
 
-class PackageSearch(ListView):
+class VulnerableCodeView(View):
+    """
+    Base ListView for VulnerableCode views that includes throttling.
+    """
+
+    throttle_classes = [AnonUserUIThrottle]
+
+    def dispatch(self, request, *args, **kwargs):
+        throttle = AnonUserUIThrottle()
+
+        if not throttle.allow_request(request, self):
+            return HttpResponse("Rate limit exceeded", status=429)
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+class VulnerableCodeDetailView(DetailView, VulnerableCodeView):
+    """
+    Base DetailView for VulnerableCode views that includes throttling.
+    """
+
+    pass
+
+
+class VulnerableCodeListView(ListView, VulnerableCodeView):
+    """
+    Base ListView for VulnerableCode views that includes throttling.
+    """
+
+    pass
+
+
+class VulnerableCodeCreateView(generic.CreateView, VulnerableCodeView):
+    """
+    Base CreateView for VulnerableCode views that includes throttling.
+    """
+
+    pass
+
+
+class PackageSearch(VulnerableCodeListView):
     model = models.Package
     template_name = "packages.html"
     ordering = ["type", "namespace", "name", "version"]
@@ -77,35 +130,7 @@ class PackageSearch(ListView):
         )
 
 
-class PackageSearchV2(ListView):
-    model = models.PackageV2
-    template_name = "packages_v2.html"
-    ordering = ["type", "namespace", "name", "version"]
-    paginate_by = PAGE_SIZE
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        request_query = self.request.GET
-        context["package_search_form"] = PackageSearchForm(request_query)
-        context["search"] = request_query.get("search")
-        return context
-
-    def get_queryset(self, query=None):
-        """
-        Return a Package queryset for the ``query``.
-        Make a best effort approach to find matching packages either based
-        on exact purl, partial purl or just name and namespace.
-        """
-        query = query or self.request.GET.get("search") or ""
-        return (
-            self.model.objects.search(query)
-            .with_vulnerability_counts()
-            .prefetch_related()
-            .order_by("package_url")
-        )
-
-
-class VulnerabilitySearch(ListView):
+class VulnerabilitySearch(VulnerableCodeListView):
     model = models.Vulnerability
     template_name = "vulnerabilities.html"
     ordering = ["vulnerability_id"]
@@ -123,25 +148,7 @@ class VulnerabilitySearch(ListView):
         return self.model.objects.search(query=query).with_package_counts()
 
 
-class AdvisorySearch(ListView):
-    model = models.AdvisoryV2
-    template_name = "vulnerabilities.html"
-    ordering = ["advisory_id"]
-    paginate_by = PAGE_SIZE
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        request_query = self.request.GET
-        context["advisory_search_form"] = VulnerabilitySearchForm(request_query)
-        context["search"] = request_query.get("search")
-        return context
-
-    def get_queryset(self, query=None):
-        query = query or self.request.GET.get("search") or ""
-        return self.model.objects.search(query=query).with_package_counts()
-
-
-class PackageDetails(DetailView):
+class PackageDetails(VulnerableCodeDetailView):
     model = models.Package
     template_name = "package_details.html"
     slug_url_kwarg = "purl"
@@ -182,7 +189,65 @@ class PackageDetails(DetailView):
         return package
 
 
-class PackageV2Details(DetailView):
+class PackageSearchV2(VulnerableCodeListView):
+    model = models.PackageV2
+    template_name = "packages_v2.html"
+    ordering = ["type", "namespace", "name", "version"]
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["package_search_form"] = PackageSearchForm(request_query)
+        context["search"] = request_query.get("search")
+        return context
+
+    def get_queryset(self, query=None):
+        """
+        Return a Package queryset for the ``query``.
+        Make a best effort approach to find matching packages either based
+        on exact purl, partial purl or just name and namespace.
+        """
+        query = query or self.request.GET.get("search") or ""
+        return self.model.objects.search(query).prefetch_related().with_is_vulnerable()
+
+
+class AffectedByAdvisoriesListView(VulnerableCodeListView):
+    model = models.AdvisoryV2
+    template_name = "affected_by_advisories.html"
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        purl = self.kwargs.get("purl")
+        package = models.PackageV2.objects.for_purl(purl).first()
+        context["fixed_package_details"] = get_fixed_package_details(package)
+        return context
+
+    def get_queryset(self):
+        purl = self.kwargs.get("purl")
+        return (
+            models.AdvisoryV2.objects.latest_affecting_advisories_for_purl(purl)
+            .only("advisory_id", "summary", "url", "date_published")
+            .prefetch_related("aliases")
+        )
+
+
+class FixingAdvisoriesListView(VulnerableCodeListView):
+    model = models.AdvisoryV2
+    template_name = "fixing_advisories.html"
+    paginate_by = PAGE_SIZE
+
+    def get_queryset(self):
+        purl = self.kwargs.get("purl")
+        return (
+            models.AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(purl)
+            .only("advisory_id", "summary", "url", "date_published")
+            .prefetch_related("aliases")
+        )
+
+
+class PackageV2Details(VulnerableCodeDetailView):
     model = models.PackageV2
     template_name = "package_details_v2.html"
     slug_url_kwarg = "purl"
@@ -191,102 +256,177 @@ class PackageV2Details(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         package = self.object
-        next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions()
 
-        (
-            fixed_pkg_details,
-            affected_by_advisories,
-            fixing_advisories,
-        ) = self.get_fixed_package_details(package)
-
-        affected_avid_by_hash = {}
-        fixing_avid_by_hash = {}
-
-        affected_avid_by_hash = group_advisories_by_content(affected_by_advisories)
-        fixing_avid_by_hash = group_advisories_by_content(fixing_advisories)
-
-        affecting_advs = []
-
-        for hash in affected_avid_by_hash:
-            affecting_advs.append(affected_avid_by_hash[hash])
-
-        fixing_advs = []
-
-        for hash in fixing_avid_by_hash:
-            fixing_advs.append(fixing_avid_by_hash[hash])
+        next_non_vulnerable, latest_non_vulnerable = package.get_non_vulnerable_versions
 
         context["package"] = package
         context["next_non_vulnerable"] = next_non_vulnerable
         context["latest_non_vulnerable"] = latest_non_vulnerable
-        context["affected_by_advisories_v2"] = affecting_advs
-        context["fixing_advisories_v2"] = fixing_advs
-
         context["package_search_form"] = PackageSearchForm(self.request.GET)
-        context["fixed_package_details"] = fixed_pkg_details
 
-        return context
-
-    def get_fixed_package_details(self, package):
-        affected_impacts = package.affected_in_impacts.select_related("advisory").prefetch_related(
-            Prefetch(
-                "fixed_by_packages",
-                queryset=(
-                    models.PackageV2.objects.annotate(affected_count=Count("affected_in_impacts"))
-                ),
-            )
-        )
-
-        fixed_impacts = package.fixed_in_impacts.select_related("advisory")
-
-        affected_avids = {impact.advisory.avid for impact in affected_impacts if impact.advisory_id}
-
-        fixed_avids = {impact.advisory.avid for impact in fixed_impacts if impact.advisory_id}
-
-        all_avids = affected_avids | fixed_avids
-
-        advisories = models.AdvisoryV2.objects.latest_for_avids(all_avids)
-        advisory_by_avid = {adv.avid: adv for adv in advisories}
-
-        fixed_pkg_details = {}
-
-        for impact in affected_impacts:
-            advisory = advisory_by_avid.get(impact.advisory.avid)
-            if not advisory:
-                continue
-
-            fixed_pkg_details.setdefault(impact.advisory.avid, []).extend(
-                {
-                    "pkg": pkg,
-                    "affected_count": pkg.affected_count,
-                }
-                for pkg in impact.fixed_by_packages.all()
+        if not package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
+                purl=package.purl
             )
 
-        affected_by_advisories = {
-            advisory_by_avid[avid] for avid in affected_avids if avid in advisory_by_avid
-        }
-
-        fixing_advisories = {
-            advisory_by_avid[avid] for avid in fixed_avids if avid in advisory_by_avid
-        }
-
-        return fixed_pkg_details, affected_by_advisories, fixing_advisories
-
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .prefetch_related(
-                Prefetch(
-                    "affected_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory"),
-                ),
-                Prefetch(
-                    "fixed_in_impacts",
-                    queryset=ImpactedPackage.objects.select_related("advisory"),
-                ),
+            fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
+                purl=package.purl
             )
-        )
+
+            context["grouped"] = False
+
+            affected_by_advisories_url = None
+            fixing_advisories_url = None
+
+            affected_by_advisories_qs_ids = affecting_advisories.only("id")
+            fixing_advisories_qs_ids = fixed_by_advisories.only("id")
+
+            affected_by_advisories = list(affected_by_advisories_qs_ids[:101])
+            if len(affected_by_advisories) > 100:
+                affected_by_advisories_url = reverse_lazy(
+                    "affected_by_advisories_v2", kwargs={"purl": package.package_url}
+                )
+                context["affected_by_advisories_v2_url"] = affected_by_advisories_url
+
+            else:
+                fixed_pkg_details = get_fixed_package_details(package)
+                context["fixed_package_details"] = fixed_pkg_details
+                affecting_advs = []
+                for adv in affecting_advisories:
+                    affecting_advs.append(
+                        {
+                            "advisory_id": adv.advisory_id.split("/")[-1],
+                            "advisory": adv,
+                        }
+                    )
+                context["affected_by_advisories_v2"] = affecting_advs
+                context["affected_by_advisories_v2_url"] = None
+
+            fixing_advisories = list(fixing_advisories_qs_ids[:101])
+            if len(fixing_advisories) > 100:
+                fixing_advisories_url = reverse_lazy(
+                    "fixing_advisories_v2", kwargs={"purl": package.package_url}
+                )
+                context["fixing_advisories_v2_url"] = fixing_advisories_url
+                context["fixing_advisories_v2"] = []
+
+            else:
+                fixed_by_advisories = fixed_by_advisories.prefetch_related(
+                    "aliases",
+                )
+                fixed_by_advisories = list(fixed_by_advisories)
+                fix_advs = []
+                for fixed_by_adv in fixed_by_advisories:
+                    fix_advs.append(
+                        {
+                            "advisory_id": fixed_by_adv.advisory_id.split("/")[-1],
+                            "advisory": fixed_by_adv,
+                        }
+                    )
+
+                context["fixing_advisories_v2"] = fix_advs
+
+            return context
+
+        is_grouped = models.AdvisorySet.objects.filter(package=package).exists()
+
+        if is_grouped:
+            context["grouped"] = True
+            fixed_pkg_details = get_fixed_package_details(package)
+            context["fixed_package_details"] = fixed_pkg_details
+
+            affected_by_advisories_qs = (
+                models.AdvisorySet.objects.filter(package=package, relation_type="affecting")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
+
+            fixing_advisories_qs = (
+                models.AdvisorySet.objects.filter(package=package, relation_type="fixing")
+                .select_related("primary_advisory")
+                .prefetch_related(
+                    Prefetch(
+                        "members",
+                        queryset=AdvisorySetMember.objects.filter(is_primary=False).select_related(
+                            "advisory"
+                        ),
+                        to_attr="secondary_members",
+                    )
+                )
+            )
+
+            affected_groups = [
+                (
+                    Group(
+                        aliases=list(adv.aliases.all()),
+                        primary=adv.primary_advisory,
+                        secondaries=[a.advisory for a in adv.secondary_members],
+                    )
+                )
+                for adv in affected_by_advisories_qs
+            ]
+            fixing_groups = [
+                (
+                    Group(
+                        aliases=list(adv.aliases.all()),
+                        primary=adv.primary_advisory,
+                        secondaries=[a.advisory for a in adv.secondary_members],
+                    )
+                )
+                for adv in fixing_advisories_qs
+            ]
+
+            affected_advisories: List[GroupedAdvisory] = get_advisories_from_groups(affected_groups)
+            fixing_advisories: List[GroupedAdvisory] = get_advisories_from_groups(fixing_groups)
+
+            context["affected_by_advisories_v2"] = affected_advisories
+            context["fixing_advisories_v2"] = fixing_advisories
+
+            return context
+
+        if package.type in TYPES_WITH_MULTIPLE_IMPORTERS:
+            affecting_advisories = AdvisoryV2.objects.latest_affecting_advisories_for_purl(
+                purl=package.purl
+            )
+
+            fixed_by_advisories = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(
+                purl=package.purl
+            )
+            fixed_pkg_details = get_fixed_package_details(package)
+            context["fixed_package_details"] = fixed_pkg_details
+            context["grouped"] = True
+
+            affecting_advisories = affecting_advisories.prefetch_related(
+                "aliases",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+
+            affected_by_advisories: List[GroupedAdvisory] = merge_and_save_grouped_advisories(
+                package, affecting_advisories, "affecting"
+            )
+
+            fixed_by_advisories = fixed_by_advisories.prefetch_related(
+                "aliases",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+
+            fixing_advisories: List[GroupedAdvisory] = merge_and_save_grouped_advisories(
+                package, fixed_by_advisories, "fixing"
+            )
+
+            context["affected_by_advisories_v2"] = affected_by_advisories
+            context["fixing_advisories_v2"] = fixing_advisories
+            return context
 
     def get_object(self, queryset=None):
         if queryset is None:
@@ -308,7 +448,44 @@ class PackageV2Details(DetailView):
         return package
 
 
-class VulnerabilityDetails(DetailView):
+def get_fixed_package_details(package):
+    rows = package.affected_in_impacts.values_list(
+        "advisory__avid",
+        "fixed_by_packages",
+    )
+
+    pkg_ids = {pkg_id for _, pkg_id in rows if pkg_id}
+
+    pkg_map = {
+        p.id: p
+        for p in models.PackageV2.objects.filter(id__in=pkg_ids, is_ghost=False).annotate(
+            is_vulnerable=Exists(
+                models.ImpactedPackage.objects.filter(affecting_packages=OuterRef("pk"))
+            )
+        )
+    }
+
+    fixed_pkg_details = defaultdict(list)
+
+    for avid, pkg_id in rows:
+        if not pkg_id:
+            continue
+
+        pkg = pkg_map.get(pkg_id)
+        if not pkg:
+            continue
+
+        fixed_pkg_details[avid].append(
+            {
+                "pkg": pkg,
+                "is_vulnerable": pkg.is_vulnerable,
+            }
+        )
+
+    return fixed_pkg_details
+
+
+class VulnerabilityDetails(VulnerableCodeDetailView):
     model = models.Vulnerability
     template_name = "vulnerability_details.html"
     slug_url_kwarg = "vulnerability_id"
@@ -412,7 +589,7 @@ class VulnerabilityDetails(DetailView):
         return context
 
 
-class AdvisoryDetails(DetailView):
+class AdvisoryDetails(VulnerableCodeDetailView):
     model = models.AdvisoryV2
     template_name = "advisory_detail.html"
     slug_url_kwarg = "avid"
@@ -586,7 +763,7 @@ class AdvisoryDetails(DetailView):
         return context
 
 
-class HomePage(View):
+class HomePage(VulnerableCodeView):
     template_name = "index.html"
 
     def get(self, request):
@@ -599,7 +776,7 @@ class HomePage(View):
         return render(request=request, template_name=self.template_name, context=context)
 
 
-class HomePageV2(View):
+class HomePageV2(VulnerableCodeView):
     template_name = "index_v2.html"
 
     def get(self, request):
@@ -639,7 +816,7 @@ Source code and issues at https://github.com/nexB/vulnerablecode
 """
 
 
-class ApiUserCreateView(generic.CreateView):
+class ApiUserCreateView(VulnerableCodeCreateView):
     model = models.ApiUser
     form_class = ApiUserCreationForm
     template_name = "api_user_creation_form.html"
@@ -669,7 +846,7 @@ class ApiUserCreateView(generic.CreateView):
         return reverse_lazy("api_user_request")
 
 
-class VulnerabilityPackagesDetails(DetailView):
+class VulnerabilityPackagesDetails(VulnerableCodeDetailView):
     """
     View to display all packages affected by or fixing a specific vulnerability.
     URL: /vulnerabilities/{vulnerability_id}/packages
@@ -720,7 +897,7 @@ class VulnerabilityPackagesDetails(DetailView):
         return context
 
 
-class AdvisoryPackagesDetails(DetailView):
+class AdvisoryPackagesDetails(VulnerableCodeDetailView):
     """
     View to display all packages affected by or fixing a specific vulnerability.
     URL: /advisories/{id}/packages
@@ -771,7 +948,7 @@ class AdvisoryPackagesDetails(DetailView):
         )
 
 
-class PipelineScheduleListView(ListView, FormMixin):
+class PipelineScheduleListView(VulnerableCodeListView, FormMixin):
     model = PipelineSchedule
     context_object_name = "schedule_list"
     template_name = "pipeline_dashboard.html"
@@ -788,6 +965,13 @@ class PipelineScheduleListView(ListView, FormMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        load_per_queue = cache.get("load_per_queue")
+
+        if load_per_queue is None:
+            load_per_queue = compute_queue_load_factor()
+            cache.set("load_per_queue", load_per_queue, CACHE_TIMEOUT)
+
+        context["load_per_queue"] = load_per_queue
         context["active_pipeline_count"] = PipelineSchedule.objects.filter(is_active=True).count()
         context["disabled_pipeline_count"] = PipelineSchedule.objects.filter(
             is_active=False
@@ -795,7 +979,7 @@ class PipelineScheduleListView(ListView, FormMixin):
         return context
 
 
-class PipelineRunListView(ListView):
+class PipelineRunListView(VulnerableCodeListView):
     model = PipelineRun
     context_object_name = "run_list"
     template_name = "pipeline_run_list.html"
@@ -821,7 +1005,7 @@ class PipelineRunListView(ListView):
         return context
 
 
-class PipelineRunDetailView(DetailView):
+class PipelineRunDetailView(VulnerableCodeDetailView):
     model = PipelineRun
     template_name = "pipeline_run_details.html"
     context_object_name = "run"

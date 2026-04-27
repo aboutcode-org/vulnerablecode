@@ -137,7 +137,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     applications, or networks. This metric is determined automatically based on the discovery of known exploits.">
                                     Exploitability</td>
                                 <td class="two-col-right wrap-strings">
-                                    {{ advisory.exploitability }}
+                                    {% if advisory.exploitability is not None %}
+                                        {{ advisory.exploitability }}
+                                    {% else %}
+                                        {{ "" }}
+                                    {% endif %}
                                 </td>
                             </tr>
 
@@ -146,7 +150,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     data-tooltip="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10."
                                 >Weighted Severity</td>
                                 <td class="two-col-right wrap-strings">
-                                    {{ advisory.weighted_severity }}
+                                    {% if advisory.weighted_severity is not None %}
+                                        {{ advisory.weighted_severity }}
+                                    {% else %}
+                                        {{ "" }}
+                                    {% endif %}
                                 </td>
                             </tr>
 
@@ -157,7 +165,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     "
                                 >Risk</td>
                                 <td class="two-col-right wrap-strings">
-                                    {{ advisory.risk_score }}
+                                    {% if advisory.risk_score is not None %}
+                                        {{ advisory.risk_score }}
+                                    {% else %}
+                                        {{ "" }}
+                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>
@@ -214,9 +226,20 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                     {% for severity in severities %}
                     <tr>
                         <td class="wrap-strings">{{ severity.scoring_system }}</td>
-                        <td class="wrap-strings">{{ severity.value }}</td>
-                        <td class="wrap-strings"><a href="{{ severity.url }}" target="_blank">
+                        <td class="wrap-strings">
+                            {% if severity.value is not None %}
+                            {{ severity.value }}
+                            {% else %}
+                            {{ "" }}
+                            {% endif %}
+                        </td>
+                        <td class="wrap-strings">
+                            {% if severity.url is not None %}
+                            <a href="{{ severity.url }}" target="_blank">
                                 {{ severity.url }}<i class="fa fa-external-link fa_link_custom"></i></a>
+                            {% else %}
+                            {{ "" }}
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}
@@ -483,7 +506,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
             <div class="tab-div content" data-content="severities-vectors">
                 {% for severity_vector in severity_vectors %}
                     {% if severity_vector.vector.version == '2.0'  %}
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
+                        Vector: {{ severity_vector.vector.vectorString }} 
+                        {% if severity_vector.origin %}
+                        Found at 
+                        <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
+                        {% endif %}
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
                           <tr>
                             <th>Exploitability (E)</th>

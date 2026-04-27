@@ -1,0 +1,288 @@
+[
+  {
+  "schema_version": "1.4.0",
+  "id": "GHSA-296w-6qhq-gf92",
+  "modified": "2024-09-18T15:57:34Z",
+  "published": "2022-05-14T02:05:08Z",
+  "aliases": [
+    "CVE-2014-0481"
+  ],
+  "summary": "Django denial of service via file upload naming",
+  "details": "The default configuration for the file upload handling system in Django before 1.4.14, 1.5.x before 1.5.9, 1.6.x before 1.6.6, and 1.7 before release candidate 3 uses a sequential file name generation process when a file with a conflicting name is uploaded, which allows remote attackers to cause a denial of service (CPU consumption) by unloading a multiple files with the same name.",
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    },
+    {
+      "type": "CVSS_V4",
+      "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N"
+    }
+  ],
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "PyPI",
+        "name": "Django"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "1.4.14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "PyPI",
+        "name": "Django"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "1.5"
+            },
+            {
+              "fixed": "1.5.9"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "PyPI",
+        "name": "Django"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "1.6"
+            },
+            {
+              "fixed": "1.6.6"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "type": "ADVISORY",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-0481"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/django/django/commit/26cd48e166ac4d84317c8ee6d63ac52a87e8da99"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/django/django/commit/30042d475bf084c6723c6217a21598d9247a9c41"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/django/django/commit/dd0c3f4ee1a30c1a1e6055061c6ba6e58c6b54d1"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/django/django"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/django/PYSEC-2014-5.yaml"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.djangoproject.com/weblog/2014/aug/20/security"
+    },
+    {
+      "type": "WEB",
+      "url": "http://lists.opensuse.org/opensuse-updates/2014-09/msg00023.html"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.debian.org/security/2014/dsa-3010"
+    }
+  ],
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-400"
+    ],
+    "severity": "HIGH",
+    "github_reviewed": true,
+    "github_reviewed_at": "2023-08-15T23:28:45Z",
+    "nvd_published_at": "2014-08-26T14:55:00Z"
+  }
+},
+  {
+  "schema_version": "1.4.0",
+  "id": "GHSA-2gwj-7jmv-h26r",
+  "modified": "2024-09-20T15:09:55Z",
+  "published": "2022-04-13T00:00:33Z",
+  "aliases": [
+    "CVE-2022-28346"
+  ],
+  "summary": "SQL Injection in Django",
+  "details": "An issue was discovered in Django 2.2 before 2.2.28, 3.2 before 3.2.13, and 4.0 before 4.0.4. `QuerySet.annotate()`, `aggregate()`, and `extra()` methods are subject to SQL injection in column aliases via a crafted dictionary (with dictionary expansion) as the passed `**kwargs`.",
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    },
+    {
+      "type": "CVSS_V4",
+      "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+    }
+  ],
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "PyPI",
+        "name": "Django"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "2.2"
+            },
+            {
+              "fixed": "2.2.28"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "PyPI",
+        "name": "Django"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "3.2"
+            },
+            {
+              "fixed": "3.2.13"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": {
+        "ecosystem": "PyPI",
+        "name": "Django"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "4.0"
+            },
+            {
+              "fixed": "4.0.4"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "type": "ADVISORY",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-28346"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/django/django/commit/2044dac5c6968441be6f534c4139bcf48c5c7e48"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/django/django/commit/2c09e68ec911919360d5f8502cefc312f9e03c5d"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/django/django/commit/800828887a0509ad1162d6d407e94d8de7eafc60"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/django/django/commit/93cae5cb2f9a4ef1514cf1a41f714fef08005200"
+    },
+    {
+      "type": "WEB",
+      "url": "https://docs.djangoproject.com/en/4.0/releases/security"
+    },
+    {
+      "type": "ADVISORY",
+      "url": "https://github.com/advisories/GHSA-2gwj-7jmv-h26r"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/django/django"
+    },
+    {
+      "type": "WEB",
+      "url": "https://github.com/pypa/advisory-database/tree/main/vulns/django/PYSEC-2022-190.yaml"
+    },
+    {
+      "type": "WEB",
+      "url": "https://groups.google.com/forum/#!forum/django-announce"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.debian.org/debian-lts-announce/2022/04/msg00013.html"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/HWY6DQWRVBALV73BPUVBXC3QIYUM24IK"
+    },
+    {
+      "type": "WEB",
+      "url": "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/LTZVAKU5ALQWOKFTPISE257VCVIYGFQI"
+    },
+    {
+      "type": "WEB",
+      "url": "https://security.netapp.com/advisory/ntap-20220609-0002"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.debian.org/security/2022/dsa-5254"
+    },
+    {
+      "type": "WEB",
+      "url": "https://www.djangoproject.com/weblog/2022/apr/11/security-releases"
+    },
+    {
+      "type": "WEB",
+      "url": "http://www.openwall.com/lists/oss-security/2022/04/11/1"
+    }
+  ],
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-89"
+    ],
+    "severity": "CRITICAL",
+    "github_reviewed": true,
+    "github_reviewed_at": "2022-04-22T20:33:03Z",
+    "nvd_published_at": "2022-04-12T05:15:00Z"
+  }
+}
+]

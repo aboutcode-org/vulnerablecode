@@ -18,6 +18,7 @@ from django.db.models import Prefetch
 from django.utils import timezone
 from packageurl import PackageURL
 
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryToDoV2
 from vulnerabilities.models import AdvisoryV2
@@ -177,8 +178,10 @@ class ComputeToDo(VulnerableCodePipeline):
                 continue
 
             advisories_with_common_alias.extend(adv_with_alias_in_adv_id)
-            if len(advisories_with_common_alias) < 2:
-                total_successfully_compared_advisory_count += 1
+            initial_advisory_group_size = len(advisories_with_common_alias)
+
+            if initial_advisory_group_size < 2:
+                total_successfully_compared_advisory_count += initial_advisory_group_size
                 continue
 
             for advisory in advisories_with_common_alias:
@@ -217,8 +220,6 @@ class ComputeToDo(VulnerableCodePipeline):
                 if adv.avid in avids_with_common_alias_and_purl
             }
 
-            if not len(advisory_group) > 1:
-                continue
             # if any eligible PURL is not unfurled, skip
             if set(comparable_purl_map) & unfurled_base_purls:
                 unfurled_purl_summary.update(
@@ -226,6 +227,10 @@ class ComputeToDo(VulnerableCodePipeline):
                 )
 
                 total_uncomparable_advisory_count += len(advisories_with_unfurled_purls)
+                continue
+
+            if not len(advisory_group) > 1:
+                total_successfully_compared_advisory_count += len(advisory_group)
                 continue
 
             package_conflict_count, count_conflicting_advisory = (
@@ -582,6 +587,11 @@ def merged_advisory(advisories, non_conflicting_purl_avid_map):
     merged_adv["summary"] = "\n".join(merged_summary)
     merged_adv["aliases"] = list(merged_adv["aliases"])
     merged_adv["weaknesses"] = list(merged_adv["weaknesses"])
+
+    merged_adv["advisory_id"] = "PLACEHOLDER_AVID"
+    merged_adv["date_published"] = ""
+    merged_adv = AdvisoryDataV2.from_dict(merged_adv).to_dict()
+
     return merged_adv
 
 

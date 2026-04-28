@@ -57,6 +57,16 @@ class VulnerabilitySeverity:
     published_at: Optional[datetime.datetime] = None
     url: Optional[str] = None
 
+    def __post_init__(self):
+        if not self.system:
+            raise ValueError("system is required for VulnerabilitySeverity")
+
+        if not isinstance(self.system, ScoringSystem):
+            raise TypeError(f"system must be a ScoringSystem, got {type(self.system)!r}")
+
+        if not isinstance(self.value, str):
+            self.value = str(self.value)
+
     def to_dict(self):
         data = {
             "system": self.system.identifier,
@@ -468,6 +478,42 @@ class AffectedPackageV2:
                 f"Affected package {self.package!r} must have either a fixed version range, "
                 "an affected version range, introduced commit patches, or fixed commit patches."
             )
+
+        if self.affected_version_range is not None and not isinstance(
+            self.affected_version_range, VersionRange
+        ):
+            raise TypeError(
+                f"affected_version_range must be VersionRange or None, got {type(self.affected_version_range)!r}"
+            )
+
+        if self.fixed_version_range is not None and not isinstance(
+            self.fixed_version_range, VersionRange
+        ):
+            raise TypeError(
+                f"fixed_version_range must be VersionRange or None, got {type(self.fixed_version_range)!r}"
+            )
+
+        if not isinstance(self.introduced_by_commit_patches, list):
+            raise TypeError(
+                f"introduced_by_commit_patches must be a list, got {type(self.introduced_by_commit_patches)!r}"
+            )
+
+        if not isinstance(self.fixed_by_commit_patches, list):
+            raise TypeError(
+                f"fixed_by_commit_patches must be a list, got {type(self.fixed_by_commit_patches)!r}"
+            )
+
+        for item in self.introduced_by_commit_patches:
+            if not isinstance(item, PackageCommitPatchData):
+                raise TypeError(
+                    f"introduced_by_commit_patches items must be PackageCommitPatchData, got {type(item)!r}"
+                )
+
+        for item in self.fixed_by_commit_patches:
+            if not isinstance(item, PackageCommitPatchData):
+                raise TypeError(
+                    f"fixed_by_commit_patches items must be PackageCommitPatchData, got {type(item)!r}"
+                )
 
     def __lt__(self, other):
         if not isinstance(other, AffectedPackageV2):

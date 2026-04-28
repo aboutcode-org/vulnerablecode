@@ -11,6 +11,7 @@ from datetime import datetime
 
 from django.test import TestCase
 from packageurl import PackageURL
+from univers.version_range import VersionRange
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
@@ -30,8 +31,8 @@ class TestComputeToDo(TestCase):
             affected_packages=[
                 AffectedPackageV2(
                     package=PackageURL(type="npm", name="package1"),
-                    affected_version_range="vers:npm/>=1.0.0|<2.0.0",
-                    fixed_version_range="vers:npm/2.0.0",
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<2.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.0"),
                 )
             ],
             references=[ReferenceV2(url="https://example.com/vuln1")],
@@ -44,7 +45,7 @@ class TestComputeToDo(TestCase):
             affected_packages=[
                 AffectedPackageV2(
                     package=PackageURL(type="npm", name="package1"),
-                    affected_version_range="vers:npm/>=1.0.0|<2.0.0",
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<2.0.0"),
                 )
             ],
             references=[ReferenceV2(url="https://example.com/vuln1")],
@@ -57,7 +58,7 @@ class TestComputeToDo(TestCase):
             affected_packages=[
                 AffectedPackageV2(
                     package=PackageURL(type="npm", name="package1"),
-                    fixed_version_range="vers:npm/2.0.0",
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.0"),
                 )
             ],
             references=[ReferenceV2(url="https://example.com/vuln1")],
@@ -70,8 +71,8 @@ class TestComputeToDo(TestCase):
             affected_packages=[
                 AffectedPackageV2(
                     package=PackageURL(type="npm", name="package1"),
-                    affected_version_range="vers:npm/>=1.0.0|<=2.0.0",
-                    fixed_version_range="vers:npm/2.0.1",
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<=2.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
                 )
             ],
             references=[ReferenceV2(url="https://example.com/vuln1")],

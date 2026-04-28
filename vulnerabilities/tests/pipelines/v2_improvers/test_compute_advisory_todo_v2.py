@@ -16,17 +16,20 @@ from univers.version_range import VersionRange
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
-from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryToDoV2
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.pipelines.v2_improvers.compute_advisory_todo import ComputeToDo
+from vulnerabilities.pipes.advisory import insert_advisory_v2
+from vulnerabilities.tests.pipelines import TestLogger
 
 
 class TestComputeToDo(TestCase):
     def setUp(self):
+        self.log = TestLogger()
         self.advisory_data1 = AdvisoryDataV2(
             advisory_id="test_id",
+            aliases=["CVE-000-000"],
             summary="Test summary",
             affected_packages=[
                 AffectedPackageV2(
@@ -67,6 +70,7 @@ class TestComputeToDo(TestCase):
 
         self.advisory_data4 = AdvisoryDataV2(
             advisory_id="test_id_3",
+            aliases=["CVE-000-000"],
             summary="Test summary",
             affected_packages=[
                 AffectedPackageV2(
@@ -80,23 +84,14 @@ class TestComputeToDo(TestCase):
         )
 
     def test_advisory_todo_missing_summary(self):
-        date = datetime.now()
-        adv = AdvisoryV2.objects.create(
-            unique_content_id="test_id",
-            url=self.advisory_data1.url,
-            summary="",
-            date_collected=date,
-            advisory_id="test_id",
-            avid="test_pipeline/test_id",
-            datasource_id="test_pipeline",
+        insert_advisory_v2(
+            advisory=self.advisory_data1,
+            pipeline_id="test_pipeline1",
+            logger=self.log.write,
         )
-        for pkg in self.advisory_data1.affected_packages:
-            ImpactedPackage.objects.create(
-                advisory=adv,
-                base_purl=pkg.package,
-                affecting_vers=pkg.affected_version_range,
-                fixed_vers=pkg.fixed_version_range,
-            )
+        adv = AdvisoryV2.objects.first()
+        adv.summary = ""
+        adv.save()
         pipeline = ComputeToDo()
         pipeline.execute()
 
@@ -106,23 +101,11 @@ class TestComputeToDo(TestCase):
         self.assertEqual(1, todo.advisories.count())
 
     def test_advisory_todo_missing_fixed(self):
-        date = datetime.now()
-        adv = AdvisoryV2.objects.create(
-            unique_content_id="test_id",
-            url=self.advisory_data2.url,
-            summary=self.advisory_data2.summary,
-            date_collected=date,
-            advisory_id="test_id",
-            avid="test_pipeline/test_id",
-            datasource_id="test_pipeline",
+        insert_advisory_v2(
+            advisory=self.advisory_data2,
+            pipeline_id="test_pipeline1",
+            logger=self.log.write,
         )
-        for pkg in self.advisory_data2.affected_packages:
-            ImpactedPackage.objects.create(
-                advisory=adv,
-                base_purl=pkg.package,
-                affecting_vers=pkg.affected_version_range,
-                fixed_vers=pkg.fixed_version_range or "",
-            )
         pipeline = ComputeToDo()
         pipeline.execute()
 
@@ -132,23 +115,11 @@ class TestComputeToDo(TestCase):
         self.assertEqual(1, todo.advisories.count())
 
     def test_advisory_todo_missing_affected(self):
-        date = datetime.now()
-        adv = AdvisoryV2.objects.create(
-            unique_content_id="test_id",
-            url=self.advisory_data3.url,
-            summary=self.advisory_data3.summary,
-            date_collected=date,
-            advisory_id="test_id",
-            avid="test_pipeline/test_id",
-            datasource_id="test_pipeline",
+        insert_advisory_v2(
+            advisory=self.advisory_data3,
+            pipeline_id="test_pipeline1",
+            logger=self.log.write,
         )
-        for pkg in self.advisory_data3.affected_packages:
-            ImpactedPackage.objects.create(
-                advisory=adv,
-                base_purl=pkg.package,
-                affecting_vers=pkg.affected_version_range or "",
-                fixed_vers=pkg.fixed_version_range,
-            )
         pipeline = ComputeToDo()
         pipeline.execute()
 
@@ -158,52 +129,31 @@ class TestComputeToDo(TestCase):
         self.assertEqual(1, todo.advisories.count())
 
     def test_advisory_todo_conflicting_fixed_affected(self):
-        alias = AdvisoryAlias.objects.create(alias="CVE-0000-0000")
-        date = datetime.now()
-        adv1 = AdvisoryV2.objects.create(
-            unique_content_id="test_id1",
-            url=self.advisory_data1.url,
-            summary=self.advisory_data1.summary,
-            date_collected=date,
-            advisory_id="test_id",
-            avid="test_pipeline/test_id_2",
-            datasource_id="test_pipeline",
+        insert_advisory_v2(
+            advisory=self.advisory_data1,
+            pipeline_id="test_pipeline1",
+            logger=self.log.write,
         )
-        for pkg in self.advisory_data1.affected_packages:
-            ImpactedPackage.objects.create(
-                advisory=adv1,
-                base_purl=pkg.package,
-                affecting_vers=pkg.affected_version_range or "",
-                fixed_vers=pkg.fixed_version_range or "",
-            )
-        adv1.aliases.add(alias)
-        adv2 = AdvisoryV2.objects.create(
-            unique_content_id="test_id2",
-            url=self.advisory_data4.url,
-            summary=self.advisory_data4.summary,
-            date_collected=date,
-            advisory_id="test_id",
-            avid="test_pipeline/test_id_2",
-            datasource_id="test_pipeline",
+        insert_advisory_v2(
+            advisory=self.advisory_data4,
+            pipeline_id="test_pipeline2",
+            logger=self.log.write,
         )
-        for pkg in self.advisory_data4.affected_packages:
-            ImpactedPackage.objects.create(
-                advisory=adv2,
-                base_purl=pkg.package,
-                affecting_vers=pkg.affected_version_range or "",
-                fixed_vers=pkg.fixed_version_range or "",
-            )
-        adv2.aliases.add(alias)
+        for imp in ImpactedPackage.objects.all():
+            imp.last_successful_range_unfurl_at = datetime.now()
+            imp.save()
 
         self.assertEqual(0, AdvisoryToDoV2.objects.count())
         pipeline = ComputeToDo()
         pipeline.execute()
 
         todo = AdvisoryToDoV2.objects.first()
+        adv = AdvisoryV2.objects.first()
         self.assertEqual(1, AdvisoryToDoV2.objects.count())
         self.assertEqual("CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES", todo.issue_type)
         self.assertIn(
-            "CVE-0000-0000: pkg:npm/package1 with conflicting fixed version", todo.issue_detail
+            '"conflict_checksum": "57f32de5f41f137f0e3808535c2d974d54eeeda426c4279e7fb90475d26f0313",',
+            todo.issue_detail,
         )
         self.assertEqual(2, todo.advisories.count())
-        self.assertEqual(todo, adv2.advisory_todos.first())
+        self.assertEqual(todo, adv.advisory_todos.first())

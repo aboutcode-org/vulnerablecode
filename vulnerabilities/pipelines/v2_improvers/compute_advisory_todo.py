@@ -217,7 +217,7 @@ class ComputeToDo(VulnerableCodePipeline):
                 if adv.avid in avids_with_common_alias_and_purl
             }
 
-            if not len(advisory_group) > 2:
+            if not len(advisory_group) > 1:
                 continue
             # if any eligible PURL is not unfurled, skip
             if set(comparable_purl_map) & unfurled_base_purls:

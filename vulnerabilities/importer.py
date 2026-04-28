@@ -648,6 +648,7 @@ class AdvisoryDataV2:
     def from_dict(cls, advisory_data):
         date_published = advisory_data["date_published"]
         transformed = {
+            "advisory_id": advisory_data["advisory_id"],
             "aliases": advisory_data["aliases"],
             "summary": advisory_data["summary"],
             "affected_packages": [

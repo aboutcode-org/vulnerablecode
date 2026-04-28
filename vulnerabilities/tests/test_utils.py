@@ -254,3 +254,10 @@ class TestComputeContentIdV2(TestCase):
         id_from_model = utils.compute_content_id_v2(advisory_model)
 
         self.assertEqual(id_from_data, id_from_model)
+
+    def test_content_id_from_adv_data_roundtrip_are_same(self):
+        id_from_data = utils.compute_content_id_v2(self.advisory1)
+        adv_roundtrip = AdvisoryDataV2.from_dict(self.advisory1.to_dict())
+        id_from_roundtrip = utils.compute_content_id_v2(adv_roundtrip)
+
+        self.assertEqual(id_from_data, id_from_roundtrip)

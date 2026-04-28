@@ -46,6 +46,7 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return (
             cls.clone,
             cls.collect_and_store_advisories,
+            cls.clean_downloads,
         )
 
     def advisories_count(self) -> int:

@@ -35,6 +35,7 @@ import toml
 import urllib3
 from cwe2.database import Database
 from cwe2.database import InvalidCWEError
+from django.db.models import Prefetch
 from packageurl import PackageURL
 from packageurl.contrib.django.utils import without_empty_values
 from univers.version_range import RANGE_CLASS_BY_SCHEMES
@@ -959,10 +960,12 @@ def get_merged_identifier_groups(advisories):
     return final_groups
 
 
-def get_advisories_from_groups(groups):
+def get_advisories_from_groups(groups, include_ssvc_trees=False):
     """
     Return a list of advisories from the merged groups of advisories.
     """
+    from vulnerabilities.models import SSVC
+    from vulnerabilities.models import AdvisoryV2
     from vulnerabilities.models import Group
     from vulnerabilities.models import GroupedAdvisory
 
@@ -996,6 +999,35 @@ def get_advisories_from_groups(groups):
         identifier = group.primary.advisory_id.split("/")[-1]
         filtered_aliases = [alias for alias in group.aliases if alias.alias != identifier]
 
+        ssvc_trees = []
+
+        if include_ssvc_trees:
+
+            all_advs = [group.primary] + list(group.secondaries)
+
+            advisories_qs = AdvisoryV2.objects.filter(
+                id__in=[adv.id for adv in all_advs]
+            ).prefetch_related(
+                Prefetch(
+                    "related_ssvcs",
+                    queryset=SSVC.objects.select_related("source_advisory")
+                    .only("id", "vector", "decision", "options", "source_advisory__url")
+                    .distinct(),
+                    to_attr="ssvc_trees",
+                )
+            )
+
+            ssvc_trees = [
+                {
+                    "vector": ssvc.vector,
+                    "decision": ssvc.decision,
+                    "options": ssvc.options,
+                    "url": ssvc.source_advisory.url if ssvc.source_advisory else None,
+                }
+                for adv in advisories_qs
+                for ssvc in adv.ssvc_trees
+            ]
+
         advisories.append(
             GroupedAdvisory(
                 aliases=filtered_aliases,
@@ -1004,6 +1036,7 @@ def get_advisories_from_groups(groups):
                 weighted_severity=weighted_severity,
                 exploitability=exploitability,
                 risk_score=risk_score,
+                ssvc_trees=ssvc_trees or [],
             )
         )
 

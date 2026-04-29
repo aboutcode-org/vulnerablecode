@@ -23,6 +23,7 @@ from rest_framework import viewsets
 from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 
+from vulnerabilities.models import SSVC
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySet
@@ -30,13 +31,11 @@ from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
-from vulnerabilities.models import Group
 from vulnerabilities.models import GroupedAdvisory
 from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import PackageV2
 from vulnerabilities.throttling import PermissionBasedUserRateThrottle
 from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
-from vulnerabilities.utils import get_advisories_from_groups
 from vulnerabilities.utils import merge_and_save_grouped_advisories
 
 
@@ -48,6 +47,7 @@ class PackageQuerySerializer(serializers.Serializer):
     )
     details = serializers.BooleanField(default=False)
     ignore_qualifiers_subpath = serializers.BooleanField(default=False)
+    max_advisories = serializers.IntegerField(default=100, min_value=1, max_value=10000)
 
     def validate(self, data):
         if not data["purls"]:
@@ -228,11 +228,17 @@ class PackageV3Serializer(serializers.ModelSerializer):
             for adv in advisories:
                 fixed = impact_map.get(adv["avid"])
                 adv.pop("avid", None)
+                resource_url = None
+
+                if request := self.context.get("request", None):
+                    resource_url = adv.pop("resource_url", None)
+                    resource_url = request.build_absolute_uri(location=resource_url)
 
                 result.append(
                     {
                         **adv,
                         "fixed_by_packages": fixed,
+                        "resource_url": resource_url,
                     }
                 )
 
@@ -246,8 +252,19 @@ class PackageV3Serializer(serializers.ModelSerializer):
             advisories_ids = advisories_qs.only("id")
 
             advisories_ids = list(advisories_ids[:101])
-            if len(advisories_ids) > 100:
+            if len(advisories_ids) > self.context.get("max_advisories", 100):
                 return None
+
+            advisories_qs = advisories_qs.prefetch_related(
+                "aliases",
+                Prefetch(
+                    "related_ssvcs",
+                    queryset=SSVC.objects.select_related("source_advisory").only(
+                        "id", "decision", "options", "vector", "source_advisory__url"
+                    ),
+                    to_attr="prefetched_ssvc_trees",
+                ),
+            )
 
             advisory_by_avid = {adv.avid: adv for adv in advisories_qs}
             avids = advisory_by_avid.keys()
@@ -264,8 +281,14 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
             for advisory in advisories_qs:
                 impact = impact_by_avid.get(advisory.avid)
-                if not impact:
-                    continue
+                fixed_by_packages = []
+                if impact:
+                    fixed_by_packages = [pkg.purl for pkg in impact.fixed_by_packages.all()]
+
+                resource_url = None
+
+                if request := self.context.get("request", None):
+                    resource_url = request.build_absolute_uri(location=advisory.get_absolute_url())
 
                 result.append(
                     {
@@ -275,7 +298,17 @@ class PackageV3Serializer(serializers.ModelSerializer):
                         "severity": advisory.weighted_severity,
                         "exploitability": advisory.exploitability,
                         "risk_score": advisory.risk_score,
-                        "fixed_by_packages": [pkg.purl for pkg in impact.fixed_by_packages.all()],
+                        "fixed_by_packages": fixed_by_packages,
+                        "resource_url": resource_url,
+                        "ssvc_trees": [
+                            {
+                                "vector": ssvc.vector,
+                                "decision": ssvc.decision,
+                                "options": ssvc.options,
+                                "source_url": ssvc.source_advisory.url,
+                            }
+                            for ssvc in advisory.prefetched_ssvc_trees
+                        ],
                     }
                 )
 
@@ -295,8 +328,18 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
     def get_fixing_vulnerabilities(self, package):
         advisories = self.context["fixing_advisory_map"].get(package.id, [])
-        if advisories:
-            return advisories
+        results = []
+        for advisory in advisories:
+            if request := self.context.get("request", None):
+                resource_url = request.build_absolute_uri(location=advisory["resource_url"])
+            results.append(
+                {
+                    "advisory_id": advisory["advisory_id"],
+                    "resource_url": resource_url,
+                }
+            )
+        if results:
+            return results
 
         advisories_qs = AdvisoryV2.objects.latest_fixed_by_advisories_for_purl(package.package_url)
 
@@ -304,15 +347,18 @@ class PackageV3Serializer(serializers.ModelSerializer):
             advisories_ids = advisories_qs.only("id")
 
             advisories_ids = list(advisories_ids[:101])
-            if len(advisories_ids) > 100:
+            if len(advisories_ids) > self.context.get("max_advisories", 100):
                 return None
 
             results = []
 
             for advisory in advisories_qs:
+                if request := self.context.get("request", None):
+                    resource_url = request.build_absolute_uri(location=advisory.get_absolute_url())
                 results.append(
                     {
                         "advisory_id": advisory.advisory_id.split("/")[-1],
+                        "resource_url": resource_url,
                     }
                 )
             return results
@@ -334,9 +380,15 @@ class PackageV3Serializer(serializers.ModelSerializer):
         result = []
         for advisory in advisories:
             assert isinstance(advisory, GroupedAdvisory)
+            resource_url = None
+            if request := self.context.get("request", None):
+                resource_url = request.build_absolute_uri(
+                    location=advisory.advisory.get_absolute_url()
+                )
             result.append(
                 {
                     "advisory_id": advisory.identifier,
+                    "resource_url": resource_url,
                 }
             )
 
@@ -357,9 +409,15 @@ class PackageV3Serializer(serializers.ModelSerializer):
         result = []
         for advisory in advisories:
             assert isinstance(advisory, GroupedAdvisory)
+            resource_url = None
+            fixed_by_packages = []
+            if request := self.context.get("request", None):
+                resource_url = request.build_absolute_uri(
+                    location=advisory.advisory.get_absolute_url()
+                )
             impact = impact_by_avid.get(advisory.advisory.avid)
             if not impact:
-                continue
+                fixed_by_packages = list(set([pkg.purl for pkg in impact.fixed_by_packages.all()]))
 
             result.append(
                 {
@@ -369,9 +427,9 @@ class PackageV3Serializer(serializers.ModelSerializer):
                     "exploitability": advisory.exploitability,
                     "risk_score": advisory.risk_score,
                     "summary": advisory.advisory.summary,
-                    "fixed_by_packages": list(
-                        set([pkg.purl for pkg in impact.fixed_by_packages.all()])
-                    ),
+                    "fixed_by_packages": fixed_by_packages,
+                    "resource_url": resource_url,
+                    "ssvc_trees": advisory.ssvc_trees,
                 }
             )
 
@@ -400,6 +458,7 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
         purls = serializer.validated_data["purls"]
         details = serializer.validated_data["details"]
         ignore_qualifiers_subpath = serializer.validated_data["ignore_qualifiers_subpath"]
+        max_advisories = serializer.validated_data["max_advisories"]
 
         if not purls:
             impacted = ImpactedPackageAffecting.objects.filter(package_id=OuterRef("id"))
@@ -464,6 +523,7 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
                 "advisory_map": affected_advisory_map,
                 "impact_map": impact_map,
                 "fixing_advisory_map": fixing_advisory_map,
+                "max_advisories": max_advisories,
             },
         )
         return self.get_paginated_response(serializer.data)
@@ -576,7 +636,25 @@ def get_affected_advisories_bulk(packages):
             relation_type="affecting",
         )
         .select_related("primary_advisory")
-        .prefetch_related(Prefetch("aliases", queryset=AdvisoryAlias.objects.only("alias")))
+        .prefetch_related(
+            Prefetch("aliases", queryset=AdvisoryAlias.objects.only("alias")),
+            Prefetch(
+                "members",
+                queryset=AdvisorySetMember.objects.select_related("advisory").prefetch_related(
+                    Prefetch(
+                        "advisory__related_ssvcs",
+                        queryset=SSVC.objects.select_related("source_advisory").only(
+                            "id",
+                            "options",
+                            "decision",
+                            "vector",
+                            "source_advisory__url",
+                        ),
+                        to_attr="prefetched_ssvc_trees",
+                    )
+                ),
+            ),
+        )
         .annotate(
             max_severity=Max(
                 "members__advisory__weighted_severity",
@@ -620,6 +698,20 @@ def get_affected_advisories_bulk(packages):
             identifier = primary.advisory_id.split("/")[-1]
 
             aliases = [a for a in adv._aliases_cache if a != identifier]
+            all_ssvc = []
+
+            for member in adv.members.all():
+                all_ssvc.extend(member.advisory.prefetched_ssvc_trees)
+
+            for ssvc in all_ssvc:
+                all_ssvc.append(
+                    {
+                        "vector": ssvc.vector,
+                        "decision": ssvc.decision,
+                        "options": ssvc.options,
+                        "source_url": ssvc.source_advisory.url,
+                    }
+                )
 
             grouped.append(
                 {
@@ -630,6 +722,8 @@ def get_affected_advisories_bulk(packages):
                     "exploitability": exploitability,
                     "risk_score": risk_score,
                     "summary": primary.summary,
+                    "resource_url": primary.get_absolute_url(),
+                    "ssvc_trees": all_ssvc,
                 }
             )
 
@@ -690,7 +784,7 @@ def get_fixing_advisories_bulk(packages):
     package_map = defaultdict(list)
 
     for adv in advisory_sets:
-        package_map[adv.package_id].append(adv.primary_advisory.advisory_id)
+        package_map[adv.package_id].append(adv.primary_advisory)
 
     result = {}
 
@@ -698,8 +792,13 @@ def get_fixing_advisories_bulk(packages):
         groups = package_map.get(package.id, [])
         grouped = []
 
-        for adv_id in groups:
-            grouped.append({"advisory_id": adv_id.split("/")[-1]})
+        for advisory in groups:
+            grouped.append(
+                {
+                    "advisory_id": advisory.advisory_id.split("/")[-1],
+                    "resource_url": advisory.get_absolute_url(),
+                }
+            )
 
         result[package.id] = grouped
 

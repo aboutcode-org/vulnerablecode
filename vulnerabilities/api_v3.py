@@ -703,8 +703,10 @@ def get_affected_advisories_bulk(packages):
             for member in adv.members.all():
                 all_ssvc.extend(member.advisory.prefetched_ssvc_trees)
 
+            ssvcs = []
+
             for ssvc in all_ssvc:
-                all_ssvc.append(
+                ssvcs.append(
                     {
                         "vector": ssvc.vector,
                         "decision": ssvc.decision,
@@ -723,7 +725,7 @@ def get_affected_advisories_bulk(packages):
                     "risk_score": risk_score,
                     "summary": primary.summary,
                     "resource_url": primary.get_absolute_url(),
-                    "ssvc_trees": all_ssvc,
+                    "ssvc_trees": ssvcs,
                 }
             )
 

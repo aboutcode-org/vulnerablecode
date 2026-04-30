@@ -3477,7 +3477,8 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         """
         Return a new Package given a ``purl`` PackageURL object or PURL string.
         """
-        return PackageV2.objects.create(**purl_to_dict(purl=purl))
+        package, _ = PackageV2.objects.get_or_create(**purl_to_dict(purl=purl))
+        return package
 
 
 class PackageV2(PackageURLMixin):
@@ -3490,6 +3491,7 @@ class PackageV2(PackageURLMixin):
         null=False,
         help_text="The Package URL for this package.",
         db_index=True,
+        unique=True,
     )
 
     plain_package_url = models.CharField(
@@ -3519,6 +3521,24 @@ class PackageV2(PackageURLMixin):
         default=0,
         db_index=True,
     )
+
+    class Meta:
+        unique_together = ["type", "namespace", "name", "version", "qualifiers", "subpath"]
+        ordering = ["type", "namespace", "name", "version_rank", "version", "qualifiers", "subpath"]
+        indexes = [
+            # Index for getting al versions of a package
+            models.Index(fields=["type", "namespace", "name"]),
+            models.Index(fields=["type", "namespace", "name", "qualifiers", "subpath"]),
+            # Index for getting a specific version of a package
+            models.Index(
+                fields=[
+                    "type",
+                    "namespace",
+                    "name",
+                    "version",
+                ]
+            ),
+        ]
 
     def __str__(self):
         return self.package_url

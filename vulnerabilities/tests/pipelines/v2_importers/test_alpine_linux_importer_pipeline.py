@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 from vulnerabilities.pipelines.v2_importers.alpine_linux_importer import load_advisories
+from vulnerabilities.pipelines.v2_importers.alpine_linux_importer import parse_vuln_ids
 from vulnerabilities.pipelines.v2_importers.alpine_linux_importer import process_record
 from vulnerabilities.tests import util_tests
 from vulnerabilities.tests.pipelines import TestLogger
@@ -95,3 +96,83 @@ def test_load_advisories_package_with_invalid_alpine_version(test_case):
     }
     result = list(load_advisories(package, "v3.11", "main", archs=[], url="", logger=logger.write))
     assert result != []
+
+
+@pytest.mark.parametrize(
+    "raw_input, expected_vuln_id, expected_aliases",
+    [
+        ("CVE-2022-42332 XSA-427", "CVE-2022-42332", ["CVE-2022-42332", "XSA-427"]),
+        (
+            "CVE-2022-42333 CVE-2022-43334 XSA-428",
+            "CVE-2022-42333",
+            ["CVE-2022-42333", "CVE-2022-43334", "XSA-428"],
+        ),
+        (
+            "CVE-2020-11501 GNUTLS-SA-2020-03-31 CVE-2020-11501",
+            "CVE-2020-11501",
+            ["CVE-2020-11501", "GNUTLS-SA-2020-03-31", "CVE-2020-11501"],
+        ),
+        ("CVE_2019-2426", "CVE-2019-2426", ["CVE-2019-2426"]),
+        (
+            "CVE-2024-22195 GHSA-h5c8-rqwp-cp95",
+            "CVE-2024-22195",
+            ["CVE-2024-22195", "GHSA-h5c8-rqwp-cp95"],
+        ),
+        ("CVE-2023-44441 ZDI-CAN-22093", "CVE-2023-44441", ["CVE-2023-44441", "ZDI-CAN-22093"]),
+        ("CVE-2022-45059 VSV00010", "CVE-2022-45059", ["CVE-2022-45059", "VSV00010"]),
+        ("OSEC-2026-03", "OSEC-2026-03", ["OSEC-2026-03"]),
+        ("CVE-2021-35940.patch", "CVE-2021-35940", ["CVE-2021-35940"]),
+        ("XSA-207", "XSA-207", ["XSA-207"]),
+        ("ALPINE-13661", "ALPINE-13661", ["ALPINE-13661"]),
+        ("GHSA-vv2x-vrpj-qqpq", "GHSA-vv2x-vrpj-qqpq", ["GHSA-vv2x-vrpj-qqpq"]),
+        ("CVE N/A ZBX-11023", "ZBX-11023", ["ZBX-11023"]),
+        ("CVE-2017-2616 (+ regression fix)", "CVE-2017-2616", ["CVE-2017-2616"]),
+        (
+            "CVE-2020-14342 (Not affected, requires --with-systemd)",
+            "CVE-2020-14342",
+            ["CVE-2020-14342"],
+        ),
+        ("CVE-2017-16808 (AoE)", "CVE-2017-16808", ["CVE-2017-16808"]),
+        ("CVE-2018-14468 (FrameRelay)", "CVE-2018-14468", ["CVE-2018-14468"]),
+        ("CVE-2018-14469 (IKEv1)", "CVE-2018-14469", ["CVE-2018-14469"]),
+        ("CVE-2018-14470 (BABEL)", "CVE-2018-14470", ["CVE-2018-14470"]),
+        ("CVE-2018-14466 (AFS/RX)", "CVE-2018-14466", ["CVE-2018-14466"]),
+        ("CVE-2018-14461 (LDP)", "CVE-2018-14461", ["CVE-2018-14461"]),
+        ("CVE-2018-14462 (ICMP)", "CVE-2018-14462", ["CVE-2018-14462"]),
+        ("CVE-2018-14465 (RSVP)", "CVE-2018-14465", ["CVE-2018-14465"]),
+        ("CVE-2018-14881 (BGP)", "CVE-2018-14881", ["CVE-2018-14881"]),
+        ("CVE-2018-14464 (LMP)", "CVE-2018-14464", ["CVE-2018-14464"]),
+        ("CVE-2018-14463 (VRRP)", "CVE-2018-14463", ["CVE-2018-14463"]),
+        ("CVE-2018-14467 (BGP)", "CVE-2018-14467", ["CVE-2018-14467"]),
+        (
+            "CVE-2018-10103 (SMB - partially fixed, but SMB printing disabled)",
+            "CVE-2018-10103",
+            ["CVE-2018-10103"],
+        ),
+        (
+            "CVE-2018-10105 (SMB - too unreliably reproduced, SMB printing disabled)",
+            "CVE-2018-10105",
+            ["CVE-2018-10105"],
+        ),
+        ("CVE-2018-14880 (OSPF6)", "CVE-2018-14880", ["CVE-2018-14880"]),
+        ("CVE-2018-16451 (SMB)", "CVE-2018-16451", ["CVE-2018-16451"]),
+        ("CVE-2018-14882 (RPL)", "CVE-2018-14882", ["CVE-2018-14882"]),
+        ("CVE-2018-16227 (802.11)", "CVE-2018-16227", ["CVE-2018-16227"]),
+        ("CVE-2018-16229 (DCCP)", "CVE-2018-16229", ["CVE-2018-16229"]),
+        ("CVE-2018-16301 (was fixed in libpcap)", "CVE-2018-16301", ["CVE-2018-16301"]),
+        ("CVE-2018-16230 (BGP)", "CVE-2018-16230", ["CVE-2018-16230"]),
+        ("CVE-2018-16452 (SMB)", "CVE-2018-16452", ["CVE-2018-16452"]),
+        ("CVE-2018-16300 (BGP)", "CVE-2018-16300", ["CVE-2018-16300"]),
+        ("CVE-2018-16228 (HNCP)", "CVE-2018-16228", ["CVE-2018-16228"]),
+        ("CVE-2019-15166 (LMP)", "CVE-2019-15166", ["CVE-2019-15166"]),
+        ("CVE-2019-15167 (VRRP)", "CVE-2019-15167", ["CVE-2019-15167"]),
+        ("CVE-????-????? TS-2024-005", "TS-2024-005", ["TS-2024-005"]),
+        ("CVE-????-????? TS-2024-005", "TS-2024-005", ["TS-2024-005"]),
+        ("CVE-2018-14879 (tcpdump -V)", "CVE-2018-14879", ["CVE-2018-14879"]),
+        ("CVE-46838", None, []),  # invalid CVE
+    ],
+)
+def test_parse_vuln_ids(raw_input, expected_vuln_id, expected_aliases):
+    vuln_id, aliases = parse_vuln_ids(raw_input)
+    assert vuln_id == expected_vuln_id
+    assert aliases == expected_aliases

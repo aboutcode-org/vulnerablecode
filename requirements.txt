@@ -80,7 +80,7 @@ typecode==30.2.0
 typecode-libmagic==5.39.210531
 typing_extensions==4.13.0
 tzlocal==5.3.1
-univers==30.12.0
+git+https://github.com/aboutcode-org/univers.git@fa06361292798d09fbb088799e9f4b275a422aa5#egg=univers
 uritemplate==4.2.0
 urllib3==2.6.3
 webencodings==0.5.1

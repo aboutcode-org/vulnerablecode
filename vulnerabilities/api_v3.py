@@ -261,7 +261,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
                     "related_ssvcs",
                     queryset=SSVC.objects.select_related("source_advisory").only(
                         "id", "decision", "options", "vector", "source_advisory__url"
-                    ),
+                    ).distinct("source_advisory__url"),
                     to_attr="prefetched_ssvc_trees",
                 ),
             )
@@ -649,7 +649,7 @@ def get_affected_advisories_bulk(packages):
                             "decision",
                             "vector",
                             "source_advisory__url",
-                        ),
+                        ).distinct("source_advisory__url"),
                         to_attr="prefetched_ssvc_trees",
                     )
                 ),

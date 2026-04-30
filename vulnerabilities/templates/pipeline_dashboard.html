@@ -86,13 +86,13 @@ Pipeline Dashboard
                                             worker{{ additional|pluralize }} for the {{ queue_name }} queue.">
                                         <span class="icon"><i class="fa fa-exclamation-triangle"></i></span>
                                     </span>
-                                {% elif load_factor < 1 %}
+                                {% elif additional < 1 %}
                                     <span class="has-text-weight-bold is-size-6 has-text-success has-tooltip-arrow has-tooltip-multiline has-tooltip-success"
                                             data-tooltip="{{ queue_name|capfirst }} queue perfectly balanced.">
                                         {{ load_factor|floatformat:2 }}
                                         <span class="icon"><i class="fa fa-check-circle"></i></span>
                                     </span>
-                                {% elif load_factor < 1.6 %}
+                                {% elif additional < 2 %}
                                     <span class="has-text-weight-bold is-size-6 has-text-orange has-tooltip-arrow has-tooltip-multiline has-tooltip-orange"
                                     data-tooltip="Consider adding {{ additional }} additional worker{{ additional|pluralize }} to the {{ queue_name }} queue.">
                                         {{ load_factor|floatformat:2 }}

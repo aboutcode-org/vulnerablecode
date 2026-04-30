@@ -3399,19 +3399,12 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         return package, is_created
 
     def bulk_get_or_create_from_purls(self, purls: List[Union[PackageURL, str]]):
-        """
-        Return new or existing Packages given ``purls`` list of PackageURL object or PURL string.
-        """
-        purl_strings = [str(p) for p in purls]
-        existing_packages = PackageV2.objects.filter(package_url__in=purl_strings)
-        existing_purls = set(existing_packages.values_list("package_url", flat=True))
+        """Return queryset of Packages for a list of PURLs, bulk create any that do not already exist."""
 
-        all_packages = list(existing_packages)
         packages_to_create = []
-        for purl in purls:
-            if str(purl) in existing_purls:
-                continue
+        normalize_purls = []
 
+        for purl in purls:
             purl_dict = purl_to_dict(purl)
             purl = PackageURL(**purl_dict)
 
@@ -3422,16 +3415,16 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
             purl_dict["package_url"] = str(normalized)
             purl_dict["plain_package_url"] = str(utils.plain_purl(normalized))
 
+            normalize_purls.append(str(normalized))
             packages_to_create.append(PackageV2(**purl_dict))
 
         try:
-            new_packages = PackageV2.objects.bulk_create(packages_to_create)
+            PackageV2.objects.bulk_create(packages_to_create, ignore_conflicts=True)
         except Exception as e:
             logging.error(f"Error creating PackageV2: {e} \n {traceback_format_exc()}")
             return []
 
-        all_packages.extend(new_packages)
-        return all_packages
+        return PackageV2.objects.filter(package_url__in=normalize_purls)
 
     def only_vulnerable(self):
         return self._vulnerable(True)

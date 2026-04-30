@@ -1,6 +1,16 @@
 Release notes
 =============
 
+Version v38.6.0
+---------------------
+
+- fix: add missing clean_downloads step for alpine_linux v2 importer (https://github.com/aboutcode-org/vulnerablecode/pull/2282)
+- fix: fix AdvisoryDataV2 deserialization and validate version ranges correctly (https://github.com/aboutcode-org/vulnerablecode/pull/2285)
+- fix: ignore conflicts while bulk creating v2 packages (https://github.com/aboutcode-org/vulnerablecode/pull/2289)
+- fix: use shared cache backend across WSGI workers (https://github.com/aboutcode-org/vulnerablecode/pull/2290)
+- fix: delete AdvisorySet associated with malformed aliases (https://github.com/aboutcode-org/vulnerablecode/pull/2291)
+
+
 Version v38.5.0
 ---------------------
 

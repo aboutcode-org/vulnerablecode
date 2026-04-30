@@ -10,38 +10,75 @@ class Migration(migrations.Migration):
     def drop_malformed_advisory_v2(apps, _):
         AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
         AdvisoryAlias = apps.get_model("vulnerabilities", "AdvisoryAlias")
+        AdvisorySet = apps.get_model("vulnerabilities", "AdvisorySet")
 
         valid_alias_prefix = [
-            "cve-", "osv-", "xsa-", "vsv", "zbx-", "zf2", "vu#", "gms-", "usn-",
-            "sw-", "ss-", "ts-", "osvdb-", "ysa-", "se-core-", "pysec-", "alpine-",
-            "dw2", "go-", "mal-", "zdi-can", "asa-", "ezsa-", "ghsl-", "ghsa-",
-            "talos-", "srcclr-sid-", "bit-", "gnutls-", "rustsec-", "snyk-",
-            "temp-", "TYPO3-", "wnpa-sec-", "sa-core-", "skcsirt-", "flow-", "gsd-"
+            "cve-",
+            "osv-",
+            "xsa-",
+            "vsv",
+            "zbx-",
+            "zf2",
+            "vu#",
+            "gms-",
+            "usn-",
+            "sw-",
+            "ss-",
+            "ts-",
+            "osvdb-",
+            "ysa-",
+            "se-core-",
+            "pysec-",
+            "alpine-",
+            "dw2",
+            "go-",
+            "mal-",
+            "zdi-can",
+            "asa-",
+            "ezsa-",
+            "ghsl-",
+            "ghsa-",
+            "talos-",
+            "srcclr-sid-",
+            "bit-",
+            "gnutls-",
+            "rustsec-",
+            "snyk-",
+            "temp-",
+            "TYPO3-",
+            "wnpa-sec-",
+            "sa-core-",
+            "skcsirt-",
+            "flow-",
+            "gsd-",
         ]
 
-        target_importers = ["alpine_linux_importer_v2",
-                            "fireeye_importer_v2",
-                            "istio_importer_v2",
-                            "mattermost_importer_v2"]
+        target_importers = [
+            "alpine_linux_importer_v2",
+            "fireeye_importer_v2",
+            "istio_importer_v2",
+            "mattermost_importer_v2",
+        ]
         query = Q()
         for alias_prefix in valid_alias_prefix:
             query |= Q(alias__istartswith=alias_prefix)
 
         malformed_alias_ids = list(
-            AdvisoryAlias.objects.filter(
-                advisories__datasource_id__in=target_importers
-            ).exclude(query).values_list('id', flat=True).distinct()
+            AdvisoryAlias.objects.filter(advisories__datasource_id__in=target_importers)
+            .exclude(query)
+            .values_list("id", flat=True)
+            .distinct()
         )
 
-        AdvisoryV2.objects.filter(
-            datasource_id__in=target_importers,
-            aliases__id__in=malformed_alias_ids
-        ).delete()
+        advisories_to_delete = AdvisoryV2.objects.filter(
+            datasource_id__in=target_importers, aliases__id__in=malformed_alias_ids
+        )
 
-        AdvisoryAlias.objects.filter(
-            id__in=malformed_alias_ids,
-            advisories__isnull=True
-        ).delete()
+        AdvisorySet.objects.filter(primary_advisory__in=advisories_to_delete).delete()
+
+        advisories_to_delete.delete()
+
+        AdvisoryAlias.objects.filter(id__in=malformed_alias_ids, advisories__isnull=True).delete()
 
     operations = [
         migrations.RunPython(drop_malformed_advisory_v2, reverse_code=migrations.RunPython.noop),

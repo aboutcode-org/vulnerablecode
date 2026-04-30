@@ -18,13 +18,30 @@ class Migration(migrations.Migration):
             "talos-", "srcclr-sid-", "bit-", "gnutls-", "rustsec-", "snyk-",
             "temp-", "TYPO3-", "wnpa-sec-", "sa-core-", "skcsirt-", "flow-", "gsd-"
         ]
+
+        target_importers = ["alpine_linux_importer_v2",
+                            "fireeye_importer_v2",
+                            "istio_importer_v2",
+                            "mattermost_importer_v2"]
         query = Q()
         for alias_prefix in valid_alias_prefix:
             query |= Q(alias__istartswith=alias_prefix)
 
-        malformed_aliases = AdvisoryAlias.objects.exclude(query)
-        AdvisoryV2.objects.filter(aliases__in=malformed_aliases, datasource_id__in=["alpine_linux_importer_v2", "fireeye_importer_v2", "istio_importer_v2", "mattermost_importer_v2"]).delete()
-        malformed_aliases.delete()
+        malformed_alias_ids = list(
+            AdvisoryAlias.objects.filter(
+                advisories__datasource_id__in=target_importers
+            ).exclude(query).values_list('id', flat=True).distinct()
+        )
+
+        AdvisoryV2.objects.filter(
+            datasource_id__in=target_importers,
+            aliases__id__in=malformed_alias_ids
+        ).delete()
+
+        AdvisoryAlias.objects.filter(
+            id__in=malformed_alias_ids,
+            advisories__isnull=True
+        ).delete()
 
     operations = [
         migrations.RunPython(drop_malformed_advisory_v2, reverse_code=migrations.RunPython.noop),

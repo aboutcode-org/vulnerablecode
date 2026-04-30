@@ -59,8 +59,6 @@ from vulnerablecode.settings import env
 
 PAGE_SIZE = 10
 
-CACHE_TIMEOUT = 60 * 5
-
 
 class VulnerableCodeView(View):
     """
@@ -965,11 +963,12 @@ class PipelineScheduleListView(VulnerableCodeListView, FormMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        cache_timeout = 60 * 10
         load_per_queue = cache.get("load_per_queue")
 
         if load_per_queue is None:
             load_per_queue = compute_queue_load_factor()
-            cache.set("load_per_queue", load_per_queue, CACHE_TIMEOUT)
+            cache.set("load_per_queue", load_per_queue, cache_timeout)
 
         context["load_per_queue"] = load_per_queue
         context["active_pipeline_count"] = PipelineSchedule.objects.filter(is_active=True).count()

@@ -19,10 +19,12 @@ from vulnerabilities.pipelines import flag_ghost_packages
 from vulnerabilities.pipelines import populate_vulnerability_summary_pipeline
 from vulnerabilities.pipelines import remove_duplicate_advisories
 from vulnerabilities.pipelines.v2_improvers import collect_ssvc_trees
+from vulnerabilities.pipelines.v2_improvers import compute_advisory_todo as compute_advisory_todo_v2
 from vulnerabilities.pipelines.v2_improvers import compute_package_risk as compute_package_risk_v2
 from vulnerabilities.pipelines.v2_improvers import (
     computer_package_version_rank as compute_version_rank_v2,
 )
+from vulnerabilities.pipelines.v2_improvers import detection_rules
 from vulnerabilities.pipelines.v2_improvers import enhance_with_exploitdb as exploitdb_v2
 from vulnerabilities.pipelines.v2_improvers import enhance_with_kev as enhance_with_kev_v2
 from vulnerabilities.pipelines.v2_improvers import (
@@ -72,5 +74,6 @@ IMPROVERS_REGISTRY = create_registry(
         collect_ssvc_trees.CollectSSVCPipeline,
         relate_severities.RelateSeveritiesPipeline,
         group_advisories_for_packages.GroupAdvisoriesForPackages,
+        detection_rules.DetectionRulesPipeline,
     ]
 )

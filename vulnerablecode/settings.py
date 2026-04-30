@@ -402,6 +402,18 @@ RQ_QUEUES = {
 }
 
 
+vcio_redis_host = env.str("VULNERABLECODE_REDIS_HOST", default=None)
+vcio_redis_port = env.str("VULNERABLECODE_REDIS_PORT", default=None)
+
+if vcio_redis_host and vcio_redis_port:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": f"redis://{vcio_redis_host}:{vcio_redis_port}",
+        }
+    }
+
+
 # FederatedCode integration
 
 FEDERATEDCODE_VULNERABILITIES_REPO = env.str(

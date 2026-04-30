@@ -1093,8 +1093,8 @@ class TestLatestAdvisoryV2Migration(TestMigrations):
 
 class TestMalformedAliasesAVIDMigration(TestMigrations):
     app_name = "vulnerabilities"
-    migrate_from = "0121_advisoryv2_is_latest_alter_advisoryv2_advisory_id_and_more"
-    migrate_to = "0122_advisoryv2_remove_malformed_aliases_and_dvisory_id"
+    migrate_from = "0123_alter_packagev2_options_alter_packagev2_package_url_and_more"
+    migrate_to = "0124_advisoryv2_remove_malformed_aliases_and_dvisory_id"
     raw_alias_inputs = [
         ("CVE-2023-1111", True),
         ("GHSA-abcd-1234", True),

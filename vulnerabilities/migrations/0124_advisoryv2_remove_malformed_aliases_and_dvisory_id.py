@@ -4,7 +4,7 @@ from django.db.models import Q
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("vulnerabilities", "0121_advisoryv2_is_latest_alter_advisoryv2_advisory_id_and_more"),
+        ("vulnerabilities", "0123_alter_packagev2_options_alter_packagev2_package_url_and_more"),
     ]
 
     def drop_malformed_advisory_v2(apps, _):

@@ -3399,9 +3399,8 @@ class PackageQuerySetV2(BaseQuerySet, PackageURLQuerySet):
         return package, is_created
 
     def bulk_get_or_create_from_purls(self, purls: List[Union[PackageURL, str]]):
-        """
-        Return new or existing Packages given ``purls`` list of PackageURL object or PURL string.
-        """
+        """Return queryset of Packages for a list of PURLs, bulk create any that do not already exist."""
+
         packages_to_create = []
         normalize_purls = []
 

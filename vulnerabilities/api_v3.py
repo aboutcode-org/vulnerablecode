@@ -113,7 +113,6 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
     weaknesses = AdvisoryWeaknessSerializer(many=True)
     references = AdvisoryReferenceSerializer(many=True)
     severities = AdvisorySeveritySerializer(many=True)
-    advisory_id = serializers.CharField(source="avid", read_only=True)
     related_ssvc_trees = serializers.SerializerMethodField()
 
     def get_related_ssvc_trees(self, obj):
@@ -142,7 +141,7 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
     class Meta:
         model = AdvisoryV2
         fields = [
-            "advisory_id",
+            "avid",
             "url",
             "aliases",
             "summary",
@@ -226,8 +225,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
             result = []
 
             for adv in advisories:
-                fixed = impact_map.get(adv["avid"])
-                adv.pop("avid", None)
+                fixed = impact_map.get(adv["avid"]) or []
                 resource_url = None
 
                 if request := self.context.get("request", None):
@@ -292,6 +290,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
 
                 result.append(
                     {
+                        "avid": advisory.avid,
                         "advisory_id": advisory.advisory_id.split("/")[-1],
                         "aliases": [alias.alias for alias in advisory.aliases.all()],
                         "summary": advisory.summary,
@@ -336,6 +335,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 {
                     "advisory_id": advisory["advisory_id"],
                     "resource_url": resource_url,
+                    "avid": advisory["avid"],
                 }
             )
         if results:
@@ -359,6 +359,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
                     {
                         "advisory_id": advisory.advisory_id.split("/")[-1],
                         "resource_url": resource_url,
+                        "avid": advisory.avid,
                     }
                 )
             return results
@@ -389,6 +390,7 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 {
                     "advisory_id": advisory.identifier,
                     "resource_url": resource_url,
+                    "avid": advisory.advisory.avid,
                 }
             )
 
@@ -416,12 +418,13 @@ class PackageV3Serializer(serializers.ModelSerializer):
                     location=advisory.advisory.get_absolute_url()
                 )
             impact = impact_by_avid.get(advisory.advisory.avid)
-            if not impact:
+            if impact:
                 fixed_by_packages = list(set([pkg.purl for pkg in impact.fixed_by_packages.all()]))
 
             result.append(
                 {
                     "advisory_id": advisory.identifier,
+                    "avid": advisory.advisory.avid,
                     "aliases": [alias.alias for alias in advisory.aliases],
                     "weighted_severity": advisory.weighted_severity,
                     "exploitability": advisory.exploitability,
@@ -542,7 +545,7 @@ class AffectedByAdvisoryV3Serializer(AdvisoryV3Serializer):
     class Meta:
         model = AdvisoryV2
         fields = [
-            "advisory_id",
+            "avid",
             "url",
             "aliases",
             "summary",
@@ -801,6 +804,7 @@ def get_fixing_advisories_bulk(packages):
                 {
                     "advisory_id": advisory.advisory_id.split("/")[-1],
                     "resource_url": advisory.get_absolute_url(),
+                    "avid": advisory.avid,
                 }
             )
 

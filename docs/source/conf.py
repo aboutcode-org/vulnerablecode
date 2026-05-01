@@ -41,6 +41,7 @@ linkcheck_ignore = [
     "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml",
     "http://ftp.suse.com/pub/projects/security/yaml/",
     r"https://nixos\.wiki/",  # NixOS wiki blocks CI bots with 403
+    "https://usn.ubuntu.com/usn-db/database-all.json.bz2",
 ]
 
 # Add any Sphinx extension module names here, as strings. They can be

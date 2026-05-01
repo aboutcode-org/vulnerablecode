@@ -259,9 +259,9 @@ class PackageV3Serializer(serializers.ModelSerializer):
                 "aliases",
                 Prefetch(
                     "related_ssvcs",
-                    queryset=SSVC.objects.select_related("source_advisory").only(
-                        "id", "decision", "options", "vector", "source_advisory__url"
-                    ).distinct("source_advisory__url"),
+                    queryset=SSVC.objects.select_related("source_advisory")
+                    .only("id", "decision", "options", "vector", "source_advisory__url")
+                    .distinct("source_advisory__url"),
                     to_attr="prefetched_ssvc_trees",
                 ),
             )
@@ -643,13 +643,15 @@ def get_affected_advisories_bulk(packages):
                 queryset=AdvisorySetMember.objects.select_related("advisory").prefetch_related(
                     Prefetch(
                         "advisory__related_ssvcs",
-                        queryset=SSVC.objects.select_related("source_advisory").only(
+                        queryset=SSVC.objects.select_related("source_advisory")
+                        .only(
                             "id",
                             "options",
                             "decision",
                             "vector",
                             "source_advisory__url",
-                        ).distinct("source_advisory__url"),
+                        )
+                        .distinct("source_advisory__url"),
                         to_attr="prefetched_ssvc_trees",
                     )
                 ),

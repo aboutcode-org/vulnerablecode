@@ -1,3 +1,47 @@
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Getting Started
+
+   introduction
+   installation
+   user-interface
+   api
+   api-admin
+   api_v3_usage
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Tutorials
+
+   tutorial_add_importer_pipeline
+   tutorial_add_improver_pipeline
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Reference
+
+   reference_importer_overview
+   reference_improver_overview
+   reference_framework_overview
+   reference_model_overview
+   command-line-interface
+   importers_link
+   PIPELINES-AVID
+   SOURCES
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+   :caption: Misc
+
+   faq
+   misc
+   soc_gsoc21
+   contributing
+
 VulnerableCode Documentation
 ============================
 
@@ -25,11 +69,11 @@ Getting started
 Start here if you are new to VulnerableCode.
 
 - :ref:`introduction`
-- :ref:`user_interface`
+- :ref:`user-interface`
 - :ref:`installation`
 - :ref:`api`
-- :ref:`api-admin`
-- :ref:`api_v3_usage.rst` 
+- :ref:`api_admin`
+- :ref:`api_v3_usage` 
 - :ref:`contributing`
 
 .. rst-class:: column column2 top-right
@@ -49,14 +93,14 @@ Reference Docs
 
 Reference documentation for VulnerableCode features and customizations.
 
-- :ref:`reference_importer_overview`
-- :ref:`reference_improver_overview`
+- :ref:`importer-overview`
+- :ref:`improver-overview`
 - :ref:`reference_framework_overview`
 - :ref:`reference_model_overview`
 - :ref:`command_line_interface`
 - :ref:`importers_link`
-- :ref:`PIPELINES-AVID.rst` 
-- :ref:`SOURCES.rst` 
+- :ref:`pipelines_avid` 
+- :ref:`sources`
 
 .. rst-class:: column column2 bottom-right
 
@@ -71,10 +115,8 @@ Misc
 ~~~~~~~~~~~~~~~
 
 - :ref:`faq`
-- :ref:`misc`
+- :ref:`miscellaneous`
 - :ref:`soc_gsoc21`
-
-.. include:: improve-docs.rst
 
 
 Indices and tables

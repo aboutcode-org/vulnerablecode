@@ -1,3 +1,8 @@
+.. _pipelines_avid:
+
+Pipelines AVID Mapping
+=========================
+
 .. list-table:: Pipeline AVID Mapping
    :header-rows: 1
    :widths: 35 65

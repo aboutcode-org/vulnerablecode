@@ -1,3 +1,5 @@
+.. _api_v3_usage:
+
 Package Endpoint
 ================
 

@@ -87,7 +87,7 @@ Parameters:
 - ``details`` — boolean (default: ``false``)
 - ``ignore_qualifiers_subpath`` — boolean (default: ``false``)
 
-The ``ignore_qualifiers_subpath`` flag replaces the previous ``plain_purl`` parameter.  
+The ``ignore_qualifiers_subpath`` flag replaces the previous ``plain_purl`` parameter.
 When set to ``true``, qualifiers and subpaths in PURLs are ignored.
 
 

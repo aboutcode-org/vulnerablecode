@@ -73,7 +73,7 @@ Start here if you are new to VulnerableCode.
 - :ref:`installation`
 - :ref:`api`
 - :ref:`api_admin`
-- :ref:`api_v3_usage` 
+- :ref:`api_v3_usage`
 - :ref:`contributing`
 
 .. rst-class:: column column2 top-right
@@ -99,7 +99,7 @@ Reference documentation for VulnerableCode features and customizations.
 - :ref:`reference_model_overview`
 - :ref:`command_line_interface`
 - :ref:`importers_link`
-- :ref:`pipelines_avid` 
+- :ref:`pipelines_avid`
 - :ref:`sources`
 
 .. rst-class:: column column2 bottom-right

@@ -80,7 +80,7 @@ typecode==30.2.0
 typecode-libmagic==5.39.210531
 typing_extensions==4.13.0
 tzlocal==5.3.1
-univers==30.12.0
+univers==32.0.1
 uritemplate==4.2.0
 urllib3==2.6.3
 webencodings==0.5.1

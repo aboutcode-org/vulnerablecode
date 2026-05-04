@@ -1271,3 +1271,103 @@ class TestCleanVersRangeMigration(TestMigrations):
         self.assertEqual(self.impact3.affecting_vers, "vers:npm/>5.6.7")
         self.assertEqual(self.impact3.fixed_vers, "vers:npm/5.6.8")
         self.assertEqual(self.impact3.advisory.advisory_id, "test_adv2")
+
+
+class TestAlpineVersSchemeMigration(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0125_clean_vers_range_without_constraints"
+    migrate_to = "0126_use_apk_scheme_for_alpine_vers"
+
+    def setUpBeforeMigration(self, apps):
+        ImpactedPackage = apps.get_model("vulnerabilities", "ImpactedPackage")
+        AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+
+        self.advisory1 = AdvisoryV2.objects.create(
+            unique_content_id="content_id_old",
+            url="https://old.example.com",
+            summary="Old advisory",
+            advisory_id="test_adv1",
+            avid="test_pipeline/test_adv",
+            datasource_id="test_pipeline",
+        )
+
+        self.impact0 = ImpactedPackage.objects.create(
+            advisory=self.advisory1,
+            base_purl="pkg:apk/foobar0",
+            affecting_vers="vers:alpine/<2.3.4-0r",
+            fixed_vers="vers:alpine/2.3.4-0",
+        )
+
+        self.impact1 = ImpactedPackage.objects.create(
+            advisory=self.advisory1,
+            base_purl="pkg:apk/foobar1",
+            affecting_vers=None,
+            fixed_vers="vers:alpine/2.3.4",
+        )
+
+        self.impact2 = ImpactedPackage.objects.create(
+            advisory=self.advisory1,
+            base_purl="pkg:apk/foobar2",
+            affecting_vers="vers:alpine/3.4.5",
+            fixed_vers=None,
+        )
+
+        self.impact3 = ImpactedPackage.objects.create(
+            advisory=self.advisory1,
+            base_purl="pkg:alpm/foobar2",
+            affecting_vers="vers:alpm/0.2.1",
+            fixed_vers=None,
+        )
+
+        alpine_affecting = ImpactedPackage.objects.filter(
+            affecting_vers__startswith="vers:alpine/"
+        ).count()
+        alpine_fixing = ImpactedPackage.objects.filter(
+            affecting_vers__startswith="vers:alpine/"
+        ).count()
+
+        self.assertEqual(alpine_affecting, 2)
+        self.assertEqual(alpine_fixing, 2)
+
+    def test_empty_fixed_vers_cleaned(self):
+        ImpactedPackage = apps.get_model("vulnerabilities", "ImpactedPackage")
+
+        result_apk_affecting = ImpactedPackage.objects.filter(
+            affecting_vers__startswith="vers:apk/"
+        ).count()
+        result_apk_fixing = ImpactedPackage.objects.filter(
+            affecting_vers__startswith="vers:apk/"
+        ).count()
+
+        result_alpine_affecting = ImpactedPackage.objects.filter(
+            affecting_vers__startswith="vers:alpine/"
+        ).count()
+        result_alpine_fixing = ImpactedPackage.objects.filter(
+            affecting_vers__startswith="vers:alpine/"
+        ).count()
+
+        self.assertEqual(result_apk_affecting, 2)
+        self.assertEqual(result_apk_fixing, 2)
+
+        self.assertEqual(result_alpine_affecting, 0)
+        self.assertEqual(result_alpine_fixing, 0)
+
+    def test_no_change_to_non_alpine_vers(self):
+        self.impact3.refresh_from_db()
+
+        self.assertEqual(self.impact3.affecting_vers, "vers:alpm/0.2.1")
+        self.assertEqual(self.impact3.fixed_vers, None)
+
+    def test_scheme_migration_correctness(self):
+        self.impact0.refresh_from_db()
+        self.impact1.refresh_from_db()
+        self.impact2.refresh_from_db()
+
+        self.assertEqual(self.impact0.affecting_vers, "vers:apk/<2.3.4-0r")
+        self.assertEqual(self.impact0.fixed_vers, "vers:apk/2.3.4-0")
+
+        self.assertEqual(self.impact1.affecting_vers, None)
+        self.assertEqual(self.impact1.fixed_vers, "vers:apk/2.3.4")
+
+        self.assertEqual(self.impact2.affecting_vers, "vers:apk/3.4.5")
+        self.assertEqual(self.impact2.fixed_vers, None)

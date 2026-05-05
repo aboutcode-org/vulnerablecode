@@ -15,6 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from vulnerabilities.importer import OvalImporter
+from vulnerabilities.utils import get_http_headers
 
 
 class SuseOvalImporter(OvalImporter):
@@ -27,7 +28,7 @@ class SuseOvalImporter(OvalImporter):
         self.translations = {"less than": "<", "equals": "=", "greater than or equal": ">="}
 
     def _fetch(self):
-        page = requests.get(self.base_url).text
+        page = requests.get(self.base_url, headers=get_http_headers()).text
         soup = BeautifulSoup(page, "lxml")
 
         suse_oval_files = [
@@ -37,7 +38,7 @@ class SuseOvalImporter(OvalImporter):
         ]
 
         for suse_file in filter(suse_oval_files):
-            response = requests.get(suse_file)
+            response = requests.get(suse_file, headers=get_http_headers())
 
             extracted = gzip.decompress(response.content)
             yield (

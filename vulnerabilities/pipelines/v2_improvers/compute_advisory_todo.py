@@ -51,6 +51,7 @@ class ComputeToDo(VulnerableCodePipeline):
             .exclude(advisory_todos__issue_type="MISSING_SUMMARY")
             .exclude(advisory_todos__issue_type="MISSING_AFFECTED_PACKAGE")
             .exclude(advisory_todos__issue_type="MISSING_FIXED_BY_PACKAGE")
+            .exclude(advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES")
             .prefetch_related(
                 "impacted_packages",
             )
@@ -126,8 +127,6 @@ class ComputeToDo(VulnerableCodePipeline):
             AdvisoryV2.objects.exclude(
                 advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES"
             )
-            .exclude(advisory_todos__issue_type="MISSING_AFFECTED_PACKAGE")
-            .exclude(advisory_todos__issue_type="MISSING_FIXED_BY_PACKAGE")
             .todo_excluded()
             .latest_per_avid()
             .distinct()
@@ -195,7 +194,7 @@ class ComputeToDo(VulnerableCodePipeline):
                     advisory_map["fixed"].update(p.version for p in impact.fixed_by_packages.all())
                     advisory_map["impact_count"] += 1
 
-                    if not impact.last_successful_range_unfurl_at:
+                    if not impact.last_successful_range_unfurl_at and impact.affecting_vers:
                         unfurled_base_purls.add(base_purl)
                         advisories_with_unfurled_purls.add(advisory.avid)
 
@@ -448,19 +447,21 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
 
     conflicting_advisories = list(conflicting_advisories)
     conflicting_avids = [avd.avid for avd in conflicting_advisories]
-    non_conflicting_purl_avid_map = get_best_impact_for_non_conflicting_purls(
+    best_purl_avid_impact_map = get_advisory_with_best_impact_for_purls(
         purl_adv_map,
-        conflicting_package_details,
         conflicting_avids,
     )
-    partial_merged_advisory = merged_advisory(conflicting_advisories, non_conflicting_purl_avid_map)
+
+    partial_merged_advisory = merged_advisory(
+        conflicting_advisories, best_purl_avid_impact_map, conflicting_package_details
+    )
     conflict_checksum = sha256_digest(canonical_value(conflicting_package_details))
 
     issue_detail = {
         "alias": alias.alias,
         "conflict_checksum": conflict_checksum,
         "conflict_details": conflicting_package_details,
-        "partial_merged_advisory": partial_merged_advisory,
+        "partial_curation_advisory": partial_merged_advisory,
     }
 
     todo_id = advisories_checksum(conflicting_advisories)
@@ -494,18 +495,14 @@ def check_conflicting_affected_and_fixed_by_packages_for_alias(
     return conflicting_package_count, conflicting_advisories_count
 
 
-def get_best_impact_for_non_conflicting_purls(
-    purl_adv_map, conflicting_package_details, conflicting_avids
-):
+def get_advisory_with_best_impact_for_purls(purl_adv_map, conflicting_avids):
     """
-    Return PURL - AVID mapping for non-conflicting packages.
+    Return PURL - AVID mapping for packages.
 
     Select only one advisory per PURL based on maximum impact package count.
     """
     best_purl_avid_map = {}
     for purl, advs in purl_adv_map.items():
-        if purl in conflicting_package_details:
-            continue
 
         candidates = [
             (avid, values["impact_count"])
@@ -518,8 +515,8 @@ def get_best_impact_for_non_conflicting_purls(
     return best_purl_avid_map
 
 
-def merged_advisory(advisories, non_conflicting_purl_avid_map):
-    """Merge multiple advisory to one removing any duplicates or conflicting package ranges."""
+def merged_advisory(advisories, best_purl_avid_impact_map, conflicting_package_details):
+    """Merge multiple advisory to one removing any duplicates or conflicting portion of package ranges."""
     merged_adv = {
         "aliases": set(),
         "summary": "",
@@ -571,24 +568,40 @@ def merged_advisory(advisories, non_conflicting_purl_avid_map):
 
         for affected in adv_dict.get("affected_packages", []):
             base_purl = PackageURL(**affected["package"]).to_string()
-            if (
-                base_purl in non_conflicting_purl_avid_map
-                and non_conflicting_purl_avid_map[base_purl][0] == adv.avid
-            ):
-                update_advisory_item(
-                    item=affected,
-                    seen_item=seen_affected,
-                    updatable=merged_adv["affected_packages"],
-                )
+
+            if base_purl in best_purl_avid_impact_map:
+                # if PURL is present in >1 advisory, then choose from best avid mapping.
+                # if PURL is not present in best avid mapping, then it means
+                # PURL is associated with only one advisory and can be merged as is.
+                if best_purl_avid_impact_map[base_purl][0] != adv.avid:
+                    continue
+
+            if base_purl in conflicting_package_details:
+                conflict = conflicting_package_details[base_purl]
+
+                if conflict["affected_disagreement"]:
+                    affected["affected_version_range"] = None
+
+                if conflict["fixed_disagreement"]:
+                    affected["fixed_version_range"] = None
+
+            if not (affected["affected_version_range"] or affected["fixed_version_range"]):
+                continue
+
+            update_advisory_item(
+                item=affected,
+                seen_item=seen_affected,
+                updatable=merged_adv["affected_packages"],
+            )
 
     for summary, avids in seen_summaries.values():
-        merged_summary.append(f"{tuple(avids)}: {summary}")
+        merged_summary.append(f"{tuple(sorted(avids))}: {summary}")
 
     merged_adv["summary"] = "\n".join(merged_summary)
     merged_adv["aliases"] = list(merged_adv["aliases"])
     merged_adv["weaknesses"] = list(merged_adv["weaknesses"])
 
-    merged_adv["advisory_id"] = "PLACEHOLDER_AVID"
+    merged_adv["advisory_id"] = "PLACEHOLDER_PARTIAL_CURATION_AVID"
     merged_adv["date_published"] = ""
     merged_adv = AdvisoryDataV2.from_dict(merged_adv).to_dict()
 

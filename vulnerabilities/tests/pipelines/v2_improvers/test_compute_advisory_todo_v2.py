@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import json
 from datetime import datetime
 
 from django.test import TestCase
@@ -78,6 +79,102 @@ class TestComputeToDo(TestCase):
                     affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<=2.0.0"),
                     fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
                 )
+            ],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
+            url="https://test.url/",
+        )
+
+        self.advisory_data5 = AdvisoryDataV2(
+            advisory_id="test_id_5",
+            aliases=["CVE-000-000"],
+            summary="Test summary",
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package2"),
+                    affected_version_range=VersionRange.from_string(
+                        "vers:npm/>=1.0.0|<=2.0.0|>=3.0.0|<=3.9.0"
+                    ),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
+                ),
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package1"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<=2.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
+                ),
+            ],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
+            url="https://test.url/",
+        )
+
+        self.advisory_data6 = AdvisoryDataV2(
+            advisory_id="test_id_6",
+            aliases=["CVE-000-000"],
+            summary="Test summary",
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package2"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<=2.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
+                ),
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package2"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>=3.0.0|<=3.9.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/3.9.1"),
+                ),
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package1"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<=2.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
+                ),
+                AffectedPackageV2(
+                    package=PackageURL(type="pypi", name="package1"),
+                    affected_version_range=VersionRange.from_string("vers:pypi/>=1.0.0|<=2.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:pypi/2.0.1"),
+                ),
+            ],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
+            url="https://test.url/",
+        )
+
+        self.advisory_data7 = AdvisoryDataV2(
+            advisory_id="test_id_5",
+            aliases=["CVE-000-000"],
+            summary="Test summary",
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package2"),
+                    affected_version_range=VersionRange.from_string(
+                        "vers:npm/>=1.0.0|<=2.0.0|>=3.0.0|<=3.9.0"
+                    ),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
+                ),
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package1"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<2.0.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
+                ),
+            ],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
+            url="https://test.url/",
+        )
+
+        self.advisory_data8 = AdvisoryDataV2(
+            advisory_id="test_id_5",
+            aliases=["CVE-000-000"],
+            summary="Test summary",
+            affected_packages=[
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package2"),
+                    affected_version_range=VersionRange.from_string(
+                        "vers:npm/>=1.0.0|<=2.0.0|>=3.0.0|<=3.9.0"
+                    ),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.1"),
+                ),
+                AffectedPackageV2(
+                    package=PackageURL(type="npm", name="package1"),
+                    affected_version_range=VersionRange.from_string("vers:npm/>=1.0.0|<=1.9.0"),
+                    fixed_version_range=VersionRange.from_string("vers:npm/2.0.0"),
+                ),
             ],
             references=[ReferenceV2(url="https://example.com/vuln1")],
             url="https://test.url/",
@@ -157,3 +254,320 @@ class TestComputeToDo(TestCase):
         )
         self.assertEqual(2, todo.advisories.count())
         self.assertEqual(todo, adv.advisory_todos.first())
+
+    def test_todo_at_package_alias_intersection(self):
+        insert_advisory_v2(
+            advisory=self.advisory_data4,
+            pipeline_id="test_pipeline4",
+            logger=self.log.write,
+        )
+        insert_advisory_v2(
+            advisory=self.advisory_data5,
+            pipeline_id="test_pipeline5",
+            logger=self.log.write,
+        )
+        for imp in ImpactedPackage.objects.all():
+            imp.last_successful_range_unfurl_at = datetime.now()
+            imp.save()
+
+        self.assertEqual(0, AdvisoryToDoV2.objects.count())
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        self.assertEqual(0, AdvisoryToDoV2.objects.count())
+
+    def test_todo_conflict_details_partial_curation(self):
+        expected_partial_curation_advisory = {
+            "advisory_id": "PLACEHOLDER_PARTIAL_CURATION_AVID",
+            "aliases": ["CVE-000-000"],
+            "summary": "('test_pipeline5/test_id_5', 'test_pipeline6/test_id_6'): Test summary",
+            "affected_packages": [
+                {
+                    "package": {
+                        "type": "npm",
+                        "namespace": "",
+                        "name": "package1",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": "vers:npm/>=1.0.0|<=2.0.0",
+                    "fixed_version_range": "vers:npm/2.0.1",
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                },
+                {
+                    "package": {
+                        "type": "npm",
+                        "namespace": "",
+                        "name": "package2",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": "vers:npm/>=1.0.0|<=2.0.0",
+                    "fixed_version_range": None,
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                },
+                {
+                    "package": {
+                        "type": "npm",
+                        "namespace": "",
+                        "name": "package2",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": "vers:npm/>=3.0.0|<=3.9.0",
+                    "fixed_version_range": None,
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                },
+                {
+                    "package": {
+                        "type": "pypi",
+                        "namespace": "",
+                        "name": "package1",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": "vers:pypi/>=1.0.0|<=2.0.0",
+                    "fixed_version_range": "vers:pypi/2.0.1",
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                },
+            ],
+            "references": [
+                {"reference_id": "", "reference_type": "", "url": "https://example.com/vuln1"}
+            ],
+            "patches": [],
+            "severities": [],
+            "date_published": None,
+            "weaknesses": [],
+            "url": "",
+        }
+
+        insert_advisory_v2(
+            advisory=self.advisory_data5,
+            pipeline_id="test_pipeline5",
+            logger=self.log.write,
+        )
+        insert_advisory_v2(
+            advisory=self.advisory_data6,
+            pipeline_id="test_pipeline6",
+            logger=self.log.write,
+        )
+        for imp in ImpactedPackage.objects.all():
+            imp.last_successful_range_unfurl_at = datetime.now()
+            imp.save()
+
+        self.assertEqual(0, AdvisoryToDoV2.objects.count())
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todo = AdvisoryToDoV2.objects.first()
+        issue_details = json.loads(todo.issue_detail)
+        result_partial_curation = issue_details["partial_curation_advisory"]
+        self.assertEqual(1, AdvisoryToDoV2.objects.count())
+        self.assertEqual("CONFLICTING_FIXED_BY_PACKAGES", todo.issue_type)
+        self.assertDictEqual(expected_partial_curation_advisory, result_partial_curation)
+
+    def test_todo_conflict_details_partial_curation_unpaired_purl_and_conflicting_affected_and_fixed(
+        self,
+    ):
+        expected_partial_curation_advisory = {
+            "advisory_id": "PLACEHOLDER_PARTIAL_CURATION_AVID",
+            "aliases": ["CVE-000-000"],
+            "summary": "('test_pipeline1/test_id', 'test_pipeline5/test_id_5'): Test summary",
+            "affected_packages": [
+                {
+                    "package": {
+                        "type": "npm",
+                        "namespace": "",
+                        "name": "package2",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": "vers:npm/>=1.0.0|<=2.0.0|>=3.0.0|<=3.9.0",
+                    "fixed_version_range": "vers:npm/2.0.1",
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                }
+            ],
+            "references": [
+                {"reference_id": "", "reference_type": "", "url": "https://example.com/vuln1"}
+            ],
+            "patches": [],
+            "severities": [],
+            "date_published": None,
+            "weaknesses": [],
+            "url": "",
+        }
+
+        insert_advisory_v2(
+            advisory=self.advisory_data5,
+            pipeline_id="test_pipeline5",
+            logger=self.log.write,
+        )
+        insert_advisory_v2(
+            advisory=self.advisory_data1,
+            pipeline_id="test_pipeline1",
+            logger=self.log.write,
+        )
+        for imp in ImpactedPackage.objects.all():
+            imp.last_successful_range_unfurl_at = datetime.now()
+            imp.save()
+
+        self.assertEqual(0, AdvisoryToDoV2.objects.count())
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todo = AdvisoryToDoV2.objects.first()
+        issue_details = json.loads(todo.issue_detail)
+        result_partial_curation = issue_details["partial_curation_advisory"]
+        self.assertEqual(1, AdvisoryToDoV2.objects.count())
+        self.assertEqual("CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES", todo.issue_type)
+        self.assertDictEqual(expected_partial_curation_advisory, result_partial_curation)
+
+    def test_todo_conflict_details_partial_curation_unpaired_purl_and_conflicting_fixed(self):
+        expected_partial_curation_advisory = {
+            "advisory_id": "PLACEHOLDER_PARTIAL_CURATION_AVID",
+            "aliases": ["CVE-000-000"],
+            "summary": "('test_pipeline1/test_id', 'test_pipeline7/test_id_5'): Test summary",
+            "affected_packages": [
+                {
+                    "package": {
+                        "type": "npm",
+                        "namespace": "",
+                        "name": "package1",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": "vers:npm/>=1.0.0|<2.0.0",
+                    "fixed_version_range": None,
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                },
+                {
+                    "package": {
+                        "type": "npm",
+                        "namespace": "",
+                        "name": "package2",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": "vers:npm/>=1.0.0|<=2.0.0|>=3.0.0|<=3.9.0",
+                    "fixed_version_range": "vers:npm/2.0.1",
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                },
+            ],
+            "references": [
+                {"reference_id": "", "reference_type": "", "url": "https://example.com/vuln1"}
+            ],
+            "patches": [],
+            "severities": [],
+            "date_published": None,
+            "weaknesses": [],
+            "url": "",
+        }
+
+        insert_advisory_v2(
+            advisory=self.advisory_data1,
+            pipeline_id="test_pipeline1",
+            logger=self.log.write,
+        )
+        insert_advisory_v2(
+            advisory=self.advisory_data7,
+            pipeline_id="test_pipeline7",
+            logger=self.log.write,
+        )
+        for imp in ImpactedPackage.objects.all():
+            imp.last_successful_range_unfurl_at = datetime.now()
+            imp.save()
+
+        self.assertEqual(0, AdvisoryToDoV2.objects.count())
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todo = AdvisoryToDoV2.objects.first()
+        issue_details = json.loads(todo.issue_detail)
+        result_partial_curation = issue_details["partial_curation_advisory"]
+        self.assertEqual(1, AdvisoryToDoV2.objects.count())
+        self.assertEqual("CONFLICTING_FIXED_BY_PACKAGES", todo.issue_type)
+        self.assertDictEqual(expected_partial_curation_advisory, result_partial_curation)
+
+    def test_todo_conflict_details_partial_curation_unpaired_purl_and_conflicting_affected(self):
+        expected_partial_curation_advisory = {
+            "advisory_id": "PLACEHOLDER_PARTIAL_CURATION_AVID",
+            "aliases": ["CVE-000-000"],
+            "summary": "('test_pipeline1/test_id', 'test_pipeline7/test_id_5'): Test summary",
+            "affected_packages": [
+                {
+                    "package": {
+                        "type": "npm",
+                        "namespace": "",
+                        "name": "package1",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": None,
+                    "fixed_version_range": "vers:npm/2.0.0",
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                },
+                {
+                    "package": {
+                        "type": "npm",
+                        "namespace": "",
+                        "name": "package2",
+                        "version": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                    },
+                    "affected_version_range": "vers:npm/>=1.0.0|<=2.0.0|>=3.0.0|<=3.9.0",
+                    "fixed_version_range": "vers:npm/2.0.1",
+                    "introduced_by_commit_patches": [],
+                    "fixed_by_commit_patches": [],
+                },
+            ],
+            "references": [
+                {"reference_id": "", "reference_type": "", "url": "https://example.com/vuln1"}
+            ],
+            "patches": [],
+            "severities": [],
+            "date_published": None,
+            "weaknesses": [],
+            "url": "",
+        }
+
+        insert_advisory_v2(
+            advisory=self.advisory_data1,
+            pipeline_id="test_pipeline1",
+            logger=self.log.write,
+        )
+        insert_advisory_v2(
+            advisory=self.advisory_data8,
+            pipeline_id="test_pipeline7",
+            logger=self.log.write,
+        )
+        for imp in ImpactedPackage.objects.all():
+            imp.last_successful_range_unfurl_at = datetime.now()
+            imp.save()
+
+        self.assertEqual(0, AdvisoryToDoV2.objects.count())
+        pipeline = ComputeToDo()
+        pipeline.execute()
+
+        todo = AdvisoryToDoV2.objects.first()
+        issue_details = json.loads(todo.issue_detail)
+        result_partial_curation = issue_details["partial_curation_advisory"]
+        self.assertEqual(1, AdvisoryToDoV2.objects.count())
+        self.assertEqual("CONFLICTING_AFFECTED_PACKAGES", todo.issue_type)
+        self.assertDictEqual(expected_partial_curation_advisory, result_partial_curation)

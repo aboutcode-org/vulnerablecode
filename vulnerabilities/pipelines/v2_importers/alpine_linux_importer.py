@@ -41,6 +41,8 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://secdb.alpinelinux.org/license.txt"
     repo_url = "git+https://github.com/aboutcode-org/aboutcode-mirror-alpine-secdb/"
 
+    exclude_from_package_todo = True
+
     precedence = 200
 
     @classmethod

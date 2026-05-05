@@ -23,6 +23,8 @@ class SUSESeverityScoreImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "suse_importer_v2"
     url = "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
 
+    exclude_from_package_todo = True
+
     @classmethod
     def steps(cls):
         return (

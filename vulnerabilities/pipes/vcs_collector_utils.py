@@ -30,6 +30,8 @@ class CollectVCSFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
     Pipeline to collect fix commits from any git repository.
     """
 
+    exclude_from_package_todo = True
+
     repo_url: str
     patterns: list[str] = [
         r"\bCVE-\d{4}-\d{4,19}\b",

@@ -2521,8 +2521,20 @@ class AdvisoryToDo(models.Model):
         unique_together = ("related_advisories_id", "issue_type")
 
 
+class AdvisoryToDoV2QuerySet(models.QuerySet):
+
+    def exclude_stale(self):
+        return self.exclude(is_todo_stale=True)
+
+
 class AdvisoryToDoV2(models.Model):
     """Track the TODOs for advisory/ies that need to be addressed."""
+
+    todo_id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
 
     # Since we can not make advisories field (M2M field) unique
     # (see https://code.djangoproject.com/ticket/702), we use related_advisories_id
@@ -2537,6 +2549,20 @@ class AdvisoryToDoV2(models.Model):
         through="ToDoRelatedAdvisoryV2",
         related_name="advisory_todos",
         help_text="Advisory/ies where this TODO is applicable.",
+    )
+
+    alias = models.CharField(
+        max_length=50,
+        db_index=True,
+        blank=False,
+        null=False,
+        help_text="Alias associated with TODO advisories",
+    )
+
+    advisories_count = models.IntegerField(
+        help_text="Number of advisory associated with this TODO.",
+        default=1,
+        db_index=True,
     )
 
     issue_type = models.CharField(
@@ -2572,6 +2598,22 @@ class AdvisoryToDoV2(models.Model):
         blank=True,
         help_text="Additional detail on how this TODO was resolved.",
     )
+
+    oldest_advisory_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="Timestamp indicating when the oldest advisory was published, used for triaging TODOs.",
+    )
+
+    is_todo_stale = models.BooleanField(
+        null=False,
+        db_index=True,
+        default=False,
+        help_text="TODOs are marked stale if associate advisory is no longer the latest version of the advisory.",
+    )
+
+    objects = AdvisoryToDoV2QuerySet.as_manager()
 
     class Meta:
         unique_together = ("related_advisories_id", "issue_type")
@@ -2957,6 +2999,12 @@ class AdvisoryV2QuerySet(BaseQuerySet):
 
         qs = self.filter(id__in=Subquery(adv_ids))
         return qs.latest_per_avid()
+
+    def todo_excluded(self):
+        """Exclude advisory ineligible for ToDo computation."""
+        from vulnerabilities.importers import TODO_EXCLUDED_PIPELINES
+
+        return self.exclude(datasource_id__in=TODO_EXCLUDED_PIPELINES)
 
 
 class AdvisorySet(models.Model):

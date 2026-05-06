@@ -52,6 +52,9 @@ from vulnerabilities.pipelines.v2_importers import debian_importer as debian_imp
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
+from vulnerabilities.pipelines.v2_importers import (
+    elixir_security_live_importer as elixir_security_live_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import epss_importer_v2
 from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
@@ -82,9 +85,6 @@ from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
-from vulnerabilities.pipelines.v2_importers import (
-    elixir_security_live_importer as elixir_security_live_importer_v2,
-)
 
 IMPORTERS_REGISTRY = create_registry(
     [

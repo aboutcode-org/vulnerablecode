@@ -10,14 +10,14 @@
 from typing import Iterable
 
 import requests
-import yaml
 from packageurl import PackageURL
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.elixir_security_importer import (
     ElixirSecurityImporterPipeline,
 )
+from vulnerabilities.utils import fetch_yaml
 
 
 class ElixirSecurityLiveImporterPipeline(ElixirSecurityImporterPipeline):
@@ -53,34 +53,13 @@ class ElixirSecurityLiveImporterPipeline(ElixirSecurityImporterPipeline):
                 f"PURL: {purl!s} is not among the supported package types {self.supported_types!r}"
             )
 
-        if not purl.version:
-            raise ValueError(f"PURL: {purl!s} is expected to have a version")
-
         self.purl = purl
 
     def advisories_count(self) -> int:
-        if self.purl.type != "hex":
-            return 0
+        return 0
 
-        try:
-            directory_url = f"https://api.github.com/repos/dependabot/elixir-security-advisories/contents/packages/{self.purl.name}"
-            response = requests.get(directory_url)
-
-            if response.status_code != 200:
-                return 0
-
-            yaml_files = [file for file in response.json() if file["name"].endswith(".yml")]
-            return len(yaml_files)
-        except Exception:
-            return 0
-
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
-        if self.purl.type != "hex":
-            self.log(f"PURL type {self.purl.type} is not supported by Elixir Security importer")
-            return []
-
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         package_name = self.purl.name
-
         try:
             directory_url = f"https://api.github.com/repos/dependabot/elixir-security-advisories/contents/packages/{package_name}"
             response = requests.get(directory_url)
@@ -94,27 +73,21 @@ class ElixirSecurityLiveImporterPipeline(ElixirSecurityImporterPipeline):
             for entry in yaml_entries:
                 # entry["path"] looks like: packages/<pkg>/<file>.yml
                 file_path = entry["path"]
-                content_url = f"https://api.github.com/repos/dependabot/elixir-security-advisories/contents/{file_path}"
-                content_response = requests.get(
-                    content_url, headers={"Accept": "application/vnd.github.v3.raw"}
+                advisory_url = f"https://api.github.com/repos/dependabot/elixir-security-advisories/contents/{file_path}"
+                advisory_text = fetch_yaml(
+                    advisory_url, headers={"Accept": "application/vnd.github.v3.raw"}
                 )
 
-                if content_response.status_code != 200:
-                    self.log(f"Failed to fetch file content for {file_path}")
-                    continue
+                path_segments = str(file_path).split("/")
+                # use the last two segments as the advisory ID
+                advisory_id = "/".join(path_segments[-2:]).replace(".yml", "")
 
-                advisory_text = content_response.text
-
-                try:
-                    yaml_file = yaml.safe_load(advisory_text) or {}
-                except Exception as e:
-                    self.log(f"Failed to parse YAML for {file_path}: {e}")
-                    continue
-
-                for advisory in self.build_advisory_from_yaml(
-                    yaml_file=yaml_file, advisory_text=advisory_text, relative_path=file_path
+                for advisory in self.build_advisory_from_text(
+                    advisory_id=advisory_id,
+                    yaml_file=advisory_text,
+                    advisory_url=advisory_url,
                 ):
-                    if self.purl.version and not self._advisory_affects_version(advisory):
+                    if self.purl.version and not self.validate_advisory(advisory):
                         continue
                     yield advisory
 
@@ -122,19 +95,24 @@ class ElixirSecurityLiveImporterPipeline(ElixirSecurityImporterPipeline):
             self.log(f"Error fetching advisories for {self.purl}: {str(e)}")
             return []
 
-    def _advisory_affects_version(self, advisory: AdvisoryData) -> bool:
+    def validate_advisory(self, advisory: AdvisoryDataV2) -> bool:
         if not self.purl.version:
             return True
 
         for affected_package in advisory.affected_packages:
-            if affected_package.affected_version_range:
-                try:
-                    purl_version = SemverVersion(self.purl.version)
-
-                    if purl_version in affected_package.affected_version_range:
-                        return True
-                except Exception as e:
-                    self.log(f"Failed to parse version {self.purl.version}: {str(e)}")
+            try:
+                purl_version = SemverVersion(self.purl.version)
+                if (
+                    affected_package.affected_version_range
+                    and purl_version in affected_package.affected_version_range
+                ) or (
+                    affected_package.fixed_version_range
+                    and purl_version in affected_package.fixed_version_range
+                ):
                     return True
 
+            except Exception as e:
+                self.log(f"Failed to parse version {self.purl.version}: {str(e)}")
+                #  Since we have a small package file, if we fail to parse the versions, we can just return all of them
+                return True
         return False

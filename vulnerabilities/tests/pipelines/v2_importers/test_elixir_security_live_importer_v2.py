@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-import shutil
 from pathlib import Path
 from unittest.mock import MagicMock
 from unittest.mock import patch
@@ -15,7 +14,6 @@ from unittest.mock import patch
 import pytest
 from packageurl import PackageURL
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines.v2_importers.elixir_security_live_importer import (
     ElixirSecurityLiveImporterPipeline,
 )
@@ -39,7 +37,7 @@ def test_package_first_mode_with_version_filter(mock_get, test_data_dir):
 
     content_response = MagicMock()
     content_response.status_code = 200
-    content_response.text = advisory_content
+    content_response.content = advisory_content
 
     mock_get.side_effect = [directory_response, content_response]
 
@@ -67,8 +65,9 @@ def test_package_first_mode_no_advisories(mock_get):
 
     purl = PackageURL(type="hex", name="nonexistent-package")
     importer = ElixirSecurityLiveImporterPipeline(purl=purl)
-    with pytest.raises(ValueError):
-        importer.get_purl_inputs()
+    importer.get_purl_inputs()
+    advisories = list(importer.collect_advisories())
+    assert len(advisories) == 0
 
 
 @patch("requests.get")
@@ -81,6 +80,7 @@ def test_package_first_mode_api_error(mock_get):
 
     content_response = MagicMock()
     content_response.status_code = 500
+    content_response.content = b""
 
     mock_get.side_effect = [directory_response, content_response]
 

@@ -1,6 +1,11 @@
 Release notes
 =============
 
+next release
+---------------------
+
+- WARNING: Vulnerablecode V1 API and UI has stopped supporting Ubuntu OVAL advisories, please shift to V3 API for new Ubuntu advisories. 
+
 Version v38.6.0
 ---------------------
 

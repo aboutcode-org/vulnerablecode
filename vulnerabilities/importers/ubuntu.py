@@ -71,7 +71,7 @@ class UbuntuImporter(OvalImporter):
         self.translations = {"less than": "<"}
 
     def _fetch(self):
-        base_url = "https://people.canonical.com/~ubuntu-security/oval"
+        base_url = "https://ubuntu.com/security/oval"
         releases = ["bionic", "trusty", "focal", "eoan", "xenial"]
         for release in releases:
             file_url = f"{base_url}/com.ubuntu.{release}.cve.oval.xml.bz2"  # nopep8

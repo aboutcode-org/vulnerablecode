@@ -18,6 +18,7 @@ class RemoveDuplicateAdvisoriesPipeline(VulnerableCodePipeline):
     """Pipeline to compute new advisory content id and remove duplicate advisories based on their content."""
 
     pipeline_id = "remove_duplicate_advisories"
+    run_once = True
 
     @classmethod
     def steps(cls):

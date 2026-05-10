@@ -9,10 +9,10 @@ import logging
 from typing import Iterable
 
 from packageurl import PackageURL
-from univers.versions import GenericVersion
+from univers.versions import InvalidVersion
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.postgresql_importer import PostgreSQLImporterPipeline
 
 logger = logging.getLogger(__name__)
@@ -49,54 +49,29 @@ class PostgreSQLLiveImporterPipeline(PostgreSQLImporterPipeline):
                 f"PURL: {purl!s} is not among the supported package types {self.supported_types!r}"
             )
 
-        if purl.name != "postgresql":
-            raise ValueError(f"PURL: {purl!s} is expected to be for 'postgresql'")
-
         if not purl.version:
             raise ValueError(f"PURL: {purl!s} is expected to have a version")
-
         self.purl = purl
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         for advisory in super().collect_advisories():
-            if self._advisory_affects_purl(advisory):
+            if self._advisory_related_purl(advisory):
                 yield advisory
 
-    def _advisory_affects_purl(self, advisory: AdvisoryData) -> bool:
+    def _advisory_related_purl(self, advisory: AdvisoryDataV2) -> bool:
         if not advisory.affected_packages:
             return False
 
         try:
-            package_semver_version = SemverVersion(self.purl.version)
-            package_generic_version = GenericVersion(self.purl.version)
-        except Exception as e:
+            package_version = SemverVersion(self.purl.version)
+        except InvalidVersion as e:
             logger.debug(f"Invalid PURL version {self.purl.version!r}: {e}")
             return False
 
         for ap in advisory.affected_packages:
-            if ap.package.type != "generic" or ap.package.name != "postgresql":
-                continue
-
-            purl_q = self.purl.qualifiers or None
-            ap_q = ap.package.qualifiers or None
-
-            if purl_q is None and ap_q is None:
-                qualifiers_match = True
-            else:
-                qualifiers_match = all(ap_q.get(k) == v for k, v in purl_q.items())
-
-            if not qualifiers_match:
-                continue
-
-            try:
-                if getattr(ap, "affected_version_range", None):
-                    if package_semver_version in ap.affected_version_range:
-                        return True
-                elif getattr(ap, "fixed_version", None):
-                    if package_generic_version < ap.fixed_version:
-                        return True
-            except Exception as e:
-                logger.debug(f"Version comparison failed for {package_semver_version}: {e}")
-                continue
+            if (ap.affected_version_range and package_version in ap.affected_version_range) or (
+                ap.fixed_version_range and package_version in ap.fixed_version_range
+            ):
+                return True
 
         return False

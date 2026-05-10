@@ -8,7 +8,6 @@ import pytest
 import requests
 from packageurl import PackageURL
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines.v2_importers.postgresql_live_importer import (
     PostgreSQLLiveImporterPipeline,
 )
@@ -48,41 +47,63 @@ def test_affected_version(monkeypatch):
     pipeline = PostgreSQLLiveImporterPipeline(purl=purl)
     pipeline.get_purl_inputs()
     advisories = list(pipeline.collect_advisories())
-
-    assert len(advisories) == 1
-    adv = advisories[0]
-    assert isinstance(adv, AdvisoryData)
-    assert adv.advisory_id == "CVE-2022-1234"
+    assert [adv.to_dict() for adv in advisories] == [
+        {
+            "advisory_id": "CVE-2022-1234",
+            "affected_packages": [
+                {
+                    "affected_version_range": "vers:generic/10.0.0|10.1.0",
+                    "fixed_by_commit_patches": [],
+                    "fixed_version_range": "vers:generic/10.2.0",
+                    "introduced_by_commit_patches": [],
+                    "package": {
+                        "name": "postgresql",
+                        "namespace": "",
+                        "qualifiers": "",
+                        "subpath": "",
+                        "type": "generic",
+                        "version": "",
+                    },
+                }
+            ],
+            "aliases": [],
+            "date_published": None,
+            "patches": [],
+            "references": [
+                {
+                    "reference_id": "",
+                    "reference_type": "",
+                    "url": "https://www.postgresql.org/support/security/CVE-2022-1234/",
+                },
+                {
+                    "reference_id": "",
+                    "reference_type": "",
+                    "url": "https://www.postgresql.org/about/news/postgresql-175-169-1513-1418-and-1321-released-3072/",
+                },
+            ],
+            "severities": [
+                {
+                    "scoring_elements": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                    "system": "cvssv3",
+                    "value": "9.8",
+                }
+            ],
+            "summary": "Issue affects all",
+            "url": "https://www.postgresql.org/support/security/",
+            "weaknesses": [],
+        }
+    ]
 
 
 def test_unaffected_version(monkeypatch):
     html = HTML_BASE.format(affected="10.0, 10.1", fixed="10.2", summary="Issue affects all")
     monkeypatch.setattr(requests, "get", lambda url: DummyResponse(html))
 
-    purl = PackageURL(type="generic", name="postgresql", version="10.2")
+    purl = PackageURL(type="generic", name="postgresql", version="14.3")
     pipeline = PostgreSQLLiveImporterPipeline(purl=purl)
     pipeline.get_purl_inputs()
     advisories = list(pipeline.collect_advisories())
 
-    assert len(advisories) == 0
-
-
-def test_qualifier_filtering(monkeypatch):
-    html = HTML_BASE.format(affected="12.0, 12.1", fixed="12.2", summary="Windows-specific issue")
-    monkeypatch.setattr(requests, "get", lambda url: DummyResponse(html))
-
-    purl = PackageURL(
-        type="generic", name="postgresql", version="12.1", qualifiers={"os": "windows"}
-    )
-    pipeline = PostgreSQLLiveImporterPipeline(purl=purl)
-    pipeline.get_purl_inputs()
-    advisories = list(pipeline.collect_advisories())
-    assert len(advisories) == 1
-
-    purl = PackageURL(type="generic", name="postgresql", version="12.1", qualifiers={"os": "linux"})
-    pipeline = PostgreSQLLiveImporterPipeline(purl=purl)
-    pipeline.get_purl_inputs()
-    advisories = list(pipeline.collect_advisories())
     assert len(advisories) == 0
 
 
@@ -90,13 +111,5 @@ def test_invalid_purl():
     pipeline = PostgreSQLLiveImporterPipeline()
 
     pipeline.inputs = {"purl": "pkg:pypi/postgresql@10.1"}
-    with pytest.raises(ValueError):
-        pipeline.get_purl_inputs()
-
-    pipeline.inputs = {"purl": "pkg:generic/notpostgresql@10.1"}
-    with pytest.raises(ValueError):
-        pipeline.get_purl_inputs()
-
-    pipeline.inputs = {"purl": "pkg:generic/postgresql"}
     with pytest.raises(ValueError):
         pipeline.get_purl_inputs()

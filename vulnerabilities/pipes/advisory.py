@@ -48,7 +48,6 @@ from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.pipes.univers_utils import get_exact_purls_v2
-from vulnerabilities.utils import compute_advisory_content
 
 
 def get_or_create_aliases(aliases: List) -> QuerySet:
@@ -302,7 +301,6 @@ def insert_advisory_v2(
     advisory_obj = None
     created = False
     content_id = compute_content_id_v2(advisory_data=advisory)
-    advisory_content_hash = compute_advisory_content(advisory_data=advisory)
     try:
         default_data = {
             "datasource_id": pipeline_id,
@@ -313,7 +311,6 @@ def insert_advisory_v2(
             "original_advisory_text": advisory.original_advisory_text,
             "url": advisory.url,
             "precedence": precedence,
-            "advisory_content_hash": advisory_content_hash,
         }
 
         advisory_obj, created = AdvisoryV2.objects.get_or_create(
@@ -337,6 +334,13 @@ def insert_advisory_v2(
     if not created:
         return advisory_obj
 
+    AdvisoryV2.objects.filter(
+        avid=f"{pipeline_id}/{advisory.advisory_id}",
+        is_latest=True,
+    ).update(is_latest=False)
+    advisory_obj.is_latest = True
+    advisory_obj.save()
+
     aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
     references = get_or_create_advisory_references(references=advisory.references)
     severities = get_or_create_advisory_severities(severities=advisory.severities)
@@ -359,12 +363,14 @@ def insert_advisory_v2(
         impact = ImpactedPackage.objects.create(
             advisory=advisory_obj,
             base_purl=str(affected_pkg.package),
-            affecting_vers=str(affected_pkg.affected_version_range)
-            if affected_pkg.affected_version_range
-            else None,
-            fixed_vers=str(affected_pkg.fixed_version_range)
-            if affected_pkg.fixed_version_range
-            else None,
+            affecting_vers=(
+                str(affected_pkg.affected_version_range)
+                if affected_pkg.affected_version_range
+                else None
+            ),
+            fixed_vers=(
+                str(affected_pkg.fixed_version_range) if affected_pkg.fixed_version_range else None
+            ),
         )
         package_affected_purls, package_fixed_purls = get_exact_purls_v2(
             affected_package=affected_pkg,

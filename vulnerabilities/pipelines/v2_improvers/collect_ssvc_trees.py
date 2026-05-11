@@ -36,7 +36,8 @@ class CollectSSVCPipeline(VulnerableCodePipeline):
 
     def collect_ssvc_data(self):
         vulnrichment_advisories = (
-            AdvisoryV2.objects.filter(
+            AdvisoryV2.objects.latest_per_avid()
+            .filter(
                 severities__scoring_system=SCORING_SYSTEMS["ssvc"],
             )
             .distinct()
@@ -135,11 +136,11 @@ def convert_vector_to_tree_and_decision(vector: str):
             options.append({name: mapping[value]})
 
     options.sort(
-        key=lambda o: VECTOR_ORDER.index(
-            next(k for k, _ in REVERSE_POINTS.values() if k == next(iter(o)))
+        key=lambda o: (
+            VECTOR_ORDER.index(next(k for k, _ in REVERSE_POINTS.values() if k == next(iter(o))))
+            if False
+            else 0
         )
-        if False
-        else 0
     )
 
     return options, decision

@@ -40,15 +40,15 @@ VulnerableCode Package Search
                         <th style="width: 225px;">
                             <span
                                 class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                data-tooltip="This is the number of vulnerabilities that affect the package.">
-                                Affected by vulnerabilities
+                                data-tooltip="This is the status of the package. If it is vulnerable, it means that there are known vulnerabilities associated with this package.">
+                                Vulnerable
                             </span>
                         </th>
                         <th style="width: 225px;">
                             <span
                                 class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                data-tooltip="This is the number of vulnerabilities fixed by the package.">
-                                Fixing vulnerabilities
+                                data-tooltip="This is the risk score of the package based on its vulnerabilities.">
+                                Risk Score
                             </span>
                         </th>
                     </tr>
@@ -61,8 +61,14 @@ VulnerableCode Package Search
                                     href="{{ package.get_absolute_url }}?search={{ search }}"
                                     target="_self">{{ package.purl }}</a>
                             </td>
-                            <td>{{ package.vulnerability_count }}</td>
-                            <td>{{ package.patched_vulnerability_count }}</td>
+                            <td>{{ package.is_vulnerable|yesno:"Yes,No" }}</td>
+                            <td>
+                                {% if package.risk_score is not None %}
+                                {{ package.risk_score }}
+                                {% else %}
+                                {{ "" }}
+                                {% endif %}
+                            </td>
                         </tr>
                     {% empty %}
                         <tr>

@@ -23,13 +23,18 @@ from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
-from vulnerabilities.api_v2 import PackageV3ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
+from vulnerabilities.api_v3 import AdvisoryV3ViewSet
+from vulnerabilities.api_v3 import AffectedByAdvisoriesViewSet
+from vulnerabilities.api_v3 import FixingAdvisoriesViewSet
+from vulnerabilities.api_v3 import PackageV3ViewSet
 from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
+from vulnerabilities.views import AffectedByAdvisoriesListView
 from vulnerabilities.views import ApiUserCreateView
+from vulnerabilities.views import FixingAdvisoriesListView
 from vulnerabilities.views import HomePage
 from vulnerabilities.views import HomePageV2
 from vulnerabilities.views import PackageDetails
@@ -70,6 +75,11 @@ api_v2_router.register("advisory-codefixes", CodeFixV2ViewSet, basename="advisor
 api_v3_router = OptionalSlashRouter()
 
 api_v3_router.register("packages", PackageV3ViewSet, basename="package-v3")
+api_v3_router.register("advisories", AdvisoryV3ViewSet, basename="advisory-v3")
+api_v3_router.register(
+    "affected-by-advisories", AffectedByAdvisoriesViewSet, basename="affected-by-advisories"
+)
+api_v3_router.register("fixing-advisories", FixingAdvisoriesViewSet, basename="fixing-advisories")
 
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
@@ -134,6 +144,16 @@ urlpatterns = [
         PackageV2Details.as_view(),
         name="package_details_v2",
     ),
+    re_path(
+        r"^fixing-advisories/v2/(?P<purl>pkg:.+)$",
+        FixingAdvisoriesListView.as_view(),
+        name="fixing_advisories_v2",
+    ),
+    re_path(
+        r"^affected-by-advisories/v2/(?P<purl>pkg:.+)$",
+        AffectedByAdvisoriesListView.as_view(),
+        name="affected_by_advisories_v2",
+    ),
     path(
         "vulnerabilities/search/",
         VulnerabilitySearch.as_view(),
@@ -174,10 +194,10 @@ urlpatterns = [
         TemplateView.as_view(template_name="tos.html"),
         name="api_tos",
     ),
-    path(
-        "admin/",
-        admin.site.urls,
-    ),
+    # path(
+    #     "admin/",
+    #     admin.site.urls,
+    # ),
 ]
 
 if DEBUG:

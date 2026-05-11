@@ -21,7 +21,6 @@ from vulnerabilities.importers import gentoo
 from vulnerabilities.importers import github_osv
 from vulnerabilities.importers import istio
 from vulnerabilities.importers import mozilla
-from vulnerabilities.importers import openssl
 from vulnerabilities.importers import oss_fuzz
 from vulnerabilities.importers import postgresql
 from vulnerabilities.importers import project_kb_msr2019
@@ -29,16 +28,15 @@ from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
 from vulnerabilities.importers import ruby
 from vulnerabilities.importers import suse_scores
-from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipelines import alpine_linux_importer
 from vulnerabilities.pipelines import github_importer
 from vulnerabilities.pipelines import gitlab_importer
 from vulnerabilities.pipelines import nginx_importer
 from vulnerabilities.pipelines import npm_importer
-from vulnerabilities.pipelines import nvd_importer
 from vulnerabilities.pipelines import pypa_importer
 from vulnerabilities.pipelines import pysec_importer
 from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpine_linux_importer_v2
@@ -122,7 +120,6 @@ IMPORTERS_REGISTRY = create_registry(
         retiredotnet_importer_v2.RetireDotnetImporterPipeline,
         ubuntu_osv_importer_v2.UbuntuOSVImporterPipeline,
         alpine_linux_importer_v2.AlpineLinuxImporterPipeline,
-        nvd_importer.NVDImporterPipeline,
         github_importer.GitHubAPIImporterPipeline,
         gitlab_importer.GitLabImporterPipeline,
         github_osv.GithubOSVImporter,
@@ -140,11 +137,9 @@ IMPORTERS_REGISTRY = create_registry(
         alpine_linux_importer.AlpineLinuxImporterPipeline,
         ruby.RubyImporter,
         apache_kafka.ApacheKafkaImporter,
-        openssl.OpensslImporter,
         openssl_importer_v2.OpenSSLImporterPipeline,
         redhat.RedhatImporter,
         archlinux.ArchlinuxImporter,
-        ubuntu.UbuntuImporter,
         debian_oval.DebianOvalImporter,
         retiredotnet.RetireDotnetImporter,
         apache_httpd.ApacheHTTPDImporter,
@@ -197,3 +192,9 @@ IMPORTERS_REGISTRY = create_registry(
         collect_fix_commits_v2.CollectGitlabFixCommitsPipeline,
     ]
 )
+
+TODO_EXCLUDED_PIPELINES = [
+    key
+    for key, value in IMPORTERS_REGISTRY.items()
+    if issubclass(value, VulnerableCodeBaseImporterPipelineV2) and value.exclude_from_package_todo
+]

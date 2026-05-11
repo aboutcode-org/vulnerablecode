@@ -24,6 +24,7 @@ from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import PipelineRun
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipes.advisory import import_advisory
 from vulnerabilities.pipes.advisory import insert_advisory
 from vulnerabilities.pipes.advisory import insert_advisory_v2
@@ -144,6 +145,9 @@ class VulnerableCodePipeline(PipelineDefinition, BasePipelineRun):
     # When set to true pipeline is run only once.
     # To rerun onetime pipeline reset is_active field to True via migration.
     run_once = False
+    # Interval between runs in hour.
+    run_interval = 24
+    run_priority = PipelineSchedule.ExecutionPriority.DEFAULT
 
     def on_failure(self):
         """
@@ -176,6 +180,9 @@ class VulnerableCodeBaseImporterPipeline(VulnerableCodePipeline):
     # When set to true pipeline is run only once.
     # To rerun onetime pipeline reset is_active field to True via migration.
     run_once = False
+    # Interval between runs in hour.
+    run_interval = 24
+    run_priority = PipelineSchedule.ExecutionPriority.DEFAULT
 
     @classmethod
     def steps(cls):
@@ -266,10 +273,16 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
 
     pipeline_id = None  # Unique Pipeline ID, this should be the name of pipeline module.
     license_url = None
+    datasource_name = None
     spdx_license_expression = None
     repo_url = None
     ignorable_versions = []
     precedence = 0
+
+    # Set this to True if computing fixed/affected package ToDo is not fruitful for this source.
+    # An example of such advisory would be pipeline dedicated to collecting issues,
+    # pull requests, commit messages, EPSS, exploits, etc.
+    exclude_from_package_todo = False
 
     # Control how often progress log is shown (range: 1–100, higher value = less frequent log)
     progress_step = 10
@@ -277,6 +290,9 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     # When set to true pipeline is run only once.
     # To rerun onetime pipeline reset is_active field to True via migration.
     run_once = False
+    # Interval between runs in hour.
+    run_interval = 24
+    run_priority = PipelineSchedule.ExecutionPriority.DEFAULT
 
     @classmethod
     def steps(cls):

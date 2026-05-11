@@ -61,8 +61,8 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
         severity_score_advisories = (
             AdvisoryV2.objects.filter(datasource_id__in=self.pipelines)
             .filter(severities__scoring_system__in=self.SUPPORTED_SYSTEMS)
-            .distinct()
             .latest_per_avid()
+            .distinct()
         )
 
         total = severity_score_advisories.count()
@@ -70,14 +70,21 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
 
         advisory_id_map = {}
 
-        qs = AdvisoryV2.objects.filter(
-            advisory_id__in=severity_score_advisories.values("advisory_id")
-        ).values("id", "advisory_id")
+        qs = (
+            AdvisoryV2.objects.filter(
+                advisory_id__in=severity_score_advisories.values("advisory_id")
+            )
+            .latest_per_avid()
+            .values("id", "advisory_id")
+        )
 
-        alias_qs = AdvisoryV2.objects.filter(
-            aliases__alias__in=severity_score_advisories.values("advisory_id")
-        ).values("id", "aliases__alias")
-
+        alias_qs = (
+            AdvisoryV2.objects.filter(
+                aliases__alias__in=severity_score_advisories.values("advisory_id")
+            )
+            .latest_per_avid()
+            .values("id", "aliases__alias")
+        )
         for row in qs:
             advisory_id_map.setdefault(row["advisory_id"], set()).add(row["id"])
 

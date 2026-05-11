@@ -58,7 +58,7 @@ class RubyImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     SOFTWARE.
     """
 
-    precedence = 200
+    precedence = 500
 
     @classmethod
     def steps(cls):

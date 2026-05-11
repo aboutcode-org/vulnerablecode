@@ -9,6 +9,7 @@
 
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Any
 from typing import Iterable
@@ -28,6 +29,7 @@ from vulnerabilities.references import WireSharkReferenceV2
 from vulnerabilities.references import XsaReferenceV2
 from vulnerabilities.references import ZbxReferenceV2
 from vulnerabilities.utils import get_advisory_url
+from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import load_json
 
 
@@ -39,6 +41,8 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://secdb.alpinelinux.org/license.txt"
     repo_url = "git+https://github.com/aboutcode-org/aboutcode-mirror-alpine-secdb/"
 
+    exclude_from_package_todo = True
+
     precedence = 200
 
     @classmethod
@@ -46,6 +50,7 @@ class AlpineLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return (
             cls.clone,
             cls.collect_and_store_advisories,
+            cls.clean_downloads,
         )
 
     def advisories_count(self) -> int:
@@ -163,8 +168,10 @@ def load_advisories(
         # fixed_vulns is a list of strings and each string is a space-separated
         # list of aliases and CVES
         for vuln_ids in fixed_vulns:
-            aliases = vuln_ids.strip().split(" ")
-            vuln_id = aliases[0]
+            vuln_id, aliases = parse_vuln_ids(vuln_ids, logger=logger)
+
+            if not vuln_id:
+                continue
 
             references = []
             if vuln_id.startswith("XSA"):
@@ -248,3 +255,53 @@ def load_advisories(
                 url=url,
                 original_advisory_text=json.dumps(pkg_infos, indent=2, ensure_ascii=False),
             )
+
+
+PARENTHESES_RE = re.compile(r"\(.*?\)")
+
+
+def parse_vuln_ids(vuln_ids_string, logger=print):
+    """
+    Parses a raw vulnerability ids, removes parentheses and returns the vuln_id and a list of all valid aliases.
+    """
+    vuln_ids = PARENTHESES_RE.sub("", vuln_ids_string)
+    if not vuln_ids_string:
+        return None, []
+
+    cleaned_vuln_ids = []
+    for alias in vuln_ids.split():
+        clean_alias = alias.replace("_", "-").replace(".patch", "")
+        cleaned_vuln_ids.append(clean_alias)
+
+    aliases = []
+    valid_prefixes = (
+        "XSA-",
+        "GHSL-",
+        "TALOS-",
+        "RUSTSEC-",
+        "GHSA-",
+        "GNUTLS-",
+        "VSV",
+        "ZDI-CAN-",
+        "DW",
+        "YSA-",
+        "ZBX-",
+        "ALPINE-",
+        "TS-",
+        "OSEC-",
+        "wnpa-sec-",
+    )
+
+    for alias in cleaned_vuln_ids:
+        if alias and (
+            (alias.startswith("CVE-") and is_cve(alias)) or alias.startswith(valid_prefixes)
+        ):
+            aliases.append(alias)
+        else:
+            logger(f"Malformed aliases found: {alias}")
+
+    if not aliases:
+        return None, []
+
+    vuln_id = aliases[0]
+    return vuln_id, aliases

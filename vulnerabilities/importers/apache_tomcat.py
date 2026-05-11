@@ -234,7 +234,7 @@ def extract_tomcat_advisory_data_from_page(apache_tomcat_advisory_html):
         # Each group of fixed-version-related data is contained in a div that immediately follows the h3 element, e.g.,
         # <h3 id="Fixed_in_Apache_Tomcat_8.5.8"><span class="pull-right">8 November 2016</span> Fixed in Apache Tomcat 8.5.8</h3>
         # <div class="text"> ... <div>
-        fixed_version_paras = fixed_version_heading.find_next_sibling()
+        fixed_version_paras = fixed_version_heading.find_next_sibling("div")
 
         # See https://tomcat.apache.org/security-impact.html for scoring.
         # Each advisory section starts with a <p> element,

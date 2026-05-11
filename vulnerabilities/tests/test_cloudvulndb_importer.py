@@ -10,9 +10,17 @@
 import os
 from unittest import TestCase
 
+import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "vulnerablecode.settings")
+os.environ.setdefault("SECRET_KEY", "test-secret-key")
+os.environ.setdefault("ALTCHA_HMAC_KEY", "0123456789abcdef0123456789abcdef")
+django.setup()
+
 from vulnerabilities.pipelines.v2_importers.cloudvulndb_importer import advisory_slug_from_link
 from vulnerabilities.pipelines.v2_importers.cloudvulndb_importer import get_advisory_id
 from vulnerabilities.pipelines.v2_importers.cloudvulndb_importer import parse_advisory_data
+from vulnerabilities.pipelines.v2_importers.cloudvulndb_importer import parse_structured_advisory_data
 from vulnerabilities.pipelines.v2_importers.cloudvulndb_importer import parse_rss_feed
 from vulnerabilities.tests import util_tests
 
@@ -62,3 +70,22 @@ class TestCloudVulnDBImporter(TestCase):
     def test_advisory_slug_from_link(self):
         slug = advisory_slug_from_link("https://www.cloudvulndb.org/vulnerabilities/aws-example/")
         self.assertEqual(slug, "aws-example")
+
+    def test_parse_structured_advisory_without_purl(self):
+        structured = {
+            "id": "CLOUD-2026-0001",
+            "title": "Azure Entra ID token validation issue",
+            "description": "Impacts Azure Entra ID service. CVE-2026-12345",
+            "references": [{"url": "https://example.com/cloud/advisory-1"}],
+        }
+
+        advisory = parse_structured_advisory_data(
+            item=structured,
+            advisory_url="https://github.com/wiz-sec/open-cvdb/blob/main/advisories/sample.yaml",
+        )
+
+        self.assertIsNotNone(advisory)
+        self.assertEqual(advisory.advisory_id, "CLOUD-2026-0001")
+        self.assertIn("CVE-2026-12345", advisory.aliases)
+        self.assertEqual(advisory.affected_packages, [])
+        self.assertGreaterEqual(len(advisory.references), 1)

@@ -54,6 +54,7 @@ from vulnerabilities.pipelines.v2_importers import debian_importer as debian_imp
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
+from vulnerabilities.pipelines.v2_importers import enisa_nisa_importer as enisa_nisa_importer_v2
 from vulnerabilities.pipelines.v2_importers import epss_importer_v2
 from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
@@ -111,6 +112,7 @@ IMPORTERS_REGISTRY = create_registry(
         ruby_importer_v2.RubyImporterPipeline,
         epss_importer_v2.EPSSImporterPipeline,
         cloudvulndb_importer_v2.CloudVulnDBImporterPipeline,
+        enisa_nisa_importer_v2.EnisaNisaImporterPipeline,
         gentoo_importer_v2.GentooImporterPipeline,
         nginx_importer_v2.NginxImporterPipeline,
         debian_importer_v2.DebianImporterPipeline,

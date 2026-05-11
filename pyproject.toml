@@ -40,6 +40,12 @@ python_files = "*.py"
 python_classes = "Test"
 python_functions = "test"
 
+filterwarnings = [
+  "ignore:Unknown config option.*:pytest.PytestConfigWarning",
+  'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated and scheduled for removal.*:DeprecationWarning',
+  "ignore:CheckConstraint.check is deprecated in favor of `.condition`.:django.utils.deprecation.RemovedInDjango60Warning",
+]
+
 addopts = [
     "-rfExXw",
     "--strict-markers",

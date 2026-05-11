@@ -10,15 +10,19 @@
 import hashlib
 import json
 import logging
+from pathlib import Path
 from typing import Iterable
 from urllib.parse import urlparse
 from xml.etree import ElementTree
 
 from dateutil import parser as dateutil_parser
+from fetchcode.vcs import fetch_via_vcs
+import saneyaml
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.utils import get_advisory_url
 from vulnerabilities.utils import fetch_response
 from vulnerabilities.utils import find_all_cve
 
@@ -28,7 +32,7 @@ CLOUDVULNDB_RSS_URL = "https://www.cloudvulndb.org/rss/feed.xml"
 
 
 class CloudVulnDBImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
-    """Collect cloud vulnerabilities from the public CloudVulnDB RSS feed."""
+    """Collect cloud vulnerabilities from CloudVulnDB structured data files."""
 
     pipeline_id = "cloudvulndb_importer_v2"
     spdx_license_expression = "CC-BY-4.0"
@@ -40,7 +44,57 @@ class CloudVulnDBImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     @classmethod
     def steps(cls):
-        return (cls.collect_and_store_advisories,)
+        return (
+            cls.clone,
+            cls.collect_and_store_advisories,
+            cls.clean_downloads,
+        )
+
+    def clone(self):
+        self.log(f"Cloning `{self.repo_url}`")
+        self.vcs_response = fetch_via_vcs(self.repo_url)
+
+    def clean_downloads(self):
+        if self.vcs_response:
+            self.log("Removing cloned repository")
+            self.vcs_response.delete()
+
+    def on_failure(self):
+        self.clean_downloads()
+
+    def _iter_structured_files(self):
+        base_directory = Path(self.vcs_response.dest_dir)
+
+        for file_path in base_directory.rglob("*"):
+            if not file_path.is_file():
+                continue
+
+            suffix = file_path.suffix.lower()
+            if suffix not in (".json", ".yaml", ".yml"):
+                continue
+
+            yield file_path
+
+    def _load_file_items(self, file_path: Path):
+        text = file_path.read_text(encoding="utf-8", errors="replace")
+        suffix = file_path.suffix.lower()
+
+        if suffix == ".json":
+            data = json.loads(text)
+        else:
+            data = saneyaml.load(text)
+
+        if isinstance(data, list):
+            return data
+
+        if isinstance(data, dict):
+            for key in ("vulnerabilities", "advisories", "items", "data"):
+                nested = data.get(key)
+                if isinstance(nested, list):
+                    return nested
+            return [data]
+
+        return []
 
     def get_feed_items(self):
         if self._cached_items is None:
@@ -49,13 +103,155 @@ class CloudVulnDBImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return self._cached_items
 
     def advisories_count(self) -> int:
+        count = 0
+        for file_path in self._iter_structured_files():
+            try:
+                count += len(self._load_file_items(file_path))
+            except Exception:
+                continue
+
+        if count:
+            return count
+
         return len(self.get_feed_items())
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
+        base_directory = Path(self.vcs_response.dest_dir)
+        structured_count = 0
+
+        for file_path in self._iter_structured_files():
+            try:
+                items = self._load_file_items(file_path)
+            except Exception as e:
+                self.log(
+                    f"Failed to parse structured file {file_path}: {e}",
+                    level=logging.WARNING,
+                )
+                continue
+
+            if not items:
+                continue
+
+            advisory_url = get_advisory_url(
+                file=file_path,
+                base_path=base_directory,
+                url="https://github.com/wiz-sec/open-cvdb/blob/main/",
+            )
+
+            for item in items:
+                advisory = parse_structured_advisory_data(item=item, advisory_url=advisory_url)
+                if advisory:
+                    structured_count += 1
+                    yield advisory
+
+        if structured_count:
+            return
+
+        self.log("No structured YAML/JSON advisories found, falling back to RSS feed")
         for item in self.get_feed_items():
-            advisory = parse_advisory_data(item)
+            advisory = parse_rss_advisory_data(item)
             if advisory:
                 yield advisory
+
+
+def parse_structured_advisory_data(item: dict, advisory_url: str):
+    """
+    Parse one structured advisory object from YAML/JSON.
+
+    This parser is intentionally tolerant and can emit advisories without packages,
+    which is required for SaaS advisories where a PURL may not exist yet.
+    """
+    if not isinstance(item, dict):
+        return None
+
+    advisory_id = (
+        item.get("id")
+        or item.get("advisory_id")
+        or item.get("uid")
+        or item.get("slug")
+        or item.get("name")
+        or ""
+    )
+    advisory_id = str(advisory_id).strip()
+
+    title = str(item.get("title") or item.get("summary") or "").strip()
+    description = str(item.get("description") or item.get("details") or "").strip()
+
+    date_value = item.get("published") or item.get("published_at") or item.get("date")
+    date_published = None
+    if date_value:
+        try:
+            date_published = dateutil_parser.parse(str(date_value))
+        except Exception:
+            date_published = None
+
+    aliases = []
+    alias_candidates = item.get("aliases")
+    if isinstance(alias_candidates, list):
+        for alias in alias_candidates:
+            alias_text = str(alias).strip()
+            if alias_text:
+                aliases.extend(find_all_cve(alias_text) or [alias_text])
+
+    for key in ("cve", "cve_id", "cve_ids"):
+        value = item.get(key)
+        if isinstance(value, str):
+            aliases.extend(find_all_cve(value))
+        elif isinstance(value, list):
+            for entry in value:
+                aliases.extend(find_all_cve(str(entry)))
+
+    # Structured records often only mentio CVEs in free text fields.
+    aliases.extend(find_all_cve(description))
+    aliases.extend(find_all_cve(title))
+
+    aliases = list(dict.fromkeys([a for a in aliases if a]))
+
+    if not advisory_id:
+        advisory_id = get_advisory_id(
+            guid="",
+            link=advisory_url,
+            title=title,
+            pub_date=str(date_value or ""),
+        )
+
+    if not advisory_id:
+        return None
+
+    references = []
+    reference_urls = []
+    refs = item.get("references")
+    if isinstance(refs, list):
+        for ref in refs:
+            if isinstance(ref, str):
+                reference_urls.append(ref)
+                continue
+
+            if isinstance(ref, dict):
+                for key in ("url", "href", "link"):
+                    if ref.get(key):
+                        reference_urls.append(str(ref.get(key)))
+                        break
+
+    source_url = item.get("url") or item.get("source") or advisory_url
+    if source_url:
+        reference_urls.append(str(source_url))
+
+    for url in list(dict.fromkeys([u.strip() for u in reference_urls if str(u).strip()])):
+        references.append(ReferenceV2(url=url))
+
+    summary = title or description or advisory_id
+
+    return AdvisoryDataV2(
+        advisory_id=advisory_id,
+        aliases=[alias for alias in aliases if alias != advisory_id],
+        summary=summary,
+        affected_packages=[],
+        references=references,
+        date_published=date_published,
+        url=advisory_url,
+        original_advisory_text=json.dumps(item, indent=2, ensure_ascii=False),
+    )
 
 
 def parse_rss_feed(xml_text: str) -> list:
@@ -89,7 +285,7 @@ def parse_rss_feed(xml_text: str) -> list:
     return items
 
 
-def parse_advisory_data(item: dict):
+def parse_rss_advisory_data(item: dict):
     """
     Parse one CloudVulnDB item and return an AdvisoryDataV2 object.
     Since the RSS feed does not provide package/version coordinates, ``affected_packages`` is empty.
@@ -131,6 +327,10 @@ def parse_advisory_data(item: dict):
         url=link or CLOUDVULNDB_RSS_URL,
         original_advisory_text=json.dumps(item, indent=2, ensure_ascii=False),
     )
+
+
+# Backward-compatible alias used by existing tests/imports.
+parse_advisory_data = parse_rss_advisory_data
 
 
 def get_advisory_id(guid: str, link: str, title: str, pub_date: str) -> str:

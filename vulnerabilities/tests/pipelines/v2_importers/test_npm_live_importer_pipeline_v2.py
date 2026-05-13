@@ -20,8 +20,9 @@ from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.pipelines.v2_importers.npm_live_importer import NpmLiveImporterPipeline
+from vulnerabilities.tests import util_tests
 
-TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "npm"
+TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "npm_live"
 
 
 def test_package_first_mode_valid_npm_package(tmp_path):
@@ -37,17 +38,15 @@ def test_package_first_mode_valid_npm_package(tmp_path):
 
     mock_vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
 
-    purl = PackageURL(type="npm", name="npm", version="1.2.0")
+    purl = PackageURL(type="npm", name="decamelize", version="1.1.0")
     pipeline = NpmLiveImporterPipeline(purl=purl)
     pipeline.vcs_response = mock_vcs_response
 
     pipeline.get_purl_inputs()
-    advisories = list(pipeline.collect_advisories())
 
-    assert len(advisories) == 1
-    assert advisories[0].aliases == ["CVE-2013-4116"]
-    assert len(advisories[0].affected_packages) == 1
-    assert advisories[0].affected_packages[0].package.name == "npm"
+    result = [adv.to_dict() for adv in pipeline.collect_advisories()]
+    expected_file = Path(TEST_DATA / "parse-advisory-npm-expected.json")
+    util_tests.check_results_against_json(result, expected_file)
 
 
 def test_package_first_mode_unaffected_version(tmp_path):
@@ -124,10 +123,7 @@ def test_version_is_affected():
         ),
     )
 
-    assert pipeline._version_is_affected(affected_package) == True
+    assert pipeline._version_is_related(affected_package) == True
 
     pipeline.purl = PackageURL(type="npm", name="npm", version="1.4.0")
-    assert pipeline._version_is_affected(affected_package) == False
-
-    pipeline.purl = PackageURL(type="npm", name="npm")
-    assert pipeline._version_is_affected(affected_package) == True
+    assert pipeline._version_is_related(affected_package) == False

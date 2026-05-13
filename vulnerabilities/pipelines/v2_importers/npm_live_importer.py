@@ -11,9 +11,10 @@ from pathlib import Path
 from typing import Iterable
 
 from packageurl import PackageURL
+from univers.versions import InvalidVersion
 from univers.versions import SemverVersion
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.npm_importer import NpmImporterPipeline
 from vulnerabilities.utils import load_json
 
@@ -58,31 +59,35 @@ class NpmLiveImporterPipeline(NpmImporterPipeline):
 
         self.purl = purl
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         vuln_directory = Path(self.vcs_response.dest_dir) / "vuln" / "npm"
-        advisory_files = list(vuln_directory.glob("*.json"))
-
         package_name = self.purl.name
         filtered_files = []
-        for advisory_file in advisory_files:
-            try:
-                data = load_json(advisory_file)
-                if data.get("module_name") == package_name:
-                    affected_package = self.get_affected_package(data, package_name)
-                    if not self.purl.version or self._version_is_affected(affected_package):
-                        filtered_files.append(advisory_file)
-            except Exception as e:
-                self.log(f"Error processing advisory file {advisory_file}: {str(e)}")
-        advisory_files = filtered_files
+        for advisory_file in vuln_directory.glob("*.json"):
+            data = load_json(advisory_file)
+            if data.get("module_name") == package_name:
+                affected_package = self.get_affected_package(data, package_name)
+                if not self.purl.version or self._version_is_related(affected_package):
+                    filtered_files.append(advisory_file)
 
-        for advisory in list(advisory_files):
+        for advisory in filtered_files:
             result = self.to_advisory_data(advisory)
             if result:
                 yield result
 
-    def _version_is_affected(self, affected_package):
-        if not self.purl.version or not affected_package.affected_version_range:
-            return True
+    def _version_is_related(self, affected_package):
+        try:
+            package_version = SemverVersion(self.purl.version)
+        except InvalidVersion as e:
+            self.log(f"Invalid PURL version: {self.purl.version!r}: {str(e)}")
+            return False
 
-        purl_version = SemverVersion(self.purl.version)
-        return purl_version in affected_package.affected_version_range
+        if (
+            affected_package.affected_version_range
+            and package_version in affected_package.affected_version_range
+        ) or (
+            affected_package.fixed_version_range
+            and package_version in affected_package.fixed_version_range
+        ):
+            return True
+        return False

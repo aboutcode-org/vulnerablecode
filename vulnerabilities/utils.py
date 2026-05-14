@@ -77,8 +77,8 @@ def load_toml(path):
         return toml.load(f)
 
 
-def fetch_yaml(url):
-    response = requests.get(url)
+def fetch_yaml(url, headers=None):
+    response = requests.get(url, headers=headers)
     return saneyaml.load(response.content)
 
 

@@ -58,32 +58,26 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return count
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
-        try:
-            base_path = Path(self.vcs_response.dest_dir)
-            vuln = base_path / "packages"
-            for file in vuln.glob("**/*.yml"):
-                yield from self.process_file(file, base_path)
-        finally:
-            if self.vcs_response:
-                self.vcs_response.delete()
+        base_path = Path(self.vcs_response.dest_dir)
+        vuln = base_path / "packages"
+        for file in vuln.glob("**/*.yml"):
+            relative_path = str(file.relative_to(base_path)).strip("/")
+            path_segments = str(file).split("/")
+            # use the last two segments as the advisory ID
+            advisory_id = "/".join(path_segments[-2:]).replace(".yml", "")
+            advisory_url = f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
+
+            yaml_file = load_yaml(str(file))
+            yield from self.build_advisory_from_text(
+                advisory_id=advisory_id, advisory_url=advisory_url, yaml_file=yaml_file
+            )
 
     def on_failure(self):
         self.clean_downloads()
 
-    def process_file(self, file, base_path) -> Iterable[AdvisoryDataV2]:
-        relative_path = str(file.relative_to(base_path)).strip("/")
-        path_segments = str(file).split("/")
-        # use the last two segments as the advisory ID
-        advisory_id = "/".join(path_segments[-2:]).replace(".yml", "")
-        advisory_url = (
-            f"https://github.com/dependabot/elixir-security-advisories/blob/master/{relative_path}"
-        )
-        advisory_text = None
-        with open(str(file)) as f:
-            advisory_text = f.read()
-
-        yaml_file = load_yaml(str(file))
-
+    def build_advisory_from_text(
+        self, advisory_id, advisory_url, yaml_file
+    ) -> Iterable[AdvisoryDataV2]:
         summary = yaml_file.get("description") or ""
         pkg_name = yaml_file.get("package") or ""
 
@@ -138,5 +132,5 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages=affected_packages,
             url=advisory_url,
             date_published=date_published,
-            original_advisory_text=advisory_text or str(yaml_file),
+            original_advisory_text=str(yaml_file),
         )

@@ -51,6 +51,9 @@ from vulnerabilities.pipelines.v2_importers import debian_importer as debian_imp
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
+from vulnerabilities.pipelines.v2_importers import (
+    elixir_security_live_importer as elixir_security_live_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import epss_importer_v2
 from vulnerabilities.pipelines.v2_importers import fireeye_importer_v2
 from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_importer_v2
@@ -196,3 +199,9 @@ TODO_EXCLUDED_PIPELINES = [
     for key, value in IMPORTERS_REGISTRY.items()
     if issubclass(value, VulnerableCodeBaseImporterPipelineV2) and value.exclude_from_package_todo
 ]
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        elixir_security_live_importer_v2.ElixirSecurityLiveImporterPipeline,
+    ]
+)

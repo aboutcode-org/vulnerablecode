@@ -12,7 +12,7 @@ from pathlib import Path
 from fetchcode.vcs import fetch_via_vcs
 from univers.version_range import GenericVersionRange
 
-from vulnerabilities.importer import AdvisoryData
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
@@ -98,9 +98,9 @@ class LinuxKernelPipeline(VulnerableCodeBaseImporterPipelineV2):
                     elif isinstance(patch_obj, ReferenceV2):
                         references.append(patch_obj)
 
-            yield AdvisoryData(
+            yield AdvisoryDataV2(
                 advisory_id=vulnerability_id,
-                references_v2=references,
+                references=references,
                 affected_packages=affected_packages,
                 patches=patches,
                 url="https://github.com/nluedtke/linux_kernel_cves",

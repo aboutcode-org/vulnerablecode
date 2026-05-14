@@ -48,6 +48,7 @@ from vulnerabilities.pipelines.v2_importers import archlinux_importer as archlin
 from vulnerabilities.pipelines.v2_importers import collect_fix_commits as collect_fix_commits_v2
 from vulnerabilities.pipelines.v2_importers import curl_importer as curl_importer_v2
 from vulnerabilities.pipelines.v2_importers import debian_importer as debian_importer_v2
+from vulnerabilities.pipelines.v2_importers import eclipse_importer as eclipse_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
     elixir_security_importer as elixir_security_importer_v2,
 )
@@ -98,6 +99,7 @@ IMPORTERS_REGISTRY = create_registry(
         xen_importer_v2.XenImporterPipeline,
         curl_importer_v2.CurlImporterPipeline,
         oss_fuzz_v2.OSSFuzzImporterPipeline,
+        eclipse_importer_v2.EclipseImporterPipeline,
         istio_importer_v2.IstioImporterPipeline,
         postgresql_importer_v2.PostgreSQLImporterPipeline,
         mozilla_importer_v2.MozillaImporterPipeline,

@@ -6,6 +6,7 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
+import json
 import logging
 from collections import defaultdict
 from typing import List
@@ -561,14 +562,29 @@ class VulnerabilityDetails(VulnerableCodeDetailView):
             ):
                 logging.error(f"CVSSMalformedError for {severity.scoring_elements}")
 
-        epss_severity = vulnerability.severities.filter(scoring_system="epss").first()
+        epss_severities = vulnerability.severities.filter(
+            scoring_system="epss"
+        ).order_by("published_at")
+
         epss_data = None
-        if epss_severity:
+        epss_history_json = "[]"
+        if epss_severities.exists():
+            latest = epss_severities.last()
             epss_data = {
-                "percentile": epss_severity.scoring_elements,
-                "score": epss_severity.value,
-                "published_at": epss_severity.published_at,
+                "percentile": latest.scoring_elements,
+                "score": latest.value,
+                "published_at": latest.published_at,
             }
+            epss_history_json = json.dumps(
+                [
+                    {
+                        "date": e.published_at.strftime("%Y-%m-%d") if e.published_at else None,
+                        "score": float(e.value) if e.value else None,
+                        "percentile": float(e.scoring_elements) if e.scoring_elements else None,
+                    }
+                    for e in epss_severities
+                ]
+            )
 
         context.update(
             {
@@ -582,6 +598,7 @@ class VulnerabilityDetails(VulnerableCodeDetailView):
                 "status": vulnerability.get_status_label,
                 "history": vulnerability.history,
                 "epss_data": epss_data,
+                "epss_history_json": epss_history_json,
             }
         )
         return context

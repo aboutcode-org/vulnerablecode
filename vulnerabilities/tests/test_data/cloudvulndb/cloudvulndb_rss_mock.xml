@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>CloudVulnDB RSS</title>
+    <link>https://www.cloudvulndb.org</link>
+    <description>Cloud vulnerabilities and security issues</description>
+    <item>
+      <title><![CDATA[AWS Example Privilege Escalation (CVE-2024-11111)]]></title>
+      <link>https://www.cloudvulndb.org/vulnerabilities/aws-example-privilege-escalation</link>
+      <guid isPermaLink="false">CLOUD-2024-0001</guid>
+      <pubDate>Tue, 04 Jun 2024 12:30:00 GMT</pubDate>
+      <description><![CDATA[An example cloud vulnerability. Additional tracking: CVE-2024-22222.]]></description>
+    </item>
+    <item>
+      <title><![CDATA[Azure IMDS SSRF Exposure]]></title>
+      <link>https://www.cloudvulndb.org/vulnerabilities/azure-imds-ssrf</link>
+      <guid></guid>
+      <pubDate>Fri, 05 Jul 2024 08:00:00 GMT</pubDate>
+      <description><![CDATA[No CVE assigned.]]></description>
+    </item>
+  </channel>
+</rss>

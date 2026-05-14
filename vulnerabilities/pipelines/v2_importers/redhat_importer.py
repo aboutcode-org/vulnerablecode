@@ -18,7 +18,6 @@ from urllib.parse import urljoin
 
 import dateparser
 import requests
-from extractcode import ExtractError
 from packageurl import PackageURL
 from univers.version_range import RpmVersionRange
 from univers.version_range import VersionRange
@@ -81,7 +80,7 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 f"Error while extracting archive {archive_path}: {errors}",
                 level=logging.ERROR,
             )
-            raise ExtractError(errors)
+            raise RuntimeError(errors)
 
     def advisories_count(self) -> int:
         return sum(1 for _ in self.location.rglob("*.json"))

@@ -79,6 +79,9 @@ from vulnerabilities.pipelines.v2_importers import retiredotnet_importer as reti
 from vulnerabilities.pipelines.v2_importers import ruby_importer as ruby_importer_v2
 from vulnerabilities.pipelines.v2_importers import suse_score_importer as suse_score_importer_v2
 from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu_osv_importer_v2
+from vulnerabilities.pipelines.v2_importers import (
+    vmware_photon_importer_v2 as vmware_photon_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
@@ -110,6 +113,7 @@ IMPORTERS_REGISTRY = create_registry(
         epss_importer_v2.EPSSImporterPipeline,
         gentoo_importer_v2.GentooImporterPipeline,
         nginx_importer_v2.NginxImporterPipeline,
+        vmware_photon_importer_v2.VmwarePhotonImporterPipeline,
         debian_importer_v2.DebianImporterPipeline,
         mattermost_importer_v2.MattermostImporterPipeline,
         glibc_importer_v2.GlibcImporterPipeline,

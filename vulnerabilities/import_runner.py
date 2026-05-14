@@ -284,7 +284,7 @@ def get_or_create_vulnerability_and_aliases(
     aliases: QuerySet, vulnerability_id=None, summary=None, advisory=None
 ):
     """
-    Get or create vulnerabilitiy and aliases such that all existing and new
+    Get or create vulnerability and aliases such that all existing and new
     aliases point to the same vulnerability
     """
     new_aliases, existing_vulns = get_vulns_for_aliases_and_get_new_aliases(aliases)

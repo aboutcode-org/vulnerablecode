@@ -67,6 +67,9 @@ from vulnerabilities.pipelines.v2_importers import openssl_importer as openssl_i
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
 from vulnerabilities.pipelines.v2_importers import postgresql_importer as postgresql_importer_v2
 from vulnerabilities.pipelines.v2_importers import (
+    postgresql_live_importer as postgresql_live_importer_v2,
+)
+from vulnerabilities.pipelines.v2_importers import (
     project_kb_msr2019_importer as project_kb_msr2019_importer_v2,
 )
 from vulnerabilities.pipelines.v2_importers import (
@@ -196,3 +199,9 @@ TODO_EXCLUDED_PIPELINES = [
     for key, value in IMPORTERS_REGISTRY.items()
     if issubclass(value, VulnerableCodeBaseImporterPipelineV2) and value.exclude_from_package_todo
 ]
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        postgresql_live_importer_v2.PostgreSQLLiveImporterPipeline,
+    ]
+)

@@ -31,6 +31,7 @@ from vulnerabilities.pipelines.v2_improvers import (
 )
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
 from vulnerabilities.pipelines.v2_improvers import group_advisories_for_packages
+from vulnerabilities.pipelines.v2_improvers import reference_collect_commits
 from vulnerabilities.pipelines.v2_improvers import relate_severities
 from vulnerabilities.pipelines.v2_improvers import unfurl_version_range as unfurl_version_range_v2
 from vulnerabilities.utils import create_registry
@@ -73,5 +74,6 @@ IMPROVERS_REGISTRY = create_registry(
         relate_severities.RelateSeveritiesPipeline,
         group_advisories_for_packages.GroupAdvisoriesForPackages,
         compute_advisory_todo_v2.ComputeToDo,
+        reference_collect_commits.CollectReferencesFixCommitsPipeline,
     ]
 )

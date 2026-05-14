@@ -94,9 +94,9 @@ class GlibcImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             affected_packages = []
             purl = PackageURL(
-                type="generic",
-                namespace="gnu",
-                name="gcc",
+                type="sid",
+                namespace="gnu.org",
+                name="glibc",
             )
 
             affected_version_range = None

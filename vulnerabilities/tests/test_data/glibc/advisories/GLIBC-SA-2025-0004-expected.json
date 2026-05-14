@@ -8,9 +8,9 @@
     "affected_packages": [
       {
         "package": {
-          "type": "generic",
-          "namespace": "gnu",
-          "name": "gcc",
+          "type": "sid",
+          "namespace": "gnu.org",
+          "name": "glibc",
           "version": "",
           "qualifiers": "",
           "subpath": ""

@@ -49,7 +49,6 @@ IMPROVERS_REGISTRY = create_registry(
         valid_versions.ApacheKafkaImprover,
         valid_versions.IstioImprover,
         valid_versions.DebianOvalImprover,
-        valid_versions.UbuntuOvalImprover,
         valid_versions.OSSFuzzImprover,
         valid_versions.RubyImprover,
         valid_versions.GithubOSVImprover,

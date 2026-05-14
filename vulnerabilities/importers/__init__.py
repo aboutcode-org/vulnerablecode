@@ -28,7 +28,6 @@ from vulnerabilities.importers import redhat
 from vulnerabilities.importers import retiredotnet
 from vulnerabilities.importers import ruby
 from vulnerabilities.importers import suse_scores
-from vulnerabilities.importers import ubuntu
 from vulnerabilities.importers import ubuntu_usn
 from vulnerabilities.importers import vulnrichment
 from vulnerabilities.importers import xen
@@ -137,7 +136,6 @@ IMPORTERS_REGISTRY = create_registry(
         openssl_importer_v2.OpenSSLImporterPipeline,
         redhat.RedhatImporter,
         archlinux.ArchlinuxImporter,
-        ubuntu.UbuntuImporter,
         debian_oval.DebianOvalImporter,
         retiredotnet.RetireDotnetImporter,
         apache_httpd.ApacheHTTPDImporter,

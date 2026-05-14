@@ -94,7 +94,7 @@ class APIV3TestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         advisory = response.data["results"][0]
-        self.assertEqual(advisory["advisory_id"], "ghsa/GHSA-1234")
+        self.assertEqual(advisory["avid"], "ghsa/GHSA-1234")
 
     def test_affected_by_advisories_list(self):
         url = reverse("affected-by-advisories-list")
@@ -109,7 +109,7 @@ class APIV3TestCase(APITestCase):
 
         results = response.data["results"]
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["advisory_id"], "ghsa/GHSA-1234")
+        self.assertEqual(results[0]["avid"], "ghsa/GHSA-1234")
 
     def test_fixing_advisories_list_empty(self):
         url = reverse("fixing-advisories-list")
@@ -197,7 +197,7 @@ class APIV3TestCaseOnePackageMultipleAdvisories(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 100)
         advisory = response.data["results"][0]
-        self.assertEqual(advisory["advisory_id"], "ghsa_importer/GHSA-12341")
+        self.assertEqual(advisory["avid"], "ghsa_importer/GHSA-12341")
 
 
 class APIV3TestCaseOneAdvisoryMultiplePackages(APITestCase):

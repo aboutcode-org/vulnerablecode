@@ -19,6 +19,7 @@ from functools import cached_property
 from itertools import groupby
 from operator import attrgetter
 from traceback import format_exc as traceback_format_exc
+from typing import Dict
 from typing import List
 from typing import NamedTuple
 from typing import Optional
@@ -3858,3 +3859,4 @@ class GroupedAdvisory(NamedTuple):
     weighted_severity: Optional[float]
     exploitability: Optional[float]
     risk_score: Optional[float]
+    ssvc_trees: List[Dict]

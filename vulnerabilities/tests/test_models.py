@@ -34,6 +34,7 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import Alias
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageV2
 from vulnerabilities.models import Patch
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.severity_systems import CVSSV3
@@ -827,3 +828,38 @@ class TestAdvisoryV2ModelDuplication(DjangoTestCase):
         result = models.AdvisoryV2.objects.count()
 
         self.assertEqual(result, 2)
+
+
+class TestPackageV2BulkCreate(DjangoTestCase):
+    def setUp(self):
+        PackageV2.objects.get_or_create_from_purl(
+            "pkg:deb/ubuntu/linux@6.17.0-19.19?arch=source&distro=questing"
+        )
+        PackageV2.objects.get_or_create_from_purl("pkg:pypi/foo@1.2.3")
+        PackageV2.objects.get_or_create_from_purl("pkg:npm/foobar@3.2.3")
+        PackageV2.objects.get_or_create_from_purl("pkg:maven/foo@1.2.3")
+        PackageV2.objects.get_or_create_from_purl(
+            "pkg:deb/ubuntu/linux@6.17.0-4.4?arch=source&distro=questing"
+        )
+
+    def test_package_bulk_get_or_create_from_purls(self):
+        purls = [
+            "pkg:npm/foo@1.2.3",
+            "pkg:pypi/foo@1.2.3",
+            "pkg:npm/foobar@3.2.3",
+            "pkg:maven/foo@1.2.3",
+            "pkg:nuget/foo@1.2.3",
+            "pkg:deb/ubuntu/linux@6.17.0-22.22?arch=source&distro=questing",
+            "pkg:deb/ubuntu/linux@6.17.0-20.20?arch=source&distro=questing",
+            "pkg:deb/ubuntu/linux@6.17.0-14.14?arch=source&distro=questing",
+            "pkg:deb/ubuntu/linux@6.17.0-12.12?arch=source&distro=questing",
+            "pkg:deb/ubuntu/linux@6.17.0-8.8?arch=source&distro=questing",
+            "pkg:deb/ubuntu/linux@6.17.0-7.7?arch=source&distro=questing",
+            "pkg:deb/ubuntu/linux@6.17.0-6.6?arch=source&distro=questing",
+            "pkg:deb/ubuntu/linux@6.17.0-5.5?arch=source&distro=questing",
+            "pkg:deb/ubuntu/linux@6.17.0-4.4?arch=source&distro=questing",
+        ]
+        result_qs = PackageV2.objects.bulk_get_or_create_from_purls(purls)
+        result = [p.package_url for p in result_qs]
+
+        self.assertCountEqual(result, purls)

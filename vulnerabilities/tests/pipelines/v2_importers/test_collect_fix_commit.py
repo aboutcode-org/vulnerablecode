@@ -52,9 +52,7 @@ def test_collect_fix_commits_groups_by_vuln(mock_repo, pipeline):
         side_effect=lambda c: (
             ["CVE-2021-0001"]
             if "CVE" in c.message
-            else ["GHSA-dead-beef-baad"]
-            if "GHSA" in c.message
-            else []
+            else ["GHSA-dead-beef-baad"] if "GHSA" in c.message else []
         )
     )
 

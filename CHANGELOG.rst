@@ -1,6 +1,51 @@
 Release notes
 =============
 
+next release
+---------------------
+
+- WARNING: Vulnerablecode V1 API and UI has stopped supporting Ubuntu OVAL advisories, please shift to V3 API for new Ubuntu advisories. 
+
+Version v38.6.0
+---------------------
+
+- fix: add missing clean_downloads step for alpine_linux v2 importer (https://github.com/aboutcode-org/vulnerablecode/pull/2282)
+- fix: fix AdvisoryDataV2 deserialization and validate version ranges correctly (https://github.com/aboutcode-org/vulnerablecode/pull/2285)
+- fix: ignore conflicts while bulk creating v2 packages (https://github.com/aboutcode-org/vulnerablecode/pull/2289)
+- fix: use shared cache backend across WSGI workers (https://github.com/aboutcode-org/vulnerablecode/pull/2290)
+- fix: delete AdvisorySet associated with malformed aliases (https://github.com/aboutcode-org/vulnerablecode/pull/2291)
+
+
+Version v38.5.0
+---------------------
+
+- fix: Make package_url field unique for PackageV2
+
+Version v38.4.0
+---------------------
+
+- fix: run pipeline scheduling jobs in respective queues (https://github.com/aboutcode-org/vulnerablecode/pull/2263)
+- feat: show queue load factors on the pipeline dashboard (https://github.com/aboutcode-org/vulnerablecode/pull/2264)
+
+Version v38.3.0
+---------------------
+
+- feat: add high priority queue and run version range unfurling pipeline more frequently (https://github.com/aboutcode-org/vulnerablecode/pull/2256)
+
+Version v38.1.0
+---------------------
+
+- Throttle UI to 15 requests per minute to avoid abuse and improve performance.
+- Handle errors in unfurl_version_range pipeline.
+- Remove Todo pipeline from v1 pipelines.
+- Add openAPI documentation for Package and Advisory viewset.
+
+Version v38.0.0
+---------------------
+
+- This is a major version, we have changed our V3 API, refer to ``api_v3_usage.rst`` for details.
+- We have started grouping advisories which have aliases or identifiers in common and also affect same set of packages together.
+
 Version v37.0.0
 ---------------------
 

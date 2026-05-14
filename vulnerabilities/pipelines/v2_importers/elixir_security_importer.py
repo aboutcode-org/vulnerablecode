@@ -35,8 +35,9 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC0-1.0"
     license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
     repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
+    run_once = True
 
-    precedence = 200
+    precedence = 400
 
     @classmethod
     def steps(cls):

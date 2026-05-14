@@ -196,7 +196,7 @@ def test_parse_cve_advisory(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
     assert advisory.summary == "Sample PyPI vulnerability"
     assert advisory.url == advisory_url
     assert len(advisory.severities) == 1
-    assert advisory.severities[0].value == 5.3
+    assert advisory.severities[0].value == "5.3"
 
 
 def test_collect_advisories_with_invalid_json(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs):

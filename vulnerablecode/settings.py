@@ -54,6 +54,9 @@ DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
 # WARNING: Set this to False in production
 STAGING = env.bool("STAGING", default=True)
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env.str("EMAIL_HOST", default="")
 EMAIL_USE_TLS = True
@@ -189,12 +192,14 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 THROTTLE_RATE_ANON = env.str("THROTTLE_RATE_ANON", default="3600/hour")
+THROTTLE_RATE_UI = env.str("THROTTLE_RATE_UI", default="15/minute")
 THROTTLE_RATE_USER_HIGH = env.str("THROTTLE_RATE_USER_HIGH", default="18000/hour")
 THROTTLE_RATE_USER_MEDIUM = env.str("THROTTLE_RATE_USER_MEDIUM", default="14400/hour")
 THROTTLE_RATE_USER_LOW = env.str("THROTTLE_RATE_USER_LOW", default="10800/hour")
 
 REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
     "anon": THROTTLE_RATE_ANON,
+    "ui": THROTTLE_RATE_UI,
     "low": THROTTLE_RATE_USER_LOW,
     "medium": THROTTLE_RATE_USER_MEDIUM,
     "high": THROTTLE_RATE_USER_HIGH,
@@ -248,7 +253,7 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "vulnerabilities.throttling.throttled_exception_handler",
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
-    "PAGE_SIZE": 10,
+    "PAGE_SIZE": 100,
     # for API docs
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%SZ",
@@ -387,8 +392,26 @@ RQ_QUEUES = {
         "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
         "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
         "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
-    }
+    },
+    "high": {
+        "HOST": env.str("VULNERABLECODE_REDIS_HOST", default="localhost"),
+        "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
+        "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
+        "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
+    },
 }
+
+
+vcio_redis_host = env.str("VULNERABLECODE_REDIS_HOST", default=None)
+vcio_redis_port = env.str("VULNERABLECODE_REDIS_PORT", default=None)
+
+if vcio_redis_host and vcio_redis_port:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": f"redis://{vcio_redis_host}:{vcio_redis_port}",
+        }
+    }
 
 
 # FederatedCode integration

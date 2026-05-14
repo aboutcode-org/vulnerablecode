@@ -20,6 +20,7 @@ from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import fetch_response
+from vulnerabilities.utils import is_cve
 
 MM_REPO = {
     "Mattermost Mobile Apps": "mattermost-mobile",
@@ -62,11 +63,17 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             return
 
         for advisory in data:
-            vuln_id = advisory.get("issue_id")
-            if not vuln_id or not vuln_id.startswith("MMSA-"):
-                self.log(f"Skipping advisory with missing issue_id. {vuln_id}")
+            issue_id = advisory.get("issue_id") or ""
+            cve_id = advisory.get("cve_id") or ""
+
+            advisory_id, aliases = parse_vuln_ids(issue_id, cve_id)
+
+            if not advisory_id:
+                self.log(
+                    f"Skipping advisory with missing advisory_id. issue_id:{issue_id} cve_id:{cve_id}"
+                )
                 continue
-            cve_id = advisory.get("cve_id")
+
             details = advisory.get("details")
 
             platform = advisory.get("platform")
@@ -78,7 +85,7 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             affected_packages = []
             severity = advisory.get("severity")
             if not package_name:
-                self.log(f"Unknown platform '{platform}' in advisory '{vuln_id}'.")
+                self.log(f"Unknown platform '{platform}' in advisory '{advisory_id}'.")
 
             else:
                 package = PackageURL(
@@ -105,7 +112,7 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                 except Exception as e:
                     self.log(
-                        f"Error processing fixed versions '{fixed_versions}' for advisory '{vuln_id}': {e}"
+                        f"Error processing fixed versions '{fixed_versions}' for advisory '{advisory_id}': {e}"
                     )
 
             severities = []
@@ -118,8 +125,8 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             )
 
             yield AdvisoryDataV2(
-                advisory_id=vuln_id,
-                aliases=[cve_id],
+                advisory_id=advisory_id,
+                aliases=aliases,
                 summary=details,
                 references=[reference],
                 affected_packages=affected_packages,
@@ -127,3 +134,27 @@ class MattermostImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 url=self.url,
                 original_advisory_text=json.dumps(advisory, indent=2, ensure_ascii=False),
             )
+
+
+def parse_vuln_ids(issue_id, cve_id):
+    """
+    Parses a raw issue_id, cve_id, validate and returns the advisory id and a list of all valid aliases.
+    """
+    advisory_id = None
+    aliases = []
+
+    cve_id = cve_id.strip()
+    issue_id = issue_id.strip()
+
+    for vuln_id in issue_id.split(","):
+        vuln_id = vuln_id.strip()
+        if vuln_id.startswith("MMSA-") or vuln_id.startswith("CVE-"):
+            aliases.append(vuln_id)
+
+    if cve_id and is_cve(cve_id):
+        aliases.append(cve_id)
+
+    if aliases:
+        advisory_id = aliases.pop(0)
+
+    return advisory_id, aliases

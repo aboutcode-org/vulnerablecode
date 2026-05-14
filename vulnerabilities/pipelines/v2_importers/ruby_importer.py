@@ -58,7 +58,7 @@ class RubyImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     SOFTWARE.
     """
 
-    precedence = 200
+    precedence = 500
 
     @classmethod
     def steps(cls):
@@ -162,7 +162,9 @@ def get_affected_packages(record, purl):
     affected_packages = []
     for unaffected_version in record.get("unaffected_versions", []):
         try:
-            affected_version_range = GemVersionRange.from_native(unaffected_version).invert()
+            if unaffected_version:
+                unaffected_version = unaffected_version.strip()
+                affected_version_range = GemVersionRange.from_native(unaffected_version).invert()
             validate_comparators(affected_version_range.constraints)
             affected_packages.append(
                 AffectedPackageV2(

@@ -334,6 +334,13 @@ def insert_advisory_v2(
     if not created:
         return advisory_obj
 
+    AdvisoryV2.objects.filter(
+        avid=f"{pipeline_id}/{advisory.advisory_id}",
+        is_latest=True,
+    ).update(is_latest=False)
+    advisory_obj.is_latest = True
+    advisory_obj.save()
+
     aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
     references = get_or_create_advisory_references(references=advisory.references)
     severities = get_or_create_advisory_severities(severities=advisory.severities)
@@ -356,12 +363,14 @@ def insert_advisory_v2(
         impact = ImpactedPackage.objects.create(
             advisory=advisory_obj,
             base_purl=str(affected_pkg.package),
-            affecting_vers=str(affected_pkg.affected_version_range)
-            if affected_pkg.affected_version_range
-            else None,
-            fixed_vers=str(affected_pkg.fixed_version_range)
-            if affected_pkg.fixed_version_range
-            else None,
+            affecting_vers=(
+                str(affected_pkg.affected_version_range)
+                if affected_pkg.affected_version_range
+                else None
+            ),
+            fixed_vers=(
+                str(affected_pkg.fixed_version_range) if affected_pkg.fixed_version_range else None
+            ),
         )
         package_affected_purls, package_fixed_purls = get_exact_purls_v2(
             affected_package=affected_pkg,

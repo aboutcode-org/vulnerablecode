@@ -103,13 +103,15 @@ class MattermostDataSource(Importer):
                 Reference(
                     reference_id=ref_col.text,
                     url=SECURITY_UPDATES_URL,
-                    severities=[
-                        VulnerabilitySeverity(
-                            system=severity_systems.CVSS31_QUALITY, value=severity_col.text
-                        )
-                    ]
-                    if severity_col.text.lower() != "na"
-                    else [],
+                    severities=(
+                        [
+                            VulnerabilitySeverity(
+                                system=severity_systems.CVSS31_QUALITY, value=severity_col.text
+                            )
+                        ]
+                        if severity_col.text.lower() != "na"
+                        else []
+                    ),
                 )
             ]
 

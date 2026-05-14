@@ -20,7 +20,9 @@ from collections import defaultdict
 from functools import total_ordering
 from http import HTTPStatus
 from typing import List
+from typing import NamedTuple
 from typing import Optional
+from typing import Set
 from typing import Tuple
 from typing import Union
 from unittest.mock import MagicMock
@@ -41,6 +43,7 @@ from univers.version_range import NginxVersionRange
 from univers.version_range import VersionRange
 
 from aboutcode.hashid import build_vcid
+from vulnerabilities.pipes.group_advisories import delete_and_save_advisory_set
 
 logger = logging.getLogger(__name__)
 
@@ -611,7 +614,31 @@ def normalize_text(text):
 
 def normalize_list(lst):
     """Sort a list to ensure consistent ordering."""
+    lst = [x for x in lst if x]
     return sorted(lst) if lst else []
+
+
+def canonical_value(value):
+    """
+    Return a canonical, order independent tuple for hashing/deduplication.
+
+    >>> canonical_value({"b": ["k", "j"], "a": 2})
+    (('a', 2), ('b', ('j', 'k')))
+    >>> canonical_value([2, 1])
+    (1, 2)
+    """
+    if isinstance(value, dict):
+        return tuple(sorted((k, canonical_value(v)) for k, v in value.items()))
+    if isinstance(value, (list, set, tuple)):
+        return tuple(sorted(canonical_value(v) for v in value))
+    return value
+
+
+def sha256_digest(normalized_data):
+    """Return SHA256 digest from normalized data."""
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    return hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
 
 
 def compute_content_id(advisory_data):
@@ -692,10 +719,7 @@ def compute_content_id_v2(advisory_data):
     }
     normalized_data["url"] = advisory_data.url
 
-    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
-    content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
-
-    return content_id
+    return sha256_digest(normalized_data)
 
 
 def create_registry(pipelines):
@@ -844,26 +868,188 @@ def compute_patch_checksum(patch_text: str):
     return hashlib.sha512(patch_text.encode("utf-8")).hexdigest()
 
 
-def group_advisories_by_content(advisories):
-    grouped = {}
+def merge_advisories(advisories, package):
+    """
+    Merge advisories based on their content hash and identifiers.
+    """
+    from vulnerabilities.models import Group
 
-    for advisory in advisories:
-        content_hash = advisory.compute_advisory_content()
+    advisories = list(advisories)
 
-        entry = grouped.setdefault(
-            content_hash,
-            {"primary": advisory, "secondary": set()},
+    content_hash_map = defaultdict(list)
+
+    for adv in advisories:
+        content_hash = compute_advisory_content_hash(adv, package)
+        content_hash_map[content_hash].append(adv)
+
+    final_groups: List[Group] = []
+
+    for group in content_hash_map.values():
+        groups = get_merged_identifier_groups(group)
+        final_groups.extend(groups)
+
+    return final_groups
+
+
+def compute_advisory_content_hash(adv, package):
+    """Compute a content hash for an advisory based on its affected and fixed packages for a given package.
+    This is used to determine if two advisories are the same based on their content."""
+    affected = []
+    fixed = []
+
+    version_less_purl = PackageURL(
+        type=package.type,
+        namespace=package.namespace,
+        name=package.name,
+        qualifiers=package.qualifiers,
+        subpath=package.subpath,
+    )
+
+    for impact in adv.impacted_packages.filter(base_purl=str(version_less_purl)):
+        affected.extend([pkg.package_url for pkg in impact.affecting_packages.all()])
+        fixed.extend([pkg.package_url for pkg in impact.fixed_by_packages.all()])
+
+    normalized_data = {
+        "affected_packages": normalize_list(affected),
+        "fixed_packages": normalize_list(fixed),
+    }
+
+    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
+    content_hash = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
+    return content_hash
+
+
+def get_merged_identifier_groups(advisories):
+    """
+    Merge advisories based on their identifiers (advisory_id and aliases).
+    Example: If two advisories share ``advisory_id`` or share an alias, they will be merged together.
+    """
+    from vulnerabilities.models import Group
+
+    identifier_groups = defaultdict(set)
+
+    advisories = list(advisories)
+
+    for adv in advisories:
+
+        identifier_groups[adv.advisory_id].add(adv)
+
+        for alias in adv.aliases.values_list("alias", flat=True):
+            identifier_groups[alias].add(adv)
+
+    groups = [set(advs) for advs in identifier_groups.values() if len(advs) > 1]
+
+    merged = []
+
+    for group in groups:
+        group = set(group)
+
+        i = 0
+        while i < len(merged):
+            if group & merged[i]:
+                group |= merged[i]
+                merged.pop(i)
+            else:
+                i += 1
+
+        merged.append(group)
+
+    all_grouped = set()
+    for g in merged:
+        all_grouped |= g
+
+    for adv in advisories:
+        if adv not in all_grouped:
+            merged.append({adv})
+
+    final_groups: List[Group] = []
+
+    for group in merged:
+        identifiers = set()
+        for adv in group:
+            for alias in adv.aliases.all().order_by("alias"):
+                identifiers.add(alias)
+
+        primary = max(group, key=lambda a: a.precedence if a.precedence is not None else -1)
+
+        secondary = [a for a in group if a != primary]
+
+        final_groups.append(Group(aliases=identifiers, primary=primary, secondaries=secondary))
+
+    return final_groups
+
+
+def get_advisories_from_groups(groups):
+    """
+    Return a list of advisories from the merged groups of advisories.
+    """
+    from vulnerabilities.models import Group
+    from vulnerabilities.models import GroupedAdvisory
+
+    advisories = []
+
+    for group in groups:
+
+        assert isinstance(group, Group)
+        weighted_severity = None
+        exploitability = None
+        risk_score = None
+
+        severity_scores = []
+        severity_scores.append(group.primary.weighted_severity or 0.0)
+        severity_scores.extend([adv.weighted_severity or 0.0 for adv in group.secondaries])
+
+        if severity_scores:
+            weighted_severity = round(max(severity_scores), 1)
+
+        exploitability_scores = []
+        exploitability_scores.append(group.primary.exploitability or 0.0)
+        exploitability_scores.extend([adv.exploitability or 0.0 for adv in group.secondaries])
+
+        if exploitability_scores:
+            exploitability = max(exploitability_scores)
+
+        if exploitability and weighted_severity:
+            risk_score = min(float(exploitability * weighted_severity), 10.0)
+            risk_score = round(risk_score, 1)
+
+        identifier = group.primary.advisory_id.split("/")[-1]
+        filtered_aliases = [alias for alias in group.aliases if alias.alias != identifier]
+
+        advisories.append(
+            GroupedAdvisory(
+                aliases=filtered_aliases,
+                advisory=group.primary,
+                identifier=identifier,
+                weighted_severity=weighted_severity,
+                exploitability=exploitability,
+                risk_score=risk_score,
+            )
         )
 
-        primary = entry["primary"]
+    return advisories
 
-        if advisory is primary:
-            continue
 
-        if advisory.precedence > primary.precedence:
-            entry["primary"] = advisory
-            entry["secondary"].add(primary)
-        else:
-            entry["secondary"].add(advisory)
+def merge_and_save_grouped_advisories(package, advisories, relation):
+    """
+    Merge advisories based on their content and identifiers and save the merged advisories to the database.
+    """
+    groups = merge_advisories(advisories, package)
+    delete_and_save_advisory_set(groups, package, relation)
+    advisories = get_advisories_from_groups(groups)
 
-    return grouped
+    return advisories
+
+
+TYPES_WITH_MULTIPLE_IMPORTERS = [
+    "pypi",
+    "maven",
+    "nuget",
+    "golang",
+    "npm",
+    "composer",
+    "hex",
+    "cargo",
+    "gem",
+    "conan",
+]

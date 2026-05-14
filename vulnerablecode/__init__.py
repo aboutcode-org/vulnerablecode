@@ -14,7 +14,7 @@ from pathlib import Path
 
 import git
 
-__version__ = "37.0.0"
+__version__ = "38.6.0"
 
 
 PROJECT_DIR = Path(__file__).resolve().parent
@@ -45,7 +45,7 @@ def get_git_commit_from_version_file():
         if not commit_line.startswith("commit=") or commit_line.startswith("commit=$Format"):
             return
         return commit_line.replace("commit=", "")
-    except (UnicodeDecodeError):
+    except UnicodeDecodeError:
         return
 
 
@@ -61,7 +61,7 @@ def get_git_tag_from_version_file():
         if "tag:" in ref_line:
             if vcio_tag := ref_line.split("tag:")[-1].strip():
                 return vcio_tag
-    except (UnicodeDecodeError):
+    except UnicodeDecodeError:
         return
 
 

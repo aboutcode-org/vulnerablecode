@@ -62,6 +62,7 @@ from vulnerabilities.pipelines.v2_importers import mattermost_importer as matter
 from vulnerabilities.pipelines.v2_importers import mozilla_importer as mozilla_importer_v2
 from vulnerabilities.pipelines.v2_importers import nginx_importer as nginx_importer_v2
 from vulnerabilities.pipelines.v2_importers import npm_importer as npm_importer_v2
+from vulnerabilities.pipelines.v2_importers import npm_live_importer as npm_live_importer_v2
 from vulnerabilities.pipelines.v2_importers import nvd_importer as nvd_importer_v2
 from vulnerabilities.pipelines.v2_importers import openssl_importer as openssl_importer_v2
 from vulnerabilities.pipelines.v2_importers import oss_fuzz as oss_fuzz_v2
@@ -196,3 +197,9 @@ TODO_EXCLUDED_PIPELINES = [
     for key, value in IMPORTERS_REGISTRY.items()
     if issubclass(value, VulnerableCodeBaseImporterPipelineV2) and value.exclude_from_package_todo
 ]
+
+LIVE_IMPORTERS_REGISTRY = create_registry(
+    [
+        npm_live_importer_v2.NpmLiveImporterPipeline,
+    ]
+)

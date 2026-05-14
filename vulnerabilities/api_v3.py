@@ -637,6 +637,9 @@ class PackageCommitPatchViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = PackageCommitPatchFilter
 
     def get_queryset(self):
+        if not self.request.query_params:
+            return PackageCommitPatch.objects.none()
+
         return PackageCommitPatch.objects.prefetch_related(
             "introduced_in_impacts__advisory", "fixed_in_impacts__advisory"
         ).order_by("id")
@@ -661,6 +664,9 @@ class PatchViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = PatchFilter
 
     def get_queryset(self):
+        if not self.request.query_params:
+            return Patch.objects.none()
+
         return Patch.objects.all()
 
 

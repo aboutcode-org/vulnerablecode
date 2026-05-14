@@ -6,7 +6,6 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
 from collections import defaultdict
 
 from aboutcode.pipeline import LoopProgress
@@ -59,8 +58,8 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
 
     def collect_and_store_fix_commits(self):
         advisories = AdvisoryV2.objects.only("id").prefetch_related(
-            Prefetch("references", queryset=AdvisoryReference.objects.only("url")),
-            Prefetch("patches", queryset=Patch.objects.only("patch_url")),
+            Prefetch("references", queryset=AdvisoryReference.objects.only("id", "url")),
+            Prefetch("patches", queryset=Patch.objects.only("id", "patch_url")),
         )
 
         progress = LoopProgress(total_iterations=advisories.count(), logger=self.log)
@@ -68,7 +67,7 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
         commit_batch = []
         updated_pkg_patch_commit_count = 0
         batch_size = 10000
-        for adv in progress.iter(advisories.paginated(per_page=batch_size)):
+        for adv in progress.iter(advisories.iterator(chunk_size=batch_size)):
             urls = {r.url for r in adv.references.all()} | {p.patch_url for p in adv.patches.all()}
 
             for url in urls:
@@ -96,7 +95,7 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
         commit_hashes = {commit_hash for _, commit_hash in commit_data}
 
         existing_impacts = ImpactedPackage.objects.filter(advisory_id__in=adv_ids).only(
-            "base_purl", "advisory_id"
+            "id", "base_purl", "advisory_id"
         )
         existing_impact_pairs = {
             (impact_pkg.base_purl, impact_pkg.advisory_id) for impact_pkg in existing_impacts
@@ -107,7 +106,8 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
                 [
                     ImpactedPackage(base_purl=base_purl, advisory_id=adv_id)
                     for base_purl, adv_id in new_impacts
-                ]
+                ],
+                ignore_conflicts=True,
             )
 
         PackageCommitPatch.objects.bulk_create(
@@ -121,7 +121,7 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
         fetched_impacts = {
             (impacted_pkg.base_purl, impacted_pkg.advisory_id): impacted_pkg
             for impacted_pkg in ImpactedPackage.objects.filter(advisory_id__in=adv_ids).only(
-                "base_purl", "advisory_id"
+                "id", "base_purl", "advisory_id"
             )
         }
 
@@ -129,17 +129,27 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
             (pkg_commit_patch.vcs_url, pkg_commit_patch.commit_hash): pkg_commit_patch
             for pkg_commit_patch in PackageCommitPatch.objects.filter(
                 commit_hash__in=commit_hashes
-            ).only("vcs_url", "commit_hash")
+            ).only("id", "vcs_url", "commit_hash")
         }
 
-        pkg_commit_add_impact_pkg = defaultdict(list)
+        through_model = PackageCommitPatch.fixed_in_impacts.through
+
+        relations = []
         for base_purl, vcs_url, commit_hash, adv_id in vcs_data_table:
             impacted_pkg_obj = fetched_impacts.get((base_purl, adv_id))
             pkg_commit_obj = fetched_pkg_commits.get((vcs_url, commit_hash))
+
             if impacted_pkg_obj and pkg_commit_obj:
-                pkg_commit_add_impact_pkg[pkg_commit_obj].append(impacted_pkg_obj)
+                relations.append(
+                    through_model(
+                        packagecommitpatch_id=pkg_commit_obj.id,
+                        impactedpackage_id=impacted_pkg_obj.id,
+                    )
+                )
 
-        for pkg_commit_obj, impact_pkgs in pkg_commit_add_impact_pkg.items():
-            pkg_commit_obj.fixed_in_impacts.add(*impact_pkgs)
-
+        through_model.objects.bulk_create(
+            relations,
+            ignore_conflicts=True,
+            batch_size=10000,
+        )
         return len(vcs_data_table)

@@ -23,8 +23,11 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import Alias
 from vulnerabilities.models import ApiUser
 from vulnerabilities.models import CodeFixV2
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
+from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.models import PackageV2
+from vulnerabilities.models import Patch
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
@@ -834,3 +837,142 @@ class CodeFixV2APITest(APITestCase):
             response = self.client.get(self.url, {"advisory_id": "nonexistent/ADVISORY-ID"})
         assert response.status_code == status.HTTP_200_OK
         assert response.data["count"] == 0
+
+
+class PackageCommitPatchList(APITestCase):
+    def setUp(self):
+        self.advisory = AdvisoryV2.objects.create(
+            datasource_id="test_source",
+            advisory_id="TEST-2025-001",
+            avid="test_source/TEST-2025-001",
+            unique_content_id="a" * 64,
+            url="https://example.com/advisory",
+            date_collected="2025-07-01T00:00:00Z",
+        )
+
+        self.affected_package = PackageV2.objects.from_purl(purl="pkg:github/torvalds/linux@1.0.0")
+        self.fixed_package = PackageV2.objects.from_purl(purl="pkg:github/torvalds/linux@1.0.1")
+
+        self.pkg_commit_patch1 = PackageCommitPatch.objects.create(
+            commit_hash="2e1c42391ff2556387b3cb6308b24f6f65619feb",
+            vcs_url="https://github.com/torvalds/linux",
+            patch_text="From 2e1c42391ff2556387b3cb6308b24f6f65619feb Mon Sep 17 00:00:00 2001...",
+        )
+
+        self.pkg_commit_patch2 = PackageCommitPatch.objects.create(
+            commit_hash="99253eb750fda6a644d5188fb26c43bad8d5a745",
+            vcs_url="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git",
+            patch_text="From 99253eb750fda6a644d5188fb26c43bad8d5a745 Mon Sep 17 00:00:00 2001...",
+        )
+
+        self.pkg_commit_patch3 = PackageCommitPatch.objects.create(
+            commit_hash="f043bfc98c193c284e2cd768fefabe18ac2fed9b",
+            vcs_url="https://github.com/torvalds/linux",
+            patch_text="From f043bfc98c193c284e2cd768fefabe18ac2fed9b Mon Sep 17 00:00:00 2001...",
+        )
+
+        self.impacted_package1 = ImpactedPackage.objects.create(
+            base_purl="pkg:github/torvalds/linux",
+            advisory=self.advisory,
+        )
+
+        self.impacted_package2 = ImpactedPackage.objects.create(
+            base_purl="pkg:generic/git.kernel.org/pub/scm/linux/kernel",
+            advisory=self.advisory,
+        )
+
+        self.impacted_package1.fixed_by_package_commit_patches.add(self.pkg_commit_patch1)
+        self.impacted_package1.introduced_by_package_commit_patches.add(self.pkg_commit_patch3)
+        self.impacted_package2.fixed_by_package_commit_patches.add(self.pkg_commit_patch2)
+
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
+        self.url = reverse("package-commit-patch-list")
+
+    def test_package_commit_patches_list(self):
+        response = self.client.get(self.url)
+        assert response.status_code == 200
+        results = response.json().get("results", response.json())
+        assert len(results) == 3
+        patch_data = results[0]
+        assert patch_data["vcs_url"] == self.pkg_commit_patch1.vcs_url
+        assert patch_data["commit_hash"] == self.pkg_commit_patch1.commit_hash
+        assert patch_data["fixed_in_advisories"] == [
+            {"avid": self.advisory.avid, "purl": self.impacted_package1.base_purl}
+        ]
+        assert patch_data["introduced_in_advisories"] == []
+
+    def test_filter_by_commit_hash(self):
+        response = self.client.get(f"{self.url}?commit_hash={self.pkg_commit_patch1.commit_hash}")
+        results = response.json().get("results", response.json())
+        assert len(results) == 1
+
+        response = self.client.get(f"{self.url}?commit_hash=test")
+        results = response.json().get("results", response.json())
+        assert len(results) == 0
+
+    def test_filter_by_vcs_url(self):
+        response = self.client.get(f"{self.url}?vcs_url={self.pkg_commit_patch1.vcs_url}")
+        results = response.json().get("results", response.json())
+        assert len(results) == 2
+
+        response = self.client.get(f"{self.url}?vcs_url=test")
+        results = response.json().get("results", response.json())
+        assert len(results) == 0
+
+    def test_filter_by_advisory_avid(self):
+        response = self.client.get(f"{self.url}?advisory_avid={self.advisory.avid}")
+        results = response.json().get("results", response.json())
+        assert len(results) == 3
+
+        response = self.client.get(f"{self.url}?advisory_avid=test_source/DOES-NOT-EXIST")
+        results = response.json().get("results", response.json())
+        assert len(results) == 0
+
+    def test_filter_by_purl(self):
+        response = self.client.get(f"{self.url}?purl=pkg:github/torvalds/linux")
+        results = response.json().get("results", response.json())
+        assert len(results) == 2
+
+        response = self.client.get(f"{self.url}?purl=pkg:github/aboutcode-org")
+        results = response.json().get("results", response.json())
+        assert len(results) == 0
+
+
+class PatchList(APITestCase):
+    def setUp(self):
+        self.advisory = AdvisoryV2.objects.create(
+            datasource_id="test_source",
+            advisory_id="TEST-2025-001",
+            avid="test_source/TEST-2025-001",
+            unique_content_id="a" * 64,
+            url="https://example.com/advisory",
+            date_collected="2025-07-01T00:00:00Z",
+        )
+
+        self.patch = Patch.objects.create(
+            patch_url="https://lore.kernel.org/patchwork/patch/1086060/", patch_text="some text"
+        )
+
+        self.advisory.patches.add(self.patch)
+
+        self.user = ApiUser.objects.create_api_user(username="e@mail.com")
+        self.auth = f"Token {self.user.auth_token.key}"
+        self.client = APIClient(enforce_csrf_checks=True)
+        self.client.credentials(HTTP_AUTHORIZATION=self.auth)
+        self.url = reverse("patches-list")
+
+    def test_patch_list(self):
+        response = self.client.get(self.url)
+        assert response.status_code == 200
+        results = response.json().get("results", response.json())
+        assert len(results) == 1
+        assert results[0]["patch_url"] == self.patch.patch_url
+        assert results == [
+            {
+                "patch_url": "https://lore.kernel.org/patchwork/patch/1086060/",
+                "in_advisories": ["test_source/TEST-2025-001"],
+            }
+        ]

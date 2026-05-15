@@ -28,9 +28,12 @@ from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.api_v3 import AdvisoryV3ViewSet
 from vulnerabilities.api_v3 import AffectedByAdvisoriesViewSet
 from vulnerabilities.api_v3 import FixingAdvisoriesViewSet
+from vulnerabilities.api_v3 import PackageCommitPatchViewSet
 from vulnerabilities.api_v3 import PackageV3ViewSet
+from vulnerabilities.api_v3 import PatchViewSet
 from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
+from vulnerabilities.views import AdvisoryPackageCommitPatchDetails
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import AffectedByAdvisoriesListView
 from vulnerabilities.views import ApiUserCreateView
@@ -81,6 +84,11 @@ api_v3_router.register(
 )
 api_v3_router.register("fixing-advisories", FixingAdvisoriesViewSet, basename="fixing-advisories")
 
+api_v3_router.register(
+    "package-commit-patches", PackageCommitPatchViewSet, basename="package-commit-patch"
+)
+api_v3_router.register("patches", PatchViewSet, basename="patches")
+
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
     path("api/v2/", include(api_v2_router.urls)),
@@ -118,6 +126,11 @@ urlpatterns = [
         "advisories/packages/<path:avid>",
         AdvisoryPackagesDetails.as_view(),
         name="advisory_package_details",
+    ),
+    path(
+        "advisories/commits/<path:avid>",
+        AdvisoryPackageCommitPatchDetails.as_view(),
+        name="advisory_package_commit_details",
     ),
     path(
         "advisories/<path:avid>",

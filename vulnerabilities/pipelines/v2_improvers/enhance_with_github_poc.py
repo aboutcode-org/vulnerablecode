@@ -15,6 +15,7 @@ from fetchcode.vcs import fetch_via_vcs
 
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryPOC
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
@@ -64,6 +65,10 @@ class GithubPocsImproverPipeline(VulnerableCodePipeline):
             try:
                 if alias := AdvisoryAlias.objects.get(alias=filename):
                     for adv in alias.advisories.all():
+                        advisories.add(adv)
+                else:
+                    advs = AdvisoryV2.objects.filter(advisory_id=filename).latest_per_avid()
+                    for adv in advs:
                         advisories.add(adv)
             except AdvisoryAlias.DoesNotExist:
                 self.log(f"Advisory {filename} not found.")

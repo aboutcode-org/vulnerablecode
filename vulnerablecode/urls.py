@@ -22,12 +22,12 @@ from vulnerabilities.api import PackageViewSet
 from vulnerabilities.api import VulnerabilityViewSet
 from vulnerabilities.api_v2 import CodeFixV2ViewSet
 from vulnerabilities.api_v2 import CodeFixViewSet
-from vulnerabilities.api_v2 import DetectionRuleViewSet
 from vulnerabilities.api_v2 import PackageV2ViewSet
 from vulnerabilities.api_v2 import PipelineScheduleV2ViewSet
 from vulnerabilities.api_v2 import VulnerabilityV2ViewSet
 from vulnerabilities.api_v3 import AdvisoryV3ViewSet
 from vulnerabilities.api_v3 import AffectedByAdvisoriesViewSet
+from vulnerabilities.api_v3 import DetectionRuleViewSet
 from vulnerabilities.api_v3 import FixingAdvisoriesViewSet
 from vulnerabilities.api_v3 import PackageV3ViewSet
 from vulnerabilities.views import AdminLoginView

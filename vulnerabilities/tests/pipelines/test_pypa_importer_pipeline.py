@@ -23,7 +23,7 @@ class TestPyPaImporterPipeline(TestCase):
     def test_to_advisories_with_summary(self):
         pypa_advisory_path = TEST_DATA / "pypa_test.yaml"
 
-        mock_response = saneyaml.load(pypa_advisory_path.read_text())
+mock_response = saneyaml.safe_load(pypa_advisory_path.read_text())
         expected_file = os.path.join(TEST_DATA, "pypa-expected.json")
         imported_data = parse_advisory_data(
             mock_response,

@@ -64,7 +64,7 @@ class AffectedPackage:
 
 def load_yaml(path):
     with open(path) as f:
-        return saneyaml.load(f)
+return saneyaml.safe_load(f)
 
 
 def load_json(path):
@@ -79,7 +79,7 @@ def load_toml(path):
 
 def fetch_yaml(url):
     response = requests.get(url)
-    return saneyaml.load(response.content)
+return saneyaml.safe_load(response.content)
 
 
 # FIXME: Remove this entirely after complete importer-improver migration

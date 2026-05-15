@@ -37,6 +37,7 @@ from vulnerabilities import models
 from vulnerabilities.forms import AdminLoginForm
 from vulnerabilities.forms import AdvisorySearchForm
 from vulnerabilities.forms import ApiUserCreationForm
+from vulnerabilities.forms import DetectionRuleSearchForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
@@ -944,6 +945,44 @@ class AdvisoryPackagesDetails(VulnerableCodeDetailView):
                 )
             )
         )
+
+
+class DetectionRuleSearch(ListView):
+    model = models.DetectionRule
+    template_name = "detection_rules.html"
+    paginate_by = PAGE_SIZE
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        request_query = self.request.GET
+        context["detection_search_form"] = DetectionRuleSearchForm(request_query)
+        page_obj = context["page_obj"]
+        context["elided_page_range"] = page_obj.paginator.get_elided_page_range(
+            page_obj.number, on_each_side=2, on_ends=1
+        )
+        return context
+
+    def get_queryset(self):
+        advisories_prefetch = Prefetch(
+            "related_advisories", queryset=AdvisoryV2.objects.only("id", "avid")
+        )
+
+        queryset = super().get_queryset().prefetch_related(advisories_prefetch)
+        form = DetectionRuleSearchForm(self.request.GET)
+        if form.is_valid():
+            rule_type = form.cleaned_data.get("rule_type")
+            advisory_avid = form.cleaned_data.get("advisory_avid")
+            rule_text = form.cleaned_data.get("rule_text_contains")
+
+            if rule_type:
+                queryset = queryset.filter(rule_type=rule_type)
+
+            if advisory_avid:
+                queryset = queryset.filter(related_advisories__avid=advisory_avid)
+
+            if rule_text:
+                queryset = queryset.filter(rule_text__icontains=rule_text)
+        return queryset
 
 
 class PipelineScheduleListView(VulnerableCodeListView, FormMixin):

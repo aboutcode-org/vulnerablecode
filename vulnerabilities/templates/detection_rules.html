@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block title %}
+Detection Rule Search
+{% endblock %}
+
+{% block content %}
+<section class="section pt-0">
+    {% include "detection_rules_box.html" %}
+</section>
+    
+    <div class="is-max-desktop mb-3">
+        <section class="mx-5">
+            <div class="is-flex" style="justify-content: space-between;">
+                <div>
+                    {{ page_obj.paginator.count|intcomma }} results
+                </div>
+              {% if is_paginated %}
+                {% include 'includes/rules_pagination.html' with page_obj=page_obj %}
+              {% endif %}
+            </div>
+        </section>
+    </div>
+
+    <section class="section pt-0">
+        <div class="content">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th colspan="width: 200px;">Metadata</th>
+                        <th colspan="width: 100px;">Text</th>
+                        <th>Source URL</th>
+                        <th>Advisory IDs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detection_rule in page_obj %}
+                        <tr class="is-clipped-list">
+                            <td>{{ detection_rule.rule_type }}</td>
+                            <td>{{ detection_rule.rule_metadata }}</td>
+                            <td>{{ detection_rule.rule_text|truncatewords:10 }}</td>
+                            <td><a href="{{ detection_rule.source_url }}">{{ detection_rule.source_url }}</a></td>
+                            <td>
+                                {% for advisory in detection_rule.related_advisories.all %}
+                                    {% ifchanged advisory.avid %}
+                                    <a href="{% url "advisory_details" advisory.avid %}">{{ advisory.avid }}</a>
+                                    <br/>
+                                    {% endifchanged %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr class="is-clipped-list">
+                            <td colspan="5" style="word-break: break-all">
+                            No detection rules found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+      {% if is_paginated %}
+        {% include 'includes/rules_pagination.html' with page_obj=page_obj %}
+      {% endif %}
+    </section>
+
+{% endblock %}

@@ -582,7 +582,7 @@ class DataFederation:
         """
         Return a DataFederation loaded from a YAML configuration text.
         """
-        data = saneyaml.load(text)
+data = saneyaml.safe_load(text)
 
         if data["name"] != name:
             raise TypeError(

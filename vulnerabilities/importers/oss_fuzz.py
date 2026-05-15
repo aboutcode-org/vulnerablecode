@@ -33,7 +33,7 @@ class OSSFuzzImporter(Importer):
             path = base_path / "vulns"
             for file in path.glob("**/*.yaml"):
                 with open(file) as f:
-                    yaml_data = saneyaml.load(f.read())
+yaml_data = saneyaml.safe_load(f.read())
                     advisory_url = get_advisory_url(
                         file=file,
                         base_path=base_path,

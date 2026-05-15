@@ -153,4 +153,4 @@ class IstioImporter(Importer):
 
         with open(path) as f:
             front_matter, _ = split_markdown_front_matter(f.read())
-            return saneyaml.load(front_matter)
+return saneyaml.safe_load(front_matter)

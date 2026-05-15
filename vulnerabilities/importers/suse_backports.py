@@ -40,7 +40,7 @@ class SUSEBackportsImporter(Importer):
         try:
             resp = requests.get(url)
             resp.raise_for_status()
-            return saneyaml.load(resp.content)
+return saneyaml.safe_load(resp.content)
 
         except requests.HTTPError:
             return {}

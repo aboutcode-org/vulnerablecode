@@ -178,7 +178,7 @@ def parse_interesting_advisories(yml_files, purl) -> Iterable[VendorData]:
 
     for file in yml_files:
         yml_data = fetch_yaml(file["path"])
-        gitlab_advisory = saneyaml.load(yml_data)
+gitlab_advisory = saneyaml.safe_load(yml_data)
         affected_range = gitlab_advisory["affected_range"]
         if gitlab_constraints_satisfied(affected_range, version):
             yield VendorData(

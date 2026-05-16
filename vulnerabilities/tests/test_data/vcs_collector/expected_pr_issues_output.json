@@ -1,0 +1,1712 @@
+[
+  {
+    "advisory_id": "CVE-2007-4559",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2007-4559",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/44823"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2012-5568",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2012-5568",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/13449"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2015-1793",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2015-1793",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/2178"
+      },
+      {
+        "reference_id": "CVE-2015-1793",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/2141"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2015-3194",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2015-3194",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/4133"
+      },
+      {
+        "reference_id": "CVE-2015-3194",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/4132"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2015-7384",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2015-7384",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/3138"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2015-8027",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2015-8027",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/4029"
+      },
+      {
+        "reference_id": "CVE-2015-8027",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/4156"
+      },
+      {
+        "reference_id": "CVE-2015-8027",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/4155"
+      },
+      {
+        "reference_id": "CVE-2015-8027",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/4154"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2016-2107",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2016-2107",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/6622"
+      },
+      {
+        "reference_id": "CVE-2016-2107",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/6621"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2016-2216",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2016-2216",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/5754"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2016-5180",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2016-5180",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/12532"
+      },
+      {
+        "reference_id": "CVE-2016-5180",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/11728"
+      },
+      {
+        "reference_id": "CVE-2016-5180",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/9037"
+      },
+      {
+        "reference_id": "CVE-2016-5180",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/8849"
+      },
+      {
+        "reference_id": "CVE-2016-5180",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/9153"
+      },
+      {
+        "reference_id": "CVE-2016-5180",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/9147"
+      },
+      {
+        "reference_id": "CVE-2016-5180",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/9154"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2016-7052",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2016-7052",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/8790"
+      },
+      {
+        "reference_id": "CVE-2016-7052",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/8789"
+      },
+      {
+        "reference_id": "CVE-2016-7052",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/8786"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2016-7055",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2016-7055",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/12691"
+      },
+      {
+        "reference_id": "CVE-2016-7055",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/9594"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2016-8625",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2016-8625",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/25679"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2017-1000381",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2017-1000381",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/19939"
+      },
+      {
+        "reference_id": "CVE-2017-1000381",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/13897"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2017-14919",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2017-14919",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/16547"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2017-15896",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2017-15896",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/17533"
+      },
+      {
+        "reference_id": "CVE-2017-15896",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/17534"
+      },
+      {
+        "reference_id": "CVE-2017-15896",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/17531"
+      },
+      {
+        "reference_id": "CVE-2017-15896",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/17532"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2017-3732",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2017-3732",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/11021"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2017-3736",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2017-3736",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/16691"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2017-3737",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2017-3737",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/17526"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-0732",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-0732",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/22187"
+      },
+      {
+        "reference_id": "CVE-2018-0732",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/21344"
+      },
+      {
+        "reference_id": "CVE-2018-0732",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/21343"
+      },
+      {
+        "reference_id": "CVE-2018-0732",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/21282"
+      },
+      {
+        "reference_id": "CVE-2018-0732",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/21400"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-0734",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-0734",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/24353"
+      },
+      {
+        "reference_id": "CVE-2018-0734",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/23965"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-0735",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-0735",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/24370"
+      },
+      {
+        "reference_id": "CVE-2018-0735",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/23950"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-0737",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-0737",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/20090"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-12121",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-12121",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/24692"
+      },
+      {
+        "reference_id": "CVE-2018-12121",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/24990"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-12122",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-12122",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/24760"
+      },
+      {
+        "reference_id": "CVE-2018-12122",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/24803"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-5407",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-5407",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/24352"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-6341",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-6341",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/24735"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-7159",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-7159",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/25514"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2018-7166",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2018-7166",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/27298"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2019-13050",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2019-13050",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/29531"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2019-1552",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2019-1552",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/29455"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2019-9511",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2019-9511",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/29133"
+      },
+      {
+        "reference_id": "CVE-2019-9511",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/29151"
+      },
+      {
+        "reference_id": "CVE-2019-9511",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/29148"
+      },
+      {
+        "reference_id": "CVE-2019-9511",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/29152"
+      },
+      {
+        "reference_id": "CVE-2019-9511",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/29150"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2019-9518",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2019-9518",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/37875"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2019-9636",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2019-9636",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/38631"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2020-10531",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2020-10531",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/33572"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2020-7598",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2020-7598",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/32296"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2020-7774",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2020-7774",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/37918"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-21148",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-21148",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/37074"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-22930",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-22930",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/40306"
+      },
+      {
+        "reference_id": "CVE-2021-22930",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/39500"
+      },
+      {
+        "reference_id": "CVE-2021-22930",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/39534"
+      },
+      {
+        "reference_id": "CVE-2021-22930",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/39466"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-22940",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-22940",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/40308"
+      },
+      {
+        "reference_id": "CVE-2021-22940",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/40319"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-33503",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-33503",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/45570"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-3450",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-3450",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/38082"
+      },
+      {
+        "reference_id": "CVE-2021-3450",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/38085"
+      },
+      {
+        "reference_id": "CVE-2021-3450",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/38083"
+      },
+      {
+        "reference_id": "CVE-2021-3450",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/38084"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-3672",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-3672",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/40231"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-3807",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-3807",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/41039"
+      },
+      {
+        "reference_id": "CVE-2021-3807",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/40853"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-4044",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-4044",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/41167"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-44228",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-44228",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/41191"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2021-44906",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2021-44906",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/42451"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-0778",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-0778",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/42441"
+      },
+      {
+        "reference_id": "CVE-2022-0778",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/42385"
+      },
+      {
+        "reference_id": "CVE-2022-0778",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/42363"
+      },
+      {
+        "reference_id": "CVE-2022-0778",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/42381"
+      },
+      {
+        "reference_id": "CVE-2022-0778",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/42371"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-21449",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-21449",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/42863"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-21824",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-21824",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/42282"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-23491",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-23491",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/51613"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-25881",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-25881",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/46555"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-25883",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-25883",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/48835"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-32215",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-32215",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/43946"
+      },
+      {
+        "reference_id": "CVE-2022-32215",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/43893"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-32222",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-32222",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/46150"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2022-38900",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2022-38900",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/46026"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-0464",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-0464",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/47443"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-3420",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-3420",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/50077"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-39331",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-39331",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/50469"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-43804",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-43804",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/51647"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-44487",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-44487",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/50342"
+      },
+      {
+        "reference_id": "CVE-2023-44487",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/51074"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-45143",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-45143",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/50153"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-46809",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-46809",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/55628"
+      },
+      {
+        "reference_id": "CVE-2023-46809",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/52196"
+      },
+      {
+        "reference_id": "CVE-2023-46809",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/55629"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-4807",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-4807",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/49879"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2023-5363",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2023-5363",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/50395"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2024-13176",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2024-13176",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/59548"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2024-21538",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2024-21538",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/58242"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2024-24806",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2024-24806",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/51737"
+      },
+      {
+        "reference_id": "CVE-2024-24806",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/51702"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2024-27980",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2024-27980",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/52543"
+      },
+      {
+        "reference_id": "CVE-2024-27980",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/52505"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2024-28863",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2024-28863",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/53214"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2024-4761",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2024-4761",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/54598"
+      },
+      {
+        "reference_id": "CVE-2024-4761",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/54597"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2024-4947",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2024-4947",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/54793"
+      },
+      {
+        "reference_id": "CVE-2024-4947",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/54795"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2025-15467",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2025-15467",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/61887"
+      },
+      {
+        "reference_id": "CVE-2025-15467",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/61755"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2025-23085",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2025-23085",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/57644"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2025-32955",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2025-32955",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/58109"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2025-5889",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2025-5889",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/59253"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2025-59465",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2025-59465",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/61661"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2025-59466",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2025-59466",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/62125"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2025-64756",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2025-64756",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/61085"
+      },
+      {
+        "reference_id": "CVE-2025-64756",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/60792"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2025-9230",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2025-9230",
+        "reference_type": "Issues",
+        "url": "https://github.com/nodejs/node/issues/60193"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  },
+  {
+    "advisory_id": "CVE-2026-1525",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CVE-2026-1525",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/62250"
+      },
+      {
+        "reference_id": "CVE-2026-1525",
+        "reference_type": "PRs",
+        "url": "https://github.com/nodejs/node/pull/62247"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://mocked.url/advisory"
+  }
+]

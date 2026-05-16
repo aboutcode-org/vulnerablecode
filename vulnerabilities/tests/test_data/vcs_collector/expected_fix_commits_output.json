@@ -47,18 +47,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "319e2231b8db60100a70d8fc0fbc1e5621d8d0cb",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/319e2231b8db60100a70d8fc0fbc1e5621d8d0cb"
-      },
-      {
-        "reference_id": "87d60a1fff48dd4997e5e281fd7cc9ad2896ed44",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/87d60a1fff48dd4997e5e281fd7cc9ad2896ed44"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -92,13 +81,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "07fc47f95344852658d65b63316be0123ac48416",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/07fc47f95344852658d65b63316be0123ac48416"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -132,13 +115,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "b28b3cd65cae038d09732db9a3697f520818168e",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/b28b3cd65cae038d09732db9a3697f520818168e"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -214,23 +191,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "0af34ee71078633dcb960995f4adfd3f7293c1f3",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/0af34ee71078633dcb960995f4adfd3f7293c1f3"
-      },
-      {
-        "reference_id": "7ecda1ac8e26d8fb3725e954b2dc4723dda2255f",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/7ecda1ac8e26d8fb3725e954b2dc4723dda2255f"
-      },
-      {
-        "reference_id": "1cdd451d703a9c1b0a395d81dacadbf5c4d85277",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/1cdd451d703a9c1b0a395d81dacadbf5c4d85277"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -264,13 +225,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "1f48fa27672170bba3b9a97384905bb04c18761b",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/1f48fa27672170bba3b9a97384905bb04c18761b"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -367,28 +322,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "d4ee3023b2fbc8af9a220df130097e9497dad5b5",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/d4ee3023b2fbc8af9a220df130097e9497dad5b5"
-      },
-      {
-        "reference_id": "985768b2fdcf4c1e7228951baab7c25239c6a7f6",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/985768b2fdcf4c1e7228951baab7c25239c6a7f6"
-      },
-      {
-        "reference_id": "960d736e55cbb9386a68e4ee45f80581fd2a4e32",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/960d736e55cbb9386a68e4ee45f80581fd2a4e32"
-      },
-      {
-        "reference_id": "28a3dcf787b489d155bd27765f1aed5e7a1f44a9",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/28a3dcf787b489d155bd27765f1aed5e7a1f44a9"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -443,18 +377,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "3bdc8bbaa51ced2c241da6107ec8b3604ebb2853",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3bdc8bbaa51ced2c241da6107ec8b3604ebb2853"
-      },
-      {
-        "reference_id": "4192276aa3f07d75143583441bbea448fbf38c13",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/4192276aa3f07d75143583441bbea448fbf38c13"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -509,18 +432,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "1207a08b36c7696397855ef7fd6ae6cff2c8c4be",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/1207a08b36c7696397855ef7fd6ae6cff2c8c4be"
-      },
-      {
-        "reference_id": "f055a7d133ed6a4060485b4abea295210fbe1af0",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/f055a7d133ed6a4060485b4abea295210fbe1af0"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -575,18 +487,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "65b9d9e0f32fbaad722435726ec3b4afae14f8a7",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/65b9d9e0f32fbaad722435726ec3b4afae14f8a7"
-      },
-      {
-        "reference_id": "ba528f9345a7c2891a0cbc52a8e103661fc2a870",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/ba528f9345a7c2891a0cbc52a8e103661fc2a870"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -620,13 +521,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "8813c7b542497935018ed9efc897b12b49faf189",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/8813c7b542497935018ed9efc897b12b49faf189"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -660,13 +555,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "5797f013b3be450c146a4141514bda525f2f1b51",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/5797f013b3be450c146a4141514bda525f2f1b51"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -721,18 +610,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "1195841dfb9aa26b3b0dabc6f05d72e4af25be3e",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/1195841dfb9aa26b3b0dabc6f05d72e4af25be3e"
-      },
-      {
-        "reference_id": "780ecb672b9324ba879056240089e14539cda6e4",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/780ecb672b9324ba879056240089e14539cda6e4"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -787,18 +665,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "0c2cc41d2e40807baa5ee2c72987ebfb64ea2eb6",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/0c2cc41d2e40807baa5ee2c72987ebfb64ea2eb6"
-      },
-      {
-        "reference_id": "1cdec46aa95dc4b9ea75e9092ef0cfb98809672f",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/1cdec46aa95dc4b9ea75e9092ef0cfb98809672f"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -895,28 +762,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "319e2231b8db60100a70d8fc0fbc1e5621d8d0cb",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/319e2231b8db60100a70d8fc0fbc1e5621d8d0cb"
-      },
-      {
-        "reference_id": "87d60a1fff48dd4997e5e281fd7cc9ad2896ed44",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/87d60a1fff48dd4997e5e281fd7cc9ad2896ed44"
-      },
-      {
-        "reference_id": "8e37862b693799e69a4bb690cb36d98d0b6c8790",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/8e37862b693799e69a4bb690cb36d98d0b6c8790"
-      },
-      {
-        "reference_id": "b7c87a4d82397a5e6ac169b6098bed0b1ae7a583",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/b7c87a4d82397a5e6ac169b6098bed0b1ae7a583"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -971,18 +817,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "2d4530854673d78d2212ec91523135452dbd75fb",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/2d4530854673d78d2212ec91523135452dbd75fb"
-      },
-      {
-        "reference_id": "64856d858e2afcc028d368d58c442757ac28ee51",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/64856d858e2afcc028d368d58c442757ac28ee51"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1037,18 +872,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "83380b42969a4a42f3a90d3be00bf39e6d6f6e23",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/83380b42969a4a42f3a90d3be00bf39e6d6f6e23"
-      },
-      {
-        "reference_id": "87f7874a79abe5be70a7a67258da957c4efe0bda",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/87f7874a79abe5be70a7a67258da957c4efe0bda"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1103,18 +927,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "a2767e8c50063a9ef308a9526bb732e638c3480d",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a2767e8c50063a9ef308a9526bb732e638c3480d"
-      },
-      {
-        "reference_id": "6d0c39fd7e9db860b47585d87b8072d6117b197f",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/6d0c39fd7e9db860b47585d87b8072d6117b197f"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1253,38 +1066,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "9f4905d7e3f42002209d8ce46435d3b9447de588",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/9f4905d7e3f42002209d8ce46435d3b9447de588"
-      },
-      {
-        "reference_id": "3f55bfc53b911b309b254849a1fb75671e9e5b58",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3f55bfc53b911b309b254849a1fb75671e9e5b58"
-      },
-      {
-        "reference_id": "8d2d64c10006801b35f287e92e69da01d0b447cd",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/8d2d64c10006801b35f287e92e69da01d0b447cd"
-      },
-      {
-        "reference_id": "c21c8dcd95fa87221a6d818550fd76e7e770cf2e",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/c21c8dcd95fa87221a6d818550fd76e7e770cf2e"
-      },
-      {
-        "reference_id": "82d2960ad1d15d4f50f7ec4e684845371d7681d1",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/82d2960ad1d15d4f50f7ec4e684845371d7681d1"
-      },
-      {
-        "reference_id": "fa07539016754200890df9fa791d9d0ea3e31c6b",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/fa07539016754200890df9fa791d9d0ea3e31c6b"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1339,18 +1121,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "47913fb091794830c54eac2927e26bce92cfced1",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/47913fb091794830c54eac2927e26bce92cfced1"
-      },
-      {
-        "reference_id": "bd55825ab86557458a1dbbfbdb02e36a0e66ac4d",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/bd55825ab86557458a1dbbfbdb02e36a0e66ac4d"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1447,28 +1218,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "a2767e8c50063a9ef308a9526bb732e638c3480d",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a2767e8c50063a9ef308a9526bb732e638c3480d"
-      },
-      {
-        "reference_id": "6d0c39fd7e9db860b47585d87b8072d6117b197f",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/6d0c39fd7e9db860b47585d87b8072d6117b197f"
-      },
-      {
-        "reference_id": "68cfcd6446bc44eda37456f0d788235f39c3af9e",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/68cfcd6446bc44eda37456f0d788235f39c3af9e"
-      },
-      {
-        "reference_id": "c9796ba7f7632bf06d3391c3bfde27304b6ae12a",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/c9796ba7f7632bf06d3391c3bfde27304b6ae12a"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1523,18 +1273,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "e3a4aeeffa17d6e001586d11f8c714f9c690e1b1",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e3a4aeeffa17d6e001586d11f8c714f9c690e1b1"
-      },
-      {
-        "reference_id": "b21117954d439472cd57d663f9b886ab873a24ec",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/b21117954d439472cd57d663f9b886ab873a24ec"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1589,18 +1328,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "4235be759db5e0678ceac88ec19f2b8f8482214a",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/4235be759db5e0678ceac88ec19f2b8f8482214a"
-      },
-      {
-        "reference_id": "ba403e0bffa6899c5527f139ef03e7ea5c829087",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/ba403e0bffa6899c5527f139ef03e7ea5c829087"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1655,18 +1383,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "6e11754642a59d83d7a575b78e6c3e988d3b6c93",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/6e11754642a59d83d7a575b78e6c3e988d3b6c93"
-      },
-      {
-        "reference_id": "a771f4ef22a1e53988a35d166bf5cb30e5891775",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a771f4ef22a1e53988a35d166bf5cb30e5891775"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1721,18 +1438,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "140655d69e1dd7fa6c6a242a19740106d18ebdf5",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/140655d69e1dd7fa6c6a242a19740106d18ebdf5"
-      },
-      {
-        "reference_id": "3215f70f4cd1876078a67001996451f2d16bb609",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3215f70f4cd1876078a67001996451f2d16bb609"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1787,18 +1493,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "3ba8348c51f09d823096228fae223bffc054efd5",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3ba8348c51f09d823096228fae223bffc054efd5"
-      },
-      {
-        "reference_id": "0101877f95d2ff542ec5fb6e07b60a090faa2d52",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/0101877f95d2ff542ec5fb6e07b60a090faa2d52"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1832,13 +1527,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "3eb2791c3e9695f7d37ffe84e0c2184fae665cb6",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3eb2791c3e9695f7d37ffe84e0c2184fae665cb6"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1893,18 +1582,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "d5db254ca8167995a1654d1c45ffc74b2fade39a",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/d5db254ca8167995a1654d1c45ffc74b2fade39a"
-      },
-      {
-        "reference_id": "974c98a45ac78dc8cd9e6b5cefe4d7e32fcdf981",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/974c98a45ac78dc8cd9e6b5cefe4d7e32fcdf981"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -1959,18 +1637,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "db934be0646e3002287c72ba2154a904a4dc42b5",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/db934be0646e3002287c72ba2154a904a4dc42b5"
-      },
-      {
-        "reference_id": "e2d303c1bb5f538d17dc3d9134bc8858bdece781",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e2d303c1bb5f538d17dc3d9134bc8858bdece781"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2025,18 +1692,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "a014ef75a3a0ed7f24ebb157632ba58751e732c6",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a014ef75a3a0ed7f24ebb157632ba58751e732c6"
-      },
-      {
-        "reference_id": "551b38716479ccfc4e6a833e609c12a7bbef46de",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/551b38716479ccfc4e6a833e609c12a7bbef46de"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2070,13 +1726,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "3eae429ab4b573c7712e86687d03f00a4cad755b",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3eae429ab4b573c7712e86687d03f00a4cad755b"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2215,38 +1865,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "a5496f4098e3998c9b84e8dc564aa983d6cdf6e8",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a5496f4098e3998c9b84e8dc564aa983d6cdf6e8"
-      },
-      {
-        "reference_id": "e70588385712e6693a5ebebbdf149205e9f8f842",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e70588385712e6693a5ebebbdf149205e9f8f842"
-      },
-      {
-        "reference_id": "a46f6df91e65ebe9e01237c6777a24459c49cb37",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a46f6df91e65ebe9e01237c6777a24459c49cb37"
-      },
-      {
-        "reference_id": "c27324927e95f0f3ecdcec9c6b6e4d795475d538",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/c27324927e95f0f3ecdcec9c6b6e4d795475d538"
-      },
-      {
-        "reference_id": "36cebad4c0df355c245821b72c5bfe7b0b095087",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/36cebad4c0df355c245821b72c5bfe7b0b095087"
-      },
-      {
-        "reference_id": "134a8d43014ad96a5d7f11170046abb5b99dc0a1",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/134a8d43014ad96a5d7f11170046abb5b99dc0a1"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2280,13 +1899,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "e4b23daad7601d0c7efc4c59cf68675914228e61",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e4b23daad7601d0c7efc4c59cf68675914228e61"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2341,18 +1954,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "88917019f03860609114082cdc0f31a561503f9e",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/88917019f03860609114082cdc0f31a561503f9e"
-      },
-      {
-        "reference_id": "7e991c8c7e59291296fecd3fa38e32d011249952",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/7e991c8c7e59291296fecd3fa38e32d011249952"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2386,13 +1988,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "e090027adcbf62737d5b1f83a9618a9500a49321",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e090027adcbf62737d5b1f83a9618a9500a49321"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2447,18 +2043,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "62ba8e455d8f460001d9fb486a6dabfd1ed67717",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/62ba8e455d8f460001d9fb486a6dabfd1ed67717"
-      },
-      {
-        "reference_id": "e6eace307ef435eec3395c99247155efed9219e4",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e6eace307ef435eec3395c99247155efed9219e4"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2492,13 +2077,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "4a5e5307435db9dd7024d4cc8b15727d27d1b772",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/4a5e5307435db9dd7024d4cc8b15727d27d1b772"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2553,18 +2132,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "20f9293f1f5a95c17ba82cfcd24dc182475d66a8",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/20f9293f1f5a95c17ba82cfcd24dc182475d66a8"
-      },
-      {
-        "reference_id": "b031537fe98525b22152bfa04a18734ad08c5362",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/b031537fe98525b22152bfa04a18734ad08c5362"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2619,18 +2187,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "b35268e6bb9e07ef55e0a266280960930049c10a",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/b35268e6bb9e07ef55e0a266280960930049c10a"
-      },
-      {
-        "reference_id": "c6a590328014c9a25d88ca7789f5f657a21a52ac",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/c6a590328014c9a25d88ca7789f5f657a21a52ac"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2685,18 +2242,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "751b2a03e565e9eb02ffe923b7c24ac73d604034",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/751b2a03e565e9eb02ffe923b7c24ac73d604034"
-      },
-      {
-        "reference_id": "c9f6830ba6d30f01606d9876d239c77b702b8c38",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/c9f6830ba6d30f01606d9876d239c77b702b8c38"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2751,18 +2297,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "4a61e36def4ae7349dc7b39f2a9848505389cf6a",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/4a61e36def4ae7349dc7b39f2a9848505389cf6a"
-      },
-      {
-        "reference_id": "b12a5be4a09d46653b062bea35a52433778a8a43",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/b12a5be4a09d46653b062bea35a52433778a8a43"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2817,18 +2352,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "2f6c5a883e106aa82a570d3d1f243993284b70f3",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/2f6c5a883e106aa82a570d3d1f243993284b70f3"
-      },
-      {
-        "reference_id": "36e97f8121a19a7955e666d24a80ea2cf3d0b75a",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/36e97f8121a19a7955e666d24a80ea2cf3d0b75a"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2883,18 +2407,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "a23b077b79cae11757fb97f8d4e174af153c7104",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a23b077b79cae11757fb97f8d4e174af153c7104"
-      },
-      {
-        "reference_id": "3df1b4dd7c210c21deb6f829df19412b74573f8d",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3df1b4dd7c210c21deb6f829df19412b74573f8d"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -2949,18 +2462,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "4c4caa7be46aaed9c6c355307ab38ae99cf1c6d9",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/4c4caa7be46aaed9c6c355307ab38ae99cf1c6d9"
-      },
-      {
-        "reference_id": "7c2693a2c64904d1d0af8503b57763943648cbe5",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/7c2693a2c64904d1d0af8503b57763943648cbe5"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3015,18 +2517,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "c908b518ef15eee4fb768cd015e8e72261d98e93",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/c908b518ef15eee4fb768cd015e8e72261d98e93"
-      },
-      {
-        "reference_id": "a30cd12433e3a9f7764763ba38849ac635da5283",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a30cd12433e3a9f7764763ba38849ac635da5283"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3060,13 +2551,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "3ca131743b00f42bad8edbac4ef92656d954c629",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3ca131743b00f42bad8edbac4ef92656d954c629"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3121,18 +2606,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "d4fb244d2d93d014e26bec1d32fe4f225289e2c6",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/d4fb244d2d93d014e26bec1d32fe4f225289e2c6"
-      },
-      {
-        "reference_id": "6336322d2f9bbccaacfc80cba83a3c62eefd5737",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/6336322d2f9bbccaacfc80cba83a3c62eefd5737"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3187,18 +2661,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "ae0aba064ff32fd75260f98da19213684d0717b3",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/ae0aba064ff32fd75260f98da19213684d0717b3"
-      },
-      {
-        "reference_id": "0df7bd71f32f3b772e2646c6ab0d60c9b610addf",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/0df7bd71f32f3b772e2646c6ab0d60c9b610addf"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3337,38 +2800,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "cf8b9adad48dced388ad0cff9d5ab6ea5c326302",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/cf8b9adad48dced388ad0cff9d5ab6ea5c326302"
-      },
-      {
-        "reference_id": "7b1feac06a04df82a0b5625b5166b943060bcfae",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/7b1feac06a04df82a0b5625b5166b943060bcfae"
-      },
-      {
-        "reference_id": "e964536139800b6e419c5fe9f24b52abb508fdab",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e964536139800b6e419c5fe9f24b52abb508fdab"
-      },
-      {
-        "reference_id": "3db1733310ddd944c2e690ba673232345c928eec",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3db1733310ddd944c2e690ba673232345c928eec"
-      },
-      {
-        "reference_id": "e3b50fa373847d9238985001a4a15e56d241442e",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e3b50fa373847d9238985001a4a15e56d241442e"
-      },
-      {
-        "reference_id": "a4141782ccd6d4e7b0c15f20a875c17623e4b0f7",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a4141782ccd6d4e7b0c15f20a875c17623e4b0f7"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3423,18 +2855,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "d1cbb0dd59c1df91c6f24468a1ae13e2d97f155b",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/d1cbb0dd59c1df91c6f24468a1ae13e2d97f155b"
-      },
-      {
-        "reference_id": "c6334a765b1e6d71760e4a3b32ae5b8367f2ed4d",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/c6334a765b1e6d71760e4a3b32ae5b8367f2ed4d"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3468,13 +2889,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "75be449d456d29fef27e9d1828bafa30174284b4",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/75be449d456d29fef27e9d1828bafa30174284b4"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3508,13 +2923,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "cce3c7ebb194e33a4cf267eb546bbdca14406ac2",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/cce3c7ebb194e33a4cf267eb546bbdca14406ac2"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3548,13 +2957,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "744b7c73827cbb6595cc0bf58fde8e73dc4e96a8",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/744b7c73827cbb6595cc0bf58fde8e73dc4e96a8"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3693,38 +3096,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "08a17ef22d2a2cdcc1c3b84cb90315d7cb373c1d",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/08a17ef22d2a2cdcc1c3b84cb90315d7cb373c1d"
-      },
-      {
-        "reference_id": "a274170293f3a17ccd76a3d22bf97cffed8c5d0c",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/a274170293f3a17ccd76a3d22bf97cffed8c5d0c"
-      },
-      {
-        "reference_id": "c33b6cae38185d78e44676382bb333235c353fda",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/c33b6cae38185d78e44676382bb333235c353fda"
-      },
-      {
-        "reference_id": "175ec1f365b0db982d6eac9019701cbf6e8bc2f2",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/175ec1f365b0db982d6eac9019701cbf6e8bc2f2"
-      },
-      {
-        "reference_id": "1a8429e338ff53bdcc4b42e7e71b6fffdd84fcd1",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/1a8429e338ff53bdcc4b42e7e71b6fffdd84fcd1"
-      },
-      {
-        "reference_id": "6608c8777254e73a4b540e5e1c4af92e680a55fc",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/6608c8777254e73a4b540e5e1c4af92e680a55fc"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3758,13 +3130,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "e6093d9e4788f4d82236d856c5ed7b16767886a7",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/e6093d9e4788f4d82236d856c5ed7b16767886a7"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3798,13 +3164,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "bf28c82dc9b1f630fa8e9106358771b20a0040f7",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/bf28c82dc9b1f630fa8e9106358771b20a0040f7"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3901,28 +3261,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "41e23347b5218b3b0397a55176c7d97396735bae",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/41e23347b5218b3b0397a55176c7d97396735bae"
-      },
-      {
-        "reference_id": "3c045414299680b9f5dca7d76cf6cef6121c0236",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/3c045414299680b9f5dca7d76cf6cef6121c0236"
-      },
-      {
-        "reference_id": "6d37f2b07cf2996fee38f02aa7f1dac78a29a077",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/6d37f2b07cf2996fee38f02aa7f1dac78a29a077"
-      },
-      {
-        "reference_id": "fd85f45c2d9af1cd5c44bc3521d5c4ea98102f84",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/fd85f45c2d9af1cd5c44bc3521d5c4ea98102f84"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,
@@ -3977,18 +3316,7 @@
         ]
       }
     ],
-    "references": [
-      {
-        "reference_id": "2df49e7750ce3fc49ef1d44b1c4ece654d4b754c",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/2df49e7750ce3fc49ef1d44b1c4ece654d4b754c"
-      },
-      {
-        "reference_id": "418c57a9517508a5c2ab303902fd6c3f97804ca0",
-        "reference_type": "commit",
-        "url": "https://github.com/zulip/zulip/commit/418c57a9517508a5c2ab303902fd6c3f97804ca0"
-      }
-    ],
+    "references": [],
     "patches": [],
     "severities": [],
     "date_published": null,

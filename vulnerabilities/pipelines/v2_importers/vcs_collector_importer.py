@@ -11,16 +11,15 @@ from pathlib import Path
 from typing import Iterable
 
 from fetchcode.vcs import fetch_via_vcs
-from packageurl import PackageURL
-from packageurl.contrib.purl2url import get_commit_url
 from packageurl.contrib.url2purl import url2purl
 
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import ReferenceV2
-from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
+from vulnerabilities.pipes.advisory import VCS_URLS_SUPPORTED_TYPES
+from vulnerabilities.pipes.advisory import classify_patch_source
 from vulnerabilities.utils import get_advisory_url
 
 
@@ -59,6 +58,9 @@ class VSCCollectorPipeline(VulnerableCodeBaseImporterPipelineV2):
                 raw_data = json.load(f)
                 vcs_url = raw_data["vcs_url"]
                 purl = url2purl(vcs_url)
+                if not purl or (purl.type not in VCS_URLS_SUPPORTED_TYPES):
+                    self.log(f"Unsupported url2purl for git repo url: {vcs_url}")
+                    continue
                 vulnerabilities = raw_data.get("vulnerabilities", {})
                 advisory_url = get_advisory_url(
                     file=file,
@@ -83,26 +85,6 @@ class VSCCollectorPipeline(VulnerableCodeBaseImporterPipelineV2):
                             ],
                         )
                         affected_packages.append(affected_package)
-
-                        purl_with_commit_hash = PackageURL(
-                            type=purl.type,
-                            namespace=purl.namespace,
-                            name=purl.name,
-                            version=commit_hash,
-                            qualifiers=purl.qualifiers,
-                        )
-
-                        ref_url = get_commit_url(purl=str(purl_with_commit_hash))
-                        if not ref_url:
-                            continue
-
-                        references.append(
-                            ReferenceV2(
-                                reference_id=commit_hash,
-                                reference_type=AdvisoryReference.COMMIT,
-                                url=ref_url,
-                            )
-                        )
 
                     yield AdvisoryDataV2(
                         advisory_id=vuln_id,

@@ -237,6 +237,27 @@ class PackageV2ViewSetTest(APITestCase):
             all(vuln_id in response.data["results"]["vulnerabilities"] for vuln_id in package_vulns)
         )
 
+    def test_filter_packages_by_vulnerability_status(self):
+        vulnerability = Vulnerability.objects.create(
+            vulnerability_id="VCID-FILTER", summary="Test vulnerability for is_vulnerable filter"
+        )
+        self.package1.affected_by_vulnerabilities.add(vulnerability)
+        url = reverse("package-v2-list")
+        response = self.client.get(url, {"is_vulnerable": "true"}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("results", response.data)
+        self.assertIn("packages", response.data["results"])
+        package_purls = [pkg["purl"] for pkg in response.data["results"]["packages"]]
+        self.assertIn(self.package1.package_url, package_purls)
+        self.assertNotIn(self.package2.package_url, package_purls)
+        response = self.client.get(url, {"is_vulnerable": "false"}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("results", response.data)
+        self.assertIn("packages", response.data["results"])
+        package_purls = [pkg["purl"] for pkg in response.data["results"]["packages"]]
+        self.assertNotIn(self.package1.package_url, package_purls)
+        self.assertIn(self.package2.package_url, package_purls)
+
     def test_filter_packages_by_purl(self):
         """
         Test filtering packages by one or more PURLs.

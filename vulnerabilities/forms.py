@@ -14,6 +14,7 @@ from django_altcha import AltchaField
 
 from vulnerabilities.models import ISSUE_TYPE_CHOICES
 from vulnerabilities.models import ApiUser
+from vulnerabilities.models import DetectionRuleTypes
 
 
 class PackageSearchForm(forms.Form):
@@ -41,6 +42,35 @@ class AdvisorySearchForm(forms.Form):
     search = forms.CharField(
         required=True,
         widget=forms.TextInput(attrs={"placeholder": "Advisory id or alias such as CVE or GHSA"}),
+    )
+
+
+class DetectionRuleSearchForm(forms.Form):
+    rule_type = forms.ChoiceField(
+        required=False,
+        label="Rule Type",
+        choices=[("", "All")] + DetectionRuleTypes.choices,
+        initial="",
+    )
+
+    advisory_avid = forms.CharField(
+        required=False,
+        label="Advisory avid",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by avid: github_osv_importer_v2/GHSA-7g5f-wrx8-5ccf",
+            }
+        ),
+    )
+
+    rule_text_contains = forms.CharField(
+        required=False,
+        label="Rule Text",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search in rule text",
+            }
+        ),
     )
 
 

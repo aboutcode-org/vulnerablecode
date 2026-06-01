@@ -73,7 +73,7 @@ const app = {
             let toggleHtml = "";
             if (hasSecondaries) {
                 toggleHtml = `
-                    <button class="button is-small is-warning is-light mb-2" onclick="app.toggleColumnFold(${groupIdx}); event.stopPropagation();" style="font-size: 0.7rem; padding: 2px 6px;">
+                    <button class="button is-small is-warning is-light mb-2 wrap-button" onclick="app.toggleColumnFold(${groupIdx}); event.stopPropagation();" style="white-space: normal; height: auto;">
                         <span class="icon is-small"><i class="fa ${isExpanded ? 'fa-minus' : 'fa-plus'}"></i></span>
                         <span>${isExpanded ? 'Hide Similar Advisory' : `Show Similar Advisory (+${secondaries.length})`}</span>
                     </button>

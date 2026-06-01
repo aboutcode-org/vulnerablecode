@@ -518,6 +518,61 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                             {% endif %}
                         </tbody>
                     </table>
+
+                    {% if epss_history_data|length > 1 %}
+                    <div class="has-text-weight-bold tab-nested-div ml-1 mb-3 mt-5">
+                        EPSS Score History
+                    </div>
+
+                    <div class="mb-4 ml-1">
+                        <button id="btn-load-epss-chart" class="button is-small is-info is-outlined mr-2">
+                            See Trend
+                        </button>
+                        <button id="btn-load-epss-table" class="button is-small is-info is-outlined">
+                            See Table
+                        </button>
+                    </div>
+
+                    <style>
+                    .bb-tooltip-container {
+                        min-width: 220px !important;
+                    }
+                    .bb-tooltip th, .bb-tooltip td {
+                        white-space: nowrap !important;
+                    }
+                    </style>
+
+                    <div id="epss-chart-wrap" style="display:none;">
+                        <div class="has-text-weight-bold tab-nested-div ml-1 mb-3">
+                            30-Day Trend
+                        </div>
+                        <div id="epss-chart" style="width:100%; height:260px;"></div>
+                    </div>
+
+                    <div id="epss-history-table-wrap" style="display:none; margin-top:2rem;">
+                        <div class="has-text-weight-bold tab-nested-div ml-1 mb-3">
+                            EPSS History Table
+                        </div>
+                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border" id="epss-history-table">
+                            <thead>
+                                <tr>
+                                    <th>Published At</th>
+                                    <th>EPSS Score</th>
+                                    <th>Percentile</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in epss_history_data reversed %}
+                                <tr>
+                                    <td>{{ row.published_at|date:"M d, Y" }}</td>
+                                    <td>{{ row.score|default_if_none:"—" }}</td>
+                                    <td>{{ row.percentile|default_if_none:"—" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
                 {% else %}
                     <p>No EPSS data available for this advisory.</p>
                 {% endif %}
@@ -736,6 +791,11 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 
 <script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/billboard.js@3/dist/billboard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/billboard.js@3/dist/billboard.pkgd.min.js"></script>
+
+{{ epss_history_data|json_script:"epss-history-data" }}
+
 <script>
     function goToTab(tabName) {
         const activeLink = document.querySelector('div.tabs.is-boxed li.is-active');
@@ -751,5 +811,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
         targetTabContent.classList.add('is-active');
     }
 </script>
+
+<script src="{% static 'js/advisory_detail.js' %}"></script>
 
 {% endblock %}

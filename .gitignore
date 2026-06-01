@@ -93,6 +93,7 @@ Pipfile
 
 # editors
 .vscode
+*.code-workspace
 # PyCharm
 .idea/
 

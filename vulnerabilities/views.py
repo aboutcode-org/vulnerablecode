@@ -22,16 +22,23 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models import Exists
+from django.db.models import FloatField
+from django.db.models import Max
 from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.db.models import Q
+from django.db.models.functions import Cast
+from django.db.models.functions import TruncDate
+from django.http import HttpRequest
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views import generic
+from django.views.decorators.http import require_safe
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
 from django.views.generic.edit import FormView
@@ -739,6 +746,44 @@ class AdvisoryDetails(VulnerableCodeDetailView):
             add_ssvc(ssvc)
 
         context["ssvcs"] = ssvc_entries
+
+        # EPSS history
+        cves = {
+            alias_obj.alias
+            for alias_obj in advisory.aliases.all()
+            if alias_obj.alias.startswith("CVE-")
+        }
+        if advisory.advisory_id and advisory.advisory_id.startswith("CVE-"):
+            cves.add(advisory.advisory_id)
+
+        if cves:
+            epss_scores_queryset = (
+                models.AdvisorySeverity.objects.filter(
+                    advisories__advisory_id__in=cves,
+                    scoring_system=EPSS.identifier,
+                    published_at__isnull=False,
+                )
+                .annotate(pub_date=TruncDate("published_at"))
+                .values("pub_date")
+                .annotate(
+                    max_score=Max(Cast("value", FloatField())),
+                    max_percentile=Max(Cast("scoring_elements", FloatField())),
+                )
+                .order_by("-pub_date")[:30]
+            )
+
+            epss_history_data = [
+                {
+                    "score": record["max_score"],
+                    "percentile": record["max_percentile"],
+                    "published_at": record["pub_date"],
+                }
+                for record in epss_scores_queryset
+            ]
+            epss_history_data.reverse()
+        else:
+            epss_history_data = []
+
         context.update(
             {
                 "advisory": advisory,
@@ -750,6 +795,7 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                 "weaknesses": weaknesses_present_in_db,
                 "status": advisory.get_status_label,
                 "epss_data": epss_data,
+                "epss_history_data": epss_history_data,
             }
         )
         return context

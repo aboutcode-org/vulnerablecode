@@ -1,0 +1,777 @@
+[
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.000480000",
+                "scoring_elements": "0.151710000",
+                "published_at": "2026-05-31T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.000480000",
+                "scoring_elements": "0.152040000",
+                "published_at": "2026-05-30T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.15216000",
+                "published_at": "2026-05-29T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.15143000",
+                "published_at": "2026-05-28T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14998000",
+                "published_at": "2026-05-27T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14898000",
+                "published_at": "2026-05-26T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14902000",
+                "published_at": "2026-05-25T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14918000",
+                "published_at": "2026-05-24T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14966000",
+                "published_at": "2026-05-23T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14978000",
+                "published_at": "2026-05-22T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14803000",
+                "published_at": "2026-05-21T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14827000",
+                "published_at": "2026-05-20T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14816000",
+                "published_at": "2026-05-19T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14837000",
+                "published_at": "2026-05-18T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14886000",
+                "published_at": "2026-05-17T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14905000",
+                "published_at": "2026-05-16T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14881000",
+                "published_at": "2026-05-15T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14874000",
+                "published_at": "2026-05-14T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14815000",
+                "published_at": "2026-05-13T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14793000",
+                "published_at": "2026-05-12T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14748000",
+                "published_at": "2026-05-11T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14765000",
+                "published_at": "2026-05-10T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14752000",
+                "published_at": "2026-05-09T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14697000",
+                "published_at": "2026-05-08T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14663000",
+                "published_at": "2026-05-07T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14530000",
+                "published_at": "2026-05-06T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14530000",
+                "published_at": "2026-05-05T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14530000",
+                "published_at": "2026-05-04T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14593000",
+                "published_at": "2026-05-03T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14616000",
+                "published_at": "2026-05-02T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    },
+    {
+        "advisory_id": "CVE-2022-25204",
+        "aliases": [],
+        "summary": "",
+        "affected_packages": [],
+        "references": [
+            {
+                "reference_id": "",
+                "reference_type": "",
+                "url": "https://api.first.org/data/v1/epss?cve=CVE-2022-25204"
+            }
+        ],
+        "patches": [],
+        "severities": [
+            {
+                "system": "epss",
+                "value": "0.00048000",
+                "scoring_elements": "0.14603000",
+                "published_at": "2026-05-01T00:00:00+00:00"
+            }
+        ],
+        "date_published": null,
+        "weaknesses": [],
+        "url": "https://epss.cyentia.com/epss_scores-current.csv.gz"
+    }
+]

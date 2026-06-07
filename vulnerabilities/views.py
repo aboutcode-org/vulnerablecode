@@ -21,6 +21,7 @@ from django.contrib.auth.views import LoginView
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from django.db.models import Exists
 from django.db.models import FloatField
 from django.db.models import Max
@@ -772,7 +773,7 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                 )
                 .order_by("-pub_date")
             )
-            
+
             paginator = Paginator(epss_scores_queryset, 30)
             epss_page = self.request.GET.get("epss_page", 1)
             epss_page_obj = paginator.get_page(epss_page)

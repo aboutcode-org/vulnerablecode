@@ -25,7 +25,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 
         <div class="tabs is-boxed" id="tabs">
             <ul>
-                <li class="is-active" data-tab="essentials">
+                <li class="{% if not is_epss_tab_active %}is-active{% endif %}" data-tab="essentials">
                     <a>
                         <span>Essentials</span>
                     </a>
@@ -55,7 +55,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                     </li>
                 {% endif %}
 
-                <li data-tab="epss">
+                <li class="{% if is_epss_tab_active %}is-active{% endif %}" data-tab="epss">
                     <a>
                         <span>
                             EPSS
@@ -100,7 +100,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
             </ul>
         </div>
         <div id="tab-content">
-            <div class="tab-div is-active" data-content="essentials">
+            <div class="tab-div {% if not is_epss_tab_active %}is-active{% endif %}" data-content="essentials">
                 <div class="tab-nested-div">
                     <table class="table vcio-table width-100-pct mt-2">
                         <tbody>
@@ -458,7 +458,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 {% endfor %}
             </div>
         
-            <div class="tab-div content" data-content="epss">
+            <div class="tab-div content {% if is_epss_tab_active %}is-active{% endif %}" data-content="epss">
                 {% if epss_data %}
                     <div class="has-text-weight-bold tab-nested-div ml-1 mb-1 mt-1">
                         Exploit Prediction Scoring System (EPSS)
@@ -549,7 +549,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         <div id="epss-chart" style="width:100%; height:260px;"></div>
                     </div>
 
-                    <div id="epss-history-table-wrap" style="display:none; margin-top:2rem;">
+                    <div id="epss-history-table-wrap" {% if not is_epss_tab_active %}style="display:none; margin-top:2rem;"{% else %}style="margin-top:2rem;"{% endif %}>
                         <div class="has-text-weight-bold tab-nested-div ml-1 mb-3">
                             EPSS History Table
                         </div>
@@ -571,6 +571,22 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                 {% endfor %}
                             </tbody>
                         </table>
+                        
+                        {% if epss_page_obj and epss_page_obj.has_other_pages %}
+                        <nav class="pagination is-small is-centered mt-4" role="navigation" aria-label="pagination">
+                            {% if epss_page_obj.has_previous %}
+                                <a class="pagination-previous" href="?epss_page={{ epss_page_obj.previous_page_number }}">Newer</a>
+                            {% else %}
+                                <a class="pagination-previous" disabled>Newer</a>
+                            {% endif %}
+                            
+                            {% if epss_page_obj.has_next %}
+                                <a class="pagination-next" href="?epss_page={{ epss_page_obj.next_page_number }}">Older</a>
+                            {% else %}
+                                <a class="pagination-next" disabled>Older</a>
+                            {% endif %}
+                        </nav>
+                        {% endif %}
                     </div>
                     {% endif %}
                 {% else %}

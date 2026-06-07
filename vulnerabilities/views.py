@@ -26,6 +26,7 @@ from django.db.models import FloatField
 from django.db.models import Max
 from django.db.models import OuterRef
 from django.db.models import Prefetch
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models.functions import Cast
 from django.db.models.functions import TruncDate
@@ -769,8 +770,12 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                     max_score=Max(Cast("value", FloatField())),
                     max_percentile=Max(Cast("scoring_elements", FloatField())),
                 )
-                .order_by("-pub_date")[:30]
+                .order_by("-pub_date")
             )
+            
+            paginator = Paginator(epss_scores_queryset, 30)
+            epss_page = self.request.GET.get("epss_page", 1)
+            epss_page_obj = paginator.get_page(epss_page)
 
             epss_history_data = [
                 {
@@ -778,11 +783,12 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                     "percentile": record["max_percentile"],
                     "published_at": record["pub_date"],
                 }
-                for record in epss_scores_queryset
+                for record in epss_page_obj.object_list
             ]
             epss_history_data.reverse()
         else:
             epss_history_data = []
+            epss_page_obj = None
 
         context.update(
             {
@@ -796,6 +802,8 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                 "status": advisory.get_status_label,
                 "epss_data": epss_data,
                 "epss_history_data": epss_history_data,
+                "epss_page_obj": epss_page_obj,
+                "is_epss_tab_active": "epss_page" in self.request.GET,
             }
         )
         return context

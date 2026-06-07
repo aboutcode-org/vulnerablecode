@@ -533,15 +533,6 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         </button>
                     </div>
 
-                    <style>
-                    .bb-tooltip-container {
-                        min-width: 220px !important;
-                    }
-                    .bb-tooltip th, .bb-tooltip td {
-                        white-space: nowrap !important;
-                    }
-                    </style>
-
                     <div id="epss-chart-wrap" style="display:none;">
                         <div class="has-text-weight-bold tab-nested-div ml-1 mb-3">
                             30-Day Trend
@@ -549,7 +540,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         <div id="epss-chart" style="width:100%; height:260px;"></div>
                     </div>
 
-                    <div id="epss-history-table-wrap" {% if not is_epss_tab_active %}style="display:none; margin-top:2rem;"{% else %}style="margin-top:2rem;"{% endif %}>
+                    <div id="epss-history-table-wrap" class="mt-5" {% if not is_epss_tab_active %}style="display:none;"{% endif %}>
                         <div class="has-text-weight-bold tab-nested-div ml-1 mb-3">
                             EPSS History Table
                         </div>

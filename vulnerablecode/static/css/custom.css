@@ -655,3 +655,13 @@ ul.fixed_by_bullet li li li {
         box-shadow: none;
     }
 }
+
+/* Tooltip styles for EPSS charts */
+.bb-tooltip-container {
+    min-width: 220px !important;
+}
+
+.bb-tooltip th,
+.bb-tooltip td {
+    white-space: nowrap !important;
+}

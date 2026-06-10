@@ -8,11 +8,19 @@
     const getHistoryData = () => JSON.parse(document.getElementById('epss-history-data')?.textContent || "[]");
     const toggleDisplay = (el) => el.style.display = el.style.display === "none" ? "block" : "none";
 
+    const updateBtn = (btn, wrap) => {
+        if (!btn || !wrap) return;
+        const isHidden = wrap.style.display === "none";
+        btn.textContent = btn.textContent.replace(isHidden ? "Hide" : "See", isHidden ? "See" : "Hide");
+    };
+
     function renderChart() {
         const data = getHistoryData();
         if (!data.length) return;
 
         toggleDisplay(chartWrap);
+        updateBtn(btnChart, chartWrap);
+        
         if (chartWrap.style.display === "none" || epssChartInstance) return;
 
         const history = [];
@@ -62,5 +70,11 @@
     }
 
     btnChart?.addEventListener("click", renderChart);
-    btnTable?.addEventListener("click", () => toggleDisplay(tableWrap));
+    btnTable?.addEventListener("click", () => {
+        toggleDisplay(tableWrap);
+        updateBtn(btnTable, tableWrap);
+    });
+
+    updateBtn(btnChart, chartWrap);
+    updateBtn(btnTable, tableWrap);
 })();

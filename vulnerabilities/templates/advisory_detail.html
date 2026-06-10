@@ -798,8 +798,8 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 
 <script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/billboard.js@3/dist/billboard.min.css">
-<script src="https://cdn.jsdelivr.net/npm/billboard.js@3/dist/billboard.pkgd.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/billboard-3.18.0.min.css' %}">
+<script src="{% static 'js/billboard-3.18.0.pkgd.min.js' %}"></script>
 
 {{ epss_history_data|json_script:"epss-history-data" }}
 

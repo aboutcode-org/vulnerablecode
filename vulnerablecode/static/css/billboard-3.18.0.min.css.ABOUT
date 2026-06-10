@@ -1,0 +1,13 @@
+about_resource: billboard-3.18.0.min.css
+name: billboard.js
+version: 3.18.0
+download_url: https://github.com/naver/billboard.js/archive/3.18.0.zip
+description: Re-usable easy interface JavaScript chart library, based on D3 v4+ 
+homepage_url: https://naver.github.io/billboard.js/
+license_expression: mit
+attribute: yes
+package_url: pkg:npm/billboard.js@3.18.0
+licenses:
+  - key: mit
+    name: MIT License
+    file: billboard-3.18.0.min.css.LICENSE

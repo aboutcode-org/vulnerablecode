@@ -1,44 +1,37 @@
+//
+// Copyright (c) nexB Inc. and others. All rights reserved.
+// VulnerableCode is a trademark of nexB Inc.
+// SPDX-License-Identifier: Apache-2.0
+// See http://www.apache.org/licenses/LICENSE-2.0 for the license text.
+// See https://github.com/aboutcode-org/vulnerablecode for support or download.
+// See https://aboutcode.org for more information about nexB OSS projects.
+//
+
 (function () {
     let epssChartInstance = null;
     
-    const [btnChart, btnTable, chartWrap, tableWrap] = 
-        ["btn-load-epss-chart", "btn-load-epss-table", "epss-chart-wrap", "epss-history-table-wrap"]
+    const [btnChart, btnTable, chartContainer, tableContainer] = 
+        ["btn-load-epss-chart", "btn-load-epss-table", "epss-chart-container", "epss-history-table-container"]
         .map(id => document.getElementById(id));
 
     const getHistoryData = () => JSON.parse(document.getElementById('epss-history-data')?.textContent || "[]");
     const toggleDisplay = (el) => el.style.display = el.style.display === "none" ? "block" : "none";
 
-    const updateBtn = (btn, wrap) => {
-        if (!btn || !wrap) return;
-        const isHidden = wrap.style.display === "none";
+    const updateBtn = (btn, container) => {
+        if (!btn || !container) return;
+        const isHidden = container.style.display === "none";
         btn.textContent = btn.textContent.replace(isHidden ? "Hide" : "See", isHidden ? "See" : "Hide");
     };
 
     function renderChart() {
-        const data = getHistoryData();
-        if (!data.length) return;
+        const history = getHistoryData();
+        if (!history.length) return;
 
-        toggleDisplay(chartWrap);
-        updateBtn(btnChart, chartWrap);
+        toggleDisplay(chartContainer);
+        updateBtn(btnChart, chartContainer);
         
-        if (chartWrap.style.display === "none" || epssChartInstance) return;
+        if (chartContainer.style.display === "none" || epssChartInstance) return;
 
-        const history = [];
-        const map = new Map(data.map(h => [new Date(h.published_at + "T00:00:00").setHours(0,0,0,0), h]));
-        
-        const end = new Date(data[data.length - 1].published_at + "T00:00:00").setHours(0,0,0,0);
-        let start = new Date(end);
-        start.setDate(start.getDate() - 30);
-        
-        const actualStart = new Date(data[0].published_at + "T00:00:00").setHours(0,0,0,0);
-        start = new Date(Math.max(start.getTime(), actualStart));
-
-        for (let d = start; d.getTime() <= end; d.setDate(d.getDate() + 1)) {
-            history.push(map.get(d.getTime()) || {
-                published_at: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
-                score: null, percentile: null
-            });
-        }
         try {
             epssChartInstance = bb.generate({
                 bindto: "#epss-chart",
@@ -71,10 +64,10 @@
 
     btnChart?.addEventListener("click", renderChart);
     btnTable?.addEventListener("click", () => {
-        toggleDisplay(tableWrap);
-        updateBtn(btnTable, tableWrap);
+        toggleDisplay(tableContainer);
+        updateBtn(btnTable, tableContainer);
     });
 
-    updateBtn(btnChart, chartWrap);
-    updateBtn(btnTable, tableWrap);
+    updateBtn(btnChart, chartContainer);
+    updateBtn(btnTable, tableContainer);
 })();

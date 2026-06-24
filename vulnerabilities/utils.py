@@ -691,6 +691,36 @@ def compute_content_id(advisory_data):
     return content_id
 
 
+def get_normalized_advisory_v2(advisory_data):
+    """
+    Return a normalized dictionary of advisory data for diffing history.
+
+    :param advisory_data: An AdvisoryV2 object
+    :return: A normalized dictionary of advisory data
+    """
+    from vulnerabilities.models import AdvisoryV2
+
+    if not isinstance(advisory_data, AdvisoryV2):
+        raise ValueError("Unsupported advisory data type for history diffing")
+
+    advisory_data = advisory_data.to_advisory_data()
+
+    normalized_data = {
+        "advisory_id": advisory_data.advisory_id,
+        "aliases": advisory_data.aliases,
+        "summary": advisory_data.summary,
+        "affected_packages": [pkg.to_dict() for pkg in advisory_data.affected_packages if pkg],
+        "references": [ref.to_dict() for ref in advisory_data.references if ref],
+        "severities": [sev.to_dict() for sev in advisory_data.severities if sev],
+        "weaknesses": advisory_data.weaknesses,
+        "patches": [patch.to_dict() for patch in advisory_data.patches],
+        "url": advisory_data.url,
+        # "date_published": str(advisory_data.date_published) if advisory_data.date_published else None,
+    }
+
+    return normalized_data
+
+
 def compute_content_id_v2(advisory_data):
     """
     Compute a unique content_id for an advisory by normalizing its data and hashing it.
@@ -1129,3 +1159,72 @@ def safe_altcha_redirect(next_url: str) -> redirect:
         return redirect(next_url)
 
     return redirect("/")
+
+
+def exclude_epss_severities(severities: list) -> list:
+    """
+    Return a copy of the severities list with all EPSS entries removed.
+    EPSS scores are updated daily and can be tracked separately in EPSS tab.
+    """
+    return [
+        severity
+        for severity in (severities or [])
+        if str(severity.get("system", "")).lower() != "epss"
+    ]
+
+
+def diff_advisories_v2(old_data: dict, new_data: dict) -> dict:
+    """
+    Diff two normalised advisories and return the changes.
+    """
+    changes = {}
+    all_keys = set(old_data.keys()).union(new_data.keys())
+
+    for field in all_keys:
+        old_field_value = old_data.get(field)
+        new_field_value = new_data.get(field)
+
+        if isinstance(old_field_value, list) or isinstance(new_field_value, list):
+            old_items_list = old_field_value or []
+            new_items_list = new_field_value or []
+
+            if field == "severities":
+                old_items_list = exclude_epss_severities(old_items_list)
+                new_items_list = exclude_epss_severities(new_items_list)
+
+            if all(isinstance(item, str) for item in old_items_list + new_items_list):
+                # "aliases", "weaknesses"
+                old_items_set = set(old_items_list)
+                new_items_set = set(new_items_list)
+                if old_items_set != new_items_set:
+                    changes[field] = {
+                        "added": sorted(new_items_set - old_items_set),
+                        "removed": sorted(old_items_set - new_items_set),
+                    }
+            elif all(isinstance(item, dict) for item in old_items_list + new_items_list):
+                # "references", "affected_packages", "patches", "severities"
+                old_items_set = {
+                    json.dumps(item, sort_keys=True, default=str) for item in old_items_list
+                }
+                new_items_set = {
+                    json.dumps(item, sort_keys=True, default=str) for item in new_items_list
+                }
+                if old_items_set != new_items_set:
+                    changes[field] = {
+                        "added": [
+                            json.loads(item) for item in sorted(new_items_set - old_items_set)
+                        ],
+                        "removed": [
+                            json.loads(item) for item in sorted(old_items_set - new_items_set)
+                        ],
+                    }
+        elif (
+            isinstance(old_field_value, str)
+            or isinstance(new_field_value, str)
+            or (old_field_value is None and new_field_value is None)
+        ):
+            # "url", "date_published", "summary"
+            if old_field_value != new_field_value:
+                changes[field] = {"old": old_field_value, "new": new_field_value}
+
+    return changes

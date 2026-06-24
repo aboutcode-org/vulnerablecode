@@ -1,0 +1,154 @@
+[
+  {
+    "references": {
+      "added": [
+        {
+          "reference_id": "",
+          "reference_type": "",
+          "url": "https://github.com/FasterXML/jackson-core/commit/b0c428e6f993e1b5ece5c1c3cb2523e887cd52cf"
+        },
+        {
+          "reference_id": "",
+          "reference_type": "",
+          "url": "https://github.com/FasterXML/jackson-core/pull/1555"
+        }
+      ],
+      "removed": [
+        {
+          "reference_id": "",
+          "reference_type": "",
+          "url": "https://github.com/FasterXML/jackson-core/commit/a004e9789c2cc6b41b379d02d229d58474d9a738"
+        },
+        {
+          "reference_id": "",
+          "reference_type": "",
+          "url": "https://github.com/FasterXML/jackson-core/issues/1538"
+        }
+      ]
+    }
+  },
+  {
+    "affected_packages": {
+      "added": [],
+      "removed": [
+        {
+          "affected_version_range": "vers:maven/<=2.18.5",
+          "fixed_by_commit_patches": [],
+          "fixed_version_range": "vers:maven/2.18.6",
+          "introduced_by_commit_patches": [],
+          "package": {
+            "name": "jackson-core",
+            "namespace": "tools.jackson.core",
+            "qualifiers": "",
+            "subpath": "",
+            "type": "maven",
+            "version": ""
+          }
+        },
+        {
+          "affected_version_range": "vers:maven/>=2.19.0|<2.21.1",
+          "fixed_by_commit_patches": [],
+          "fixed_version_range": "vers:maven/2.21.1",
+          "introduced_by_commit_patches": [],
+          "package": {
+            "name": "jackson-core",
+            "namespace": "tools.jackson.core",
+            "qualifiers": "",
+            "subpath": "",
+            "type": "maven",
+            "version": ""
+          }
+        },
+        {
+          "affected_version_range": "vers:maven/>=3.0.0|<3.1.0",
+          "fixed_by_commit_patches": [],
+          "fixed_version_range": "vers:maven/3.1.0",
+          "introduced_by_commit_patches": [],
+          "package": {
+            "name": "jackson-core",
+            "namespace": "com.fasterxml.jackson.core",
+            "qualifiers": "",
+            "subpath": "",
+            "type": "maven",
+            "version": ""
+          }
+        }
+      ]
+    },
+    "severities": {
+      "added": [
+        {
+          "scoring_elements": "",
+          "system": "generic_textual",
+          "value": "MODERATE"
+        },
+        {
+          "scoring_elements": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N",
+          "system": "cvssv4",
+          "value": "6.9"
+        }
+      ],
+      "removed": [
+        {
+          "scoring_elements": "",
+          "system": "generic_textual",
+          "value": "HIGH"
+        },
+        {
+          "scoring_elements": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+          "system": "cvssv4",
+          "value": "8.7"
+        }
+      ]
+    }
+  },
+  {
+    "affected_packages": {
+      "added": [
+        {
+          "affected_version_range": "vers:maven/<=2.18.5",
+          "fixed_by_commit_patches": [],
+          "fixed_version_range": "vers:maven/2.18.6",
+          "introduced_by_commit_patches": [],
+          "package": {
+            "name": "jackson-core",
+            "namespace": "tools.jackson.core",
+            "qualifiers": "",
+            "subpath": "",
+            "type": "maven",
+            "version": ""
+          }
+        },
+        {
+          "affected_version_range": "vers:maven/>=2.19.0|<2.21.1",
+          "fixed_by_commit_patches": [],
+          "fixed_version_range": "vers:maven/2.21.1",
+          "introduced_by_commit_patches": [],
+          "package": {
+            "name": "jackson-core",
+            "namespace": "tools.jackson.core",
+            "qualifiers": "",
+            "subpath": "",
+            "type": "maven",
+            "version": ""
+          }
+        },
+        {
+          "affected_version_range": "vers:maven/>=3.0.0|<3.1.0",
+          "fixed_by_commit_patches": [],
+          "fixed_version_range": "vers:maven/3.1.0",
+          "introduced_by_commit_patches": [],
+          "package": {
+            "name": "jackson-core",
+            "namespace": "com.fasterxml.jackson.core",
+            "qualifiers": "",
+            "subpath": "",
+            "type": "maven",
+            "version": ""
+          }
+        }
+      ],
+      "removed": []
+    }
+  }
+]

@@ -40,7 +40,7 @@ const app = {
     renderHeader(item) {
         const header = document.getElementById('table-header');
         header.innerHTML = `
-            <th class="has-text-weight-bold pt-4">Version</th>
+            <th class="has-text-weight-bold has-text-centered pt-4">Version</th>
             <th style="width: 140px;" class="has-text-centered">
                 <div>
                     <div>

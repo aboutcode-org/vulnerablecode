@@ -1113,3 +1113,209 @@ class AdvisoryPackageCurationView(DetailView):
         context["vulnerability_id"] = todo.alias
         context["curation_items"] = json.dumps(todo.issue_detail["curation_items"])
         return context
+
+
+class AdvisoryCVSSCurationView(DetailView):
+    model = AdvisoryToDoV2
+    template_name = "cvss_curation.html"
+    slug_url_kwarg = "todo_id"
+    slug_field = "todo_id"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(issue_type="CONFLICTING_SEVERITY_SCORES")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        todo = self.object
+
+        context["advisory_summaries"] = {
+            adv.avid: adv.summary for adv in todo.advisories.all() if adv.summary.strip()
+        }
+        context["vulnerability_id"] = todo.alias
+
+        # ttt = [
+        #     {
+        #         "cvss": "3.0",
+        #         "conflict_reason": "Divergent vectors mapped between NVD and source advisory data streams.",
+        #         "partial_cvss_curation": {
+        #             "AV": "N",
+        #             "AC": "L",
+        #             "AT": "N",
+        #             "PR": "N",
+        #             "UI": "N",
+        #             "VC": "H",
+        #             "VI": "H",
+        #         },
+        #         "advisories": [
+        #             {
+        #                 "advisory_uid": "GHSA-30-demo-01",
+        #                 "vector": {
+        #                     "vectorString": "CVSS:3.0/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+        #                     "score": 7.8,
+        #                     "AV": "L",
+        #                     "attackComplexity": "L",
+        #                     "privilegesRequired": "N",
+        #                     "userInteraction": "R",
+        #                     "scope": "U",
+        #                     "confidentialityImpact": "H",
+        #                     "integrityImpact": "H",
+        #                     "availabilityImpact": "H",
+        #                     "exploitCodeMaturity": "X",
+        #                 },
+        #             },
+        #             {
+        #                 "advisory_uid": "NVD-CVE-2026-9001",
+        #                 "vector": {
+        #                     "vectorString": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:H",
+        #                     "score": 8.8,
+        #                     "AV": "N",
+        #                     "attackComplexity": "L",
+        #                     "privilegesRequired": "N",
+        #                     "userInteraction": "N",
+        #                     "scope": "U",
+        #                     "confidentialityImpact": "H",
+        #                     "integrityImpact": "L",
+        #                     "availabilityImpact": "H",
+        #                 },
+        #             },
+        #         ],
+        #     },
+        #     {
+        #         "cvss": "3.1",
+        #         "conflict_reason": "Remediation parameters discrepancy found inside vendor configuration metrics.",
+        #         "partial_cvss_curation": {
+        #             "attackVector": "N",
+        #             "scope": "C",
+        #             "exploitCodeMaturity": "P",
+        #         },
+        #         "advisories": [
+        #             {
+        #                 "advisory_uid": "RHSA-2026-0421",
+        #                 "vector": {
+        #                     "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:L/I:L/A:N",
+        #                     "score": 6.1,
+        #                     "attackVector": "N",
+        #                     "scope": "C",
+        #                     "exploitCodeMaturity": "U",
+        #                 },
+        #             },
+        #         ],
+        #     },
+        #     {
+        #         "cvss": "4.0",
+        #         "conflict_reason": "Analyzing Supplemental execution vectors (Safety classifications vs Animatable flags).",
+        #         "partial_cvss_curation": {
+        #             "attackVector": "N",
+        #             "vulnSystemConfidentiality": "H",
+        #             "safety": "N",
+        #         },
+        #         "advisories": [
+        #             {
+        #                 "advisory_uid": "OSV-40-MOCK",
+        #                 "vector": {
+        #                     "vectorString": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/S:N/AU:Y",
+        #                     "score": 9.3,
+        #                     "attackVector": "N",
+        #                     "vulnSystemConfidentiality": "H",
+        #                     "safety": "N",
+        #                     "automatable": "Y",
+        #                 },
+        #             }
+        #         ],
+        #     },
+        # ]
+        # context["curation_items"] = json.dumps(ttt)
+
+        # ttt = [
+        #     {
+        #         "cvss": "3.0",
+        #         "partial_cvss_curation": {
+        #             "A": "N",
+        #             "C": "H",
+        #             "I": "N",
+        #             "AV": "N",
+        #             "PR": "H",
+        #             "UI": "N",
+        #             "E": "U",
+        #         },
+        #         "advisories": [
+        #             {
+        #                 "primary": {
+        #                     "score": "5.3",
+        #                     "vector": {
+        #                         "A": "N",
+        #                         "C": "L",
+        #                         "I": "N",
+        #                         "S": "U",
+        #                         "AC": "L",
+        #                         "AV": "N",
+        #                         "PR": "N",
+        #                         "UI": "N",
+        #                         "E": "U",
+        #                     },
+        #                     "advisory_uid": "gitlab/npm/simplehttpserver/CVE-2018-16478",
+        #                     "vector_string": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+        #                 },
+        #                 "secondaries": [
+        #                     {
+        #                         "score": "6.8",
+        #                         "vector": {
+        #                             "A": "N",
+        #                             "C": "H",
+        #                             "I": "N",
+        #                             "S": "C",
+        #                             "AC": "L",
+        #                             "AV": "N",
+        #                             "PR": "H",
+        #                             "UI": "N",
+        #                             "E": "U",
+        #                         },
+        #                         "advisory_uid": "npm/npm-481",
+        #                         "vector_string": "CVSS:3.0/AV:N/AC:L/PR:H/UI:N/S:C/C:H/I:N/A:N",
+        #                     },
+        #                 ],
+        #             },
+        #             {
+        #                 "primary": {
+        #                     "score": "5.3",
+        #                     "vector": {
+        #                         "A": "N",
+        #                         "C": "L",
+        #                         "I": "N",
+        #                         "S": "U",
+        #                         "AC": "L",
+        #                         "AV": "N",
+        #                         "PR": "N",
+        #                         "UI": "N",
+        #                         "E": "U",
+        #                     },
+        #                     "advisory_uid": "gitlab/npm/simplehttpserver/CVE-2018-16478",
+        #                     "vector_string": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+        #                 },
+        #                 "secondaries": [
+        #                     {
+        #                         "score": "6.8",
+        #                         "vector": {
+        #                             "A": "N",
+        #                             "C": "H",
+        #                             "I": "N",
+        #                             "S": "C",
+        #                             "AC": "L",
+        #                             "AV": "N",
+        #                             "PR": "H",
+        #                             "UI": "N",
+        #                             "E": "U",
+        #                         },
+        #                         "advisory_uid": "npm/npm-481",
+        #                         "vector_string": "CVSS:3.0/AV:N/AC:L/PR:H/UI:N/S:C/C:H/I:N/A:N",
+        #                     },
+        #                 ],
+        #             },
+        #         ],
+        #     }
+        # ]
+        # context["curation_items"] = json.dumps(ttt)
+
+        context["curation_items"] = json.dumps(todo.issue_detail["curation_items"])
+        print(todo.issue_detail["curation_items"])
+        return context

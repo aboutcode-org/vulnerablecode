@@ -125,6 +125,8 @@ Advisory To-Dos
                     {% with supported_curation="CONFLICTING_FIXED_BY_PACKAGES CONFLICTING_AFFECTED_PACKAGES CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES" %}
                     {% if todo.issue_type in supported_curation.split %}
                         <a href="{% url 'todo-detail' todo_id=todo.todo_id %}" class="has-text-info">
+                    {% elif todo.issue_type == "CONFLICTING_SEVERITY_SCORES" %}
+                        <a href="{% url 'todo-severity-detail' todo_id=todo.todo_id %}" class="has-text-info">
                     {% endif %}
                             <div class="columns px-1 is-vcentered">
                                 <div class="column has-text-left" style="flex: 0 0 20%;">

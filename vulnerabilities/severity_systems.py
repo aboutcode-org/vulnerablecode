@@ -82,9 +82,12 @@ class Cvssv3ScoringSystem(ScoringSystem):
         """
         return str(CVSS3(vector=scoring_elements).base_score)
 
-    def get(self, scoring_elements: str) -> dict:
+    def get_cvss(self, scoring_elements: str) -> CVSS3:
         scoring_elements = scoring_elements.strip()
-        return CVSS3(vector=scoring_elements).as_json()
+        return CVSS3(vector=scoring_elements)
+
+    def get(self, scoring_elements: str) -> dict:
+        return self.get_cvss(scoring_elements=scoring_elements).as_json()
 
 
 @dataclasses.dataclass(order=True)
@@ -98,9 +101,12 @@ class Cvssv4ScoringSystem(ScoringSystem):
         """
         return str(CVSS4(vector=scoring_elements).base_score)
 
-    def get(self, scoring_elements: str) -> dict:
+    def get_cvss(self, scoring_elements: str) -> CVSS4:
         scoring_elements = scoring_elements.strip()
-        return CVSS4(vector=scoring_elements).as_json()
+        return CVSS4(vector=scoring_elements)
+
+    def get(self, scoring_elements: str) -> dict:
+        return self.get_cvss(scoring_elements=scoring_elements).as_json()
 
 
 CVSSV3 = Cvssv3ScoringSystem(

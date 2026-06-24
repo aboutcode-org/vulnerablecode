@@ -7,11 +7,11 @@
 {% endblock %}
 
 {% block content %}
-<section class="section">
+<section class="section my-0 pt-3 px-0 mx-0">
     <div class="container is-fluid">
         <div class="columns is-vcentered mb-5">
             <div class="column">
-                <h1 class="title is-3">Advisory Curation</h1>
+                <h1 class="title is-3">Advisory Package Curation</h1>
                 <h2 class="subtitle is-5 has-text-grey">{{ vulnerability_id }}</h2>
             </div>
 
@@ -32,7 +32,7 @@
         <div class="columns">
             <div class="column is-3">
                 <h3 class="title is-5">Advisory Summaries</h3>
-                <div id="summaries-container" style="max-height: 800px; overflow-y: auto;">
+                <div id="summaries-container" style="max-height: 950px; overflow-y: auto;">
                     {% for avid, text in advisory_summaries.items %}
                         <div class="notification is-info is-light p-3 mb-3">
                             <p><strong>{{ avid }}</strong></p>
@@ -97,5 +97,5 @@
     const baseAdvisoryUrl = "{% url 'advisory_details' 0 %}";
     const curationItems = {{ curation_items|safe }};
 </script>
-<script src="{% static 'js/package_curation.min.js' %}"></script>
+<script src="{% static 'js/package_curation.js' %}"></script>
 {% endblock %}

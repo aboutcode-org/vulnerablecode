@@ -30,6 +30,7 @@ from vulnerabilities.api_v3 import AffectedByAdvisoriesViewSet
 from vulnerabilities.api_v3 import FixingAdvisoriesViewSet
 from vulnerabilities.api_v3 import PackageV3ViewSet
 from vulnerabilities.views import AdminLoginView
+from vulnerabilities.views import AdvisoryCVSSCurationView
 from vulnerabilities.views import AdvisoryDetails
 from vulnerabilities.views import AdvisoryPackageCurationView
 from vulnerabilities.views import AdvisoryPackagesDetails
@@ -110,6 +111,11 @@ urlpatterns = [
         "advisories/todos/<uuid:todo_id>/package/curate/",
         AdvisoryPackageCurationView.as_view(),
         name="todo-detail",
+    ),
+    path(
+        "advisories/todos/<uuid:todo_id>/severity/curate/",
+        AdvisoryCVSSCurationView.as_view(),
+        name="todo-severity-detail",
     ),
     path(
         "pipelines/<str:pipeline_id>/runs/",

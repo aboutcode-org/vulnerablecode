@@ -48,6 +48,8 @@ class MozillaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     precedence = 200
 
+    exclude_from_package_todo = True
+
     @classmethod
     def steps(cls):
         return (

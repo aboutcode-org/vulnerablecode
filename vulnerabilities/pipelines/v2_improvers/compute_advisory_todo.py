@@ -12,6 +12,8 @@ import json
 from collections import Counter
 from collections import defaultdict
 from itertools import chain
+from traceback import format_exc as traceback_format_exc
+from typing import List
 
 from aboutcode.pipeline import LoopProgress
 from django.db.models import Prefetch
@@ -26,6 +28,9 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ToDoRelatedAdvisoryV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes.advisory import advisories_checksum
+from vulnerabilities.severity_systems import CVSS4
+from vulnerabilities.severity_systems import CVSSV3
+from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import canonical_value
 from vulnerabilities.utils import normalize_text
 from vulnerabilities.utils import sha256_digest
@@ -39,8 +44,9 @@ class ComputeToDo(VulnerableCodePipeline):
     @classmethod
     def steps(cls):
         return (
-            cls.compute_individual_advisory_todo,
-            cls.detect_conflicting_advisories,
+            # cls.compute_individual_advisory_todo,
+            # cls.detect_conflicting_advisories,
+            cls.detect_conflicting_cvss_scores,
         )
 
     def compute_individual_advisory_todo(self):
@@ -274,6 +280,485 @@ class ComputeToDo(VulnerableCodePipeline):
             "containing unfurled packages."
         )
         self.log(f"Summary of unfurled PURLs: \n {unfurled_purl_summary}")
+
+    def detect_conflicting_cvss_scores(self):
+        """
+        Create ToDos for advisories with conflicting opinions on CVSS for a vulnerability.
+
+        Create ToDos for vulnerabilities that affect the same set of packages
+        but have different severity scores reported by different advisories.
+        """
+        advisory_relation_to_create = {}
+        todo_to_create = []
+        new_todos_count = 0
+        batch_size = 1
+        total_count_conflicting_advisory = 0
+        total_cvss_conflict_count = 0
+        total_successfully_compared_advisory_count = 0
+        existing_todo_ids = set(
+            AdvisoryToDoV2.objects.values_list("related_advisories_id", flat=True)
+        )
+
+        advisory_qs = (
+            AdvisoryV2.objects.exclude(
+                advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES"
+            )
+            .todo_excluded()
+            .latest_per_avid()
+            .distinct()
+            .prefetch_related("impacted_packages")
+        )
+
+        cve_aliases = AdvisoryAlias.objects.filter(alias__istartswith="cve").prefetch_related(
+            Prefetch("advisories", queryset=advisory_qs, to_attr="filtered_advisories")
+        )
+        non_cve_aliases = AdvisoryAlias.objects.exclude(alias__istartswith="cve").prefetch_related(
+            Prefetch("advisories", queryset=advisory_qs, to_attr="filtered_advisories")
+        )
+        aliases_count = cve_aliases.count() + non_cve_aliases.count()
+        progress = LoopProgress(
+            total_iterations=aliases_count,
+            logger=self.log,
+            progress_step=5,
+        )
+        self.log(f"Detect conflicting CVSS score for {aliases_count} aliases.")
+        aliases = chain(
+            cve_aliases.iterator(chunk_size=50),
+            non_cve_aliases.iterator(chunk_size=50),
+        )
+        for alias in progress.iter(aliases):
+
+            advisory_avid_map = {}
+            advisory_curation_item_map = defaultdict(dict)
+            adv_purl_map = defaultdict(
+                lambda: {
+                    "purls": set(),
+                    "cvssv4": set(),
+                    "cvssv3": set(),
+                    "cvssv3.1": set(),
+                    # "cvssv4_vector": set(),
+                    # "cvssv3_vector": set(),
+                    # "cvssv3.1_vector": set(),
+                }
+            )
+
+            advisories_with_common_alias = alias.filtered_advisories or []
+            known_advisory_ids = [a.id for a in advisories_with_common_alias]
+            adv_with_alias_in_adv_id = advisory_qs.filter(advisory_id=alias.alias).exclude(
+                id__in=known_advisory_ids
+            )
+            if not advisories_with_common_alias and not adv_with_alias_in_adv_id.exists():
+                continue
+
+            advisories_with_common_alias.extend(adv_with_alias_in_adv_id)
+            initial_advisory_group_size = len(advisories_with_common_alias)
+
+            if initial_advisory_group_size < 2:
+                continue
+
+            for advisory in advisories_with_common_alias:
+                advisory_avid_map[advisory.avid] = advisory
+                has_cvss_score = False
+                advisory_map = adv_purl_map[advisory.avid]
+                advisory_curation = advisory_curation_item_map[advisory.avid]
+                for sv in advisory.severities.all():
+                    if sv.scoring_system not in ["cvssv4", "cvssv3", "cvssv3.1"]:
+                        continue
+
+                    cvss_score = sv.value
+                    cvss_vector = {}
+                    if not cvss_score and not sv.scoring_elements:
+                        continue
+                    system = SCORING_SYSTEMS[sv.scoring_system]
+                    if sv.scoring_elements:
+                        try:
+                            cvss_score = system.compute(sv.scoring_elements)
+                            cvss_obj = system.get_cvss(sv.scoring_elements)
+                            cvss_vector = cvss_obj.original_metrics
+                        except Exception as e:
+                            print(
+                                f"Error while computing score for {advisory.avid!s}, {sv.scoring_system}: {e!r} \n {traceback_format_exc()}",
+                            )
+
+                    advisory_curation[sv.scoring_system] = {
+                        "advisory_uid": advisory.avid,
+                        "vector": cvss_vector,
+                        "score": cvss_score,
+                        "vector_string": sv.scoring_elements or "",
+                    }
+                    advisory_map[sv.scoring_system].add(cvss_score)
+                    # advisory_map[f"{sv.scoring_system}_vector"] = vector
+                    has_cvss_score = True
+
+                if not has_cvss_score:
+                    continue
+
+                for impact in advisory.impacted_packages.all():
+                    base_purl = impact.base_purl
+
+                    if not (
+                        impact.fixed_by_packages.exists() or impact.affecting_packages.exists()
+                    ):
+                        continue
+
+                    advisory_map["purls"].add(base_purl)
+
+                    # if not impact.last_successful_range_unfurl_at and impact.affecting_vers:
+                    #     unfurled_base_purls.add(base_purl)
+                    #     advisories_with_unfurled_purls.add(advisory.avid)
+
+            comparable_adv_map = {
+                avid: value for avid, value in adv_purl_map.items() if len(value["purls"]) > 0
+            }
+
+            cvss_conflict_count, count_conflicting_advisory = check_conflicting_cvss_for_alias(
+                alias=alias.alias,
+                comparable_adv_map=comparable_adv_map,
+                advisories=advisory_avid_map,
+                advisory_curation_item_map=advisory_curation_item_map,
+                todo_to_create=todo_to_create,
+                advisory_relation_to_create=advisory_relation_to_create,
+                existing_todo_ids=existing_todo_ids,
+            )
+
+            total_cvss_conflict_count += cvss_conflict_count
+            total_count_conflicting_advisory += count_conflicting_advisory
+            total_successfully_compared_advisory_count += initial_advisory_group_size
+
+            # adv_by_cvss = {
+            #     "cvssv4": {},
+            #     "cvssv3": {},
+            #     "cvssv3.1": {},
+            # }
+            # cvss_version = {
+            #     "cvssv4": "4.0",
+            #     "cvssv3": "3.0",
+            #     "cvssv3.1": "3.1",
+            # }
+            # for v_type in ["cvssv4"]:
+            #     for avid, value in comparable_adv_map.items():
+            #         if value[v_type]:
+            #             adv_by_cvss[v_type][avid] = value
+
+            # all_conflict_items = []
+            # conflicting_advisories = []
+            # for v_type, item in adv_by_cvss.items():
+            #     if len(item) < 2:
+            #         continue
+            #     result = compute_cvss_disagreement(item, v_type)
+            #     if not result or result["purl_disagreement"]:
+            #         continue
+
+            #     if not result["cvssv_disagreement"]:
+            #         continue
+
+            #     consensus_metrics = {}
+            #     vectors = [
+            #         adv_by_cvss_value[f"{v_type}_vector"] for adv_by_cvss_value in item.values()
+            #     ]
+            #     if len(vectors) == len(item):
+            #         if v_type == "cvssv4":
+            #             consensus_metrics = consensus_cvss3_metric(vectors)
+            #         else:
+            #             consensus_metrics = consensus_cvss4_metric(vector)
+
+            #     conflicting_advisories.extend([advisory_avid_map[avid] for avid in item])
+            #     conflict_item = {
+            #         # fix me
+            #         "cvss": cvss_version[v_type],
+            #         "partial_cvss_curation": consensus_metrics,
+            #         "advisories": [advisory_curation_item_map[avid][v_type] for avid in item],
+            #     }
+            #     all_conflict_items.append(conflict_item)
+
+            # if not all_conflict_items:
+            #     continue
+
+            # issue_detail = {
+            #     "alias": alias.alias,
+            #     # "conflict_checksum": conflict_checksum,
+            #     # "conflict_details": conflicting_package_details,
+            #     # "partial_curation_advisory": partial_merged_advisory,
+            #     "curation_items": all_conflict_items,
+            # }
+
+            # todo_id = advisories_checksum(conflicting_advisories)
+
+            # if todo_id in existing_todo_ids:
+            #     continue
+
+            # existing_todo_ids.add(todo_id)
+            # conflicting_advisories_count = len(conflicting_advisories)
+
+            # date_published = min(
+            #     (a.date_published for a in conflicting_advisories if a.date_published),
+            #     default=None,
+            # )
+            # date_collected = min(
+            #     (a.date_collected for a in conflicting_advisories if a.date_collected),
+            #     default=None,
+            # )
+            # todo = AdvisoryToDoV2(
+            #     related_advisories_id=todo_id,
+            #     issue_type="CONFLICTING_SEVERITY_SCORES",
+            #     issue_detail=issue_detail,
+            #     alias=alias,
+            #     advisories_count=conflicting_advisories_count,
+            #     oldest_advisory_date=date_published or date_collected,
+            # )
+            # todo_to_create.append(todo)
+            # advisory_relation_to_create[todo_id] = conflicting_advisories
+
+            if len(todo_to_create) > batch_size:
+                new_todos_count += bulk_create_with_m2m(
+                    todos=todo_to_create,
+                    advisories=advisory_relation_to_create,
+                    logger=self.log,
+                )
+                advisory_relation_to_create.clear()
+                todo_to_create.clear()
+
+            new_todos_count += bulk_create_with_m2m(
+                todos=todo_to_create,
+                advisories=advisory_relation_to_create,
+                logger=self.log,
+            )
+
+        self.log(
+            f"Successfully compared {total_successfully_compared_advisory_count} advisories, created {new_todos_count} new ToDos for {total_cvss_conflict_count} "
+            f"conflicting CVSS scores related to {total_count_conflicting_advisory} advisories."
+        )
+
+
+def check_conflicting_cvss_for_alias(
+    alias,
+    comparable_adv_map,
+    advisories,
+    advisory_curation_item_map,
+    todo_to_create,
+    advisory_relation_to_create,
+    existing_todo_ids,
+):
+    """
+    Add appropriate AdvisoryToDo for conflicting CVSS score for an alias.
+
+    Compute ToDo for conflicting CVSS 4.0, 3.1 and 3.0 at package advisory intersection for an alias.
+    """
+    cvss_versions = {
+        "cvssv4": "4.0",
+        "cvssv3": "3.0",
+        "cvssv3.1": "3.1",
+    }
+    adv_by_cvss = defaultdict(dict)
+    curation_items = []
+    conflicting_advisories = []
+
+    for avid, value in comparable_adv_map.items():
+        for cvss_type in ["cvssv4", "cvssv3", "cvssv3.1"]:
+            if cvss_type not in value or not value[cvss_type]:
+                continue
+
+            adv_by_cvss[cvss_type][avid] = value
+
+    for cvss_type, item in adv_by_cvss.items():
+        if len(item) < 2:
+            continue
+
+        disagreement = compute_cvss_disagreement(item, cvss_type)
+        if not disagreement or disagreement["purl_disagreement"]:
+            continue
+
+        if not disagreement["cvssv_disagreement"]:
+            continue
+
+        consensus_metrics = {}
+        cvss_version = cvss_versions[cvss_type]
+        vectors = []
+        for avid in item:
+            metric = advisory_curation_item_map[avid][cvss_type]
+            if metric["vector"]:
+                vectors.append(metric["vector"])
+
+        if len(vectors) == len(item):
+            consensus_metrics = consensus_cvss_metric(vectors, cvss_version)
+
+        conflicting_advisories.extend([advisories[avid] for avid in item])
+        packages = disagreement["purl_union"]
+        noun = "package" if len(packages) == 1 else "packages"
+
+        conflict_message = f"Conflicting severity scores for {noun}: " f"{', '.join(packages)}"
+        conflict_item = {
+            "cvss": cvss_version,
+            "conflict_reason": conflict_message,
+            "partial_cvss_curation": consensus_metrics,
+            "advisories": get_grouped_advisory_curation(
+                advisory_curation_item_map, cvss_type, advisories, item.keys()
+            ),
+        }
+        curation_items.append(conflict_item)
+
+    if not curation_items:
+        return 0, 0
+
+    issue_detail = {
+        "alias": alias,
+        "curation_items": curation_items,
+    }
+
+    todo_id = advisories_checksum(conflicting_advisories)
+
+    if todo_id in existing_todo_ids:
+        return 0, 0
+
+    existing_todo_ids.add(todo_id)
+    conflicting_advisories_count = len(conflicting_advisories)
+
+    date_published = min(
+        (a.date_published for a in conflicting_advisories if a.date_published),
+        default=None,
+    )
+    date_collected = min(
+        (a.date_collected for a in conflicting_advisories if a.date_collected),
+        default=None,
+    )
+    todo = AdvisoryToDoV2(
+        related_advisories_id=todo_id,
+        issue_type="CONFLICTING_SEVERITY_SCORES",
+        issue_detail=issue_detail,
+        alias=alias,
+        advisories_count=conflicting_advisories_count,
+        oldest_advisory_date=date_published or date_collected,
+    )
+    todo_to_create.append(todo)
+    advisory_relation_to_create[todo_id] = conflicting_advisories
+
+    print(curation_items)
+    return len(curation_items), conflicting_advisories_count
+
+
+def get_grouped_advisory_curation(advisory_curation_item_map, cvss_type, advisories, avids):
+    curation_items = []
+    vector_group = defaultdict(list)
+    for count, avid in enumerate(avids):
+        vector = advisory_curation_item_map[avid][cvss_type]["vector_string"] or str(count)
+        vector_group[vector].append((avid, advisories[avid].precedence))
+
+    for avids in vector_group.values():
+        sorted_avids = [x[0] for x in sorted(avids, key=lambda x: x[1], reverse=True)]
+        primary_avid = sorted_avids[0]
+        curation_items.append(
+            {
+                "primary": advisory_curation_item_map[primary_avid][cvss_type],
+                "secondaries": [advisory_curation_item_map[a][cvss_type] for a in avids[1:]],
+            }
+        )
+
+    return curation_items
+
+
+def consensus_cvss_metric(cvss_metrics: List[dict], cvss_version):
+    """Return consensus CVSS metric from metrics reported by different advisories."""
+
+    cvss_v3_keys = [
+        "AV",
+        "AC",
+        "PR",
+        "UI",
+        "S",
+        "C",
+        "I",
+        "A",
+        "E",
+        "RL",
+        "RC",
+        "MAV",
+        "MAC",
+        "MPR",
+        "MUI",
+        "MS",
+        "MC",
+        "MI",
+        "MA",
+        "CR",
+        "IR",
+        "AR",
+    ]
+
+    cvss_v4_keys = [
+        "AV",
+        "AC",
+        "AR",
+        "PR",
+        "UI",
+        "VC",
+        "VI",
+        "VA",
+        "SC",
+        "SI",
+        "SA",
+        "E",
+        "S",
+        "AU",
+        "R",
+        "V",
+        "RE",
+        "U",
+        "MAV",
+        "MAC",
+        "MAT",
+        "MPR",
+        "MUI",
+        "MVC",
+        "MVI",
+        "MVA",
+        "MSC",
+        "MSI",
+        "MSA",
+        "CR",
+        "IR",
+        "AR",
+    ]
+
+    consensus = {}
+    cvss_keys = cvss_v4_keys if cvss_version == "4.0" else cvss_v3_keys
+    if not cvss_metrics:
+        return consensus
+
+    for key in cvss_keys:
+        unique_values = set(d.get(key) for d in cvss_metrics if d.get(key))
+        if len(unique_values) == 1:
+            consensus[key] = unique_values.pop()
+
+    return consensus
+
+
+def compute_cvss_disagreement(adv_map, cvss_type):
+    """Compute differences in CVSS score across advisories."""
+
+    purl_sets = [v["purls"] for v in adv_map.values()]
+    cvssv_sets = [v[cvss_type] for v in adv_map.values()]
+
+    disagreement = {
+        "purl_union": [],
+        "purl_disagreement": [],
+        "cvssv_disagreement": [],
+    }
+
+    if not purl_sets:
+        return {}
+
+    purl_union = set().union(*purl_sets)
+    purl_intersection = set.intersection(*purl_sets)
+
+    disagreement["purl_union"] = list(purl_union)
+    disagreement["purl_disagreement"] = list(purl_union - purl_intersection)
+
+    if cvssv_sets:
+        cvssv_union = set().union(*cvssv_sets)
+        cvssv_intersection = set.intersection(*cvssv_sets)
+        disagreement["cvssv_disagreement"] = list(cvssv_union - cvssv_intersection)
+
+    return disagreement
 
 
 def check_missing_summary(
@@ -534,7 +1019,7 @@ def get_grouped_curation_advisories_for_dashboard_ui(purl, adv_map, conflict_det
         "advisories": [],
     }
 
-    all_versions = conflict_detail["affected_union"] + conflict_detail["fixed_union"]
+    all_versions = list(set(conflict_detail["affected_union"] + conflict_detail["fixed_union"]))
     package_url = PackageURL.from_string(purl)
     range_class = RANGE_CLASS_BY_SCHEMES[package_url.type]
     version_class = range_class.version_class

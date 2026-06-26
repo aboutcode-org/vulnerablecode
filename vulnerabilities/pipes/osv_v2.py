@@ -269,9 +269,12 @@ def get_severities(raw_data, url) -> Iterable[VulnerabilitySeverity]:
                 continue
 
             severity_type = OSV_TO_VCIO_SEVERITY_MAP.get(severity_type, severity_type)
-            system = SCORING_SYSTEMS[severity_type]
 
-            if severity_type in ["cvssv3.1", "cvssv4"]:
+            if value.lower().startswith("cvss:3.0/"):
+                severity_type = "cvssv3"
+
+            system = SCORING_SYSTEMS[severity_type]
+            if severity_type in ["cvssv3", "cvssv3.1", "cvssv4"]:
                 scoring_element = value
                 valid_vector = value[:-1] if value and value.endswith("/") else value
                 value = system.compute(valid_vector)

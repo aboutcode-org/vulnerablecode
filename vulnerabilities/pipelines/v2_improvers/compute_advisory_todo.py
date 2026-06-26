@@ -8,7 +8,6 @@
 #
 
 
-import json
 from collections import Counter
 from collections import defaultdict
 from itertools import chain
@@ -28,8 +27,6 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ToDoRelatedAdvisoryV2
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes.advisory import advisories_checksum
-from vulnerabilities.severity_systems import CVSS4
-from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import canonical_value
 from vulnerabilities.utils import normalize_text
@@ -425,90 +422,6 @@ class ComputeToDo(VulnerableCodePipeline):
             total_count_conflicting_advisory += count_conflicting_advisory
             total_successfully_compared_advisory_count += initial_advisory_group_size
 
-            # adv_by_cvss = {
-            #     "cvssv4": {},
-            #     "cvssv3": {},
-            #     "cvssv3.1": {},
-            # }
-            # cvss_version = {
-            #     "cvssv4": "4.0",
-            #     "cvssv3": "3.0",
-            #     "cvssv3.1": "3.1",
-            # }
-            # for v_type in ["cvssv4"]:
-            #     for avid, value in comparable_adv_map.items():
-            #         if value[v_type]:
-            #             adv_by_cvss[v_type][avid] = value
-
-            # all_conflict_items = []
-            # conflicting_advisories = []
-            # for v_type, item in adv_by_cvss.items():
-            #     if len(item) < 2:
-            #         continue
-            #     result = compute_cvss_disagreement(item, v_type)
-            #     if not result or result["purl_disagreement"]:
-            #         continue
-
-            #     if not result["cvssv_disagreement"]:
-            #         continue
-
-            #     consensus_metrics = {}
-            #     vectors = [
-            #         adv_by_cvss_value[f"{v_type}_vector"] for adv_by_cvss_value in item.values()
-            #     ]
-            #     if len(vectors) == len(item):
-            #         if v_type == "cvssv4":
-            #             consensus_metrics = consensus_cvss3_metric(vectors)
-            #         else:
-            #             consensus_metrics = consensus_cvss4_metric(vector)
-
-            #     conflicting_advisories.extend([advisory_avid_map[avid] for avid in item])
-            #     conflict_item = {
-            #         # fix me
-            #         "cvss": cvss_version[v_type],
-            #         "partial_cvss_curation": consensus_metrics,
-            #         "advisories": [advisory_curation_item_map[avid][v_type] for avid in item],
-            #     }
-            #     all_conflict_items.append(conflict_item)
-
-            # if not all_conflict_items:
-            #     continue
-
-            # issue_detail = {
-            #     "alias": alias.alias,
-            #     # "conflict_checksum": conflict_checksum,
-            #     # "conflict_details": conflicting_package_details,
-            #     # "partial_curation_advisory": partial_merged_advisory,
-            #     "curation_items": all_conflict_items,
-            # }
-
-            # todo_id = advisories_checksum(conflicting_advisories)
-
-            # if todo_id in existing_todo_ids:
-            #     continue
-
-            # existing_todo_ids.add(todo_id)
-            # conflicting_advisories_count = len(conflicting_advisories)
-
-            # date_published = min(
-            #     (a.date_published for a in conflicting_advisories if a.date_published),
-            #     default=None,
-            # )
-            # date_collected = min(
-            #     (a.date_collected for a in conflicting_advisories if a.date_collected),
-            #     default=None,
-            # )
-            # todo = AdvisoryToDoV2(
-            #     related_advisories_id=todo_id,
-            #     issue_type="CONFLICTING_SEVERITY_SCORES",
-            #     issue_detail=issue_detail,
-            #     alias=alias,
-            #     advisories_count=conflicting_advisories_count,
-            #     oldest_advisory_date=date_published or date_collected,
-            # )
-            # todo_to_create.append(todo)
-            # advisory_relation_to_create[todo_id] = conflicting_advisories
-
             if len(todo_to_create) > batch_size:
                 new_todos_count += bulk_create_with_m2m(
                     todos=todo_to_create,
@@ -643,13 +556,13 @@ def get_grouped_advisory_curation(advisory_curation_item_map, cvss_type, advisor
         vector = advisory_curation_item_map[avid][cvss_type]["vector_string"] or str(count)
         vector_group[vector].append((avid, advisories[avid].precedence))
 
-    for avids in vector_group.values():
-        sorted_avids = [x[0] for x in sorted(avids, key=lambda x: x[1], reverse=True)]
+    for avid_precedence in vector_group.values():
+        sorted_avids = [x[0] for x in sorted(avid_precedence, key=lambda x: x[1], reverse=True)]
         primary_avid = sorted_avids[0]
         curation_items.append(
             {
                 "primary": advisory_curation_item_map[primary_avid][cvss_type],
-                "secondaries": [advisory_curation_item_map[a][cvss_type] for a in avids[1:]],
+                "secondaries": [advisory_curation_item_map[a][cvss_type] for a in sorted_avids[1:]],
             }
         )
 

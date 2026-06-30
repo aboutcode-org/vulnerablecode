@@ -170,7 +170,7 @@
     ],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon4.0.json"
+    "url": "https://packages.broadcom.com/photon/photon_cve_metadata/cve_data_photon4.0.json"
   },
   {
     "advisory_id": "CVE-2021-45417",
@@ -203,6 +203,6 @@
     ],
     "date_published": null,
     "weaknesses": [],
-    "url": "https://packages.vmware.com/photon/photon_cve_metadata/cve_data_photon4.0.json"
+    "url": "https://packages.broadcom.com/photon/photon_cve_metadata/cve_data_photon4.0.json"
   }
 ]

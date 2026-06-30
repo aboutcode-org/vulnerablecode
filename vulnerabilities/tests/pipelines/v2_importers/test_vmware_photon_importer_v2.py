@@ -32,7 +32,7 @@ class TestVmwarePhotonImporterPipeline(TestCase):
         """
 
         def side_effect(url):
-            if url == "https://packages.vmware.com/photon/photon_cve_metadata/":
+            if url == "https://packages.broadcom.com/photon/photon_cve_metadata/":
                 return Mock(text=index_html)
             if "cve_data_photon4.0.json" in url:
                 return Mock(json=lambda: sample_data)

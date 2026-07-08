@@ -36,6 +36,9 @@ class ProjectKBStatementsPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/SAP/project-kb/blob/main/LICENSE.txt"
     repo_url = "git+https://github.com/SAP/project-kb@vulnerability-data"
+    datasource_id = "project_kb_statements"
+
+    exclude_from_package_todo = True
 
     precedence = 200
 

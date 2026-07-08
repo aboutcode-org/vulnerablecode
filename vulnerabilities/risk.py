@@ -8,6 +8,9 @@
 #
 from urllib.parse import urlparse
 
+from django.db.models import Max
+
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.weight_config import WEIGHT_CONFIG
@@ -110,22 +113,6 @@ def compute_package_risk(package):
     result = []
     for relation in package.affectedbypackagerelatedvulnerability_set.all():
         if risk := relation.vulnerability.risk_score:
-            result.append(float(risk))
-
-    if not result:
-        return
-
-    return round(max(result), 1)
-
-
-def compute_package_risk_v2(package):
-    """
-    Calculate the risk for a package by iterating over all vulnerabilities that affects this package
-    and determining the associated risk.
-    """
-    result = []
-    for impact in package.affected_in_impacts.all():
-        if risk := impact.advisory.risk_score:
             result.append(float(risk))
 
     if not result:

@@ -13,6 +13,7 @@ from itertools import batched
 from django.db import transaction
 
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.pipelines.v2_importers.suse_score_importer import (
@@ -34,6 +35,10 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
     """
 
     pipeline_id = "relate_severities_v2"
+
+    # Run pipeline every 30 minutes.
+    run_interval = 30
+    run_priority = PipelineSchedule.ExecutionPriority.HIGH
 
     # Severity systems to process
     SUPPORTED_SYSTEMS = {
@@ -59,10 +64,10 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
         """
         # Filter severities by supported scoring systems
         severity_score_advisories = (
-            AdvisoryV2.objects.filter(datasource_id__in=self.pipelines)
+            AdvisoryV2.objects.filter(pipeline_id__in=self.pipelines)
             .filter(severities__scoring_system__in=self.SUPPORTED_SYSTEMS)
-            .distinct()
             .latest_per_avid()
+            .distinct()
         )
 
         total = severity_score_advisories.count()
@@ -70,14 +75,21 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
 
         advisory_id_map = {}
 
-        qs = AdvisoryV2.objects.filter(
-            advisory_id__in=severity_score_advisories.values("advisory_id")
-        ).values("id", "advisory_id")
+        qs = (
+            AdvisoryV2.objects.filter(
+                advisory_id__in=severity_score_advisories.values("advisory_id")
+            )
+            .latest_per_avid()
+            .values("id", "advisory_id")
+        )
 
-        alias_qs = AdvisoryV2.objects.filter(
-            aliases__alias__in=severity_score_advisories.values("advisory_id")
-        ).values("id", "aliases__alias")
-
+        alias_qs = (
+            AdvisoryV2.objects.filter(
+                aliases__alias__in=severity_score_advisories.values("advisory_id")
+            )
+            .latest_per_avid()
+            .values("id", "aliases__alias")
+        )
         for row in qs:
             advisory_id_map.setdefault(row["advisory_id"], set()).add(row["id"])
 

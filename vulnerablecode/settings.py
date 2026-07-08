@@ -45,6 +45,9 @@ ALTCHA_HMAC_KEY = env.str("ALTCHA_HMAC_KEY")
 # SECURITY WARNING: do not run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
+# remove altcha verification once broswer is closed
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 # SECURITY WARNING: do not  run with debug turned on in production
 DEBUG_TOOLBAR = env.bool("VULNERABLECODE_DEBUG_TOOLBAR", default=False)
 
@@ -53,6 +56,9 @@ DEBUG_UI = env.bool("VULNERABLECODE_DEBUG_UI", default=False)
 
 # WARNING: Set this to False in production
 STAGING = env.bool("STAGING", default=True)
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env.str("EMAIL_HOST", default="")
@@ -105,6 +111,8 @@ MIDDLEWARE = (
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "vulnerabilities.middleware.ban_user_agent.BanUserAgent",
     "vulnerabilities.middleware.timezone.UserTimezoneMiddleware",
+    "vulnerabilities.middleware.altcha_protection.AltchaProtectionMiddleware",
+    "vulnerabilities.middleware.vcio_user_agent.VCIOUserAgentMiddleware",
 )
 
 ROOT_URLCONF = "vulnerablecode.urls"
@@ -188,13 +196,17 @@ VULNERABLECODEIO_REQUIRE_AUTHENTICATION = env.bool(
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-THROTTLE_RATE_ANON = env.str("THROTTLE_RATE_ANON", default="3600/hour")
-THROTTLE_RATE_USER_HIGH = env.str("THROTTLE_RATE_USER_HIGH", default="18000/hour")
-THROTTLE_RATE_USER_MEDIUM = env.str("THROTTLE_RATE_USER_MEDIUM", default="14400/hour")
-THROTTLE_RATE_USER_LOW = env.str("THROTTLE_RATE_USER_LOW", default="10800/hour")
+THROTTLE_RATE_ANON = env.str("THROTTLE_RATE_ANON", default="10/minute")
+THROTTLE_RATE_UI = env.str("THROTTLE_RATE_UI", default="15/minute")
+THROTTLE_RATE_USER_HIGH = env.str("THROTTLE_RATE_USER_HIGH", default="1/second")
+THROTTLE_RATE_USER_MEDIUM = env.str("THROTTLE_RATE_USER_MEDIUM", default="30/minute")
+THROTTLE_RATE_USER_LOW = env.str("THROTTLE_RATE_USER_LOW", default="20/minute")
+
+VCIO_USER_AGENT = env.str("VCIO_USER_AGENT", default="VCIO_API_AGENT")
 
 REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
     "anon": THROTTLE_RATE_ANON,
+    "ui": THROTTLE_RATE_UI,
     "low": THROTTLE_RATE_USER_LOW,
     "medium": THROTTLE_RATE_USER_MEDIUM,
     "high": THROTTLE_RATE_USER_HIGH,
@@ -248,30 +260,40 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "vulnerabilities.throttling.throttled_exception_handler",
     "DEFAULT_PAGINATION_CLASS": "vulnerabilities.pagination.SmallResultSetPagination",
     # Limit the load on the Database returning a small number of records by default. https://github.com/nexB/vulnerablecode/issues/819
-    "PAGE_SIZE": 10,
+    "PAGE_SIZE": 100,
     # for API docs
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%SZ",
 }
 
-api_doc_intro = """
+api_doc_intro = f"""
 <div>
+    <strong>Note:</strong> All API requests must include the following
+    <code>User-Agent</code> header:
+    <pre>User-Agent: {VCIO_USER_AGENT} </pre>
+    Requests without this exact header value will be rejected.
     <p><strong>VulnerableCode</strong> is open data and free software by
     <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others.</a>
     </p>
+    <p>API is throttled for anon users it is 10/minute and 30/minute for user with API key </p>
+    <p>Please refer to <a href="https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html" target="_blank">urllib3 documentation</a> and set <code> respect_retry_after_header </code> as True to respect the Retry-After header.</p>
+    <p>Example: <a href="https://github.com/aboutcode-org/dejacode/pull/550/changes#diff-9065d35748dfe1659a740cce66f00cee2782e07016665739584799bd27489df3" target="_blank">Dejacode Implementation</a></p>
     <p>The VulnerableCode API exposes these endpoints:</p>
     <ul>
         <li>
-            <strong>packages/</strong>: main endpoint to lookup for vulnerable packages.
+            <strong>/v3/packages/</strong>: main endpoint to lookup for vulnerable packages.
         </li>
         <li>
-            <strong>vulnerabilities/</strong>: secondary endpoint to lookup by vulnerabilities.
+            <strong>/v3/advisories/</strong>: endpoint to lookup for advisories for a given package.
         </li>
         <li>
-            <strong>alias/</strong>: secondary endpoint to lookup vulnerabilities by aliases (e.g., CVE)
+            <strong>/v3/affected-by-advisories/</strong>: endpoint to lookup for advisories that affect a given package.
         </li>
         <li>
-            <strong>cpes/</strong>: secondary endpoint to lookup vulnerabilities by CPE.
+            <strong>/v3/fixing-advisories/</strong>: endpoint to lookup for advisories that fix a given package.
+        </li>
+        <li>
+            <strong>/v3/package-types/</strong>: endpoint to get package types of all the packages in the database.
         </li>
     </ul>
 </div>
@@ -387,8 +409,26 @@ RQ_QUEUES = {
         "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
         "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
         "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
-    }
+    },
+    "high": {
+        "HOST": env.str("VULNERABLECODE_REDIS_HOST", default="localhost"),
+        "PORT": env.str("VULNERABLECODE_REDIS_PORT", default="6379"),
+        "PASSWORD": env.str("VULNERABLECODE_REDIS_PASSWORD", default=""),
+        "DEFAULT_TIMEOUT": env.int("VULNERABLECODE_REDIS_DEFAULT_TIMEOUT", default=3600),
+    },
 }
+
+
+vcio_redis_host = env.str("VULNERABLECODE_REDIS_HOST", default=None)
+vcio_redis_port = env.str("VULNERABLECODE_REDIS_PORT", default=None)
+
+if vcio_redis_host and vcio_redis_port:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": f"redis://{vcio_redis_host}:{vcio_redis_port}",
+        }
+    }
 
 
 # FederatedCode integration

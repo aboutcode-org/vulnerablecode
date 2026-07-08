@@ -36,6 +36,8 @@ def vulnrichment_advisory(db):
         url="https://example.com/advisory/TEST-2024-0001",
         unique_content_id="unique-1234",
         date_collected=datetime.now(),
+        is_latest=True,
+        pipeline_id="ds_importer_v2",
     )
 
 
@@ -59,6 +61,8 @@ def related_advisory(db):
         url="https://example.com/related/TEST-2024-0001",
         unique_content_id="unique-5678",
         date_collected=datetime.now(),
+        is_latest=True,
+        pipeline_id="ds_importer_v2",
     )
 
 

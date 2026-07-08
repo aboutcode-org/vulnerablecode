@@ -41,6 +41,7 @@ class GitLabImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "gitlab_importer_v2"
+    datasource_id = "gitlab"
     spdx_license_expression = "MIT"
     license_url = "https://gitlab.com/gitlab-org/advisories-community/-/blob/main/LICENSE"
     repo_url = "git+https://gitlab.com/gitlab-org/advisories-community/"

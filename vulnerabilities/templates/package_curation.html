@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+{% load utils %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/package_curation.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section my-0 pt-3 px-0 mx-0">
+    <div class="container is-fluid">
+        <div class="columns is-vcentered mb-5">
+            <div class="column">
+                <h1 class="title is-3">Advisory Package Curation</h1>
+                <h2 class="subtitle is-5 has-text-grey">{{ vulnerability_id }}</h2>
+            </div>
+
+            <div class="column is-narrow">
+                <div class="box p-4 has-background-white shadow-soft" style="min-width: 260px; border-radius: 5px;">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
+                        <span class="is-size-6 has-text-grey-dark uppercase has-text-weight-bold mr-2">
+                            Progress
+                        </span>
+                        <span class="tag is-info is-light has-text-weight-bold" id="progress-text">0 / 0</span>
+                    </div>
+                    <progress class="progress is-info is-small mb-0" id="progress" value="0" max="100"></progress>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="columns">
+            <div class="column is-3">
+                <h3 class="title is-5">Advisory Summaries</h3>
+                <div id="summaries-container" style="max-height: 950px; overflow-y: auto;">
+                    {% for avid, text in advisory_summaries.items %}
+                        <div class="notification is-info is-light p-3 mb-3">
+                            <p><strong>{{ avid }}</strong></p>
+                            <div class="text summary-text is-2">{{ text|normalize_links|urlize }}</div>
+                        </div>
+                    {% empty %}
+                        <div class="notification is-light p-3 mb-3 has-text-grey">
+                            No summaries available.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="column is-9">
+                <div class="box">
+                    <div class="mb-4">
+                        <h4 class="title is-4 mb-1" id="current-purl"></h4>
+                        <p class="text is-5" id="conflict-reason"></p>
+                        <a id="toggle-conflict" class="is-link is-5" style="display:none;">Show more</a>
+                    </div>
+
+                    <div class="table-container" style="max-height: 800px; overflow-y: auto; border: 1px solid #dbdbdb; border-radius: 6px;">
+                        <table class="table is-bordered is-narrow is-fullwidth is-hoverable">
+                            <thead style="position: sticky; top: 0; background: white; z-index: 10;">
+                                <tr id="table-header">
+
+                                </tr>
+                            </thead>
+                            <tbody id="curation-body">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="level mt-5">
+                        <div class="level-left">
+                            <button class="button is-light" id="prev-btn" onclick="app.navigate(-1)">
+                                <span class="icon"><i class="fa fa-chevron-left"></i></span>
+                                <span>Previous Item</span>
+                            </button>
+                        </div>
+                        <div class="level-right">
+                            <button class="button is-info" id="next-btn" onclick="app.navigate(1)">
+                                <span>Next Item</span>
+                                <span class="icon"><i class="fa fa-chevron-right"></i></span>
+                            </button>
+                            <button class="button is-info is-hidden" id="finish-btn" disabled>
+                                <span class="icon"><i class="fa fa-check"></i></span>
+                                <span>Submit</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    const baseAdvisoryUrl = "{% url 'advisory_details' 0 %}";
+    const curationItems = {{ curation_items|safe }};
+</script>
+<script src="{% static 'js/package_curation.js' %}"></script>
+{% endblock %}

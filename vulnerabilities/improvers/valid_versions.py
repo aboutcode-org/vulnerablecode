@@ -35,7 +35,6 @@ from vulnerabilities.importers.github_osv import GithubOSVImporter
 from vulnerabilities.importers.istio import IstioImporter
 from vulnerabilities.importers.oss_fuzz import OSSFuzzImporter
 from vulnerabilities.importers.ruby import RubyImporter
-from vulnerabilities.importers.ubuntu import UbuntuImporter
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.improver import Improver
 from vulnerabilities.improver import Inference
@@ -455,11 +454,6 @@ class IstioImprover(ValidVersionImprover):
 
 class DebianOvalImprover(ValidVersionImprover):
     importer = DebianOvalImporter
-    ignorable_versions = []
-
-
-class UbuntuOvalImprover(ValidVersionImprover):
-    importer = UbuntuImporter
     ignorable_versions = []
 
 

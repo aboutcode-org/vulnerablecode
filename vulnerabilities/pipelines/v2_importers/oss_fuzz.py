@@ -26,6 +26,7 @@ class OSSFuzzImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/google/oss-fuzz-vulns/blob/main/LICENSE"
     repo_url = "git+https://github.com/google/oss-fuzz-vulns"
+    datasource_id = "oss_fuzz"
 
     precedence = 100
 

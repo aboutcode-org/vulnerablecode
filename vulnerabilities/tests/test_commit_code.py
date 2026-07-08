@@ -20,6 +20,7 @@ class TestCodePatch:
             advisory_id="test_id",
             avid="test_pipeline/test_id",
             datasource_id="test_pipeline",
+            pipeline_id="test_pipeline_v2",
         )
 
         self.impacted = ImpactedPackage.objects.create(

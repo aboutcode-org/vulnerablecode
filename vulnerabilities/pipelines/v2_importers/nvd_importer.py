@@ -36,6 +36,7 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "nvd_importer_v2"
+    datasource_id = "nvd"
     # See https://github.com/nexB/vulnerablecode/issues/665 for follow up
     spdx_license_expression = (
         "LicenseRef-scancode-us-govt-public-domain  AND LicenseRef-scancode-cve-tou"
@@ -70,6 +71,8 @@ class NVDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         INFORMATION THEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
         MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     """
+
+    exclude_from_package_todo = True
 
     precedence = 100
 

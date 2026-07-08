@@ -29,11 +29,13 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "vulnrichment_importer_v2"
+    datasource_id = "vulnrichment"
     spdx_license_expression = "CC0-1.0"
     license_url = "https://github.com/cisagov/vulnrichment/blob/develop/LICENSE"
     repo_url = "git+https://github.com/cisagov/vulnrichment.git"
 
     precedence = 100
+    exclude_from_package_todo = True
 
     @classmethod
     def steps(cls):

@@ -28,9 +28,10 @@ class RetireDotnetImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "MIT"
     repo_url = "git+https://github.com/RetireNet/Packages/"
     pipeline_id = "retiredotnet_importer_v2"
+    datasource_id = "retiredotnet"
     run_once = True
 
-    precedence = 200
+    precedence = 400
 
     @classmethod
     def steps(cls):

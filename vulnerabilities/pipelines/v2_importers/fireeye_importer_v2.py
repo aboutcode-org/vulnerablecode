@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC-BY-SA-4.0 AND MIT"
+    datasource_id = "fireeye"
     license_url = "https://github.com/mandiant/Vulnerability-Disclosures/blob/master/README.md"
     notice = """
     Copyright (c) Mandiant
@@ -41,6 +42,8 @@ class FireeyeImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "fireeye_importer_v2"
 
     precedence = 200
+
+    exclude_from_package_todo = True
 
     @classmethod
     def steps(cls):
@@ -104,7 +107,7 @@ def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryDataV2:
     cve_refs = md_dict.get("## CVE Reference") or []
     cve_ids = md_dict.get("## CVE ID") or []
     cleaned_cve_ids = []
-    for line in cve_ids:
+    for line in cve_ids + cve_refs:
         found_cves = find_all_cve(line)
         cleaned_cve_ids.extend(found_cves)
 
@@ -112,7 +115,8 @@ def parse_advisory_data(raw_data, file_path, base_path) -> AdvisoryDataV2:
     cwe_data = md_dict.get("## Common Weakness Enumeration") or []
 
     advisory_id = file_path.stem
-    aliases = dedupe([cve.strip() for cve in cleaned_cve_ids + cve_refs])
+    aliases = dedupe([cve.strip() for cve in cleaned_cve_ids])
+
     aliases = [aliase for aliase in aliases if aliase != advisory_id]
     advisory_url = get_advisory_url(
         file=file_path,

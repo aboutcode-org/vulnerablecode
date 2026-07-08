@@ -10,6 +10,7 @@
 from datetime import datetime
 from datetime import timedelta
 
+import pytest
 from django.test import TestCase
 from fetchcode.package_versions import PackageVersion
 from packageurl import PackageURL
@@ -24,6 +25,7 @@ from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.pipelines import insert_advisory_v2
 from vulnerabilities.references import XsaReferenceV2
@@ -33,6 +35,7 @@ from vulnerabilities.utils import AffectedPackage
 from vulnerabilities.utils import get_item
 from vulnerabilities.utils import get_severity_range
 from vulnerabilities.utils import nearest_patched_package
+from vulnerabilities.utils import relate_aliases_with_advisories
 from vulnerabilities.utils import resolve_version_range
 from vulnerabilities.utils import split_markdown_front_matter
 
@@ -241,6 +244,7 @@ class TestComputeContentIdV2(TestCase):
         insert_advisory_v2(
             advisory=self.advisory1,
             pipeline_id="test_pipeline_v2",
+            datasource_id="test",
             logger=self.logger.write,
         )
 
@@ -254,3 +258,159 @@ class TestComputeContentIdV2(TestCase):
         id_from_model = utils.compute_content_id_v2(advisory_model)
 
         self.assertEqual(id_from_data, id_from_model)
+
+    def test_content_id_from_adv_data_roundtrip_are_same(self):
+        id_from_data = utils.compute_content_id_v2(self.advisory1)
+        adv_roundtrip = AdvisoryDataV2.from_dict(self.advisory1.to_dict())
+        id_from_roundtrip = utils.compute_content_id_v2(adv_roundtrip)
+
+        self.assertEqual(id_from_data, id_from_roundtrip)
+
+
+@pytest.mark.django_db
+def test_returns_advisories_from_alias():
+    advisory = AdvisoryV2.objects.create(
+        advisory_id="GHSA-123",
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        unique_content_id="i3giu",
+        url="https://test.com",
+        avid="GHSA-123",
+        is_latest=True,
+        _all_impacts_unfurled_at="2025-01-01",
+    )
+
+    alias = AdvisoryAlias.objects.create(alias="CVE-2025-123")
+    alias.advisories.add(advisory)
+
+    result = relate_aliases_with_advisories(["CVE-2025-123"])
+
+    assert result == {advisory}
+
+
+@pytest.mark.django_db
+def test_returns_latest_advisory_from_advisory_id():
+    advisory = AdvisoryV2.objects.create(
+        advisory_id="GHSA-456",
+        avid="GHSA-456",
+        is_latest=True,
+        _all_impacts_unfurled_at="2025-01-01",
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        unique_content_id="i3giu2w",
+        url="https://test.com",
+    )
+
+    result = relate_aliases_with_advisories(["GHSA-456"])
+
+    assert advisory in result
+    assert len(result) == 1
+
+
+@pytest.mark.django_db
+def test_handles_mixed_aliases_and_advisory_ids():
+    alias_adv = AdvisoryV2.objects.create(
+        advisory_id="GHSA-1",
+        avid="GHSA-1",
+        is_latest=True,
+        _all_impacts_unfurled_at="2025-01-01",
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        unique_content_id="i3gswiu",
+        url="https://test.com",
+    )
+
+    advisory_id_adv = AdvisoryV2.objects.create(
+        advisory_id="GHSA-2",
+        avid="GHSA-2",
+        is_latest=True,
+        _all_impacts_unfurled_at="2025-01-01",
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        unique_content_id="i3giu2ww",
+        url="https://test.com",
+    )
+
+    alias = AdvisoryAlias.objects.create(alias="CVE-2025-1")
+    alias.advisories.add(alias_adv)
+
+    result = relate_aliases_with_advisories(["CVE-2025-1", "GHSA-2"])
+
+    assert result == {alias_adv, advisory_id_adv}
+
+
+@pytest.mark.django_db
+def test_excludes_non_latest_alias_advisories():
+    latest = AdvisoryV2.objects.create(
+        advisory_id="GHSA-1",
+        avid="GHSA-1",
+        is_latest=True,
+        _all_impacts_unfurled_at="2025-01-01",
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        unique_content_id="i3giu",
+        url="https://test.com",
+    )
+
+    old = AdvisoryV2.objects.create(
+        advisory_id="GHSA-1-old",
+        avid="GHSA-1",
+        is_latest=False,
+        _all_impacts_unfurled_at="2025-01-01",
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        unique_content_id="i3giu2w",
+        url="https://test.com",
+    )
+
+    alias = AdvisoryAlias.objects.create(alias="CVE-2025-1")
+    alias.advisories.add(latest, old)
+
+    result = relate_aliases_with_advisories(["CVE-2025-1"])
+
+    assert result == {latest}
+
+
+@pytest.mark.django_db
+def test_excludes_unfurled_advisories():
+    advisory = AdvisoryV2.objects.create(
+        advisory_id="GHSA-1",
+        avid="GHSA-1",
+        is_latest=True,
+        _all_impacts_unfurled_at=None,
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        unique_content_id="i3giu",
+        url="https://test.com",
+    )
+
+    alias = AdvisoryAlias.objects.create(alias="CVE-2025-1")
+    alias.advisories.add(advisory)
+
+    result = relate_aliases_with_advisories(["CVE-2025-1"])
+
+    assert result == set()
+
+
+@pytest.mark.django_db
+def test_deduplicates_results():
+    advisory = AdvisoryV2.objects.create(
+        advisory_id="GHSA-1",
+        avid="GHSA-1",
+        is_latest=True,
+        _all_impacts_unfurled_at="2025-01-01",
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        unique_content_id="i3giu",
+        url="https://test.com",
+    )
+
+    alias1 = AdvisoryAlias.objects.create(alias="CVE-1")
+    alias2 = AdvisoryAlias.objects.create(alias="CVE-2")
+
+    alias1.advisories.add(advisory)
+    alias2.advisories.add(advisory)
+
+    result = relate_aliases_with_advisories(["CVE-1", "CVE-2"])
+
+    assert result == {advisory}

@@ -28,6 +28,7 @@ from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import get_advisory_url
+from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import split_markdown_front_matter
 
 is_release = re.compile(r"^[\d.]+$", re.IGNORECASE).match
@@ -39,6 +40,7 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "istio_importer_v2"
+    datasource_id = "istio"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/istio/istio.io/blob/master/LICENSE"
     repo_url = "git+https://github.com/istio/istio.io"
@@ -88,6 +90,7 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 data.get("releases", []), GolangVersion
             )
             cves = data.get("cves", [])
+            aliases = [cve for cve in cves if is_cve(cve)]
 
             affected_packages = []
             if semver_constraints:
@@ -107,6 +110,10 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 )
 
             title = data.get("title") or ""
+            if not title.startswith("ISTIO-SECURITY-"):
+                self.log(f"Invalid advisory_id: {title}")
+                continue
+
             summary = data.get("description") or ""
             references = []
             if title:
@@ -119,7 +126,7 @@ class IstioImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
             yield AdvisoryDataV2(
                 advisory_id=title,
-                aliases=cves,
+                aliases=aliases,
                 summary=summary,
                 affected_packages=affected_packages,
                 references=references,

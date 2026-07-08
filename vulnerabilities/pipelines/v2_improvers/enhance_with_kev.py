@@ -13,10 +13,10 @@ from traceback import format_exc as traceback_format_exc
 import requests
 from aboutcode.pipeline import LoopProgress
 
-from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryExploit
-from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.utils import build_alias_to_advisory_map
 
 
 class VulnerabilityKevPipeline(VulnerableCodePipeline):
@@ -27,6 +27,10 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
 
     pipeline_id = "enhance_with_kev_v2"
     license_expression = None
+
+    # Run pipeline every 30 minutes.
+    run_interval = 30
+    run_priority = PipelineSchedule.ExecutionPriority.HIGH
 
     @classmethod
     def steps(cls):
@@ -53,51 +57,56 @@ class VulnerabilityKevPipeline(VulnerableCodePipeline):
     def add_exploits(self):
         fetched_exploit_count = self.kev_data.get("count")
         self.log(f"Enhancing the vulnerability with {fetched_exploit_count:,d} exploit records")
-
-        vulnerability_exploit_count = 0
         progress = LoopProgress(total_iterations=fetched_exploit_count, logger=self.log)
+        cve_ids = {
+            record["cveID"] for record in self.kev_data["vulnerabilities"] if record.get("cveID")
+        }
 
-        for record in progress.iter(self.kev_data.get("vulnerabilities", [])):
-            vulnerability_exploit_count += add_vulnerability_exploit(
-                kev_vul=record,
-                logger=self.log,
-            )
+        cve_to_advisories = build_alias_to_advisory_map(cve_ids)
 
-        self.log(f"Successfully added {vulnerability_exploit_count:,d} kev exploit")
+        exploits = []
 
+        advisories_seen_multiple_times = set()
 
-def add_vulnerability_exploit(kev_vul, logger):
-    cve_id = kev_vul.get("cveID")
+        for record in progress.iter(self.kev_data["vulnerabilities"]):
+            cve_id = record.get("cveID")
 
-    if not cve_id:
-        return 0
+            if not cve_id:
+                continue
 
-    advisories = set()
-    try:
-        if alias := AdvisoryAlias.objects.get(alias=cve_id):
-            for adv in alias.advisories.all():
-                advisories.add(adv)
-        else:
-            advs = AdvisoryV2.objects.filter(advisory_id=cve_id)
-            for adv in advs:
-                advisories.add(adv)
-    except AdvisoryAlias.DoesNotExist:
-        logger(f"No advisory found for aliases {cve_id}")
-        return 0
+            for advisory in cve_to_advisories.get(cve_id, []):
+                if (advisory.avid, cve_id) in advisories_seen_multiple_times:
+                    continue
+                advisories_seen_multiple_times.add((advisory.avid, cve_id))
+                exploits.append(
+                    AdvisoryExploit(
+                        advisory=advisory,
+                        record_id=cve_id,
+                        data_source="KEV",
+                        description=record["shortDescription"],
+                        date_added=record["dateAdded"],
+                        required_action=record["requiredAction"],
+                        due_date=record["dueDate"],
+                        notes=record["notes"],
+                        known_ransomware_campaign_use=(
+                            record["knownRansomwareCampaignUse"] == "Known"
+                        ),
+                    )
+                )
+        if not exploits:
+            return
 
-    for advisory in advisories:
-        AdvisoryExploit.objects.update_or_create(
-            advisory=advisory,
-            data_source="KEV",
-            defaults={
-                "description": kev_vul["shortDescription"],
-                "date_added": kev_vul["dateAdded"],
-                "required_action": kev_vul["requiredAction"],
-                "due_date": kev_vul["dueDate"],
-                "notes": kev_vul["notes"],
-                "known_ransomware_campaign_use": (
-                    True if kev_vul["knownRansomwareCampaignUse"] == "Known" else False
-                ),
-            },
+        AdvisoryExploit.objects.bulk_create(
+            exploits,
+            update_conflicts=True,
+            unique_fields=["advisory", "data_source", "record_id"],
+            update_fields=[
+                "description",
+                "date_added",
+                "required_action",
+                "due_date",
+                "notes",
+                "known_ransomware_campaign_use",
+            ],
+            batch_size=1000,
         )
-    return 1

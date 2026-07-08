@@ -48,26 +48,39 @@ def parse_range(raw_range):
         if not range:
             continue
         if "-" not in range:
-            parsed_range.append(
-                VersionConstraint(
-                    comparator="=",
-                    version=SemverVersion(range),
+            version = parse_exact_version(range)
+            if version:
+                parsed_range.append(
+                    VersionConstraint(
+                        comparator="=",
+                        version=version,
+                    )
                 )
-            )
             continue
 
         lhs, rhs = range.split("-")
-        parsed_range.append(
-            VersionConstraint(
-                comparator=">=",
-                version=SemverVersion(lhs.strip()),
+        lhs_version = parse_exact_version(lhs.strip())
+        rhs_version = parse_exact_version(rhs.strip())
+        if lhs_version:
+            parsed_range.append(
+                VersionConstraint(
+                    comparator=">=",
+                    version=lhs_version,
+                )
             )
-        )
-        parsed_range.append(
-            VersionConstraint(
-                comparator="<=",
-                version=SemverVersion(rhs.strip()),
+        if rhs_version:
+            parsed_range.append(
+                VersionConstraint(
+                    comparator="<=",
+                    version=rhs_version,
+                )
             )
-        )
 
     return parsed_range
+
+
+def parse_exact_version(version_str):
+    try:
+        return SemverVersion(version_str)
+    except Exception:
+        return None

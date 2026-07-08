@@ -10,6 +10,7 @@ from datetime import datetime
 from decimal import Decimal
 
 import pytest
+from django.utils import timezone
 
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
@@ -26,14 +27,19 @@ def test_simple_risk_pipeline():
     pkg = PackageV2.objects.create(type="pypi", name="foo", version="2.3.0")
     assert PackageV2.objects.count() == 1
 
+    cur = timezone.now()
+
     adv = AdvisoryV2(
         advisory_id="VCID-Existing",
         summary="vulnerability description here",
         datasource_id="ds",
+        pipeline_id="ds_importer_v2",
         avid="ds/VCID-Existing",
         unique_content_id="ajkef",
         url="https://test.com",
         date_collected=datetime.now(),
+        is_latest=True,
+        _all_impacts_unfurled_at=cur,
     )
     adv.save()
 

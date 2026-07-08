@@ -61,6 +61,7 @@ def test_is_vcs_url_already_processed_true():
         url="https://example.com/advisory/CVE-2025-9999",
         unique_content_id="11111",
         date_collected=datetime.now(),
+        pipeline_id="test_pipeline_v2",
     )
     package = PackageV2.objects.create(
         type="bar",
@@ -86,6 +87,7 @@ def test_collect_fix_commits_pipeline_creates_entry():
         url="https://example.com/advisory/CVE-2025-1000",
         unique_content_id="11111",
         date_collected=datetime.now(),
+        pipeline_id="test_pipeline_v2",
     )
     package = PackageV2.objects.create(
         type="foo",
@@ -115,6 +117,7 @@ def test_collect_fix_commits_pipeline_skips_non_commit_urls():
     advisory = AdvisoryV2.objects.create(
         advisory_id="CVE-2025-2000",
         datasource_id="test-ds",
+        pipeline_id="test-ds_v2",
         avid="test-ds/CVE-2025-2000",
         url="https://example.com/advisory/CVE-2025-2000",
         unique_content_id="11111",

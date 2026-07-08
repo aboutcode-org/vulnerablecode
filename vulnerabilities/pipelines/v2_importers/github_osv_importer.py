@@ -27,11 +27,12 @@ class GithubOSVImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "github_osv_importer_v2"
+    datasource_id = "github_osv"
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://github.com/github/advisory-database/blob/main/LICENSE.md"
     repo_url = "git+https://github.com/github/advisory-database/"
 
-    precedence = 100
+    precedence = 200
 
     @classmethod
     def steps(cls):

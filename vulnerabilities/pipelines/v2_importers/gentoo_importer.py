@@ -30,6 +30,7 @@ from vulnerabilities.severity_systems import GENERIC
 class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     repo_url = "git+https://anongit.gentoo.org/git/data/glsa.git"
     spdx_license_expression = "CC-BY-SA-4.0"
+    datasource_id = "gentoo"
     # the license notice is at this url https://anongit.gentoo.org/ says:
     # The contents of this document, unless otherwise expressly stated, are licensed
     # under the [CC-BY-SA-4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.

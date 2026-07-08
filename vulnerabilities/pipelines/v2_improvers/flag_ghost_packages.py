@@ -25,6 +25,9 @@ class FlagGhostPackagePipeline(VulnerableCodePipeline):
 
     pipeline_id = "flag_ghost_packages_v2"
 
+    # Run pipeline every 6 hours.
+    run_interval = 360
+
     @classmethod
     def steps(cls):
         return (cls.flag_ghost_packages,)

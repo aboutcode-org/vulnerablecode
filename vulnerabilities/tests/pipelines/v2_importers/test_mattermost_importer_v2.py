@@ -14,6 +14,7 @@ from univers.version_range import GitHubVersionRange
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.mattermost_importer import MattermostImporterPipeline
+from vulnerabilities.pipelines.v2_importers.mattermost_importer import parse_vuln_ids
 
 
 @pytest.fixture
@@ -212,3 +213,24 @@ def test_fetch_is_cached(monkeypatch):
     importer.collect_advisories()
 
     assert call_count["count"] == 1
+
+
+@pytest.mark.parametrize(
+    "issue_id, cve_id, expected_advisory_id, expected_aliases",
+    [
+        ("MMSA-2026-00624", "CVE-2026-3590", "MMSA-2026-00624", ["CVE-2026-3590"]),
+        ("MMSA-2026-00605", "", "MMSA-2026-00605", []),
+        ("MMSA-2021-0055,CVE-2021-37859", "", "MMSA-2021-0055", ["CVE-2021-37859"]),
+        ("MMSA-2021-0055, CVE-2021-37859", "", "MMSA-2021-0055", ["CVE-2021-37859"]),
+        ("MMSA-2024-00344", "n/a", "MMSA-2024-00344", []),
+        ("5.17.2.4", "", None, []),
+        ("na", "", None, []),
+        ("N/A", "", None, []),
+        ("Issue Identifier", "", None, []),
+        ("", "", None, []),
+    ],
+)
+def test_parse_vuln_ids(issue_id, cve_id, expected_advisory_id, expected_aliases):
+    advisory_id, aliases = parse_vuln_ids(issue_id, cve_id)
+    assert advisory_id == expected_advisory_id
+    assert aliases == expected_aliases

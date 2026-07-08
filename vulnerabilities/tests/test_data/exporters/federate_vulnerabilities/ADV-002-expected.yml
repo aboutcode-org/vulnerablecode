@@ -1,5 +1,5 @@
 advisory_id: ADV-002
-datasource_id: test_pipeline_v2/ADV-002
+datasource_id: test/ADV-002
 datasource_url: https://example.com/advisory/2
 aliases:
   - CVE-2025-0002

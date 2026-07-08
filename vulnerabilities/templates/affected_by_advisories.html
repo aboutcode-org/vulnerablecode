@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+{% load static %}
+{% load url_filters %}
+{% load utils %}
+
+{% block content %}
+<div class="is-max-desktop mb-3">
+    <section class="mx-5">
+        <div class="is-flex" style="justify-content: space-between;">
+            <div>
+                {{ page_obj.paginator.count|intcomma }} results
+            </div>
+            {% if is_paginated %}
+                {% include 'includes/pagination.html' with page_obj=page_obj %}
+            {% endif %}
+        </div>
+    </section>
+</div>
+
+<section class="section pt-0">
+    <div class="content">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th style="width: 200px;">Advisory</th>
+                                    <th style="width: 310px;">Source</th>
+                                    <th style="width: 200px;">Date Published</th>
+                                    <th>Summary</th>
+                                    <th style="width: 310px;">Fixed in package version</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for advisory in page_obj %}
+                                <tr>
+                                    <td>
+                                        <a href="{{advisory.get_absolute_url}}">
+                                            {{advisory.avid }}
+                                        </a>
+                                        <br />
+                                        {% if advisory.alias|length != 0 %}
+                                        Aliases:
+                                        {% endif %}
+                                        <br />
+                                        {% for alias in advisory.alias %}
+                                        {% if alias.url %}
+                                        <a href="{{ alias.url }}" target="_blank">{{ alias }}<i
+                                                class="fa fa-external-link fa_link_custom"></i></a>
+                                        <br />
+                                        {% else %}
+                                        {{ alias }}
+                                        <br />
+                                        {% endif %}
+                                        {% endfor %}
+
+                                        {% if advisory.secondary|length != 0 %}
+                                    <p>Supporting advisories are listed below the primary advisory.</p>
+                                    {% for secondary in advisory.secondary %}
+                                            <a href="{{secondary.get_absolute_url}}">
+                                                {{secondary.avid }}
+                                            </a>
+                                    {% endfor %}
+                                    {% endif %}
+                                    </td>
+                                    <td style="word-wrap: break-word; word-break: break-word;">
+                                        <a href={{advisory.url}} target="_blank">{{advisory.url}}</a>
+                                    </td>
+                                    <td style="word-wrap: break-word; word-break: break-word;">
+                                        {{advisory.date_published}}
+                                    </td>
+                                    <td style="word-wrap: break-word; word-break: break-word;">
+                                        {{ advisory.summary }}
+                                    </td>
+                                    <td style="word-wrap: break-word; word-break: break-all;">
+                                        {% with fixed=fixed_package_details|get_item:advisory.avid %}
+                                            {% if fixed %}
+                                                {% for item in fixed %}
+                                                <section>
+                                                    <a href="/packages/v2/{{ item.pkg.purl|url_quote }}?search={{ item.pkg.purl }}"
+                                                        target="_self">{{ item.pkg.version }}</a>
+                                                    <br/>
+                                                    {% if item.pkg.is_vulnerable %}
+                                                    <span class="{{ item.pkg.is_vulnerable|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Vulnerable
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="{{ item.pkg.is_vulnerable|yesno:'emphasis-vulnerable,emphasis-not-vulnerable' }}">
+                                                        Not vulnerable
+                                                    </span>
+                                                    {% endif %}
+                                                </section>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="emphasis-vulnerable">There are no reported fixed by versions.</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">
+                                        <span class="emphasis-not-vulnerable">This package is not known to be subject of any advisories.</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+    </div>
+
+{% if is_paginated %}
+    {% include 'includes/pagination.html' with page_obj=page_obj %}
+{% endif %}
+{% endblock %}
+</section>

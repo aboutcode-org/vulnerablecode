@@ -15,6 +15,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from django.test import TestCase
+from django.utils import timezone
 from git import Repo
 from packageurl import PackageURL
 from univers.version_range import VersionRange
@@ -83,16 +84,25 @@ class TestFederatePackageVulnerabilities(TestCase):
             date_published=datetime.now() - timedelta(days=10),
             url="https://example.com/advisory/2",
         )
-        insert_advisory_v2(
+        a1 = insert_advisory_v2(
             advisory=advisory1,
             pipeline_id="test_pipeline_v2",
             logger=self.logger.write,
+            datasource_id="test",
         )
-        insert_advisory_v2(
+        cur = timezone.now()
+        a1._all_impacts_unfurled_at = cur
+        a1._all_impacts_unfurled_successfully_at = cur
+        a1.save()
+        a2 = insert_advisory_v2(
             advisory=advisory2,
             pipeline_id="test_pipeline_v2",
             logger=self.logger.write,
+            datasource_id="test",
         )
+        a2._all_impacts_unfurled_at = cur
+        a2._all_impacts_unfurled_successfully_at = cur
+        a2.save()
 
     @patch(
         "vulnerabilities.pipelines.exporters.federate_vulnerabilities.FederatePackageVulnerabilities.clone_federation_repository"

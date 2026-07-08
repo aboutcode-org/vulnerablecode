@@ -24,7 +24,6 @@ from vulnerabilities.severity_systems import GENERIC
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def vulnerability():
     vul = Vulnerability(vulnerability_id="VCID-Existing")
     vul.save()
@@ -50,7 +49,6 @@ def vulnerability():
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def exploit():
     vul = Vulnerability(vulnerability_id="VCID-Exploit")
     vul.save()
@@ -58,7 +56,6 @@ def exploit():
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def vulnerability_with_exploit_ref():
     vul = Vulnerability(vulnerability_id="VCID-Exploit-Ref")
     vul.save()
@@ -74,7 +71,6 @@ def vulnerability_with_exploit_ref():
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def high_epss_score():
     vul = Vulnerability(vulnerability_id="VCID-HIGH-EPSS")
     vul.save()
@@ -90,7 +86,6 @@ def high_epss_score():
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def low_epss_score():
     vul = Vulnerability(vulnerability_id="VCID-LOW-EPSS")
     vul.save()

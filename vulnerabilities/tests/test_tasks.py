@@ -20,6 +20,7 @@ from vulnerabilities.tasks import execute_pipeline
 
 class OneTimePipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "one_time_pipeline_test"
+    datasource_id = "one_time_pipeline_test"
     run_once = True
 
     def collect_advisories(self):
@@ -31,6 +32,7 @@ class OneTimePipeline(VulnerableCodeBaseImporterPipelineV2):
 
 class NotOneTimePipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "not_one_time_pipeline_test"
+    datasource_id = "not_one_time_pipeline_test"
     run_once = False
 
     def collect_advisories(self):

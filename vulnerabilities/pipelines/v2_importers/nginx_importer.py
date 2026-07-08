@@ -32,6 +32,7 @@ class NginxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Collect Nginx security advisories."""
 
     pipeline_id = "nginx_importer_v2"
+    datasource_id = "nginx"
 
     spdx_license_expression = "BSD-2-Clause"
     license_url = "https://nginx.org/LICENSE"

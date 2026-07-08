@@ -19,9 +19,12 @@ from vulnerabilities.utils import fetch_yaml
 
 class SUSESeverityScoreImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC-BY-4.0"
+    datasource_id = "suse_score"
     license_url = "https://ftp.suse.com/pub/projects/security/yaml/LICENSE"
     pipeline_id = "suse_importer_v2"
     url = "https://ftp.suse.com/pub/projects/security/yaml/suse-cvss-scores.yaml"
+
+    exclude_from_package_todo = True
 
     @classmethod
     def steps(cls):

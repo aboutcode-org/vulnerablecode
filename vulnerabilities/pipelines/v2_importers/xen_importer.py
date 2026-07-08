@@ -25,6 +25,7 @@ class XenImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "xen_importer_v2"
+    datasource_id = "xen"
     url = "https://xenbits.xen.org/xsa/xsa.json"
     spdx_license_expression = "LicenseRef-scancode-other-permissive"
     license_url = "https://xenbits.xen.org/xsa/"
@@ -56,6 +57,7 @@ class XenImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     precedence = 200
+    exclude_from_package_todo = True
 
     _cached_data = None  # Class-level cache
 

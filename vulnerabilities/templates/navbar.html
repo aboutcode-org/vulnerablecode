@@ -11,7 +11,7 @@
 </div>
 {% endif %}
 
-<nav class="navbar is-dark mb-5 border-bottom-radius" role="navigation" aria-label="main navigation"
+<nav class="navbar is-dark  border-bottom-radius" role="navigation" aria-label="main navigation"
     style="border-radius: 0;">
     <div class="navbar-brand ml-3">
         <a class="navbar-item is-size-4 has-text-weight-bold {% active_item 'home' %}" href="{% url 'home' %}">
@@ -20,21 +20,15 @@
     </div>
     <div class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item {% active_item 'package_search' %}" href="{% url 'package_search' %}">
-                Packages
-            </a>
-            <a class="navbar-item {% active_item 'vulnerability_search' %}" href="{% url 'vulnerability_search' %}">
-                Vulnerabilities
-            </a>
-            <a class="navbar-item {% active_item 'package_search_v2' %}" href="{% url 'package_search_v2' %}">
-                V2
-            </a>
             <a class="navbar-item" href="https://vulnerablecode.readthedocs.io/en/latest/" target="_blank">
                 Documentation
             </a>
         </div>
     </div>
     <div class="navbar-end mr-3">
+        <a class="navbar-item  {% active_item 'todo-list' %}" href="{% url 'todo-list' %}">
+            Advisory To-Dos
+        </a>
         <a class="navbar-item  {% active_item 'dashboard' %}" href="{% url 'dashboard' %}">
             Pipeline Dashboard
         </a>

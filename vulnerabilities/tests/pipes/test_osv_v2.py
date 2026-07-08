@@ -293,3 +293,13 @@ class TestOSVImporter(TestCase):
         )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)
+
+    def test_to_advisories_pypa8_cvss_v3_0_parsing(self):
+        with open(os.path.join(TEST_DATA, "pypa/pypa-8.yaml")) as f:
+            mock_response = saneyaml.load(f)
+        expected_file = os.path.join(TEST_DATA, "pypa/pypa-expected-8.json")
+        imported_data = parse_advisory_data_v3(
+            mock_response, "pypi", advisory_url="https://test.com", advisory_text=""
+        )
+        result = imported_data.to_dict()
+        util_tests.check_results_against_json(result, expected_file, regen=True)

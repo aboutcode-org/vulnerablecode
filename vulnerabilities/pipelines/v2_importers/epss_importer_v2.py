@@ -29,6 +29,9 @@ class EPSSImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "epss_importer_v2"
     spdx_license_expression = "unknown"
     importer_name = "EPSS Importer"
+    datasource_id = "epss"
+
+    exclude_from_package_todo = True
 
     precedence = 200
 

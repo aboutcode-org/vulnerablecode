@@ -31,6 +31,7 @@ class DebianImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Debian Importer Pipeline"""
 
     pipeline_id = "debian_importer_v2"
+    datasource_id = "debian"
     spdx_license_expression = "LicenseRef-scancode-other-permissive"
     license_url = "https://www.debian.org/license"
     notice = """

@@ -33,6 +33,7 @@ class ApacheKafkaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """Import Apache Kafka Advisories"""
 
     pipeline_id = "apache_kafka_importer_v2"
+    datasource_id = "apache_kafka"
     spdx_license_expression = "Apache-2.0"
     importer_name = "Apache Kafka Importer V2"
 

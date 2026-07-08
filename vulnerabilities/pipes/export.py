@@ -25,7 +25,11 @@ def package_prefetched_qs(checkpoint):
         .prefetch_related(
             Prefetch(
                 "affected_in_impacts",
-                queryset=ImpactedPackage.objects.only("advisory_id").prefetch_related(
+                queryset=ImpactedPackage.objects.filter(
+                    advisory__is_latest=True, advisory___all_impacts_unfurled_at__isnull=False
+                )
+                .only("advisory_id")
+                .prefetch_related(
                     Prefetch(
                         "advisory",
                         queryset=AdvisoryV2.objects.only("avid"),
@@ -34,7 +38,11 @@ def package_prefetched_qs(checkpoint):
             ),
             Prefetch(
                 "fixed_in_impacts",
-                queryset=ImpactedPackage.objects.only("advisory_id").prefetch_related(
+                queryset=ImpactedPackage.objects.filter(
+                    advisory__is_latest=True, advisory___all_impacts_unfurled_at__isnull=False
+                )
+                .only("advisory_id")
+                .prefetch_related(
                     Prefetch(
                         "advisory",
                         queryset=AdvisoryV2.objects.only("avid"),

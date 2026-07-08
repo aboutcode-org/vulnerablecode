@@ -1,6 +1,91 @@
 Release notes
 =============
 
+Version v40.0.1
+---------------------
+
+- Add throttling info in API docs, remove V1 and V2 API docs.
+- Avoid converting None to "None" in AdvisorySeverity.
+- Refine package curation workflow.
+
+
+Version v40.0.0
+---------------------
+
+- Fix malformed CVSS severity scores.
+- Disable v1 API, UI & pipelines.
+
+
+Version v39.0.0
+---------------------
+
+- WARNING: Vulnerablecode V1 API and UI has stopped supporting Ubuntu OVAL advisories, please shift to V3 API for new Ubuntu advisories.
+- WARNING: We will deprecate improver pipelines for calculating package version rank and grouping advisories for packages.
+- Add attribute ``pipeline_id`` to AdvisoryV2 to track the pipeline that created the advisory, also rename existing ``datasource_id`` and AVIDs.
+- We will group advisories for packages and calculate package risk score and advisory risk score only when an advisory is completely unfurled,
+  this will improve consistency of the data. In future if we change our grouping approach we have to make a migration to mark all advisories 
+  as not unfurled, so they can be goruped again with the new algo.
+- Create a pipeline to continuously collect various URLs and archive them #2233.
+- Add GitHub PoC collector #2024.
+- Collect existing fix commits for Linux Kernel #1989.
+- Add support for Reference Fix Commits improver #2163.
+- Add support for glib importer #2118.
+- Update federated library to work with the latest federation config #2310.
+- Add datasource ID #2309.
+- feat: add UI to expose curation queue 
+- Add support for parsing Git commit messages 
+- Add curation dashboard to resolve conflicting package version range 
+- Change architecture to import and marking advisories as usable 
+- Correct logic for non vuln versions 
+- Fix exploit ehancement pipelines 
+- Add a user agent with documentation 
+- Increase frequency and priority for critical pipelines 
+- Add ALTCHA verification in UI 
+- Add API/ UI support for Patch/PackageCommitPatch
+- Fix failing V2 pipelinea
+- Improve altcha challenge flow and reduce session timeout (https://github.com/aboutcode-org/vulnerablecode/pull/2348)
+
+
+Version v38.6.0
+---------------------
+
+- fix: add missing clean_downloads step for alpine_linux v2 importer (https://github.com/aboutcode-org/vulnerablecode/pull/2282)
+- fix: fix AdvisoryDataV2 deserialization and validate version ranges correctly (https://github.com/aboutcode-org/vulnerablecode/pull/2285)
+- fix: ignore conflicts while bulk creating v2 packages (https://github.com/aboutcode-org/vulnerablecode/pull/2289)
+- fix: use shared cache backend across WSGI workers (https://github.com/aboutcode-org/vulnerablecode/pull/2290)
+- fix: delete AdvisorySet associated with malformed aliases (https://github.com/aboutcode-org/vulnerablecode/pull/2291)
+
+
+Version v38.5.0
+---------------------
+
+- fix: Make package_url field unique for PackageV2
+
+Version v38.4.0
+---------------------
+
+- fix: run pipeline scheduling jobs in respective queues (https://github.com/aboutcode-org/vulnerablecode/pull/2263)
+- feat: show queue load factors on the pipeline dashboard (https://github.com/aboutcode-org/vulnerablecode/pull/2264)
+
+Version v38.3.0
+---------------------
+
+- feat: add high priority queue and run version range unfurling pipeline more frequently (https://github.com/aboutcode-org/vulnerablecode/pull/2256)
+
+Version v38.1.0
+---------------------
+
+- Throttle UI to 15 requests per minute to avoid abuse and improve performance.
+- Handle errors in unfurl_version_range pipeline.
+- Remove Todo pipeline from v1 pipelines.
+- Add openAPI documentation for Package and Advisory viewset.
+
+Version v38.0.0
+---------------------
+
+- This is a major version, we have changed our V3 API, refer to ``api_v3_usage.rst`` for details.
+- We have started grouping advisories which have aliases or identifiers in common and also affect same set of packages together.
+
 Version v37.0.0
 ---------------------
 

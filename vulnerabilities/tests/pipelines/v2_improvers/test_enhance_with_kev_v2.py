@@ -41,10 +41,13 @@ def test_kev_improver(mock_get):
     adv1 = AdvisoryV2.objects.create(
         advisory_id="VCIO-123-2002",
         datasource_id="ds",
+        pipeline_id="ds_importer_v2",
         avid="ds/VCIO-123-2002",
         unique_content_id="i3giu",
         url="https://test.com",
         date_collected=datetime.now(),
+        is_latest=True,
+        _all_impacts_unfurled_at=datetime.now(),
     )
     adv1.save()
 

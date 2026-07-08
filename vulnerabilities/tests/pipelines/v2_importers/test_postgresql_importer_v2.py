@@ -38,7 +38,7 @@ HTML_ADVISORY = """
           </td>
           <td>10.0, 10.1</td>
           <td>10.2</td>
-          <td><a href="/vector?vector=CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H">9.8</a></td>
+          <td><a href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H">9.8</a></td>
           <td>Description of the issue</td>
         </tr>
       </tbody>
@@ -113,7 +113,7 @@ def test_cvss_parsing(mock_get, importer):
     severity = advisories[0].severities[0]
     assert severity.system.identifier == "cvssv3"
     assert severity.value == "9.8"
-    assert "AV:N/AC:L/PR:N/UI:N" in severity.scoring_elements
+    assert "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H" == severity.scoring_elements
 
 
 @patch("vulnerabilities.pipelines.v2_importers.postgresql_importer.requests.get")

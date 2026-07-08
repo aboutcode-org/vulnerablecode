@@ -1,3 +1,5 @@
+.. _soc_gsoc21:
+
 Google Summer of Code 2021 Final Report
 ============================================
 

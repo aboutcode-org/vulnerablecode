@@ -7,15 +7,10 @@ VulnerableCode Home
 
 {% block content %}
 <section class="section pt-2">
-    <div class="container">
+    <div>
         <div class="columns is-centered mb-5 mt-2">
             <div class="column is-full-tablet is-full-desktop">
-                {% include "package_search_box.html" %}
-            </div>
-        </div>
-        <div class="columns is-centered mb-5">
-            <div class="column is-full-tablet is-full-desktop">
-                {% include "vulnerability_search_box.html" %}
+                {% include "package_search_box_v2.html" %}
             </div>
         </div>
         <div class="notification is-info is-light has-text-centered">
@@ -32,9 +27,6 @@ VulnerableCode Home
                     Check out latest updates here!
                 </a>
             </p>
-        </div>
-        <div class="notification is-info is-light has-text-centered">
-            ATTENTION: We will be deprecating V1 and V2 API by 30th June 2026. V3 endpoint is live now. Please migrate to V3 API before the deprecation date. For more details, please refer to this <a href="https://aboutcode-org.github.io/www.aboutcode.org/blog/vcio-migration-announcement-aboutcode" target="_blank" class="has-text-link is-underlined">blog</a>.
         </div>
     </div>
 </section>

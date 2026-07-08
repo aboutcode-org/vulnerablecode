@@ -45,6 +45,7 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     spdx_license_expression = "CC-BY-4.0"
     license_url = "https://access.redhat.com/security/data/"
     url = "https://security.access.redhat.com/data/csaf/v2/advisories/"
+    datasource_id = "redhat"
 
     precedence = 200
 

@@ -12,6 +12,7 @@ from django.contrib.admin.forms import AdminAuthenticationForm
 from django.core.validators import validate_email
 from django_altcha import AltchaField
 
+from vulnerabilities.models import ISSUE_TYPE_CHOICES
 from vulnerabilities.models import ApiUser
 
 
@@ -103,3 +104,36 @@ class PipelineSchedulePackageForm(forms.Form):
 
 class AdminLoginForm(AdminAuthenticationForm):
     captcha = AltchaField(floating=True, hidefooter=True)
+
+
+class AdvisoryToDoForm(forms.Form):
+    search = forms.CharField(
+        required=False,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search ToDos...",
+                "class": "input",
+            },
+        ),
+    )
+
+    resolved = forms.ChoiceField(
+        required=False,
+        choices=[
+            ("", "All"),
+            ("True", "Yes"),
+            ("False", "No"),
+        ],
+        widget=forms.Select(attrs={"class": "select"}),
+    )
+
+    issue_type = forms.ChoiceField(
+        required=False,
+        choices=[("", "All")] + ISSUE_TYPE_CHOICES,
+        widget=forms.Select(attrs={"class": "select"}),
+    )
+
+
+class AltchaForm(forms.Form):
+    altcha = AltchaField(auto="onload")

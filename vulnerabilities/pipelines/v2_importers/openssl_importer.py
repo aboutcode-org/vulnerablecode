@@ -36,6 +36,7 @@ class OpenSSLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "openssl_importer_v2"
     spdx_license_expression = "Apache-2.0"
     importer_name = "OpenSSL Importer V2"
+    datasource_id = "openssl"
 
     license_url = "https://github.com/openssl/openssl/blob/master/LICENSE.txt"
     repo_url = "git+https://github.com/openssl/release-metadata/"

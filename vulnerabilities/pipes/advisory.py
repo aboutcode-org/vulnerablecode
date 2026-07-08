@@ -47,8 +47,8 @@ from vulnerabilities.models import VulnerabilityReference
 from vulnerabilities.models import VulnerabilityRelatedReference
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
+from vulnerabilities.pipes.risk_score import compute_advisory_risk_score
 from vulnerabilities.pipes.univers_utils import get_exact_purls_v2
-from vulnerabilities.utils import compute_advisory_content
 
 
 def get_or_create_aliases(aliases: List) -> QuerySet:
@@ -293,6 +293,7 @@ def insert_advisory_v2(
     advisory: AdvisoryDataV2,
     pipeline_id: str,
     logger: Callable,
+    datasource_id: str,
     precedence: int = 0,
 ):
     from vulnerabilities.models import ImpactedPackage
@@ -302,23 +303,23 @@ def insert_advisory_v2(
     advisory_obj = None
     created = False
     content_id = compute_content_id_v2(advisory_data=advisory)
-    advisory_content_hash = compute_advisory_content(advisory_data=advisory)
     try:
         default_data = {
-            "datasource_id": pipeline_id,
+            "datasource_id": datasource_id,
+            "pipeline_id": pipeline_id,
             "advisory_id": advisory.advisory_id,
-            "avid": f"{pipeline_id}/{advisory.advisory_id}",
+            "avid": f"{datasource_id}/{advisory.advisory_id}",
             "summary": advisory.summary,
             "date_published": advisory.date_published,
             "original_advisory_text": advisory.original_advisory_text,
             "url": advisory.url,
             "precedence": precedence,
-            "advisory_content_hash": advisory_content_hash,
         }
 
         advisory_obj, created = AdvisoryV2.objects.get_or_create(
             advisory_id=advisory.advisory_id,
-            datasource_id=pipeline_id,
+            datasource_id=datasource_id,
+            pipeline_id=pipeline_id,
             unique_content_id=content_id,
             defaults=default_data,
         )
@@ -337,6 +338,13 @@ def insert_advisory_v2(
     if not created:
         return advisory_obj
 
+    AdvisoryV2.objects.filter(
+        avid=f"{datasource_id}/{advisory.advisory_id}",
+        is_latest=True,
+    ).update(is_latest=False)
+    advisory_obj.is_latest = True
+    advisory_obj.save()
+
     aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
     references = get_or_create_advisory_references(references=advisory.references)
     severities = get_or_create_advisory_severities(severities=advisory.severities)
@@ -354,6 +362,18 @@ def insert_advisory_v2(
     for field_name, values in related_fields.items():
         if values:
             getattr(advisory_obj, field_name).add(*values)
+
+    weighted_severity, exploitability, risk_score = compute_advisory_risk_score(advisory_obj)
+    advisory_obj.weighted_severity = (
+        round(weighted_severity, 1) if weighted_severity is not None else None
+    )
+    advisory_obj.exploitability = round(exploitability, 1) if exploitability is not None else None
+    advisory_obj.risk_score = round(risk_score, 1) if risk_score is not None else None
+    cur = datetime.now(timezone.utc)
+    if not advisory.affected_packages:
+        advisory_obj._all_impacts_unfurled_at = cur
+        advisory_obj._all_impacts_unfurled_successfully_at = cur
+    advisory_obj.save()
 
     for affected_pkg in advisory.affected_packages:
         impact = ImpactedPackage.objects.create(
@@ -382,6 +402,11 @@ def insert_advisory_v2(
 
         impact.affecting_packages.add(*affected_packages_v2)
         impact.fixed_by_packages.add(*fixed_packages_v2)
+
+        if affected_packages_v2:
+            affected_packages_v2[0].calculate_version_rank
+        elif fixed_packages_v2:
+            fixed_packages_v2[0].calculate_version_rank
 
         introduced_commit_v2 = get_or_create_advisory_package_commit_patches(
             affected_pkg.introduced_by_commit_patches

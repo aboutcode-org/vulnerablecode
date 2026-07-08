@@ -36,8 +36,9 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://github.com/dependabot/elixir-security-advisories/blob/master/LICENSE.txt"
     repo_url = "git+https://github.com/dependabot/elixir-security-advisories"
     run_once = True
+    datasource_id = "elixir_security"
 
-    precedence = 200
+    precedence = 400
 
     @classmethod
     def steps(cls):

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load utils %}
+
 {% block title %}
 Pipeline Dashboard
 {% endblock %}
@@ -22,16 +24,28 @@ Pipeline Dashboard
     .column {
         word-break: break-word;
     }
+
+    .has-text-orange {
+        color: #ff8c42 !important;
+    }
+
+    .has-tooltip-orange::before {
+        background-color: #ff8c42 !important;
+    }
+
+    .has-tooltip-orange::after {
+        border-top-color: #ff8c42 !important;
+    }
 </style>
 {% endblock %}
 
 
 {% block content %}
-<div class="columns">
+<div class="columns mt-4">
     <div class="column">
     </div>
 
-    <div class="column is-four-fifths">
+    <div class="column is-11">
         <div class="content is-normal">
             <h1>Pipeline Dashboard</h1>
             <hr />
@@ -48,11 +62,63 @@ Pipeline Dashboard
         </form>
 
         <div class="box">
-            <div class="column has-text-right">
-                <p class="has-text-weight-semibold">
-                    {{ active_pipeline_count|default:0 }} active pipeline{{ active_pipeline_count|default:0|pluralize }},
-                    {{ disabled_pipeline_count|default:0 }} disabled pipeline{{ disabled_pipeline_count|default:0|pluralize }}
-                </p>
+            <div class="columns is-multiline is-vcentered mb-0">
+                <div class="column is-half has-text-left">
+                    {% if load_per_queue %}
+                    <p class="ml-3">
+                        <span class="has-text-weight-bold has-text-black is-size-6 has-tooltip-arrow has-tooltip-multiline"
+                            data-tooltip="Load factor is the ratio of the total compute required to run all active pipelines
+                                in a queue to the available worker capacity for that queue over a 24-hour period.
+                                A value greater than 1 indicates that the number of workers is insufficient to
+                                run all pipelines within the schedule.">
+                            Load Factor:
+                        </span>
+                        {% for queue_name, values in load_per_queue.items %}
+
+                            <span class="has-text-weight-bold is-size-6 has-tooltip-arrow has-tooltip-multiline"
+                                data-tooltip="{{ queue_name|capfirst }} priority pipeline queue.">
+                                {{ queue_name| capfirst }}
+                            </span>
+                            {% with load_factor=values|get_item:"load_factor" additional=values|get_item:"additional_worker" %}
+                                {% if load_factor == "no_worker" %}
+                                    <span class="has-text-weight-bold is-size-6 has-text-danger has-tooltip-arrow has-tooltip-multiline has-tooltip-danger"
+                                            data-tooltip="All workers in the {{ queue_name }} queue are down. Please run {{ additional }}
+                                            worker{{ additional|pluralize }} for the {{ queue_name }} queue.">
+                                        <span class="icon"><i class="fa fa-exclamation-triangle"></i></span>
+                                    </span>
+                                {% elif additional < 1 %}
+                                    <span class="has-text-weight-bold is-size-6 has-text-success has-tooltip-arrow has-tooltip-multiline has-tooltip-success"
+                                            data-tooltip="{{ queue_name|capfirst }} queue perfectly balanced.">
+                                        {{ load_factor|floatformat:2 }}
+                                        <span class="icon"><i class="fa fa-check-circle"></i></span>
+                                    </span>
+                                {% elif additional < 2 %}
+                                    <span class="has-text-weight-bold is-size-6 has-text-orange has-tooltip-arrow has-tooltip-multiline has-tooltip-orange"
+                                    data-tooltip="Consider adding {{ additional }} additional worker{{ additional|pluralize }} to the {{ queue_name }} queue.">
+                                        {{ load_factor|floatformat:2 }}
+                                        <span class="icon"><i class="fa fa-info-circle"></i></span>
+                                    </span>
+                                {% else %}
+                                    <span class="has-text-weight-bold is-size-6 has-text-danger has-tooltip-arrow has-tooltip-multiline has-tooltip-danger"
+                                            data-tooltip="Consider adding {{ additional }} additional worker{{ additional|pluralize }} to the {{ queue_name }} queue.">
+                                        {{ load_factor|floatformat:2 }}
+                                        <span class="icon"><i class="fa fa-exclamation-circle"></i></span>
+                                    </span>
+                                {% endif %}
+                            {% endwith %}
+
+                            {% if not forloop.last %} &bull; {% endif %}
+
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="column is-half has-text-right">
+                    <p class="has-text-grey-dark has-text-weight-semibold mr-3">
+                        {{ active_pipeline_count|default:0 }} active pipeline{{ active_pipeline_count|default:0|pluralize }},
+                        {{ disabled_pipeline_count|default:0 }} disabled pipeline{{ disabled_pipeline_count|default:0|pluralize }}
+                    </p>
+                </div>
             </div>
             <table class="table is-striped  is-hoverable is-fullwidth">
                 <thead>
@@ -60,12 +126,13 @@ Pipeline Dashboard
                         <th colspan="6">
                             <div class="box is-small">
                                 <div class="columns is-mobile is-vcentered">
-                                    <div class="column is-one-quarter">Pipeline ID</div>
-                                    <div class="column is-one-eighth">Active</div>
-                                    <div class="column is-one-eighth">Interval</div>
-                                    <div class="column is-one-eighth">Status</div>
-                                    <div class="column is-one-fifth">Last Run End Time</div>
-                                    <div class="column is-one-fifth">Next Run Start</div>
+                                    <div class="column has-text-left" style="flex: 0 0 25%; font-weight: bold;">Pipeline ID</div>
+                                    <div class="column has-text-left" style="flex: 0 0 8%; font-weight: bold;">Active</div>
+                                    <div class="column has-text-left" style="flex: 0 0 8%; font-weight: bold;">Priority</div>
+                                    <div class="column has-text-left" style="flex: 0 0 13%; font-weight: bold;">Interval</div>
+                                    <div class="column has-text-left" style="flex: 0 0 14%; font-weight: bold;">Status</div>
+                                    <div class="column has-text-left" style="flex: 0 0 18%; font-weight: bold;">Last Run End Time</div>
+                                    <div class="column has-text-left" style="flex: 0 0 14%; font-weight: bold;">Next Run Start</div>
                                 </div>
                             </div>
                         </th>
@@ -76,29 +143,30 @@ Pipeline Dashboard
                     <tr>
                         <td colspan="6">
                             <a href="{% url 'runs-list' pipeline_id=schedule.pipeline_id %}" class="has-text-info">
-                                <div class="columns px-1 is-mobile is-vcentered">
-                                    <div class="column is-one-quarter">{{ schedule.pipeline_id }}</div>
-                                    <div class="column is-one-eighth has-text-grey">{{ schedule.is_active|yesno:"Yes,No" }}</div>
-                                    <div class="column is-one-eighth has-text-grey">
+                                <div class="columns mx-2 is-mobile is-vcentered">
+                                    <div class="column has-text-left" style="flex: 0 0 25%;">{{ schedule.pipeline_id }}</div>
+                                    <div class="column has-text-grey" style="flex: 0 0 8%;">{{ schedule.is_active|yesno:"Yes,No" }}</div>
+                                    <div class="column has-text-grey" style="flex: 0 0 8%;">{{ schedule.get_run_priority_display|capfirst}}</div>
+                                    <div class="column has-text-grey" style="flex: 0 0 13%;">
                                         {% if schedule.is_run_once %}
                                             Once
                                         {% else %}
-                                            {{ schedule.run_interval }} hour{{ schedule.run_interval|pluralize }}
+                                            {{ schedule.run_interval|humanize_interval }}
                                         {% endif %}
                                     </div>
-                                    <div class="column is-one-eighth">
+                                    <div class="column" style="flex: 0 0 14%;">
                                         <span class="is-flex is-align-items-center">
                                             {% include "includes/job_status.html" with status=schedule.status %}
                                         </span>
                                     </div>
-                                    <div class="column is-one-fifth has-text-grey">
+                                    <div class="column has-text-grey" style="flex: 0 0 18%;">
                                         {% if schedule.latest_run_end_date %}
                                             {{ schedule.latest_run_end_date|date:"Y-m-d h:i a T" }}
                                         {% else %}
                                             N/A
                                         {% endif %}
                                     </div>
-                                    <div class="column is-one-fifth has-text-grey">
+                                    <div class="column has-text-grey" style="flex: 0 0 14%;">
                                         {% if schedule.next_run_date %}
                                             {{ schedule.next_run_date|date:"Y-m-d" }}
                                         {% else %}

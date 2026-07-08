@@ -14,11 +14,11 @@ from datetime import datetime
 from operator import attrgetter
 from pathlib import Path
 
+from aboutcode.federated import DataFederation
 from aboutcode.pipeline import LoopProgress
 from django.conf import settings
 from django.utils import timezone
 
-from aboutcode.federated import DataFederation
 from vulnerabilities.pipelines import VulnerableCodePipeline
 from vulnerabilities.pipes import export
 from vulnerabilities.pipes import federatedcode

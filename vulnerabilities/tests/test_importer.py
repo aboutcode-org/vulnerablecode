@@ -13,6 +13,7 @@ from vulnerabilities.importer import Importer
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipes.advisory import classify_patch_source
 
 
@@ -201,3 +202,15 @@ def test_classify_patch_source_integration(url, commit_hash, patch_text, results
             assert actual_data_obj.reference_id == expected_data_obj.reference_id
             assert actual_data_obj.reference_type == expected_data_obj.reference_type
             assert actual_data_obj.url == expected_data_obj.url
+
+
+def test_vulnerability_severity_value_string_conversion():
+    severity = VulnerabilitySeverity.from_dict(
+        {
+            "system": "cvssv3",
+            "value": None,
+            "scoring_elements": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        }
+    )
+
+    assert severity.value == ""

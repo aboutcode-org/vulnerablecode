@@ -3,11 +3,6 @@
 Installation
 ============
 
-.. warning::
-   VulnerableCode is going through a major structural change and the
-   installations are likely to not produce enough results.
-   This is tracked in https://github.com/aboutcode-org/vulnerablecode/issues/597
-
 Welcome to **VulnerableCode** installation guide! This guide describes how to install
 VulnerableCode on various platforms.
 Please read and follow the instructions carefully to ensure your installation is
@@ -58,11 +53,19 @@ Run the App
 
 **Run your image** as a container::
 
-    docker compose up
+    docker compose up -d \
+    --scale vulnerablecode_rqworker=4 \
+    --scale vulnerablecode_rqworker_high=2
+
+.. tip::
+
+    Adjust the scaling factor as needed, or based on the recommendation shown in ``Load Factor`` at http://localhost:8000/pipelines/dashboard/.
+
 
 
 At this point, the VulnerableCode app should be running at port ``8000`` on your Docker host.
 Go to http://localhost:8000/ on a web browser to access the web UI.
+Go to http://localhost:8000/pipelines/dashboard/ to view the run status of the importer and improver pipelines.
 Optionally, you can set ``NGINX_PORT`` environment variable in your shell or in the `.env` file
 to run on a different port than 8000.
 
@@ -86,28 +89,10 @@ to run on a different port than 8000.
 
 .. tip::
 
-    Set ``STAGING`` to ``False`` in production to disable the staging environment warning.
-
-Execute a Command
-^^^^^^^^^^^^^^^^^
-
-You can execute a one of ``manage.py`` commands through the Docker command line
-interface, for example::
-
-    docker compose run vulnerablecode ./manage.py import --list
-
-.. note::
-    Refer to the :ref:`command_line_interface` section for the full list of commands.
-
-Alternatively, you can connect to the Docker container ``bash`` and run commands
-from there::
-
-    docker compose run vulnerablecode bash
-    ./manage.py import --list
+    Set ``STAGING=False`` in ``.env`` file to disable the staging environment warning.
 
 
 .. _local_development_installation:
-
 
 Local development installation
 ------------------------------
@@ -217,6 +202,38 @@ application.
 .. warning::
     This setup is **not suitable for deployments** and **only supported for local
     development**.
+
+
+Run Pipelines
+^^^^^^^^^^^^^
+
+For local testing, you can use ``manage.py`` commands to run importer and improver pipelines.
+
+To list the available importer pipelines::
+
+    ./manage.py import --list
+
+
+To run an importer pipeline::
+
+    ./manage.py import curl_importer_v2
+
+
+To list the available improver pipelines::
+
+    ./manage.py improve --list
+
+To run an improver pipeline::
+
+    ./manage.py improve compute_package_risk_v2
+
+
+.. note::
+    Running pipeline using `manage.py` command will not display it on the ``Pipeline Dashboard``. Instead, all logs will be printed directly to the CLI.
+
+
+.. tip::
+    Refer to the :ref:`command_line_interface` section for the complete list of commands.
 
 
 Upgrading

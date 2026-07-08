@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load utils %}
+
+{% block title %}
+Advisory To-Dos
+{% endblock %}
+
+{% block extrahead %}
+<style>
+    thead th {
+        border-bottom: none !important;
+    }
+
+    tbody tr:hover {
+        background-color: #e0e0e0 !important;
+        cursor: pointer;
+    }
+
+    tbody tr:nth-child(even):hover {
+        background-color: #d3d3d3 !important;
+    }
+
+    .column {
+        word-break: break-word;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="columns mt-4">
+    <div class="column">
+    </div>
+
+    <div class="column is-11">
+        <div class="content is-normal">
+            <h1>Advisory To-Dos</h1>
+            <hr />
+        </div>
+            <form method="get" class="box px-6 mx-0">
+
+                <div class="field has-addons">
+                    <div class="control is-expanded has-icons-right">
+                        {{ form.search }}
+
+                        {% if form.search.value %}
+                        <a href="?{% querystring request search='' %}"
+                        class="icon is-right"
+                        style="pointer-events: auto; cursor: pointer;">
+                            ✕
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="control">
+                        <button type="submit" class="button is-info">
+                            <i class="fa fa-search mx-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        <div class="box">
+    <table class="table is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th colspan="4">
+                    <div class="box is-small">
+                        <div class="columns is-vcentered">
+                            <div class="column has-text-left" style="flex: 0 0 20%; font-weight: bold;">Aliases</div>
+                            <div class="column has-text-left" style="flex: 0 0 20%; font-weight: bold;">Date</div>
+                            <div class="column has-text-left" style="flex: 0 0 10%; font-weight: bold;">Resolved</div>
+                            <div class="column has-text-left" style="flex: 0 0 10%; font-weight: bold;"># Advisories</div>
+                            <div class="column has-text-left" style="flex: 0 0 40%; font-weight: bold;">Issue Type</div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th colspan="4">
+                    <form method="get">
+                        <input type="hidden" name="search" value="{{ form.search.value|default:'' }}">
+
+                        <div class="columns is-vcentered px-1">
+                            <div class="column has-text-left" style="flex: 0 0 20%;"></div>
+                            <div class="column has-text-left" style="flex: 0 0 20%;"></div>
+
+                            <div class="column " style="flex: 0 0 10%;">
+                                <div class="select is-half">
+                                    <select name="resolved" onchange="this.form.submit()">
+                                        {% for val, label in form.fields.resolved.choices %}
+                                            <option value="{{ val }}"
+                                                {% if form.resolved.value == val %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="column has-text-left" style="flex: 0 0 10%;"></div>
+
+                            <div class="column">
+                                <div class="select is-fullwidth">
+                                    <select name="issue_type" onchange="this.form.submit()" >
+                                        {% for val, label in form.fields.issue_type.choices %}
+                                            <option value="{{ val }}"
+                                                {% if form.issue_type.value == val %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for todo in todo_list %}
+            <tr>
+                <td colspan="4">
+                    {% with supported_curation="CONFLICTING_FIXED_BY_PACKAGES CONFLICTING_AFFECTED_PACKAGES CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES" %}
+                    {% if todo.issue_type in supported_curation.split %}
+                        <a href="{% url 'todo-detail' todo_id=todo.todo_id %}" class="has-text-info">
+                    {% elif todo.issue_type == "CONFLICTING_SEVERITY_SCORES" %}
+                        <a href="{% url 'todo-severity-detail' todo_id=todo.todo_id %}" class="has-text-info">
+                    {% endif %}
+                            <div class="columns px-1 is-vcentered">
+                                <div class="column has-text-left" style="flex: 0 0 20%;">
+                                    {{ todo.alias }}
+                                </div>
+                                <div class="column has-text-left" style="flex: 0 0 20%;">
+                                    {{ todo.oldest_advisory_date|default:"NA" }}
+                                </div>
+                                <div class="column has-text-centered has-text-grey" style="flex: 0 0 10%;">
+                                    {{ todo.is_resolved|yesno:"Yes,No" }}
+                                </div>
+                                <div class="column has-text-centered has-text-grey" style="flex: 0 0 10%;">
+                                    {{ todo.advisories_count }}
+                                </div>
+                                <div class="column has-text-left has-text-grey" style="flex: 0 0 40%;">
+                                    {{ todo.get_issue_type_display }}
+                                </div>
+                            </div>
+                    {% if todo.issue_type in supported_curation.split %}
+                        </a>
+                    {% endif %}
+                    {% endwith %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="has-text-centered">No To-Dos found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        </div>
+            {% include "includes/pagination_v2.html" with page_obj=page_obj %}
+        </div>
+    <div class="column"></div>
+</div>
+{% endblock %}
+

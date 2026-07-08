@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="section">
+    <div class="columns is-centered mt-4 pt-4">
+        <div class="column is-4">
+            <div class="card">
+                <div class="card-content">
+                    <h1 class="title is-5 has-text-centered mt-4">
+                        Please verify that you are human to continue
+                    </h1>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="has-text-centered ml-5 pt-4">
+                            <div style="display:inline-block; min-width: 304px;">
+                                {{ form }}
+                            </div>
+                        </div>
+
+                        <div class="field mt-4 pt-2">
+                            <div class="control">
+                                <button type="submit" class="button is-info is-fullwidth">
+                                    Continue
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

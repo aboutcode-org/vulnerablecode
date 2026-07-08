@@ -28,10 +28,12 @@ class AospImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
 
     pipeline_id = "aosp_dataset_fix_commits"
+    datasource_id = "aosp_dataset"
     spdx_license_expression = "Apache-2.0"
     license_url = "https://github.com/quarkslab/aosp_dataset/blob/master/LICENSE"
 
     precedence = 200
+    exclude_from_package_todo = True
 
     @classmethod
     def steps(cls):

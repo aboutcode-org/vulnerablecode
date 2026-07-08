@@ -14,7 +14,6 @@ import requests
 from bs4 import BeautifulSoup
 from packageurl import PackageURL
 from univers.version_range import GenericVersionRange
-from univers.versions import GenericVersion
 
 from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryDataV2
@@ -35,6 +34,7 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     license_url = "https://www.postgresql.org/about/licence/"
     spdx_license_expression = "PostgreSQL"
     base_url = "https://www.postgresql.org/support/security/"
+    datasource_id = "postgresql"
 
     links = set()
 
@@ -121,9 +121,13 @@ class PostgreSQLImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 if link.startswith("/"):
                     link = urlparse.urljoin("https://www.postgresql.org/", link)
                 if "support/security/CVE" in link and vector_link_tag:
+                    if "v3-calculator" not in vector_link_tag["href"]:
+                        continue
+
                     parsed_link = urlparse.urlparse(vector_link_tag["href"])
                     cvss3_vector = urlparse.parse_qs(parsed_link.query).get("vector", [""])[0]
                     cvss3_base_score = vector_link_tag.text
+                    cvss3_vector = "CVSS:3.0/" + cvss3_vector.removeprefix("CVSS:3.0/")
                     severities.append(
                         VulnerabilitySeverity(
                             system=severity_systems.CVSSV3,

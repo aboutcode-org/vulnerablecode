@@ -1,108 +1,38 @@
 [
   {
-    "vulnerability_id": null,
-    "aliases": [
-      "CVE-2021-44224"
-    ],
-    "confidence": 100,
-    "summary": "A crafted URI sent to httpd configured as a forward proxy (ProxyRequests on) can cause a crash (NULL pointer dereference) or, for configurations mixing forward and reverse proxy declarations, can allow for requests to be directed to a declared Unix Domain Socket endpoint (Server Side Request Forgery).\n\nThis issue affects Apache HTTP Server 2.4.7 up to 2.4.51 (included).",
-    "affected_purls": [
-      {
+    "vulnerability_id": "CVE-2021-44224",
+    "affected_package": {
+      "package": {
         "type": "apache",
-        "namespace": "",
-        "name": "httpd",
-        "version": "2.4.8",
-        "qualifiers": "",
-        "subpath": ""
+        "name": "httpd"
       },
-      {
-        "type": "apache",
-        "namespace": "",
-        "name": "httpd",
-        "version": "2.4.9",
-        "qualifiers": "",
-        "subpath": ""
-      },
-      {
-        "type": "apache",
-        "namespace": "",
-        "name": "httpd",
-        "version": "2.4.10",
-        "qualifiers": "",
-        "subpath": ""
-      }
-    ],
-    "fixed_purl": {
-      "type": "apache",
-      "namespace": "",
-      "name": "httpd",
-      "version": "2.4.53",
-      "qualifiers": "",
-      "subpath": ""
-    },
-    "references": [
-      {
-        "reference_id": "CVE-2021-44224",
-        "reference_type": "",
-        "url": "https://httpd.apache.org/security/json/CVE-2021-44224.json",
-        "severities": [
+      "affected_version_range": {
+        "constraints": [
           {
-            "system": "apache_httpd",
-            "value": "moderate",
-            "scoring_elements": ""
+            "comparator": "<=",
+            "version": "2.4.48"
+          },
+          {
+            "comparator": "!=",
+            "version": "2.4.49"
           }
         ]
       }
-    ],
-    "weaknesses": [476]
-  },
-  {
-    "vulnerability_id": null,
-    "aliases": [
-      "CVE-2021-44224"
-    ],
-    "confidence": 100,
-    "summary": "A crafted URI sent to httpd configured as a forward proxy (ProxyRequests on) can cause a crash (NULL pointer dereference) or, for configurations mixing forward and reverse proxy declarations, can allow for requests to be directed to a declared Unix Domain Socket endpoint (Server Side Request Forgery).\n\nThis issue affects Apache HTTP Server 2.4.7 up to 2.4.51 (included).",
-    "affected_purls": [
-      {
-        "type": "apache",
-        "namespace": "",
-        "name": "httpd",
-        "version": "2.4.7",
-        "qualifiers": "",
-        "subpath": ""
-      },
-      {
-        "type": "apache",
-        "namespace": "",
-        "name": "httpd",
-        "version": "2.4.51",
-        "qualifiers": "",
-        "subpath": ""
-      }
-    ],
-    "fixed_purl": {
-      "type": "apache",
-      "namespace": "",
-      "name": "httpd",
-      "version": "2.4.52",
-      "qualifiers": "",
-      "subpath": ""
     },
-    "references": [
+    "fixed_package": {
+      "package": {
+        "type": "apache",
+        "name": "httpd"
+      },
+      "fixed_version": "2.4.49"
+    },
+    "weaknesses": [200],
+    "severities": [
       {
-        "reference_id": "CVE-2021-44224",
-        "reference_type": "",
-        "url": "https://httpd.apache.org/security/json/CVE-2021-44224.json",
-        "severities": [
-          {
-            "system": "apache_httpd",
-            "value": "moderate",
-            "scoring_elements": ""
-          }
-        ]
+        "system": "apache_httpd",
+        "value": "MODERATE",
+        "scoring_elements": ""
       }
-    ],
-    "weaknesses": [476]
+    ]
   }
 ]

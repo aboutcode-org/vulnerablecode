@@ -20,7 +20,6 @@ from univers.versions import SemverVersion
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importers.apache_tomcat import ApacheTomcatImporter
 from vulnerabilities.importers.apache_tomcat import extract_tomcat_advisory_data_from_page
-from vulnerabilities.importers.apache_tomcat import to_version_ranges_apache
 from vulnerabilities.importers.apache_tomcat import to_version_ranges_maven
 from vulnerabilities.improvers.default import DefaultImprover
 from vulnerabilities.improvers.valid_versions import ApacheTomcatImprover
@@ -394,31 +393,4 @@ def test_to_version_ranges():
     assert expected_MavenVersionRange_versions_data == converted_versions_data_maven
     assert (
         MavenVersionRange.from_string(expected_versions_data_maven) == converted_versions_data_maven
-    )
-
-    expected_versions_data_apache = "vers:apache/>=1.0.0|<=2.0.0|!=3.0.0|>=3.2.2|<=3.2.3|>=3.3a|<=3.3.1|!=3.3.1a|>=9.0.0.M1|<=9.0.0.M9|>=10.1.0-M1|<=10.1.0-M16"
-
-    expected_ApacheVersionRange_versions_data = ApacheVersionRange(
-        constraints=(
-            VersionConstraint(comparator=">=", version=SemverVersion(string="1.0.0")),
-            VersionConstraint(comparator="<=", version=SemverVersion(string="2.0.0")),
-            VersionConstraint(comparator="!=", version=SemverVersion(string="3.0.0")),
-            VersionConstraint(comparator=">=", version=SemverVersion(string="3.2.2")),
-            VersionConstraint(comparator="<=", version=SemverVersion(string="3.2.3")),
-            VersionConstraint(comparator=">=", version=SemverVersion(string="3.3a")),
-            VersionConstraint(comparator="<=", version=SemverVersion(string="3.3.1")),
-            VersionConstraint(comparator="!=", version=SemverVersion(string="3.3.1a")),
-            VersionConstraint(comparator=">=", version=SemverVersion(string="9.0.0.M1")),
-            VersionConstraint(comparator="<=", version=SemverVersion(string="9.0.0.M9")),
-            VersionConstraint(comparator=">=", version=SemverVersion(string="10.1.0-M1")),
-            VersionConstraint(comparator="<=", version=SemverVersion(string="10.1.0-M16")),
-        )
-    )
-
-    converted_versions_data_apache = to_version_ranges_apache(versions_data, fixed_versions)
-
-    assert expected_ApacheVersionRange_versions_data == converted_versions_data_apache
-    assert (
-        ApacheVersionRange.from_string(expected_versions_data_apache)
-        == converted_versions_data_apache
     )

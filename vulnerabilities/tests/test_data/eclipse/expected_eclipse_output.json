@@ -1,0 +1,82 @@
+[
+  {
+    "advisory_id": "CVE-2017-7649",
+    "aliases": [],
+    "summary": "The network enabled distribution of Kura before 2.1.0 takes control over the device's firewall...",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-7649"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://bugs.eclipse.org/bugs/show_bug.cgi?id=514681"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "9.8",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2017-04-14T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-7649"
+  },
+  {
+    "advisory_id": "CVE-2018-12537",
+    "aliases": [],
+    "summary": "Moderate severity vulnerability that affects io.vertx:vertx-core",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-12537"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://bugs.eclipse.org/bugs/show_bug.cgi?id=536038"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/CVEProject/cvelist/pull/932"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2018-06-19T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-12537"
+  },
+  {
+    "advisory_id": "CVE-2024-2212",
+    "aliases": [],
+    "summary": "",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2212"
+      },
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/eclipse-threadx/threadx/security/advisories/GHSA-v9jj-7qjg-h6g6"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2024-03-06T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-2212"
+  }
+]

@@ -101,7 +101,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
             </ul>
         </div>
         <div id="tab-content">
-            <div class="tab-div {% if not 'epss_page' in request.GET %}is-active{% endif %}" data-content="essentials">
+            <div class="tab-div is-active" data-content="essentials">
                 <div class="tab-nested-div">
                     <table class="table vcio-table width-100-pct mt-2">
                         <tbody>
@@ -797,9 +797,9 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 </section>
 {% endif %}
 
-<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
 
-{% if 'epss_page' in request.GET or severities %}
+{% if show_epss_chart %}
     <link rel="stylesheet" href="{% static 'css/billboard.css' %}">
     <script src="{% static 'js/d3.js' %}"></script>
     <script src="{% static 'js/billboard.js' %}"></script>

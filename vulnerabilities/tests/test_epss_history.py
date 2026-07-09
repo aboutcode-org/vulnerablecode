@@ -9,9 +9,9 @@
 
 import json
 import time
-import pytest
 from pathlib import Path
 
+import pytest
 from django.test import TestCase
 from django.urls import reverse
 

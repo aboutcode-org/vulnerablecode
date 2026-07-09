@@ -28,7 +28,6 @@ from django.db.models import FloatField
 from django.db.models import Max
 from django.db.models import OuterRef
 from django.db.models import Prefetch
-from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models.functions import Cast
 from django.db.models.functions import TruncDate
@@ -806,6 +805,8 @@ class AdvisoryDetails(VulnerableCodeDetailView):
             advisory, self.request.GET.get("epss_page")
         )
 
+        show_epss_chart = "epss_page" in self.request.GET or advisory.severities.exists()
+
         context.update(
             {
                 "advisory": advisory,
@@ -819,6 +820,7 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                 "epss_data": epss_data,
                 "epss_history_data": epss_history_data,
                 "epss_pagination_obj": epss_pagination_obj,
+                "show_epss_chart": show_epss_chart,
             }
         )
         return context

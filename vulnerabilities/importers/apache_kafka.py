@@ -15,6 +15,8 @@ import requests
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 from packageurl import PackageURL
+from univers.version_range import VersionRange
+from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -97,16 +99,65 @@ class ApacheKafkaImporter(Importer):
     license_url = "https://www.apache.org/licenses/"
     importer_name = "Apache Kafka Importer"
 
+    def __init__(self, purl=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.purl = purl
+        if self.purl:
+            if self.purl.type != "apache" or self.purl.name != "kafka":
+                print(
+                    f"Warning: This importer handles Apache Kafka packages. Current PURL: {self.purl!s}"
+                )
+
     @staticmethod
     def fetch_advisory_page(self):
         page = requests.get(self.GH_PAGE_URL)
         return page.content
 
     def advisory_data(self):
-        advisory_page = self.fetch_advisory_page(self)
+        advisory_page = self.fetch_advisory_page()
 
-        parsed_data = self.to_advisory(advisory_page)
-        return parsed_data
+        all_advisories = self.to_advisory(advisory_page)
+
+        if self.purl:
+            return self._filter_advisories_for_purl(all_advisories)
+
+        return all_advisories
+
+    def _filter_advisories_for_purl(self, advisories):
+        if not self.purl:
+            return advisories
+
+        filtered_advisories = []
+        for advisory in advisories:
+            if self._advisory_affects_purl(advisory):
+                filtered_advisories.append(advisory)
+
+        return filtered_advisories
+
+    def _advisory_affects_purl(self, advisory):
+        if not self.purl:
+            return True
+
+        if self.purl.type != "apache" or self.purl.name != "kafka":
+            return False
+
+        if not self.purl.version:
+            return True
+
+        for affected_package in advisory.affected_packages:
+
+            if affected_package.affected_version_range:
+                try:
+                    purl_version = SemverVersion(self.purl.version)
+                    if purl_version in VersionRange.from_string(
+                        affected_package.affected_version_range
+                    ):
+                        return True
+                except Exception as e:
+                    logger.error(f"Error checking version {self.purl.version}: {e}")
+                    return True
+
+        return False
 
     def to_advisory(self, advisory_page):
         advisories = []

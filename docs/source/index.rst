@@ -34,6 +34,16 @@
 .. toctree::
    :hidden:
    :maxdepth: 1
+   :caption: Advisory Curation
+
+   advisory-todos
+   advisory-package-curation
+   advisory-severity-curation
+   advisory-weakness-curation
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
    :caption: Misc
 
    faq
@@ -108,6 +118,13 @@ Explanations
 Consult the reference to understand VulnerableCode concepts.
 
 .. rst-class:: row clearfix
+
+Advisory Curation
+~~~~~~~~~~~~~~~~~
+
+Learn how to review and enrich vulnerability advisory data.
+
+- :ref:`advisory_todos`
 
 Misc
 ~~~~~~~~~~~~~~~

@@ -3,13 +3,13 @@
 Advisory Weakness Curation
 ===========================
 
-Follow these steps to curate the `Common Weakness Enumeration (CWE) <https://cwe.mitre.org/>`_ associated with an advisories:
+Follow these steps to curate the `Common Weakness Enumeration (CWE) <https://cwe.mitre.org/>`_ associated with vulnerability advisories:
 
 .. image:: images/advisory-weakness-curation.png
 
 1. Click the Alias you want to curate, for example, ``CVE-2022-24512``.
 
-2. Select the appropriate CWE status (APPLICABLE or NOT APPLICABLE) for the selected CWE ID.
+2. Select the appropriate CWE status (``APPLICABLE`` or ``NOT APPLICABLE``) for the selected CWE ID.
 
    .. image:: images/weakness_select_value.png
 

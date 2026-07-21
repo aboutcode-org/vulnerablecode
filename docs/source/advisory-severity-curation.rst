@@ -3,7 +3,7 @@
 Advisory Severity Curation
 ==========================
 
-Follow these steps to curate the severity for advisories:
+Follow these steps to curate the severity associated with vulnerability advisories:
 
 .. image:: images/advisory-severity-curation.png
 
@@ -21,4 +21,4 @@ Follow these steps to curate the severity for advisories:
 
 4. Once you have curated all advisories, click **Submit**
 
-   .. image:: images/severity_submit-button.png
+   .. image:: images/severity_submit.png

@@ -1,0 +1,32 @@
+{
+  "source_url": "https://database.clamav.net/main.cvd?api-version=1",
+  "source_filename": "main.hdb",
+  "rules": [
+    {
+      "rule_metadata": {
+        "name": "Eicar-Test-Signature",
+        "line_num": 1
+      },
+      "rule_text": "44d88612fea8a8f36de82e1278abb02f:68:Eicar-Test-Signature",
+      "vulnerabilities": []
+    },
+    {
+      "rule_metadata": {
+        "name": "Win.Trojan.Yat-2",
+        "line_num": 3
+      },
+      "rule_text": "de3430cd6a3e24bfb9f78743a25f7c96:1098752:Win.Trojan.Yat-2",
+      "vulnerabilities": []
+    },
+    {
+        "rule_metadata": {
+            "name": "Java.Exploit.CVE_2012_5076-1",
+            "line_num": 10079
+        },
+        "rule_text": "a9b65b78619002a1b30ceee2d85fa770:205:Java.Exploit.CVE_2012_5076-1",
+        "vulnerabilities": [
+            "CVE-2012-5076"
+        ]
+    }
+  ]
+}

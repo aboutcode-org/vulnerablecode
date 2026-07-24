@@ -1,0 +1,45 @@
+<div class="chart-row card-chart-row">
+    <h3 class="card-chart-title {% if chart.has_search %}card-chart-title-with-search{% endif %}">
+        {{ chart.title }}
+        {% if chart.has_search %}
+        <div class="severity-search-wrapper" style="gap: 15px;">
+            {% if not search_query %}
+                <span class="tag is-primary is-light is-small">Showing All Packages</span>
+            {% else %}
+                <a href="{% url 'insights-panel' current_panel_id %}#chart-{{ chart.id }}" class="button is-small is-light">Show All Packages</a>
+            {% endif %}
+
+            <div style="position: relative;">
+                <form method="GET" action="{% url 'insights-panel' current_panel_id %}#chart-{{ chart.id }}" class="field has-addons mb-0">
+                    <div class="control">
+                        <input class="input is-small" type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Search package name or purl..." style="width: 250px;">
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-small is-info">
+                            <span>Search</span>
+                        </button>
+                    </div>
+                </form>
+                {% if search_error %}
+                <p class="help is-danger has-text-right mt-1" style="position: absolute; right: 0; width: 100%;">{{ search_error }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </h3>
+    <div class="chart-container
+        {% if chart.chart_type == 'donut' or chart.chart_type == 'pie' %}is-pie
+        {% endif %}" id="chart-{{ chart.id }}"
+        data-chart-type="{{ chart.chart_type }}" aria-label="{{ chart.title }}" role="img">
+        {% if chart.chart_type == 'scatter' %}
+            {% include 'insights/components/severity_scatter_chart.html' %}
+        {% else %}
+        <div class="chart-loading">Loading…</div>
+        {% endif %}
+    </div>
+
+    {% if chart.chart_type == 'line' %}
+    <div class="cwe-legend-bar" id="legend-{{ chart.id }}">
+    </div>
+    {% endif %}
+</div>

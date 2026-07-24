@@ -96,13 +96,13 @@ class ImporterInsight(models.Model):
 
 
 @dataclass(frozen=True)
-class GraphDefinition:
+class ChartDefinition:
 
     id: str
     title: str
     panel: str
     chart_type: str
-    data_fn: Callable[[Dict[str, Any]], Dict[str, Any]]
+    formatter_fn: Callable[[Dict[str, Any]], Dict[str, Any]]
     collect_fn: Optional[Callable] = None
     is_per_package: bool = False
     has_search: bool = False

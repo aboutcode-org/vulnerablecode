@@ -78,6 +78,7 @@ INSTALLED_APPS = (
     # Local apps
     # Must come before Third-party apps for proper templates override
     "vulnerabilities",
+    "insights",
     # Django built-in
     "django.contrib.auth",
     "django.contrib.contenttypes",

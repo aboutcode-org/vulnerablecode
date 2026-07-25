@@ -1,59 +1,91 @@
-import json
-import os
+from datetime import timedelta
 
-from vulnerabilities.templatetags.diff_advisory_history import format_diff_for_ui
-from vulnerabilities.tests.util_tests import check_results_against_json
+import pytest
+from django.utils import timezone
+
+from vulnerabilities.models import AdvisoryHistoryDiff
+from vulnerabilities.models import AdvisorySeverity
+from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.pipelines.v2_improvers.history_diff_backfill import HistoryDiffImproverPipeline
 
 
+@pytest.mark.django_db
 def test_advisory_history_diffing():
     """
     Test the diffing logic for historical advisory snapshots.
     """
-    from vulnerabilities.utils import diff_advisories_v2
+    avid1 = "github_osv/GHSA-72hv-8253-57qq"
 
-    base_dir = os.path.join(os.path.dirname(__file__), "test_data", "advisory_history")
+    severity_high = AdvisorySeverity.objects.create(scoring_system="generic_textual", value="HIGH")
+    severity_moderate = AdvisorySeverity.objects.create(
+        scoring_system="generic_textual", value="MODERATE"
+    )
 
-    # Test GHSA-72hv-8253-57qq (Sample 1)
-    # See: https://github.com/github/advisory-database/commits/main/advisories/github-reviewed/2026/02/GHSA-72hv-8253-57qq/GHSA-72hv-8253-57qq.json
-    sample1_dir = os.path.join(base_dir, "GHSA-72hv-8253-57qq")
-    with open(os.path.join(sample1_dir, "normalised_history_GHSA-72hv-8253-57qq.json"), "r") as f:
-        sample1_data = json.load(f)
+    old_advisory_snapshot = AdvisoryV2.objects.create(
+        advisory_id="GHSA-72hv-8253-57qq",
+        unique_content_id="snap1hash",
+        date_collected=timezone.now(),
+        pipeline_id="test",
+        datasource_id="github_osv",
+        url="http://test.com",
+        avid=avid1,
+        summary="Initial summary",
+    )
+    old_advisory_snapshot.severities.add(severity_high)
 
-    sample1_diffs = [
-        diff_advisories_v2(sample1_data[i], sample1_data[i + 1])
-        for i in range(len(sample1_data) - 1)
-    ]
+    new_advisory_snapshot = AdvisoryV2.objects.create(
+        advisory_id="GHSA-72hv-8253-57qq",
+        unique_content_id="snap2hash",
+        date_collected=timezone.now() + timedelta(days=1),
+        pipeline_id="test",
+        datasource_id="github_osv",
+        url="http://test.com",
+        avid=avid1,
+        summary="Updated summary",
+    )
+    new_advisory_snapshot.severities.add(severity_moderate)
 
-    sample1_expected_file = os.path.join(sample1_dir, "expected_diff_GHSA-72hv-8253-57qq.json")
-    check_results_against_json(sample1_diffs, sample1_expected_file)
+    pkg1 = ImpactedPackage.objects.create(
+        advisory=old_advisory_snapshot,
+        base_purl="pkg:maven/tools.jackson.core/jackson-core",
+        affecting_vers="vers:maven/<=2.18.5",
+        fixed_vers="vers:maven/2.18.6",
+    )
+    pkg2 = ImpactedPackage.objects.create(
+        advisory=old_advisory_snapshot,
+        base_purl="pkg:maven/tools.jackson.core/jackson-core",
+        affecting_vers="vers:maven/>=2.19.0|<2.21.1",
+        fixed_vers="vers:maven/2.21.1",
+    )
+    pkg3 = ImpactedPackage.objects.create(
+        advisory=old_advisory_snapshot,
+        base_purl="pkg:maven/com.fasterxml.jackson.core/jackson-core",
+        affecting_vers="vers:maven/>=3.0.0|<3.1.0",
+        fixed_vers="vers:maven/3.1.0",
+    )
 
-    # Test GHSA-6rw7-vpxm-498p (Sample 2)
-    # See: https://github.com/github/advisory-database/commits/main/advisories/github-reviewed/2025/12/GHSA-6rw7-vpxm-498p/GHSA-6rw7-vpxm-498p.json
-    sample2_dir = os.path.join(base_dir, "GHSA-6rw7-vpxm-498p")
-    with open(os.path.join(sample2_dir, "normalised_history_GHSA-6rw7-vpxm-498p.json"), "r") as f:
-        sample2_data = json.load(f)
+    pipeline = HistoryDiffImproverPipeline()
+    pipeline.execute()
 
-    sample2_diffs = [
-        diff_advisories_v2(sample2_data[i], sample2_data[i + 1])
-        for i in range(len(sample2_data) - 1)
-    ]
+    # Run a second time to ensure idempotency
+    pipeline.execute()
 
-    sample2_expected_file = os.path.join(sample2_dir, "expected_diff_GHSA-6rw7-vpxm-498p.json")
-    check_results_against_json(sample2_diffs, sample2_expected_file)
+    old_advisory_snapshot.refresh_from_db()
+    new_advisory_snapshot.refresh_from_db()
 
+    assert hasattr(old_advisory_snapshot, "history_diff")
+    assert old_advisory_snapshot.history_diff.advisory_before is None
 
-def test_format_diff_for_ui():
-    """
-    Test the template tag logic that formats diffs for the UI.
-    """
-    base_dir = os.path.join(os.path.dirname(__file__), "test_data", "advisory_history")
-    sample2_dir = os.path.join(base_dir, "GHSA-6rw7-vpxm-498p")
-    input_file = os.path.join(sample2_dir, "expected_diff_GHSA-6rw7-vpxm-498p.json")
+    diff = AdvisoryHistoryDiff.objects.get(advisory_after=new_advisory_snapshot)
+    assert diff.summary_removed == "Initial summary"
+    assert diff.summary_added == "Updated summary"
+    assert severity_moderate in diff.added_severities.all()
+    assert severity_high in diff.removed_severities.all()
 
-    with open(input_file, "r") as f:
-        input_diffs = json.load(f)
-
-    formatted_diffs = [format_diff_for_ui(diff) for diff in input_diffs]
-
-    expected_file = os.path.join(sample2_dir, "expected_formatted_diff_GHSA-6rw7-vpxm-498p.json")
-    check_results_against_json(formatted_diffs, expected_file)
+    assert diff.added_impacted_packages.count() == 0
+    assert diff.removed_impacted_packages.count() == 3
+    assert pkg1 in diff.removed_impacted_packages.all()
+    assert pkg2 in diff.removed_impacted_packages.all()
+    assert pkg3 in diff.removed_impacted_packages.all()
+    assert AdvisoryHistoryDiff.objects.count() == 2

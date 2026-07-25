@@ -776,6 +776,9 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                 <span class="tag is-info is-light">Oldest version collected</span>
                                 {% elif entry.diff %}
                                 {% with formatted_diff=entry.diff|format_diff_for_ui %}
+                                {% if formatted_diff %}
+                                <a class="diff-toggle-btn is-block has-text-right has-text-link is-size-7 has-text-weight-semibold mb-1 is-clickable"
+                                    onclick="toggleDiff(this)">Show more ▾</a>
                                 <div class="history-diff-collapsible">
                                     {% for field, change in formatted_diff.items %}
                                     <div class="mb-2">
@@ -794,15 +797,13 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                         <div class="mt-1">
                                             {% for item in change.added %}
                                             <div class="mt-1">
-                                                <span class="diff-badge diff-badge-green diff-wrap">&plus; Added {% if item.attributes %}{{ item.header }} with
-{% for key, value in item.attributes %}    {{ key }} <b>{{ value }}</b>{% if not forloop.last %}
+                                                <span class="diff-badge diff-badge-green diff-wrap">{% if item.attributes %}{% for key, value in item.attributes %}{{ key }} <b>{{ value }}</b>{% if not forloop.last %}
 {% endif %}{% endfor %}{% else %}{{ item }}{% endif %}</span>
                                             </div>
                                             {% endfor %}
                                             {% for item in change.removed %}
                                             <div class="mt-1">
-                                                <span class="diff-badge diff-badge-red diff-wrap">&minus; Removed {% if item.attributes %}{{ item.header }} with
-{% for key, value in item.attributes %}    {{ key }} <b>{{ value }}</b>{% if not forloop.last %}
+                                                <span class="diff-badge diff-badge-red diff-wrap">{% if item.attributes %}{% for key, value in item.attributes %}{{ key }} <b>{{ value }}</b>{% if not forloop.last %}
 {% endif %}{% endfor %}{% else %}{{ item }}{% endif %}</span>
                                             </div>
                                             {% endfor %}
@@ -811,8 +812,9 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     </div>
                                     {% endfor %}
                                 </div>
-                                <a class="diff-toggle-btn is-block has-text-right has-text-link is-size-7 has-text-weight-semibold mt-1 is-clickable"
-                                    onclick="toggleDiff(this)">Show more ▾</a>
+                                {% else %}
+                                <span class="has-text-grey is-italic is-size-7">No changes detected in this snapshot.</span>
+                                {% endif %}
                                 {% endwith %}
                                 {% endif %}
                             </td>
@@ -873,7 +875,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 
     function checkDiffHeights() {
         document.querySelectorAll('.history-diff-collapsible').forEach(function (diffContainer) {
-            const toggleButton = diffContainer.nextElementSibling;
+            const toggleButton = diffContainer.previousElementSibling;
             if (!toggleButton || !toggleButton.classList.contains('diff-toggle-btn')) return;
 
             // Measure true height 
@@ -893,7 +895,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
     }
 
     function toggleDiff(toggleButton) {
-        const diffContainer = toggleButton.previousElementSibling;
+        const diffContainer = toggleButton.nextElementSibling;
         diffContainer.classList.toggle('is-expanded');
         toggleButton.textContent = diffContainer.classList.contains('is-expanded')
             ? 'Show less \u25b4'

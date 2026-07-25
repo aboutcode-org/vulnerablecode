@@ -63,9 +63,7 @@ from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.tasks import compute_queue_load_factor
 from vulnerabilities.throttling import AnonUserUIThrottle
 from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
-from vulnerabilities.utils import diff_advisories_v2
 from vulnerabilities.utils import get_advisories_from_groups
-from vulnerabilities.utils import get_normalized_advisory_v2
 from vulnerabilities.utils import safe_altcha_redirect
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import VULNERABLECODE_ALTCHA_SESSION_TIMEOUT
@@ -587,55 +585,47 @@ def build_advisory_history(advisory, page_number):
     """
     Build advisory history for a given advisory.
     """
-    advisory_history_qs = (
-        models.AdvisoryV2.objects.filter(avid=advisory.avid)
-        .order_by("-date_collected", "-unique_content_id")
-        .prefetch_related(
-            "aliases", "references", "weaknesses", "severities", "impacted_packages", "patches"
-        )
+    advisory_history_qs = models.AdvisoryV2.objects.filter(avid=advisory.avid).order_by(
+        "-date_collected", "-unique_content_id"
     )
 
     paginator = Paginator(advisory_history_qs, 10)
     pagination_obj = paginator.get_page(page_number)
     advisories_on_page = list(pagination_obj.object_list)
 
-    last_advisory_fallback = None
-    if pagination_obj.has_next():
-        # Fetch the very first record from the next page to calculate the diff for the last item on the current page
-        last_advisory_fallback = advisory_history_qs.filter(
-            date_collected__lt=advisories_on_page[-1].date_collected
-        ).first()
-
-    normalized_advisories = {
-        adv.unique_content_id: get_normalized_advisory_v2(adv) for adv in advisories_on_page
-    }
-
-    # Normalize the last advisory fallback
-    if last_advisory_fallback:
-        normalized_advisories[last_advisory_fallback.unique_content_id] = (
-            get_normalized_advisory_v2(last_advisory_fallback)
+    advisory_ids = [advisory.pk for advisory in advisories_on_page]
+    advisory_to_diff = {
+        diff.advisory_after_id: diff
+        for diff in models.AdvisoryHistoryDiff.objects.filter(
+            advisory_after_id__in=advisory_ids
+        ).prefetch_related(
+            "added_severities",
+            "removed_severities",
+            "added_impacted_packages",
+            "removed_impacted_packages",
+            "added_references",
+            "removed_references",
+            "added_patches",
+            "removed_patches",
+            "added_weaknesses",
+            "removed_weaknesses",
+            "added_aliases",
+            "removed_aliases",
         )
+    }
 
     advisory_history = []
     for current_index, current_advisory in enumerate(advisories_on_page):
-        # Diff w.r.t immediately older advisory
-        if current_index + 1 < len(advisories_on_page):
-            older_advisory = advisories_on_page[current_index + 1]
-        else:
-            older_advisory = last_advisory_fallback
-
-        current_data = normalized_advisories[current_advisory.unique_content_id]
-        older_data = (
-            normalized_advisories[older_advisory.unique_content_id] if older_advisory else None
-        )
+        is_initial = not pagination_obj.has_next() and current_index == len(advisories_on_page) - 1
+        history_diff = advisory_to_diff.get(current_advisory.pk)
 
         advisory_history.append(
             {
                 "date_collected": current_advisory.date_collected,
                 "unique_content_id": current_advisory.unique_content_id,
                 "is_latest": current_advisory.is_latest,
-                "is_initial": older_advisory is None,
-                "diff": diff_advisories_v2(older_data, current_data) if older_data else {},
+                "is_initial": is_initial,
+                "diff": history_diff,
             }
         )
 
@@ -1099,7 +1089,6 @@ class AdvisoryPackagesSnapshotView(AdvisoryPackagesDetails):
     def get_queryset(self):
         from vulnerabilities.models import ImpactedPackage
         from vulnerabilities.models import PackageV2
-
 
         return AdvisoryV2.objects.all().prefetch_related(
             Prefetch(

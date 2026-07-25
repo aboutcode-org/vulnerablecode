@@ -28,8 +28,8 @@ from vulnerabilities.views import AdvisoryPackageCommitPatchDetails
 from vulnerabilities.views import AdvisoryPackageCurationView
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import AdvisoryPackagesSnapshotView
-from vulnerabilities.views import AdvisorySnapshotView
 from vulnerabilities.views import AdvisorySeverityCurationView
+from vulnerabilities.views import AdvisorySnapshotView
 from vulnerabilities.views import AdvisoryToDoListView
 from vulnerabilities.views import AdvisoryWeaknessCurationView
 from vulnerabilities.views import AffectedByAdvisoriesListView
@@ -117,9 +117,9 @@ urlpatterns = [
         name="run-details",
     ),
     path(
-        "v2",
-        HomePageV2.as_view(),
-        name="home",
+        "advisories/packages/snapshot/<path:avid>/<str:unique_content_id>",
+        AdvisoryPackagesSnapshotView.as_view(),
+        name="advisory_package_snapshot",
     ),
     path(
         "advisories/packages/<path:avid>",

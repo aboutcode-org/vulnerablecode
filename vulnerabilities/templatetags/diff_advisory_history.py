@@ -8,111 +8,94 @@
 #
 
 from django import template
-from packageurl import PackageURL
+
+from vulnerabilities.models import AdvisoryHistoryDiff
 
 register = template.Library()
 
 
 @register.filter
-def format_diff_for_ui(changes) -> dict:
-    """
-    Example:
-        {
-            'affected_packages': {
-                'added': [{'package': {'type': 'pypi', 'name': 'requests', 'version': '2.25.0'}, 'affected_version_range': '==2.25.0', 'fixed_version_range': '==2.25.1'}],
-                'removed': [{'package': {'type': 'pypi', 'name': 'requests', 'version': '2.24.0'}, 'affected_version_range': '==2.24.0', 'fixed_version_range': '==2.24.1'}]
-            }
-        }
-    should result in:
-            {
-                'Affected Packages': {
-                    'added': [{'header': 'Affected package', 'attributes': [('PURL', 'pkg:pypi/requests@2.25.0'), ('Affected version', '==2.25.0'), ('Fixed Version', '==2.25.1')] }],
-                    'removed': [{'header': 'Affected package', 'attributes': [('PURL', 'pkg:pypi/requests@2.24.0'), ('Affected version', '==2.24.0'), ('Fixed Version', '==2.24.1')] }]
-                }
-            }
-    """
+def format_diff_for_ui(diff: AdvisoryHistoryDiff) -> dict:
     formatted = {}
 
-    for field, change in changes.items():
-        label = field.replace("_", " ").title()
+    if diff.summary_added or diff.summary_removed:
+        formatted["Summary"] = {"old": diff.summary_removed, "new": diff.summary_added}
 
-        if "old" in change or "new" in change:
-            formatted[label] = change
-            continue
+    if diff.url_added or diff.url_removed:
+        formatted["Url"] = {"old": diff.url_removed, "new": diff.url_added}
 
-        formatted[label] = {"added": [], "removed": []}
+    def _process_added_removed(label, added_qs, removed_qs, formatter):
+        added = [formatter(item) for item in added_qs]
+        removed = [formatter(item) for item in removed_qs]
+        if added or removed:
+            formatted[label] = {"added": added, "removed": removed}
 
-        for change_type in ["added", "removed"]:
-            for item in change.get(change_type, []):
-                if field == "affected_packages":
-                    attributes = []
+    def format_severity(severity):
+        scoring_system_string = str(severity.scoring_system)
+        if "cvss" in scoring_system_string.lower():
+            scoring_system_string = scoring_system_string.upper()
+        else:
+            scoring_system_string = scoring_system_string.replace("_", " ").title()
 
-                    if package := item.get("package"):
-                        package_string = (
-                            str(PackageURL(**package))
-                            if isinstance(package, dict)
-                            else str(package)
-                        )
-                        attributes.append(("PURL", package_string))
+        attrs = [("System", scoring_system_string)]
+        if severity.value:
+            attrs.append(("Value", severity.value))
+        if severity.scoring_elements:
+            attrs.append(("Elements", severity.scoring_elements))
+        return {"header": "Severity", "attributes": attrs}
 
-                    if affected_version_range := item.get("affected_version_range"):
-                        attributes.append(("Affected version", affected_version_range))
+    _process_added_removed(
+        "Severities", diff.added_severities.all(), diff.removed_severities.all(), format_severity
+    )
 
-                    if fixed_version_range := item.get("fixed_version_range"):
-                        attributes.append(("Fixed Version", fixed_version_range))
+    def format_package(package):
+        attrs = [("PURL", package.base_purl)]
+        if package.affecting_vers:
+            attrs.append(("Affected version", package.affecting_vers))
+        if package.fixed_vers:
+            attrs.append(("Fixed Version", package.fixed_vers))
+        return {"header": "Affected package", "attributes": attrs}
 
-                    formatted[label][change_type].append(
-                        {"header": "Affected package", "attributes": attributes}
-                    )
+    _process_added_removed(
+        "Affected Packages",
+        diff.added_impacted_packages.all(),
+        diff.removed_impacted_packages.all(),
+        format_package,
+    )
 
-                elif field == "references":
-                    attributes = []
+    def format_reference(reference):
+        attrs = []
+        if reference.url:
+            attrs.append(("URL", reference.url))
+        if reference.reference_id:
+            attrs.append(("ID", reference.reference_id))
+        return {"header": "Reference", "attributes": attrs}
 
-                    if reference_url := item.get("url"):
-                        attributes.append(("URL", reference_url))
+    _process_added_removed(
+        "References", diff.added_references.all(), diff.removed_references.all(), format_reference
+    )
 
-                    if reference_id := item.get("reference_id"):
-                        attributes.append(("ID", reference_id))
+    def format_patch(patch):
+        attrs = []
+        if patch.url or patch.repository:
+            attrs.append(("URL", patch.url or patch.repository))
+        if patch.commit:
+            attrs.append(("Commit", patch.commit))
+        return {"header": "Patch", "attributes": attrs}
 
-                    formatted[label][change_type].append(
-                        {"header": "Reference", "attributes": attributes}
-                    )
+    _process_added_removed(
+        "Patches", diff.added_patches.all(), diff.removed_patches.all(), format_patch
+    )
 
-                elif field == "severities":
-                    attributes = []
+    _process_added_removed(
+        "Weaknesses",
+        diff.added_weaknesses.all(),
+        diff.removed_weaknesses.all(),
+        lambda weakness: weakness.cwe_id,
+    )
 
-                    if scoring_system := item.get("system") or item.get("scoring_system"):
-                        scoring_system_string = str(scoring_system)
-                        if "cvss" in scoring_system_string.lower():
-                            scoring_system_string = scoring_system_string.upper()
-                        else:
-                            scoring_system_string = scoring_system_string.replace("_", " ").title()
-                        attributes.append(("System", scoring_system_string))
-
-                    if severity_value := item.get("value"):
-                        attributes.append(("Value", severity_value))
-
-                    if scoring_elements := item.get("scoring_elements"):
-                        attributes.append(("Elements", scoring_elements))
-
-                    formatted[label][change_type].append(
-                        {"header": "Severity", "attributes": attributes}
-                    )
-
-                elif field == "patches":
-                    attributes = []
-
-                    if patch_url := (item.get("url") or item.get("repository")):
-                        attributes.append(("URL", patch_url))
-
-                    if patch_commit := item.get("commit"):
-                        attributes.append(("Commit", patch_commit))
-
-                    formatted[label][change_type].append(
-                        {"header": "Patch", "attributes": attributes}
-                    )
-
-                else:
-                    formatted[label][change_type].append(item)
+    _process_added_removed(
+        "Aliases", diff.added_aliases.all(), diff.removed_aliases.all(), lambda alias: alias.alias
+    )
 
     return formatted

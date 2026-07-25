@@ -691,36 +691,6 @@ def compute_content_id(advisory_data):
     return content_id
 
 
-def get_normalized_advisory_v2(advisory_data):
-    """
-    Return a normalized dictionary of advisory data for diffing history.
-
-    :param advisory_data: An AdvisoryV2 object
-    :return: A normalized dictionary of advisory data
-    """
-    from vulnerabilities.models import AdvisoryV2
-
-    if not isinstance(advisory_data, AdvisoryV2):
-        raise ValueError("Unsupported advisory data type for history diffing")
-
-    advisory_data = advisory_data.to_advisory_data()
-
-    normalized_data = {
-        "advisory_id": advisory_data.advisory_id,
-        "aliases": advisory_data.aliases,
-        "summary": advisory_data.summary,
-        "affected_packages": [pkg.to_dict() for pkg in advisory_data.affected_packages if pkg],
-        "references": [ref.to_dict() for ref in advisory_data.references if ref],
-        "severities": [sev.to_dict() for sev in advisory_data.severities if sev],
-        "weaknesses": advisory_data.weaknesses,
-        "patches": [patch.to_dict() for patch in advisory_data.patches],
-        "url": advisory_data.url,
-        # "date_published": str(advisory_data.date_published) if advisory_data.date_published else None,
-    }
-
-    return normalized_data
-
-
 def compute_content_id_v2(advisory_data):
     """
     Compute a unique content_id for an advisory by normalizing its data and hashing it.
@@ -1161,70 +1131,83 @@ def safe_altcha_redirect(next_url: str) -> redirect:
     return redirect("/")
 
 
-def exclude_epss_severities(severities: list) -> list:
+def compute_advisory_v2_diff(old_snapshot, new_snapshot):
     """
-    Return a copy of the severities list with all EPSS entries removed.
-    EPSS scores are updated daily and can be tracked separately in EPSS tab.
+    Compare two advisory snapshots and compute the diff.
+    Args:
+        old_snapshot: The old advisory snapshot.
+        new_snapshot: The new advisory snapshot.
     """
-    return [
-        severity
-        for severity in (severities or [])
-        if str(severity.get("system", "")).lower() != "epss"
-    ]
+    from vulnerabilities.models import AdvisoryHistoryDiff
 
+    diff = AdvisoryHistoryDiff(advisory_after=new_snapshot, advisory_before=old_snapshot)
 
-def diff_advisories_v2(old_data: dict, new_data: dict) -> dict:
-    """
-    Diff two normalised advisories and return the changes.
-    """
-    changes = {}
-    all_keys = set(old_data.keys()).union(new_data.keys())
+    if old_snapshot.summary != new_snapshot.summary:
+        diff.summary_removed = old_snapshot.summary
+        diff.summary_added = new_snapshot.summary
 
-    for field in all_keys:
-        old_field_value = old_data.get(field)
-        new_field_value = new_data.get(field)
+    if old_snapshot.url != new_snapshot.url:
+        diff.url_removed = old_snapshot.url
+        diff.url_added = new_snapshot.url
 
-        if isinstance(old_field_value, list) or isinstance(new_field_value, list):
-            old_items_list = old_field_value or []
-            new_items_list = new_field_value or []
+    diff.save()
 
-            if field == "severities":
-                old_items_list = exclude_epss_severities(old_items_list)
-                new_items_list = exclude_epss_severities(new_items_list)
+    def _compute_diff_helper(old_queryset, new_queryset, added_manager, removed_manager):
+        old_ids = set(old_queryset.values_list("pk", flat=True))
+        new_ids = set(new_queryset.values_list("pk", flat=True))
+        if added_ids := new_ids - old_ids:
+            added_manager.set(added_ids)
+        if removed_ids := old_ids - new_ids:
+            removed_manager.set(removed_ids)
 
-            if all(isinstance(item, str) for item in old_items_list + new_items_list):
-                # "aliases", "weaknesses"
-                old_items_set = set(old_items_list)
-                new_items_set = set(new_items_list)
-                if old_items_set != new_items_set:
-                    changes[field] = {
-                        "added": sorted(new_items_set - old_items_set),
-                        "removed": sorted(old_items_set - new_items_set),
-                    }
-            elif all(isinstance(item, dict) for item in old_items_list + new_items_list):
-                # "references", "affected_packages", "patches", "severities"
-                old_items_set = {
-                    json.dumps(item, sort_keys=True, default=str) for item in old_items_list
-                }
-                new_items_set = {
-                    json.dumps(item, sort_keys=True, default=str) for item in new_items_list
-                }
-                if old_items_set != new_items_set:
-                    changes[field] = {
-                        "added": [
-                            json.loads(item) for item in sorted(new_items_set - old_items_set)
-                        ],
-                        "removed": [
-                            json.loads(item) for item in sorted(old_items_set - new_items_set)
-                        ],
-                    }
-        elif (
-            isinstance(old_field_value, str)
-            or isinstance(new_field_value, str)
-            or (old_field_value is None and new_field_value is None)
-        ):
-            # "url", "date_published", "summary"
-            if old_field_value != new_field_value:
-                changes[field] = {"old": old_field_value, "new": new_field_value}
+    _compute_diff_helper(
+        old_snapshot.severities,
+        new_snapshot.severities,
+        diff.added_severities,
+        diff.removed_severities,
+    )
+    _compute_diff_helper(
+        old_snapshot.references,
+        new_snapshot.references,
+        diff.added_references,
+        diff.removed_references,
+    )
+    _compute_diff_helper(
+        old_snapshot.aliases, new_snapshot.aliases, diff.added_aliases, diff.removed_aliases
+    )
+    _compute_diff_helper(
+        old_snapshot.weaknesses,
+        new_snapshot.weaknesses,
+        diff.added_weaknesses,
+        diff.removed_weaknesses,
+    )
+    _compute_diff_helper(
+        old_snapshot.patches, new_snapshot.patches, diff.added_patches, diff.removed_patches
+    )
 
-    return changes
+    def _get_impacted_package(impacted_package) -> tuple:
+        """
+        Return the tuple representation of an impacted package.
+        For eg: ("pkg:pypi/django", "<1.0", "5.0.1")
+        """
+        return (
+            impacted_package.base_purl,
+            impacted_package.affecting_vers,
+            impacted_package.fixed_vers,
+        )
+
+    old_packages_map = {
+        _get_impacted_package(pkg): pkg.pk for pkg in old_snapshot.impacted_packages.all()
+    }
+    new_packages_map = {
+        _get_impacted_package(pkg): pkg.pk for pkg in new_snapshot.impacted_packages.all()
+    }
+
+    old_tuples = set(old_packages_map.keys())
+    new_tuples = set(new_packages_map.keys())
+
+    if added_tuples := new_tuples - old_tuples:
+        diff.added_impacted_packages.set([new_packages_map[tup] for tup in added_tuples])
+
+    if removed_tuples := old_tuples - new_tuples:
+        diff.removed_impacted_packages.set([old_packages_map[tup] for tup in removed_tuples])

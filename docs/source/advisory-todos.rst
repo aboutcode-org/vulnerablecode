@@ -23,9 +23,12 @@ available from trusted sources:
   - Advisories with conflicting **affected** package versions.
   - Advisories with conflicting **affected** and **fixed** package
     versions.
+
+* **Extra Mitigation Curation**: See :ref:`extra-mitigation-curation`.
+
   - *(Not currently supported)* Advisories missing affected package
     versions.
-  - *(Not currently supported)* Advisories missing fixed package
+  - Advisories missing fixed package
     versions.
   - *(Not currently supported)* Advisories missing both affected and
     fixed package versions.

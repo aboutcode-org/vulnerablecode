@@ -40,6 +40,7 @@
    advisory-package-curation
    advisory-severity-curation
    advisory-weakness-curation
+   extra-mitigation-curation
 
 .. toctree::
    :hidden:

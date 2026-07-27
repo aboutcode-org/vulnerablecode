@@ -19,7 +19,6 @@ from typing import Mapping
 from typing import Optional
 from typing import Set
 from typing import Tuple
-from typing import Union
 
 import pytz
 from dateutil import parser as dateparser
@@ -40,7 +39,6 @@ from vulnerabilities.utils import compute_patch_checksum
 from vulnerabilities.utils import get_reference_id
 from vulnerabilities.utils import is_commit
 from vulnerabilities.utils import is_cve
-from vulnerabilities.utils import nearest_patched_package
 from vulnerabilities.utils import purl_to_dict
 from vulnerabilities.utils import update_purl_version
 
@@ -65,7 +63,7 @@ class VulnerabilitySeverity:
             raise TypeError(f"system must be a ScoringSystem, got {type(self.system)!r}")
 
         if not isinstance(self.value, str):
-            self.value = str(self.value)
+            self.value = str(self.value) if self.value else ""
 
     def to_dict(self):
         data = {

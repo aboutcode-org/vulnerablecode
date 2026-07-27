@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+{% load static %}
+{% load utils %}
+
+{% block extrahead %}
+<style>
+    .table {
+        table-layout: fixed !important;
+        width: 100% !important;
+    }
+
+    .table th {
+        border-width: 0 1px 1px 1px !important;
+        border-color: #dbdbdb !important;
+        background-color: #fff !important;
+    }
+
+    #table-header th {
+        height: 100px;
+        padding: 0.75rem 0.5rem !important;
+    }
+
+    #table-header th>div {
+        display: inline-flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        width: 100%;
+    }
+
+    #table-header th:first-child {
+        width: 120px !important;
+    }
+
+    #table-header th:nth-child(2) {
+        width: 150px !important;
+    }
+
+    #table-header th:nth-child(n+3) {
+        width: 150px !important;
+    }
+
+    .table td {
+        vertical-align: middle !important;
+    }
+
+    #summaries-container p strong {
+        display: block;
+        word-break: break-all;
+        overflow-wrap: break-word;
+        line-height: 1.3;
+        margin-bottom: 4px;
+    }
+
+    .summary-text {
+        line-height: 1.4;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    div.summary-text a:link,
+    div.summary-text a {
+        color: #3273dc !important;
+    }
+
+    div.summary-text a:visited {
+        color: #8a4de8 !important;
+    }
+
+    div.summary-text a:hover {
+        color: #0a0a0a !important;
+    }
+
+    .advisory-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        text-align: left;
+        text-decoration: underline;
+        white-space: normal;
+        flex-wrap: wrap;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 800px;
+        border: 1px solid #dbdbdb;
+        border-radius: 6px;
+    }
+
+    .has-tooltip-top::before {
+        transform: translate(-5% , -100%) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="section my-0 pt-3 px-0 mx-0">
+    <div class="container is-fluid">
+        <div class="columns is-vcentered mb-5">
+            <div class="column">
+                <h1 class="title is-3">Extra Mitigation Curation</h1>
+                <h2 class="subtitle is-5 has-text-grey">
+                    <a href={% url 'advisory_details' avid %} target="_blank" rel="noopener noreferrer" class="has-text-link">
+                        <span>{{ avid }}</span>
+                        <span class="icon is-small"><i class="fa fa-external-link"></i></span>
+                    </a>
+                </h2>
+            </div>
+
+            <div class="column is-narrow">
+                <div class="box p-4 has-background-white shadow-soft" style="min-width: 260px; border-radius: 5px;">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
+                        <span class="is-size-6 has-text-grey-dark uppercase has-text-weight-bold mr-2">
+                            Progress
+                        </span>
+                        <span class="tag is-info is-light has-text-weight-bold" id="progress-text">0 / 0</span>
+                    </div>
+                    <progress class="progress is-info is-small mb-0" id="progress" value="0" max="100"></progress>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="columns">
+            <div class="column is-3">
+                <h3 class="title is-5">Advisory Summary</h3>
+                <div id="summaries-container" style="max-height: 950px; overflow-y: auto;">
+                    {% for avid, text in advisory_summaries.items %}
+                        <div class="notification is-info is-light p-3 mb-3">
+                            <p><strong>{{ avid }}</strong></p>
+                            <div class="text summary-text is-2">{{ text|normalize_links|urlize }}</div>
+                        </div>
+                    {% empty %}
+                        <div class="notification is-light p-3 mb-3 has-text-grey">
+                            No summaries available.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="column is-9">
+                <div class="box">
+                    <div class="mb-4">
+                        <h4 class="title is-4 mb-1" id="current-purl"></h4>
+                        <a id="toggle-conflict" class="is-link is-5" style="display:none;">Show more</a>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table is-bordered is-narrow is-fullwidth is-hoverable">
+                            <thead style="position: sticky; top: 0; background: white; z-index: 10;">
+                                <tr id="table-header">
+                                    <th class="has-text-weight-bold has-text-centered pt-4 is-size-5">Mitigation Type</th>
+                                    <th class="has-text-weight-bold has-text-centered pt-4 is-size-5">Mitigation Data</th>
+                                    <th class="has-text-weight-bold has-text-centered pt-4 is-size-5">Mitigation Note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="curation-body">
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="level mt-5">
+                        <div class="level-left">
+                            <button class="button is-light" id="prev-btn" onclick="app.navigate(-1)">
+                                <span class="icon"><i class="fa fa-chevron-left"></i></span>
+                                <span>Previous Item</span>
+                            </button>
+                        </div>
+                        <div class="level-right">
+                            <button class="button is-info" id="next-btn" onclick="app.navigate(1)">
+                                <span>Next Item</span>
+                                <span class="icon"><i class="fa fa-chevron-right"></i></span>
+                            </button>
+                            <button class="button is-info is-hidden" id="finish-btn" disabled>
+                                <span class="icon"><i class="fa fa-check"></i></span>
+                                <span>Submit</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    const curationItems = {{ curation_items|safe }};
+    const mitigation_items = [
+            "upgrade_version",
+            "upgrade_note",
+            "downgrade_version",
+            "downgrade_note",
+            "patch",
+            "patch_note",
+            "config",
+            "config_note",
+            "filter_ips_ports",
+            "filter_ips_ports_note",
+            "replace_package",
+            "replace_note",
+        ];
+
+const app = {
+    currentIndex: 0,
+    userStates: {},
+
+    init() {
+        this.renderMitigationCuration();
+
+        document.querySelector('.summary-text')?.addEventListener('click', (e) => {
+            if (e.target.closest('a')) {
+                e.target.target = '_blank';
+            }
+        });
+    },
+
+    renderMitigationCuration() {
+        const total = curationItems.length;
+        const purl = curationItems[this.currentIndex];
+        const progPercentage = ((this.currentIndex + 1) / total) * 100;
+        document.getElementById('progress').value = progPercentage;
+        document.getElementById('progress-text').innerText = `${this.currentIndex + 1} / ${total}`;
+        document.getElementById('current-purl').innerText = `No reported fix version for ${purl}`;
+
+        if (!this.userStates[this.currentIndex]) {
+            this.userStates[this.currentIndex] = Object.fromEntries(
+                mitigation_items.map((key) => [key, ""]
+                )
+            );
+            this.userStates[this.currentIndex]["purl"] = purl;
+        }
+
+        this.renderBody();
+        this.updateNavButtons();
+    },
+
+    renderBody() {
+        state = this.userStates[this.currentIndex]
+        const body = document.getElementById('curation-body');
+        body.innerHTML = `
+<tr>
+    <td class="has-text-weight-bold"style="word-break: break-all;">
+        Upgrade to Versions
+        <span class="icon has-tooltip-multiline has-tooltip-bottom has-tooltip-arrow has-text-weight-normal"
+        data-tooltip="Specify the version(s) users should upgrade to in order to remediate the vulnerability. Enter one or more fixed versions separated by commas (e.g., 1.0.1, 2.3.4). Use the note field for any additional upgrade guidance or constraints.">
+            <i class="fa fa-info-circle"></i>
+        </span>
+    </td>
+    <td>
+        <input class="input" type="text" id="upgrade_version" value="${state.upgrade_version}" placeholder="e.g., 1.0.1, 2.3.4">
+    <td>
+        <textarea class="textarea" id="upgrade_note" rows="1" placeholder="Details or notes">${state.upgrade_note}</textarea></td>
+    </td>
+</tr>
+
+<tr>
+    <td class="has-text-weight-bold"style="word-break: break-all;">
+        Downgrade to Versions
+        <span class="icon has-tooltip-multiline has-tooltip-top has-tooltip-arrow has-text-weight-normal" data-tooltip="Specify the version(s) users should downgrade to if no fixed upgrade is available. Enter one or more non-vulnerable versions separated by commas (e.g., 1.0.1, 2.3.4). Use the note field for any additional guidance or cautions related to the downgrade.">
+            <i class="fa fa-info-circle"></i>
+        </span>
+    </td>
+    <td>
+        <input class="input" type="text" id="downgrade_version" value="${state.downgrade_version}" placeholder="e.g., 1.0.1, 2.3.4 (non-vulnerable)">
+    <td>
+        <textarea class="textarea" id="downgrade_note" rows="1" placeholder="Details or notes">${state.downgrade_note}</textarea></td>
+    </td>
+</tr>
+
+<tr>
+    <td class="has-text-weight-bold"style="word-break: break-all;">
+        Apply Patch
+        <span class="icon has-tooltip-multiline has-tooltip-top has-tooltip-arrow has-text-weight-normal" data-tooltip="Provide a URL to the official patch, hotfix that remediates the vulnerability. Use the note field to include any additional instructions, prerequisites, or known limitations.">
+            <i class="fa fa-info-circle"></i>
+        </span>
+    </td>
+    <td>
+        <input class="input" type="text" id="patch" value="${state.patch}" placeholder="Patch URL or reference">
+    <td>
+        <textarea class="textarea" id="patch_note" rows="1" placeholder="Details or notes">${state.patch_note}</textarea></td>
+    </td>
+</tr>
+
+
+<tr>
+    <td class="has-text-weight-bold"style="word-break: break-all;">
+        Change Config
+        <span class="icon has-tooltip-multiline has-tooltip-top has-tooltip-arrow has-text-weight-normal" data-tooltip="Provide the configuration changes that mitigate the vulnerabilities, such as modifying settings, disabling features, or enabling security controls. Use the note field to include any potential side effects, or additional implementation guidance.">
+            <i class="fa fa-info-circle"></i>
+        </span>
+    </td>
+    <td>
+<textarea class="textarea" id="config" rows="1" placeholder="Configuration change details">${state.config}</textarea>
+    <td>
+        <textarea class="textarea" id="config_note" rows="1" placeholder="Details or notes">${state.config_note}</textarea></td>
+    </td>
+</tr>
+
+<tr>
+    <td class="has-text-weight-bold"style="word-break: break-all;">
+        Apply Network Restrictions
+        <span class="icon has-tooltip-multiline has-tooltip-top has-tooltip-arrow has-text-weight-normal" data-tooltip="Specify the network restrictions required to mitigate the vulnerability, such as blocking or limiting access to specific ports, IP addresses, or network ranges. Use the note field to provide firewall rules, scope details, or additional implementation guidance.">
+            <i class="fa fa-info-circle"></i>
+        </span>
+    </td>
+    <td>
+<textarea class="textarea" id="filter_ips_ports" rows="1" placeholder="e.g., Block port 443, Allow IP range 10.0.0.0/24">${state.filter_ips_ports}</textarea>
+    <td>
+        <textarea class="textarea" id="filter_ips_ports_note" rows="1" placeholder="Details or notes">${state.filter_ips_ports_note}</textarea></td>
+    </td>
+</tr>
+
+<tr>
+    <td class="has-text-weight-bold"style="word-break: break-all;">
+        Replace Package
+        <span class="icon has-tooltip-multiline has-tooltip-top has-tooltip-arrow has-text-weight-normal" data-tooltip="Specify the Package-URL of the replacement package to use instead of the vulnerable package. Use the note field for compatibility details, or additional guidance.">
+            <i class="fa fa-info-circle"></i>
+        </span>
+    </td>
+    <td>
+        <input class="input" type="text" id="replace_package" value="${state.replace_package}" placeholder="PURL of replacement package">
+    <td>
+        <textarea class="textarea" id="replace_note" rows="1" placeholder="Details or notes">${state.replace_note}</textarea></td>
+    </td>
+</tr>`;
+    },
+
+    saveChanges() {
+        this.userStates[this.currentIndex] = {
+            ...this.userStates[this.currentIndex],
+            ...Object.fromEntries(
+                mitigation_items.map((key) => [
+                    key,
+                    document.getElementById(key)?.value ?? ""
+                ])
+            ),
+        };
+    },
+
+    navigate(dir) {
+        this.saveChanges();
+        console.log(this.userStates[this.currentIndex]);
+        this.currentIndex += dir;
+        this.renderMitigationCuration();
+    },
+
+    updateNavButtons() {
+        document.getElementById('prev-btn').disabled = this.currentIndex === 0;
+        const isLast = this.currentIndex === curationItems.length - 1;
+        document.getElementById('next-btn').classList.toggle('is-hidden', isLast);
+        document.getElementById('finish-btn').classList.toggle('is-hidden', !isLast);
+    },
+
+};
+document.addEventListener('DOMContentLoaded', () => app.init());
+
+</script>
+{% endblock %}

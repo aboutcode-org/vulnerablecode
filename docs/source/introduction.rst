@@ -18,19 +18,17 @@ What can I do with VulnerableCode?
 
 **For security researchers and software developers, VulnerableCode offers a web
 UI and a JSON API to efficiently find if the FOSS packages and dependencies that
-you use are affected by known vulnerabilities and to determine whether a later package version
-fixes those vulnerabilities.**
+you use are affected by known vulnerabilities advisories and to determine whether
+a later package version fixes those vulnerabilities advisories.**
 
 
-- With the web UI, you can search by package using Package URLs or search by
-  vulnerability, e.g., by CVE. From there you can navigate to the package
-  vulnerabilities and to the vulnerable packages.
+- With the web UI, you can search by package using
+  Package URLs and navigate directly to advisory/AVID page
 
 - With the JSON API, you can perform package queries using Package URLs (`purl
   <https://github.com/package-url/purl-spec>`__) or query
-  by vulnerability id ("VCID"). You can also query by CPEs and other vulnerability aliases.
-  The API provides paginated index and detail endpoints and includes indexes
-  of vulnerable CPEs and vulnerable Package URLs.
+  by advisory/AVID.
+  For comprehensive details, see the :ref:`api` section.
 
 You can install VulnerableCode locally or use the provided publicly hosted instance,
 or host your own installation. You can contact the VulnerableCode team
@@ -41,9 +39,9 @@ Why VulnerableCode?
 -------------------
 
 VulnerableCode provides open correlated data and will support curated
-data. Our approach is to prioritize upstream data sources and to merge multiple
-vulnerability data sources after comparison and correlation. The vulnerability
-data is keyed by Package URL ensuring quick and accurate lookup with minimal
+data. Our approach is to prioritize upstream data sources and to group multiple
+vulnerability advisory data sources after comparison and correlation. The vulnerability
+advisory data is keyed by Package URL ensuring quick and accurate lookup with minimal
 friction. We continuously validate and refine the collected data for
 quality, accuracy and consistency using "improver" jobs.
 An example is an improver that can validate that a package version reported as

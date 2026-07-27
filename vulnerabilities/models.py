@@ -9,8 +9,6 @@
 
 import csv
 import datetime
-import hashlib
-import json
 import logging
 import uuid
 import xml.etree.ElementTree as ET
@@ -36,7 +34,6 @@ from cwe2.database import Database
 from cwe2.mappings import xml_database_path
 from cwe2.weakness import Weakness as DBWeakness
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from django.contrib.auth.models import UserManager
 from django.core import exceptions
 from django.core.exceptions import ValidationError
@@ -2465,6 +2462,7 @@ ISSUE_TYPE_CHOICES = [
         "Advisories have conflicting affected and fixed-by packages",
     ),
     ("CONFLICTING_SEVERITY_SCORES", "Advisories have conflicting severity scores"),
+    ("CONFLICTING_WEAKNESSES", "Advisories have conflicting weaknesses"),
 ]
 
 
@@ -3470,6 +3468,67 @@ class ImpactedPackage(models.Model):
         indexes = [
             models.Index(fields=["advisory", "last_range_unfurl_at"]),
         ]
+
+
+class AdvisoryMitigations(models.Model):
+
+    advisory = models.ForeignKey(
+        AdvisoryV2,
+        related_name="mitigations",
+        on_delete=models.CASCADE,
+    )
+
+    base_purl = models.CharField(
+        max_length=500,
+        blank=False,
+        help_text="Version less PURL related to mitigation.",
+    )
+
+    upgrade_to_versions = models.ManyToManyField(
+        "PackageV2",
+        blank=True,
+        related_name="upgrade_mitigations",
+        help_text="Packages that mitigates the advisory by upgrading.",
+    )
+    upgrade_to_versions_note = models.TextField(blank=True)
+
+    downgrade_to_versions = models.ManyToManyField(
+        "PackageV2",
+        blank=True,
+        related_name="downgrade_mitigations",
+        help_text="Packages that mitigates the advisory by downgrading.",
+    )
+    downgrade_to_versions_note = models.TextField(blank=True)
+
+    patches = models.ManyToManyField(
+        "PackageCommitPatch",
+        related_name="patch_mitigations",
+        help_text="Patches to mitigate the advisory.",
+    )
+    patches_note = models.TextField(blank=True)
+
+    config_change = models.TextField(
+        blank=True,
+        help_text="Configuration change to mitigate the advisory.",
+    )
+    config_change_note = models.TextField(blank=True)
+
+    filter_ports_ips = models.TextField(
+        blank=True,
+        help_text="Filter Ports and IPs to mitigate the advisory.",
+    )
+    filter_ports_ips_note = models.TextField(blank=True)
+
+    replace_with_packages = models.ManyToManyField(
+        "PackageV2",
+        blank=True,
+        related_name="replacement_mitigations",
+        help_text="Packages that can replace the vulnerable package.",
+    )
+    replace_package_note = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class ToDoRelatedAdvisory(models.Model):

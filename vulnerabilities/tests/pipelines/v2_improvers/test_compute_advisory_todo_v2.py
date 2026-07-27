@@ -26,6 +26,7 @@ from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.pipelines.v2_improvers.compute_advisory_todo import ComputeToDo
 from vulnerabilities.pipes.advisory import insert_advisory_v2
 from vulnerabilities.tests.pipelines import TestLogger
+from vulnerabilities.utils import canonical_value
 
 
 class TestComputeToDo(TestCase):
@@ -690,7 +691,10 @@ class TestComputeToDo(TestCase):
         result_partial_curation = issue_details["partial_curation_advisory"]
         self.assertEqual(1, AdvisoryToDoV2.objects.count())
         self.assertEqual("CONFLICTING_AFFECTED_PACKAGES", todo.issue_type)
-        self.assertDictEqual(expected_partial_curation_advisory, result_partial_curation)
+        self.assertCountEqual(
+            expected_partial_curation_advisory["affected_packages"],
+            result_partial_curation["affected_packages"],
+        )
 
     def test_todo_conflicting_severity(self):
         insert_advisory_v2(

@@ -23,6 +23,10 @@ from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import Reference
+from vulnerabilities.models import AdvisorySeverity
+from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.utils import compute_content_id_v2
 from vulnerabilities.utils import purl_to_dict
 
 
@@ -1378,3 +1382,50 @@ class TestAlpineVersSchemeMigration(TestMigrations):
 
         self.assertEqual(self.impact2.affecting_vers, "vers:apk/3.4.5")
         self.assertEqual(self.impact2.fixed_vers, None)
+
+
+class TestCleanAdvisorySeverityMigration(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0138_fix_malformed_cvss_vector"
+    migrate_to = "0139_cleanup_none_string_in_severity"
+
+    def setUpBeforeMigration(self, apps):
+        # AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+        # ImpactedPackage = apps.get_model("vulnerabilities", "ImpactedPackage")
+        # AdvisorySeverity = apps.get_model("vulnerabilities", "AdvisorySeverity")
+
+        self.advisory1 = AdvisoryV2.objects.create(
+            unique_content_id="b001d1a8952bc056d0161f1dd45dd8f90b25f62c56a887ea21d09fafd78a0f61",
+            url="https://old.example.com",
+            summary="Old advisory",
+            advisory_id="test_adv1",
+            avid="test_pipeline/test_adv",
+            datasource_id="test_pipeline",
+            pipeline_id="test_pipeline_v2",
+        )
+
+        ImpactedPackage.objects.create(
+            advisory=self.advisory1,
+            base_purl="pkg:npm/foobar0",
+            affecting_vers="vers:npm/4.3.2",
+            fixed_vers="vers:npm/5.0.0",
+        )
+
+        self.severity = AdvisorySeverity.objects.create(
+            scoring_system=severity_systems.CVSSV4,
+            scoring_elements="CVSS:4.0/AV:N/AC:L/AT:P/PR:H/UI:P/VC:N/VI:N/VA:N",
+            value="None",
+        )
+
+        self.advisory1.severities.add(self.severity)
+
+    def test_severity_value_cleaned(self):
+        self.severity.refresh_from_db()
+        self.assertEqual(self.severity.value, "")
+
+    def test_advisory_content_id_recomputed(self):
+        self.advisory1.refresh_from_db()
+        self.assertEqual(
+            self.advisory1.unique_content_id,
+            "a15d4651cb05e3513c12263a11e34bd9103f68833cac8f7ffdbbd71b9cb4cf16",
+        )

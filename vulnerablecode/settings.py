@@ -42,6 +42,8 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 ALTCHA_HMAC_KEY = env.str("ALTCHA_HMAC_KEY")
 
+ALTCHA_SESSION_TIMEOUT = env.int("ALTCHA_SESSION_TIMEOUT", None)
+
 # SECURITY WARNING: do not run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
@@ -114,6 +116,7 @@ MIDDLEWARE = (
     "vulnerabilities.middleware.altcha_protection.AltchaProtectionMiddleware",
     "vulnerabilities.middleware.vcio_user_agent.VCIOUserAgentMiddleware",
 )
+
 
 ROOT_URLCONF = "vulnerablecode.urls"
 
@@ -215,6 +218,7 @@ REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
 
 if IS_TESTS:
     VULNERABLECODEIO_REQUIRE_AUTHENTICATION = False
+    ALTCHA_SESSION_TIMEOUT = 900
 
 USE_L10N = True
 
@@ -275,19 +279,25 @@ api_doc_intro = f"""
     <p><strong>VulnerableCode</strong> is open data and free software by
     <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others.</a>
     </p>
+    <p>API is throttled for anon users it is 10/minute and 30/minute for user with API key </p>
+    <p>Please refer to <a href="https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html" target="_blank">urllib3 documentation</a> and set <code> respect_retry_after_header </code> as True to respect the Retry-After header.</p>
+    <p>Example: <a href="https://github.com/aboutcode-org/dejacode/pull/550/changes#diff-9065d35748dfe1659a740cce66f00cee2782e07016665739584799bd27489df3" target="_blank">Dejacode Implementation</a></p>
     <p>The VulnerableCode API exposes these endpoints:</p>
     <ul>
         <li>
-            <strong>packages/</strong>: main endpoint to lookup for vulnerable packages.
+            <strong>/v3/packages/</strong>: main endpoint to lookup for vulnerable packages.
         </li>
         <li>
-            <strong>vulnerabilities/</strong>: secondary endpoint to lookup by vulnerabilities.
+            <strong>/v3/advisories/</strong>: endpoint to lookup for advisories for a given package.
         </li>
         <li>
-            <strong>alias/</strong>: secondary endpoint to lookup vulnerabilities by aliases (e.g., CVE)
+            <strong>/v3/affected-by-advisories/</strong>: endpoint to lookup for advisories that affect a given package.
         </li>
         <li>
-            <strong>cpes/</strong>: secondary endpoint to lookup vulnerabilities by CPE.
+            <strong>/v3/fixing-advisories/</strong>: endpoint to lookup for advisories that fix a given package.
+        </li>
+        <li>
+            <strong>/v3/package-types/</strong>: endpoint to get package types of all the packages in the database.
         </li>
     </ul>
 </div>

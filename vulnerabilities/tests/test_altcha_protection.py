@@ -13,7 +13,6 @@ import pytest
 from django.test import RequestFactory
 
 from vulnerabilities.forms import AltchaForm
-from vulnerabilities.views import AltchaView
 
 
 @pytest.mark.django_db
@@ -39,6 +38,7 @@ class TestAltchaProtectionMiddleware:
         assert response.status_code != 302
 
     def test_expired_session_redirects(self, client):
+
         session = client.session
         session["altcha_verified_at"] = time.time() - 3601
         session.save()
@@ -62,6 +62,8 @@ class TestAltchaProtectionMiddleware:
 @pytest.mark.django_db
 class TestAltchaView:
     def test_form_valid_sets_session(self, monkeypatch):
+        from vulnerabilities.views import AltchaView
+
         now = 1234567890
 
         monkeypatch.setattr(time, "time", lambda: now)

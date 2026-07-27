@@ -3,23 +3,9 @@
 Model Overview
 =================
 
-This is a set of Graphviz-based graph diagrams of the application and admin models as of 2023-11-27:
+This is a set of Graphviz-based graph diagrams of the application and admin models as of 2026-7-10:
 
-Application
------------
-
-.. figure:: images/vcio-db-application-2023-11-27-01.png
-    :alt: alternate text
+.. figure:: images/vcio-model.svg
+    :alt: application and Admin model diagrams
     :width: 100%
-    :class: with-shadow
-
-.. rst-class::  clear-both
-
-
-Admin
------
-
-.. figure:: images/vcio-db-admin-2023-11-27-01.png
-    :alt: alternate text
-    :width: 70%
-    :class: with-shadow
+    :class: with-shadow clear-both

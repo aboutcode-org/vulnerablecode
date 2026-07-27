@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 from django.shortcuts import redirect
 from django.utils.deprecation import MiddlewareMixin
 
-SESSION_TIMEOUT = 900  # 15 minutes
+from vulnerablecode.settings import ALTCHA_SESSION_TIMEOUT
 
 ALTCHA_PROTECTED_PREFIXES = (
     "/packages/",
@@ -25,8 +25,10 @@ ALTCHA_PROTECTED_PREFIXES = (
 
 
 class AltchaProtectionMiddleware(MiddlewareMixin):
-
     def __call__(self, request):
+        if not ALTCHA_SESSION_TIMEOUT:
+            return self.get_response(request)
+
         protected = any(request.path.startswith(prefix) for prefix in ALTCHA_PROTECTED_PREFIXES)
 
         if not protected:
@@ -38,7 +40,7 @@ class AltchaProtectionMiddleware(MiddlewareMixin):
         if not verified_at:
             return redirect(f"/altcha/?{urlencode({'next': next_url})}")
 
-        if time.time() - verified_at > SESSION_TIMEOUT:
+        if time.time() - verified_at > ALTCHA_SESSION_TIMEOUT:
             request.session.pop("altcha_verified_at", None)
             return redirect(f"/altcha/?{urlencode({'next': next_url})}")
 

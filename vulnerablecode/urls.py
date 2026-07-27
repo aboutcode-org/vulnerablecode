@@ -23,11 +23,13 @@ from vulnerabilities.api_v3 import PackageTypesView
 from vulnerabilities.api_v3 import PackageV3ViewSet
 from vulnerabilities.views import AdminLoginView
 from vulnerabilities.views import AdvisoryDetails
+from vulnerabilities.views import AdvisoryMitigationCurationView
 from vulnerabilities.views import AdvisoryPackageCommitPatchDetails
 from vulnerabilities.views import AdvisoryPackageCurationView
 from vulnerabilities.views import AdvisoryPackagesDetails
 from vulnerabilities.views import AdvisorySeverityCurationView
 from vulnerabilities.views import AdvisoryToDoListView
+from vulnerabilities.views import AdvisoryWeaknessCurationView
 from vulnerabilities.views import AffectedByAdvisoriesListView
 from vulnerabilities.views import AltchaView
 from vulnerabilities.views import ApiUserCreateView
@@ -38,6 +40,7 @@ from vulnerabilities.views import PackageV2Details
 from vulnerabilities.views import PipelineRunDetailView
 from vulnerabilities.views import PipelineRunListView
 from vulnerabilities.views import PipelineScheduleListView
+from vulnerablecode.settings import ALTCHA_SESSION_TIMEOUT
 from vulnerablecode.settings import DEBUG
 from vulnerablecode.settings import DEBUG_TOOLBAR
 
@@ -92,6 +95,16 @@ urlpatterns = [
         name="todo-severity-detail",
     ),
     path(
+        "advisories/todos/<uuid:todo_id>/weakness/curate/",
+        AdvisoryWeaknessCurationView.as_view(),
+        name="todo-weakness-detail",
+    ),
+    path(
+        "advisories/todos/<uuid:todo_id>/mitigation/curate/",
+        AdvisoryMitigationCurationView.as_view(),
+        name="todo-mitigation-detail",
+    ),
+    path(
         "pipelines/<str:pipeline_id>/runs/",
         PipelineRunListView.as_view(),
         name="runs-list",
@@ -116,7 +129,6 @@ urlpatterns = [
         AdvisoryDetails.as_view(),
         name="advisory_details",
     ),
-    path("altcha/", AltchaView.as_view(), name="altcha"),
     path(
         "packages/v2/search/",
         PackageSearchV2.as_view(),
@@ -162,6 +174,9 @@ urlpatterns = [
     #     admin.site.urls,
     # ),
 ]
+
+if ALTCHA_SESSION_TIMEOUT:
+    urlpatterns += [path("altcha/", AltchaView.as_view(), name="altcha")]
 
 if DEBUG:
     urlpatterns += [path("django-rq/", include("django_rq.urls"))]

@@ -15,12 +15,12 @@ package URL or purl prefix fragment such as
 
 The search by packages is available at the following URL:
 
-    `https://public.vulnerablecode.io/packages/search/ <https://public.vulnerablecode.io/packages/search/>`_
+    `https://public.vulnerablecode.io <https://public.vulnerablecode.io>`_
 
 How to search by packages:
 
-    1. Go to the URL: `https://public.vulnerablecode.io/packages/search/ <https://public.vulnerablecode.io/packages/search/>`_
-    2. Enter the package URL or purl prefix fragment such as ``pkg:pypi``
+    1. Go to the URL: `https://public.vulnerablecode.io/ <https://public.vulnerablecode.io/>`_
+    2. Enter the package URL or purl prefix fragment such as ``pkg:pypi/aubio``
        or by package name in the search box.
     3. Click on the search button.
 
@@ -35,39 +35,12 @@ Click on the package URL to view the package details.
 
 .. _vuln-search:
 
-Search by vulnerabilities
----------------------------
+Navigate to Advisories
+-----------------------
 
-The search by vulnerabilities is a very powerful feature of
-VulnerableCode. It allows you to search for vulnerabilities by the
-VCID itself. It also allows you to search for
-vulnerabilities by the CVE, GHSA, CPEs etc or by the
-fragment of these identifiers like ``CVE-2021``.
+You can directly navigate to an advisory page by specifying the datasource_id (for example, nvd)
+and advisory_id (for example, CVE-2026-23918). `https://public.vulnerablecode.io/advisories/datasource_id/advisory_id`
 
-The search by vulnerabilities is available at the following URL:
-
-    `https://public.vulnerablecode.io/vulnerabilities/search/ <https://public.vulnerablecode.io/vulnerabilities/search/>`_
-
-How to search by vulnerabilities:
-
-    1. Go to the URL: `https://public.vulnerablecode.io/vulnerabilities/search/ <https://public.vulnerablecode.io/vulnerabilities/search/>`_
-    2. Enter the VCID, CVE, GHSA, CPEs etc. in the search box.
-    3. Click on the search button.
-
-The search results will be displayed in the table below the search box.
-
-    .. image:: images/vuln_search.png
-
-Click on the VCID to view the vulnerability details.
-
-    .. image:: images/vuln_details.png
-
-Affected packages tab shows the list of packages affected by the
-vulnerability.
-
-    .. image:: images/vuln_affected_packages.png
-
-Fixed by packages tab shows the list of packages that fix the
-vulnerability.
-
-    .. image:: images/vuln_fixed_packages.png
+For example:
+    - `https://public.vulnerablecode.io/advisories/github_osv/GHSA-6xcx-gx7r-rccj <https://public.vulnerablecode.io/advisories/github_osv/GHSA-6xcx-gx7r-rccj>`_
+    - `https://public.vulnerablecode.io/advisories/nvd/CVE-2026-23918 <https://public.vulnerablecode.io/advisories/nvd/CVE-2023-40024>`_

@@ -131,7 +131,7 @@ const app = {
                 <div>
                     <div class="has-text-weight-bold is-size-6">Curation</div>
                 </div>
-                <button class="button is-small is-outlined is-info mt-auto" onclick="app.resetCurrentCuration()">Reset</button>
+                <button class="button is-small is-outlined is-info" onclick="app.resetCurrentCuration()">Reset</button>
             </div>
             </th>
         `;
@@ -174,7 +174,7 @@ const app = {
                         ${primaryUidHtml}
                     </div>
                     <button
-                        class="button is-small is-info mt-auto"
+                        class="button is-small is-info"
                         onclick="app.pickAdvisory(${groupIdx}, 'primary')"
                         ${advGroup.primary.vector_string ? '' : 'disabled'}>
                         Pick This
@@ -204,7 +204,7 @@ const app = {
                             </div>
                             <span class="is-info is-light mb-1 is-size-6">Score: ${sec.score || 'NA'}</span><br>
                             <button
-                                class="button is-small is-info is-light mt-auto"
+                                class="button is-small is-info is-light"
                                 onclick="app.pickAdvisory(${groupIdx}, 'secondary')"
                                 ${sec.vector_string ? '' : 'disabled'}>
                                 Pick This

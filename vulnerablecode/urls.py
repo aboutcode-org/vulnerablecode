@@ -40,9 +40,9 @@ from vulnerabilities.views import PackageV2Details
 from vulnerabilities.views import PipelineRunDetailView
 from vulnerabilities.views import PipelineRunListView
 from vulnerabilities.views import PipelineScheduleListView
-from vulnerablecode.settings import ALTCHA_SESSION_TIMEOUT
 from vulnerablecode.settings import DEBUG
 from vulnerablecode.settings import DEBUG_TOOLBAR
+from vulnerablecode.settings import VULNERABLECODE_ALTCHA_SESSION_TIMEOUT
 
 
 # See the comment at https://stackoverflow.com/a/46163870.
@@ -175,7 +175,7 @@ urlpatterns = [
     # ),
 ]
 
-if ALTCHA_SESSION_TIMEOUT:
+if VULNERABLECODE_ALTCHA_SESSION_TIMEOUT:
     urlpatterns += [path("altcha/", AltchaView.as_view(), name="altcha")]
 
 if DEBUG:

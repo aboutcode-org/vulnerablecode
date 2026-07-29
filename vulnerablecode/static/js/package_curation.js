@@ -68,7 +68,7 @@ const app = {
                     <div>
                         <div class="has-text-weight-bold">Curation</div>
                     </div>
-                    <button class="button is-small is-outlined is-info mt-auto" onclick="app.resetCurrentCuration()">Reset</button>
+                    <button class="button is-small is-outlined is-info" onclick="app.resetCurrentCuration()">Reset</button>
                 </div>
             </th>`;
             
@@ -108,7 +108,7 @@ const app = {
                         ${toggleHtml}
                         ${primaryUidHtml}
                     </div>
-                    <button class="button is-small is-info mt-auto" onclick="app.pickAdvisory(${groupIdx}, 'primary')">Pick This</button>
+                    <button class="button is-small is-info" onclick="app.pickAdvisory(${groupIdx}, 'primary')">Pick This</button>
                 </div>
             `;
             header.appendChild(primaryTh);
@@ -131,7 +131,7 @@ const app = {
                                     <span class="icon is-small" ><i class="fa fa-external-link"></i></span>
                                 </a>
                             </div>
-                            <button class="button is-small is-info is-light mt-auto" onclick="app.pickAdvisory(${groupIdx}, 'secondary', ${secIdx})">Pick This</button>
+                            <button class="button is-small is-info is-light" onclick="app.pickAdvisory(${groupIdx}, 'secondary', ${secIdx})">Pick This</button>
                         </div>
                     `;
                     header.appendChild(secTh);

@@ -110,6 +110,7 @@ Reference documentation for VulnerableCode features and customizations.
 - :ref:`command_line_interface`
 - :ref:`importers_link`
 - :ref:`pipeline_avid_mapping`
+- :ref:`advisory_schema`
 
 .. rst-class:: column column2 bottom-right
 

@@ -13,8 +13,11 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import ImpactedPackageFixedBy
-from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.models import PackageV2
+
+# Warning!
+# Any changes to the structure of the advisory exporter also require updating the advisory
+# schema documentation at `docs/source/advisory-schema.rst`.
 
 
 def package_prefetched_qs(checkpoint):

@@ -108,7 +108,7 @@ def serialize_severity(sev):
         "score": sev.value,
         "scoring_system": sev.scoring_system,
         "scoring_elements": sev.scoring_elements,
-        "published_at": str(sev.published_at),
+        "published_at": str(sev.published_at) if sev.published_at else None,
         "url": sev.url,
     }
 

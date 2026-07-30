@@ -163,3 +163,10 @@ def test_to_version_ranges_unknown_comparator(pipeline):
     fixed_versions = []
     with pytest.raises(ValueError):
         pipeline.to_version_ranges(versions_data, fixed_versions)
+
+
+def test_to_version_ranges_without_constraints(pipeline):
+    # A version range with no constraints serializes to "vers:apache/", which
+    # VersionRange.from_string() rejects, so no range must be returned at all.
+    versions_data = [{"version_value": "", "version_affected": "="}]
+    assert pipeline.to_version_ranges(versions_data, []) is None

@@ -30,6 +30,7 @@
    command-line-interface
    importers_link
    PIPELINES-AVID
+   advisory-schema
 
 .. toctree::
    :hidden:

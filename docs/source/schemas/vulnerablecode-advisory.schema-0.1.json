@@ -57,13 +57,13 @@
       "required": [
         "package"
       ],
-      "title": "AffectedPackageV2",
+      "title": "Affected Package",
       "type": "object"
     },
     "PackageCommitPatchData": {
       "properties": {
         "vcs_url": {
-          "title": "VCS URL",
+          "title": "Version Control Systems URL",
           "type": "string"
         },
         "commit_hash": {
@@ -75,7 +75,7 @@
         "vcs_url",
         "commit_hash"
       ],
-      "title": "PackageCommitPatchData",
+      "title": "Package Commit Patch",
       "type": "object"
     },
     "ReferenceV2": {
@@ -96,13 +96,13 @@
           "type": "string"
         }
       },
-      "title": "ReferenceV2",
+      "title": "Reference",
       "type": "object"
     },
     "VulnerabilitySeverity": {
       "properties": {
         "scoring_system": {
-          "title": "System",
+          "title": "Scoring System",
           "type": "string"
         },
         "score": {
@@ -137,10 +137,10 @@
             }
           ],
           "default": null,
-          "title": "Url"
+          "title": "Severity URL"
         }
       },
-      "title": "VulnerabilitySeverity",
+      "title": "Vulnerability Severity",
       "type": "object"
     }
   },

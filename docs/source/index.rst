@@ -34,6 +34,17 @@
 .. toctree::
    :hidden:
    :maxdepth: 1
+   :caption: Advisory Curation
+
+   advisory-todos
+   advisory-package-curation
+   advisory-severity-curation
+   advisory-weakness-curation
+   extra-mitigation-curation
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
    :caption: Misc
 
    faq
@@ -49,7 +60,7 @@ vulnerabilities with comprehensive information from upstream and downstream publ
 sources including packages affected by a vulnerability advisories and packages that fix a
 vulnerability advisory.
 
-There is a `public vulnerableCode database <https://public.vulnerablecode.io/>`_
+There is a `Public VulnerableCode Database <https://public.vulnerablecode.io/>`_
 and the project also provides the tools to build your own instance of the database.
 
 Documentation overview
@@ -108,6 +119,13 @@ Explanations
 Consult the reference to understand VulnerableCode concepts.
 
 .. rst-class:: row clearfix
+
+Advisory Curation
+~~~~~~~~~~~~~~~~~
+
+Learn how to review and curate vulnerability advisories.
+
+- :ref:`advisory_todos`
 
 Misc
 ~~~~~~~~~~~~~~~

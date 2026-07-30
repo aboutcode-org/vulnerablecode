@@ -33,6 +33,7 @@ from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.improver import MAX_CONFIDENCE
 from vulnerabilities.models import Advisory
 from vulnerabilities.models import AdvisoryAlias
+from vulnerabilities.models import AdvisoryHistoryDiff
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
@@ -49,6 +50,7 @@ from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.models import Weakness
 from vulnerabilities.pipes.risk_score import compute_advisory_risk_score
 from vulnerabilities.pipes.univers_utils import get_exact_purls_v2
+from vulnerabilities.utils import compute_advisory_v2_diff
 
 
 def get_or_create_aliases(aliases: List) -> QuerySet:
@@ -295,6 +297,7 @@ def insert_advisory_v2(
     logger: Callable,
     datasource_id: str,
     precedence: int = 0,
+    calculate_history_diff: bool = True,
 ):
     from vulnerabilities.models import ImpactedPackage
     from vulnerabilities.models import PackageV2
@@ -338,12 +341,16 @@ def insert_advisory_v2(
     if not created:
         return advisory_obj
 
-    AdvisoryV2.objects.filter(
+    latest_qs = AdvisoryV2.objects.filter(
         avid=f"{datasource_id}/{advisory.advisory_id}",
         is_latest=True,
-    ).update(is_latest=False)
+    )
+
+    previous_latest_advisory = latest_qs.first()
+    latest_qs.update(is_latest=False)
+
     advisory_obj.is_latest = True
-    advisory_obj.save()
+    advisory_obj.save(update_fields=["is_latest"])
 
     aliases = get_or_create_advisory_aliases(aliases=advisory.aliases)
     references = get_or_create_advisory_references(references=advisory.references)
@@ -416,6 +423,31 @@ def insert_advisory_v2(
         )
         impact.introduced_by_package_commit_patches.add(*introduced_commit_v2)
         impact.fixed_by_package_commit_patches.add(*fixed_commit_v2)
+
+    if calculate_history_diff:
+        if previous_latest_advisory:
+            previous = AdvisoryV2.objects.prefetch_related(
+                "aliases",
+                "references",
+                "weaknesses",
+                "severities",
+                "patches",
+                "impacted_packages",
+            ).get(id=previous_latest_advisory.id)
+
+            current = AdvisoryV2.objects.prefetch_related(
+                "aliases",
+                "references",
+                "weaknesses",
+                "severities",
+                "patches",
+                "impacted_packages",
+            ).get(id=advisory_obj.id)
+
+            compute_advisory_v2_diff(previous, current)
+        else:
+            AdvisoryHistoryDiff.objects.create(advisory_after=advisory_obj, advisory_before=None)
+
     return advisory_obj
 
 

@@ -4,6 +4,7 @@
 {% load static %}
 {% load show_cvss %}
 {% load url_filters %}
+{% load diff_advisory_history %}
 
 {% block title %}
 VulnerableCode Advisory Details - {{ advisory.advisory_id }}
@@ -22,6 +23,13 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 </span>
             </div>
         </article>
+
+        {% if is_snapshot %}
+        <div class="notification is-warning mb-3 has-text-centered" style="max-width: fit-content; margin: 0 auto;">
+            <i class="fa fa-history mr-1"></i> Historical snapshot collected on <strong>{{ advisory.date_collected|date:"Y-m-d H:i" }} UTC</strong>.
+            <a href="{{ advisory.get_absolute_url }}" class="ml-3"><strong>View current version</strong> <i class="fa fa-arrow-right is-size-7"></i></a>
+        </div>
+        {% endif %}
 
         <div class="tabs is-boxed" id="tabs">
             <ul>
@@ -46,13 +54,13 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 </li>
 
                 {% if advisory.exploits %}
-                    <li data-tab="exploits">
-                        <a>
-                            <span>
-                                Exploits ({{ advisory.exploits.count }})
-                            </span>
-                        </a>
-                    </li>
+                <li data-tab="exploits">
+                    <a>
+                        <span>
+                            Exploits ({{ advisory.exploits.count }})
+                        </span>
+                    </a>
+                </li>
                 {% endif %}
 
                 <li data-tab="epss">
@@ -72,13 +80,23 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 </li>
 
                 {% if ssvcs %}
-                    <li data-tab="ssvcs">
-                        <a>
-                            <span>
-                                Related SSVCS ({{ ssvcs|length }})
-                            </span>
-                        </a>
-                    </li>
+                <li data-tab="ssvcs">
+                    <a>
+                        <span>
+                            Related SSVCS ({{ ssvcs|length }})
+                        </span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if advisory_history and not is_snapshot %}
+                <li data-tab="history">
+                    <a onclick="goToTab('history'); requestAnimationFrame(checkDiffHeights);">
+                        <span>
+                            History 
+                        </span>
+                    </a>
+                </li>
                 {% endif %}
             
                 <li data-tab="patch-url">
@@ -124,13 +142,13 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                             </tr>
                             <tr>
                                 <td class="two-col-left">Summary</td>
-                                <td class="two-col-right wrap-strings">{{ advisory.summary }}
+                                <td class="two-col-right wrap-strings">{{ advisory.summary }}                                  
                                 </td>
                             </tr>
                             {% if severity_score_range %}
                             <tr>
                                 <td class="two-col-left">Severity score range</td>
-                                <td class="two-col-right">{{ severity_score_range }}
+                                <td class="two-col-right">{{ severity_score_range }}                                    
                                 </td>
                                 {% endif %}
                             </tr>
@@ -147,9 +165,9 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     Exploitability</td>
                                 <td class="two-col-right wrap-strings">
                                     {% if advisory.exploitability is not None %}
-                                        {{ advisory.exploitability }}
+                                    {{ advisory.exploitability }}
                                     {% else %}
-                                        {{ "" }}
+                                    {{ "" }}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -157,27 +175,27 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                             <tr>
                                 <td class="two-col-left"
                                     data-tooltip="Weighted severity is the highest value calculated by multiplying each severity by its corresponding weight, divided by 10."
-                                >Weighted Severity</td>
+                                    >Weighted Severity</td>
                                 <td class="two-col-right wrap-strings">
                                     {% if advisory.weighted_severity is not None %}
-                                        {{ advisory.weighted_severity }}
+                                    {{ advisory.weighted_severity }}
                                     {% else %}
-                                        {{ "" }}
+                                    {{ "" }}
                                     {% endif %}
                                 </td>
                             </tr>
 
                             <tr>
                                 <td class="two-col-left"
-                                    data-tooltip="Risk expressed as a number ranging from 0 to 10. It is calculated by multiplying
+                                data-tooltip="Risk expressed as a number ranging from 0 to 10. It is calculated by multiplying
                                     the weighted severity and exploitability values, capped at a maximum of 10.
                                     "
-                                >Risk</td>
+                                    >Risk</td>
                                 <td class="two-col-right wrap-strings">
                                     {% if advisory.risk_score is not None %}
-                                        {{ advisory.risk_score }}
+                                    {{ advisory.risk_score }}
                                     {% else %}
-                                        {{ "" }}
+                                    {{ "" }}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -188,7 +206,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     "
                                 >Affected and Fixed Packages</td>
                                 <td class="two-col-right wrap-strings">
-                                    <a href="/advisories/packages/{{ advisory.avid }}">
+                                    <a href="{% if is_snapshot %}{% url 'advisory_package_snapshot' avid=advisory.avid unique_content_id=advisory.unique_content_id %}{% else %}{% url 'advisory_package_details' avid=advisory.avid %}{% endif %}">
                                         Package Details
                                     </a>
                                 </td>
@@ -222,7 +240,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                         {{ weakness.name }} <i class="fa fa-external-link fa_link_custom"></i>
                                     </a>
                                 </td>
-    
+
                             </tr>
                             {% empty %}
                             <tr>
@@ -311,215 +329,215 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 
             <div class="tab-div content" data-content="exploits">
                 {% for exploit in advisory.exploits.all %}
-                    <table class="table is-bordered is-striped is-fullwidth gray-header-border">
-                            <tr>
-                                <th class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                    data-tooltip="The source of the exploit information, such as CISA KEV, Exploit-DB, Metasploit, Packet Storm, or others."> Data source </th>
-                                <th> {{ exploit.data_source }} </th>
-                            </tr>
+                <table class="table is-bordered is-striped is-fullwidth gray-header-border">
+                    <tr>
+                        <th class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                            data-tooltip="The source of the exploit information, such as CISA KEV, Exploit-DB, Metasploit, Packet Storm, or others."> Data source </th>
+                        <th> {{ exploit.data_source }} </th>
+                    </tr>
 
-                            <tbody>
-                                {% if exploit.date_added %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                data-tooltip="The date the advisory was added to an exploit catalog.">
-                                                Date added
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.date_added }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.description %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                data-tooltip="Description of the advisory in an exploit catalog, often a refinement of the original CVE description">
-                                                Description
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.description }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.required_action %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                data-tooltip="The required action to address the advisory,
+                    <tbody>
+                        {% if exploit.date_added %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The date the advisory was added to an exploit catalog.">
+                                    Date added
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.date_added }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.description %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="Description of the advisory in an exploit catalog, often a refinement of the original CVE description">
+                                    Description
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.description }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.required_action %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The required action to address the advisory,
                                                 typically to apply vendor updates or apply vendor mitigations or to discontinue use.">
-                                                Required action
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.required_action }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.due_date %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                data-tooltip="The date the required action is due in the format YYYY-MM-DD,
+                                    Required action
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.required_action }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.due_date %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The date the required action is due in the format YYYY-MM-DD,
                                                  which applies to all USA federal civilian executive branch (FCEB) agencies,
                                                   but all organizations are strongly encouraged to execute the required action.">
-                                                Due date
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.due_date }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.notes %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                data-tooltip="Additional notes and resources about the advisory,
+                                    Due date
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.due_date }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.notes %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="Additional notes and resources about the advisory,
                                                  often a URL to vendor instructions.">
-                                                Note
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right"><pre class="has-text-black">{{ exploit.notes }}</pre></td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.known_ransomware_campaign_use is not None %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                data-tooltip="'Known' if this advisory is known to have been leveraged as part of a ransomware campaign; or 'Unknown' if CISA lacks confirmation that the advisory has been utilized for ransomware.">
-                                                Ransomware campaign use
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.known_ransomware_campaign_use|yesno:"Known,Unknown" }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.source_date_published %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                    data-tooltip="The date that the exploit was published or disclosed.">
-                                                    Source publication date
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.source_date_published }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.exploit_type %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                        data-tooltip="The type of the exploit as provided by the original upstream data source.">
-                                                        Exploit type
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.exploit_type }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.platform %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                                    data-tooltip="The platform associated with the exploit as provided by the original upstream data source.">
-                                                    Platform
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.platform }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if exploit.source_date_updated %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span
-                                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                            data-tooltip="The date the exploit was updated in the original upstream data source.">
-                                            Source update date
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.source_date_updated }}</td>
-                                    </tr>
-                                {% endif %}
+                                    Note
+                                </span>
+                            </td>
+                            <td class="two-col-right"><pre class="has-text-black">{{ exploit.notes }}</pre></td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.known_ransomware_campaign_use is not None %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="'Known' if this advisory is known to have been leveraged as part of a ransomware campaign; or 'Unknown' if CISA lacks confirmation that the advisory has been utilized for ransomware.">
+                                    Ransomware campaign use
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.known_ransomware_campaign_use|yesno:"Known,Unknown" }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.source_date_published %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The date that the exploit was published or disclosed.">
+                                    Source publication date
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.source_date_published }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.exploit_type %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The type of the exploit as provided by the original upstream data source.">
+                                    Exploit type
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.exploit_type }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.platform %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The platform associated with the exploit as provided by the original upstream data source.">
+                                    Platform
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.platform }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if exploit.source_date_updated %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span
+                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The date the exploit was updated in the original upstream data source.">
+                                    Source update date
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.source_date_updated }}</td>
+                        </tr>
+                        {% endif %}
 
-                                {% if exploit.source_url %}
-                                    <tr>
-                                        <td class="two-col-left">
-                                            <span
-                                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                            data-tooltip="The URL to the exploit as provided in the original upstream data source.">
-                                            Source URL
-                                            </span>
-                                        </td>
-                                        <td class="two-col-right">{{ exploit.source_url }}</td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                    </table>
+                        {% if exploit.source_url %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span
+                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The URL to the exploit as provided in the original upstream data source.">
+                                    Source URL
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ exploit.source_url }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
                 {% empty %}
-                    <tr>
-                        <td colspan="2">
-                            No exploits are available.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="2">
+                        No exploits are available.
+                    </td>
+                </tr>
                 {% endfor %}
             </div>
-        
+
             <div class="tab-div content" data-content="epss">
                 {% if epss_data %}
-                    <div class="has-text-weight-bold tab-nested-div ml-1 mb-1 mt-1">
-                        Exploit Prediction Scoring System (EPSS)
-                    </div>
-                    <table class="table vcio-table width-100-pct mt-2">
-                        <tbody>
-                            <tr>
-                                <td class="two-col-left">
-                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                          data-tooltip="The percentile of the current score, the proportion of all scored vulnerabilities with the same or a lower EPSS score">
-                                          Percentile
-                                    </span>
-                                </td>
-                                <td class="two-col-right">{{ epss_data.percentile }}</td>
-                            </tr>
-                            <tr>
-                                <td class="two-col-left">
-                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                          data-tooltip="The EPSS score represents the probability [0-1] of exploitation in the wild in the next 30 days.">
-                                          EPSS Score
-                                    </span>
-                                </td>
-                                <td class="two-col-right">{{ epss_data.score }}</td>
-                            </tr>
-                            {% if epss_data.published_at %}
-                            <tr>
-                                <td class="two-col-left">
-                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                          data-tooltip="Date when the EPSS score was published.">
-                                          Published At
-                                    </span>
-                                </td>
-                                <td class="two-col-right">{{ epss_data.published_at }}</td>
-                            </tr>
-                            {% endif %}
-                            {% if epss_data.source %}
-                            <tr>
-                                <td class="two-col-left">
-                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                          data-tooltip="Source URL of the EPSS Score.">
-                                          Source
-                                    </span>
-                                </td>
-                                <td class="two-col-right"> <a href="{{ epss_data.source }}" target="_blank">{{ epss_data.source }}</a></td>
-                            </tr>
-                            {% endif %}
-                            {% if epss_data.advisory %}
-                            <tr>
-                                <td class="two-col-left">
-                                    <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
-                                          data-tooltip="Advisory of the EPSS Score.">
-                                          Advisory
-                                    </span>
-                                </td>
-                                <td class="two-col-right"> <a href="{{ epss_data.advisory.get_absolute_url }}">{{ epss_data.advisory.avid }}</a></td>
-                            </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+                <div class="has-text-weight-bold tab-nested-div ml-1 mb-1 mt-1">
+                    Exploit Prediction Scoring System (EPSS)
+                </div>
+                <table class="table vcio-table width-100-pct mt-2">
+                    <tbody>
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The percentile of the current score, the proportion of all scored vulnerabilities with the same or a lower EPSS score">
+                                    Percentile
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ epss_data.percentile }}</td>
+                        </tr>
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="The EPSS score represents the probability [0-1] of exploitation in the wild in the next 30 days.">
+                                    EPSS Score
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ epss_data.score }}</td>
+                        </tr>
+                        {% if epss_data.published_at %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="Date when the EPSS score was published.">
+                                    Published At
+                                </span>
+                            </td>
+                            <td class="two-col-right">{{ epss_data.published_at }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if epss_data.source %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="Source URL of the EPSS Score.">
+                                    Source
+                                </span>
+                            </td>
+                            <td class="two-col-right"> <a href="{{ epss_data.source }}" target="_blank">{{ epss_data.source }}</a></td>
+                        </tr>
+                        {% endif %}
+                        {% if epss_data.advisory %}
+                        <tr>
+                            <td class="two-col-left">
+                                <span class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                                    data-tooltip="Advisory of the EPSS Score.">
+                                    Advisory
+                                </span>
+                            </td>
+                            <td class="two-col-right"> <a href="{{ epss_data.advisory.get_absolute_url }}">{{ epss_data.advisory.avid }}</a></td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
                 {% else %}
-                    <p>No EPSS data available for this advisory.</p>
+                <p>No EPSS data available for this advisory.</p>
                 {% endif %}
             </div>
 
@@ -547,169 +565,169 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
             
             <div class="tab-div content" data-content="severities-vectors">
                 {% for severity_vector in severity_vectors %}
-                    {% if severity_vector.vector.version == '2.0'  %}
-                        Vector: {{ severity_vector.vector.vectorString }} 
-                        {% if severity_vector.origin %}
-                        Found at 
-                        <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
-                        {% endif %}
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
-                          <tr>
-                            <th>Exploitability (E)</th>
-                            <th>Access Vector (AV)</th>
-                            <th>Access Complexity (AC)</th>
-                            <th>Authentication (Au)</th>
-                            <th>Confidentiality Impact (C)</th>
-                            <th>Integrity Impact (I)</th>
-                            <th>Availability Impact (A)</th>
-                          </tr>
-                          <tr>
-                            <td>{{ severity_vector.vector.exploitability|cvss_printer:"high,functional,unproven,proof_of_concept,not_defined" }}</td>
-                            <td>{{ severity_vector.vector.accessVector|cvss_printer:"local,adjacent_network,network" }}</td>
-                            <td>{{ severity_vector.vector.accessComplexity|cvss_printer:"high,medium,low" }}</td>
-                            <td>{{ severity_vector.vector.authentication|cvss_printer:"multiple,single,none" }}</td>
-                            <td>{{ severity_vector.vector.confidentialityImpact|cvss_printer:"none,partial,complete" }}</td>
-                            <td>{{ severity_vector.vector.integrityImpact|cvss_printer:"none,partial,complete" }}</td>
-                            <td>{{ severity_vector.vector.availabilityImpact|cvss_printer:"none,partial,complete" }}</td>
-                          </tr>
-                        </table>
-                    {% elif severity_vector.vector.version == '3.1' or severity_vector.vector.version == '3.0'%}
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
-                              <tr>
-                                <th>Attack Vector (AV)</th>
-                                <th>Attack Complexity (AC)</th>
-                                <th>Privileges Required (PR)</th>
-                                <th>User Interaction (UI)</th>
-                                <th>Scope (S)</th>
-                                <th>Confidentiality Impact (C)</th>
-                                <th>Integrity Impact (I)</th>
-                                <th>Availability Impact (A)</th>
-                              </tr>
-                              <tr>
-                                <td>{{ severity_vector.vector.attackVector|cvss_printer:"network,adjacent_network,local,physical"}}</td>
-                                <td>{{ severity_vector.vector.attackComplexity|cvss_printer:"low,high" }}</td>
-                                <td>{{ severity_vector.vector.privilegesRequired|cvss_printer:"none,low,high" }}</td>
-                                <td>{{ severity_vector.vector.userInteraction|cvss_printer:"none,required"}}</td>
-                                <td>{{ severity_vector.vector.scope|cvss_printer:"unchanged,changed" }}</td>
-                                <td>{{ severity_vector.vector.confidentialityImpact|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.integrityImpact|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.availabilityImpact|cvss_printer:"high,low,none" }}</td>
-                              </tr>
-                            </table>
-                    {% elif severity_vector.vector.version == '4' %}
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
-                              <tr>
-                                <th>Attack Vector (AV)</th>
-                                <th>Attack Complexity (AC)</th>
-                                <th>Attack Requirements (AT)</th>
-                                <th>Privileges Required (PR)</th>
-                                <th>User Interaction (UI)</th>
+                {% if severity_vector.vector.version == '2.0'  %}
+                Vector: {{ severity_vector.vector.vectorString }}
+                {% if severity_vector.origin %}
+                Found at
+                <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
+                {% endif %}
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
+                    <tr>
+                        <th>Exploitability (E)</th>
+                        <th>Access Vector (AV)</th>
+                        <th>Access Complexity (AC)</th>
+                        <th>Authentication (Au)</th>
+                        <th>Confidentiality Impact (C)</th>
+                        <th>Integrity Impact (I)</th>
+                        <th>Availability Impact (A)</th>
+                    </tr>
+                    <tr>
+                        <td>{{ severity_vector.vector.exploitability|cvss_printer:"high,functional,unproven,proof_of_concept,not_defined" }}</td>
+                        <td>{{ severity_vector.vector.accessVector|cvss_printer:"local,adjacent_network,network" }}</td>
+                        <td>{{ severity_vector.vector.accessComplexity|cvss_printer:"high,medium,low" }}</td>
+                        <td>{{ severity_vector.vector.authentication|cvss_printer:"multiple,single,none" }}</td>
+                        <td>{{ severity_vector.vector.confidentialityImpact|cvss_printer:"none,partial,complete" }}</td>
+                        <td>{{ severity_vector.vector.integrityImpact|cvss_printer:"none,partial,complete" }}</td>
+                        <td>{{ severity_vector.vector.availabilityImpact|cvss_printer:"none,partial,complete" }}</td>
+                    </tr>
+                </table>
+                {% elif severity_vector.vector.version == '3.1' or severity_vector.vector.version == '3.0'%}
+                Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
+                    <tr>
+                        <th>Attack Vector (AV)</th>
+                        <th>Attack Complexity (AC)</th>
+                        <th>Privileges Required (PR)</th>
+                        <th>User Interaction (UI)</th>
+                        <th>Scope (S)</th>
+                        <th>Confidentiality Impact (C)</th>
+                        <th>Integrity Impact (I)</th>
+                        <th>Availability Impact (A)</th>
+                    </tr>
+                    <tr>
+                        <td>{{ severity_vector.vector.attackVector|cvss_printer:"network,adjacent_network,local,physical"}}</td>
+                        <td>{{ severity_vector.vector.attackComplexity|cvss_printer:"low,high" }}</td>
+                        <td>{{ severity_vector.vector.privilegesRequired|cvss_printer:"none,low,high" }}</td>
+                        <td>{{ severity_vector.vector.userInteraction|cvss_printer:"none,required"}}</td>
+                        <td>{{ severity_vector.vector.scope|cvss_printer:"unchanged,changed" }}</td>
+                        <td>{{ severity_vector.vector.confidentialityImpact|cvss_printer:"high,low,none" }}</td>
+                        <td>{{ severity_vector.vector.integrityImpact|cvss_printer:"high,low,none" }}</td>
+                        <td>{{ severity_vector.vector.availabilityImpact|cvss_printer:"high,low,none" }}</td>
+                    </tr>
+                </table>
+                {% elif severity_vector.vector.version == '4' %}
+                Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth gray-header-border">
+                    <tr>
+                        <th>Attack Vector (AV)</th>
+                        <th>Attack Complexity (AC)</th>
+                        <th>Attack Requirements (AT)</th>
+                        <th>Privileges Required (PR)</th>
+                        <th>User Interaction (UI)</th>
 
-                                <th>Vulnerable System Impact Confidentiality (VC)</th>
-                                <th>Vulnerable System Impact Integrity (VI)</th>
-                                <th>Vulnerable System Impact Availability (VA)</th>
+                        <th>Vulnerable System Impact Confidentiality (VC)</th>
+                        <th>Vulnerable System Impact Integrity (VI)</th>
+                        <th>Vulnerable System Impact Availability (VA)</th>
 
-                                <th>Subsequent System Impact Confidentiality (SC)</th>
-                                <th>Subsequent System Impact Integrity (SI)</th>
-                                <th>Subsequent System Impact Availability (SA)</th>
-                              </tr>
-                              <tr>
-                                <td>{{ severity_vector.vector.attackVector|cvss_printer:"network,adjacent,local,physical"}}</td>
-                                <td>{{ severity_vector.vector.attackComplexity|cvss_printer:"low,high" }}</td>
-                                <td>{{ severity_vector.vector.attackRequirement|cvss_printer:"none,present" }}</td>
-                                <td>{{ severity_vector.vector.privilegesRequired|cvss_printer:"none,low,high" }}</td>
-                                <td>{{ severity_vector.vector.userInteraction|cvss_printer:"none,passive,active"}}</td>
+                        <th>Subsequent System Impact Confidentiality (SC)</th>
+                        <th>Subsequent System Impact Integrity (SI)</th>
+                        <th>Subsequent System Impact Availability (SA)</th>
+                    </tr>
+                    <tr>
+                        <td>{{ severity_vector.vector.attackVector|cvss_printer:"network,adjacent,local,physical"}}</td>
+                        <td>{{ severity_vector.vector.attackComplexity|cvss_printer:"low,high" }}</td>
+                        <td>{{ severity_vector.vector.attackRequirement|cvss_printer:"none,present" }}</td>
+                        <td>{{ severity_vector.vector.privilegesRequired|cvss_printer:"none,low,high" }}</td>
+                        <td>{{ severity_vector.vector.userInteraction|cvss_printer:"none,passive,active"}}</td>
 
-                                <td>{{ severity_vector.vector.vulnerableSystemImpactConfidentiality|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.vulnerableSystemImpactIntegrity|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.vulnerableSystemImpactAvailability|cvss_printer:"high,low,none" }}</td>
+                        <td>{{ severity_vector.vector.vulnerableSystemImpactConfidentiality|cvss_printer:"high,low,none" }}</td>
+                        <td>{{ severity_vector.vector.vulnerableSystemImpactIntegrity|cvss_printer:"high,low,none" }}</td>
+                        <td>{{ severity_vector.vector.vulnerableSystemImpactAvailability|cvss_printer:"high,low,none" }}</td>
 
-                                <td>{{ severity_vector.vector.subsequentSystemImpactConfidentiality|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.subsequentSystemImpactIntegrity|cvss_printer:"high,low,none" }}</td>
-                                <td>{{ severity_vector.vector.subsequentSystemImpactAvailability|cvss_printer:"high,low,none" }}</td>
-                              </tr>
-                            </table>
-                    {% elif severity_vector.vector.version == 'ssvc' %}
-                        <hr/>
-                        Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
-                        <hr/>
-                    {% endif %}
-                    {% empty %}
-                        <tr>
-                            <td>
-                                There are no known vectors.
-                            </td>
-                        </tr>
-                    {% endfor %}
+                        <td>{{ severity_vector.vector.subsequentSystemImpactConfidentiality|cvss_printer:"high,low,none" }}</td>
+                        <td>{{ severity_vector.vector.subsequentSystemImpactIntegrity|cvss_printer:"high,low,none" }}</td>
+                        <td>{{ severity_vector.vector.subsequentSystemImpactAvailability|cvss_printer:"high,low,none" }}</td>
+                    </tr>
+                </table>
+                {% elif severity_vector.vector.version == 'ssvc' %}
+                <hr/>
+                Vector: {{ severity_vector.vector.vectorString }} Found at <a href="{{ severity_vector.origin }}" target="_blank">{{ severity_vector.origin }}</a>
+                <hr/>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td>
+                        There are no known vectors.
+                    </td>
+                </tr>
+                {% endfor %}
             </div>
 
             <div class="tab-div content" data-content="ssvcs">
                 {% if ssvcs %}
-                  {% for ssvc in ssvcs %}
-                    <div class="box ssvc-card mb-0 pb-0">
-                        <div>
-                            <p>
-                              Vector: {{ ssvc.vector }}
-                            </p>
-                            <p>
-                              Decision: {{ ssvc.decision }}
-                            </p>
+                {% for ssvc in ssvcs %}
+                <div class="box ssvc-card mb-0 pb-0">
+                    <div>
                         <p>
-                          Source URL:
-                          <a href="{{ ssvc.advisory_url }}" target="_blank">
-                            {{ ssvc.advisory_url }}
-                            <i class="fa fa-external-link fa_link_custom"></i>
-                          </a>
+                            Vector: {{ ssvc.vector }}
                         </p>
                         <p>
-                          Source Advisory:
-                          <a href="{{ ssvc.advisory.get_absolute_url }}">
-                            {{ ssvc.advisory.avid }}
-                            <i class="fa fa-external-link fa_link_custom"></i>
-                          </a>
+                            Decision: {{ ssvc.decision }}
                         </p>
-                          <details>
+                        <p>
+                            Source URL:
+                            <a href="{{ ssvc.advisory_url }}" target="_blank">
+                                {{ ssvc.advisory_url }}
+                                <i class="fa fa-external-link fa_link_custom"></i>
+                            </a>
+                        </p>
+                        <p>
+                            Source Advisory:
+                            <a href="{{ ssvc.advisory.get_absolute_url }}">
+                                {{ ssvc.advisory.avid }}
+                                <i class="fa fa-external-link fa_link_custom"></i>
+                            </a>
+                        </p>
+                        <details>
                             <summary class="is-size-7 has-text-link" style="cursor: pointer;">
-                              View SSVC decision tree
+                                View SSVC decision tree
                             </summary>
                             <pre>{{ ssvc.options|pprint }}</pre>
-                          </details>
-                        </div>
+                        </details>
                     </div>
-                  {% endfor %}
+                </div>
+                {% endfor %}
                 {% else %}
-                  <p>There are no SSVC decisions available.</p>
+                <p>There are no SSVC decisions available.</p>
                 {% endif %}
-              </div>
+            </div>
 
-        <!-- <div class="tab-div content" data-content="history">
+            <!-- <div class="tab-div content" data-content="history">
             <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                 <thead>
                     <tr>
                         <th>
-                            <span
-                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                            <span 
+                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                 data-tooltip="The date that the vulnerability was imported (collected) or improved.">
                                 Date </span>
                         </th>
                         <th>
                             <span
-                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                 data-tooltip="The process that created or updated the vulnerability."> Actor </span>
                         </th>
                         <th> <span
-                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                 data-tooltip="Imported or Improved"> Action </span> </th>
-                        <th> <span
-                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                        <th> <span 
+                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                 data-tooltip="The public service that published the advisory or related information."> Source </span> </th>
-                        <th> <span
-                                class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
+                        <th> <span 
+                            class="has-tooltip-multiline has-tooltip-black has-tooltip-arrow has-tooltip-text-left"
                                 data-tooltip="The version of VulnerableCode that performed the action. ">
-                                VulnerableCode Version
-                            </span> </th>
+                                    VulnerableCode Version
+                                </span> </th>
                     </tr>
                 </thead>
                 {% for log in history %}
@@ -729,6 +747,123 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 {% endfor %}
             </table>
         </div> -->
+
+            {% if advisory_history and not is_snapshot %}
+            <div class="tab-div content" data-content="history">
+                <div class="notification is-info is-light mb-4 py-2 px-3 is-size-6">
+                    <i class="fa fa-info-circle mr-2"></i>To track EPSS score history go to <a onclick="goToTab('epss');" style="cursor: pointer;">EPSS Tab</a>
+                </div>
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px;">Date Collected</th>
+                            <th>Changes in this version</th>
+                            <th style="width: 100px;">Snapshot</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in advisory_history %}
+                        {% if entry.is_initial or entry.diff %}
+                        <tr>
+                            <td>
+                                {{ entry.date_collected|date:"Y-m-d H:i" }} UTC
+                                {% if entry.is_latest %}
+                                <span class="tag is-info is-light ml-2">Latest</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.is_initial %}
+                                <span class="tag is-info is-light">Oldest version collected</span>
+                                {% elif entry.diff %}
+                                {% with formatted_diff=entry.diff|format_diff_for_ui %}
+                                {% if formatted_diff %}
+                                <a class="diff-toggle-btn is-block has-text-right has-text-link is-size-7 has-text-weight-semibold mb-1 is-clickable"
+                                    onclick="toggleDiff(this)">Show more ▾</a>
+                                <div class="history-diff-collapsible">
+                                    {% for field, change in formatted_diff.items %}
+                                    <div class="mb-2">
+                                        <strong>{{ field }}</strong>:
+                                        {% if field == 'Summary' %}
+                                        <span class="diff-badge diff-badge-yellow"><b>Summary was changed</b></span>
+                                        {% elif 'old' in change or 'new' in change %}
+                                        <div class="mt-1">
+                                            <span class="diff-badge diff-badge-red diff-wrap diff-max-width"><b>{{
+                                                    change.old }}</b></span>
+                                            &rarr;
+                                            <span class="diff-badge diff-badge-green diff-wrap diff-max-width"><b>{{
+                                                    change.new }}</b></span>
+                                        </div>
+                                        {% else %}
+                                        <div class="mt-1">
+                                            {% for item in change.added %}
+                                            <div class="mt-1">
+                                                <span class="diff-badge diff-badge-green diff-wrap">{% if item.attributes %}{% for key, value in item.attributes %}{{ key }} <b>{{ value }}</b>{% if not forloop.last %}
+{% endif %}{% endfor %}{% else %}{{ item }}{% endif %}</span>
+                                            </div>
+                                            {% endfor %}
+                                            {% for item in change.removed %}
+                                            <div class="mt-1">
+                                                <span class="diff-badge diff-badge-red diff-wrap">{% if item.attributes %}{% for key, value in item.attributes %}{{ key }} <b>{{ value }}</b>{% if not forloop.last %}
+{% endif %}{% endfor %}{% else %}{{ item }}{% endif %}</span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <span class="has-text-grey is-italic is-size-7">No changes detected in this snapshot.</span>
+                                {% endif %}
+                                {% endwith %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not entry.is_latest %}
+                                <a href="{% url 'advisory_snapshot' avid=advisory.avid unique_content_id=entry.unique_content_id %}"
+                                    target="_blank" class="button is-small is-link is-light">
+                                    View <i class="fa fa-external-link fa_link_custom"></i>
+                                </a>
+                                {% else %}
+                                <span class="has-text-grey is-size-7">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">No historical versions available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if page_obj.has_other_pages %}
+                <nav class="pagination is-centered is-small mt-4" role="navigation" aria-label="pagination">
+                    {% if page_obj.has_previous %}
+                    <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% else %}
+                    <a class="pagination-previous" disabled>Previous</a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                    <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+                    {% else %}
+                    <a class="pagination-next" disabled>Next page</a>
+                    {% endif %}
+
+                    <ul class="pagination-list">
+                        {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                        <li><a class="pagination-link is-current" aria-current="page">{{ i }}</a></li>
+                        {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %} <li><a
+                                class="pagination-link" href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -737,6 +872,36 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 <script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
 
 <script>
+
+    function checkDiffHeights() {
+        document.querySelectorAll('.history-diff-collapsible').forEach(function (diffContainer) {
+            const toggleButton = diffContainer.previousElementSibling;
+            if (!toggleButton || !toggleButton.classList.contains('diff-toggle-btn')) return;
+
+            // Measure true height 
+            diffContainer.classList.remove('is-expanded', 'no-truncate');
+            diffContainer.style.maxHeight = '';
+
+            if (diffContainer.scrollHeight <= 125) {
+                // Full View
+                toggleButton.style.display = 'none';
+                diffContainer.classList.add('no-truncate');
+                diffContainer.style.maxHeight = 'none';
+            } else {
+                // Collapsed view
+                toggleButton.style.display = '';
+            }
+        });
+    }
+
+    function toggleDiff(toggleButton) {
+        const diffContainer = toggleButton.nextElementSibling;
+        diffContainer.classList.toggle('is-expanded');
+        toggleButton.textContent = diffContainer.classList.contains('is-expanded')
+            ? 'Show less \u25b4'
+            : 'Show more \u25be';
+    }
+
     function goToTab(tabName) {
         const activeLink = document.querySelector('div.tabs.is-boxed li.is-active');
         const activeTabContent = document.querySelector('div.tab-div.is-active');
@@ -750,6 +915,13 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
         target_id.classList.add('is-active');
         targetTabContent.classList.add('is-active');
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.search.includes('page=')) {
+            goToTab('history');
+            requestAnimationFrame(checkDiffHeights);
+        }
+    });
 </script>
 
 {% endblock %}

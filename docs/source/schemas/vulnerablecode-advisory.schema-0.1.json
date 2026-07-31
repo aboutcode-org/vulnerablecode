@@ -1,0 +1,205 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/aboutcode-org/vulnerablecode/refs/heads/main/docs/source/schemas/vulnerablecode-advisory.schema-0.1.json",
+  "title": "AdvisoryDataV2",
+  "version": "0.1",
+  "type": "object",
+  "definitions": {
+    "AffectedPackageV2": {
+      "description": "Relate a Package-URL with a range of affected versions and fixed versions.",
+      "properties": {
+        "purl": {
+          "title": "Base Package-URL",
+          "type": "string",
+          "description": "Package-URL (PURL) identifying the base package. Ref: https://www.packageurl.org/docs/purl/specification"
+        },
+        "affected_versions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Affected VERS Version Range",
+          "description": "VERS range describing affected package versions. Ref: https://www.packageurl.org/docs/vers/specification"
+        },
+        "fixed_versions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fixed VERS Version Range",
+          "description": "VERS range describing fixed package versions. Ref: https://www.packageurl.org/docs/vers/specification"
+        },
+        "introduced_in_commits": {
+          "items": {
+            "$ref": "#/definitions/PackageCommitPatchData"
+          },
+          "title": "Introduced By Commit Patches",
+          "type": "array"
+        },
+        "fixed_in_commits": {
+          "items": {
+            "$ref": "#/definitions/PackageCommitPatchData"
+          },
+          "title": "Fixed By Commit Patches",
+          "type": "array"
+        }
+      },
+      "required": [
+        "package"
+      ],
+      "title": "Affected Package",
+      "type": "object"
+    },
+    "PackageCommitPatchData": {
+      "properties": {
+        "vcs_url": {
+          "title": "Version Control Systems URL",
+          "type": "string"
+        },
+        "commit_hash": {
+          "title": "Commit Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "vcs_url",
+        "commit_hash"
+      ],
+      "title": "Package Commit Patch",
+      "type": "object"
+    },
+    "ReferenceV2": {
+      "properties": {
+        "reference_id": {
+          "default": "",
+          "title": "Reference ID",
+          "type": "string"
+        },
+        "reference_type": {
+          "default": "",
+          "title": "Reference Type",
+          "type": "string"
+        },
+        "url": {
+          "default": "",
+          "title": "Reference URL",
+          "type": "string"
+        }
+      },
+      "title": "Reference",
+      "type": "object"
+    },
+    "VulnerabilitySeverity": {
+      "properties": {
+        "scoring_system": {
+          "title": "Scoring System",
+          "type": "string"
+        },
+        "score": {
+          "title": "Value",
+          "type": "string"
+        },
+        "scoring_elements": {
+          "default": "",
+          "title": "Scoring Elements",
+          "type": "string"
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published At"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Severity URL"
+        }
+      },
+      "title": "Vulnerability Severity",
+      "type": "object"
+    }
+  },
+  "description": "Schema to describe a VulnerableCode Advisory.",
+  "properties": {
+    "advisory_id": {
+      "default": "",
+      "title": "Advisory ID",
+      "type": "string"
+    },
+    "datasource_id": {
+      "default": "",
+      "title": "DataSource ID",
+      "type": "string"
+    },
+    "datasource_url": {
+      "default": "",
+      "title": "DataSource URL",
+      "type": "string"
+    },
+    "aliases": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Aliases",
+      "type": "array"
+    },
+    "summary": {
+      "default": "",
+      "title": "Summary",
+      "type": "string"
+    },
+    "impacted_packages": {
+      "items": {
+        "$ref": "#/definitions/AffectedPackageV2"
+      },
+      "title": "Affected Packages",
+      "type": "array"
+    },
+    "references": {
+      "items": {
+        "$ref": "#/definitions/ReferenceV2"
+      },
+      "title": "References",
+      "type": "array"
+    },
+    "weaknesses": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Weaknesses",
+      "type": "array"
+    },
+    "severities": {
+      "items": {
+        "$ref": "#/definitions/VulnerabilitySeverity"
+      },
+      "title": "Severities",
+      "type": "array"
+    }
+  }
+}

@@ -93,8 +93,8 @@ a CPE. This makes answers to questions such as "Is package *foo* vulnerable
 to vulnerability *bar*?" more accurate and easier to interpret.
 
 The primary access to VulnerableCode data is through a REST API, but there
-is also a Web UI for searching and browsing vulnerabilities by package
-or by vulnerability. For the initial releases both access modes are
+is also a Web UI for searching and browsing vulnerability advisories by package.
+For the initial releases both access modes are
 read-only, but our longer-term goal is to enable community curation of
 the data including addition of new packages and vulnerabilities, and
 reviewing and updating their relationships.

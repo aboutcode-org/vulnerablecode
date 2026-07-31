@@ -30,6 +30,18 @@
    command-line-interface
    importers_link
    PIPELINES-AVID
+   advisory-schema
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+   :caption: Advisory Curation
+
+   advisory-todos
+   advisory-package-curation
+   advisory-severity-curation
+   advisory-weakness-curation
+   extra-mitigation-curation
 
 .. toctree::
    :hidden:
@@ -49,7 +61,7 @@ vulnerabilities with comprehensive information from upstream and downstream publ
 sources including packages affected by a vulnerability advisories and packages that fix a
 vulnerability advisory.
 
-There is a `public vulnerableCode database <https://public.vulnerablecode.io/>`_
+There is a `Public VulnerableCode Database <https://public.vulnerablecode.io/>`_
 and the project also provides the tools to build your own instance of the database.
 
 Documentation overview
@@ -99,6 +111,7 @@ Reference documentation for VulnerableCode features and customizations.
 - :ref:`command_line_interface`
 - :ref:`importers_link`
 - :ref:`pipeline_avid_mapping`
+- :ref:`advisory_schema`
 
 .. rst-class:: column column2 bottom-right
 
@@ -108,6 +121,13 @@ Explanations
 Consult the reference to understand VulnerableCode concepts.
 
 .. rst-class:: row clearfix
+
+Advisory Curation
+~~~~~~~~~~~~~~~~~
+
+Learn how to review and curate vulnerability advisories.
+
+- :ref:`advisory_todos`
 
 Misc
 ~~~~~~~~~~~~~~~

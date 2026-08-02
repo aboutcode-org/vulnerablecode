@@ -185,4 +185,9 @@ def get_affected_and_fixed_purls(affected_elem, logger):
 
             qualifiers = {"slot": slot_value} if slot_value else {}
             purl = PackageURL(type="ebuild", name=pkg_name, namespace=pkg_ns, qualifiers=qualifiers)
-            yield purl, (comparator, info.text), (info.tag == "unaffected")
+            # GLSA data sometimes appends the SLOT to the version using a
+            # colon, e.g. "6.9.3:6" for a package in SLOT "6". A colon is not
+            # part of the Gentoo version syntax, so it must be stripped
+            # before the value can be parsed as a GentooVersion.
+            version = info.text.partition(":")[0]
+            yield purl, (comparator, version), (info.tag == "unaffected")

@@ -55,7 +55,7 @@
         }
       },
       "required": [
-        "package"
+        "purl"
       ],
       "title": "Affected Package",
       "type": "object"
@@ -66,14 +66,14 @@
           "title": "Version Control Systems URL",
           "type": "string"
         },
-        "commit_hash": {
+        "commit": {
           "title": "Commit Hash",
           "type": "string"
         }
       },
       "required": [
         "vcs_url",
-        "commit_hash"
+        "commit"
       ],
       "title": "Package Commit Patch",
       "type": "object"

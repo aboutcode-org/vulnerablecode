@@ -15,7 +15,7 @@ from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import ImpactedPackageFixedBy
 from vulnerabilities.models import PackageV2
 
-# Warning!
+# Note!
 # Any changes to the structure of the advisory exporter also require updating the advisory
 # schema documentation at `docs/source/advisory-schema.rst`.
 

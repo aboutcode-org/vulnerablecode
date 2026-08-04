@@ -329,7 +329,11 @@ SPECTACULAR_SETTINGS = {
         "defaultModelsExpandDepth": 1,
         "displayRequestDuration": True,
         "docExpansion": "list",
+        "userAgent": VCIO_USER_AGENT,
     },
+    "AUTHENTICATION_WHITELIST": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
     "SORT_OPERATIONS": False,
     "TAGS_SORTER": False,
 }

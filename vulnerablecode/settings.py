@@ -42,6 +42,8 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 ALTCHA_HMAC_KEY = env.str("ALTCHA_HMAC_KEY")
 
+VULNERABLECODE_ALTCHA_SESSION_TIMEOUT = env.int("VULNERABLECODE_ALTCHA_SESSION_TIMEOUT", None)
+
 # SECURITY WARNING: do not run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 
@@ -114,6 +116,7 @@ MIDDLEWARE = (
     "vulnerabilities.middleware.altcha_protection.AltchaProtectionMiddleware",
     "vulnerabilities.middleware.vcio_user_agent.VCIOUserAgentMiddleware",
 )
+
 
 ROOT_URLCONF = "vulnerablecode.urls"
 
@@ -215,6 +218,7 @@ REST_FRAMEWORK_DEFAULT_THROTTLE_RATES = {
 
 if IS_TESTS:
     VULNERABLECODEIO_REQUIRE_AUTHENTICATION = False
+    VULNERABLECODE_ALTCHA_SESSION_TIMEOUT = 900
 
 USE_L10N = True
 

@@ -1,6 +1,11 @@
 Release notes
 =============
 
+Version v40.0.2
+---------------------
+- Update VulnerableCode documentation for advisories
+
+
 Version v40.0.1
 ---------------------
 
@@ -44,7 +49,6 @@ Version v39.0.0
 - Add API/ UI support for Patch/PackageCommitPatch
 - Fix failing V2 pipelinea
 - Improve altcha challenge flow and reduce session timeout (https://github.com/aboutcode-org/vulnerablecode/pull/2348)
-
 
 Version v38.6.0
 ---------------------

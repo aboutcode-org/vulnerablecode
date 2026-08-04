@@ -8,21 +8,28 @@
 #
 
 
+import json
+import shutil
 import tempfile
 from datetime import datetime
 from datetime import timedelta
 from pathlib import Path
 from unittest.mock import patch
 
+import saneyaml
 from django.test import TestCase
 from django.utils import timezone
 from git import Repo
+from jsonschema import Draft7Validator
 from packageurl import PackageURL
 from univers.version_range import VersionRange
 
+from vulnerabilities import severity_systems
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
+from vulnerabilities.importer import ReferenceV2
+from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import insert_advisory_v2
 from vulnerabilities.pipelines.exporters.federate_vulnerabilities import (
     FederatePackageVulnerabilities,
@@ -32,6 +39,14 @@ from vulnerabilities.tests.pipelines import TestLogger
 
 TEST_DATA = (
     Path(__file__).parent.parent.parent / "test_data" / "exporters" / "federate_vulnerabilities"
+)
+
+LATEST_FEDERATEDCODE_ADVISORY_SCHEMA = (
+    Path(__file__).parent.parent.parent.parent.parent
+    / "docs"
+    / "source"
+    / "schemas"
+    / "vulnerablecode-advisory.schema-0.1.json"
 )
 
 
@@ -62,9 +77,15 @@ class TestFederatePackageVulnerabilities(TestCase):
         advisory2 = AdvisoryDataV2(
             summary="Test advisory2",
             aliases=["CVE-2025-0002"],
-            references=[],
-            severities=[],
-            weaknesses=[],
+            references=[ReferenceV2(url="https://example.com/vuln1")],
+            severities=[
+                VulnerabilitySeverity(
+                    system=severity_systems.CVSSV3,
+                    scoring_elements="CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+                    value="8.8",
+                ),
+            ],
+            weaknesses=[707, 20],
             affected_packages=[
                 AffectedPackageV2(
                     package=PackageURL.from_string("pkg:npm/foobar"),
@@ -104,6 +125,12 @@ class TestFederatePackageVulnerabilities(TestCase):
         a2._all_impacts_unfurled_successfully_at = cur
         a2.save()
 
+        self.working_dir = Path(tempfile.mkdtemp())
+
+    def tearDown(self):
+        if self.working_dir:
+            shutil.rmtree(self.working_dir)
+
     @patch(
         "vulnerabilities.pipelines.exporters.federate_vulnerabilities.FederatePackageVulnerabilities.clone_federation_repository"
     )
@@ -114,18 +141,17 @@ class TestFederatePackageVulnerabilities(TestCase):
         mock_commit.return_value = None
         mock_clone.__name__ = "clone_federation_repository"
 
-        working_dir = Path(tempfile.mkdtemp())
         pipeline = FederatePackageVulnerabilities()
-        pipeline.repo = Repo.init(working_dir)
-        pipeline.repo_path = working_dir
+        pipeline.repo = Repo.init(self.working_dir)
+        pipeline.repo_path = self.working_dir
         pipeline.log = self.logger.write
         exit_code, _ = pipeline.execute()
 
         self.assertEqual(exit_code, 0)
 
-        result_advisories_yml = next(working_dir.rglob("1.2.4/advisories.yml"))
-        result_advisory1_yml = next(working_dir.rglob("ADV-001.yml"))
-        result_advisory2_yml = next(working_dir.rglob("ADV-002.yml"))
+        result_advisories_yml = next(self.working_dir.rglob("1.2.4/advisories.yml"))
+        result_advisory1_yml = next(self.working_dir.rglob("ADV-001.yml"))
+        result_advisory2_yml = next(self.working_dir.rglob("ADV-002.yml"))
 
         expected_advisories_yml = TEST_DATA / "1.2.4" / "advisories-expected.yml"
         expected_advisory1_yml = TEST_DATA / "ADV-001-expected.yml"
@@ -134,3 +160,34 @@ class TestFederatePackageVulnerabilities(TestCase):
         util_tests.check_results_and_expected_files(result_advisories_yml, expected_advisories_yml)
         util_tests.check_results_and_expected_files(result_advisory1_yml, expected_advisory1_yml)
         util_tests.check_results_and_expected_files(result_advisory2_yml, expected_advisory2_yml)
+
+    @patch(
+        "vulnerabilities.pipelines.exporters.federate_vulnerabilities.FederatePackageVulnerabilities.clone_federation_repository"
+    )
+    @patch("vulnerabilities.pipes.federatedcode.commit_and_push_changes")
+    @patch("vulnerabilities.pipes.federatedcode.check_federatedcode_configured_and_available")
+    def test_vulnerabilities_federation_schema(self, mock_check_fed, mock_commit, mock_clone):
+        mock_check_fed.return_value = None
+        mock_commit.return_value = None
+        mock_clone.__name__ = "clone_federation_repository"
+
+        pipeline = FederatePackageVulnerabilities()
+        pipeline.repo = Repo.init(self.working_dir)
+        pipeline.repo_path = self.working_dir
+        pipeline.log = self.logger.write
+        exit_code, _ = pipeline.execute()
+
+        self.assertEqual(exit_code, 0)
+
+        with LATEST_FEDERATEDCODE_ADVISORY_SCHEMA.open("r", encoding="utf-8") as f:
+            validator = Draft7Validator(json.load(f))
+
+        result_advisory1_yml = saneyaml.load(
+            next(self.working_dir.rglob("ADV-001.yml")).read_text(encoding="utf-8")
+        )
+        result_advisory2_yml = saneyaml.load(
+            next(self.working_dir.rglob("ADV-002.yml")).read_text(encoding="utf-8")
+        )
+
+        validator.validate(result_advisory1_yml)
+        validator.validate(result_advisory2_yml)

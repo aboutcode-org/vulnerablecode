@@ -45,6 +45,7 @@ class ComputeToDo(VulnerableCodePipeline):
             cls.compute_individual_advisory_todo,
             cls.detect_conflicting_package_versions,
             cls.detect_conflicting_cvss_scores,
+            cls.detect_conflicting_weakness,
         )
 
     def compute_individual_advisory_todo(self):
@@ -436,6 +437,223 @@ class ComputeToDo(VulnerableCodePipeline):
             f"conflicting CVSS scores related to {total_count_conflicting_advisory} advisories."
         )
 
+    def detect_conflicting_weakness(self):
+        """
+        Create ToDos for advisories with conflicting opinions on weaknesses for a vulnerability.
+        """
+        advisory_relation_to_create = {}
+        todo_to_create = []
+        new_todos_count = 0
+        batch_size = 1
+        total_count_conflicting_advisory = 0
+        total_weakness_conflict_count = 0
+        total_successfully_compared_advisory_count = 0
+        existing_todo_ids = set(
+            AdvisoryToDoV2.objects.values_list("related_advisories_id", flat=True)
+        )
+
+        advisory_qs = (
+            AdvisoryV2.objects.exclude(
+                advisory_todos__issue_type="MISSING_AFFECTED_AND_FIXED_BY_PACKAGES"
+            )
+            .filter(weaknesses__isnull=False)
+            .todo_excluded()
+            .latest_per_avid()
+            .distinct()
+            .prefetch_related("weaknesses")
+        )
+
+        cve_aliases = AdvisoryAlias.objects.filter(alias__istartswith="cve").prefetch_related(
+            Prefetch("advisories", queryset=advisory_qs, to_attr="filtered_advisories")
+        )
+        non_cve_aliases = AdvisoryAlias.objects.exclude(alias__istartswith="cve").prefetch_related(
+            Prefetch("advisories", queryset=advisory_qs, to_attr="filtered_advisories")
+        )
+        advisory_count = advisory_qs.count()
+        aliases_count = cve_aliases.count() + non_cve_aliases.count()
+        progress = LoopProgress(
+            total_iterations=aliases_count,
+            logger=self.log,
+            progress_step=5,
+        )
+        self.log(f"Detect conflicting weaknesses in {advisory_count} advisory.")
+        aliases = chain(
+            cve_aliases.iterator(chunk_size=50),
+            non_cve_aliases.iterator(chunk_size=50),
+        )
+        for alias in progress.iter(aliases):
+
+            advisory_avid_map = {}
+            cwe_avid_map = defaultdict(
+                lambda: {
+                    "cwes": (),
+                    "avid_precedence": [],
+                    "primary": "",
+                    "secondaries": [],
+                }
+            )
+
+            advisories_with_common_alias = alias.filtered_advisories or []
+            known_advisory_ids = [a.id for a in advisories_with_common_alias]
+            adv_with_alias_in_adv_id = advisory_qs.filter(advisory_id=alias.alias).exclude(
+                id__in=known_advisory_ids
+            )
+            if not advisories_with_common_alias and not adv_with_alias_in_adv_id.exists():
+                continue
+
+            advisories_with_common_alias.extend(adv_with_alias_in_adv_id)
+            initial_advisory_group_size = len(advisories_with_common_alias)
+
+            if initial_advisory_group_size < 2:
+                continue
+
+            cwe_details = {}
+            for advisory in advisories_with_common_alias:
+                cwes = set()
+                for w in advisory.weaknesses.all():
+                    if not w.weakness.weakness_abstraction:
+                        continue
+
+                    cwe_details[w.cwe_id] = w.to_dict()
+                    cwes.add(w.cwe_id)
+
+                canonical_cwes = canonical_value(cwes)
+                cwe_checksum = sha256_digest(canonical_cwes)
+                cwe_avid_map[cwe_checksum]["cwes"] = canonical_cwes
+                cwe_avid_map[cwe_checksum]["avid_precedence"].append(
+                    (advisory.avid, advisory.precedence)
+                )
+                advisory_avid_map[advisory.avid] = advisory
+
+            if len(cwe_avid_map) < 2:
+                continue
+
+            for map in cwe_avid_map.values():
+                avid_precedence = map["avid_precedence"]
+                sorted_avids = [
+                    x[0] for x in sorted(avid_precedence, key=lambda x: x[1], reverse=True)
+                ]
+                map["primary"] = {"advisory_uid": sorted_avids[0]}
+                map["secondaries"] = [{"advisory_uid": a} for a in sorted_avids[1:]]
+                del map["avid_precedence"]
+
+            weakness_conflict_count, count_conflicting_advisory = (
+                check_conflicting_weaknesses_for_alias(
+                    alias=alias,
+                    comparable_cwe_map=cwe_avid_map,
+                    advisories=advisory_avid_map,
+                    cwe_details=cwe_details,
+                    todo_to_create=todo_to_create,
+                    advisory_relation_to_create=advisory_relation_to_create,
+                    existing_todo_ids=existing_todo_ids,
+                )
+            )
+
+            total_weakness_conflict_count += weakness_conflict_count
+            total_count_conflicting_advisory += count_conflicting_advisory
+            total_successfully_compared_advisory_count += initial_advisory_group_size
+
+            if len(todo_to_create) > batch_size:
+                new_todos_count += bulk_create_with_m2m(
+                    todos=todo_to_create,
+                    advisories=advisory_relation_to_create,
+                    logger=self.log,
+                )
+                advisory_relation_to_create.clear()
+                todo_to_create.clear()
+
+            new_todos_count += bulk_create_with_m2m(
+                todos=todo_to_create,
+                advisories=advisory_relation_to_create,
+                logger=self.log,
+            )
+
+        self.log(
+            f"Successfully compared {total_successfully_compared_advisory_count} advisories, created {new_todos_count} new ToDos for {total_weakness_conflict_count} "
+            f"conflicting weaknesses related to {total_count_conflicting_advisory} advisories."
+        )
+
+
+def compute_cwe_disagreement(cwe_groups):
+    """Compute differences in cwe across given cwe groups."""
+
+    cwe_union = set().union(*cwe_groups)
+    cwe_intersection = set.intersection(*cwe_groups)
+
+    return {
+        "cwe_union": list(sorted(cwe_union)),
+        "cwe_intersection": list(cwe_intersection),
+        "cwe_disagreement": list(cwe_union - cwe_intersection),
+    }
+
+
+def check_conflicting_weaknesses_for_alias(
+    alias,
+    advisories,
+    comparable_cwe_map,
+    cwe_details,
+    todo_to_create,
+    advisory_relation_to_create,
+    existing_todo_ids,
+):
+    """
+    Add appropriate AdvisoryToDo for conflicting weaknesses for given advisories..
+    """
+
+    curation_item = {}
+    cwe_groups = [set(value["cwes"]) for value in comparable_cwe_map.values()]
+    disagreement = compute_cwe_disagreement(cwe_groups)
+
+    cwe_disagreement_count = len(disagreement["cwe_disagreement"])
+    if cwe_disagreement_count < 1:
+        return 0, 0
+
+    noun = "weaknesses" if cwe_disagreement_count > 1 else "weakness"
+    curation_item["all_cwes"] = disagreement["cwe_union"]
+    curation_item["cwe_details"] = cwe_details
+    curation_item["partial_curation"] = {"cwes": disagreement["cwe_intersection"]}
+    curation_item["conflict_reason"] = f"Advisories report different {noun} for {alias}"
+    curation_item["advisories"] = list(comparable_cwe_map.values())
+
+    issue_type = "CONFLICTING_WEAKNESSES"
+    conflicting_advisories = list(advisories.values())
+
+    conflict_checksum = sha256_digest(canonical_value([curation_item]))
+    issue_detail = {
+        "alias": alias.alias,
+        "conflict_checksum": conflict_checksum,
+        "curation_items": [curation_item],
+    }
+
+    todo_id = advisories_checksum(conflicting_advisories)
+
+    if todo_id in existing_todo_ids:
+        return 0, 0
+
+    existing_todo_ids.add(todo_id)
+    conflicting_advisories_count = len(conflicting_advisories)
+
+    date_published = min(
+        (a.date_published for a in conflicting_advisories if a.date_published),
+        default=None,
+    )
+    date_collected = min(
+        (a.date_collected for a in conflicting_advisories if a.date_collected),
+        default=None,
+    )
+    todo = AdvisoryToDoV2(
+        related_advisories_id=todo_id,
+        issue_type=issue_type,
+        issue_detail=issue_detail,
+        alias=alias,
+        advisories_count=conflicting_advisories_count,
+        oldest_advisory_date=date_published or date_collected,
+    )
+    todo_to_create.append(todo)
+    advisory_relation_to_create[todo_id] = conflicting_advisories
+
+    return cwe_disagreement_count, conflicting_advisories_count
+
 
 def check_conflicting_cvss_for_alias(
     alias,
@@ -495,7 +713,7 @@ def check_conflicting_cvss_for_alias(
             "cvss": cvss_version,
             "conflict_reason": conflict_message,
             "partial_cvss_curation": consensus_metrics,
-            "advisories": get_grouped_advisory_curation(
+            "advisories": get_grouped_cvss_advisory_curation(
                 advisory_curation_item_map, cvss_type, advisories, item.keys()
             ),
         }
@@ -539,7 +757,7 @@ def check_conflicting_cvss_for_alias(
     return len(curation_items), conflicting_advisories_count
 
 
-def get_grouped_advisory_curation(advisory_curation_item_map, cvss_type, advisories, avids):
+def get_grouped_cvss_advisory_curation(advisory_curation_item_map, cvss_type, advisories, avids):
     """Group curation advisory based on CVSS vector similarity."""
     curation_items = []
     vector_group = defaultdict(list)

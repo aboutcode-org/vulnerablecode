@@ -9,11 +9,11 @@ Framework Overview
        ┌──────────────────────┐                              │            │                                          ┌─────────────────────┐
        │                      │                              │  Database  │ Has version ranges                       │                     │
        │                      ├─────────────────────────────►│    in      │                                          │                     │
-       │                      │                              │  Advisory  │  As true as upstream                     │                     │
+       │                      │                              │  Advisory  │ As true as upstream                      │                     │
        │                      │                              │    Model   │                                          │                     │
        │                      │                              │            │                                          │   Frontend          │
        │                      │                              ├────────────┘                                          │                     │
-       │        Importers     │                              │                                                       │                     │
+       │      Importers       │                              │                                                       │                     │
        │                      │                              │                                                       │                     │
        │                      │                              │                                                       │                     │
        │                      │                              │                                                       │                     │
@@ -25,39 +25,39 @@ Framework Overview
                                                              │                               │
                                                              │                               │
                                                              │                               │
-         ┌───────────────────────┐                           │                               │
-         │                       │                           │                               │
-         │                       │◄──────────────────────────┘              ┌──────────────┐ │
-         │                       │                                          │Vulnerability │ │
-         │                       │                                          │ ID (auto)    │ │
-         │    Specific           │                                          ├──────────────┤ │
-         │    Improvers          │                                          │              │ │
-         │                       │                                          │  Aliases     │ │
-         │     - BasicImproverer ├─────────────────────────────────────────►├──────────────┤ │
-         │                       │                                          │              ├─┘
-         │     - TimeTravel      │                                          │  Aff pkgs    │
-         │                       │                                          ├──────────────┤
-         │     - ...             │                                          │              │
-         │                       │                                          │  Fixed pkgs  │
-         └───────────────────────┘                                          ├──────────────┤
-                                                                            │    ...       │
-                                                                            └──────────────┘
-                                                                                    ▲
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                                                                    │
-                                              Independent to access any Advisory    │
-             ┌─────────────────────────┐        Generic to all data                 │
-             │                         │                                            │
-             │                         │ ───────────────────────────────────────────┘
+         ┌──────────────────────────────────┐                │                               │
+         │                                  │                │                               │
+         │                                  │◄───────────────┘                         ┌──────────────────────┐
+         │                                  │                                          │ Package              │
+         │                                  │                                          │                      │
+         │    Specific                      │                                          ├──────────────────────┤
+         │    Improvers                     │                                          │  purl                │
+         │                                  │                                          │  Package URL         │
+         │ - GroupAdvisoriesForPackages     ├─────────────────────────────────────────►├──────────────────────┤
+         │ - FlagGhostPackagePipeline       │                                          │  Aff by advisories   │
+         │ - MarkUnfurlVersionRangePipeline │                                          │                      │
+         │ - ComputePackageRiskPipeline     │                                          ├──────────────────────┤
+         │ - ...                            │                                          │                      │
+         │                                  │                                          │  Fixed by advisories │
+         └──────────────────────────────────┘                                          ├──────────────────────┤
+                                                                                       │    ...               │
+                                                                                       └──────────────────────┘
+                                                                                                ▲
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                              Independent to access any Advisory                │
+             ┌─────────────────────────┐        Generic to all data                             │
+             │                         │                                                        │
+             │                         │ ───────────────────────────────────────────────────────┘
              │   Generic Improvers     │
              │                         │
              │     - DefaultImprover   │

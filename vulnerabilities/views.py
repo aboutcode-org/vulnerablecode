@@ -46,7 +46,6 @@ from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
 from vulnerabilities.forms import VulnerabilitySearchForm
-from vulnerabilities.middleware.altcha_protection import SESSION_TIMEOUT as ALTCHA_SESSION_TIMEOUT
 from vulnerabilities.models import ISSUE_TYPE_CHOICES
 from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisoryToDoV2
@@ -66,6 +65,7 @@ from vulnerabilities.utils import TYPES_WITH_MULTIPLE_IMPORTERS
 from vulnerabilities.utils import get_advisories_from_groups
 from vulnerabilities.utils import safe_altcha_redirect
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
+from vulnerablecode.settings import VULNERABLECODE_ALTCHA_SESSION_TIMEOUT
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 10
@@ -1166,7 +1166,7 @@ class AltchaView(FormView):
         verified_at = request.session.get("altcha_verified_at")
 
         if verified_at:
-            if time.time() - verified_at < ALTCHA_SESSION_TIMEOUT:
+            if time.time() - verified_at < VULNERABLECODE_ALTCHA_SESSION_TIMEOUT:
                 next_url = request.GET.get("next", "/")
                 return safe_altcha_redirect(next_url)
 
@@ -1197,4 +1197,51 @@ class AdvisorySeverityCurationView(DetailView):
         }
         context["vulnerability_id"] = todo.alias
         context["curation_items"] = json.dumps(todo.issue_detail["curation_items"])
+        return context
+
+
+class AdvisoryWeaknessCurationView(DetailView):
+    model = AdvisoryToDoV2
+    template_name = "weakness_curation.html"
+    slug_url_kwarg = "todo_id"
+    slug_field = "todo_id"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(issue_type="CONFLICTING_WEAKNESSES")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        todo = self.object
+
+        context["advisory_summaries"] = {
+            adv.avid: adv.summary for adv in todo.advisories.all() if adv.summary.strip()
+        }
+        context["vulnerability_id"] = todo.alias
+        context["curation_items"] = json.dumps(todo.issue_detail["curation_items"])
+        return context
+
+
+class AdvisoryMitigationCurationView(DetailView):
+    model = AdvisoryToDoV2
+    template_name = "mitigation_curation.html"
+    slug_url_kwarg = "todo_id"
+    slug_field = "todo_id"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(issue_type="MISSING_FIXED_BY_PACKAGE")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        todo = self.object
+
+        context["advisory_summaries"] = {
+            adv.avid: adv.summary for adv in todo.advisories.all() if adv.summary.strip()
+        }
+        context["avid"] = next(iter(context["advisory_summaries"]))
+        context["curation_items"] = [
+            a.base_purl
+            for a in todo.advisories.first().impacted_packages.filter(
+                fixed_by_packages__isnull=True
+            )
+        ]
         return context

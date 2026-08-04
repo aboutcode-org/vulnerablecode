@@ -8,7 +8,7 @@ TL;DR
 -------
 
 #. Create a new file ``{name}_importer.py`` inside **vulnerabilities/pipelines/**.
-#. Create a new importer pipeline by inheriting **VulnerableCodeBaseImporterPipeline**
+#. Create a new importer pipeline by inheriting **VulnerableCodeBaseImporterPipelineV2**
    defined in **vulnerabilities.pipelines**. By convention the importer pipeline
    class should end with **ImporterPipeline**.
 #. Specify the license of upstream data being imported.
@@ -215,7 +215,7 @@ version management from `univers <https://github.com/aboutcode-org/univers>`_.
     from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 
-    class ExampleImporterPipeline(VulnerableCodeBaseImporterPipeline):
+    class ExampleImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         """Collect advisories Example."""
 
         pipeline_id = "example_importer"

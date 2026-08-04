@@ -16,7 +16,7 @@ const app = {
 
     renderPackageCuration() {
         const item = curationItems[this.currentIndex];
-        const versions = item.all_versions || item.all_version;
+        const versions = item.all_versions;
 
         const total = curationItems.length;
         const progPercentage = ((this.currentIndex + 1) / total) * 100;
@@ -68,7 +68,7 @@ const app = {
                     <div>
                         <div class="has-text-weight-bold">Curation</div>
                     </div>
-                    <button class="button is-small is-outlined is-info mt-auto" onclick="app.resetCurrentCuration()">Reset</button>
+                    <button class="button is-small is-outlined is-info" onclick="app.resetCurrentCuration()">Reset</button>
                 </div>
             </th>`;
             
@@ -108,7 +108,7 @@ const app = {
                         ${toggleHtml}
                         ${primaryUidHtml}
                     </div>
-                    <button class="button is-small is-info mt-auto" onclick="app.pickAdvisory(${groupIdx}, 'primary')">Pick This</button>
+                    <button class="button is-small is-info" onclick="app.pickAdvisory(${groupIdx}, 'primary')">Pick This</button>
                 </div>
             `;
             header.appendChild(primaryTh);
@@ -131,7 +131,7 @@ const app = {
                                     <span class="icon is-small" ><i class="fa fa-external-link"></i></span>
                                 </a>
                             </div>
-                            <button class="button is-small is-info is-light mt-auto" onclick="app.pickAdvisory(${groupIdx}, 'secondary', ${secIdx})">Pick This</button>
+                            <button class="button is-small is-info is-light" onclick="app.pickAdvisory(${groupIdx}, 'secondary', ${secIdx})">Pick This</button>
                         </div>
                     `;
                     header.appendChild(secTh);
@@ -222,7 +222,7 @@ const app = {
 
     resetCurrentCuration() {
         const item = curationItems[this.currentIndex];
-        const versions = item.all_versions || item.all_version;
+        const versions = item.all_versions;
         versions.forEach(v => {
             if (item.partial_curation.affected.includes(v)) {
                 this.userStates[this.currentIndex][v] = 'affected';
@@ -257,13 +257,12 @@ const app = {
 
             if (isExpanded && advGroup.secondaries) {
                 advGroup.secondaries.forEach(sec => {
-                    const secAffected = sec.affected || advGroup.affected;
-                    const secFixing = sec.fixing || advGroup.fixing;
+                    const secAffected = advGroup.affected;
+                    const secFixing = advGroup.fixing;
                     
                     const secState = secAffected.includes(v) ? 'affected' : (secFixing.includes(v) ? 'fixed' : 'unaffected'); 
                     const secTd = document.createElement('td');
                     secTd.className = `state-${secState} has-text-centered advisory-cell`;
-                    secTd.style.borderLeft = "1px dashed #dbdbdb";
                     secTd.innerText = secState.toUpperCase();
                     tr.appendChild(secTd);
                 });
@@ -314,7 +313,7 @@ const app = {
             }
         }
         const item = curationItems[this.currentIndex];
-        const versions = item.all_versions || item.all_version;
+        const versions = item.all_versions;
         this.renderBody(item, versions);
     },
 
@@ -326,7 +325,7 @@ const app = {
             this.expandedFolds.add(colKey);
         }
         const item = curationItems[this.currentIndex];
-        const versions = item.all_versions || item.all_version;
+        const versions = item.all_versions;
         
         this.renderHeader(item);
         this.renderBody(item, versions);
@@ -335,7 +334,7 @@ const app = {
     toggleRanges() {
         this.showRanges = !this.showRanges;
         const item = curationItems[this.currentIndex];
-        const versions = item.all_versions || item.all_version;
+        const versions = item.all_versions;
         this.renderBody(item, versions);
     },
 
@@ -344,14 +343,14 @@ const app = {
         const current = this.userStates[this.currentIndex][v];
         this.userStates[this.currentIndex][v] = seq[(seq.indexOf(current) + 1) % 3];
         const item = curationItems[this.currentIndex];
-        const versions = item.all_versions || item.all_version;
+        const versions = item.all_versions;
         this.renderBody(item, versions);
     },
 
     pickAdvisory(advIdx, type, secondaryIdx) {
         const item = curationItems[this.currentIndex];
         const advGroup = item.advisories[advIdx];
-        const versions = item.all_versions || item.all_version;
+        const versions = item.all_versions;
         
         versions.forEach(v => {
             if (advGroup.affected.includes(v)) this.userStates[this.currentIndex][v] = 'affected';

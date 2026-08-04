@@ -4,9 +4,9 @@ Improver Overview
 ===================
 
 Improvers improve upon already imported data. They are responsible for creating a relational
-model for vulnerabilites and packages.
+model for vulnerability advisories and packages.
 
-An Improver is intended to contain data points about a vulnerability and the relevant discrete
+An Improver is intended to contain data points about a advisory and the relevant discrete
 affected and fixed packages (in the form of `PackageURLs
 <https://github.com/package-url/packageurl-python>`_).
 There is no notion of version ranges here; all package versions must be explicitly specified.

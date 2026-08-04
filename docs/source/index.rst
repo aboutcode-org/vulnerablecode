@@ -30,7 +30,18 @@
    command-line-interface
    importers_link
    PIPELINES-AVID
-   SOURCES
+   advisory-schema
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+   :caption: Explanations
+
+   advisory-todos
+   advisory-package-curation
+   advisory-severity-curation
+   advisory-weakness-curation
+   extra-mitigation-curation
 
 .. toctree::
    :hidden:
@@ -47,10 +58,10 @@ VulnerableCode Documentation
 
 *VulnerableCode* provides a Web UI and API to access a database of known software package
 vulnerabilities with comprehensive information from upstream and downstream public
-sources including packages affected by a vulnerability and packages that fix a
-vulnerability.
+sources including packages affected by a vulnerability advisories and packages that fix a
+vulnerability advisory.
 
-There is a `public VulnerableCode database <https://public.vulnerablecode.io/>`_
+There is a `Public VulnerableCode Database <https://public.vulnerablecode.io/>`_
 and the project also provides the tools to build your own instance of the database.
 
 Documentation overview
@@ -99,17 +110,22 @@ Reference documentation for VulnerableCode features and customizations.
 - :ref:`reference_model_overview`
 - :ref:`command_line_interface`
 - :ref:`importers_link`
-- :ref:`pipelines_avid`
-- :ref:`sources`
+- :ref:`pipeline_avid_mapping`
+- :ref:`advisory_schema`
 
 .. rst-class:: column column2 bottom-right
 
 Explanations
 ~~~~~~~~~~~~~~~~~~
 
-Consult the reference to understand VulnerableCode concepts.
+Consult the reference to understand VulnerableCode concepts and learn
+how to review and curate vulnerability advisories.
 
-.. rst-class:: row clearfix
+- :ref:`advisory_todos`
+- :ref:`advisory-package-curation`
+- :ref:`advisory-severity-curation`
+- :ref:`advisory-weakness-curation`
+- :ref:`extra-mitigation-curation`
 
 Misc
 ~~~~~~~~~~~~~~~

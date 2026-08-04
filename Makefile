@@ -131,6 +131,10 @@ webtest:
 	@echo "-> Run web tests"
 	${ACTIVATE} ${PYTHON_EXE} -m pytest -vvs -m "webtest"
 
+mypy:
+	@echo "-> Run mypy type checking"
+	@${ACTIVATE} mypy
+
 bump:
 	@echo "-> Bump the version"
 	bin/bumpver update --no-fetch --patch
@@ -148,4 +152,4 @@ docker-images:
 	@mkdir -p dist/
 	@docker save postgres vulnerablecode_vulnerablecode nginx | gzip > dist/vulnerablecode-images-`git describe --tags`.tar.gz
 
-.PHONY: virtualenv conf dev envfile install check valid isort clean migrate postgres sqlite run test bump docs docker-images
+.PHONY: virtualenv conf dev envfile install check valid isort clean migrate postgres sqlite run test mypy bump docs docker-images

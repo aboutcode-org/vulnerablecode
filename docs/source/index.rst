@@ -35,7 +35,7 @@
 .. toctree::
    :hidden:
    :maxdepth: 1
-   :caption: Advisory Curation
+   :caption: Explanations
 
    advisory-todos
    advisory-package-curation
@@ -118,16 +118,14 @@ Reference documentation for VulnerableCode features and customizations.
 Explanations
 ~~~~~~~~~~~~~~~~~~
 
-Consult the reference to understand VulnerableCode concepts.
-
-.. rst-class:: row clearfix
-
-Advisory Curation
-~~~~~~~~~~~~~~~~~
-
-Learn how to review and curate vulnerability advisories.
+Consult the reference to understand VulnerableCode concepts and learn
+how to review and curate vulnerability advisories.
 
 - :ref:`advisory_todos`
+- :ref:`advisory-package-curation`
+- :ref:`advisory-severity-curation`
+- :ref:`advisory-weakness-curation`
+- :ref:`extra-mitigation-curation`
 
 Misc
 ~~~~~~~~~~~~~~~

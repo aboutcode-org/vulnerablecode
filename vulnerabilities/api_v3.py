@@ -12,6 +12,7 @@ from urllib.parse import urlencode
 
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.cache import cache
+from django.db.models import Count
 from django.db.models import Exists
 from django.db.models import F
 from django.db.models import Max
@@ -126,6 +127,7 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
     severities = AdvisorySeveritySerializer(many=True)
     advisory_uid = serializers.CharField(source="avid", read_only=True)
     related_ssvc_trees = serializers.SerializerMethodField()
+    todo_count = serializers.IntegerField(read_only=True)
 
     def get_related_ssvc_trees(self, obj):
         seen = set()
@@ -165,6 +167,7 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
             "weighted_severity",
             "risk_score",
             "related_ssvc_trees",
+            "todo_count",
         ]
 
 
@@ -396,51 +399,58 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
 
         purls = serializer.validated_data["purls"]
 
-        latest_advisories = AdvisoryV2.objects.latest_advisories_for_purls(
-            purls=purls
-        ).prefetch_related(
-            Prefetch(
-                "references",
-                queryset=AdvisoryReference.objects.only(
-                    "id",
-                    "url",
-                    "reference_type",
-                    "reference_id",
+        latest_advisories = (
+            AdvisoryV2.objects.latest_advisories_for_purls(purls=purls)
+            .annotate(
+                todo_count=Count(
+                    "advisory_todos",
+                    filter=Q(advisory_todos__is_todo_stale=False),
+                )
+            )
+            .prefetch_related(
+                Prefetch(
+                    "references",
+                    queryset=AdvisoryReference.objects.only(
+                        "id",
+                        "url",
+                        "reference_type",
+                        "reference_id",
+                    ),
                 ),
-            ),
-            Prefetch(
-                "severities",
-                queryset=AdvisorySeverity.objects.only(
-                    "id",
-                    "url",
-                    "value",
-                    "scoring_system",
-                    "scoring_elements",
-                    "published_at",
+                Prefetch(
+                    "severities",
+                    queryset=AdvisorySeverity.objects.only(
+                        "id",
+                        "url",
+                        "value",
+                        "scoring_system",
+                        "scoring_elements",
+                        "published_at",
+                    ),
                 ),
-            ),
-            "weaknesses",
-            "aliases",
-            Prefetch(
-                "related_ssvcs",
-                queryset=SSVC.objects.only(
-                    "id",
-                    "vector",
-                    "decision",
-                    "options",
-                    "source_advisory__url",
+                "weaknesses",
+                "aliases",
+                Prefetch(
+                    "related_ssvcs",
+                    queryset=SSVC.objects.only(
+                        "id",
+                        "vector",
+                        "decision",
+                        "options",
+                        "source_advisory__url",
+                    ),
                 ),
-            ),
-            Prefetch(
-                "source_ssvcs",
-                queryset=SSVC.objects.only(
-                    "id",
-                    "vector",
-                    "decision",
-                    "options",
-                    "source_advisory__url",
+                Prefetch(
+                    "source_ssvcs",
+                    queryset=SSVC.objects.only(
+                        "id",
+                        "vector",
+                        "decision",
+                        "options",
+                        "source_advisory__url",
+                    ),
                 ),
-            ),
+            )
         )
 
         page = self.paginate_queryset(latest_advisories)
@@ -627,6 +637,10 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
             max_exploitability=Max(
                 "members__advisory__exploitability",
             ),
+            todo_count=Count(
+                "primary_advisory__advisory_todos",
+                filter=Q(primary_advisory__advisory_todos__is_todo_stale=False),
+            ),
         )
         .only(
             "id",
@@ -772,6 +786,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                     ),
                     "ssvc_trees": adv.ssvc_trees,
                     "resource_url": resource_url,
+                    "todo_count": adv.todo_count,
                 }
             )
 
@@ -809,25 +824,34 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
     if not allowed_package_ids:
         return result
 
-    advisories = AdvisoryV2.objects.filter(
-        id__in=allowed_advisory_ids,
-    ).prefetch_related(
-        "aliases",
-        Prefetch(
-            "related_ssvcs",
-            queryset=(
-                SSVC.objects.select_related("source_advisory")
-                .only(
-                    "id",
-                    "decision",
-                    "options",
-                    "vector",
-                    "source_advisory__url",
-                )
-                .distinct("source_advisory__url")
+    advisories = (
+        AdvisoryV2.objects.filter(
+            id__in=allowed_advisory_ids,
+        )
+        .annotate(
+            todo_count=Count(
+                "advisory_todos",
+                filter=Q(advisory_todos__is_todo_stale=False),
+            )
+        )
+        .prefetch_related(
+            "aliases",
+            Prefetch(
+                "related_ssvcs",
+                queryset=(
+                    SSVC.objects.select_related("source_advisory")
+                    .only(
+                        "id",
+                        "decision",
+                        "options",
+                        "vector",
+                        "source_advisory__url",
+                    )
+                    .distinct("source_advisory__url")
+                ),
+                to_attr="prefetched_ssvc_trees",
             ),
-            to_attr="prefetched_ssvc_trees",
-        ),
+        )
     )
 
     advisory_by_id = {advisory.id: advisory for advisory in advisories}
@@ -880,6 +904,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                         for ssvc in advisory.prefetched_ssvc_trees
                     ],
                     "resource_url": resource_url,
+                    "todo_count": advisory.todo_count,
                 }
             )
 

@@ -35,6 +35,7 @@ from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySet
 from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisorySeverity
+from vulnerabilities.models import AdvisoryToDoV2
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
 from vulnerabilities.models import ImpactedPackageAffecting
@@ -128,6 +129,7 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
     advisory_uid = serializers.CharField(source="avid", read_only=True)
     related_ssvc_trees = serializers.SerializerMethodField()
     todo_count = serializers.IntegerField(read_only=True)
+    curating_advisories = serializers.SerializerMethodField()
 
     def get_related_ssvc_trees(self, obj):
         seen = set()
@@ -152,6 +154,18 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
 
         return result
 
+    def get_curating_advisories(self, obj):
+        request = self.context.get("request")
+        return [
+            reverse(
+                "advisory_details",
+                kwargs={"avid": related_advisory.avid},
+                request=request,
+            )
+            for todo in obj.resolves_todos.all()
+            for related_advisory in todo.advisories.all()
+        ]
+
     class Meta:
         model = AdvisoryV2
         fields = [
@@ -168,6 +182,8 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
             "risk_score",
             "related_ssvc_trees",
             "todo_count",
+            "is_curation",
+            "curating_advisories",
         ]
 
 
@@ -384,6 +400,8 @@ class AffectedByAdvisoryV3Serializer(AdvisoryV3Serializer):
             "related_ssvc_trees",
             "fixed_by_packages",
             "todo_count",
+            "is_curation",
+            "curating_advisories",
         ]
 
 
@@ -451,6 +469,15 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
                         "source_advisory__url",
                     ),
                 ),
+                Prefetch(
+                    "resolves_todos",
+                    queryset=AdvisoryToDoV2.objects.prefetch_related(
+                        Prefetch(
+                            "advisories",
+                            queryset=AdvisoryV2.objects.only("avid"),
+                        )
+                    ),
+                ),
             )
         )
 
@@ -478,6 +505,17 @@ class PackageAdvisoriesViewSet(viewsets.ReadOnlyModelViewSet):
                     "advisory_todos",
                     filter=Q(advisory_todos__is_todo_stale=False),
                 )
+            )
+            .prefetch_related(
+                Prefetch(
+                    "resolves_todos",
+                    queryset=AdvisoryToDoV2.objects.prefetch_related(
+                        Prefetch(
+                            "advisories",
+                            queryset=AdvisoryV2.objects.only("avid"),
+                        )
+                    ),
+                ),
             )
         )
 
@@ -639,6 +677,15 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                 "aliases",
                 queryset=AdvisoryAlias.objects.only("alias"),
             ),
+            Prefetch(
+                "primary_advisory__resolves_todos",
+                queryset=AdvisoryToDoV2.objects.prefetch_related(
+                    Prefetch(
+                        "advisories",
+                        queryset=AdvisoryV2.objects.only("avid"),
+                    )
+                ),
+            ),
         )
         .annotate(
             max_severity=Max(
@@ -658,6 +705,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
             "primary_advisory__avid",
             "primary_advisory__summary",
             "primary_advisory__advisory_id",
+            "primary_advisory__is_curation",
         )
     )
 
@@ -770,6 +818,12 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
 
             aliases = [a for a in adv._aliases_cache if a != identifier]
 
+            curating_advisories = [
+                f"{base_url}{related_advisory.get_absolute_url()}"
+                for todo in primary.resolves_todos.all()
+                for related_advisory in todo.advisories.all()
+            ]
+
             resource_url = None
             advisory_url = primary.get_absolute_url()
 
@@ -797,6 +851,8 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                     "ssvc_trees": adv.ssvc_trees,
                     "resource_url": resource_url,
                     "todo_count": adv.primary_adv_todo_count,
+                    "is_curation": primary.is_curation,
+                    "curating_advisories": curating_advisories,
                 }
             )
 
@@ -861,6 +917,15 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                 ),
                 to_attr="prefetched_ssvc_trees",
             ),
+            Prefetch(
+                "resolves_todos",
+                queryset=AdvisoryToDoV2.objects.prefetch_related(
+                    Prefetch(
+                        "advisories",
+                        queryset=AdvisoryV2.objects.only("avid"),
+                    )
+                ),
+            ),
         )
     )
 
@@ -885,6 +950,11 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
             identifier = advisory.advisory_id.split("/")[-1]
 
             aliases = [alias.alias for alias in advisory.aliases.all() if alias.alias != identifier]
+            curating_advisories = [
+                f"{base_url}{related_advisory.get_absolute_url()}"
+                for todo in advisory.resolves_todos.all()
+                for related_advisory in todo.advisories.all()
+            ]
 
             resource_url = None
             advisory_url = advisory.get_absolute_url()
@@ -915,6 +985,8 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                     ],
                     "resource_url": resource_url,
                     "todo_count": advisory.todo_count,
+                    "is_curation": advisory.is_curation,
+                    "curating_advisories": curating_advisories,
                 }
             )
 

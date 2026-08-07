@@ -1390,9 +1390,9 @@ class TestCleanAdvisorySeverityMigration(TestMigrations):
     migrate_to = "0139_cleanup_none_string_in_severity"
 
     def setUpBeforeMigration(self, apps):
-        # AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
-        # ImpactedPackage = apps.get_model("vulnerabilities", "ImpactedPackage")
-        # AdvisorySeverity = apps.get_model("vulnerabilities", "AdvisorySeverity")
+        AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+        ImpactedPackage = apps.get_model("vulnerabilities", "ImpactedPackage")
+        AdvisorySeverity = apps.get_model("vulnerabilities", "AdvisorySeverity")
 
         self.advisory1 = AdvisoryV2.objects.create(
             unique_content_id="b001d1a8952bc056d0161f1dd45dd8f90b25f62c56a887ea21d09fafd78a0f61",

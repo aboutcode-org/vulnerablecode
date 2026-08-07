@@ -23,9 +23,13 @@ from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.models import AdvisorySet
 from vulnerabilities.models import AdvisorySetMember
+from vulnerabilities.models import AdvisoryToDoV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import PackageV2
+from vulnerabilities.pipelines.v2_improvers.group_advisories_for_packages import (
+    GroupAdvisoriesForPackages,
+)
 from vulnerabilities.pipes.advisory import insert_advisory_v2
 from vulnerabilities.tests.pipelines import TestLogger
 
@@ -112,7 +116,7 @@ class APIV3TestCase(APITestCase):
     def test_advisories_post(self):
         url = reverse("advisory-v3-list")
 
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(11):
             response = self.client.post(
                 url,
                 data={"purls": ["pkg:pypi/sample@1.0.0"]},
@@ -129,7 +133,7 @@ class APIV3TestCase(APITestCase):
     def test_affected_by_advisories_list(self):
         url = reverse("affected-by-advisories-list")
 
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(12):
             response = self.client.get(
                 url, {"purl": "pkg:pypi/sample@1.0.0"}, HTTP_USER_AGENT="VCIO_API_AGENT"
             )
@@ -230,7 +234,7 @@ class APIV3TestCaseOnePackageMultipleAdvisories(APITestCase):
     def test_advisories_post(self):
         url = reverse("advisory-v3-list")
 
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(11):
             response = self.client.post(
                 url,
                 data={"purls": ["pkg:pypi/sample@1.0.0"]},
@@ -241,7 +245,7 @@ class APIV3TestCaseOnePackageMultipleAdvisories(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 100)
         advisory = response.data["results"][0]
-        self.assertEqual(advisory["advisory_id"], "GHSA-12341")
+        self.assertContains(response, "GHSA-12341")
 
 
 class APIV3TestCaseOneAdvisoryMultiplePackages(APITestCase):
@@ -606,3 +610,281 @@ class TestPackageTypesView(APITestCase):
         assert response.json() == ["npm", "pypi"]
 
         assert cache.get("package_types") == ["npm", "pypi"]
+
+
+class APIV3TestCaseAdvisoryTODO(APITestCase):
+    def setUp(self):
+        logger = TestLogger()
+        from vulnerabilities.importer import AdvisoryDataV2
+        from vulnerabilities.importer import AffectedPackageV2
+
+        affected_packages1 = [
+            (
+                AffectedPackageV2(
+                    package=PackageURL(type="pypi", name=f"sample"),
+                    fixed_version_range=PypiVersionRange.from_string("vers:pypi/=1.0.0"),
+                )
+            )
+        ]
+
+        advisory1 = AdvisoryDataV2(
+            advisory_id="GHSA-4321",
+            aliases=["CVE-2021-4321"],
+            summary="Sample advisory",
+            affected_packages=affected_packages1,
+            url="https://example.com/advisory",
+            original_advisory_text="Sample advisory text",
+        )
+        advisory_obj1 = insert_advisory_v2(advisory1, "ghsa_importer", logger.write, "ghsa", 100)
+        cur = timezone.now()
+        advisory_obj1._all_impacts_unfurled_at = cur
+        advisory_obj1.save()
+
+        affected_packages = [
+            (
+                AffectedPackageV2(
+                    package=PackageURL(type="pypi", name=f"sample"),
+                    affected_version_range=PypiVersionRange.from_string("vers:pypi/=1.0.0"),
+                )
+            )
+        ]
+
+        advisory = AdvisoryDataV2(
+            advisory_id="GHSA-1234",
+            aliases=["CVE-2021-1234"],
+            summary="Sample advisory",
+            affected_packages=affected_packages,
+            url="https://example.com/advisory",
+            original_advisory_text="Sample advisory text",
+        )
+
+        advisory_obj = insert_advisory_v2(advisory, "ghsa_importer", logger.write, "ghsa", 100)
+        cur = timezone.now()
+        advisory_obj._all_impacts_unfurled_at = cur
+        advisory_obj.save()
+
+        todo = AdvisoryToDoV2.objects.create(
+            related_advisories_id="d1a9088a718d7f6f63676ccead5c",
+            alias="GHSA-1234",
+            advisories_count=1,
+            issue_type="CONFLICTING_AFFECTED_PACKAGES",
+        )
+        todo.advisories.add(advisory_obj)
+
+        GroupAdvisoriesForPackages().execute()
+
+        self.client = APIClient(enforce_csrf_checks=True)
+
+        self.allow_request_patcher = patch(
+            "vulnerabilities.throttling.PermissionBasedUserRateThrottle.allow_request",
+            return_value=True,
+        )
+        self.allow_request_patcher.start()
+        self.addCleanup(self.allow_request_patcher.stop)
+
+        self.anon_patcher = patch(
+            "rest_framework.throttling.AnonRateThrottle.allow_request",
+            return_value=True,
+        )
+        self.anon_patcher.start()
+        self.addCleanup(self.anon_patcher.stop)
+
+    def test_get_todo_count_in_package_endpoint(self):
+        url = reverse("package-v3-list")
+
+        with self.assertNumQueries(14):
+            response = self.client.post(
+                url,
+                data={
+                    "purls": ["pkg:pypi/sample@1.0.0"],
+                    "details": True,
+                },
+                format="json",
+                HTTP_USER_AGENT="VCIO_API_AGENT",
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        results = response.data["results"]
+        self.assertEqual(results[0]["affected_by_vulnerabilities"][0]["todo_count"], 1)
+
+    def test_get_todo_count_in_affected_by_advisories_endpoint(self):
+        url = reverse("affected-by-advisories-list")
+
+        with self.assertNumQueries(12):
+            response = self.client.get(
+                url,
+                data={
+                    "purl": "pkg:pypi/sample@1.0.0",
+                },
+                HTTP_USER_AGENT="VCIO_API_AGENT",
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        results = response.data["results"]
+        self.assertEqual(results[0]["todo_count"], 1)
+
+    def test_get_todo_count_in_fixing_advisories_endpoint(self):
+        url = reverse("fixing-advisories-list")
+
+        with self.assertNumQueries(11):
+            response = self.client.get(
+                url,
+                data={
+                    "purl": "pkg:pypi/sample@1.0.0",
+                },
+                HTTP_USER_AGENT="VCIO_API_AGENT",
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        results = response.data["results"]
+        self.assertEqual(results[0]["todo_count"], 0)
+
+
+class APIV3TestCaseCuratedAdvisory(APITestCase):
+    def setUp(self):
+        logger = TestLogger()
+        from vulnerabilities.importer import AdvisoryDataV2
+        from vulnerabilities.importer import AffectedPackageV2
+
+        affected_packages1 = [
+            (
+                AffectedPackageV2(
+                    package=PackageURL(type="pypi", name=f"sample"),
+                    fixed_version_range=PypiVersionRange.from_string("vers:pypi/=1.0.0"),
+                )
+            )
+        ]
+
+        advisory1 = AdvisoryDataV2(
+            advisory_id="GHSA-4321",
+            aliases=["CVE-2021-4321"],
+            summary="Sample advisory",
+            affected_packages=affected_packages1,
+            url="https://example.com/advisory",
+            original_advisory_text="Sample advisory text",
+        )
+        advisory_obj1 = insert_advisory_v2(advisory1, "ghsa_importer", logger.write, "ghsa", 100)
+        cur = timezone.now()
+        advisory_obj1._all_impacts_unfurled_at = cur
+        advisory_obj1.save()
+
+        todo = AdvisoryToDoV2.objects.create(
+            related_advisories_id="d1a9088a718d7f6f63676ccead5c",
+            alias="GHSA-4321",
+            advisories_count=1,
+            issue_type="CONFLICTING_AFFECTED_PACKAGES",
+        )
+        todo.advisories.add(advisory_obj1)
+
+        affected_packages = [
+            (
+                AffectedPackageV2(
+                    package=PackageURL(type="pypi", name=f"sample"),
+                    affected_version_range=PypiVersionRange.from_string("vers:pypi/=1.0.0"),
+                )
+            )
+        ]
+
+        advisory = AdvisoryDataV2(
+            advisory_id="curation/GHSA-1234",
+            aliases=["CVE-2021-1234"],
+            summary="Sample advisory",
+            affected_packages=affected_packages,
+            url="https://example.com/advisory",
+            original_advisory_text="Sample advisory text",
+        )
+
+        advisory_obj = insert_advisory_v2(
+            advisory, "curation_importer", logger.write, "curation", 100
+        )
+        cur = timezone.now()
+        advisory_obj._all_impacts_unfurled_at = cur
+        advisory_obj.is_curation = True
+        advisory_obj.save()
+        advisory_obj.resolves_todos.add(todo)
+
+        GroupAdvisoriesForPackages().execute()
+
+        self.client = APIClient(enforce_csrf_checks=True)
+
+        self.allow_request_patcher = patch(
+            "vulnerabilities.throttling.PermissionBasedUserRateThrottle.allow_request",
+            return_value=True,
+        )
+        self.allow_request_patcher.start()
+        self.addCleanup(self.allow_request_patcher.stop)
+
+        self.anon_patcher = patch(
+            "rest_framework.throttling.AnonRateThrottle.allow_request",
+            return_value=True,
+        )
+        self.anon_patcher.start()
+        self.addCleanup(self.anon_patcher.stop)
+
+    def test_get_curating_advisories_in_package_endpoint(self):
+        url = reverse("package-v3-list")
+
+        with self.assertNumQueries(15):
+            response = self.client.post(
+                url,
+                data={
+                    "purls": ["pkg:pypi/sample@1.0.0"],
+                    "details": True,
+                },
+                format="json",
+                HTTP_USER_AGENT="VCIO_API_AGENT",
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        results = response.data["results"]
+        affected_by_vulnerabilities = results[0]["affected_by_vulnerabilities"][0]
+
+        self.assertEqual(affected_by_vulnerabilities["is_curation"], True)
+        self.assertEqual(
+            affected_by_vulnerabilities["curating_advisories"],
+            ["http://testserver/advisories/ghsa/GHSA-4321"],
+        )
+
+    def test_get_curating_advisories_in_affected_by_advisory_endpoint(self):
+        url = reverse("affected-by-advisories-list")
+
+        with self.assertNumQueries(13):
+            response = self.client.get(
+                url,
+                data={
+                    "purl": "pkg:pypi/sample@1.0.0",
+                },
+                HTTP_USER_AGENT="VCIO_API_AGENT",
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        results = response.data["results"][0]
+
+        self.assertEqual(results["is_curation"], True)
+        self.assertEqual(
+            results["curating_advisories"], ["http://testserver/advisories/ghsa/GHSA-4321"]
+        )
+
+    def test_get_curating_advisories_in_advisory_endpoint(self):
+        url = reverse("fixing-advisories-list")
+
+        with self.assertNumQueries(11):
+            response = self.client.get(
+                url,
+                data={
+                    "purl": "pkg:pypi/sample@1.0.0",
+                },
+                HTTP_USER_AGENT="VCIO_API_AGENT",
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        results = response.data["results"][0]
+
+        self.assertEqual(results["is_curation"], False)
+        self.assertEqual(results["curating_advisories"], [])

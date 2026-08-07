@@ -3213,6 +3213,20 @@ class AdvisoryV2(models.Model):
         help_text="A list of patches associated with this advisory.",
     )
 
+    resolves_todos = models.ManyToManyField(
+        AdvisoryToDoV2,
+        related_name="resolved_in_advisories",
+        help_text="A list of Advisory ToDos resolved by this advisory.",
+    )
+
+    is_curation = models.BooleanField(
+        default=False,
+        blank=False,
+        null=False,
+        db_index=True,
+        help_text="Indicates whether this is a curation advisory.",
+    )
+
     date_published = models.DateTimeField(
         blank=True,
         null=True,

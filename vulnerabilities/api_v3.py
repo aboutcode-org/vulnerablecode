@@ -383,6 +383,7 @@ class AffectedByAdvisoryV3Serializer(AdvisoryV3Serializer):
             "risk_score",
             "related_ssvc_trees",
             "fixed_by_packages",
+            "todo_count",
         ]
 
 
@@ -469,7 +470,16 @@ class PackageAdvisoriesViewSet(viewsets.ReadOnlyModelViewSet):
         if not purl:
             return AdvisoryV2.objects.none()
 
-        return AdvisoryV2.objects.filter(**{self.relation: purl}).latest_per_avid()
+        return (
+            AdvisoryV2.objects.filter(**{self.relation: purl})
+            .latest_per_avid()
+            .annotate(
+                todo_count=Count(
+                    "advisory_todos",
+                    filter=Q(advisory_todos__is_todo_stale=False),
+                )
+            )
+        )
 
 
 class FixingAdvisoriesViewSet(PackageAdvisoriesViewSet):
@@ -637,7 +647,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
             max_exploitability=Max(
                 "members__advisory__exploitability",
             ),
-            todo_count=Count(
+            primary_adv_todo_count=Count(
                 "primary_advisory__advisory_todos",
                 filter=Q(primary_advisory__advisory_todos__is_todo_stale=False),
             ),
@@ -786,7 +796,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                     ),
                     "ssvc_trees": adv.ssvc_trees,
                     "resource_url": resource_url,
-                    "todo_count": adv.todo_count,
+                    "todo_count": adv.primary_adv_todo_count,
                 }
             )
 

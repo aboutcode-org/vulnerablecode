@@ -160,13 +160,13 @@ def build_importer_package_columns(importers) -> Dict[str, Any]:
         "x_categories": importer_names,
         "columns": [
             ["total_advisories"] + total_advisories,
-            ["advisories_without_packages"] + advisories_without_packages,
             ["advisories_with_packages"] + advisories_with_packages,
+            ["advisories_without_packages"] + advisories_without_packages,
             ["advisories_without_ghost_packages"] + advisories_without_ghost_packages,
             ["advisories_with_ghost_packages"] + advisories_with_ghost_packages,
         ],
         "groups": [
-            ["advisories_without_packages", "advisories_with_packages"],
+            ["advisories_with_packages", "advisories_without_packages"],
             ["advisories_without_ghost_packages", "advisories_with_ghost_packages"],
         ],
     }
@@ -176,10 +176,11 @@ def build_importer_exploit_columns(importers) -> Dict[str, Any]:
     """Helper to build mappings for Exploit Coverage chart as expected by Billboard.JS"""
     importer_names = []
     total_advisories = []
+    advisories_with_exploits = []
+    advisories_without_exploits = []
     advisories_with_kev = []
     advisories_with_metasploit = []
     advisories_with_exploitdb = []
-    advisories_without_exploits = []
 
     for importer_insight in importers:
         importer_names.append(format_importer_name(importer_insight.importer))
@@ -193,18 +194,21 @@ def build_importer_exploit_columns(importers) -> Dict[str, Any]:
             + importer_insight.advisories_with_metasploit
             + importer_insight.advisories_with_exploitdb
         )
+        advisories_with_exploits.append(total_with_exploits)
         advisories_without_exploits.append(importer_insight.total_advisories - total_with_exploits)
 
     return {
         "x_categories": importer_names,
         "columns": [
             ["total_advisories"] + total_advisories,
+            ["advisories_with_exploits"] + advisories_with_exploits,
             ["advisories_without_exploits"] + advisories_without_exploits,
             ["advisories_with_exploitdb"] + advisories_with_exploitdb,
             ["advisories_with_metasploit"] + advisories_with_metasploit,
             ["advisories_with_kev"] + advisories_with_kev,
         ],
         "groups": [
-            ["advisories_with_exploitdb", "advisories_with_metasploit", "advisories_with_kev"]
+            ["advisories_with_exploits", "advisories_without_exploits"],
+            ["advisories_with_exploitdb", "advisories_with_metasploit", "advisories_with_kev"],
         ],
     }

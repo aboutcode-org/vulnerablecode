@@ -7,7 +7,7 @@
 // See https://aboutcode.org for more information about nexB OSS projects.
 //
 
-const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+export const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 const paletteVars = [
     "--bulma-primary",
@@ -31,7 +31,7 @@ const getBucketColors = () => [
     getCssVar("--bulma-danger"), getCssVar("--bulma-danger") // 8-9: Danger
 ];
 
-const formatWholeNumbersOnly = x => Number.isInteger(x) ? x : "";
+export const formatWholeNumbersOnly = (x) => (Number.isInteger(x) ? x : "");
 
 export const renderers = {
     donut(id, config) {
@@ -72,39 +72,6 @@ export const renderers = {
             },
             tooltip: { format: { title: x => config.full_labels?.[x] || x, value: val => val.toLocaleString() } },
             legend: { show: false }
-        });
-    },
-
-    importer_bar(id, config) {
-        bb.generate({
-            bindto: `#chart-${id}`,
-            data: {
-                x: "x",
-                columns: [["x", ...config.x_categories], ...config.columns],
-                type: "bar",
-                colors: {
-                    total_advisories: getCssVar("--bulma-link"),
-                    advisories_with_packages: getCssVar("--bulma-primary"),
-                    advisories_without_packages: getCssVar("--bulma-danger"),
-                    advisories_with_exploits: getCssVar("--bulma-success"),
-                    advisories_without_exploits: getCssVar("--bulma-danger"),
-                    advisories_with_kev: getCssVar("--bulma-warning"),
-                    advisories_with_metasploit: getCssVar("--bulma-purple"),
-                    advisories_with_exploitdb: getCssVar("--bulma-success"),
-                    advisories_with_ghost_packages: getCssVar("--bulma-orange"),
-                    advisories_without_ghost_packages: getCssVar("--bulma-primary-dark"),
-                },
-                names: {
-                    total_advisories: "All Advisories", advisories_with_packages: "Advisories with a Package",
-                    advisories_without_packages: "Advisories without a Package", advisories_with_exploits: "Advisories with an Exploit",
-                    advisories_without_exploits: "Advisories without an Exploit", advisories_with_kev: "Advisories with KEV",
-                    advisories_with_metasploit: "Advisories with Metasploit", advisories_with_exploitdb: "Advisories with Exploit-DB",
-                    advisories_with_ghost_packages: "Advisories with a Ghost Package", advisories_without_ghost_packages: "Advisories without a Ghost Package"
-                },
-                groups: config.groups 
-            },
-            axis: { rotated: true, x: { type: "category" }, y: { tick: { format: formatWholeNumbersOnly } } },
-            bar: { width: { ratio: 0.8 } }, tooltip: { grouped: true }, legend: { show: true }
         });
     },
 
@@ -158,7 +125,7 @@ export const renderers = {
                 color: (defaultColor, dataPoint) => dataPoint.x !== undefined ? getBucketColors()[dataPoint.x] || defaultColor : defaultColor, 
                 labels: false
             },
-            bubble: { maxR: 55 },
+            bubble: { maxR: 45 },
             axis: { 
                 x: { 
                     type: "category", 

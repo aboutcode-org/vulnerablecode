@@ -69,6 +69,20 @@ def test_latest_for_avid_tie_breaks_by_id(advisory_factory, django_assert_num_qu
 
 
 @pytest.mark.django_db
+def test_latest_for_avid_returns_none_for_unknown_avid(django_assert_num_queries):
+    """
+    ``latest_for_avid`` should return ``None`` (not raise ``DoesNotExist``) for an
+    avid that does not exist, since callers rely on a falsy return value to
+    raise an ``Http404``. See GH issue: Advisory Page Returns 500 Instead of 404
+    for Invalid Advisory IDs.
+    """
+    with django_assert_num_queries(1):
+        result = AdvisoryV2.objects.latest_for_avid("does-not-exist/ADV-404")
+
+    assert result is None
+
+
+@pytest.mark.django_db
 def test_latest_per_avid_returns_one_row_per_avid(advisory_factory, django_assert_num_queries):
     advisory_factory(advisory_id="A", summary="old advisory")
     latest_a = advisory_factory(advisory_id="A", summary="new advisory")

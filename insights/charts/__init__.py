@@ -25,10 +25,10 @@ CHARTS = [
         collect_fn=collect_ecosystem_distribution,
     ),
     ChartDefinition(
-        id="pkg-name-donut",
+        id="pkg-name-bar",
         title="Top 10 Packages",
         panel="package_panel",
-        chart_type="donut",
+        chart_type="colored_bar",
         formatter_fn=format_top_packages,
         collect_fn=collect_packages,
         is_per_package=True,
@@ -54,7 +54,7 @@ CHARTS = [
     ),
     ChartDefinition(
         id="importer-empty-pkg-bar",
-        title="Affected Package Coverage across Importers",
+        title="PURL Coverage across Importers",
         panel="importer_panel",
         chart_type="importer_bar",
         formatter_fn=partial(_get_snapshot_data, build_columns_fn=build_importer_package_columns),

@@ -11,16 +11,15 @@ import { initDropdownChart } from './core.js';
 import { formatWholeNumbersOnly, getCssVar, renderers } from './renderers.js';
 
 const names = {
-    total_advisories: "Total Advisories",
-    advisories_without_packages: "Advisories without a Package",
-    advisories_with_packages: "Advisories with a Package",
-    advisories_without_ghost_packages: "Advisories without a Ghost Package",
-    advisories_with_ghost_packages: "Advisories with a Ghost Package",
-    advisories_without_exploits: "Advisories without an Exploit",
-    advisories_with_exploitdb: "Advisories with Exploit-DB",
-    advisories_with_metasploit: "Advisories with Metasploit",
-    advisories_with_kev: "Advisories with KEV",
-    advisories_with_exploits: "Advisories with an Exploit",
+    advisories_with_packages: "with a PURL",
+    advisories_without_packages: "without a PURL",
+    advisories_without_ghost_packages: "with an existing PURL",
+    advisories_with_ghost_packages: "with a non-existing PURL",
+    advisories_with_exploits: "with an Exploit",
+    advisories_without_exploits: "without an Exploit",
+    advisories_with_exploitdb: "with a Exploit-DB exploit",
+    advisories_with_metasploit: "with a Metasploit exploit",
+    advisories_with_kev: "with a KEV",
 };
 
 function renderImporterBar(id, config) {
@@ -57,8 +56,13 @@ function renderImporterBar(id, config) {
         bar: { width: { ratio: 0.8 } },
         tooltip: {
             grouped: true,
+            order: (a, b) => {
+                //Keep a stable order of rows 
+                const cols = config.columns.map(c => c[0]);
+                return cols.indexOf(a.id) - cols.indexOf(b.id);
+            },
             format: {
-                title: (x) => `${config.x_categories[x]} (Total: ${totals?.[x + 1]?.toLocaleString()})`,
+                title: (x) => `Advisories from ${config.x_categories[x]} (Total: ${totals?.[x + 1]?.toLocaleString()})`,
                 value: (val) => val.toLocaleString(),
             },
         },

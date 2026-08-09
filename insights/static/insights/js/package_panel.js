@@ -16,7 +16,7 @@ document.addEventListener('insightsDataLoaded', (e) => {
     const searchData = document.getElementById("chart-search-data")?.textContent;
     const parsedSearch = searchData ? JSON.parse(searchData) : null;
 
-    initDropdownChart("pkg-name-donut", snapshotData["pkg-name-donut"], "All Packages");
+    initDropdownChart("pkg-name-bar", snapshotData["pkg-name-bar"], "All Packages");
 
     renderChartWithData(
         "pkg-cwe-bar",

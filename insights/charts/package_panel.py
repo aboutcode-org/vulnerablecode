@@ -98,8 +98,19 @@ def collect_packages(pipeline: Any, package_type: str) -> None:
 
 
 def build_name_chart_columns(name_counts: dict) -> Dict[str, Any]:
-    """Helper to build package name donut charts."""
-    return {"columns": [[name, count] for name, count in name_counts.items()]}
+    """Helper to build package name bar charts."""
+    names = list(name_counts.keys())
+    counts = list(name_counts.values())
+
+    return {
+        "columns": [
+            ["x"] + names,
+            ["Advisories"] + counts,
+        ],
+        "x_label": "Package Name",
+        "y_label": "Advisories",
+        "color": "var(--bulma-orange)",
+    }
 
 
 def format_top_packages(snapshot: Any) -> Dict[str, Any]:
@@ -162,7 +173,7 @@ def build_cwe_chart_columns(cwe_counts: dict) -> Dict[str, Any]:
     sorted_cwes = sorted(cwe_counts.items(), key=lambda item: item[1], reverse=True)
     return {
         "columns": [
-            ["x"] + [cwe_id for cwe_id, count in sorted_cwes],
+            ["x"] + [f"CWE-{cwe_id}" for cwe_id, count in sorted_cwes],
             ["Advisories"] + [count for cwe_id, count in sorted_cwes],
         ],
         "full_labels": [get_cwe_label(cwe_id) for cwe_id, count in sorted_cwes],

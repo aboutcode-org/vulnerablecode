@@ -28,7 +28,7 @@
         {% endif %}
     </h3>
     <div class="chart-container
-        {% if chart.chart_type == 'donut' or chart.chart_type == 'pie' %}is-pie
+        {% if chart.chart_type == 'donut' or chart.chart_type == 'pie' %}is-tall
         {% endif %}" id="chart-{{ chart.id }}"
         data-chart-type="{{ chart.chart_type }}" aria-label="{{ chart.title }}" role="img">
         {% if chart.chart_type == 'scatter' %}

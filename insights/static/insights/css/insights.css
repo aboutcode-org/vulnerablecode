@@ -114,7 +114,7 @@
     min-height: 320px;
 }
 
-.chart-container.is-pie {
+.chart-container.is-tall {
     min-height: 420px;
 }
 

@@ -61,16 +61,16 @@ export const renderers = {
     },
 
     colored_bar(id, config) {
-        const monoColor = getCssVar("--bulma-link")
+        const monoColor = config.color || getCssVar("--bulma-link");
         bb.generate({
             bindto: `#chart-${id}`,
             data: { x: "x", columns: config.columns, type: "bar", color: () => monoColor },
             axis: {
                 rotated: true,
-                x: { type: "category", label: { text: "CWE", position: "outer-middle" } },
-                y: { label: { text: "Advisories", position: "outer-center" }, tick: { format: formatWholeNumbersOnly } }
+                x: { type: "category", label: { text: config.x_label || "CWE", position: "outer-middle" } },
+                y: { label: { text: config.y_label || "Advisories", position: "outer-center" }, tick: { format: formatWholeNumbersOnly } }
             },
-            tooltip: { format: { title: x => config.full_labels?.[x] || x, value: val => val.toLocaleString() } },
+            tooltip: { format: { title: x => config.full_labels?.[x] || config.columns[0][x + 1], value: val => val.toLocaleString() } },
             legend: { show: false }
         });
     },
@@ -125,7 +125,7 @@ export const renderers = {
                 color: (defaultColor, dataPoint) => dataPoint.x !== undefined ? getBucketColors()[dataPoint.x] || defaultColor : defaultColor, 
                 labels: false
             },
-            bubble: { maxR: 45 },
+            bubble: { maxR: 40 },
             axis: { 
                 x: { 
                     type: "category", 

@@ -11,7 +11,11 @@ from django.db import transaction
 
 from insights.charts import CHARTS
 from insights.models import DailySnapshot
+from insights.models import DataQualityIssueByDatasourceInsight
+from insights.models import DataQualityToDosResolutionInsight
 from insights.models import ImporterInsight
+from insights.models import OverviewCoverageInsight
+from insights.models import OverviewYearlyInsight
 from insights.models import PackageCWEInsight
 from insights.models import PackageInsight
 from insights.models import PackageNameInsight
@@ -42,6 +46,11 @@ class InsightsSnapshotPipeline(VulnerableCodePipeline):
         self.package_cwes = []
         self.importer_insights = []
         self.severity_insight = None
+        self.overview_insight = None
+        self.overview_yearly_insights = []
+        self.overview_coverage_insights = []
+        self.data_quality_issue_types = []
+        self.data_quality_todos_resolutions = []
         active_charts = [chart_def for chart_def in CHARTS if chart_def.collect_fn]
 
         # Count steps for progress bar
@@ -78,8 +87,32 @@ class InsightsSnapshotPipeline(VulnerableCodePipeline):
             self.severity_insight.snapshot_id = snapshot.id
             self.severity_insight.save()
 
+        if self.overview_insight:
+            self.overview_insight.snapshot_id = snapshot.id
+            self.overview_insight.save()
+
+            for yearly in self.overview_yearly_insights:
+                yearly.overview_id = self.overview_insight.id
+            for coverage in self.overview_coverage_insights:
+                coverage.overview_id = self.overview_insight.id
+
+        for insight in self.data_quality_issue_types:
+            insight.snapshot_id = snapshot.id
+        for insight in self.data_quality_todos_resolutions:
+            insight.snapshot_id = snapshot.id
+
         PackageInsight.objects.bulk_create(self.package_insights.values(), batch_size=5000)
         PackageNameInsight.objects.bulk_create(self.package_names, batch_size=5000)
         PackageCWEInsight.objects.bulk_create(self.package_cwes, batch_size=5000)
         ImporterInsight.objects.bulk_create(self.importer_insights, batch_size=5000)
+        OverviewYearlyInsight.objects.bulk_create(self.overview_yearly_insights, batch_size=5000)
+        OverviewCoverageInsight.objects.bulk_create(
+            self.overview_coverage_insights, batch_size=5000
+        )
+        DataQualityIssueByDatasourceInsight.objects.bulk_create(
+            self.data_quality_issue_types, batch_size=5000
+        )
+        DataQualityToDosResolutionInsight.objects.bulk_create(
+            self.data_quality_todos_resolutions, batch_size=5000
+        )
         self.log("Snapshot saved successfully.")

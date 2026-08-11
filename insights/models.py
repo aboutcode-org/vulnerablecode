@@ -24,6 +24,36 @@ class DailySnapshot(models.Model):
         ordering = ["-created_at"]
 
 
+class OverviewInsight(models.Model):
+    snapshot = models.OneToOneField(
+        "DailySnapshot", related_name="overview", on_delete=models.CASCADE
+    )
+
+    total_advisories = models.IntegerField(default=0)
+    total_packages = models.IntegerField(default=0)
+    total_data_sources = models.IntegerField(default=0)
+    last_30days = ArrayField(
+        models.IntegerField(),
+        default=list,
+    )
+
+
+class OverviewYearlyInsight(models.Model):
+    overview = models.ForeignKey(
+        OverviewInsight, related_name="yearly_insights", on_delete=models.CASCADE
+    )
+    year = models.IntegerField()
+    count = models.IntegerField()
+
+
+class OverviewCoverageInsight(models.Model):
+    overview = models.ForeignKey(
+        OverviewInsight, related_name="coverage_insights", on_delete=models.CASCADE
+    )
+    source_name = models.CharField(max_length=100)
+    count = models.IntegerField()
+
+
 class PackageInsight(models.Model):
     snapshot = models.ForeignKey(
         DailySnapshot, related_name="package_insights", on_delete=models.CASCADE
@@ -91,6 +121,41 @@ class ImporterInsight(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["snapshot", "importer"], name="unique_snapshot_importer"
+            )
+        ]
+
+
+class DataQualityIssueByDatasourceInsight(models.Model):
+    snapshot = models.ForeignKey(
+        DailySnapshot, related_name="data_quality_issue_types", on_delete=models.CASCADE
+    )
+    issue_type = models.CharField(max_length=50)
+    datasource_id = models.CharField(max_length=100)
+    count = models.IntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["snapshot", "issue_type", "datasource_id"],
+                name="unique_snapshot_issue_type_datasource",
+            )
+        ]
+
+
+class DataQualityToDosResolutionInsight(models.Model):
+    snapshot = models.ForeignKey(
+        DailySnapshot, related_name="data_quality_todos_resolutions", on_delete=models.CASCADE
+    )
+    datasource_id = models.CharField(max_length=100)
+    month = models.DateField(help_text="The first day of the month for this data point.")
+    open_count = models.IntegerField(default=0)
+    resolved_count = models.IntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["snapshot", "datasource_id", "month"],
+                name="unique_snapshot_todos_resolution_datasource_month",
             )
         ]
 

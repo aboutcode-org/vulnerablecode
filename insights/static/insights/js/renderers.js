@@ -22,7 +22,7 @@ const paletteVars = [
     "--bulma-primary-dark",
 ];
 
-const getPalette = () => paletteVars.map(getCssVar).filter(Boolean);
+export const getPalette = () => paletteVars.map(getCssVar).filter(Boolean);
 
 const getBucketColors = () => [
     getCssVar("--bulma-success"), getCssVar("--bulma-success"), getCssVar("--bulma-success"), getCssVar("--bulma-success"), // 0-3: Success
@@ -62,16 +62,112 @@ export const renderers = {
 
     colored_bar(id, config) {
         const monoColor = config.color || getCssVar("--bulma-link");
+        const isRotated = config.rotated !== undefined ? config.rotated : true;
         bb.generate({
             bindto: `#chart-${id}`,
+            padding: { right: 30 },
             data: { x: "x", columns: config.columns, type: "bar", color: () => monoColor },
             axis: {
-                rotated: true,
-                x: { type: "category", label: { text: config.x_label || "CWE", position: "outer-middle" } },
-                y: { label: { text: config.y_label || "Advisories", position: "outer-center" }, tick: { format: formatWholeNumbersOnly } }
+                rotated: isRotated,
+                x: { 
+                    type: "category", 
+                    label: { text: config.x_label || "CWE", position: isRotated ? "outer-middle" : "outer-center" },
+                    tick: { 
+                        culling: isRotated ? false : { max: config.x_tick_culling !== undefined ? config.x_tick_culling : 8 },
+                        multiline: false
+                    }
+                },
+                y: { 
+                    label: { text: config.y_label || "Advisories", position: isRotated ? "outer-center" : "outer-middle" }, 
+                    tick: { format: formatWholeNumbersOnly } 
+                }
             },
             tooltip: { format: { title: x => config.full_labels?.[x] || config.columns[0][x + 1], value: val => val.toLocaleString() } },
             legend: { show: false }
+        });
+    },
+
+    stacked_bar(id, config) {
+        bb.generate({
+            bindto: `#chart-${id}`,
+            data: {
+                x: "x",
+                columns: config.columns,
+                type: "bar",
+                groups: config.groups,
+                colors: {
+                    "VulnerableCode": getCssVar("--bulma-link"),
+                },
+            },
+            color: { pattern: getPalette() },
+            axis: {
+                rotated: true,
+                x: { type: "category" },
+                y: {
+                    label: { text: config.y_label || "Advisories", position: "outer-center" },
+                    tick: { count: 6, format: formatWholeNumbersOnly },
+                },
+            },
+            tooltip: {
+                contents(dataPoints, defaultTitle, defaultVal, color) {
+                    const nonZeroPoints = dataPoints.filter((point) => point.value > 0);
+                    if (!nonZeroPoints.length) return "";
+                    return this.internal.getTooltipContent(nonZeroPoints, defaultTitle, defaultVal, color);
+                },
+                format: { value: (val) => val.toLocaleString() },
+            },
+        });
+    },
+
+
+    line(id, config) {
+        const isMultiSeries = config.columns.length > 2;
+        const color = config.color || getCssVar("--bulma-primary");
+
+        bb.generate({
+            bindto: `#chart-${id}`,
+            data: {
+                x: "x",
+                columns: config.columns,
+                type: "line",
+                colors: {
+                    "Open": getCssVar("--bulma-danger"),
+                    "Resolved": getCssVar("--bulma-primary"),
+                    "Total Advisories": color,
+                    "Advisories Ingested": color,
+                },
+            },
+            axis: {
+                x: {
+                    type: "timeseries",
+                    tick: {
+                        format: isMultiSeries ? "%Y-%m" : "%b %d",
+                        fit: true,
+                        count: 6,
+                    },
+                },
+                y: {
+                    min: 0,
+                    padding: { bottom: 0 },
+                    label: { text: config.y_label || "Count", position: "outer-middle" },
+                    tick: { format: formatWholeNumbersOnly },
+                },
+            },
+            point: { r: 3, focus: { expand: { r: 5 } } },
+            legend: { show: isMultiSeries },
+            tooltip: {
+                format: {
+                    value(val, ratio, id, index) {
+                        const added =
+                            id === "Open"
+                                ? config.new_open_counts?.[index]
+                                : config.new_resolved_counts?.[index];
+                        return added !== undefined
+                            ? `${val.toLocaleString()} (+${added.toLocaleString()} new)`
+                            : val.toLocaleString();
+                    },
+                },
+            },
         });
     },
 

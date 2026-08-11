@@ -42,7 +42,11 @@
             </article>
 
             <div class="chart-inner p-5 w-full">
-                {% if panel.layout == 'split_top' %}
+                {% if panel.id == 'overview_panel' %}
+                    {% include 'insights/components/overview_panel_content.html' with panel=panel %}
+                {% elif panel.id == 'data_quality_panel' %}
+                    {% include 'insights/components/data_quality_panel_content.html' with panel=panel %}
+                {% elif panel.layout == 'split_top' %}
                     {% include 'insights/components/package_panel_donuts.html' with panel=panel %}
                     {% for chart in panel.charts|slice:"2:" %}
                         {% include 'insights/components/chart_card.html' with chart=chart current_panel_id=current_panel_id search_query=search_query search_error=search_error %}
@@ -68,7 +72,9 @@
 {{ search_results_dict|json_script:"chart-search-data" }}
 {% endif %}
 <script type="module" src="{% static 'insights/js/core.js' %}"></script>
+<script type="module" src="{% static 'insights/js/overview_panel.js' %}"></script>
 <script type="module" src="{% static 'insights/js/package_panel.js' %}"></script>
 <script type="module" src="{% static 'insights/js/severity_panel.js' %}"></script>
 <script type="module" src="{% static 'insights/js/importer_panel.js' %}"></script>
+<script type="module" src="{% static 'insights/js/data_quality_panel.js' %}"></script>
 {% endblock %}

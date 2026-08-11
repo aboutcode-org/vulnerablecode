@@ -197,8 +197,8 @@
 
 .card-chart-title {
     border-bottom: 1px solid #e8e8e8;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
 /* Package Panel Specific Styles */
@@ -305,4 +305,26 @@
     display: flex;
     align-items: center;
     margin-left: auto;
+}
+
+/* Overview Panel Specific Styles */
+.kpi-card {
+    border-top: 4px solid var(--bulma-link);
+    height: 100%;
+    margin-bottom: 0 !important;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease-in-out;
+}
+
+.delta-positive {
+    color: var(--bulma-success);
+    font-weight: bold;
+}
+
+.delta-negative {
+    color: var(--bulma-danger);
+    font-weight: bold;
 }

@@ -93,6 +93,8 @@ check:
 	@${ACTIVATE} isort --check-only .
 	@echo "-> Run black validation"
 	@${ACTIVATE} black --check ${BLACK_ARGS}
+	@echo "-> Run mypy type checking"
+	@${ACTIVATE} mypy
 
 clean:
 	@echo "-> Clean the Python env"

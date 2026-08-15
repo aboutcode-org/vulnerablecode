@@ -12,6 +12,16 @@ impacted_packages:
       - vcs_url: https://foobar.vcs/
         commit: 982f801f
     introduced_in_commits: []
-severities: []
-weaknesses: []
-references: []
+severities:
+  - score: '8.8'
+    scoring_system: cvssv3
+    scoring_elements: CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H
+    published_at:
+    url:
+weaknesses:
+  - CWE-707
+  - CWE-20
+references:
+  - url: https://example.com/vuln1
+    reference_type:
+    reference_id:

@@ -13,8 +13,11 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import ImpactedPackageFixedBy
-from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.models import PackageV2
+
+# Note!
+# Any changes to the structure of the advisory exporter also require updating the advisory
+# schema documentation at `docs/source/advisory-schema.rst`.
 
 
 def package_prefetched_qs(checkpoint):
@@ -108,7 +111,7 @@ def serialize_severity(sev):
         "score": sev.value,
         "scoring_system": sev.scoring_system,
         "scoring_elements": sev.scoring_elements,
-        "published_at": str(sev.published_at),
+        "published_at": str(sev.published_at) if sev.published_at else None,
         "url": sev.url,
     }
 

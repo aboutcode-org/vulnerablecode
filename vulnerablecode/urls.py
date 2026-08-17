@@ -27,7 +27,9 @@ from vulnerabilities.views import AdvisoryMitigationCurationView
 from vulnerabilities.views import AdvisoryPackageCommitPatchDetails
 from vulnerabilities.views import AdvisoryPackageCurationView
 from vulnerabilities.views import AdvisoryPackagesDetails
+from vulnerabilities.views import AdvisoryPackagesSnapshotView
 from vulnerabilities.views import AdvisorySeverityCurationView
+from vulnerabilities.views import AdvisorySnapshotView
 from vulnerabilities.views import AdvisoryToDoListView
 from vulnerabilities.views import AdvisoryWeaknessCurationView
 from vulnerabilities.views import AffectedByAdvisoriesListView
@@ -115,6 +117,11 @@ urlpatterns = [
         name="run-details",
     ),
     path(
+        "advisories/packages/snapshot/<path:avid>/<str:unique_content_id>",
+        AdvisoryPackagesSnapshotView.as_view(),
+        name="advisory_package_snapshot",
+    ),
+    path(
         "advisories/packages/<path:avid>",
         AdvisoryPackagesDetails.as_view(),
         name="advisory_package_details",
@@ -123,6 +130,11 @@ urlpatterns = [
         "advisories/commits/<path:avid>",
         AdvisoryPackageCommitPatchDetails.as_view(),
         name="advisory_package_commit_details",
+    ),
+    path(
+        "advisories/snapshot/<path:avid>/<str:unique_content_id>",
+        AdvisorySnapshotView.as_view(),
+        name="advisory_snapshot",
     ),
     path(
         "advisories/<path:avid>",

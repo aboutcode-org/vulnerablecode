@@ -3367,6 +3367,72 @@ class AdvisoryV2(models.Model):
     alias = get_aliases
 
 
+class AdvisoryHistoryDiff(models.Model):
+    """
+    Stores the pre-computed diff between an AdvisoryV2 snapshot (advisory_after)
+    and its immediate predecessor (advisory_before).
+    Created for every snapshot.
+    """
+
+    # Points to the older snapshot in the comparison
+    advisory_before = models.OneToOneField(
+        AdvisoryV2,
+        on_delete=models.PROTECT,
+        related_name="history_diff_before",
+        null=True,  # The very first snapshot won't have a predecessor
+        blank=True,
+    )
+
+    # Points to the newer snapshot in the comparison
+    advisory_after = models.OneToOneField(
+        AdvisoryV2, on_delete=models.PROTECT, related_name="history_diff", null=True, blank=True
+    )
+
+    summary_added = models.TextField(blank=True, null=True)
+    summary_removed = models.TextField(blank=True, null=True)
+
+    url_added = models.URLField(blank=True, null=True)
+    url_removed = models.URLField(blank=True, null=True)
+
+    added_severities = models.ManyToManyField(
+        "AdvisorySeverity", related_name="added_in_history", blank=True
+    )
+    removed_severities = models.ManyToManyField(
+        "AdvisorySeverity", related_name="removed_in_history", blank=True
+    )
+
+    added_impacted_packages = models.ManyToManyField(
+        "ImpactedPackage", related_name="added_in_history", blank=True
+    )
+    removed_impacted_packages = models.ManyToManyField(
+        "ImpactedPackage", related_name="removed_in_history", blank=True
+    )
+
+    added_references = models.ManyToManyField(
+        "AdvisoryReference", related_name="added_in_history", blank=True
+    )
+    removed_references = models.ManyToManyField(
+        "AdvisoryReference", related_name="removed_in_history", blank=True
+    )
+
+    added_aliases = models.ManyToManyField(
+        "AdvisoryAlias", related_name="added_in_history", blank=True
+    )
+    removed_aliases = models.ManyToManyField(
+        "AdvisoryAlias", related_name="removed_in_history", blank=True
+    )
+
+    added_weaknesses = models.ManyToManyField(
+        "AdvisoryWeakness", related_name="added_in_history", blank=True
+    )
+    removed_weaknesses = models.ManyToManyField(
+        "AdvisoryWeakness", related_name="removed_in_history", blank=True
+    )
+
+    added_patches = models.ManyToManyField("Patch", related_name="added_in_history", blank=True)
+    removed_patches = models.ManyToManyField("Patch", related_name="removed_in_history", blank=True)
+
+
 class ImpactedPackage(models.Model):
     """
     Represents a single impact for an advisory, including affected range and fixed version and

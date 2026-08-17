@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import datetime
 import json
 import logging
 import time
@@ -21,10 +22,15 @@ from django.contrib.auth.views import LoginView
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from django.db.models import Exists
+from django.db.models import FloatField
+from django.db.models import Max
 from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.db.models import Q
+from django.db.models.functions import Cast
+from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
@@ -580,6 +586,61 @@ class VulnerabilityDetails(VulnerableCodeDetailView):
         return context
 
 
+def get_epss_history(advisory, epss_page_param):
+    """
+    Fetch and return EPSS history data for an advisory.
+    """
+
+    epss_history_data = []
+    epss_pagination_obj = None
+
+    epss_scores_queryset = (
+        models.AdvisorySeverity.objects.filter(
+            advisories__advisory_id=advisory.advisory_id,
+            advisories__datasource_id=EPSS.identifier,
+            scoring_system=EPSS.identifier,
+            published_at__isnull=False,
+        )
+        .annotate(pub_date=TruncDate("published_at"))
+        .values("pub_date")
+        .annotate(
+            max_score=Max(Cast("value", FloatField())),
+            max_percentile=Max(Cast("scoring_elements", FloatField())),
+        )
+        .order_by("-pub_date")
+    )
+
+    paginator = Paginator(epss_scores_queryset, 30)
+    epss_page = epss_page_param or 1
+    epss_pagination_obj = paginator.get_page(epss_page)
+
+    if epss_pagination_obj.object_list:
+        records = list(epss_pagination_obj.object_list)
+        newest_date = records[0]["pub_date"]
+        oldest_date = records[-1]["pub_date"]
+
+        records_by_date = {
+            record["pub_date"]: {
+                "score": record["max_score"],
+                "percentile": record["max_percentile"],
+                "published_at": record["pub_date"],
+            }
+            for record in records
+        }
+
+        total_days = (newest_date - oldest_date).days
+        all_dates = [oldest_date + datetime.timedelta(days=i) for i in range(total_days + 1)]
+
+        # Handle missing dates
+        for date in all_dates:
+            if date in records_by_date:
+                epss_history_data.append(records_by_date[date])
+            else:
+                epss_history_data.append({"published_at": date, "score": None, "percentile": None})
+
+    return epss_history_data, epss_pagination_obj
+
+
 class AdvisoryDetails(VulnerableCodeDetailView):
     model = models.AdvisoryV2
     template_name = "advisory_detail.html"
@@ -739,6 +800,13 @@ class AdvisoryDetails(VulnerableCodeDetailView):
             add_ssvc(ssvc)
 
         context["ssvcs"] = ssvc_entries
+
+        epss_history_data, epss_pagination_obj = get_epss_history(
+            advisory, self.request.GET.get("epss_page")
+        )
+
+        show_epss_chart = "epss_page" in self.request.GET or advisory.severities.exists()
+
         context.update(
             {
                 "advisory": advisory,
@@ -750,6 +818,9 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                 "weaknesses": weaknesses_present_in_db,
                 "status": advisory.get_status_label,
                 "epss_data": epss_data,
+                "epss_history_data": epss_history_data,
+                "epss_pagination_obj": epss_pagination_obj,
+                "show_epss_chart": show_epss_chart,
             }
         )
         return context

@@ -112,7 +112,18 @@ class AdvisoryToDoForm(forms.Form):
         label=False,
         widget=forms.TextInput(
             attrs={
-                "placeholder": "Search ToDos...",
+                "placeholder": "Search aliases (CVE, GHSA, etc.)",
+                "class": "input",
+            },
+        ),
+    )
+
+    avid = forms.CharField(
+        required=False,
+        label=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Lookup advisory by AVID",
                 "class": "input",
             },
         ),

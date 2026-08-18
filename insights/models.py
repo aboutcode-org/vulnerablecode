@@ -97,7 +97,6 @@ class ImporterInsight(models.Model):
 
 @dataclass(frozen=True)
 class ChartDefinition:
-
     id: str
     title: str
     panel: str

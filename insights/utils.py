@@ -17,14 +17,3 @@ def get_cwe_label(cwe_id: str) -> str:
         return f"CWE-{num} · {name}" if name else f"CWE-{num}"
     except KeyError:
         return f"CWE-{num}"
-
-
-def format_importer_name(name: str) -> str:
-    """
-    Format importer internal names into human-readable labels.
-    e.g., 'pysec_importer_v2' -> 'Pysec Importer'
-    """
-    parts = name.rsplit("_v", 1)
-    if len(parts) == 2 and parts[1].isdigit():
-        name = parts[0]
-    return name.replace("_", " ")

@@ -15,7 +15,6 @@ from django.db.models import OuterRef
 from django.db.models import Q
 
 from insights.models import ImporterInsight
-from insights.utils import format_importer_name
 from vulnerabilities.models import AdvisoryExploit
 from vulnerabilities.models import AdvisoryV2
 
@@ -128,7 +127,7 @@ def _get_snapshot_data(snapshot: Any, build_columns_fn) -> Dict[str, Any]:
 
         # Individual data for each importer
         for importer_insight in all_importers:
-            formatted_name = format_importer_name(importer_insight.importer)
+            formatted_name = importer_insight.importer
             data[formatted_name] = build_columns_fn([importer_insight])
 
     return data
@@ -144,7 +143,7 @@ def build_importer_package_columns(importers) -> Dict[str, Any]:
     advisories_without_ghost_packages = []
 
     for importer_insight in importers:
-        importer_names.append(format_importer_name(importer_insight.importer))
+        importer_names.append(importer_insight.importer)
         total_advisories.append(importer_insight.total_advisories)
         advisories_with_packages.append(importer_insight.advisories_with_packages)
         advisories_without_packages.append(
@@ -183,7 +182,7 @@ def build_importer_exploit_columns(importers) -> Dict[str, Any]:
     advisories_with_exploitdb = []
 
     for importer_insight in importers:
-        importer_names.append(format_importer_name(importer_insight.importer))
+        importer_names.append(importer_insight.importer)
         total_advisories.append(importer_insight.total_advisories)
         advisories_with_kev.append(importer_insight.advisories_with_kev)
         advisories_with_metasploit.append(importer_insight.advisories_with_metasploit)

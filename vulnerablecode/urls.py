@@ -65,6 +65,7 @@ api_v3_router.register("package-types", PackageTypesView, basename="package-type
 urlpatterns = [
     path("admin/login/", AdminLoginView.as_view(), name="admin-login"),
     path("api/v3/", include(api_v3_router.urls)),
+    path("insights/", include("insights.urls")),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),

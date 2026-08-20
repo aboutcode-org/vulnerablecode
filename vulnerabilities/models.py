@@ -2926,7 +2926,10 @@ class PackageCommitPatch(models.Model):
 
 class AdvisoryV2QuerySet(BaseQuerySet):
     def latest_for_avid(self, avid: str):
-        return self.get(avid=avid, is_latest=True)
+        try:
+            return self.get(avid=avid, is_latest=True)
+        except self.model.DoesNotExist:
+            return None
 
     def latest_per_avid(self):
         return self.filter(is_latest=True)

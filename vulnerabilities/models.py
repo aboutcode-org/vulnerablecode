@@ -1344,7 +1344,7 @@ class Alias(models.Model):
             return f"https://github.com/advisories/{alias}"
 
         if alias.startswith("NPM-"):
-            id = alias.lstrip("NPM-")
+            id = alias.removeprefix("NPM-")
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
@@ -2829,7 +2829,7 @@ class AdvisoryAlias(models.Model):
             return f"https://github.com/advisories/{alias}"
 
         if alias.startswith("NPM-"):
-            id = alias.lstrip("NPM-")
+            id = alias.removeprefix("NPM-")
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 

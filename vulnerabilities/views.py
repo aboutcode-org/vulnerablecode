@@ -1119,7 +1119,10 @@ class AdvisoryToDoListView(ListView, FormMixin):
             qs = qs.filter(issue_type=issue_type)
 
         qs.prefetch_related("advisories__aliases")
-        if form.is_valid() and (search := form.cleaned_data.get("search")):
+
+        if form.is_valid() and (avid := form.cleaned_data.get("avid")):
+            return qs.filter(advisories__avid=avid).distinct()
+        elif form.is_valid() and (search := form.cleaned_data.get("search")):
             return qs.filter(advisories__aliases__alias__icontains=search).distinct()
 
         return qs

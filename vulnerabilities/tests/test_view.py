@@ -379,3 +379,22 @@ class ThrottleTestCase(TestCase):
             HTTP_USER_AGENT="test-agent",
         )
         assert response.status_code == 429
+
+
+class AdvisoryDetailNotFoundTestCase(TestCase):
+    def setUp(self):
+        # bypass the altcha bot protection middleware
+        import time
+
+        session = self.client.session
+        session["altcha_verified_at"] = time.time()
+        session.save()
+
+    def test_unknown_advisory_avid_returns_404_not_500(self):
+        # https://github.com/aboutcode-org/vulnerablecode/issues/2396
+        response = self.client.get("/advisories/pysec/PYSEC-3000-0")
+        self.assertEqual(404, response.status_code)
+
+    def test_unknown_advisory_packages_avid_returns_404_not_500(self):
+        response = self.client.get("/advisories/packages/pysec/PYSEC-3000-0")
+        self.assertEqual(404, response.status_code)

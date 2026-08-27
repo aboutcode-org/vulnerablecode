@@ -2926,7 +2926,9 @@ class PackageCommitPatch(models.Model):
 
 class AdvisoryV2QuerySet(BaseQuerySet):
     def latest_for_avid(self, avid: str):
-        return self.get(avid=avid, is_latest=True)
+        # Return None when there is no advisory for this avid: the detail
+        # views rely on this to raise an Http404 instead of a server error.
+        return self.filter(avid=avid, is_latest=True).first()
 
     def latest_per_avid(self):
         return self.filter(is_latest=True)

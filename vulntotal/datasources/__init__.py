@@ -15,6 +15,7 @@ from vulntotal.datasources import osv
 from vulntotal.datasources import safetydb
 from vulntotal.datasources import snyk
 from vulntotal.datasources import vulnerablecode
+from vulntotal.datasources import vulnerablecode_local
 from vulntotal.validator import DataSource
 
 DATASOURCE_REGISTRY = {
@@ -26,4 +27,5 @@ DATASOURCE_REGISTRY = {
     "osv": osv.OSVDataSource,
     "snyk": snyk.SnykDataSource,
     "vulnerablecode": vulnerablecode.VulnerableCodeDataSource,
+    "vulnerablecode_local": vulnerablecode_local.LocalVulnerableCodeDataSource,
 }

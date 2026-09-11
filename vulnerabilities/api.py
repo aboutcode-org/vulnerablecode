@@ -635,7 +635,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     Lookup for vulnerabilities affecting packages.
     """
 
-    queryset = Vulnerability.objects.all()
+    queryset = Vulnerability.objects.all().order_by('-vulnerability_id')
 
     def get_fixed_packages_qs(self):
         """
@@ -703,7 +703,7 @@ class CPEViewSet(VulnerabilityViewSet):
 
     queryset = Vulnerability.objects.filter(
         vulnerabilityreference__reference_id__startswith="cpe"
-    ).distinct()
+    ).distinct().order_by('-vulnerability_id')
 
     filterset_class = CPEFilterSet
 
@@ -723,7 +723,7 @@ class CPEViewSet(VulnerabilityViewSet):
                 return Response(status=400, data={"Error": f"Invalid CPE: {cpe}"})
         vulnerabilitiesResponse = Vulnerability.objects.filter(
             vulnerabilityreference__reference_id__in=cpes
-        ).distinct()
+        ).distinct().order_by('-vulnerability_id')
         return Response(
             VulnerabilitySerializer(
                 vulnerabilitiesResponse, many=True, context={"request": request}

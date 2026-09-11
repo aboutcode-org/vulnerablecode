@@ -46,7 +46,6 @@ addopts = [
     "--doctest-modules",
     # Ignore the following doctests until these files are migrated to
     # import-improve structure
-    "--ignore=vulnerabilities/importers/apache_httpd.py",
     "--ignore=vulnerabilities/importers/apache_kafka.py",
     "--ignore=vulnerabilities/importers/apache_tomcat.py",
     "--ignore=vulnerabilities/importers/elixir_security.py",

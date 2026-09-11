@@ -37,6 +37,7 @@ class ApacheHTTPDImporter(Importer):
     spdx_license_expression = "Apache-2.0"
     license_url = "https://www.apache.org/licenses/LICENSE-2.0"
     importer_name = "Apache HTTPD Importer"
+    created_by = "apache_httpd_importer"
 
     def advisory_data(self):
         links = fetch_links(self.base_url)
@@ -114,6 +115,7 @@ class ApacheHTTPDImporter(Importer):
             references=[reference],
             weaknesses=weaknesses,
             url=reference.url,
+            created_by=self.created_by,
         )
 
     def to_version_ranges(self, versions_data, fixed_versions):
@@ -248,7 +250,7 @@ def get_weaknesses(cve_data):
         descriptions = problemTypes[0].get("descriptions", []) if len(problemTypes) > 0 else []
         for description in descriptions:
             cwe_id_string = description.get("cweId", "")
-            cwe_strings.append(cwe_id_string)
+            if cwe_id_string:
+                cwe_strings.append(cwe_id_string)
 
-    weaknesses = create_weaknesses_list(cwe_strings)
-    return weaknesses
+    return create_weaknesses_list(cwe_strings)

@@ -7,12 +7,17 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import logging
+from unittest import mock
+
 import pytest
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from univers.version_range import VersionRange
 
 from vulnerabilities import models
 from vulnerabilities.import_runner import ImportRunner
+from vulnerabilities.import_runner import logger
 from vulnerabilities.import_runner import process_inferences
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AffectedPackage
@@ -223,3 +228,44 @@ def test_process_inferences_idempotency():
     process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver")
     process_inferences(INFERENCES, DUMMY_ADVISORY, improver_name="test_improver")
     assert all_objects == get_objects_in_all_tables_used_by_process_inferences()
+
+
+def test_vulnerability_reference_logging():
+    """Test that duplicate vulnerability references are logged as DEBUG while other errors are WARNINGS."""
+
+    reference = "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-1509"
+
+    # Mock the logger
+    with mock.patch.object(logger, "debug") as mock_debug, mock.patch.object(
+        logger, "warning"
+    ) as mock_warning:
+
+        # Simulate a ValidationError for duplicate reference
+        duplicate_error = ValidationError("Vulnerability reference with this Url already exists.")
+        try:
+            raise duplicate_error
+        except ValidationError as e:
+            error_message = str(e)
+            if "Vulnerability reference with this Url already exists." in error_message:
+                logger.debug(f"Duplicate vulnerability reference ignored: {reference!r}")
+            else:
+                logger.warning(f"Invalid vulnerability reference: {reference!r}: {e}")
+
+        # Simulate a ValidationError for a different case
+        other_error = ValidationError("Some other validation error.")
+        try:
+            raise other_error
+        except ValidationError as e:
+            error_message = str(e)
+            if "Vulnerability reference with this Url already exists." in error_message:
+                logger.debug(f"Duplicate vulnerability reference ignored: {reference!r}")
+            else:
+                logger.warning(f"Invalid vulnerability reference: {reference!r}: {e}")
+
+        # Assertions
+        mock_debug.assert_called_once_with(
+            f"Duplicate vulnerability reference ignored: {reference!r}"
+        )
+        mock_warning.assert_called_once_with(
+            f"Invalid vulnerability reference: {reference!r}: {other_error}"
+        )

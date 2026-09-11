@@ -1,0 +1,26 @@
+{
+  "advisory_id": "ZDI-25-001",
+  "aliases": [
+    "CVE-2025-12345"
+  ],
+  "summary": "ZDI-25-001: Example Vendor Product Remote Code Execution Vulnerability",
+  "affected_packages": [],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "http://www.zerodayinitiative.com/advisories/ZDI-25-001/"
+    }
+  ],
+  "patches": [],
+  "severities": [
+    {
+      "system": "generic_textual",
+      "value": "8.8",
+      "scoring_elements": ""
+    }
+  ],
+  "date_published": "2025-01-06T00:00:00-06:00",
+  "weaknesses": [],
+  "url": "http://www.zerodayinitiative.com/advisories/ZDI-25-001/"
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Zero Day Initiative - Published Advisories</title>
+    <link>http://www.zerodayinitiative.com</link>
+    <description>Published ZDI Advisories</description>
+    <item>
+      <title><![CDATA[ZDI-25-001: Example Vendor Product Remote Code Execution Vulnerability]]></title>
+      <guid isPermaLink="false">ZDI-CAN-12345</guid>
+      <link>http://www.zerodayinitiative.com/advisories/ZDI-25-001/</link>
+      <description><![CDATA[This vulnerability allows remote attackers to execute arbitrary code on affected installations of Example Vendor Product. User interaction is required to exploit this vulnerability. The ZDI has assigned a CVSS rating of 8.8. The following CVEs are assigned: CVE-2025-12345.]]></description>
+      <pubDate>Mon, 06 Jan 2025 00:00:00 -0600</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[ZDI-25-002: Another Vendor Product Information Disclosure Vulnerability]]></title>
+      <guid isPermaLink="false">ZDI-CAN-67890</guid>
+      <link>http://www.zerodayinitiative.com/advisories/ZDI-25-002/</link>
+      <description><![CDATA[This vulnerability allows remote attackers to disclose sensitive information on affected installations of Another Vendor Product. No user interaction is required to exploit this vulnerability. The ZDI has assigned a CVSS rating of 5.3. No CVE has been assigned to this advisory at this time.]]></description>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 -0600</pubDate>
+    </item>
+  </channel>
+</rss>

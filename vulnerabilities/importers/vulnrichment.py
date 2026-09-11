@@ -29,7 +29,7 @@ class VulnrichImporter(Importer):
         try:
             vcs_response = self.clone(repo_url=self.repo_url)
             base_path = Path(vcs_response.dest_dir)
-            for file_path in base_path.glob(f"**/**/*.json"):
+            for file_path in base_path.glob("**/**/*.json"):
                 if not file_path.name.startswith("CVE-"):
                     continue
 

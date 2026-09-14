@@ -2009,7 +2009,6 @@ class PipelineRun(models.Model):
 
     created_date = models.DateTimeField(
         auto_now_add=True,
-        db_index=True,
     )
 
     vulnerablecode_version = models.CharField(
@@ -3925,7 +3924,6 @@ class ImpactedPackageAffecting(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True,
-        db_index=True,
     )
 
     class Meta:
@@ -3948,7 +3946,6 @@ class ImpactedPackageFixedBy(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True,
-        db_index=True,
     )
 
     class Meta:

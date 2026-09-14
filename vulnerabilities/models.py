@@ -3930,7 +3930,6 @@ class ImpactedPackageAffecting(models.Model):
         unique_together = ("impacted_package", "package")
         indexes = [
             models.Index(fields=["package", "impacted_package"]),
-            models.Index(fields=["impacted_package", "package"]),
         ]
 
 
@@ -3952,7 +3951,6 @@ class ImpactedPackageFixedBy(models.Model):
         unique_together = ("impacted_package", "package")
         indexes = [
             models.Index(fields=["package", "impacted_package"]),
-            models.Index(fields=["impacted_package", "package"]),
         ]
 
 

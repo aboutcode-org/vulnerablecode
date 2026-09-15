@@ -13,6 +13,13 @@ VulnerableCode Advisory Package Details - {{ advisoryv2.advisory_id }}
 
 {% if advisoryv2 %}
     <section class="section pt-4">
+        {% if is_snapshot %}
+        <div class="notification is-warning mb-3 has-text-centered" style="max-width: fit-content; margin: 0 auto;">
+            <i class="fa fa-history mr-1"></i> Historical snapshot collected on <strong>{{ advisoryv2.date_collected|date:"Y-m-d H:i" }} UTC</strong>.
+            <a href="{% url 'advisory_package_details' avid=advisoryv2.avid %}" class="ml-3"><strong>View current version</strong> <i class="fa fa-arrow-right is-size-7"></i></a>
+        </div>
+        {% endif %}
+
         <div class="details-container">
             <article class="panel is-info panel-header-only">
                 <div class="panel-heading py-2 is-size-6">

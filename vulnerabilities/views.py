@@ -21,6 +21,7 @@ from django.contrib.auth.views import LoginView
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from django.db.models import Exists
 from django.db.models import OuterRef
 from django.db.models import Prefetch
@@ -580,6 +581,57 @@ class VulnerabilityDetails(VulnerableCodeDetailView):
         return context
 
 
+def build_advisory_history(advisory, page_number):
+    """
+    Build advisory history for a given advisory.
+    """
+    advisory_history_qs = models.AdvisoryV2.objects.filter(avid=advisory.avid).order_by(
+        "-date_collected", "-unique_content_id"
+    )
+
+    paginator = Paginator(advisory_history_qs, 10)
+    pagination_obj = paginator.get_page(page_number)
+    advisories_on_page = list(pagination_obj.object_list)
+
+    advisory_ids = [advisory.pk for advisory in advisories_on_page]
+    advisory_to_diff = {
+        diff.advisory_after_id: diff
+        for diff in models.AdvisoryHistoryDiff.objects.filter(
+            advisory_after_id__in=advisory_ids
+        ).prefetch_related(
+            "added_severities",
+            "removed_severities",
+            "added_impacted_packages",
+            "removed_impacted_packages",
+            "added_references",
+            "removed_references",
+            "added_patches",
+            "removed_patches",
+            "added_weaknesses",
+            "removed_weaknesses",
+            "added_aliases",
+            "removed_aliases",
+        )
+    }
+
+    advisory_history = []
+    for current_index, current_advisory in enumerate(advisories_on_page):
+        is_initial = not pagination_obj.has_next() and current_index == len(advisories_on_page) - 1
+        history_diff = advisory_to_diff.get(current_advisory.pk)
+
+        advisory_history.append(
+            {
+                "date_collected": current_advisory.date_collected,
+                "unique_content_id": current_advisory.unique_content_id,
+                "is_latest": current_advisory.is_latest,
+                "is_initial": is_initial,
+                "diff": history_diff,
+            }
+        )
+
+    return advisory_history, pagination_obj
+
+
 class AdvisoryDetails(VulnerableCodeDetailView):
     model = models.AdvisoryV2
     template_name = "advisory_detail.html"
@@ -645,6 +697,12 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                         "decision",
                         "source_advisory__id",
                         "source_advisory__url",
+                    ),
+                ),
+                Prefetch(
+                    "impacted_packages",
+                    queryset=models.ImpactedPackage.objects.only(
+                        "base_purl", "affecting_vers", "fixed_vers"
                     ),
                 ),
             )
@@ -738,6 +796,10 @@ class AdvisoryDetails(VulnerableCodeDetailView):
         for ssvc in advisory.related_ssvcs.all():
             add_ssvc(ssvc)
 
+        advisory_history, pagination_obj = build_advisory_history(
+            advisory, self.request.GET.get("page", 1)
+        )
+
         context["ssvcs"] = ssvc_entries
         context.update(
             {
@@ -750,8 +812,26 @@ class AdvisoryDetails(VulnerableCodeDetailView):
                 "weaknesses": weaknesses_present_in_db,
                 "status": advisory.get_status_label,
                 "epss_data": epss_data,
+                "advisory_history": advisory_history,
+                "page_obj": pagination_obj,
+                "is_snapshot": False,
             }
         )
+        return context
+
+
+class AdvisorySnapshotView(AdvisoryDetails):
+    def get_object(self, queryset=None):
+        avid = self.kwargs["avid"]
+        uid = self.kwargs["unique_content_id"]
+        try:
+            return self.get_queryset().get(avid=avid, unique_content_id=uid)
+        except models.AdvisoryV2.DoesNotExist:
+            raise Http404
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"advisory_history": [], "is_snapshot": True})
         return context
 
 
@@ -991,6 +1071,45 @@ class AdvisoryPackageCommitPatchDetails(DetailView):
                 )
             )
         )
+
+
+class AdvisoryPackagesSnapshotView(AdvisoryPackagesDetails):
+    """
+    View to display package details for an advisory snapshot.
+    """
+
+    def get_object(self, queryset=None):
+        avid = self.kwargs["avid"]
+        uid = self.kwargs["unique_content_id"]
+        try:
+            return self.get_queryset().get(avid=avid, unique_content_id=uid)
+        except models.AdvisoryV2.DoesNotExist:
+            raise Http404
+
+    def get_queryset(self):
+        from vulnerabilities.models import ImpactedPackage
+        from vulnerabilities.models import PackageV2
+
+        return AdvisoryV2.objects.all().prefetch_related(
+            Prefetch(
+                "impacted_packages",
+                queryset=ImpactedPackage.objects.all().prefetch_related(
+                    Prefetch(
+                        "affecting_packages",
+                        queryset=PackageV2.objects.only("type", "namespace", "name", "version"),
+                    ),
+                    Prefetch(
+                        "fixed_by_packages",
+                        queryset=PackageV2.objects.only("type", "namespace", "name", "version"),
+                    ),
+                ),
+            )
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"is_snapshot": True})
+        return context
 
 
 class PipelineScheduleListView(VulnerableCodeListView, FormMixin):

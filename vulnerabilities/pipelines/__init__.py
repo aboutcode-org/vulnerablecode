@@ -284,6 +284,10 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     # pull requests, commit messages, EPSS, exploits, etc.
     exclude_from_package_todo = False
 
+    # Set this to True if computing history diff is not fruitful for this source.
+    # An example of such advisory would be pipeline dedicated to EPSS
+    exclude_from_history_diff = False
+
     # Control how often progress log is shown (range: 1–100, higher value = less frequent log)
     progress_step = 10
 
@@ -344,6 +348,7 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
                     datasource_id=self.datasource_id,
                     logger=self.log,
                     precedence=self.precedence,
+                    calculate_history_diff=not self.exclude_from_history_diff,
                 ):
                     collected_advisory_count += 1
             except Exception as e:

@@ -1,0 +1,16 @@
+<div class="overview-grid">
+    <div class="overview-row" style="grid-template-columns: repeat(2, 1fr);">
+        {% with chart=panel.charts.0 %}
+            {% include 'insights/components/chart_card.html' %}
+        {% endwith %}
+        {% with chart=panel.charts.1 %}
+            {% include 'insights/components/chart_card.html' %}
+        {% endwith %}
+    </div>
+
+    <div class="overview-row" style="grid-template-columns: 1fr;">
+        {% with chart=panel.charts.2 %}
+            {% include 'insights/components/chart_card.html' %}
+        {% endwith %}
+    </div>
+</div>

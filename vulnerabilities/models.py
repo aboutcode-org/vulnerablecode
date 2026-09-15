@@ -3322,14 +3322,6 @@ class AdvisoryV2(models.Model):
             )
         ]
         indexes = [
-            models.Index(
-                fields=["avid", "-date_collected", "-id"],
-                name="advisory_latest_by_avid_idx",
-            ),
-            models.Index(
-                fields=["_all_impacts_unfurled_at", "id"],
-                name="advisory_unfurled_idx",
-            ),
             models.Index(fields=["is_latest", "_all_impacts_unfurled_at"]),
         ]
 

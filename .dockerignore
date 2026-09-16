@@ -32,3 +32,6 @@ README.rst
 # Ignore virtualenv and local Python build files
 **/venv
 **/*.egg-info
+
+# Ignore VulnTotal
+**/vulntotal

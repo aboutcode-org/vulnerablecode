@@ -1,0 +1,59 @@
+[
+  {
+    "advisory_id": "GLSA-202511-03",
+    "aliases": [
+      "CVE-2023-45872",
+      "CVE-2025-10728",
+      "CVE-2025-10729"
+    ],
+    "summary": "Multiple vulnerabilities have been discovered in qtsvg, the worst of which could lead to execution of arbitrary code.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "dev-qt",
+          "name": "qtsvg",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:ebuild/<6.9.3",
+        "fixed_version_range": null,
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "ebuild",
+          "namespace": "dev-qt",
+          "name": "qtsvg",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": null,
+        "fixed_version_range": "vers:ebuild/>=6.9.3",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "GLSA-202511-03",
+        "reference_type": "",
+        "url": "https://security.gentoo.org/glsa/202511-03"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "high",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": null,
+    "weaknesses": [],
+    "url": "https://security.gentoo.org/glsa/202511-03"
+  }
+]

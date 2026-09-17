@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glsa SYSTEM "http://www.gentoo.org/dtd/glsa.dtd">
+<glsa id="202511-03">
+    <title>qtsvg: Multiple Vulnerabilities</title>
+    <synopsis>Multiple vulnerabilities have been discovered in qtsvg, the worst of which could lead to execution of arbitrary code.</synopsis>
+    <product type="ebuild">qtsvg</product>
+    <announced>2025-11-24</announced>
+    <revised count="1">2025-11-24</revised>
+    <bug>915998</bug>
+    <bug>963710</bug>
+    <access>local and remote</access>
+    <affected>
+        <package name="dev-qt/qtsvg" auto="yes" arch="*">
+            <unaffected range="ge">6.9.3:6</unaffected>
+            <vulnerable range="lt">6.9.3:6</vulnerable>
+        </package>
+    </affected>
+    <background>
+        <p>qtsvg is a SVG rendering library for the Qt framework.</p>
+    </background>
+    <description>
+        <p>Multiple vulnerabilities have been discovered in qtsvg. Please review the CVE identifiers referenced below for details.</p>
+    </description>
+    <impact type="high">
+        <p>Please review the referenced CVE identifiers for details.</p>
+    </impact>
+    <workaround>
+        <p>There is no known workaround at this time.</p>
+    </workaround>
+    <resolution>
+        <p>All qtsvg users should upgrade to the latest version:</p>
+        
+        <code>
+          # emerge --sync
+          # emerge --ask --oneshot --verbose ">=dev-qt/qtsvg-6.9.3"
+        </code>
+    </resolution>
+    <references>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2023-45872">CVE-2023-45872</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-10728">CVE-2025-10728</uri>
+        <uri link="https://nvd.nist.gov/vuln/detail/CVE-2025-10729">CVE-2025-10729</uri>
+    </references>
+    <metadata tag="requester" timestamp="2025-11-24T23:58:02.219156Z">graaff</metadata>
+    <metadata tag="submitter" timestamp="2025-11-24T23:58:02.221875Z">sam</metadata>
+</glsa>

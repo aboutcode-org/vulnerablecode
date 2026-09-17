@@ -8,6 +8,10 @@
 
 FROM python:3.12
 
+LABEL org.opencontainers.image.source="https://github.com/aboutcode-org/vulnerablecode"
+LABEL org.opencontainers.image.description="VulnerableCode"
+LABEL org.opencontainers.image.licenses="Apache-2.0 AND CC-BY-SA-4.0"
+
 WORKDIR /app
 
 # Python settings: Force unbuffered stdout and stderr (i.e. they are flushed to terminal immediately)

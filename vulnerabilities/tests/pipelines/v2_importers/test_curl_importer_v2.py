@@ -105,6 +105,78 @@ def test_parse_curl_advisory_minimal():
     assert parsed.severities[0].value == ""
 
 
+def test_parse_curl_advisory_git_only_range():
+    # Advisories with only a GIT range (no SEMVER) previously caused an
+    # UnboundLocalError because fixed_version_range was never assigned before
+    # being passed to AffectedPackageV2.
+    data = {
+        "id": "CURL-CVE-2024-11111",
+        "aliases": ["CVE-2024-11111"],
+        "summary": "Test advisory with GIT-only range",
+        "published": "2024-01-01T00:00:00.00Z",
+        "affected": [
+            {
+                "ranges": [
+                    {
+                        "type": "GIT",
+                        "repo": "https://github.com/curl/curl.git",
+                        "events": [
+                            {"introduced": "abc123"},
+                            {"fixed": "def456"},
+                        ],
+                    }
+                ],
+                "versions": ["8.5.0", "8.4.0"],
+            }
+        ],
+        "database_specific": {
+            "URL": "https://curl.se/docs/CVE-2024-11111.json",
+            "www": "https://curl.se/docs/CVE-2024-11111.html",
+            "severity": "Low",
+        },
+    }
+
+    parsed = parse_curl_advisory(data)
+
+    assert parsed.advisory_id == "CURL-CVE-2024-11111"
+    assert parsed.aliases == ["CVE-2024-11111"]
+    assert parsed.affected_packages[0].fixed_version_range is None
+    assert "8.5.0" in str(parsed.affected_packages[0].affected_version_range)
+
+
+def test_parse_curl_advisory_curl_id_format():
+    # The feed uses CURL-CVE-* as the id with CVE-* in aliases. The advisory_id
+    # should be the CURL-CVE-* form and aliases should contain the CVE id.
+    data = {
+        "id": "CURL-CVE-2024-22222",
+        "aliases": ["CVE-2024-22222"],
+        "summary": "Test CURL id format",
+        "published": "2024-03-01T08:00:00.00Z",
+        "affected": [
+            {
+                "ranges": [
+                    {
+                        "type": "SEMVER",
+                        "events": [{"introduced": "8.0.0"}, {"fixed": "8.1.0"}],
+                    }
+                ],
+                "versions": ["8.0.0"],
+            }
+        ],
+        "database_specific": {
+            "URL": "https://curl.se/docs/CVE-2024-22222.json",
+            "www": "https://curl.se/docs/CVE-2024-22222.html",
+            "severity": "Medium",
+        },
+    }
+
+    parsed = parse_curl_advisory(data)
+
+    assert parsed.advisory_id == "CURL-CVE-2024-22222"
+    assert "CVE-2024-22222" in parsed.aliases
+    assert str(parsed.affected_packages[0].fixed_version_range) == "vers:generic/8.1.0"
+
+
 def test_get_cwe_from_valid():
     cwe_data = {"database_specific": {"CWE": {"id": "CWE-79", "desc": "Cross-site scripting"}}}
     result = get_cwe_from_curl_advisory(cwe_data)

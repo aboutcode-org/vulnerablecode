@@ -50,6 +50,8 @@ jobs:
     needs:
       - build-pypi-distribs
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
 
     steps:
       - name: Download built archives

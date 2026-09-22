@@ -116,3 +116,19 @@ def update_pipeline_schedule():
                 pipeline.run_priority = run_priority
                 pipeline.run_interval = run_interval
                 pipeline.save()
+
+
+def mark_stale_runs():
+    """Mark unfinished pipeline runs as stale."""
+    from django.db.models import Q
+
+    from vulnerabilities.models import PipelineRun
+
+    for job in PipelineRun.objects.filter(run_start_date__isnull=False).filter(
+        Q(run_end_date__isnull=True) | Q(run_exitcode__isnull=True)
+    ):
+        job.set_run_staled()
+
+
+def refresh_runs():
+    mark_stale_runs()

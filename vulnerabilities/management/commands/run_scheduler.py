@@ -12,6 +12,7 @@ from django_rq.management.commands import rqscheduler
 
 from vulnerabilities import models
 from vulnerabilities.schedules import clear_zombie_pipeline_schedules
+from vulnerabilities.schedules import refresh_runs
 from vulnerabilities.schedules import scheduled_job_exists
 from vulnerabilities.schedules import update_pipeline_schedule
 
@@ -38,5 +39,6 @@ class Command(rqscheduler.Command):
     def handle(self, *args, **kwargs):
         clear_zombie_pipeline_schedules()
         update_pipeline_schedule()
+        refresh_runs()
         init_pipeline_scheduled()
         super(Command, self).handle(*args, **kwargs)

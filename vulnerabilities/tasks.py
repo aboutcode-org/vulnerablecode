@@ -115,9 +115,22 @@ def set_run_failure(job, connection, type, value, traceback):
     run.set_run_ended(exitcode=1, output=f"value={value} trace={traceback}")
 
 
+def enqueue_run(run):
+    pipeline_schedule = run.pipeline
+    queue = queues.get(pipeline_schedule.get_run_priority_display())
+
+    job = queue.enqueue(
+        execute_pipeline,
+        pipeline_schedule.pipeline_id,
+        run.run_id,
+        job_id=str(run.run_id),
+        on_failure=set_run_failure,
+        job_timeout=f"{pipeline_schedule.execution_timeout}h",
+    )
+
+
 def enqueue_pipeline(pipeline_id):
     pipeline_schedule = models.PipelineSchedule.objects.get(pipeline_id=pipeline_id)
-    queue = queues.get(pipeline_schedule.get_run_priority_display())
 
     if pipeline_schedule.status in [
         models.PipelineRun.Status.RUNNING,
@@ -134,14 +147,8 @@ def enqueue_pipeline(pipeline_id):
     run = models.PipelineRun.objects.create(
         pipeline=pipeline_schedule,
     )
-    job = queue.enqueue(
-        execute_pipeline,
-        pipeline_id,
-        run.run_id,
-        job_id=str(run.run_id),
-        on_failure=set_run_failure,
-        job_timeout=f"{pipeline_schedule.execution_timeout}h",
-    )
+
+    enqueue_run(run)
 
 
 def dequeue_job(job_id):
@@ -150,6 +157,12 @@ def dequeue_job(job_id):
     for queue in queues.values():
         if job_id in queue.jobs:
             queue.remove(job_id)
+
+
+def is_job_in_queue(job_id):
+    """Return whether a job exists in any queue."""
+
+    return any(job_id in queue.jobs for queue in queues.values())
 
 
 def compute_queue_load_factor():

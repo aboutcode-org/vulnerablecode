@@ -124,11 +124,34 @@ def mark_stale_runs():
 
     from vulnerabilities.models import PipelineRun
 
-    for job in PipelineRun.objects.filter(run_start_date__isnull=False).filter(
+    stale_jobs = PipelineRun.objects.filter(run_start_date__isnull=False).filter(
         Q(run_end_date__isnull=True) | Q(run_exitcode__isnull=True)
-    ):
+    )
+    stale_jobs_count = stale_jobs.count()
+
+    for job in stale_jobs.iterator(chunk_size=1000):
         job.set_run_staled()
+
+    log.info(f"Marked {stale_jobs_count} unfinished jobs as stale.")
+
+
+def requeue_missing_jobs():
+    """Requeue pipeline runs that have not started and are missing from the queue."""
+
+    from vulnerabilities.models import PipelineRun
+    from vulnerabilities.tasks import enqueue_run
+    from vulnerabilities.tasks import is_job_in_queue
+
+    missing_jobs_count = 0
+    for job in PipelineRun.objects.filter(run_start_date__isnull=True).iterator(chunk_size=1000):
+        if not is_job_in_queue(job_id=job.run_id):
+            enqueue_run(run=job)
+            missing_jobs_count += 1
+
+    log.info(f"Requeued {missing_jobs_count} missing jobs.")
 
 
 def refresh_runs():
+    """Refresh the stale and missing jobs."""
     mark_stale_runs()
+    requeue_missing_jobs()

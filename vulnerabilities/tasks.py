@@ -178,7 +178,7 @@ def compute_queue_load_factor():
     """
     field = models.PipelineSchedule._meta.get_field("run_priority")
     label_to_value = {label: value for value, label in field.choices}
-    total_compute_seconds_per_queue = {}
+    total_compute_seconds_per_queue_in_24hr_cycle = {}
     worker_per_queue = {}
     load_per_queue = {}
     seconds_in_24_hr = 86400
@@ -191,26 +191,39 @@ def compute_queue_load_factor():
         worker_per_queue = dict(Counter(queue_names))
 
     for queue in RQ_QUEUES.keys():
-        total_compute_seconds_per_queue[queue] = sum(
-            (p.latest_successful_run.runtime / (p.run_interval / (24 * 60)))
-            for p in models.PipelineSchedule.objects.filter(
-                is_active=True, run_priority=label_to_value[queue]
-            )
-            if p.latest_successful_run
+        total_compute_seconds = 0
+        active_schedules = models.PipelineSchedule.objects.filter(
+            is_active=True,
+            run_priority=label_to_value[queue],
         )
+        for schedule in active_schedules:
+            if not schedule.latest_successful_run:
+                continue
+
+            runs_per_day = (24 * 60) / schedule.run_interval
+            compute_seconds_per_day = schedule.latest_successful_run.runtime * runs_per_day
+            total_compute_seconds += compute_seconds_per_day
+
+        total_compute_seconds_per_queue_in_24hr_cycle[queue] = total_compute_seconds
+
         if queue not in worker_per_queue:
             worker_per_queue[queue] = 0
 
     for queue_name, worker_count in worker_per_queue.items():
         net_load_on_queue = "no_worker"
-        total_compute = total_compute_seconds_per_queue.get(queue_name, 0)
+        total_compute = total_compute_seconds_per_queue_in_24hr_cycle.get(queue_name, 0)
+        total_pipeline_for_queue = models.PipelineSchedule.objects.filter(
+            is_active=True, run_priority=label_to_value[queue_name]
+        ).count()
         if total_compute == 0:
             continue
 
         unit_load_on_queue = total_compute / seconds_in_24_hr
 
         num_of_worker_for_balanced_queue = round(unit_load_on_queue)
-        addition_worker_needed = max(num_of_worker_for_balanced_queue - worker_count, 0)
+        addition_worker_needed = min(
+            max(num_of_worker_for_balanced_queue - worker_count, 0), total_pipeline_for_queue
+        )
 
         if worker_count > 0:
             net_load_on_queue = unit_load_on_queue / worker_count

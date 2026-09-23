@@ -131,7 +131,7 @@ def mark_stale_runs():
     stale_jobs_count = stale_jobs.count()
 
     for job in stale_jobs.iterator(chunk_size=1000):
-        job.set_run_staled()
+        job.stop_run()
 
     log.info(f"Marked {stale_jobs_count} unfinished jobs as stale.")
 
@@ -151,7 +151,7 @@ def requeue_missing_jobs():
                 enqueue_run(run=job)
                 missing_jobs_count += 1
             else:
-                job.set_run_staled()
+                job.stop_run()
 
     log.info(f"Requeued {missing_jobs_count} missing jobs.")
 

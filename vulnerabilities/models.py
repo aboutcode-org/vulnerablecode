@@ -2219,8 +2219,9 @@ class PipelineRun(models.Model):
             job_id=str(self.run_id),
         )
         self.set_run_stopped()
+        self.delete_run_job()
 
-    def delete_run(self):
+    def delete_run_job(self):
         if job := self.job:
             job.delete()
 
@@ -2231,7 +2232,7 @@ class PipelineRun(models.Model):
         with suppress(redis.exceptions.ConnectionError, AttributeError):
             self.stop_run()
 
-        self.delete_run()
+        self.delete_run_job()
 
         return super().delete(*args, **kwargs)
 

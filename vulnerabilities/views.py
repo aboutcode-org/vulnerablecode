@@ -66,6 +66,8 @@ from vulnerabilities.utils import get_advisories_from_groups
 from vulnerabilities.utils import safe_altcha_redirect
 from vulnerablecode import __version__ as VULNERABLECODE_VERSION
 from vulnerablecode.settings import VULNERABLECODE_ALTCHA_SESSION_TIMEOUT
+from vulnerablecode.settings import VULNERABLECODE_MINIMUM_PIPELINE_RUNS_TO_RETAIN
+from vulnerablecode.settings import VULNERABLECODE_PIPELINE_RUN_RETENTION_DAYS
 from vulnerablecode.settings import env
 
 PAGE_SIZE = 10
@@ -1048,6 +1050,8 @@ class PipelineRunListView(VulnerableCodeListView):
         )
         context["pipeline_name"] = pipeline.pipeline_class.__name__
         context["pipeline_description"] = pipeline.description
+        context["pipeline_run_retention_days"] = VULNERABLECODE_PIPELINE_RUN_RETENTION_DAYS
+        context["minimum_pipeline_runs_retain"] = VULNERABLECODE_MINIMUM_PIPELINE_RUNS_TO_RETAIN
         return context
 
 

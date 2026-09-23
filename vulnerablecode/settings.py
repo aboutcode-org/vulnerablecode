@@ -44,6 +44,16 @@ ALTCHA_HMAC_KEY = env.str("ALTCHA_HMAC_KEY")
 
 VULNERABLECODE_ALTCHA_SESSION_TIMEOUT = env.int("VULNERABLECODE_ALTCHA_SESSION_TIMEOUT", None)
 
+# Retain pipeline runs for the specified number of days, cannot be less than 10 days.
+VULNERABLECODE_PIPELINE_RUN_RETENTION_DAYS = max(
+    env.int("VULNERABLECODE_PIPELINE_RUN_RETENTION_DAYS", 60), 10
+)
+
+# Minimum number of pipeline runs to retain regardless of the retention period, cannot be less than 15.
+VULNERABLECODE_MINIMUM_PIPELINE_RUNS_TO_RETAIN = max(
+    env.int("VULNERABLECODE_MINIMUM_PIPELINE_RUNS_TO_RETAIN", 60), 15
+)
+
 # SECURITY WARNING: do not run with debug turned on in production
 DEBUG = env.bool("VULNERABLECODE_DEBUG", default=False)
 

@@ -145,8 +145,12 @@ def requeue_missing_jobs():
     missing_jobs_count = 0
     for job in PipelineRun.objects.filter(run_start_date__isnull=True).iterator(chunk_size=1000):
         if not is_job_in_queue(job_id=job.run_id):
-            enqueue_run(run=job)
-            missing_jobs_count += 1
+            pipeline_latest_run = job.pipeline.latest_run
+            if pipeline_latest_run and pipeline_latest_run.run_id == job.run_id:
+                enqueue_run(run=job)
+                missing_jobs_count += 1
+            else:
+                job.set_run_staled()
 
     log.info(f"Requeued {missing_jobs_count} missing jobs.")
 

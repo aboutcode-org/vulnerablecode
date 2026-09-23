@@ -103,7 +103,6 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
             matches = advisory_id_map.get(advisory.advisory_id, set())
             for target_id in matches:
                 if target_id != advisory.id:
-                    self.log(f"Relating advisory {advisory.avid} to {target_id}")
                     relations.append(
                         through(
                             from_advisoryv2_id=target_id,

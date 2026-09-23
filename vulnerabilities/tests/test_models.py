@@ -688,6 +688,23 @@ class TestPipelineRunModel(DjangoTestCase):
         self.run1.set_run_ended(exitcode=0)
         self.assertEqual(self.run1.status, self.run1.Status.SUCCESS)
 
+    def test_pipelinerun_schedules_mark_stale_runs_unfinished_job(self):
+        from vulnerabilities.schedules import mark_stale_runs
+
+        self.run1.set_run_started()
+        self.assertEqual(self.run1.run_exitcode, None)
+        mark_stale_runs()
+        self.run1.refresh_from_db()
+        self.assertEqual(self.run1.run_exitcode, 88)
+
+    def test_pipelinerun_schedules_mark_stale_runs_job_not_yet_started(self):
+        from vulnerabilities.schedules import mark_stale_runs
+
+        self.assertEqual(self.run1.run_exitcode, None)
+        mark_stale_runs()
+        self.run1.refresh_from_db()
+        self.assertEqual(self.run1.run_exitcode, None)
+
 
 class TestPipelineScheduleModel(DjangoTestCase):
     def setUp(self):

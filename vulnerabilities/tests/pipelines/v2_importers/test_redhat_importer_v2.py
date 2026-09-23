@@ -17,6 +17,7 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines.v2_importers.redhat_importer import RedHatImporterPipeline
 from vulnerabilities.tests import util_tests
+from vulnerabilities.tests.pipelines import TestLogger
 from vulnerabilities.utils import normalize_list
 
 TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "redhat" / "csaf_2_0"
@@ -25,10 +26,15 @@ TEST_DATA = Path(__file__).parent.parent.parent / "test_data" / "redhat" / "csaf
 class TestArchLinuxImporterPipeline(TestCase):
     @patch("vulnerabilities.pipelines.v2_importers.redhat_importer.RedHatImporterPipeline.fetch")
     def test_redhat_advisories_v2(self, mock_fetch):
+        logger = TestLogger()
+
         mock_fetch.__name__ = "fetch"
         pipeline = RedHatImporterPipeline()
         pipeline.location = TEST_DATA
-        pipeline.execute()
+        pipeline.log = logger.write
+        exit_code, _ = pipeline.execute()
+
+        self.assertEqual(exit_code, 0)
         self.assertEqual(6, AdvisoryV2.objects.count())
         self.assertEqual(93, PackageV2.objects.count())
         expected_file = TEST_DATA.parent / "redhat_advisoryv2-expected.json"

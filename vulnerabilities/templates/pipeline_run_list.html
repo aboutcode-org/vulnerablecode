@@ -41,14 +41,22 @@
     </div>
 
     {% if pipeline_description %}
-      <div class="notification is-info is-light">
-        <p class="is-size-5 has-text-grey-dark has-text-centered">
-          {{ pipeline_description }}
-        </p>
-      </div>
+<div class="notification is-info is-light">
+    <div class="is-size-5 has-text-grey-dark">
+        {{ pipeline_description|linebreaks }}
+    </div>
+</div>
     {% endif %}
 
     <div class="box">
+      <div class="notification  has-text-centered" style="background-color: #f8edb2;">
+          <p class="is-size-6 has-text-grey-dark">
+              <i class="fa fa-exclamation-triangle mr-1"></i>
+              Pipeline runs older than {{ pipeline_run_retention_days }} days are automatically removed.
+              At least the latest {{ minimum_pipeline_runs_retain }} pipeline runs are always retained.
+          </p>
+      </div>
+
       <table class="table is-striped  is-hoverable is-fullwidth">
         <thead>
           <tr>

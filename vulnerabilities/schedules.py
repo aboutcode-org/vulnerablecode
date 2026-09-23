@@ -91,8 +91,9 @@ def update_pipeline_schedule():
     from vulnerabilities.improvers import IMPROVERS_REGISTRY
     from vulnerabilities.models import PipelineSchedule
     from vulnerabilities.pipelines.exporters import EXPORTERS_REGISTRY
+    from vulnerabilities.pipelines.management import MANAGEMENT_REGISTRY
 
-    pipelines = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY
+    pipelines = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY | MANAGEMENT_REGISTRY
 
     PipelineSchedule.objects.exclude(pipeline_id__in=pipelines.keys()).delete()
     for id, pipeline_class in pipelines.items():

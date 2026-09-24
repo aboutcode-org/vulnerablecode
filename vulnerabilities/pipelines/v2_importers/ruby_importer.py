@@ -202,8 +202,6 @@ def get_aliases(record) -> [str]:
     aliases = []
     if record.get("cve"):
         aliases.append("CVE-{}".format(record.get("cve")))
-    if record.get("osvdb"):
-        aliases.append("OSV-{}".format(record.get("osvdb")))
     if record.get("ghsa"):
         aliases.append("GHSA-{}".format(record.get("ghsa")))
     return aliases

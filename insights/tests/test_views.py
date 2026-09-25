@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from insights.models import DailySnapshot
-from vulnerabilities.models import PackageV2
+from vulnerabilities.models import AdvisoryV2, AdvisoryWeakness, PackageV2
 
 
 class TestInsightsViews(TestCase):
@@ -43,3 +43,27 @@ class TestInsightsViews(TestCase):
         response = self.client.get("/insights/severity_panel/?q=pkg:pypi/does_not_exist")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["search_error"], "No data available for this query.")
+
+    def test_cwe_advisories(self):
+        weakness = AdvisoryWeakness.objects.create(cwe_id=200)
+
+        advisory = AdvisoryV2.objects.create(
+          datasource_id="test-datasource",
+          pipeline_id="test-pipeline",
+          advisory_id="TEST-200",
+          avid="test-advisory-200",
+          unique_content_id="test-content-200",
+          url="https://example.com/test-advisory-200",
+          summary="Test advisory for CWE-200",
+          is_latest=True,
+          )
+        advisory.weaknesses.add(weakness)
+
+        response = self.client.get("/insights/cwe/200/advisories/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["advisories"]), 1)
+        self.assertEqual(
+            response.json()["advisories"][0]["avid"],
+            "test-advisory-200",
+        )

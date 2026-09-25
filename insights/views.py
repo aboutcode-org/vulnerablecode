@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 from django.db.models import Count
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 
@@ -59,6 +60,27 @@ def _cwe_search(search_query):
         error = "No packages found for this query."
 
     return {"pkg-cwe-bar": chart_data}, error
+
+def cwe_advisories(request, cwe_id):
+    """Return the latest advisories associated with a CWE."""
+    advisories = (
+        AdvisoryV2.objects.filter(
+            weaknesses__cwe_id=cwe_id,
+            is_latest=True,
+        )
+        .distinct()
+    )
+
+    data = [
+        {
+            "avid": advisory.avid,
+            "url": advisory.get_absolute_url(),
+            "summary": advisory.summary,
+        }
+        for advisory in advisories
+    ]
+
+    return JsonResponse({"advisories": data})
 
 
 def insights_dashboard(request, panel_id=None):

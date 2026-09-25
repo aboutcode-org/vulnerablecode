@@ -60,20 +60,65 @@ export const renderers = {
         bb.generate(bbConfig);
     },
 
-    colored_bar(id, config) {
-        const monoColor = config.color || getCssVar("--bulma-link");
-        bb.generate({
-            bindto: `#chart-${id}`,
-            data: { x: "x", columns: config.columns, type: "bar", color: () => monoColor },
-            axis: {
-                rotated: true,
-                x: { type: "category", label: { text: config.x_label || "CWE", position: "outer-middle" } },
-                y: { label: { text: config.y_label || "Advisories", position: "outer-center" }, tick: { format: formatWholeNumbersOnly } }
-            },
-            tooltip: { format: { title: x => config.full_labels?.[x] || config.columns[0][x + 1], value: val => val.toLocaleString() } },
-            legend: { show: false }
+   colored_bar(id, config) {
+    const chartContainer = document.getElementById(`chart-${id}`);
+    if (!chartContainer) return;
+
+    const labels = config.columns[0].slice(1);
+    const values = config.columns[1].slice(1);
+    const monoColor = config.color || getCssVar("--bulma-link");
+
+    chartContainer.innerHTML = "";
+
+    labels.forEach((label, index) => {
+        const row = document.createElement("div");
+        row.style.marginBottom = "12px";
+        row.style.cursor = "pointer";
+
+        const title = document.createElement("div");
+        title.textContent =
+            config.full_labels?.[index] || label;
+
+        const bar = document.createElement("div");
+        bar.style.height = "28px";
+        bar.style.width = `${Math.max(values[index] * 10, 20)}px`;
+        bar.style.maxWidth = "100%";
+        bar.style.backgroundColor = monoColor;
+        bar.style.borderRadius = "4px";
+        bar.style.marginTop = "4px";
+        bar.textContent = values[index].toLocaleString();
+        bar.style.color = "white";
+        bar.style.paddingLeft = "8px";
+        bar.style.lineHeight = "28px";
+
+        row.appendChild(title);
+        row.appendChild(bar);
+
+        row.addEventListener("click", async () => {
+            const cweId = label.replace("CWE-", "");
+
+            try {
+                const response = await fetch(
+                    `/insights/cwe/${cweId}/advisories/`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch advisories");
+                }
+
+                const data = await response.json();
+
+                showCweAdvisories(label, data.advisories);
+            } catch (error) {
+                console.error("Error loading CWE advisories:", error);
+                showCweAdvisories(label, []);
+            }
         });
-    },
+
+        chartContainer.appendChild(row);
+    });
+},
+
 
     scatter(id, config) {
         const [, ...buckets] = config.columns[0];
@@ -146,3 +191,76 @@ export const renderers = {
         });
     }
 };
+
+function showCweAdvisories(cwe, advisories) {
+    let modal = document.getElementById("cwe-advisories-modal");
+
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "cwe-advisories-modal";
+        modal.className = "modal";
+
+        modal.innerHTML = `
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title" id="cwe-advisories-title"></p>
+                    <button class="delete" aria-label="close"></button>
+                </header>
+
+                <section class="modal-card-body" id="cwe-advisories-body">
+                </section>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal.querySelector(".modal-background").addEventListener(
+            "click",
+            () => modal.classList.remove("is-active")
+        );
+
+        modal.querySelector(".delete").addEventListener(
+            "click",
+            () => modal.classList.remove("is-active")
+        );
+    }
+
+    document.getElementById("cwe-advisories-title").textContent =
+        `${cwe} Advisories`;
+
+    const body = document.getElementById("cwe-advisories-body");
+
+    if (!advisories.length) {
+        body.innerHTML = `
+            <p class="has-text-grey">
+                No advisories found for ${cwe}.
+            </p>
+        `;
+    } else {
+        body.innerHTML = `
+            <div class="content">
+                <p>
+                    <strong>${advisories.length}</strong>
+                    advisories associated with ${cwe}
+                </p>
+                <ul>
+                    ${advisories.map(advisory => `
+                        <li>
+                            <a href="${advisory.url}" target="_blank">
+                                ${advisory.avid}
+                            </a>
+                            ${
+                                advisory.summary
+                                    ? `<p class="has-text-grey">${advisory.summary}</p>`
+                                    : ""
+                            }
+                        </li>
+                    `).join("")}
+                </ul>
+            </div>
+        `;
+    }
+
+    modal.classList.add("is-active");
+}

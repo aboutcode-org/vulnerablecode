@@ -13,5 +13,10 @@ from insights import views
 
 urlpatterns = [
     path("", views.insights_dashboard, name="insights-dashboard"),
+    path(
+        "cwe/<int:cwe_id>/advisories/",
+        views.cwe_advisories,
+        name="cwe_advisories",
+    ),
     path("<str:panel_id>/", views.insights_dashboard, name="insights-panel"),
 ]

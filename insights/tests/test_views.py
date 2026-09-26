@@ -2,7 +2,9 @@ from django.test import TestCase
 from django.urls import reverse
 
 from insights.models import DailySnapshot
-from vulnerabilities.models import AdvisoryV2, AdvisoryWeakness, PackageV2
+from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import AdvisoryWeakness
+from vulnerabilities.models import PackageV2
 
 
 class TestInsightsViews(TestCase):

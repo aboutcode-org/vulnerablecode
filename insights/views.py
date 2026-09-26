@@ -61,15 +61,13 @@ def _cwe_search(search_query):
 
     return {"pkg-cwe-bar": chart_data}, error
 
+
 def cwe_advisories(request, cwe_id):
     """Return the latest advisories associated with a CWE."""
-    advisories = (
-        AdvisoryV2.objects.filter(
-            weaknesses__cwe_id=cwe_id,
-            is_latest=True,
-        )
-        .distinct()
-    )
+    advisories = AdvisoryV2.objects.filter(
+        weaknesses__cwe_id=cwe_id,
+        is_latest=True,
+    ).distinct()
 
     data = [
         {

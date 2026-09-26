@@ -23,8 +23,6 @@ from vulnerabilities.utils import normalize_list
 
 @transaction.atomic
 def delete_and_save_advisory_set(groups, package, relation=None):
-    print(f"Grouping advisories for package: {package.purl}")
-
     AdvisorySet.objects.filter(
         package=package,
         relation_type=relation,
@@ -101,8 +99,6 @@ def delete_and_save_advisory_set(groups, package, relation=None):
             batch_size=10000,
         )
 
-    print(f"Successfully saved advisory sets for package: {package.purl}")
-
 
 def group_advisory_for_package(package, logger=None):
     """
@@ -133,7 +129,6 @@ def group_advisory_for_package(package, logger=None):
         group_single_package_with_provided_advisories(
             package, affecting_advisories, fixed_by_advisories
         )
-        logger(f"Successfully rebuilt advisory sets for package {package.purl}")
     except Exception as e:
         if logger:
             logger(f"Failed rebuilding advisory sets for package {package.purl}: {e!r}")

@@ -23,6 +23,11 @@ Advisory To-Dos
     .column {
         word-break: break-word;
     }
+
+    .select.is-solid-info::after {
+        border-color: white !important;
+    }
+
 </style>
 {% endblock %}
 
@@ -40,21 +45,43 @@ Advisory To-Dos
             <form method="get" class="box px-6 mx-0">
 
                 <div class="field has-addons">
-                    <div class="control is-expanded has-icons-right">
+
+                    <div class="control">
+                        <div class="select is-solid-info">
+                            <select id="search-mode" class="has-background-info has-text-white border-0">
+                                <option value="search" class="has-background-white has-text-black">Search</option>
+                                <option value="lookup" class="has-background-white has-text-black">Lookup</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control is-expanded has-icons-right" id="search-container">
                         {{ form.search }}
 
                         {% if form.search.value %}
-                        <a href="?{% querystring request search='' %}"
-                        class="icon is-right"
-                        style="pointer-events: auto; cursor: pointer;">
-                            ✕
-                        </a>
+                            <a href="?{% querystring request search='' avid='' %}"
+                            class="icon is-right"
+                            style="pointer-events: auto; cursor: pointer;">
+                                <i class="fa fa-close" style="color:grey"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="control is-expanded has-icons-right" id="lookup-container">
+                        {{ form.avid }}
+
+                        {% if form.avid.value %}
+                            <a href="?{% querystring request search='' avid='' %}"
+                            class="icon is-right"
+                            style="pointer-events: auto; cursor: pointer;">
+                                <i class="fa fa-close" style="color:gray"></i>
+                            </a>
                         {% endif %}
                     </div>
 
                     <div class="control">
                         <button type="submit" class="button is-info">
-                            <i class="fa fa-search mx-1"></i>
+                            <i class="fa fa-arrow-right mx-1"></i>
                         </button>
                     </div>
                 </div>
@@ -80,6 +107,7 @@ Advisory To-Dos
                 <th colspan="4">
                     <form method="get">
                         <input type="hidden" name="search" value="{{ form.search.value|default:'' }}">
+                        <input type="hidden" name="avid" value="{{ form.avid.value|default:'' }}">
 
                         <div class="columns is-vcentered px-1">
                             <div class="column has-text-left" style="flex: 0 0 20%;"></div>
@@ -169,3 +197,39 @@ Advisory To-Dos
 </div>
 {% endblock %}
 
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const mode = document.getElementById('search-mode');
+        const searchContainer = document.getElementById('search-container');
+        const lookupContainer = document.getElementById('lookup-container');
+        const params = new URLSearchParams(window.location.search);
+
+        const search = params.get('search');
+        const avid = params.get('avid');
+
+        if (search && search.trim() !== '') {
+            mode.value = 'search';
+        } else if (avid && avid.trim() !== '') {
+            mode.value = 'lookup';
+        }
+
+        function updateMode() {
+            if (mode.value === 'lookup') {
+                searchContainer.style.display = 'none';
+                lookupContainer.style.display = '';
+                searchContainer.querySelector('input').value = '';
+            } else {
+                searchContainer.style.display = '';
+                lookupContainer.style.display = 'none';
+                lookupContainer.querySelector('input').value = '';
+            }
+        }
+
+        mode.addEventListener('change', updateMode);
+        updateMode();
+    });
+</script>
+
+{% endblock %}

@@ -56,6 +56,14 @@ def test_latest_for_avid_returns_latest_by_date_collected(
 
 
 @pytest.mark.django_db
+def test_latest_for_avid_returns_none_when_advisory_does_not_exist(django_assert_num_queries):
+    with django_assert_num_queries(1):
+        result = AdvisoryV2.objects.latest_for_avid("pysec/PYSEC-3000-0")
+
+    assert result is None
+
+
+@pytest.mark.django_db
 def test_latest_for_avid_tie_breaks_by_id(advisory_factory, django_assert_num_queries):
     avid = "source/ADV-2"
 

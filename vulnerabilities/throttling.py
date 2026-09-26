@@ -10,7 +10,6 @@
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework.exceptions import Throttled
 from rest_framework.throttling import UserRateThrottle
-from rest_framework.views import exception_handler
 
 
 class PermissionBasedUserRateThrottle(UserRateThrottle):
@@ -68,6 +67,7 @@ def throttled_exception_handler(exception, context):
     """
     Return this response whenever a request has been throttled
     """
+    from rest_framework.views import exception_handler
 
     response = exception_handler(exception, context)
 

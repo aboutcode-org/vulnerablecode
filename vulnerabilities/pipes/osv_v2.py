@@ -100,6 +100,12 @@ def parse_advisory_data_v3(
         affected_constraints = []
         fixed_constraints = []
         for r in affected_pkg.get("ranges") or []:
+            db_specific_explicit_last_known = get_last_known_affected_version(
+                affected_pkg=affected_pkg,
+                raw_id=advisory_id,
+                supported_ecosystem=purl.type,
+            )
+
             (
                 affected_constraint,
                 fixed_constraint,
@@ -109,6 +115,7 @@ def parse_advisory_data_v3(
                 ranges=r,
                 raw_id=advisory_id,
                 supported_ecosystem=purl.type,
+                db_specific_explicit_last_known=db_specific_explicit_last_known,
             )
             if affected_constraint:
                 affected_constraints.extend(affected_constraint)
@@ -166,15 +173,7 @@ def parse_advisory_data_v3(
             supported_ecosystem=purl.type,
         )
 
-        explicit_last_known = get_last_known_affected_range(
-            affected_pkg=affected_pkg,
-            raw_id=advisory_id,
-            supported_ecosystem=purl.type,
-        )
-
-        final_affected_range = (
-            explicit_affected_range or explicit_last_known or affected_version_range
-        )
+        final_affected_range = explicit_affected_range or affected_version_range
 
         if (
             fixed_version_range
@@ -396,7 +395,7 @@ def get_explicit_affected_range(affected_pkg, raw_id, supported_ecosystem):
     return version_range_class(constraints=constraints)
 
 
-def get_last_known_affected_range(affected_pkg, raw_id, supported_ecosystem):
+def get_last_known_affected_version(affected_pkg, raw_id, supported_ecosystem):
     """
     Return the last_known_affected_version_range from the database_specific
     """
@@ -410,7 +409,7 @@ def get_last_known_affected_range(affected_pkg, raw_id, supported_ecosystem):
         affected_version_range = build_range_from_github_advisory_constraint(
             supported_ecosystem, last_known_value
         )
-        return affected_version_range
+        return affected_version_range.constraints[0].version
 
     except Exception as e:
         logger.error(
@@ -420,7 +419,9 @@ def get_last_known_affected_range(affected_pkg, raw_id, supported_ecosystem):
         return
 
 
-def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
+def get_version_ranges_constraints(
+    ranges, raw_id, supported_ecosystem, db_specific_explicit_last_known=None
+):
     """
     Return a tuple containing lists of affected constraints, fixed constraints,
     introduced commits, and fixed commits
@@ -485,7 +486,14 @@ def get_version_ranges_constraints(ranges, raw_id, supported_ecosystem):
                 affected_constraints.append(constraint)
 
             elif event_type == "fixed":
+                # If database specific last known version is available then it's assumed that such last known
+                # version is applicable to all ranges of current affected block.
                 affected_constraint = VersionConstraint(comparator="<", version=v_obj)
+                if db_specific_explicit_last_known:
+                    affected_constraint = VersionConstraint(
+                        comparator="<=", version=db_specific_explicit_last_known
+                    )
+
                 affected_constraints.append(affected_constraint)
 
                 fixed_constraint = VersionConstraint(comparator="=", version=v_obj)

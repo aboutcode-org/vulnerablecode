@@ -30,8 +30,8 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipes import extractcode_utils
 from vulnerabilities.severity_systems import REDHAT_AGGREGATE
+from vulnerabilities.utils import get_item
 from vulnerabilities.utils import load_json
-from vulntotal import vulntotal_utils
 
 
 class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
@@ -135,7 +135,7 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 )
             )
 
-        impacts = get_item(advisory, "product_tree", "branches", 0, "branches", default=[])
+        impacts = get_item(advisory, "product_tree", "branches", 0, "branches") or []
         for impact in impacts:
             if impact["category"] == "product_family":
                 continue
@@ -145,7 +145,6 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     "product",
                     "product_identification_helper",
                     "purl",
-                    default=None,
                 ):
                     if not purl.startswith("pkg:rpm/"):
                         continue
@@ -188,11 +187,3 @@ class RedHatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def on_failure(self):
         self.clean_download()
-
-
-def get_item(entity, *attributes, default=None):
-    try:
-        result = vulntotal_utils.get_item(entity, *attributes)
-    except (KeyError, IndexError, TypeError) as e:
-        result = default
-    return result

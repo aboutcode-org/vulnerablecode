@@ -2009,7 +2009,6 @@ class PipelineRun(models.Model):
 
     created_date = models.DateTimeField(
         auto_now_add=True,
-        db_index=True,
     )
 
     vulnerablecode_version = models.CharField(
@@ -2926,7 +2925,10 @@ class PackageCommitPatch(models.Model):
 
 class AdvisoryV2QuerySet(BaseQuerySet):
     def latest_for_avid(self, avid: str):
-        return self.get(avid=avid, is_latest=True)
+        try:
+            return self.get(avid=avid, is_latest=True)
+        except self.model.DoesNotExist:
+            return None
 
     def latest_per_avid(self):
         return self.filter(is_latest=True)
@@ -3211,6 +3213,20 @@ class AdvisoryV2(models.Model):
         Patch,
         related_name="advisories",
         help_text="A list of patches associated with this advisory.",
+    )
+
+    resolves_todos = models.ManyToManyField(
+        AdvisoryToDoV2,
+        related_name="resolved_in_advisories",
+        help_text="A list of Advisory ToDos resolved by this advisory.",
+    )
+
+    is_curation = models.BooleanField(
+        default=False,
+        blank=False,
+        null=False,
+        db_index=True,
+        help_text="Indicates whether this is a curation advisory.",
     )
 
     date_published = models.DateTimeField(
@@ -3908,14 +3924,12 @@ class ImpactedPackageAffecting(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True,
-        db_index=True,
     )
 
     class Meta:
         unique_together = ("impacted_package", "package")
         indexes = [
             models.Index(fields=["package", "impacted_package"]),
-            models.Index(fields=["impacted_package", "package"]),
         ]
 
 
@@ -3931,14 +3945,12 @@ class ImpactedPackageFixedBy(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True,
-        db_index=True,
     )
 
     class Meta:
         unique_together = ("impacted_package", "package")
         indexes = [
             models.Index(fields=["package", "impacted_package"]),
-            models.Index(fields=["impacted_package", "package"]),
         ]
 
 

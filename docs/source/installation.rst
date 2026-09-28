@@ -90,7 +90,65 @@ to run on a different port than 8000.
 .. tip::
 
     Set ``STAGING=False`` in ``.env`` file to disable the staging environment warning.
+Windows installation with Docker
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Windows users should run VulnerableCode with Docker Desktop. Native Windows
+installation is not supported.
+
+Install and start Docker Desktop, then open PowerShell and clone the repository::
+
+    git clone https://github.com/aboutcode-org/vulnerablecode.git
+    cd vulnerablecode
+
+Create the configuration directory and environment file using PowerShell. The
+following commands generate secure values for both required settings::
+
+    New-Item -ItemType Directory -Force .\vulnerablecode-config
+    $secretKeyBytes = New-Object byte[] 50
+    $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+    $rng.GetBytes($secretKeyBytes)
+    $secretKey = [Convert]::ToBase64String($secretKeyBytes)
+
+    $altchaKeyBytes = New-Object byte[] 32
+    $rng.GetBytes($altchaKeyBytes)
+    $altchaHmacKey = -join ($altchaKeyBytes | ForEach-Object { $_.ToString("x2") })
+    $rng.Dispose()
+
+    @"
+    SECRET_KEY="$secretKey"
+    ALTCHA_HMAC_KEY="$altchaHmacKey"
+    "@ | Set-Content .\vulnerablecode-config\.env
+
+Create ``docker-compose.override.yml`` with the configuration mount for the
+application, scheduler, and both RQ workers::
+
+        services:
+            vulnerablecode:
+                volumes:
+                    - .\vulnerablecode-config:/etc/vulnerablecode/
+            vulnerablecode_scheduler:
+                volumes:
+                    - .\vulnerablecode-config:/etc/vulnerablecode/
+            vulnerablecode_rqworker:
+                volumes:
+                    - .\vulnerablecode-config:/etc/vulnerablecode/
+            vulnerablecode_rqworker_high:
+                volumes:
+                    - .\vulnerablecode-config:/etc/vulnerablecode/
+
+Start and check the services::
+
+    docker compose up -d
+    docker compose ps
+
+VulnerableCode should then be available at::
+
+    http://localhost
+
+To stop the services::
+
+    docker compose down
 
 .. _local_development_installation:
 
@@ -104,9 +162,6 @@ Supported Platforms
 
     #. **Debian-based** Linux distributions
     #. **macOS** 12.1 and up
-
-.. warning::
-     On **Windows** VulnerableCode can **only** :ref:`run_with_docker` and is not supported.
 
 Pre-installation Checklist
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

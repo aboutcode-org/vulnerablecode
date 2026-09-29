@@ -1,9 +1,27 @@
 Release notes
 =============
 
-Version v40.0.2
+Version v40.1.0
 ---------------------
-- Update VulnerableCode documentation for advisories
+- Add support for CWE weakness curation https://github.com/aboutcode-org/vulnerablecode/pull/2380
+- Update VulnerableCode documentation for advisories https://github.com/aboutcode-org/vulnerablecode/pull/2374
+- fix: disable ALTCHA session validation by default https://github.com/aboutcode-org/vulnerablecode/pull/2385
+- Add support for extra mitigation curation https://github.com/aboutcode-org/vulnerablecode/pull/2386
+- Fix Firefox table header overflow and button alignment  https://github.com/aboutcode-org/vulnerablecode/pull/2395
+- fedcode-next: Documentation on how to use the new curation feature https://github.com/aboutcode-org/vulnerablecode/pull/2383
+- Add schema for federated advisory data  https://github.com/aboutcode-org/vulnerablecode/pull/2401
+- fix: include schema doc in toctree https://github.com/aboutcode-org/vulnerablecode/pull/2402
+- test: validate advisory federation against latest schema https://github.com/aboutcode-org/vulnerablecode/pull/2403
+- Move Advisory Curation to "Explanations" section https://github.com/aboutcode-org/vulnerablecode/pull/2404
+- Add support for userAgent in swagger https://github.com/aboutcode-org/vulnerablecode/pull/2377
+- Expose advisory todo count and curating advisories in API response https://github.com/aboutcode-org/vulnerablecode/pull/2406
+- feat: support advisory todo lookup using AVID https://github.com/aboutcode-org/vulnerablecode/pull/2415
+- fix: return 404 for unknown advisory IDs https://github.com/aboutcode-org/vulnerablecode/pull/2397
+- Do not ignore introduced version when considering db specific field https://github.com/aboutcode-org/vulnerablecode/pull/2425
+- chore: bump virtualenv to v21.7.8 https://github.com/aboutcode-org/vulnerablecode/pull/2428
+- Remove duplicate and unused indexes https://github.com/aboutcode-org/vulnerablecode/pull/2432
+- Add workflow to publish VulnerableCode docker image https://github.com/aboutcode-org/vulnerablecode/pull/2436
+- Refresh stale and missing pipeline jobs https://github.com/aboutcode-org/vulnerablecode/pull/2449
 
 
 Version v40.0.1

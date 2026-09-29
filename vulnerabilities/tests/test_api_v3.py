@@ -846,7 +846,13 @@ class APIV3TestCaseCuratedAdvisory(APITestCase):
         self.assertEqual(affected_by_vulnerabilities["is_curation"], True)
         self.assertEqual(
             affected_by_vulnerabilities["curating_advisories"],
-            ["http://testserver/advisories/ghsa/GHSA-4321"],
+            [
+                {
+                    "advisory_id": "GHSA-4321",
+                    "advisory_uid": "ghsa/GHSA-4321",
+                    "resource_url": "http://testserver/advisories/ghsa/GHSA-4321",
+                }
+            ],
         )
 
     def test_get_curating_advisories_in_affected_by_advisory_endpoint(self):
@@ -867,7 +873,14 @@ class APIV3TestCaseCuratedAdvisory(APITestCase):
 
         self.assertEqual(results["is_curation"], True)
         self.assertEqual(
-            results["curating_advisories"], ["http://testserver/advisories/ghsa/GHSA-4321"]
+            results["curating_advisories"],
+            [
+                {
+                    "advisory_id": "GHSA-4321",
+                    "advisory_uid": "ghsa/GHSA-4321",
+                    "resource_url": "http://testserver/advisories/ghsa/GHSA-4321",
+                }
+            ],
         )
 
     def test_get_curating_advisories_in_advisory_endpoint(self):

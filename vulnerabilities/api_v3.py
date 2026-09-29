@@ -156,15 +156,20 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
 
     def get_curating_advisories(self, obj):
         request = self.context.get("request")
-        return [
-            reverse(
-                "advisory_details",
-                kwargs={"avid": related_advisory.avid},
-                request=request,
-            )
+        curating_advisories = {
+            related_advisory.avid: {
+                "advisory_uid": related_advisory.avid,
+                "advisory_id": related_advisory.advisory_id.split("/")[-1],
+                "resource_url": reverse(
+                    "advisory_details",
+                    kwargs={"avid": related_advisory.avid},
+                    request=request,
+                ),
+            }
             for todo in obj.resolves_todos.all()
             for related_advisory in todo.advisories.all()
-        ]
+        }
+        return list(curating_advisories.values())
 
     class Meta:
         model = AdvisoryV2
@@ -474,7 +479,7 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
                     queryset=AdvisoryToDoV2.objects.prefetch_related(
                         Prefetch(
                             "advisories",
-                            queryset=AdvisoryV2.objects.only("avid"),
+                            queryset=AdvisoryV2.objects.only("avid", "advisory_id"),
                         )
                     ),
                 ),
@@ -512,7 +517,7 @@ class PackageAdvisoriesViewSet(viewsets.ReadOnlyModelViewSet):
                     queryset=AdvisoryToDoV2.objects.prefetch_related(
                         Prefetch(
                             "advisories",
-                            queryset=AdvisoryV2.objects.only("avid"),
+                            queryset=AdvisoryV2.objects.only("avid", "advisory_id"),
                         )
                     ),
                 ),
@@ -682,7 +687,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                 queryset=AdvisoryToDoV2.objects.prefetch_related(
                     Prefetch(
                         "advisories",
-                        queryset=AdvisoryV2.objects.only("avid"),
+                        queryset=AdvisoryV2.objects.only("avid", "advisory_id"),
                     )
                 ),
             ),
@@ -818,11 +823,15 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
 
             aliases = [a for a in adv._aliases_cache if a != identifier]
 
-            curating_advisories = [
-                f"{base_url}{related_advisory.get_absolute_url()}"
+            curating_advisories = {
+                related_advisory.avid: {
+                    "advisory_uid": related_advisory.avid,
+                    "advisory_id": related_advisory.advisory_id.split("/")[-1],
+                    "resource_url": f"{base_url}{related_advisory.get_absolute_url()}",
+                }
                 for todo in primary.resolves_todos.all()
                 for related_advisory in todo.advisories.all()
-            ]
+            }
 
             resource_url = None
             advisory_url = primary.get_absolute_url()
@@ -852,7 +861,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                     "resource_url": resource_url,
                     "todo_count": adv.primary_adv_todo_count,
                     "is_curation": primary.is_curation,
-                    "curating_advisories": curating_advisories,
+                    "curating_advisories": list(curating_advisories.values()),
                 }
             )
 
@@ -922,7 +931,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                 queryset=AdvisoryToDoV2.objects.prefetch_related(
                     Prefetch(
                         "advisories",
-                        queryset=AdvisoryV2.objects.only("avid"),
+                        queryset=AdvisoryV2.objects.only("avid", "advisory_id"),
                     )
                 ),
             ),
@@ -950,11 +959,15 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
             identifier = advisory.advisory_id.split("/")[-1]
 
             aliases = [alias.alias for alias in advisory.aliases.all() if alias.alias != identifier]
-            curating_advisories = [
-                f"{base_url}{related_advisory.get_absolute_url()}"
+            curating_advisories = {
+                related_advisory.avid: {
+                    "advisory_uid": related_advisory.avid,
+                    "advisory_id": related_advisory.advisory_id.split("/")[-1],
+                    "resource_url": f"{base_url}{related_advisory.get_absolute_url()}",
+                }
                 for todo in advisory.resolves_todos.all()
                 for related_advisory in todo.advisories.all()
-            ]
+            }
 
             resource_url = None
             advisory_url = advisory.get_absolute_url()
@@ -986,7 +999,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                     "resource_url": resource_url,
                     "todo_count": advisory.todo_count,
                     "is_curation": advisory.is_curation,
-                    "curating_advisories": curating_advisories,
+                    "curating_advisories": list(curating_advisories.values()),
                 }
             )
 

@@ -397,7 +397,8 @@ def get_explicit_affected_range(affected_pkg, raw_id, supported_ecosystem):
 
 def get_last_known_affected_version(affected_pkg, raw_id, supported_ecosystem):
     """
-    Return the last_known_affected_version_range from the database_specific
+    Return the VersionConstraint parsed from the ``last_known_affected_version_range``
+    in the database_specific data, or None.
     """
     database_specific = affected_pkg.get("database_specific") or {}
     last_known_value = database_specific.get("last_known_affected_version_range")
@@ -409,7 +410,7 @@ def get_last_known_affected_version(affected_pkg, raw_id, supported_ecosystem):
         affected_version_range = build_range_from_github_advisory_constraint(
             supported_ecosystem, last_known_value
         )
-        return affected_version_range.constraints[0].version
+        return affected_version_range.constraints[0]
 
     except Exception as e:
         logger.error(
@@ -490,9 +491,10 @@ def get_version_ranges_constraints(
                 # version is applicable to all ranges of current affected block.
                 affected_constraint = VersionConstraint(comparator="<", version=v_obj)
                 if db_specific_explicit_last_known:
-                    affected_constraint = VersionConstraint(
-                        comparator="<=", version=db_specific_explicit_last_known
-                    )
+                    # Keep the comparator GitHub published. It is usually "<=" but a
+                    # strict "<" happens, and rewriting it marks one extra version
+                    # affected that GitHub says is not.
+                    affected_constraint = db_specific_explicit_last_known
 
                 affected_constraints.append(affected_constraint)
 

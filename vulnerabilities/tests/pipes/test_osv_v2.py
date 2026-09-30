@@ -15,10 +15,12 @@ import saneyaml
 from univers.version_constraint import VersionConstraint
 from univers.version_range import MavenVersionRange
 from univers.version_range import PypiVersionRange
+from univers.versions import ComposerVersion
 from univers.versions import MavenVersion
 from univers.versions import PypiVersion
 
 from vulnerabilities.pipes.osv_v2 import get_explicit_affected_range
+from vulnerabilities.pipes.osv_v2 import get_last_known_affected_version
 from vulnerabilities.pipes.osv_v2 import get_version_ranges_constraints
 from vulnerabilities.pipes.osv_v2 import parse_advisory_data_v3
 from vulnerabilities.tests import util_tests
@@ -76,6 +78,41 @@ def test_get_version_ranges_constraints():
         [],
         [],
     )
+
+
+def test_get_last_known_affected_version_keeps_the_comparator():
+    affected_pkg = {
+        "database_specific": {"last_known_affected_version_range": "< 5.5.5"},
+    }
+    assert get_last_known_affected_version(
+        affected_pkg=affected_pkg,
+        raw_id="GHSA-x684-96hh-833x",
+        supported_ecosystem="composer",
+    ) == VersionConstraint(comparator="<", version=ComposerVersion(string="5.5.5"))
+
+    affected_pkg["database_specific"]["last_known_affected_version_range"] = "<= 5.5.5"
+    assert get_last_known_affected_version(
+        affected_pkg=affected_pkg,
+        raw_id="GHSA-x684-96hh-833x",
+        supported_ecosystem="composer",
+    ) == VersionConstraint(comparator="<=", version=ComposerVersion(string="5.5.5"))
+
+
+def test_get_version_ranges_constraints_keeps_a_strict_last_known_bound():
+    # GitHub says "< 5.5.5", so 5.5.5 itself is not affected.
+    affected, fixed, _, _ = get_version_ranges_constraints(
+        ranges={"type": "ECOSYSTEM", "events": [{"introduced": "5.0.0-RC1"}, {"fixed": "5.5.5"}]},
+        raw_id="GHSA-x684-96hh-833x",
+        supported_ecosystem="composer",
+        db_specific_explicit_last_known=VersionConstraint(
+            comparator="<", version=ComposerVersion(string="5.5.5")
+        ),
+    )
+    assert affected == [
+        VersionConstraint(comparator=">=", version=ComposerVersion(string="5.0.0-RC1")),
+        VersionConstraint(comparator="<", version=ComposerVersion(string="5.5.5")),
+    ]
+    assert fixed == [VersionConstraint(comparator="=", version=ComposerVersion(string="5.5.5"))]
 
 
 def test_get_explicit_affected_constraints():

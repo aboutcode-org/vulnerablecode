@@ -65,7 +65,11 @@ class ArchLinuxImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         summary = record.get("type", "")
         summary = "" if summary == "unknown" else summary
 
-        for name in record["packages"]:
+        packages = record["packages"]
+        if record.get("status") == "Not affected":
+            packages = []
+
+        for name in packages:
             affected = record.get("affected")
             fixed = record.get("fixed")
 

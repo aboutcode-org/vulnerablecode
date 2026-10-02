@@ -275,7 +275,11 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
-    @extend_schema(request=PackageQuerySerializer)
+    @extend_schema(
+        operation_id="v3_packages_retrieve",
+        request=PackageQuerySerializer,
+        responses={200: PackageV3Serializer(many=True)},
+    )
     def create(self, request, *args, **kwargs):
         serializer = PackageQuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -411,7 +415,11 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
-    @extend_schema(request=AdvisoryQuerySerializer)
+    @extend_schema(
+        operation_id="v3_advisories_retrieve",
+        request=AdvisoryQuerySerializer,
+        responses={200: AdvisoryV3Serializer(many=True)},
+    )
     def create(self, request, *args, **kwargs):
         serializer = AdvisoryQuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

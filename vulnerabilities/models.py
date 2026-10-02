@@ -14,6 +14,7 @@ import uuid
 import xml.etree.ElementTree as ET
 from contextlib import suppress
 from functools import cached_property
+from inspect import cleandoc
 from itertools import groupby
 from operator import attrgetter
 from traceback import format_exc as traceback_format_exc
@@ -2073,7 +2074,7 @@ class PipelineRun(models.Model):
 
     @property
     def job(self):
-        with suppress(NoSuchJobError):
+        with suppress(redis.exceptions.ConnectionError, NoSuchJobError):
             return Job.fetch(
                 str(self.run_id),
                 connection=django_rq.get_connection(),
@@ -2218,13 +2219,11 @@ class PipelineRun(models.Model):
             job_id=str(self.run_id),
         )
         self.set_run_stopped()
+        self.delete_run_job()
 
-    def delete_run(self, delete_self=True):
+    def delete_run_job(self):
         if job := self.job:
             job.delete()
-
-        if delete_self:
-            self.delete()
 
     def delete(self, *args, **kwargs):
         """
@@ -2232,6 +2231,8 @@ class PipelineRun(models.Model):
         """
         with suppress(redis.exceptions.ConnectionError, AttributeError):
             self.stop_run()
+
+        self.delete_run_job()
 
         return super().delete(*args, **kwargs)
 
@@ -2366,16 +2367,20 @@ class PipelineSchedule(models.Model):
         from vulnerabilities.importers import IMPORTERS_REGISTRY
         from vulnerabilities.improvers import IMPROVERS_REGISTRY
         from vulnerabilities.pipelines.exporters import EXPORTERS_REGISTRY
+        from vulnerabilities.pipelines.management import MANAGEMENT_REGISTRY
 
-        pipeline_registry = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY
+        pipeline_registry = (
+            IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY | MANAGEMENT_REGISTRY
+        )
 
         return pipeline_registry[self.pipeline_id]
 
     @property
     def description(self):
         """Return the pipeline class."""
+
         if self.pipeline_class:
-            return self.pipeline_class.__doc__
+            return cleandoc(self.pipeline_class.__doc__ or "")
 
     @property
     def all_runs(self):

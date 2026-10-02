@@ -91,8 +91,9 @@ def update_pipeline_schedule():
     from vulnerabilities.improvers import IMPROVERS_REGISTRY
     from vulnerabilities.models import PipelineSchedule
     from vulnerabilities.pipelines.exporters import EXPORTERS_REGISTRY
+    from vulnerabilities.pipelines.management import MANAGEMENT_REGISTRY
 
-    pipelines = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY
+    pipelines = IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY | MANAGEMENT_REGISTRY
 
     PipelineSchedule.objects.exclude(pipeline_id__in=pipelines.keys()).delete()
     for id, pipeline_class in pipelines.items():
@@ -130,7 +131,7 @@ def mark_stale_runs():
     stale_jobs_count = stale_jobs.count()
 
     for job in stale_jobs.iterator(chunk_size=1000):
-        job.set_run_staled()
+        job.stop_run()
 
     log.info(f"Marked {stale_jobs_count} unfinished jobs as stale.")
 
@@ -150,7 +151,7 @@ def requeue_missing_jobs():
                 enqueue_run(run=job)
                 missing_jobs_count += 1
             else:
-                job.set_run_staled()
+                job.stop_run()
 
     log.info(f"Requeued {missing_jobs_count} missing jobs.")
 

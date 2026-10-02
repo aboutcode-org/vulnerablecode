@@ -28,3 +28,20 @@ class TestArchLinuxImporterPipeline(TestCase):
         pipeline.response = data
         result = [adv.to_dict() for adv in pipeline.collect_advisories()]
         util_tests.check_results_against_json(result, expected_file)
+
+    def test_not_affected_avg_has_no_affected_packages(self):
+        record = {
+            "name": "AVG-2737",
+            "packages": ["gnome-remote-desktop"],
+            "status": "Not affected",
+            "severity": "Unknown",
+            "type": "unknown",
+            "affected": "42.1-1",
+            "fixed": "42.1.1-1",
+            "ticket": None,
+            "issues": ["CVE-2022-1736"],
+            "advisories": [],
+        }
+        advisory = ArchLinuxImporterPipeline().parse_advisory(record)
+        self.assertEqual(advisory.affected_packages, [])
+        self.assertEqual(advisory.aliases, ["CVE-2022-1736"])

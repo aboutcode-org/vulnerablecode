@@ -16,6 +16,8 @@ from typing import Tuple
 
 import pytz
 import saneyaml
+from cvss.exceptions import CVSS2MalformedError
+from cvss.exceptions import CVSS3MalformedError
 from dateutil import parser as dateparser
 from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
@@ -302,23 +304,41 @@ def parse_gitlab_advisory(
     cvss_v3 = gitlab_advisory.get("cvss_v3")
     severities = []
     if cvss_v2:
+        cvss_v2_clean = cvss_v2.strip()
+        value = None
+        try:
+            value = SCORING_SYSTEMS["cvssv2"].compute(cvss_v2_clean)
+        except CVSS2MalformedError as e:
+            logger(
+                f"parse_gitlab_advisory: Invalid CVSSv2 vector {cvss_v2!r}: {e}",
+                level=logging.ERROR,
+            )
         severities.append(
             VulnerabilitySeverity(
                 system=SCORING_SYSTEMS["cvssv2"],
                 scoring_elements=cvss_v2,
-                value=None,
+                value=value,
                 url=advisory_url,
             )
         )
     if cvss_v3:
+        cvss_v3_clean = cvss_v3.strip()
         scoring_system = SCORING_SYSTEMS["cvssv3"]
-        if cvss_v3.startswith("CVSS:3.1/"):
+        if cvss_v3_clean.startswith("CVSS:3.1/"):
             scoring_system = SCORING_SYSTEMS["cvssv3.1"]
+        value = None
+        try:
+            value = scoring_system.compute(cvss_v3_clean)
+        except CVSS3MalformedError as e:
+            logger(
+                f"parse_gitlab_advisory: Invalid CVSSv3 vector {cvss_v3!r}: {e}",
+                level=logging.ERROR,
+            )
         severities.append(
             VulnerabilitySeverity(
                 system=scoring_system,
                 scoring_elements=cvss_v3,
-                value=None,
+                value=value,
                 url=advisory_url,
             )
         )

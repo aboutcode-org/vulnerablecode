@@ -52,11 +52,13 @@ class APIV3TestCase(APITestCase):
         self.advisory.save()
 
         self.package = PackageV2.objects.from_purl(purl="pkg:pypi/sample@1.0.0")
+        self.package2 = PackageV2.objects.from_purl(purl="pkg:pypi/sample@2.0.0")
         self.impact = ImpactedPackage.objects.create(
             advisory=self.advisory,
             base_purl="pkg:pypi/sample",
         )
         self.impact.affecting_packages.add(self.package)
+        self.impact.fixed_by_packages.add(self.package2)
 
         self.client = APIClient(enforce_csrf_checks=True)
 
@@ -113,6 +115,31 @@ class APIV3TestCase(APITestCase):
         pkg = response.data["results"][0]
         self.assertEqual(pkg["purl"], "pkg:pypi/sample@1.0.0")
 
+    def test_packages_post_with_details_fixing_vulnerabilities(self):
+        url = reverse("package-v3-list")
+        GroupAdvisoriesForPackages().execute()
+
+        with self.assertNumQueries(12):
+            response = self.client.post(
+                url,
+                data={
+                    "purls": ["pkg:pypi/sample@2.0.0"],
+                    "details": True,
+                },
+                format="json",
+                HTTP_USER_AGENT="VCIO_API_AGENT",
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        pkg = response.data["results"][0]
+        fixing_vulnerability = pkg["fixing_vulnerabilities"][0]
+
+        self.assertEqual(fixing_vulnerability["advisory_id"], "GHSA-1234")
+        self.assertEqual(fixing_vulnerability["advisory_uid"], "ghsa/GHSA-1234")
+        self.assertEqual(fixing_vulnerability["datasource_id"], "ghsa")
+        self.assertEqual(pkg["next_non_vulnerable_version"], "2.0.0")
+
     def test_advisories_post(self):
         url = reverse("advisory-v3-list")
 
@@ -129,6 +156,7 @@ class APIV3TestCase(APITestCase):
         advisory = response.data["results"][0]
         self.assertEqual(advisory["advisory_id"], "GHSA-1234")
         self.assertEqual(advisory["advisory_uid"], "ghsa/GHSA-1234")
+        self.assertEqual(advisory["datasource_id"], "ghsa")
 
     def test_affected_by_advisories_list(self):
         url = reverse("affected-by-advisories-list")
@@ -143,6 +171,7 @@ class APIV3TestCase(APITestCase):
         results = response.data["results"]
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["advisory_id"], "GHSA-1234")
+        self.assertEqual(results[0]["datasource_id"], "ghsa")
 
     def test_fixing_advisories_list_empty(self):
         url = reverse("fixing-advisories-list")
@@ -154,6 +183,21 @@ class APIV3TestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 0)
+
+    def test_fixing_advisories_list(self):
+        url = reverse("fixing-advisories-list")
+
+        with self.assertNumQueries(11):
+            response = self.client.get(
+                url, {"purl": "pkg:pypi/sample@2.0.0"}, HTTP_USER_AGENT="VCIO_API_AGENT"
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        results = response.data["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["advisory_id"], "GHSA-1234")
+        self.assertEqual(results[0]["datasource_id"], "ghsa")
 
     def test_packages_pagination(self):
         url = reverse("package-v3-list")
@@ -314,6 +358,7 @@ class APIV3TestCaseOneAdvisoryMultiplePackages(APITestCase):
 
 class PackageCommitPatchTests(APITestCase):
     def setUp(self):
+        self.logger = TestLogger()
         self.advisory = AdvisoryDataV2(
             advisory_id="AVID-123",
             aliases=[],
@@ -352,7 +397,12 @@ class PackageCommitPatchTests(APITestCase):
         self.anon_patcher.start()
         self.addCleanup(self.anon_patcher.stop)
 
-        self.advisory = insert_advisory_v2(self.advisory, "importer_1", print, 100)
+        self.advisory = insert_advisory_v2(
+            advisory=self.advisory,
+            pipeline_id="importer_1",
+            logger=self.logger.write,
+            datasource_id="test_source",
+        )
         self.advisory.is_latest = True
         self.advisory._all_impacts_unfurled_at = timezone.now()
         self.advisory.save()
@@ -393,6 +443,7 @@ class PackageCommitPatchTests(APITestCase):
         advisory_data = vulns[0]
 
         assert advisory_data["advisory_id"] == "AVID-123"
+        assert advisory_data["datasource_id"] == "test_source"
         assert advisory_data["introduced_in_patches"] == [
             {
                 "commit_hash": "06580c7f99c6fde7bcf18e30bdcc61f081430957",

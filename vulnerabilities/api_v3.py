@@ -171,6 +171,7 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
         fields = [
             "advisory_id",
             "advisory_uid",
+            "datasource_id",
             "url",
             "aliases",
             "summary",
@@ -392,6 +393,7 @@ class AffectedByAdvisoryV3Serializer(AdvisoryV3Serializer):
         fields = [
             "advisory_id",
             "advisory_uid",
+            "datasource_id",
             "url",
             "aliases",
             "summary",
@@ -713,6 +715,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
             "primary_advisory__avid",
             "primary_advisory__summary",
             "primary_advisory__advisory_id",
+            "primary_advisory__datasource_id",
             "primary_advisory__is_curation",
         )
     )
@@ -842,6 +845,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                 {
                     "advisory_id": identifier,
                     "advisory_uid": primary.avid,
+                    "datasource_id": primary.datasource_id,
                     "aliases": aliases,
                     "summary": primary.summary,
                     "weighted_severity": weighted_severity,
@@ -974,6 +978,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                 {
                     "advisory_id": identifier,
                     "advisory_uid": advisory.avid,
+                    "datasource_id": advisory.datasource_id,
                     "aliases": aliases,
                     "summary": advisory.summary,
                     "weighted_severity": advisory.weighted_severity,
@@ -1026,6 +1031,7 @@ def get_fixing_advisories_bulk(packages, max_advisories, base_url):
             "id",
             "package_id",
             "primary_advisory__advisory_id",
+            "primary_advisory__datasource_id",
         )
     )
 
@@ -1051,6 +1057,7 @@ def get_fixing_advisories_bulk(packages, max_advisories, base_url):
                     "advisory_id": advisory.advisory_id.split("/")[-1],
                     "resource_url": resource_url,
                     "advisory_uid": advisory.avid,
+                    "datasource_id": advisory.datasource_id,
                 }
             )
 
@@ -1114,6 +1121,7 @@ def get_fixing_advisories_bulk(packages, max_advisories, base_url):
                     "advisory_id": advisory.advisory_id.split("/")[-1],
                     "resource_url": resource_url,
                     "advisory_uid": advisory.avid,
+                    "datasource_id": advisory.datasource_id,
                 }
             )
         result[package.id] = package_result

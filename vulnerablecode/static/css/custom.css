@@ -655,3 +655,63 @@ ul.fixed_by_bullet li li li {
         box-shadow: none;
     }
 }
+
+
+/* Diff formatting for advisory history */
+
+.diff-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.diff-badge-yellow {
+    color: #856404;
+    background-color: #fff3cd;
+}
+
+.diff-badge-red {
+    color: #721c24;
+    background-color: #f8d7da;
+}
+
+.diff-badge-green {
+    color: #155724;
+    background-color: #d4edda;
+}
+
+.diff-wrap {
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.diff-max-width {
+    max-width: 600px;
+}
+
+#tab-content table div {
+    display: block !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.history-diff-collapsible {
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+}
+
+.history-diff-collapsible:not(.is-expanded):not(.no-truncate)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, white);
+    pointer-events: none;
+}
+
+.history-diff-collapsible.is-expanded {
+    max-height: none;
+}

@@ -7,154 +7,154 @@
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-devel",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-drivers-gpu",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-drivers-sound",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-docs",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-drivers-intel-sgx",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-oprofile",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-tools",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-python3-perf",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "bpftool",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-4.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-4.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       },
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "linux-aws",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<5.10.224-3.ph4",
-        "fixed_version_range": "vers:rpm/5.10.224-3.ph4",
+        "affected_version_range": "vers:rpm/<5.10.224",
+        "fixed_version_range": "vers:rpm/5.10.224",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -180,14 +180,14 @@
       {
         "package": {
           "type": "rpm",
-          "namespace": "vmware",
+          "namespace": "photon",
           "name": "aide",
           "version": "",
-          "qualifiers": "distro=photon",
+          "qualifiers": "photon=ph4",
           "subpath": ""
         },
-        "affected_version_range": "vers:rpm/<0.16.2-3.ph4",
-        "fixed_version_range": "vers:rpm/0.16.2-3.ph4",
+        "affected_version_range": "vers:rpm/<0.16.2",
+        "fixed_version_range": "vers:rpm/0.16.2",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }

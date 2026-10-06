@@ -104,21 +104,29 @@ class VmwarePhotonImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                 aff_ver = record.get("aff_ver")
                 res_ver = record.get("res_ver")
 
-                # Example PURL Format: pkg:rpm/vmware/apache-ant?distro=photon
-                purl = PackageURL(
-                    type="rpm",
-                    namespace="vmware",
-                    name=pkg_name,
-                    qualifiers={"distro": "photon"},
-                )
-
+                # In this datasource the aff_ver is either "N/A" or in the format "all versions before <version> are vulnerable"
                 ver_match = re.match(r"all versions before (.+) are vulnerable", aff_ver)
 
                 if not ver_match:
                     self.log(f"Could not extract affected version from aff_ver: {aff_ver!r}")
                     continue
 
-                aff_ver = ver_match.group(1)
+                original_aff_ver = ver_match.group(1)
+
+                qualifiers = {}
+                qualifiers["photon"] = "ph" + original_aff_ver.split(".ph")[-1]
+
+                # Example PURL Format: pkg:rpm/photon/apache-ant?photon=ph4
+                purl = PackageURL(
+                    type="rpm",
+                    namespace="photon",
+                    name=pkg_name,
+                    qualifiers=qualifiers,
+                )
+
+                # Get the version string (e.g. "4.0.0-1.ph2" -> "4.0.0")
+                aff_ver = original_aff_ver.split("-")[0]
+                res_ver = res_ver.split("-")[0]
                 affected_version_range = RpmVersionRange(
                     constraints=[
                         VersionConstraint(

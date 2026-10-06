@@ -1,8 +1,21 @@
 Release notes
 =============
 
+
+Version v40.2.0
+-----------------
+
+- Remove unused indexes from advisory model https://github.com/aboutcode-org/vulnerablecode/pull/2434
+- Add config and job to clean up old pipeline runs https://github.com/aboutcode-org/vulnerablecode/pull/2451
+- Use X-User-Agent for Swagger API requests https://github.com/aboutcode-org/vulnerablecode/pull/2459
+- Include `datasource_id` in advisory API response https://github.com/aboutcode-org/vulnerablecode/pull/2461
+- Remove unsupported retrieve endpoint from PackageAdvisoriesViewSet https://github.com/aboutcode-org/vulnerablecode/pull/2463
+- Correctly compute next runtime for pipelines https://github.com/aboutcode-org/vulnerablecode/pull/2464
+
+
 Version v40.1.0
----------------------
+-----------------
+
 - Add support for CWE weakness curation https://github.com/aboutcode-org/vulnerablecode/pull/2380
 - Update VulnerableCode documentation for advisories https://github.com/aboutcode-org/vulnerablecode/pull/2374
 - fix: disable ALTCHA session validation by default https://github.com/aboutcode-org/vulnerablecode/pull/2385

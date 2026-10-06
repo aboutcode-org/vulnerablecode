@@ -1,0 +1,452 @@
+[
+  {
+    "advisory_id": "CVE-1999-0001",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0001"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.72779",
+        "system": "epss",
+        "value": "0.00383"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0002",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0002"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.85717",
+        "system": "epss",
+        "value": "0.01328"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0003",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0003"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.92305",
+        "system": "epss",
+        "value": "0.04409"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0004",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0004"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.82687",
+        "system": "epss",
+        "value": "0.00917"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0005",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0005"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.99186",
+        "system": "epss",
+        "value": "0.91963"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0006",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0006"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.91189",
+        "system": "epss",
+        "value": "0.03341"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0007",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0007"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.54770",
+        "system": "epss",
+        "value": "0.00174"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0008",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0008"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.95650",
+        "system": "epss",
+        "value": "0.13967"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0009",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0009"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2025-01-01T00:00:00+00:00",
+        "scoring_elements": "0.94616",
+        "system": "epss",
+        "value": "0.09014"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2025/epss_scores-2025-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0001",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0001"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.78141",
+        "system": "epss",
+        "value": "0.01151"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0002",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0002"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.91975",
+        "system": "epss",
+        "value": "0.08201"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0003",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0003"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.99531",
+        "system": "epss",
+        "value": "0.89352"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0004",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0004"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.86311",
+        "system": "epss",
+        "value": "0.03037"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0005",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0005"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.94069",
+        "system": "epss",
+        "value": "0.13652"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0006",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0006"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.91996",
+        "system": "epss",
+        "value": "0.08244"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0007",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0007"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.86681",
+        "system": "epss",
+        "value": "0.03203"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0008",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0008"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.89674",
+        "system": "epss",
+        "value": "0.05208"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  },
+  {
+    "advisory_id": "CVE-1999-0009",
+    "affected_packages": [],
+    "aliases": [],
+    "date_published": null,
+    "patches": [],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://api.first.org/data/v1/epss?cve=CVE-1999-0009"
+      }
+    ],
+    "severities": [
+      {
+        "published_at": "2026-01-01T12:55:00+00:00",
+        "scoring_elements": "0.99101",
+        "system": "epss",
+        "value": "0.8048"
+      }
+    ],
+    "summary": "",
+    "url": "https://github.com/empiricalsec/epss_scores/blob/main/2026/epss_scores-2026-01-01.csv.gz",
+    "weaknesses": []
+  }
+]

@@ -20,8 +20,11 @@ from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
 from packageurl import PackageURL
+from rest_framework import mixins
 from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -496,10 +499,28 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
         return self.get_paginated_response(serializer.data)
 
 
-class PackageAdvisoriesViewSet(viewsets.ReadOnlyModelViewSet):
+class PackageAdvisoriesViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
     serializer_class = AdvisoryV3Serializer
     relation = None
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    filter_backends = []
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="purl",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Package-URL (PURL) to query.",
+                required=True,
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         purl = self.request.query_params.get("purl")

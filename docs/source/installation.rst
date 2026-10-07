@@ -90,6 +90,7 @@ to run on a different port than 8000.
 .. tip::
 
     Set ``STAGING=False`` in ``.env`` file to disable the staging environment warning.
+
 Windows installation with Docker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -101,46 +102,22 @@ Install and start Docker Desktop, then open PowerShell and clone the repository:
     git clone https://github.com/aboutcode-org/vulnerablecode.git
     cd vulnerablecode
 
-Create the configuration directory and environment file using PowerShell. The
-following commands generate secure values for both required settings::
+Create the configuration directory and an environment file using PowerShell.
+Replace the example values below with your own strong, unique secrets. Do not
+use the example values as-is::
 
     New-Item -ItemType Directory -Force .\vulnerablecode-config
-    $secretKeyBytes = New-Object byte[] 50
-    $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
-    $rng.GetBytes($secretKeyBytes)
-    $secretKey = [Convert]::ToBase64String($secretKeyBytes)
-
-    $altchaKeyBytes = New-Object byte[] 32
-    $rng.GetBytes($altchaKeyBytes)
-    $altchaHmacKey = -join ($altchaKeyBytes | ForEach-Object { $_.ToString("x2") })
-    $rng.Dispose()
-
     @"
-    SECRET_KEY="$secretKey"
-    ALTCHA_HMAC_KEY="$altchaHmacKey"
+    SECRET_KEY=replace-with-a-strong-random-secret
+    ALTCHA_HMAC_KEY=replace-with-a-32-byte-hex-value
     "@ | Set-Content .\vulnerablecode-config\.env
 
-Create ``docker-compose.override.yml`` with the configuration mount for the
-application, scheduler, and both RQ workers::
+The repository includes ``docker-compose.windows.yml`` to mount this configuration
+directory into the application, scheduler, and RQ worker containers. Start and
+check the services with::
 
-        services:
-            vulnerablecode:
-                volumes:
-                    - .\vulnerablecode-config:/etc/vulnerablecode/
-            vulnerablecode_scheduler:
-                volumes:
-                    - .\vulnerablecode-config:/etc/vulnerablecode/
-            vulnerablecode_rqworker:
-                volumes:
-                    - .\vulnerablecode-config:/etc/vulnerablecode/
-            vulnerablecode_rqworker_high:
-                volumes:
-                    - .\vulnerablecode-config:/etc/vulnerablecode/
-
-Start and check the services::
-
-    docker compose up -d
-    docker compose ps
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml ps
 
 VulnerableCode should then be available at::
 
@@ -148,7 +125,7 @@ VulnerableCode should then be available at::
 
 To stop the services::
 
-    docker compose down
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml down
 
 .. _local_development_installation:
 
@@ -162,6 +139,10 @@ Supported Platforms
 
     #. **Debian-based** Linux distributions
     #. **macOS** 12.1 and up
+
+.. warning::
+    Native Windows installation is not supported. Windows users can run
+    VulnerableCode with Docker Desktop; see :ref:`run_with_docker`.
 
 Pre-installation Checklist
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

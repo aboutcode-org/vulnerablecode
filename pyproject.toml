@@ -40,10 +40,21 @@ python_files = "*.py"
 python_classes = "Test"
 python_functions = "test"
 
+filterwarnings = [
+  "ignore:Unknown config option.*:pytest.PytestConfigWarning",
+  'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated and scheduled for removal.*:DeprecationWarning',
+  "ignore:CheckConstraint.check is deprecated in favor of `.condition`.:django.utils.deprecation.RemovedInDjango60Warning",
+]
+
 addopts = [
     "-rfExXw",
     "--strict-markers",
     "--doctest-modules",
+    # setup.py imports setuptools which is not available in the Docker runtime
+    # image. Without this, pytest (which uses python_files = "*.py") tries to
+    # collect setup.py as a test module and crashes with exit code 2.
+    "--ignore=setup.py",
+  "--ignore-glob=*/setup.py",
     # Ignore the following doctests until these files are migrated to
     # import-improve structure
     "--ignore=vulnerabilities/importers/apache_httpd.py",

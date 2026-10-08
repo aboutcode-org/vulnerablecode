@@ -91,6 +91,41 @@ to run on a different port than 8000.
 
     Set ``STAGING=False`` in ``.env`` file to disable the staging environment warning.
 
+Windows installation with Docker
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Windows users should run VulnerableCode with Docker Desktop. Native Windows
+installation is not supported.
+
+Install and start Docker Desktop, then open PowerShell and clone the repository::
+
+    git clone https://github.com/aboutcode-org/vulnerablecode.git
+    cd vulnerablecode
+
+Create the configuration directory and an environment file using PowerShell.
+Replace the example values below with your own strong, unique secrets. Do not
+use the example values as-is::
+
+    New-Item -ItemType Directory -Force .\vulnerablecode-config
+    @"
+    SECRET_KEY=replace-with-a-strong-random-secret
+    ALTCHA_HMAC_KEY=replace-with-a-32-byte-hex-value
+    "@ | Set-Content .\vulnerablecode-config\.env
+
+The repository includes ``docker-compose.windows.yml`` to mount this configuration
+directory into the application, scheduler, and RQ worker containers. Start and
+check the services with::
+
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml ps
+
+VulnerableCode should then be available at::
+
+    http://localhost
+
+To stop the services::
+
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml down
 
 .. _local_development_installation:
 
@@ -106,7 +141,8 @@ Supported Platforms
     #. **macOS** 12.1 and up
 
 .. warning::
-     On **Windows** VulnerableCode can **only** :ref:`run_with_docker` and is not supported.
+    Native Windows installation is not supported. Windows users can run
+    VulnerableCode with Docker Desktop; see :ref:`run_with_docker`.
 
 Pre-installation Checklist
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

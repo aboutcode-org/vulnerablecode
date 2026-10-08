@@ -57,6 +57,14 @@ class PackageQuerySerializer(serializers.Serializer):
     max_advisories = serializers.IntegerField(default=100, min_value=1, max_value=10000)
     reachability = serializers.BooleanField(default=False)
 
+    def validate_purls(self, purls):
+        for purl in purls:
+            try:
+                PackageURL.from_string(purl)
+            except ValueError as e:
+                raise serializers.ValidationError(str(e))
+        return purls
+
     def validate(self, data):
         if not data["purls"]:
             if data["details"] or data["ignore_qualifiers_subpath"]:

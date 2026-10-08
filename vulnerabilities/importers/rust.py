@@ -8,7 +8,9 @@
 #
 
 import asyncio
+import logging
 from itertools import chain
+from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Set
@@ -27,8 +29,19 @@ from vulnerabilities.importer import Reference
 from vulnerabilities.package_managers import CratesVersionAPI
 from vulnerabilities.utils import nearest_patched_package
 
+logger = logging.getLogger(__name__)
+
 
 class RustImporter(Importer):
+    def __init__(self, purl=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.purl = purl
+        if self.purl:
+            if self.purl.type != "cargo":
+                print(
+                    f"Warning: PURL type {self.purl.type} is not 'cargo', may not match any advisories"
+                )
+
     def __enter__(self):
         super(RustImporter, self).__enter__()
 
@@ -49,12 +62,19 @@ class RustImporter(Importer):
         asyncio.run(self.crates_api.load_api(packages))
 
     def updated_advisories(self) -> Set[AdvisoryData]:
-        return self._load_advisories(self._updated_files.union(self._added_files))
+        if not self.purl:
+            return self._load_advisories(self._updated_files.union(self._added_files))
+
+        return self._load_advisories_for_package(self.purl.name)
 
     def _load_advisories(self, files) -> Set[AdvisoryData]:
         # per @tarcieri It will always be named RUSTSEC-0000-0000.md
         # https://github.com/nexB/vulnerablecode/pull/281/files#r528899864
         files = [f for f in files if not f.endswith("-0000.md")]  # skip temporary files
+        if self.purl:
+            files = [f for f in files if f"crates/{self.purl.name}/" in f]
+            if not files:
+                return []
         packages = self.collect_packages(files)
         self.set_api(packages)
 
@@ -64,6 +84,12 @@ class RustImporter(Importer):
             for path in batch:
                 advisory = self._load_advisory(path)
                 if advisory:
+                    if (
+                        self.purl
+                        and self.purl.version
+                        and not self._advisory_affects_version(advisory)
+                    ):
+                        continue
                     advisories.append(advisory)
             yield advisories
 
@@ -132,6 +158,42 @@ class RustImporter(Importer):
             vulnerability_id=cve_id,
             references=references,
         )
+
+    def _advisory_affects_version(self, advisory: AdvisoryData) -> bool:
+        if not self.purl.version:
+            return True
+
+        version = SemverVersion(self.purl.version)
+        for affected_package in advisory.affected_packages:
+            if affected_package.package.name == self.purl.name:
+                if (
+                    affected_package.affected_version_range
+                    and version in affected_package.affected_version_range
+                ):
+                    return True
+
+        return False
+
+    def _load_advisories_for_package(self, package_name) -> Iterable[AdvisoryData]:
+        files = [
+            f
+            for f in self._added_files.union(self._updated_files)
+            if f"crates/{package_name}/" in f and f.endswith(".md") and not f.endswith("-0000.md")
+        ]
+
+        if not files:
+            logger.info(f"No advisories found for {package_name} in Rust advisory database")
+            return
+
+        self.set_api([package_name])
+
+        for path in files:
+            advisory = self._load_advisory(path)
+            if advisory:
+                # If version is specified in PURL, check if it's in the affected versions
+                if self.purl.version and not self._advisory_affects_version(advisory):
+                    continue
+                yield advisory
 
 
 def categorize_versions(

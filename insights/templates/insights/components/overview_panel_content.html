@@ -1,0 +1,48 @@
+<div class="overview-panel">
+    <!-- KPI Cards Row -->
+    <div class="columns is-multiline mb-5">
+        <div class="column is-4">
+            <div class="chart-row card-chart-row has-text-centered p-5 kpi-card">
+                <p class="card-chart-title is-size-6 has-text-grey" style="border-bottom: none;">Total Active Advisories</p>
+                <p class="title is-size-2 has-text-black mb-1" id="kpi-total-advisories">--</p>
+                <p class="is-size-7 has-text-grey" id="kpi-delta-advisories">--</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="chart-row card-chart-row has-text-centered p-5 kpi-card">
+                <p class="card-chart-title is-size-6 has-text-grey" style="border-bottom: none;">Total Packages</p>
+                <p class="title is-size-2 has-text-black mb-1" id="kpi-total-packages">--</p>
+                <p class="is-size-7 has-text-grey" id="kpi-delta-packages">--</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="chart-row card-chart-row has-text-centered p-5 kpi-card">
+                <p class="card-chart-title is-size-6 has-text-grey" style="border-bottom: none;">Data Sources</p>
+                <p class="title is-size-2 has-text-black mb-1" id="kpi-total-sources">--</p>
+                <p class="is-size-7 has-text-grey" id="kpi-delta-sources">--</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="columns is-multiline">
+        <div class="column is-12">
+            <div class="chart-row card-chart-row p-0 mb-4">
+                <div class="columns is-desktop mb-0" style="margin: 0; align-items: stretch;">
+                    <div class="column is-7" style="border-right: 1px solid #e8e8e8; padding: 1.25rem 1.5rem;">
+                        <h3 class="card-chart-title has-text-centered mb-4">{{ panel.charts.3.title }}</h3>
+                        <div class="chart-container" style="min-height: 420px;" id="chart-{{ panel.charts.3.id }}" data-chart-type="{{ panel.charts.3.chart_type }}"></div>
+                    </div>
+                    <div class="column is-5" style="padding: 1.25rem 1.5rem;">
+                        <h3 class="card-chart-title has-text-centered mb-4">{{ panel.charts.2.title }}</h3>
+                        <div class="chart-container" style="min-height: 420px;" id="chart-{{ panel.charts.2.id }}" data-chart-type="{{ panel.charts.2.chart_type }}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column is-12">
+            {% with chart=panel.charts.1 %}
+                {% include 'insights/components/chart_card.html' %}
+            {% endwith %}
+        </div>
+    </div>
+</div>

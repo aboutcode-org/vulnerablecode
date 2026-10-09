@@ -1,0 +1,75 @@
+name: Docker tests
+
+# Run the test suite inside the same python:3.12 (Debian) image used in
+# production.  The standard CI (main.yml) runs on ubuntu-latest, which can
+# diverge from the Debian-based container environment in subtle ways (e.g.
+# different glibc, locale defaults, available system libraries).  This
+# workflow catches those divergences.
+
+on:
+  push:
+    paths:
+      - "Dockerfile"
+      - ".dockerignore"
+      - "docker.env"
+      - "docker-compose.yml"
+      - "vulnerabilities/tests/test_docker.py"
+      - ".github/workflows/docker-tests.yml"
+  pull_request:
+    paths:
+      - "Dockerfile"
+      - ".dockerignore"
+      - "docker.env"
+      - "docker-compose.yml"
+      - "vulnerabilities/tests/test_docker.py"
+      - ".github/workflows/docker-tests.yml"
+  workflow_dispatch:
+
+env:
+  DB_NAME: vulnerablecode
+  DB_USER: vulnerablecode
+  DB_PASSWORD: vulnerablecode
+
+jobs:
+  docker-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t vulnerablecode-test:ci .
+
+      - name: Run Dockerfile structure and env-file tests inside the container
+        # Mount the project root so the test file can read Dockerfile and docker.env.
+        # The integration class (TestDockerBuild) is also exercised here because
+        # the Docker daemon is available on the GitHub Actions runner.
+        run: |
+          docker run --rm \
+            --network host \
+            -e VULNERABLECODE_DB_NAME=${{ env.DB_NAME }} \
+            -e VULNERABLECODE_DB_USER=${{ env.DB_USER }} \
+            -e VULNERABLECODE_DB_PASSWORD=${{ env.DB_PASSWORD }} \
+            -e VULNERABLECODE_DB_HOST=localhost \
+            -e POSTGRES_HOST=localhost \
+            -e POSTGRES_PORT=5432 \
+            -e GH_TOKEN=1 \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            vulnerablecode-test:ci \
+            python -m pytest vulnerabilities/tests/test_docker.py -v

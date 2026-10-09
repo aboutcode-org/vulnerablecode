@@ -144,6 +144,12 @@ class GentooImporter(Importer):
                 if len(info.attrib.get("range")) > 2:
                     continue
 
+            # GLSA data sometimes appends the SLOT to the version using a
+            # colon, e.g. "6.9.3:6" for a package in SLOT "6". A colon is not
+            # part of the Gentoo version syntax, so it must be stripped
+            # before the value can be parsed as a GentooVersion.
+            version = info.text.partition(":")[0]
+
             if info.tag == "unaffected":
                 # quick hack, to know whether this
                 # version lies in this range, 'e' stands for
@@ -153,14 +159,14 @@ class GentooImporter(Importer):
                 # which ('rle', 'rge', 'rgt') are ignored, because they compare
                 # 'release' not the 'version'.
                 if "e" in info.attrib["range"]:
-                    safe_versions.add(info.text)
+                    safe_versions.add(version)
                 else:
-                    affected_versions.add(info.text)
+                    affected_versions.add(version)
 
             elif info.tag == "vulnerable":
                 if "e" in info.attrib["range"]:
-                    affected_versions.add(info.text)
+                    affected_versions.add(version)
                 else:
-                    safe_versions.add(info.text)
+                    safe_versions.add(version)
 
         return safe_versions, affected_versions

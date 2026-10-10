@@ -206,3 +206,125 @@ def test_parse_gitlab_advisory_with_no_purl(monkeypatch, gitlab_advisory_yaml):
     assert isinstance(result.date_published, datetime)
     assert result.date_published.year == 2018
     assert result.affected_packages == []  # Because get_purl was mocked to return None
+
+
+def test_parse_gitlab_advisory_computes_cvss_scores(tmp_path):
+    content = {
+        "identifier": "CVE-2019-1010083",
+        "package_slug": "pypi/Flask",
+        "title": "Denial of service",
+        "description": "Denial of Service due to unexpected memory usage in the Pallets Project Flask",
+        "pubdate": "2019-07-17",
+        "affected_range": "<1.0",
+        "fixed_versions": ["1.0"],
+        "urls": ["https://nvd.nist.gov/vuln/detail/CVE-2019-1010083"],
+        "cvss_v2": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
+        "cvss_v3": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "cwe_ids": ["CWE-1035", "CWE-937"],
+        "identifiers": ["CVE-2019-1010083"],
+    }
+    advisory_path = tmp_path / "CVE-2019-1010083.yaml"
+    advisory_path.write_text(saneyaml.dump(content))
+
+    dummy_logger = lambda *args, **kwargs: None
+    result = parse_gitlab_advisory(
+        file=advisory_path,
+        base_path=advisory_path.parent,
+        gitlab_scheme_by_purl_type={"pypi": "pypi"},
+        purl_type_by_gitlab_scheme={"pypi": "pypi"},
+        logger=dummy_logger,
+    )
+
+    assert isinstance(result, AdvisoryDataV2)
+    assert len(result.severities) == 2
+
+    cvss_v2_sev = result.severities[0]
+    assert cvss_v2_sev.system.identifier == "cvssv2"
+    assert cvss_v2_sev.scoring_elements == "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+    assert cvss_v2_sev.value == "5.0"
+
+    cvss_v3_sev = result.severities[1]
+    assert cvss_v3_sev.system.identifier == "cvssv3"
+    assert cvss_v3_sev.scoring_elements == "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+    assert cvss_v3_sev.value == "7.5"
+
+
+def test_parse_gitlab_advisory_cvss_v31_scoring_system(tmp_path):
+    content = {
+        "identifier": "CVE-2023-0001",
+        "package_slug": "pypi/django",
+        "title": "Vulnerability with CVSS 3.1",
+        "description": "Test CVSS 3.1 scoring system selection and computation",
+        "pubdate": "2023-01-01",
+        "affected_range": "<4.0.0",
+        "fixed_versions": ["4.0.0"],
+        "urls": ["https://example.com/advisory"],
+        "cvss_v3": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "cwe_ids": ["CWE-79"],
+        "identifiers": ["CVE-2023-0001"],
+    }
+    advisory_path = tmp_path / "CVE-2023-0001.yaml"
+    advisory_path.write_text(saneyaml.dump(content))
+
+    dummy_logger = lambda *args, **kwargs: None
+    result = parse_gitlab_advisory(
+        file=advisory_path,
+        base_path=advisory_path.parent,
+        gitlab_scheme_by_purl_type={"pypi": "pypi"},
+        purl_type_by_gitlab_scheme={"pypi": "pypi"},
+        logger=dummy_logger,
+    )
+
+    assert isinstance(result, AdvisoryDataV2)
+    assert len(result.severities) == 1
+    cvss_v31_sev = result.severities[0]
+    assert cvss_v31_sev.system.identifier == "cvssv3.1"
+    assert cvss_v31_sev.scoring_elements == "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    assert cvss_v31_sev.value == "9.8"
+
+
+def test_parse_gitlab_advisory_malformed_cvss_vectors(tmp_path):
+    content = {
+        "identifier": "CVE-2023-0002",
+        "package_slug": "pypi/django",
+        "title": "Vulnerability with malformed vectors",
+        "description": "Test error handling for malformed CVSS vectors",
+        "pubdate": "2023-01-01",
+        "affected_range": "<4.0.0",
+        "fixed_versions": ["4.0.0"],
+        "urls": ["https://example.com/advisory"],
+        "cvss_v2": "MALFORMED_CVSS2_VECTOR",
+        "cvss_v3": "MALFORMED_CVSS3_VECTOR",
+        "cwe_ids": ["CWE-79"],
+        "identifiers": ["CVE-2023-0002"],
+    }
+    advisory_path = tmp_path / "CVE-2023-0002.yaml"
+    advisory_path.write_text(saneyaml.dump(content))
+
+    logged_errors = []
+
+    def recording_logger(msg, level=None):
+        logged_errors.append((msg, level))
+
+    result = parse_gitlab_advisory(
+        file=advisory_path,
+        base_path=advisory_path.parent,
+        gitlab_scheme_by_purl_type={"pypi": "pypi"},
+        purl_type_by_gitlab_scheme={"pypi": "pypi"},
+        logger=recording_logger,
+    )
+
+    assert isinstance(result, AdvisoryDataV2)
+    assert len(result.severities) == 2
+
+    assert result.severities[0].system.identifier == "cvssv2"
+    assert result.severities[0].scoring_elements == "MALFORMED_CVSS2_VECTOR"
+    assert result.severities[0].value == ""
+
+    assert result.severities[1].system.identifier == "cvssv3"
+    assert result.severities[1].scoring_elements == "MALFORMED_CVSS3_VECTOR"
+    assert result.severities[1].value == ""
+
+    assert len(logged_errors) == 2
+    assert any("Invalid CVSSv2 vector" in msg for msg, _ in logged_errors)
+    assert any("Invalid CVSSv3 vector" in msg for msg, _ in logged_errors)

@@ -16,6 +16,7 @@ import pytest
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
+from vulnerabilities.pipelines.v2_importers.cve_schema import parse_cve_advisory
 from vulnerabilities.pipelines.v2_importers.vulnrichment_importer import VulnrichImporterPipeline
 from vulnerabilities.severity_systems import Cvssv4ScoringSystem
 
@@ -99,9 +100,8 @@ def test_collect_advisories(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
     # Mock `vcs_response.dest_dir` to point to the temporary directory
     mock_vcs_response.dest_dir = str(mock_pathlib.parent)
 
-    # Mock `parse_cve_advisory` to return an AdvisoryData object
     with patch(
-        "vulnerabilities.pipelines.v2_importers.vulnrichment_importer.VulnrichImporterPipeline.parse_cve_advisory"
+        "vulnerabilities.pipelines.v2_importers.cve_schema.parse_cve_advisory"
     ) as mock_parse:
         mock_parse.return_value = AdvisoryDataV2(
             advisory_id="CVE-2021-1234",
@@ -109,7 +109,7 @@ def test_collect_advisories(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
             references=[ReferenceV2(url="https://example.com")],
             affected_packages=[],
             weaknesses=[],
-            url="https://example.com",
+            url="https://github.com/cisagov/vulnrichment/blob/develop/vulns/CVE-2021-1234.json",
             severities=[
                 VulnerabilitySeverity(
                     system=Cvssv4ScoringSystem(
@@ -133,7 +133,10 @@ def test_collect_advisories(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
         advisory = advisories[0]
         assert advisory.advisory_id == "CVE-2021-1234"
         assert advisory.summary == "Sample PyPI vulnerability"
-        assert advisory.url == "https://example.com"
+        assert (
+            advisory.url
+            == "https://github.com/cisagov/vulnrichment/blob/develop/vulns/CVE-2021-1234.json"
+        )
         assert len(advisory.severities) == 1
 
 
@@ -190,7 +193,7 @@ def test_parse_cve_advisory(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
 
     pipeline = VulnrichImporterPipeline()
     pipeline.clone()
-    advisory = pipeline.parse_cve_advisory(raw_data, advisory_url)
+    advisory = parse_cve_advisory(raw_data, advisory_url)
 
     assert advisory.advisory_id == "CVE-2021-1234"
     assert advisory.summary == "Sample PyPI vulnerability"
@@ -206,7 +209,7 @@ def test_collect_advisories_with_invalid_json(mock_pathlib, mock_vcs_response, m
     mock_vcs_response.dest_dir = str(mock_pathlib.parent)
 
     with patch(
-        "vulnerabilities.pipelines.v2_importers.vulnrichment_importer.VulnrichImporterPipeline.parse_cve_advisory"
+        "vulnerabilities.pipelines.v2_importers.vulnrichment_importer.parse_cve_advisory"
     ) as mock_parse:
         mock_parse.side_effect = json.JSONDecodeError("Invalid JSON", "", 0)
 

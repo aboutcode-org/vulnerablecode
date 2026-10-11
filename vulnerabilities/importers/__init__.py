@@ -52,6 +52,12 @@ from vulnerabilities.pipelines.v2_importers import ubuntu_osv_importer as ubuntu
 from vulnerabilities.pipelines.v2_importers import vulnrichment_importer as vulnrichment_importer_v2
 from vulnerabilities.pipelines.v2_importers import xen_importer as xen_importer_v2
 from vulnerabilities.utils import create_registry
+from vulnerabilities.importers.csaf import CSAFImporter
+
+IMPORTERS = [
+    # ... other importers ...
+    CSAFImporter,
+]
 
 IMPORTERS_REGISTRY = create_registry(
     [

@@ -1,0 +1,40 @@
+[
+  {
+    "advisory_id": "npm-308",
+    "aliases": [],
+    "summary": "Regular Expression Denial of Service\nDecamelize is used to convert a dash/dot/underscore/space separated string to camelCase. \n\nDecamelize uses regular expressions to evaluate a string and takes unescaped separator values, which can be used to create a denial of service attack.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "",
+          "name": "decamelize",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:npm/>=1.1.0|<=1.1.1",
+        "fixed_version_range": "vers:npm/>=1.1.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://github.com/sindresorhus/decamelize/issues/5"
+      },
+      {
+        "reference_id": "308",
+        "reference_type": "",
+        "url": "https://github.com/nodejs/security-wg/blob/main/vuln/npm/308.json"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2017-01-26T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://github.com/nodejs/security-wg/blob/main/vuln/npm/308.json"
+  }
+]

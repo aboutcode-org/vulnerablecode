@@ -9,6 +9,7 @@
 
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.pipelines.v2_importers import alpine_linux_importer as alpine_linux_importer_v2
+from vulnerabilities.pipelines.v2_importers import anchore_importer as anchore_importer_v2
 from vulnerabilities.pipelines.v2_importers import aosp_importer as aosp_importer_v2
 from vulnerabilities.pipelines.v2_importers import apache_httpd_importer as apache_httpd_v2
 from vulnerabilities.pipelines.v2_importers import apache_kafka_importer as apache_kafka_importer_v2
@@ -67,6 +68,7 @@ IMPORTERS_REGISTRY = create_registry(
         pysec_importer_v2.PyPIImporterPipeline,
         xen_importer_v2.XenImporterPipeline,
         curl_importer_v2.CurlImporterPipeline,
+        anchore_importer_v2.AnchoreImporterPipeline,
         oss_fuzz_v2.OSSFuzzImporterPipeline,
         istio_importer_v2.IstioImporterPipeline,
         postgresql_importer_v2.PostgreSQLImporterPipeline,

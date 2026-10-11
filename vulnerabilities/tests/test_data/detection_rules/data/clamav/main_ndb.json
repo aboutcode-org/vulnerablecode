@@ -1,0 +1,32 @@
+{
+  "source_url": "https://database.clamav.net/main.cvd?api-version=1",
+  "source_filename": "main.ndb",
+  "rules": [
+    {
+      "rule_metadata": {
+        "name": "Legacy.Trojan.Agent-1",
+        "line_num": 1
+      },
+      "rule_text": "Legacy.Trojan.Agent-1:0:*:dd6d70241f674d8fc13e1eb3af731a7b5c43173c1cdd75722fa556c373b65c5275d513147b070077757064080386898ae75c6fb7f717b562ef636f6d6d613f2e0e202f6336c5eed52064f120228e2f6d27c101",
+      "vulnerabilities": []
+    },
+    {
+      "rule_metadata": {
+        "name": "Win.Trojan.Hotkey-1",
+        "line_num": 2
+      },
+      "rule_text": "Win.Trojan.Hotkey-1:0:*:c01640006a3cffb684000000ff159cef420089869800000089be940000008bc75f5ec20400565733ff8bf1397c240c741fff762089be8c000000ff1560ef42",
+      "vulnerabilities": []
+    },
+    {
+        "rule_metadata": {
+            "name": "Win.Exploit.CVE_2001_0500-1",
+            "line_num": 31344
+        },
+        "rule_text": "Win.Exploit.CVE_2001_0500-1:0:*:7961686f6f3a20607065726c202d6520277072696e7420225c783930227831313830302760245348454c4c434f44453d3230",
+        "vulnerabilities": [
+            "CVE-2001-0500"
+        ]
+    }
+  ]
+}

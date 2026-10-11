@@ -1,0 +1,32 @@
+{
+  "source_url": "https://database.clamav.net/main.cvd?api-version=1",
+  "source_filename": "main.ldb",
+  "rules": [
+    {
+      "rule_metadata": {
+        "name": "Win.Exploit.CVE_2016_7185-1",
+        "line_num": 1
+      },
+      "rule_text": "Win.Exploit.CVE_2016_7185-1;Engine:51-255,Target:1;(0&1&2&3);44616e6765726f757347657448616e646c65;5361666548616e646c655a65726f4f724d696e75734f6e654973496e76616c6964;52656c6561736548616e646c65;5c004400650076006900630065005c0044006600730043006c00690065006e007400",
+      "vulnerabilities": [
+        "CVE-2016-7185"
+      ]
+    },
+    {
+      "rule_metadata": {
+        "name": "Doc.Trojan.Agent-1383193",
+        "line_num": 2
+      },
+      "rule_text": "Doc.Trojan.Agent-1383193;Engine:53-255,Target:2;0&1&2&3&4;57683370314d4c73576c69454b30626476376d707563704156724856585141694f30383755365a48556f;507a33593934674e796c784e724d5937706a3068;586c49766b65446349324259514d5169556b764d436165345144415452746d3842;434c70577561534d6f4c4845437a4172754d4d6466484b3334444e78;4256504271623368394c6e6c",
+      "vulnerabilities": []
+    },
+    {
+      "rule_metadata": {
+        "name": "Doc.Trojan.Agent-1383194",
+        "line_num": 3
+      },
+      "rule_text": "Doc.Trojan.Agent-1383194;Engine:53-255,Target:2;0&1>50;28373835362920417320427974652c20;3d2059656172284e6f77292027",
+      "vulnerabilities": []
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+    "source_url": "https://github.com/OISF/suricata/blob/master/rules/dhcp-events.rules",
+    "rules": [
+        {
+            "rule_metadata": {
+                "name": "SURICATA DHCP malformed options",
+                "version": 1,
+                "id": 2227000,
+                "enabled": true
+            },
+            "rule_text": "alert dhcp any any -> any any (msg:\"SURICATA DHCP malformed options\"; app-layer-event:dhcp.malformed_options; classtype:protocol-command-decode; sid:2227000; rev:1;)",
+            "vulnerabilities": []
+        },
+        {
+            "rule_metadata": {
+                "name": "SURICATA DHCP truncated options",
+                "version": 1,
+                "id": 2227001,
+                "enabled": true
+            },
+            "rule_text": "alert dhcp any any -> any any (msg:\"SURICATA DHCP truncated options\"; app-layer-event:dhcp.truncated_options; classtype:protocol-command-decode; sid:2227001; rev:1;)",
+            "vulnerabilities": []
+        }
+    ]
+}

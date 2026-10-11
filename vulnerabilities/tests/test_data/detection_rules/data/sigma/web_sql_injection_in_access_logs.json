@@ -1,0 +1,16 @@
+{
+    "source_url": "https://github.com/SigmaHQ/sigma/blob/master/rules/web/webserver_generic/web_sql_injection_in_access_logs.yml",
+    "rules": [
+        {
+            "rule_metadata": {
+                "status": "test",
+                "author": "Saw Win Naung, Nasreddine Bencherchali (Nextron Systems), Thurein Oo (Yoma Bank)",
+                "date": "2020-02-22",
+                "title": "SQL Injection Strings In URI",
+                "id": "5513deaf-f49a-46c2-a6c8-3f111b5cb453"
+            },
+            "rule_text": "title: SQL Injection Strings In URI\nid: 5513deaf-f49a-46c2-a6c8-3f111b5cb453\nstatus: test\ndescription: Detects potential SQL injection attempts via GET requests in access logs.\nreferences:\n- https://www.acunetix.com/blog/articles/exploiting-sql-injection-example/\n- https://www.acunetix.com/blog/articles/using-logs-to-investigate-a-web-application-attack/\n- https://brightsec.com/blog/sql-injection-payloads/\n- https://github.com/payloadbox/sql-injection-payload-list\n- https://book.hacktricks.xyz/pentesting-web/sql-injection/mysql-injection\nauthor: Saw Win Naung, Nasreddine Bencherchali (Nextron Systems), Thurein Oo (Yoma\n  Bank)\ndate: 2020-02-22\nmodified: 2023-09-04\ntags:\n- attack.initial-access\n- attack.t1190\nlogsource:\n  category: webserver\ndetection:\n  selection:\n    cs-method: GET\n  keywords:\n  - '@@version'\n  - '%271%27%3D%271'\n  - '=select '\n  - =select(\n  - =select%20\n  - concat_ws(\n  - CONCAT(0x\n  - from mysql.innodb_table_stats\n  - from%20mysql.innodb_table_stats\n  - group_concat(\n  - information_schema.tables\n  - json_arrayagg(\n  - or 1=1#\n  - or%201=1#\n  - 'order by '\n  - order%20by%20\n  - 'select * '\n  - select database()\n  - select version()\n  - select%20*%20\n  - select%20database()\n  - select%20version()\n  - select%28sleep%2810%29\n  - SELECTCHAR(\n  - table_schema\n  - UNION ALL SELECT\n  - UNION SELECT\n  - UNION%20ALL%20SELECT\n  - UNION%20SELECT\n  - '''1''=''1'\n  filter_main_status:\n    sc-status: 404\n  condition: selection and keywords and not 1 of filter_main_*\nfalsepositives:\n- Java scripts and CSS Files\n- User searches in search boxes of the respective website\n- Internal vulnerability scanners can cause some serious FPs when used, if you experience\n  a lot of FPs due to this think of adding more filters such as \"User Agent\" strings\n  and more response codes\nlevel: high\n",
+            "vulnerabilities": []
+        }
+    ]
+}

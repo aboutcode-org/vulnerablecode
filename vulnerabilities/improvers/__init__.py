@@ -11,6 +11,7 @@ from vulnerabilities.pipelines.v2_improvers import archive_urls
 from vulnerabilities.pipelines.v2_improvers import collect_ssvc_trees
 from vulnerabilities.pipelines.v2_improvers import compute_advisory_todo as compute_advisory_todo_v2
 from vulnerabilities.pipelines.v2_improvers import compute_package_risk as compute_package_risk_v2
+from vulnerabilities.pipelines.v2_improvers import detection_rules
 from vulnerabilities.pipelines.v2_improvers import enhance_with_exploitdb as exploitdb_v2
 from vulnerabilities.pipelines.v2_improvers import enhance_with_github_poc
 from vulnerabilities.pipelines.v2_improvers import enhance_with_kev as enhance_with_kev_v2
@@ -43,5 +44,6 @@ IMPROVERS_REGISTRY = create_registry(
         enhance_with_github_poc.GithubPocsImproverPipeline,
         mark_unfurl_version_range.MarkUnfurlVersionRangePipeline,
         group_advisories_for_packages_v2.GroupAdvisoriesForPackages,
+        detection_rules.DetectionRulesPipeline,
     ]
 )

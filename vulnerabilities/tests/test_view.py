@@ -101,9 +101,9 @@ class PackageSearchTestCase(TestCase):
             {"pkg:nginx/nginx@1.0.15", "pkg:nginx/nginx@1.0.15?foo=bar"},
         )
 
-#     def test_package_detail_view(self):
-#         package = PackageDetails(kwargs={"purl": "pkg:nginx/nginx@1.0.15"}).get_object()
-#         assert package.purl == "pkg:nginx/nginx@1.0.15"
+    #     def test_package_detail_view(self):
+    #         package = PackageDetails(kwargs={"purl": "pkg:nginx/nginx@1.0.15"}).get_object()
+    #         assert package.purl == "pkg:nginx/nginx@1.0.15"
 
     def test_package_view_with_purl_fragment(self):
         qs = PackageSearch().get_queryset(query="nginx@1.0.15")
@@ -177,6 +177,7 @@ class PackageSearchTestCase(TestCase):
             "pkg:nginx/nginx@1.0.15",
             "pkg:nginx/nginx@1.0.7",
         ]
+
 
 #     def test_package_view_with_purl_type(self):
 #         qs = PackageSearch().get_queryset(query="pkg:pypi")

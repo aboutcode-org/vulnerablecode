@@ -45,7 +45,6 @@ from vulnerabilities.forms import AltchaForm
 from vulnerabilities.forms import ApiUserCreationForm
 from vulnerabilities.forms import PackageSearchForm
 from vulnerabilities.forms import PipelineSchedulePackageForm
-from vulnerabilities.middleware.altcha_protection import SESSION_TIMEOUT as ALTCHA_SESSION_TIMEOUT
 from vulnerabilities.models import ISSUE_TYPE_CHOICES
 from vulnerabilities.models import AdvisorySetMember
 from vulnerabilities.models import AdvisoryToDoV2

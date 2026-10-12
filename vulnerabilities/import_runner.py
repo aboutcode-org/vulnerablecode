@@ -219,7 +219,7 @@ def process_inferences(inferences: List[Inference], advisory: Advisory, improver
                         },
                     )
                     vulnerability.severities.add(vulnerability_severity)
-                except:
+                except Exception:
                     logger.error(
                         f"Failed to create VulnerabilitySeverity for: {severity} with error:\n{traceback_format_exc()}"
                     )

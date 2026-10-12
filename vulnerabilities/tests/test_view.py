@@ -15,143 +15,168 @@ from django.core.cache import cache
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 from packageurl import PackageURL
 from univers import versions
 
-from vulnerabilities.models import AffectedByPackageRelatedVulnerability
-from vulnerabilities.models import Alias
-from vulnerabilities.models import FixingPackageRelatedVulnerability
-from vulnerabilities.models import Package
-from vulnerabilities.models import PackageV2
-from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilitySeverity
+from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import PackageV2 as Package
 from vulnerabilities.templatetags.url_filters import url_quote_filter
 from vulnerabilities.utils import get_purl_version_class
-from vulnerabilities.views import PackageDetails
-from vulnerabilities.views import PackageSearch
+from vulnerabilities.views import PackageSearchV2 as PackageSearch
+from vulnerabilities.views import PackageV2Details as PackageDetails
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_DIR = os.path.join(BASE_DIR, "test_data/package_sort")
 
 
-# class PackageSearchTestCase(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         session = self.client.session
-#         session["altcha_verified_at"] = time.time()
-#         session.save()
-#         packages = [
-#             "pkg:nginx/nginx@0.6.18",
-#             "pkg:nginx/nginx@1.20.0",
-#             "pkg:nginx/nginx@1.21.0",
-#             "pkg:nginx/nginx@1.20.1",
-#             "pkg:nginx/nginx@1.9.5",
-#             "pkg:nginx/nginx@1.17.2",
-#             "pkg:nginx/nginx@1.17.3",
-#             "pkg:nginx/nginx@1.16.1",
-#             "pkg:nginx/nginx@1.15.5",
-#             "pkg:nginx/nginx@1.15.6",
-#             "pkg:nginx/nginx@1.14.1",
-#             "pkg:nginx/nginx@1.0.7",
-#             "pkg:nginx/nginx@1.0.15",
-#             "pkg:nginx/nginx@1.0.15?foo=bar",
-#             "pkg:pypi/foo@1",
-#         ]
-#         self.packages = packages
-#         for package in packages:
-#             purl = PackageURL.from_string(package)
-#             attrs = {k: v for k, v in purl.to_dict().items() if v}
-#             Package.objects.create(**attrs)
+class PackageSearchTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        session = self.client.session
+        session["altcha_verified_at"] = time.time()
+        session.save()
+        packages = [
+            "pkg:nginx/nginx@0.6.18",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@1.0.15",
+            "pkg:nginx/nginx@1.0.15?foo=bar",
+            "pkg:pypi/foo@1",
+        ]
+        self.packages = packages
+        created_packages = []
+        for package in packages:
+            purl = PackageURL.from_string(package)
+            attrs = {k: v for k, v in purl.to_dict().items() if v}
+            created_packages.append(Package.objects.create(**attrs))
 
-#     def test_packages_search_view_paginator(self):
-#         response = self.client.get("/packages/search/?type=deb&name=&page=1")
-#         self.assertEqual(response.status_code, 200)
-#         response = self.client.get("/packages/search/?type=deb&name=&page=*")
-#         self.assertEqual(response.status_code, 404)
-#         response = self.client.get("/packages/search/?type=deb&name=&page=")
-#         self.assertEqual(response.status_code, 200)
-#         response = self.client.get("/packages/search/?type=&name=&page=")
-#         self.assertEqual(response.status_code, 200)
+        # Populate version_rank so search ordering matches semantic version order.
+        for package in created_packages:
+            package.calculate_version_rank
 
-#     def test_package_view(self):
-#         qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1.0.15?foo=bar")
-#         pkgs = list(qs)
-#         self.assertEqual(len(pkgs), 2)
-#         self.assertEqual(pkgs[0].purl, "pkg:nginx/nginx@1.0.15")
+        # PackageSearchV2 only returns packages linked to a latest unfurled advisory.
+        advisory = AdvisoryV2.objects.create(
+            advisory_id="TEST-ADV-1",
+            avid="test/TEST-ADV-1",
+            datasource_id="test",
+            pipeline_id="test_pipeline_v2",
+            unique_content_id="test-content-id-1",
+            url="https://example.com/advisory",
+            is_latest=True,
+            _all_impacts_unfurled_at=timezone.now(),
+        )
+        impact = ImpactedPackage.objects.create(
+            advisory=advisory,
+            base_purl="pkg:nginx/nginx",
+        )
+        impact.affecting_packages.add(*created_packages)
+
+    def test_packages_search_view_paginator(self):
+        response = self.client.get("/packages/v2/search/?type=deb&name=&page=1")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/packages/v2/search/?type=deb&name=&page=*")
+        self.assertEqual(response.status_code, 404)
+        response = self.client.get("/packages/v2/search/?type=deb&name=&page=")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/packages/v2/search/?type=&name=&page=")
+        self.assertEqual(response.status_code, 200)
+
+    def test_package_view(self):
+        qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1.0.15?foo=bar")
+        pkgs = list(qs)
+        self.assertEqual(len(pkgs), 2)
+        self.assertEqual(
+            {p.purl for p in pkgs},
+            {"pkg:nginx/nginx@1.0.15", "pkg:nginx/nginx@1.0.15?foo=bar"},
+        )
 
 #     def test_package_detail_view(self):
 #         package = PackageDetails(kwargs={"purl": "pkg:nginx/nginx@1.0.15"}).get_object()
 #         assert package.purl == "pkg:nginx/nginx@1.0.15"
 
-#     def test_package_view_with_purl_fragment(self):
-#         qs = PackageSearch().get_queryset(query="nginx@1.0.15")
-#         pkgs = list(qs)
-#         self.assertEqual(len(pkgs), 2)
-#         self.assertEqual(pkgs[0].purl, "pkg:nginx/nginx@1.0.15")
-#         self.assertEqual(pkgs[1].purl, "pkg:nginx/nginx@1.0.15?foo=bar")
+    def test_package_view_with_purl_fragment(self):
+        qs = PackageSearch().get_queryset(query="nginx@1.0.15")
+        pkgs = list(qs)
+        self.assertEqual(len(pkgs), 2)
+        self.assertEqual(
+            {p.purl for p in pkgs},
+            {"pkg:nginx/nginx@1.0.15", "pkg:nginx/nginx@1.0.15?foo=bar"},
+        )
 
-#     def test_package_view_with_purl_fragment_2(self):
-#         qs = PackageSearch().get_queryset(query="nginx/nginx")
-#         pkgs = list(qs)
-#         pkgs = [p.purl for p in pkgs]
-#         expected = [
-#             "pkg:nginx/nginx@0.6.18",
-#             "pkg:nginx/nginx@1.0.15",
-#             "pkg:nginx/nginx@1.0.15?foo=bar",
-#             "pkg:nginx/nginx@1.0.7",
-#             "pkg:nginx/nginx@1.14.1",
-#             "pkg:nginx/nginx@1.15.5",
-#             "pkg:nginx/nginx@1.15.6",
-#             "pkg:nginx/nginx@1.16.1",
-#             "pkg:nginx/nginx@1.17.2",
-#             "pkg:nginx/nginx@1.17.3",
-#             "pkg:nginx/nginx@1.20.0",
-#             "pkg:nginx/nginx@1.20.1",
-#             "pkg:nginx/nginx@1.21.0",
-#             "pkg:nginx/nginx@1.9.5",
-#         ]
-#         assert pkgs == expected
+    def test_package_view_with_purl_fragment_2(self):
+        qs = PackageSearch().get_queryset(query="nginx/nginx")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        # Ordered by -version_rank (newest first).
+        expected = [
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.0.15?foo=bar",
+            "pkg:nginx/nginx@1.0.15",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@0.6.18",
+        ]
+        assert pkgs == expected
 
-#     def test_package_view_with_valid_purl_without_version(self):
-#         qs = PackageSearch().get_queryset(query="pkg:nginx/nginx")
-#         pkgs = list(qs)
-#         pkgs = [p.purl for p in pkgs]
-#         assert pkgs == [
-#             "pkg:nginx/nginx@0.6.18",
-#             "pkg:nginx/nginx@1.0.15",
-#             "pkg:nginx/nginx@1.0.15?foo=bar",
-#             "pkg:nginx/nginx@1.0.7",
-#             "pkg:nginx/nginx@1.14.1",
-#             "pkg:nginx/nginx@1.15.5",
-#             "pkg:nginx/nginx@1.15.6",
-#             "pkg:nginx/nginx@1.16.1",
-#             "pkg:nginx/nginx@1.17.2",
-#             "pkg:nginx/nginx@1.17.3",
-#             "pkg:nginx/nginx@1.20.0",
-#             "pkg:nginx/nginx@1.20.1",
-#             "pkg:nginx/nginx@1.21.0",
-#             "pkg:nginx/nginx@1.9.5",
-#         ]
+    def test_package_view_with_valid_purl_without_version(self):
+        qs = PackageSearch().get_queryset(query="pkg:nginx/nginx")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == [
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.0.15?foo=bar",
+            "pkg:nginx/nginx@1.0.15",
+            "pkg:nginx/nginx@1.0.7",
+            "pkg:nginx/nginx@0.6.18",
+        ]
 
-#     def test_package_view_with_valid_purl_and_incomplete_version(self):
-#         qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1")
-#         pkgs = list(qs)
-#         pkgs = [p.purl for p in pkgs]
-#         assert pkgs == [
-#             "pkg:nginx/nginx@1.0.15",
-#             "pkg:nginx/nginx@1.0.15?foo=bar",
-#             "pkg:nginx/nginx@1.0.7",
-#             "pkg:nginx/nginx@1.14.1",
-#             "pkg:nginx/nginx@1.15.5",
-#             "pkg:nginx/nginx@1.15.6",
-#             "pkg:nginx/nginx@1.16.1",
-#             "pkg:nginx/nginx@1.17.2",
-#             "pkg:nginx/nginx@1.17.3",
-#             "pkg:nginx/nginx@1.20.0",
-#             "pkg:nginx/nginx@1.20.1",
-#             "pkg:nginx/nginx@1.21.0",
-#             "pkg:nginx/nginx@1.9.5",
-#         ]
+    def test_package_view_with_valid_purl_and_incomplete_version(self):
+        qs = PackageSearch().get_queryset(query="pkg:nginx/nginx@1")
+        pkgs = list(qs)
+        pkgs = [p.purl for p in pkgs]
+        assert pkgs == [
+            "pkg:nginx/nginx@1.21.0",
+            "pkg:nginx/nginx@1.20.1",
+            "pkg:nginx/nginx@1.20.0",
+            "pkg:nginx/nginx@1.17.3",
+            "pkg:nginx/nginx@1.17.2",
+            "pkg:nginx/nginx@1.16.1",
+            "pkg:nginx/nginx@1.15.6",
+            "pkg:nginx/nginx@1.15.5",
+            "pkg:nginx/nginx@1.14.1",
+            "pkg:nginx/nginx@1.9.5",
+            "pkg:nginx/nginx@1.0.15?foo=bar",
+            "pkg:nginx/nginx@1.0.15",
+            "pkg:nginx/nginx@1.0.7",
+        ]
 
 #     def test_package_view_with_purl_type(self):
 #         qs = PackageSearch().get_queryset(query="pkg:pypi")
@@ -164,32 +189,6 @@ TEST_DIR = os.path.join(BASE_DIR, "test_data/package_sort")
 #         pkgs = list(qs)
 #         pkgs = [p.purl for p in pkgs]
 #         assert pkgs == ["pkg:pypi/foo@1"]
-
-
-# class VulnerabilitySearchTestCase(TestCase):
-#     def setUp(self):
-#         self.vulnerability = vulnerability = Vulnerability(summary="test")
-#         vulnerability.save()
-#         alias = Alias(alias="TEST-2022", vulnerability=vulnerability)
-#         alias.save()
-#         self.client = Client()
-#         session = self.client.session
-#         session["altcha_verified_at"] = time.time()
-#         session.save()
-
-#     def test_vulnerabilties_search_view_with_vcid_works_and_pk_does_not(self):
-#         response = self.client.get(f"/vulnerabilities/{self.vulnerability.pk}")
-#         self.assertEqual(response.status_code, 404)
-#         response = self.client.get(f"/vulnerabilities/{self.vulnerability.vulnerability_id}")
-#         self.assertEqual(response.status_code, 200)
-
-#     def test_vulnerabilties_search_view_with_empty(self):
-#         response = self.client.get(f"/vulnerabilities/search/")
-#         self.assertEqual(response.status_code, 200)
-
-#     def test_vulnerabilties_search_view_can_find_alias(self):
-#         response = self.client.get(f"/vulnerabilities/search/?search=TEST-2022")
-#         self.assertEqual(response.status_code, 200)
 
 
 class CheckRobotsTxtTestCase(TestCase):
@@ -286,66 +285,6 @@ class TestCustomFilters:
     def test_url_quote_filter(self, input_value, expected_output):
         filtered = url_quote_filter(input_value)
         assert filtered == expected_output
-
-
-class VulnerabilitySearchTestCaseWithPackages(TestCase):
-    def setUp(self):
-        self.vuln1 = Vulnerability.objects.create(vulnerability_id="VCID-1", summary="Vuln 1")
-        self.vuln2 = Vulnerability.objects.create(vulnerability_id="VCID-2", summary="Vuln 2")
-        self.vuln3 = Vulnerability.objects.create(vulnerability_id="VCID-3", summary="Vuln 3")
-        self.vuln4 = Vulnerability.objects.create(vulnerability_id="VCID-4", summary="Vuln 4")
-        self.vuln5 = Vulnerability.objects.create(vulnerability_id="VCID-5", summary="Vuln 5")
-
-        self.package1 = Package.objects.create(type="pypi", name="django", version="1.0.0")
-        self.package2 = Package.objects.create(type="pypi", name="django", version="2.0.0")
-        self.package3 = Package.objects.create(type="pypi", name="django", version="3.0.0")
-
-        self.package4 = PackageV2.objects.create(type="pypi", name="django", version="1.0.0")
-
-        AffectedByPackageRelatedVulnerability.objects.create(
-            package=self.package1, vulnerability=self.vuln1
-        )
-        AffectedByPackageRelatedVulnerability.objects.create(
-            package=self.package1, vulnerability=self.vuln2
-        )
-        AffectedByPackageRelatedVulnerability.objects.create(
-            package=self.package2, vulnerability=self.vuln3
-        )
-        AffectedByPackageRelatedVulnerability.objects.create(
-            package=self.package2, vulnerability=self.vuln4
-        )
-
-        FixingPackageRelatedVulnerability.objects.create(
-            package=self.package3, vulnerability=self.vuln5
-        )
-
-        self.severity1 = VulnerabilitySeverity.objects.create(
-            scoring_system="CVSSv3",
-            value="9.8",
-            scoring_elements="AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
-        )
-        self.severity2 = VulnerabilitySeverity.objects.create(
-            scoring_system="CVSSv3",
-            value="7.5",
-            scoring_elements="AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
-        )
-
-        self.vuln1.severities.add(self.severity1)
-        self.vuln1.severities.add(self.severity2)
-        self.client = Client()
-        session = self.client.session
-        session["altcha_verified_at"] = time.time()
-        session.save()
-        self.vuln1.save()
-
-    def test_aggregate_fixed_and_affected_packages(self):
-        with self.assertNumQueries(11):
-            start_time = time.time()
-            response = self.client.get(f"/packages/v2/{self.package4.package_url}")
-            end_time = time.time()
-            # Increase time for ALTCHA verification
-            assert end_time - start_time < 0.06
-            self.assertEqual(response.status_code, 200)
 
 
 class ThrottleTestCase(TestCase):

@@ -28,7 +28,6 @@ from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
-from vulnerabilities.importer import Reference
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipes.advisory import classify_patch_source
@@ -303,7 +302,7 @@ def get_severities(raw_data, url) -> Iterable[VulnerabilitySeverity]:
         )
 
 
-def get_references_v2(raw_data) -> List[Reference]:
+def get_references_v2(raw_data) -> List[ReferenceV2]:
     """
     Return a list Reference extracted from a mapping of OSV ``raw_data`` given a
     ``severities`` list of VulnerabilitySeverity.

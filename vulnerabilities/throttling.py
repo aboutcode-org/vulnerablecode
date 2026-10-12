@@ -67,6 +67,8 @@ def throttled_exception_handler(exception, context):
     """
     Return this response whenever a request has been throttled
     """
+    # Imported lazily to avoid a circular import with rest_framework.views
+    # (DEFAULT_THROTTLE_CLASSES loads this module while it is still initializing).
     from rest_framework.views import exception_handler
 
     response = exception_handler(exception, context)

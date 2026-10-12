@@ -7,7 +7,6 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
-from django.contrib import admin
 from django.urls import include
 from django.urls import path
 from django.urls import re_path
@@ -51,6 +50,8 @@ class OptionalSlashRouter(DefaultRouter):
         super(DefaultRouter, self).__init__(*args, **kwargs)
         self.trailing_slash = "/?"
 
+
+api_router = OptionalSlashRouter()
 
 api_v3_router = OptionalSlashRouter()
 
@@ -129,6 +130,7 @@ urlpatterns = [
         AdvisoryDetails.as_view(),
         name="advisory_details",
     ),
+    path("altcha/", AltchaView.as_view(), name="altcha"),
     path(
         "packages/v2/search/",
         PackageSearchV2.as_view(),
@@ -148,6 +150,11 @@ urlpatterns = [
         r"^affected-by-advisories/v2/(?P<purl>pkg:.+)$",
         AffectedByAdvisoriesListView.as_view(),
         name="affected_by_advisories_v2",
+    ),
+    path(
+        "api/",
+        include(api_router.urls),
+        name="api",
     ),
     path(
         "api/schema/",

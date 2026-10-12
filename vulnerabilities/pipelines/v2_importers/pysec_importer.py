@@ -46,7 +46,6 @@ class PyPIImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def advisories_count(self) -> int:
         with ZipFile(BytesIO(self.advisory_zip)) as zip:
             advisory_count = sum(1 for file in zip.namelist() if file.startswith("PYSEC-"))
-        # breakpoint()
         return advisory_count
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:

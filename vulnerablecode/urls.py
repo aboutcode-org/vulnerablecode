@@ -51,8 +51,6 @@ class OptionalSlashRouter(DefaultRouter):
         self.trailing_slash = "/?"
 
 
-api_router = OptionalSlashRouter()
-
 api_v3_router = OptionalSlashRouter()
 
 api_v3_router.register("packages", PackageV3ViewSet, basename="package-v3")
@@ -130,7 +128,6 @@ urlpatterns = [
         AdvisoryDetails.as_view(),
         name="advisory_details",
     ),
-    path("altcha/", AltchaView.as_view(), name="altcha"),
     path(
         "packages/v2/search/",
         PackageSearchV2.as_view(),
@@ -150,11 +147,6 @@ urlpatterns = [
         r"^affected-by-advisories/v2/(?P<purl>pkg:.+)$",
         AffectedByAdvisoriesListView.as_view(),
         name="affected_by_advisories_v2",
-    ),
-    path(
-        "api/",
-        include(api_router.urls),
-        name="api",
     ),
     path(
         "api/schema/",

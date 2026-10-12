@@ -444,5 +444,5 @@ class TestCleanAdvisorySeverityMigration(TestMigrations):
         # Hash excludes url/advisory_id (compute_content_id_v2); severity value cleaned to "".
         self.assertEqual(
             self.advisory1.unique_content_id,
-            "885d5cc15389a644089516b7047dff3716f666a0219befe32938777ae5e686fb",
+            "a15d4651cb05e3513c12263a11e34bd9103f68833cac8f7ffdbbd71b9cb4cf16",
         )

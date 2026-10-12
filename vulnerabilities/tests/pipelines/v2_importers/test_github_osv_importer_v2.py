@@ -12,7 +12,6 @@ from pathlib import Path
 
 import pytest
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.github_osv_importer import GithubOSVImporterPipeline
 

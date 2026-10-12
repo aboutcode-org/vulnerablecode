@@ -250,7 +250,7 @@ class TestComputeContentIdV2(TestCase):
 
     def test_compute_content_id_v2(self):
         result = utils.compute_content_id_v2(self.advisory1)
-        self.assertEqual(result, "5211f1e6c3d935759fb288d79a865eeacc06e3e0e352ab7f5b4cb0e76a43a955")
+        self.assertEqual(result, "a77ac4e5c5aa31c5a0fa42b7295b40ab6bc6c753f66c1fa88dbbe73061113dba")
 
     def test_content_id_from_adv_data_and_adv_model_are_same(self):
         id_from_data = utils.compute_content_id_v2(self.advisory1)

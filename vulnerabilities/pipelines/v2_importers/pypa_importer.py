@@ -46,6 +46,8 @@ class PyPaImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def advisories_count(self):
         vulns_directory = Path(self.vcs_response.dest_dir) / "vulns"
+        print(sum(1 for _ in vulns_directory.rglob("*.yaml")))
+        # breakpoint()
         return sum(1 for _ in vulns_directory.rglob("*.yaml"))
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:

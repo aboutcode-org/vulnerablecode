@@ -86,7 +86,9 @@ def compute_advisory_risk_score(advisory):
     Calculate the risk score for a single AdvisoryV2 object.
     Returns a tuple of (weighted_severity, exploitability, risk_score).
     """
-    from vulnerabilities.risk import compute_vulnerability_risk_factors
+    from vulnerabilities.pipelines.v2_improvers.compute_package_risk import (
+        compute_vulnerability_risk_factors,
+    )
 
     weighted_severity = None
     exploitability = None

@@ -19,8 +19,6 @@ from redis.exceptions import ConnectionError
 from rq import Worker
 
 from vulnerabilities import models
-from vulnerabilities.importer import Importer
-from vulnerabilities.improver import Improver
 from vulnerablecode.settings import RQ_QUEUES
 
 logger = logging.getLogger(__name__)
@@ -45,8 +43,6 @@ def execute_pipeline(pipeline_id, run_id):
     if issubclass(run_class, VulnerableCodePipeline):
         pipeline_instance = run_class(run_instance=run)
         exitcode, output = pipeline_instance.execute()
-    elif issubclass(run_class, Importer) or issubclass(run_class, Improver):
-        exitcode, output = legacy_runner(run_class=run_class, run=run)
     else:
         output = f"{pipeline_id} is not a valid importer/improver."
         exitcode = 1
@@ -60,47 +56,6 @@ def execute_pipeline(pipeline_id, run_id):
         pipeline.save()
 
     logger.info("Update Run instance with exitcode, output, and end_date")
-
-
-def legacy_runner(run_class, run):
-    from vulnerabilities.import_runner import ImportRunner
-    from vulnerabilities.improve_runner import ImproveRunner
-
-    exitcode = 0
-    output = ""
-    pipeline_id = run.pipeline.pipeline_id
-
-    log_stream = StringIO()
-    handler = logging.StreamHandler(log_stream)
-    module_name = pipeline_id.rsplit(".", 1)[0]
-    logger_modules = [module_name]
-    if module_name.startswith("vulnerabilities.improvers."):
-        logger_modules.append("vulnerabilities.improve_runner")
-    elif module_name.startswith("vulnerabilities.importers."):
-        logger_modules.append("vulnerabilities.import_runner")
-
-    loggers = []
-    for name in logger_modules:
-        logger = logging.getLogger(name)
-        logger.setLevel(logging.INFO)
-        logger.addHandler(handler)
-        loggers.append(logger)
-
-    try:
-        if issubclass(run_class, Importer):
-            ImportRunner(run_class).run()
-            run.append_to_log(f"Successfully imported data using {pipeline_id}")
-        elif issubclass(run_class, Improver):
-            ImproveRunner(improver_class=run_class).run()
-            run.append_to_log(f"Successfully improved data using {pipeline_id}")
-    except Exception as e:
-        output = (f"Failed to run {pipeline_id}: {e!r} \n {traceback_format_exc()}",)
-        exitcode = 1
-
-    run.append_to_log(log_stream.getvalue(), is_multiline=True)
-    [logger.removeHandler(handler) for logger in loggers]
-
-    return exitcode, output
 
 
 def set_run_failure(job, connection, type, value, traceback):

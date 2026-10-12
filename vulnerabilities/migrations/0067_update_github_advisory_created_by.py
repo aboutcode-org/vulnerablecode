@@ -9,20 +9,18 @@ to the new pipeline_id.
 
 
 def update_created_by(apps, schema_editor):
-    from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
-
+    #Remove pipeline import path, since we are removing V1/V2 code
     Advisory = apps.get_model("vulnerabilities", "Advisory")
     Advisory.objects.filter(created_by="vulnerabilities.importers.github.GitHubAPIImporter").update(
-        created_by=GitHubAPIImporterPipeline.pipeline_id
+        created_by="github_importer"
     )
 
 
 
 def reverse_update_created_by(apps, schema_editor):
-    from vulnerabilities.pipelines.github_importer import GitHubAPIImporterPipeline
-
+    #Remove pipeline import path, since we are removing V1/V2 code
     Advisory = apps.get_model("vulnerabilities", "Advisory")
-    Advisory.objects.filter(created_by=GitHubAPIImporterPipeline.pipeline_id).update(
+    Advisory.objects.filter(created_by="github_importer").update(
         created_by="vulnerabilities.importers.github.GitHubAPIImporter"
     )
 

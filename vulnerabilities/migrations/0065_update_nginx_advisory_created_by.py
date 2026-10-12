@@ -9,20 +9,18 @@ to the new pipeline_id.
 
 
 def update_created_by(apps, schema_editor):
-    from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
-
     Advisory = apps.get_model("vulnerabilities", "Advisory")
+    #Remove pipeline import path, since we are removing V1/V2 code
     Advisory.objects.filter(created_by="vulnerabilities.importers.nginx.NginxImporter").update(
-        created_by=NginxImporterPipeline.pipeline_id
+        created_by="nginx_importer"
     )
 
 
 
 def reverse_update_created_by(apps, schema_editor):
-    from vulnerabilities.pipelines.nginx_importer import NginxImporterPipeline
-
+    #Remove pipeline import path, since we are removing V1/V2 code
     Advisory = apps.get_model("vulnerabilities", "Advisory")
-    Advisory.objects.filter(created_by=NginxImporterPipeline.pipeline_id).update(
+    Advisory.objects.filter(created_by="nginx_importer").update(
         created_by="vulnerabilities.importers.nginx.NginxImporter"
     )
 

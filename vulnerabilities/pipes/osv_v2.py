@@ -65,7 +65,7 @@ def parse_advisory_data_v3(
     advisory_id: Optional[str] = None,
 ) -> Optional[AdvisoryDataV2]:
     """
-    Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
+    Return an AdvisoryDataV2 build from a ``raw_data`` mapping of OSV advisory and
     a ``supported_ecosystem`` string.
     """
     adv_id = raw_data.get("id")
@@ -215,7 +215,7 @@ def parse_advisory_data_v3(
             or json.dumps(raw_data, indent=2, ensure_ascii=False),
         )
     except Exception as e:
-        logger.error(f"Invalid AdvisoryData for {advisory_id}: {e}")
+        logger.error(f"Invalid AdvisoryDataV2 for {advisory_id}: {e}")
 
 
 def extract_events(range_data) -> Iterable[str]:

@@ -20,6 +20,7 @@ from aboutcode.pipeline import LoopProgress
 from aboutcode.pipeline import PipelineDefinition
 from aboutcode.pipeline import humanize_time
 
+from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipes.advisory import insert_advisory_v2
@@ -196,17 +197,17 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
             # Add step for removing downloaded/cloned resource as required.
         )
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         """
-        Yield AdvisoryData for importer pipeline.
+        Yield AdvisoryDataV2 for importer pipeline.
 
-        Populate the `self.collected_advisories_count` field and yield AdvisoryData
+        Populate the `self.collected_advisories_count` field and yield AdvisoryDataV2
         """
         raise NotImplementedError
 
     def advisories_count(self) -> int:
         """
-        Return the estimated AdvisoryData to be yielded by ``collect_advisories``.
+        Return the estimated AdvisoryDataV2 to be yielded by ``collect_advisories``.
 
         Used by ``collect_and_store_advisories`` to log the progress of advisory collection.
         """

@@ -706,9 +706,9 @@ def compute_content_id_v2(advisory_data):
 
     if isinstance(advisory_data, AdvisoryV2):
         advisory_data = advisory_data.to_advisory_data()
-        # "advisory_id": normalize_text(advisory_data.advisory_id),
 
     normalized_data = {
+        "advisory_id": normalize_text(advisory_data.advisory_id),
         "aliases": normalize_list(advisory_data.aliases),
         "summary": normalize_text(advisory_data.summary),
         "affected_packages": [
@@ -719,7 +719,7 @@ def compute_content_id_v2(advisory_data):
         "weaknesses": normalize_list(advisory_data.weaknesses),
         "patches": [patch.to_dict() for patch in normalize_list(advisory_data.patches)],
     }
-    # normalized_data["url"] = advisory_data.url
+    normalized_data["url"] = advisory_data.url
 
     return sha256_digest(normalized_data)
 

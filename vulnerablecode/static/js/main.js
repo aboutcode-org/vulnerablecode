@@ -4,24 +4,36 @@
 
 'use strict';
 
+function goToTab(tabName) {
+    const tabsContainer = document.querySelector('div.tabs.is-boxed');
+    if (!tabsContainer) return;
+
+    const targetLink = tabsContainer.querySelector(`[data-tab='${tabName}']`);
+    const targetTabContent = document.querySelector(`[data-content='${tabName}']`);
+    if (!targetLink || !targetTabContent) return;
+
+    const activeLink = tabsContainer.querySelector('li.is-active');
+    const activeTabContent = document.querySelector('div.tab-div.is-active');
+
+    if (activeLink) activeLink.classList.remove('is-active');
+    if (activeTabContent) activeTabContent.classList.remove('is-active');
+
+    targetLink.classList.add('is-active');
+    targetTabContent.classList.add('is-active');
+}
+
 function setupTabs() {
-    const $tabLinks = getAll('.tabs a');
+    const tabsContainer = document.querySelector('div.tabs.is-boxed');
+    if (!tabsContainer || tabsContainer.dataset.tabsReady === '1') return;
+    tabsContainer.dataset.tabsReady = '1';
 
-    $tabLinks.forEach(function ($el) {
-        $el.addEventListener('click', function (event) {
-            const activeLink = document.querySelector('div.tabs.is-boxed li.is-active');
-            const activeTabContent = document.querySelector('div.tab-div.is-active');
+    // Delegate from the tab list so clicks on <li>, <a>, or nested <span> all work.
+    tabsContainer.addEventListener('click', function (event) {
+        const tabItem = event.target.closest('li[data-tab]');
+        if (!tabItem || !tabsContainer.contains(tabItem)) return;
 
-            //Get the target id of the clicked tab.
-            const target_id = $el.parentNode.getAttribute('data-tab')
-            // ID the target tab content.
-            const targetTabContent = document.querySelector("[data-content='" + target_id + "']");
-
-            activeLink.classList.remove('is-active');
-            $el.parentNode.classList.add('is-active');
-            if (activeTabContent) activeTabContent.classList.remove('is-active');
-            if (targetTabContent) targetTabContent.classList.add('is-active');
-        });
+        event.preventDefault();
+        goToTab(tabItem.getAttribute('data-tab'));
     });
 }
 
@@ -32,6 +44,8 @@ function getAll(selector) {
     return Array.prototype.slice.call(parent.querySelectorAll(selector), 0);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupTabs);
+} else {
     setupTabs();
-});
+}

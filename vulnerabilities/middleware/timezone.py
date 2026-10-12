@@ -17,14 +17,18 @@ class UserTimezoneMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        try:
-            # Activate local timezone for user using cookies
-            tzname = request.COOKIES.get("user_timezone")
-            if tzname:
+        tzname = request.COOKIES.get("user_timezone")
+        if tzname:
+            try:
                 timezone.activate(zoneinfo.ZoneInfo(tzname))
-            else:
+            except Exception as e:
                 timezone.deactivate()
-        except Exception as e:
+        else:
             timezone.deactivate()
 
-        return self.get_response(request)
+        try:
+            response = self.get_response(request)
+        finally:
+            timezone.deactivate()
+
+        return response

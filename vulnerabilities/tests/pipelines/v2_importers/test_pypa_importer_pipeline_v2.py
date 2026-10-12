@@ -88,7 +88,7 @@ def test_collect_advisories(mock_pathlib, mock_vcs_response, mock_fetch_via_vcs)
     # Mock `vcs_response.dest_dir` to point to the temporary directory
     mock_vcs_response.dest_dir = str(mock_pathlib.parent)
 
-    # Mock `parse_advisory_data` to return an AdvisoryData object
+    # Mock `parse_advisory_data` to return an AdvisoryDataV2 object
     with patch(
         "vulnerabilities.pipelines.v2_importers.pypa_importer.parse_advisory_data_v3"
     ) as mock_parse:

@@ -109,7 +109,7 @@ def check_for_attributes(record, logger) -> bool:
 
 def process_record(record: dict, url: str, logger: callable) -> Iterable[AdvisoryDataV2]:
     """
-    Return a list of AdvisoryData objects by processing data
+    Return a list of AdvisoryDataV2 objects by processing data
     present in that `record`
     """
     if not record.get("packages"):
@@ -147,7 +147,7 @@ def load_advisories(
     logger: callable,
 ) -> Iterable[AdvisoryDataV2]:
     """
-    Yield AdvisoryData by mapping data from `pkg_infos`
+    Yield AdvisoryDataV2 by mapping data from `pkg_infos`
     and form PURL for AffectedPackages by using
     `distroversion`, `reponame`, `archs`
     """

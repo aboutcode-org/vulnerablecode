@@ -1,0 +1,21 @@
+{
+  "advisory_id": "CLOUD-2024-0001",
+  "aliases": [
+    "CVE-2024-11111",
+    "CVE-2024-22222"
+  ],
+  "summary": "AWS Example Privilege Escalation (CVE-2024-11111)",
+  "affected_packages": [],
+  "references": [
+    {
+      "reference_id": "",
+      "reference_type": "",
+      "url": "https://www.cloudvulndb.org/vulnerabilities/aws-example-privilege-escalation"
+    }
+  ],
+  "patches": [],
+  "severities": [],
+  "date_published": "2024-06-04T12:30:00+00:00",
+  "weaknesses": [],
+  "url": "https://www.cloudvulndb.org/vulnerabilities/aws-example-privilege-escalation"
+}

@@ -161,7 +161,7 @@ Pipeline Dashboard
                                     </div>
                                     <div class="column has-text-grey" style="flex: 0 0 18%;">
                                         {% if schedule.latest_run_end_date %}
-                                            {{ schedule.latest_run_end_date|date:"Y-m-d h:i a T" }}
+                                            {{ schedule.latest_run_end_date|date:"Y-m-d h:i A T" }}
                                         {% else %}
                                             N/A
                                         {% endif %}

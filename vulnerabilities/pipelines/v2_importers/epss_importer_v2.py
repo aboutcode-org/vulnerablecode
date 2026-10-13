@@ -53,38 +53,48 @@ class EPSSImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         if not self.lines:
-            logger.error("No EPSS data loaded")
+            self.log("No EPSS data loaded")
             raise ValueError("EPSS data is empty")
 
-        epss_reader = csv.reader(self.lines)
-        model_version, score_date = next(
-            epss_reader
-        )  # score_date='score_date:2024-05-19T00:00:00+0000'
-        published_at = datetime.strptime(score_date[11::], "%Y-%m-%dT%H:%M:%S%z")
+        yield from parse_epss_advisories(
+            lines=self.lines, advisory_url=self.advisory_url, logger=self.log
+        )
 
-        next(epss_reader)  # skip the header row
-        for epss_row in epss_reader:
-            cve, score, percentile = epss_row
 
-            if not cve or not score or not percentile:
-                logger.error(f"Invalid epss row: {epss_row}")
-                continue
+def parse_epss_advisories(
+    lines,
+    advisory_url,
+    logger,
+) -> Iterable[AdvisoryDataV2]:
+    epss_reader = csv.reader(lines)
+    model_version, score_date = next(
+        epss_reader
+    )  # score_date='score_date:2024-05-19T00:00:00+0000'
+    published_at = datetime.strptime(score_date[11::], "%Y-%m-%dT%H:%M:%S%z")
 
-            severity = VulnerabilitySeverity(
-                system=severity_systems.EPSS,
-                value=score,
-                scoring_elements=percentile,
-                published_at=published_at,
-            )
+    next(epss_reader)  # skip the header row
+    for epss_row in epss_reader:
+        cve, score, percentile = epss_row
 
-            references = ReferenceV2(
-                url=f"https://api.first.org/data/v1/epss?cve={cve}",
-            )
+        if not cve or not score or not percentile:
+            logger(f"Invalid epss row: {epss_row}")
+            continue
 
-            yield AdvisoryDataV2(
-                advisory_id=cve,
-                severities=[severity],
-                references=[references],
-                url=self.advisory_url,
-                original_advisory_text=",".join(epss_row),
-            )
+        severity = VulnerabilitySeverity(
+            system=severity_systems.EPSS,
+            value=score,
+            scoring_elements=percentile,
+            published_at=published_at,
+        )
+
+        references = ReferenceV2(
+            url=f"https://api.first.org/data/v1/epss?cve={cve}",
+        )
+
+        yield AdvisoryDataV2(
+            advisory_id=cve,
+            severities=[severity],
+            references=[references],
+            url=advisory_url,
+            original_advisory_text=",".join(epss_row),
+        )

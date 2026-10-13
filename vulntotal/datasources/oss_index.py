@@ -23,17 +23,18 @@ logger = logging.getLogger(__name__)
 class OSSDataSource(DataSource):
     spdx_license_expression = "TODO"
     license_url = "TODO"
-    api_unauthenticated = "https://ossindex.sonatype.org/api/v3/component-report"
-    api_authenticated = "https://ossindex.sonatype.org/api/v3/authorized/component-report"
+    api_unauthenticated = "https://api.guide.sonatype.com/api/v3/component-report"
+    api_authenticated = "https://api.guide.sonatype.com/api/v3/authorized/component-report"
 
     def fetch_json_response(self, coordinates):
-        """Fetch JSON response from OSS Index API for a given list of coordinates.
+        """Fetch JSON response from the Sonatype Guide OSS Index compatibility API.
 
         Parameters:
             coordinates: A list of strings representing the package coordinates.
 
         Returns:
-            A dictionary containing the JSON response from the OSS Index API, or None if the response is unsuccessful or an error occurs while fetching data.
+            A dictionary containing the JSON response from the compatibility API, or None
+            if the response is unsuccessful or an error occurs while fetching data.
         """
         username = os.environ.get("OSS_USERNAME", None)
         token = os.environ.get("OSS_TOKEN", None)
@@ -91,7 +92,7 @@ class OSSDataSource(DataSource):
 
 def parse_advisory(component, purl) -> Iterable[VendorData]:
     """
-    Parse component from OSS Index API and yield VendorData.
+    Parse component from the Sonatype Guide OSS Index compatibility API and yield VendorData.
 
     Parameters:
         component: A list containing a dictionary with component details.

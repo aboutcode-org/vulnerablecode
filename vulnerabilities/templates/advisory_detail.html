@@ -4,6 +4,7 @@
 {% load static %}
 {% load show_cvss %}
 {% load url_filters %}
+{% load diff_advisory_history %}
 
 {% block title %}
 VulnerableCode Advisory Details - {{ advisory.advisory_id }}
@@ -22,6 +23,13 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 </span>
             </div>
         </article>
+
+        {% if is_snapshot %}
+        <div class="notification is-warning mb-3 has-text-centered" style="max-width: fit-content; margin: 0 auto;">
+            <i class="fa fa-history mr-1"></i> Historical snapshot collected on <strong>{{ advisory.date_collected|date:"Y-m-d H:i" }} UTC</strong>.
+            <a href="{{ advisory.get_absolute_url }}" class="ml-3"><strong>View current version</strong> <i class="fa fa-arrow-right is-size-7"></i></a>
+        </div>
+        {% endif %}
 
         <div class="tabs is-boxed" id="tabs">
             <ul>
@@ -79,6 +87,16 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                             </span>
                         </a>
                     </li>
+                {% endif %}
+            
+                {% if advisory_history and not is_snapshot %}
+                <li data-tab="history">
+                    <a onclick="goToTab('history'); requestAnimationFrame(checkDiffHeights);">
+                        <span>
+                            History 
+                        </span>
+                    </a>
+                </li>
                 {% endif %}
             
                 <li data-tab="patch-url">
@@ -188,7 +206,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                                     "
                                 >Affected and Fixed Packages</td>
                                 <td class="two-col-right wrap-strings">
-                                    <a href="/advisories/packages/{{ advisory.avid }}">
+                                    <a href="{% if is_snapshot %}{% url 'advisory_package_snapshot' avid=advisory.avid unique_content_id=advisory.unique_content_id %}{% else %}{% url 'advisory_package_details' avid=advisory.avid %}{% endif %}">
                                         Package Details
                                     </a>
                                 </td>
@@ -729,6 +747,123 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 {% endfor %}
             </table>
         </div> -->
+
+            {% if advisory_history and not is_snapshot %}
+            <div class="tab-div content" data-content="history">
+                <div class="notification is-info is-light mb-4 py-2 px-3 is-size-6">
+                    <i class="fa fa-info-circle mr-2"></i>To track EPSS score history go to <a onclick="goToTab('epss');" style="cursor: pointer;">EPSS Tab</a>
+                </div>
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px;">Date Collected</th>
+                            <th>Changes in this version</th>
+                            <th style="width: 100px;">Snapshot</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in advisory_history %}
+                        {% if entry.is_initial or entry.diff %}
+                        <tr>
+                            <td>
+                                {{ entry.date_collected|date:"Y-m-d H:i" }} UTC
+                                {% if entry.is_latest %}
+                                <span class="tag is-info is-light ml-2">Latest</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.is_initial %}
+                                <span class="tag is-info is-light">Oldest version collected</span>
+                                {% elif entry.diff %}
+                                {% with formatted_diff=entry.diff|format_diff_for_ui %}
+                                {% if formatted_diff %}
+                                <a class="diff-toggle-btn is-block has-text-right has-text-link is-size-7 has-text-weight-semibold mb-1 is-clickable"
+                                    onclick="toggleDiff(this)">Show more ▾</a>
+                                <div class="history-diff-collapsible">
+                                    {% for field, change in formatted_diff.items %}
+                                    <div class="mb-2">
+                                        <strong>{{ field }}</strong>:
+                                        {% if field == 'Summary' %}
+                                        <span class="diff-badge diff-badge-yellow"><b>Summary was changed</b></span>
+                                        {% elif 'old' in change or 'new' in change %}
+                                        <div class="mt-1">
+                                            <span class="diff-badge diff-badge-red diff-wrap diff-max-width"><b>{{
+                                                    change.old }}</b></span>
+                                            &rarr;
+                                            <span class="diff-badge diff-badge-green diff-wrap diff-max-width"><b>{{
+                                                    change.new }}</b></span>
+                                        </div>
+                                        {% else %}
+                                        <div class="mt-1">
+                                            {% for item in change.added %}
+                                            <div class="mt-1">
+                                                <span class="diff-badge diff-badge-green diff-wrap">{% if item.attributes %}{% for key, value in item.attributes %}{{ key }} <b>{{ value }}</b>{% if not forloop.last %}
+{% endif %}{% endfor %}{% else %}{{ item }}{% endif %}</span>
+                                            </div>
+                                            {% endfor %}
+                                            {% for item in change.removed %}
+                                            <div class="mt-1">
+                                                <span class="diff-badge diff-badge-red diff-wrap">{% if item.attributes %}{% for key, value in item.attributes %}{{ key }} <b>{{ value }}</b>{% if not forloop.last %}
+{% endif %}{% endfor %}{% else %}{{ item }}{% endif %}</span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <span class="has-text-grey is-italic is-size-7">No changes detected in this snapshot.</span>
+                                {% endif %}
+                                {% endwith %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not entry.is_latest %}
+                                <a href="{% url 'advisory_snapshot' avid=advisory.avid unique_content_id=entry.unique_content_id %}"
+                                    target="_blank" class="button is-small is-link is-light">
+                                    View <i class="fa fa-external-link fa_link_custom"></i>
+                                </a>
+                                {% else %}
+                                <span class="has-text-grey is-size-7">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">No historical versions available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if page_obj.has_other_pages %}
+                <nav class="pagination is-centered is-small mt-4" role="navigation" aria-label="pagination">
+                    {% if page_obj.has_previous %}
+                    <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% else %}
+                    <a class="pagination-previous" disabled>Previous</a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                    <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+                    {% else %}
+                    <a class="pagination-next" disabled>Next page</a>
+                    {% endif %}
+
+                    <ul class="pagination-list">
+                        {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                        <li><a class="pagination-link is-current" aria-current="page">{{ i }}</a></li>
+                        {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %} <li><a
+                                class="pagination-link" href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -737,6 +872,35 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 <script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
 
 <script>
+    function checkDiffHeights() {
+        document.querySelectorAll('.history-diff-collapsible').forEach(function (diffContainer) {
+            const toggleButton = diffContainer.previousElementSibling;
+            if (!toggleButton || !toggleButton.classList.contains('diff-toggle-btn')) return;
+
+            // Measure true height 
+            diffContainer.classList.remove('is-expanded', 'no-truncate');
+            diffContainer.style.maxHeight = '';
+
+            if (diffContainer.scrollHeight <= 125) {
+                // Full View
+                toggleButton.style.display = 'none';
+                diffContainer.classList.add('no-truncate');
+                diffContainer.style.maxHeight = 'none';
+            } else {
+                // Collapsed view
+                toggleButton.style.display = '';
+            }
+        });
+    }
+
+    function toggleDiff(toggleButton) {
+        const diffContainer = toggleButton.nextElementSibling;
+        diffContainer.classList.toggle('is-expanded');
+        toggleButton.textContent = diffContainer.classList.contains('is-expanded')
+            ? 'Show less \u25b4'
+            : 'Show more \u25be';
+    }
+
     function goToTab(tabName) {
         const activeLink = document.querySelector('div.tabs.is-boxed li.is-active');
         const activeTabContent = document.querySelector('div.tab-div.is-active');
@@ -750,6 +914,12 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
         target_id.classList.add('is-active');
         targetTabContent.classList.add('is-active');
     }
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.search.includes('page=')) {
+            goToTab('history');
+            requestAnimationFrame(checkDiffHeights);
+        }
+    });
 </script>
 
 {% endblock %}

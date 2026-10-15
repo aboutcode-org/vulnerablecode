@@ -11,6 +11,7 @@ from django.conf import settings
 
 from vulnerablecode import __version__ as vulnerablecode_version
 
+print('hello world')
 
 def versions(request):
     return {

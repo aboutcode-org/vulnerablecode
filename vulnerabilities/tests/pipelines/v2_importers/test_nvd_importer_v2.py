@@ -25,7 +25,7 @@ def load_test_data(file):
 
 def sorted_advisory_data(advisory_data):
     """
-    Return ``advisory_data`` of AdvisoryData mappings where each mapping nested
+    Return ``advisory_data`` of AdvisoryDataV2 mappings where each mapping nested
     list is sorted for stable testing results.
     """
     sorter = lambda dct: tuple(dct.items())

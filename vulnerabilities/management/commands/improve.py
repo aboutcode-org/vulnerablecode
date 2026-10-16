@@ -12,7 +12,6 @@ import traceback
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
-from vulnerabilities.improve_runner import ImproveRunner
 from vulnerabilities.improvers import IMPROVERS_REGISTRY
 from vulnerabilities.pipelines import VulnerableCodePipeline
 
@@ -61,24 +60,16 @@ class Command(BaseCommand):
                 status, error = improver().execute()
                 if status != 0:
                     self.stdout.write(error)
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f"Failed to run improver {improver.pipeline_id}. Continuing..."
+                        )
+                    )
                     failed_improvers.append(improver.pipeline_id)
-                continue
+                    continue
 
-            self.stdout.write(f"Improving data using {improver.qualified_name}")
-            try:
-                ImproveRunner(improver_class=improver).run()
                 self.stdout.write(
-                    self.style.SUCCESS(
-                        f"Successfully improved data using {improver.qualified_name}"
-                    )
-                )
-            except Exception:
-                failed_improvers.append(improver.qualified_name)
-                traceback.print_exc()
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Failed to run improver {improver.qualified_name}. Continuing..."
-                    )
+                    self.style.SUCCESS(f"Successfully improved data using {improver.pipeline_id}")
                 )
 
         if failed_improvers:

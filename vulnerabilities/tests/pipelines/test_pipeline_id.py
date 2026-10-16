@@ -59,6 +59,9 @@ class PipelineTests(unittest.TestCase):
 
         pipeline_dict = {}
         for obj in self._all_subclasses(VulnerableCodeBaseImporterPipelineV2):
+            # Skip test double pipelines defined under vulnerabilities.tests
+            if ".tests." in obj.__module__ or obj.__module__.startswith("vulnerabilities.tests"):
+                continue
             pipeline_dict[obj] = (obj.pipeline_id, obj.datasource_id)
 
         return pipeline_dict

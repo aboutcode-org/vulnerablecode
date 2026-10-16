@@ -11,7 +11,6 @@ import pytest
 from packageurl import PackageURL
 from univers.version_range import GitHubVersionRange
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.pipelines.v2_importers.mattermost_importer import MattermostImporterPipeline
 from vulnerabilities.pipelines.v2_importers.mattermost_importer import parse_vuln_ids

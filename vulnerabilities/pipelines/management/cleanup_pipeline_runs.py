@@ -44,20 +44,25 @@ class CleanupPipelineRuns(VulnerableCodePipeline):
         )
         for pipeline in progress.iter(pipelines):
             cutoff = timezone.now() - timedelta(days=retention_days)
-            runs = pipeline.pipelineruns.filter(run_exitcode__isnull=False).order_by(
-                "-created_date"
+            keep_ids = list(
+                pipeline.pipelineruns.filter(run_exitcode__isnull=False)
+                .order_by("-created_date")[:minimum_number_of_runs_to_keep]
+                .values_list("run_id", flat=True)
             )
-            runs_to_keep = runs[:minimum_number_of_runs_to_keep]
-            runs_to_delete = runs.filter(created_date__lt=cutoff).exclude(
-                run_id__in=runs_to_keep.values("run_id")
+            runs_to_delete = pipeline.pipelineruns.filter(created_date__lt=cutoff).exclude(
+                run_id__in=keep_ids
             )
 
             if runs_to_delete.exists():
                 pipeline_count += 1
 
-            for run in runs_to_delete.iterator():
-                run.delete()
-                deleted_run_count += 1
+            while runs_to_delete.exists():
+                chunk_ids = list(runs_to_delete[:5000].values_list("run_id", flat=True))
+                if not chunk_ids:
+                    break
+
+                count, _ = pipeline.pipelineruns.filter(run_id__in=chunk_ids).delete()
+                deleted_run_count += count
 
         self.log(
             f"Successfully removed {deleted_run_count:,d} runs from {pipeline_count} pipelines that were older than {retention_days} days."

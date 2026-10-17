@@ -148,7 +148,7 @@ Install the required dependencies::
     You can specify the Python version during the ``make dev`` step using the following
     command::
 
-             make dev PYTHON_EXE=python3.8.10
+             make dev PYTHON_EXE=python3.12
 
     When ``PYTHON_EXE`` is not specified, by default, the ``python3`` executable is
     used.

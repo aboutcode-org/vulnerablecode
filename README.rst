@@ -35,8 +35,8 @@ Build and tests status
 |Build Status| |Code License| |Data License| |Python 3.8+| |stability-wip| |Gitter chat|
 
 
-.. |Build Status| image:: https://github.com/nexB/vulnerablecode/actions/workflows/main.yml/badge.svg?branch=main
-   :target: https://github.com/nexB/vulnerablecode/actions?query=workflow%3ACI
+.. |Build Status| image:: https://github.com/aboutcode-org/vulnerablecode/actions/workflows/main.yml/badge.svg?branch=main
+   :target: https://github.com/aboutcode-org/vulnerablecode/actions?query=workflow%3ACI
 .. |Code License| image:: https://img.shields.io/badge/Code%20License-Apache--2.0-green.svg
    :target: https://opensource.org/licenses/Apache-2.0
 .. |Data License| image:: https://img.shields.io/badge/Data%20License-CC--BY--SA--4.0-green.svg

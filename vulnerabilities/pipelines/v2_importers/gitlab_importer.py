@@ -9,6 +9,7 @@
 
 import json
 import logging
+import re
 import traceback
 from pathlib import Path
 from typing import Iterable
@@ -178,6 +179,37 @@ def get_purl(package_slug, purl_type_by_gitlab_scheme, logger):
     return
 
 
+def parse_native_version_range(vrc, native_range):
+    """
+    Return a VersionRange parsed from a native version range string.
+
+    Some upstream ranges cannot be parsed in a single pass, for example Maven
+    ranges containing single-point segments such as ``[1.81.0,1.81.0]`` or
+    segments that are not listed in version order. In this case, parse each
+    segment separately and combine the resulting constraints in a single range.
+    """
+    try:
+        return vrc.from_native(native_range)
+    except Exception:
+        pass
+
+    segments = re.findall(r"[\[\(][^\[\]()]*[\]\)]|[^,\[\]()]+", native_range)
+    constraints = []
+    for segment in segments:
+        segment = segment.strip()
+        single_point = re.fullmatch(r"\[\s*(.+?)\s*,\s*(.+?)\s*\]", segment)
+        if single_point and single_point.group(1) == single_point.group(2):
+            segment_range = vrc.from_versions([single_point.group(1)])
+        elif segment.startswith(("[", "(")):
+            segment_range = vrc.from_native(segment)
+        else:
+            segment_range = vrc.from_versions([segment])
+        constraints.extend(segment_range.constraints)
+
+    constraints = sorted(constraints, key=lambda constraint: constraint.version)
+    return vrc(constraints=tuple(constraints))
+
+
 def parse_gitlab_advisory(
     file, base_path, gitlab_scheme_by_purl_type, purl_type_by_gitlab_scheme, logger
 ):
@@ -266,7 +298,7 @@ def parse_gitlab_advisory(
                     gitlab_scheme=gitlab_scheme, string=affected_range
                 )
             else:
-                affected_version_range = vrc.from_native(affected_range)
+                affected_version_range = parse_native_version_range(vrc, affected_range)
     except Exception as e:
         logger(
             f"parse_yaml_file: affected_range is not parsable: {affected_range!r} for: {purl!s} error: {e!r}\n {traceback.format_exc()}",

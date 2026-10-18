@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 
 from vulnerabilities.importers.suse_oval import SuseOvalImporter
 from vulnerabilities.importers.suse_oval import filter
+from vulnerabilities.lib_oval import OvalState
 from vulnerabilities.oval_parser import OvalParser
 from vulnerabilities.tests import util_tests
 
@@ -97,6 +98,27 @@ def test_suse_oval_parse_CVE_2008_5679():
     }
 
     assert def0_urls == parsed_oval.get_urls_from_definition(definition_0)
+
+
+def test_get_version_range_from_state_only_strips_leading_epoch_zero():
+    xml_doc = ET.parse(os.path.join(TEST_DATA, "org.opensuse.CVE-2008-5679.xml"))
+    translations = {"less than": "<", "equals": "=", "greater than or equal": ">="}
+    parsed_oval = OvalParser(translations, xml_doc)
+
+    cases = [
+        ("0:4.14-1.1", "<4.14-1.1"),
+        ("1:4.14-1.1", "<1:4.14-1.1"),
+        ("10:4.14-1.1", "<10:4.14-1.1"),
+        ("20:4.14-1.1", "<20:4.14-1.1"),
+        ("0:10:2.0-1", "<10:2.0-1"),
+        ("4.0:14-1", "<4.0:14-1"),
+    ]
+    for version, expected_range in cases:
+        state_element = ET.Element("rpminfo_state")
+        evr_element = ET.SubElement(state_element, "evr", {"operation": "less than"})
+        evr_element.text = version
+
+        assert parsed_oval.get_version_range_from_state(OvalState(state_element)) == expected_range
 
 
 def test_filter_suse_gz_files():

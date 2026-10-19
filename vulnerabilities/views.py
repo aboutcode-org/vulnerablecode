@@ -805,8 +805,8 @@ VulnerableCode is a free and open database of software package vulnerabilities
 and the tools to aggregate and correlate these vulnerabilities.
 
 Chat at https://gitter.im/aboutcode-org/vulnerablecode
-Docs at https://vulnerablecode.readthedocs.org/
-Source code and issues at https://github.com/nexB/vulnerablecode
+Docs at https://vulnerablecode.readthedocs.io/
+Source code and issues at https://github.com/aboutcode-org/vulnerablecode
 """
 
 

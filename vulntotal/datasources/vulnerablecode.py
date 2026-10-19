@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 class VulnerableCodeDataSource(DataSource):
     spdx_license_expression = "CC-BY-SA-4.0"
-    license_url = "https://github.com/nexB/vulnerablecode/blob/main/cc-by-sa-4.0.LICENSE"
+    license_url = "https://github.com/aboutcode-org/vulnerablecode/blob/main/cc-by-sa-4.0.LICENSE"
 
     global_instance = "https://public.vulnerablecode.io/"
     vc_purl_search_api_path = "api/packages/bulk_search/"

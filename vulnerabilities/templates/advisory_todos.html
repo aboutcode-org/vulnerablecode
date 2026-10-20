@@ -59,7 +59,7 @@ Advisory To-Dos
                         {{ form.search }}
 
                         {% if form.search.value %}
-                            <a href="?{% querystring request search='' avid='' %}"
+                            <a href="{{ request.path }}"
                             class="icon is-right"
                             style="pointer-events: auto; cursor: pointer;">
                                 <i class="fa fa-close" style="color:grey"></i>
@@ -71,7 +71,7 @@ Advisory To-Dos
                         {{ form.avid }}
 
                         {% if form.avid.value %}
-                            <a href="?{% querystring request search='' avid='' %}"
+                            <a href="{{ request.path }}"
                             class="icon is-right"
                             style="pointer-events: auto; cursor: pointer;">
                                 <i class="fa fa-close" style="color:gray"></i>
@@ -220,10 +220,12 @@ Advisory To-Dos
                 searchContainer.style.display = 'none';
                 lookupContainer.style.display = '';
                 searchContainer.querySelector('input').value = '';
+                lookupContainer.querySelector('input').value = avid;
             } else {
                 searchContainer.style.display = '';
                 lookupContainer.style.display = 'none';
                 lookupContainer.querySelector('input').value = '';
+                searchContainer.querySelector('input').value = search;
             }
         }
 

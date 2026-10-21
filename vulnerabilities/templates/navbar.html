@@ -26,6 +26,9 @@
         </div>
     </div>
     <div class="navbar-end mr-3">
+        <a class="navbar-item {% active_item 'insights-dashboard' %}" href="{% url 'insights-dashboard' %}">
+            Insights
+        </a>
         <a class="navbar-item  {% active_item 'todo-list' %}" href="{% url 'todo-list' %}">
             Advisory To-Dos
         </a>

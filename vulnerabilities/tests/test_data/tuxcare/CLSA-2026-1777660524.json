@@ -1,0 +1,180 @@
+{
+    "schema_version": "1.7.5",
+    "id": "CLSA-2026-1777660524",
+    "published": "2026-05-01T18:35:28Z",
+    "modified": "2026-06-01T00:32:28.749059063Z",
+    "upstream": [
+        "CVE-2026-6100"
+    ],
+    "summary": "python3.11: Fix of CVE-2026-6100",
+    "details": "- CVE-2026-6100 fix use-after-free in lzma/bz2 decompressor by clearing\n  the dangling next_in pointer after MemoryError so a re-used\n  decompressor cannot read or write through a stale buffer pointer",
+    "affected": [
+        {
+            "package": {
+                "name": "python3.11",
+                "ecosystem": "TuxCare:AlmaLinux:9.2",
+                "purl": "pkg:rpm/tuxcare/python3.11?distro=almalinux-9.2"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.11.2-2.el9_2.2.tuxcare.els21"
+                        }
+                    ]
+                }
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_os/almalinux9.2esu/CLSA-2026-1777660524.json"
+            }
+        },
+        {
+            "package": {
+                "name": "python3.11-debug",
+                "ecosystem": "TuxCare:AlmaLinux:9.2",
+                "purl": "pkg:rpm/tuxcare/python3.11-debug?distro=almalinux-9.2"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.11.2-2.el9_2.2.tuxcare.els21"
+                        }
+                    ]
+                }
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_os/almalinux9.2esu/CLSA-2026-1777660524.json"
+            }
+        },
+        {
+            "package": {
+                "name": "python3.11-devel",
+                "ecosystem": "TuxCare:AlmaLinux:9.2",
+                "purl": "pkg:rpm/tuxcare/python3.11-devel?distro=almalinux-9.2"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.11.2-2.el9_2.2.tuxcare.els21"
+                        }
+                    ]
+                }
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_os/almalinux9.2esu/CLSA-2026-1777660524.json"
+            }
+        },
+        {
+            "package": {
+                "name": "python3.11-idle",
+                "ecosystem": "TuxCare:AlmaLinux:9.2",
+                "purl": "pkg:rpm/tuxcare/python3.11-idle?distro=almalinux-9.2"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.11.2-2.el9_2.2.tuxcare.els21"
+                        }
+                    ]
+                }
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_os/almalinux9.2esu/CLSA-2026-1777660524.json"
+            }
+        },
+        {
+            "package": {
+                "name": "python3.11-libs",
+                "ecosystem": "TuxCare:AlmaLinux:9.2",
+                "purl": "pkg:rpm/tuxcare/python3.11-libs?distro=almalinux-9.2"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.11.2-2.el9_2.2.tuxcare.els21"
+                        }
+                    ]
+                }
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_os/almalinux9.2esu/CLSA-2026-1777660524.json"
+            }
+        },
+        {
+            "package": {
+                "name": "python3.11-test",
+                "ecosystem": "TuxCare:AlmaLinux:9.2",
+                "purl": "pkg:rpm/tuxcare/python3.11-test?distro=almalinux-9.2"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.11.2-2.el9_2.2.tuxcare.els21"
+                        }
+                    ]
+                }
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_os/almalinux9.2esu/CLSA-2026-1777660524.json"
+            }
+        },
+        {
+            "package": {
+                "name": "python3.11-tkinter",
+                "ecosystem": "TuxCare:AlmaLinux:9.2",
+                "purl": "pkg:rpm/tuxcare/python3.11-tkinter?distro=almalinux-9.2"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "0"
+                        },
+                        {
+                            "fixed": "3.11.2-2.el9_2.2.tuxcare.els21"
+                        }
+                    ]
+                }
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_os/almalinux9.2esu/CLSA-2026-1777660524.json"
+            }
+        }
+    ],
+    "references": [
+        {
+            "type": "ADVISORY",
+            "url": "https://errata.tuxcare.com/els_os/almalinux9.2esu/CLSA-2026-1777660524.html"
+        }
+    ]
+}

@@ -1,458 +1,59 @@
 [
   {
-    "advisory_id": "CVE-2023-52922",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "cloudlinux",
-          "name": "squid",
-          "version": "",
-          "qualifiers": "distro=cloudlinux-7-els",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/3.5.20",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "oracle",
-          "name": "squid",
-          "version": "",
-          "qualifiers": "distro=oracle-linux-7-els",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/3.5.20",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "centos",
-          "name": "kernel",
-          "version": "",
-          "qualifiers": "distro=centos-8.5-els",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": "vers:rpm/4.18.0",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      },
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "centos",
-          "name": "squid",
-          "version": "",
-          "qualifiers": "distro=centos-stream-8-els",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/4.15",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
+    "advisory_id": "CLSA-2025-1763136711",
+    "aliases": [
+      "CVE-2022-29154",
+      "CVE-2024-12087",
+      "CVE-2024-12088"
     ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.8",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-12-23T10:08:36.423446+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2023-52922"
-  },
-  {
-    "advisory_id": "CVE-2023-48161",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "rhel",
-          "name": "java-11-openjdk",
-          "version": "",
-          "qualifiers": "distro=rhel-7-els",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/11.0.23",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.1",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-12-23T08:55:12.096092+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2023-48161"
-  },
-  {
-    "advisory_id": "CVE-2024-21147",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "rhel",
-          "name": "java-11-openjdk",
-          "version": "",
-          "qualifiers": "distro=rhel-7-els",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/11.0.23",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.4",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-12-23T08:55:07.139188+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2024-21147"
-  },
-  {
-    "advisory_id": "CVE-2025-21587",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "rhel",
-          "name": "java-11-openjdk",
-          "version": "",
-          "qualifiers": "distro=rhel-7-els",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/11.0.23",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.4",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-12-23T08:55:06.706873+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2025-21587"
-  },
-  {
-    "advisory_id": "CVE-2024-39502",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "generic",
-          "namespace": "tuxcare",
-          "name": "kernel",
-          "version": "",
-          "qualifiers": "distro=unknown-os",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:generic/2.6.32",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.8",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-09-20T06:03:30.551756+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2024-39502"
-  },
-  {
-    "advisory_id": "CVE-2024-40927",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "generic",
-          "namespace": "tuxcare",
-          "name": "kernel",
-          "version": "",
-          "qualifiers": "distro=unknown-os",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:generic/2.6.32",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.8",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-09-20T06:03:26.132106+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2024-40927"
-  },
-  {
-    "advisory_id": "CVE-2025-43392",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "generic",
-          "namespace": "tuxcare",
-          "name": "webkit2gtk3",
-          "version": "",
-          "qualifiers": "distro=tuxcare-9.6-esu",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:generic/2.50.1",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "6.5",
-        "scoring_elements": "MEDIUM"
-      }
-    ],
-    "date_published": "2025-12-20T04:26:48.737089+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2025-43392"
-  },
-  {
-    "advisory_id": "CVE-2023-50868",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "cloudlinux",
-          "name": "dhcp",
-          "version": "",
-          "qualifiers": "distro=cloudlinux-7-els",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": "vers:rpm/4.2.5",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.5",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-12-23T01:56:28.627699+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2023-50868"
-  },
-  {
-    "advisory_id": "CVE-2021-33193",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "generic",
-          "namespace": "tuxcare",
-          "name": "httpd",
-          "version": "",
-          "qualifiers": "distro=unknown-os",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:generic/2.2.15",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "7.5",
-        "scoring_elements": "HIGH"
-      }
-    ],
-    "date_published": "2025-09-19T21:21:01.425783+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2021-33193"
-  },
-  {
-    "advisory_id": "CVE-2025-50093",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "almalinux",
-          "name": "mysql",
-          "version": "",
-          "qualifiers": "distro=almalinux-9.2-esu",
-          "subpath": ""
-        },
-        "affected_version_range": null,
-        "fixed_version_range": "vers:rpm/8.0.32",
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "4.9",
-        "scoring_elements": "MEDIUM"
-      }
-    ],
-    "date_published": "2025-12-22T17:11:15.409148+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2025-50093"
-  },
-  {
-    "advisory_id": "CVE-2025-64505",
-    "aliases": [],
-    "summary": "",
-    "affected_packages": [
-      {
-        "package": {
-          "type": "rpm",
-          "namespace": "centos",
-          "name": "libpng",
-          "version": "",
-          "qualifiers": "distro=centos-7-els",
-          "subpath": ""
-        },
-        "affected_version_range": "vers:rpm/1.5.13",
-        "fixed_version_range": null,
-        "introduced_by_commit_patches": [],
-        "fixed_by_commit_patches": []
-      }
-    ],
-    "references": [],
-    "patches": [],
-    "severities": [
-      {
-        "system": "generic_textual",
-        "value": "4.4",
-        "scoring_elements": "MEDIUM"
-      }
-    ],
-    "date_published": "2025-12-20T04:34:51.112485+00:00",
-    "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2025-64505"
-  },
-  {
-    "advisory_id": "CVE-2022-50268",
-    "aliases": [],
-    "summary": "",
+    "summary": "Fix CVE(s): CVE-2022-29154, CVE-2024-12087, CVE-2024-12088\n* SECURITY UPDATE: malicious remote servers to write arbitrary files inside\n     the directories of connecting peers:\n     - debian/patches/els/0001-CVE-2022-29154.patch: fix insufficient validation of file\n       names.\n     - CVE-2022-29154.\n   * SECURITY UPDATE: path traversal vulnerability.\n     - debian/patches/els/0002-CVE-2024-12087.patch: refuse a duplicate dirlist and\n       range check dir_ndx before use\n     - CVE-2024-12087\n   * SECURITY UPDATE: rsync client fails to properly verify if a symbolic link\n     destination sent from the server contains another symbolic link within it:\n     - debian/patches/els/0003-CVE-2024-12088.patch: make --safe-links stricter.\n     - CVE-2024-12088.",
     "affected_packages": [
       {
         "package": {
           "type": "deb",
-          "namespace": "ubuntu",
-          "name": "linux",
+          "namespace": "tuxcare",
+          "name": "rsync",
           "version": "",
-          "qualifiers": "distro=ubuntu-16.04-els",
+          "qualifiers": "distro=debian-10",
           "subpath": ""
         },
-        "affected_version_range": "vers:deb/4.4.0",
-        "fixed_version_range": null,
+        "affected_version_range": "vers:deb/<3.1.3-6+tuxcare.els1",
+        "fixed_version_range": "vers:deb/3.1.3-6+tuxcare.els1",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
     ],
-    "references": [],
-    "patches": [],
-    "severities": [
+    "references": [
       {
-        "system": "generic_textual",
-        "value": "5.5",
-        "scoring_elements": "MEDIUM"
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://errata.tuxcare.com/els_os/debian10els/CLSA-2025-1763136711.html"
       }
     ],
-    "date_published": "2025-12-23T07:31:24.920518+00:00",
+    "patches": [],
+    "severities": [],
+    "date_published": "2025-11-14T16:11:55+00:00",
     "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2022-50268"
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
   },
   {
-    "advisory_id": "CVE-2020-1472",
-    "aliases": [],
-    "summary": "",
+    "advisory_id": "CLSA-2025-1765930349",
+    "aliases": [
+      "AIKIDO-2024-10370"
+    ],
+    "summary": "TuxCare security update for sentence-transformers (1 CVE)\nTuxCare rebuilt sentence-transformers to address 1 CVE. Fixed in 2.7.0.post1+tuxcare.",
     "affected_packages": [
       {
         "package": {
-          "type": "deb",
-          "namespace": "debian",
-          "name": "samba",
+          "type": "pypi",
+          "namespace": "",
+          "name": "sentence-transformers",
           "version": "",
-          "qualifiers": "distro=debian-10-els",
+          "qualifiers": "",
           "subpath": ""
         },
-        "affected_version_range": "vers:deb/4.9.5",
-        "fixed_version_range": null,
+        "affected_version_range": "vers:pypi/2.7.0",
+        "fixed_version_range": "vers:pypi/2.7.0.post1+tuxcare",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -460,26 +61,35 @@
     "references": [],
     "patches": [],
     "severities": [],
-    "date_published": "2025-12-22T16:58:13.189255+00:00",
+    "date_published": "2026-08-04T14:52:09+00:00",
     "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2020-1472"
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
   },
   {
-    "advisory_id": "CVE-2025-6297",
-    "aliases": [],
-    "summary": "",
+    "advisory_id": "CLSA-2026-1776213254",
+    "aliases": [
+      "CVE-2021-21263",
+      "CVE-2021-43808",
+      "CVE-2024-52301",
+      "CVE-2025-27515",
+      "GHSA-4mg9-vhxq-vm7j",
+      "GHSA-jwvj-pwww-3mj5",
+      "GHSA-wq8p-mqvg-2p5h",
+      "GHSA-x7p5-p2c9-phvg"
+    ],
+    "summary": "TuxCare security update for laravel/framework (8 CVEs)\nTuxCare rebuilt laravel/framework to address 8 CVEs. Fixed in 8.12.2-p1+tuxcare.",
     "affected_packages": [
       {
         "package": {
-          "type": "apk",
-          "namespace": "alpine",
-          "name": "dpkg",
+          "type": "composer",
+          "namespace": "laravel",
+          "name": "framework",
           "version": "",
-          "qualifiers": "distro=alpine-linux-3.18-els",
+          "qualifiers": "",
           "subpath": ""
         },
-        "affected_version_range": null,
-        "fixed_version_range": "vers:alpine/1.21.21",
+        "affected_version_range": "vers:composer/8.12.2",
+        "fixed_version_range": "vers:composer/8.12.2-p1+tuxcare",
         "introduced_by_commit_patches": [],
         "fixed_by_commit_patches": []
       }
@@ -487,8 +97,189 @@
     "references": [],
     "patches": [],
     "severities": [],
-    "date_published": "2025-12-19T05:00:40.874276+00:00",
+    "date_published": "2026-08-04T14:52:25+00:00",
     "weaknesses": [],
-    "url": "https://cve.tuxcare.com/els/cve/CVE-2025-6297"
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
+  },
+  {
+    "advisory_id": "CLSA-2026-1777660524",
+    "aliases": [
+      "CVE-2026-6100"
+    ],
+    "summary": "python3.11: Fix of CVE-2026-6100\n- CVE-2026-6100 fix use-after-free in lzma/bz2 decompressor by clearing\n  the dangling next_in pointer after MemoryError so a re-used\n  decompressor cannot read or write through a stale buffer pointer",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-debug",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-devel",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-idle",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-libs",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-test",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-tkinter",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://errata.tuxcare.com/els_os/almalinux9.2esu/CLSA-2026-1777660524.html"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2026-05-01T18:35:28+00:00",
+    "weaknesses": [],
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
+  },
+  {
+    "advisory_id": "CLSA-2026-1792379983",
+    "aliases": [
+      "CVE-2026-54264",
+      "CVE-2026-54265",
+      "CVE-2026-54266",
+      "CVE-2026-54267",
+      "CVE-2026-54268"
+    ],
+    "summary": "TuxCare security update for @angular/platform-server (5 CVEs)\nTuxCare rebuilt @angular/platform-server to address 5 CVEs. Fixed in 18.2.14-tuxcare.12.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "npm",
+          "namespace": "@angular",
+          "name": "platform-server",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:npm/18.2.14-tuxcare.1|18.2.14-tuxcare.3|18.2.14-tuxcare.4|18.2.14-tuxcare.5|18.2.14-tuxcare.6|18.2.14-tuxcare.7|18.2.14-tuxcare.9|18.2.14-tuxcare.10|18.2.14-tuxcare.11|18.2.14",
+        "fixed_version_range": "vers:npm/18.2.14-tuxcare.12",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2026-10-19T03:19:39+00:00",
+    "weaknesses": [],
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
+  },
+  {
+    "advisory_id": "CLSA-2026-1792431625",
+    "aliases": [
+      "CVE-2026-89425"
+    ],
+    "summary": "TuxCare security update for com.fasterxml.jackson.core:jackson-core (1 CVE)\nTuxCare rebuilt com.fasterxml.jackson.core:jackson-core to address 1 CVE. Fixed in 2.12.1-tuxcare.2.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.12.1|2.12.1-tuxcare.1",
+        "fixed_version_range": "vers:maven/2.12.1-tuxcare.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2026-10-19T17:40:25+00:00",
+    "weaknesses": [],
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
   }
 ]

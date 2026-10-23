@@ -22,7 +22,6 @@ from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.utils import create_weaknesses_list
-from vulnerabilities.utils import dedupe
 from vulnerabilities.utils import fetch_response
 from vulnerabilities.utils import get_item
 
@@ -115,8 +114,7 @@ class DebianImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     def parse(self, pkg_name: str, records: Mapping[str, Any]) -> Iterable[AdvisoryData]:
 
         for record_identifier, record in records.items():
-            affected_versions = []
-            fixed_versions = []
+            affected_packages = []
 
             releases = record["releases"].items()
             for release_name, release_record in releases:
@@ -128,41 +126,37 @@ class DebianImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     )
                     continue
 
-                purl = PackageURL(
-                    name=pkg_name,
-                    type="deb",
-                    namespace="debian",
-                    qualifiers={"distro": release_name},
+                # Debian uses "0" for releases that were never affected
+                fixed_version = release_record.get("fixed_version")
+                if fixed_version == "0":
+                    continue
+
+                affected_version_range = None
+                if release_record.get("status", "") != "resolved":
+                    affected_version_range = DebianVersionRange.from_versions([version])
+
+                fixed_version_range = None
+                if fixed_version:
+                    fixed_version_range = DebianVersionRange.from_versions([fixed_version])
+
+                affected_packages.append(
+                    AffectedPackageV2(
+                        package=PackageURL(
+                            name=pkg_name,
+                            type="deb",
+                            namespace="debian",
+                            qualifiers={"distro": release_name},
+                        ),
+                        affected_version_range=affected_version_range,
+                        fixed_version_range=fixed_version_range,
+                    )
                 )
-
-                if release_record.get("status", "") == "resolved":
-                    fixed_versions.append(version)
-                else:
-                    affected_versions.append(version)
-
-                if release_record.get("fixed_version"):
-                    fixed_versions.append(release_record["fixed_version"])
 
             references = []
             debianbug = record.get("debianbug")
             if debianbug:
                 bug_url = f"https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={debianbug}"
                 references.append(ReferenceV2(url=bug_url, reference_id=str(debianbug)))
-            affected_versions = dedupe(affected_versions)
-            fixed_versions = dedupe(fixed_versions)
-            if affected_versions:
-                affected_version_range = DebianVersionRange.from_versions(affected_versions)
-            else:
-                affected_version_range = None
-            affected_packages = []
-            for fixed_version in fixed_versions:
-                affected_packages.append(
-                    AffectedPackageV2(
-                        package=purl,
-                        affected_version_range=affected_version_range,
-                        fixed_version_range=DebianVersionRange.from_versions([fixed_version]),
-                    )
-                )
             weaknesses = get_cwe_from_debian_advisory(record)
 
             yield AdvisoryDataV2(

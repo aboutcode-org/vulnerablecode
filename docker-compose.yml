@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   db:
     image: postgres:15
@@ -35,9 +33,11 @@ services:
 
   vulnerablecode_scheduler:
     build: .
-    command: wait-for-it web:8000 -- python ./manage.py run_scheduler
+    command: wait-for-it -t 60 vulnerablecode:8000 -- python ./manage.py run_scheduler
     env_file:
       - docker.env
+      - path: .env
+        required: false
     volumes:
       - /etc/vulnerablecode/:/etc/vulnerablecode/
     depends_on:
@@ -47,9 +47,11 @@ services:
 
   vulnerablecode_rqworker:
     build: .
-    command: wait-for-it web:8000 -- python ./manage.py rqworker default
+    command: wait-for-it -t 60 vulnerablecode:8000 -- python ./manage.py rqworker default
     env_file:
       - docker.env
+      - path: .env
+        required: false
     volumes:
       - /etc/vulnerablecode/:/etc/vulnerablecode/
     depends_on:
@@ -59,9 +61,11 @@ services:
 
   vulnerablecode_rqworker_high:
     build: .
-    command: wait-for-it web:8000 -- python ./manage.py rqworker high
+    command: wait-for-it -t 60 vulnerablecode:8000 -- python ./manage.py rqworker high
     env_file:
       - docker.env
+      - path: .env
+        required: false
     volumes:
       - /etc/vulnerablecode/:/etc/vulnerablecode/
     depends_on:

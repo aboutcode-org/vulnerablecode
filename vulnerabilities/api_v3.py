@@ -20,8 +20,11 @@ from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
 from packageurl import PackageURL
+from rest_framework import mixins
 from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -171,6 +174,7 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
         fields = [
             "advisory_id",
             "advisory_uid",
+            "datasource_id",
             "url",
             "aliases",
             "summary",
@@ -275,7 +279,11 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
-    @extend_schema(request=PackageQuerySerializer)
+    @extend_schema(
+        operation_id="v3_packages_retrieve",
+        request=PackageQuerySerializer,
+        responses={200: PackageV3Serializer(many=True)},
+    )
     def create(self, request, *args, **kwargs):
         serializer = PackageQuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -388,6 +396,7 @@ class AffectedByAdvisoryV3Serializer(AdvisoryV3Serializer):
         fields = [
             "advisory_id",
             "advisory_uid",
+            "datasource_id",
             "url",
             "aliases",
             "summary",
@@ -411,7 +420,11 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
 
-    @extend_schema(request=AdvisoryQuerySerializer)
+    @extend_schema(
+        operation_id="v3_advisories_retrieve",
+        request=AdvisoryQuerySerializer,
+        responses={200: AdvisoryV3Serializer(many=True)},
+    )
     def create(self, request, *args, **kwargs):
         serializer = AdvisoryQuerySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -486,10 +499,28 @@ class AdvisoryV3ViewSet(viewsets.GenericViewSet):
         return self.get_paginated_response(serializer.data)
 
 
-class PackageAdvisoriesViewSet(viewsets.ReadOnlyModelViewSet):
+class PackageAdvisoriesViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
     serializer_class = AdvisoryV3Serializer
     relation = None
     throttle_classes = [AnonRateThrottle, PermissionBasedUserRateThrottle]
+    filter_backends = []
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="purl",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Package-URL (PURL) to query.",
+                required=True,
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         purl = self.request.query_params.get("purl")
@@ -705,6 +736,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
             "primary_advisory__avid",
             "primary_advisory__summary",
             "primary_advisory__advisory_id",
+            "primary_advisory__datasource_id",
             "primary_advisory__is_curation",
         )
     )
@@ -834,6 +866,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                 {
                     "advisory_id": identifier,
                     "advisory_uid": primary.avid,
+                    "datasource_id": primary.datasource_id,
                     "aliases": aliases,
                     "summary": primary.summary,
                     "weighted_severity": weighted_severity,
@@ -966,6 +999,7 @@ def get_affected_advisories_bulk(packages, max_advisories, base_url, reachabilit
                 {
                     "advisory_id": identifier,
                     "advisory_uid": advisory.avid,
+                    "datasource_id": advisory.datasource_id,
                     "aliases": aliases,
                     "summary": advisory.summary,
                     "weighted_severity": advisory.weighted_severity,
@@ -1018,6 +1052,7 @@ def get_fixing_advisories_bulk(packages, max_advisories, base_url):
             "id",
             "package_id",
             "primary_advisory__advisory_id",
+            "primary_advisory__datasource_id",
         )
     )
 
@@ -1043,6 +1078,7 @@ def get_fixing_advisories_bulk(packages, max_advisories, base_url):
                     "advisory_id": advisory.advisory_id.split("/")[-1],
                     "resource_url": resource_url,
                     "advisory_uid": advisory.avid,
+                    "datasource_id": advisory.datasource_id,
                 }
             )
 
@@ -1106,6 +1142,7 @@ def get_fixing_advisories_bulk(packages, max_advisories, base_url):
                     "advisory_id": advisory.advisory_id.split("/")[-1],
                     "resource_url": resource_url,
                     "advisory_uid": advisory.avid,
+                    "datasource_id": advisory.datasource_id,
                 }
             )
         result[package.id] = package_result

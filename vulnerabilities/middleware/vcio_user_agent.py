@@ -24,8 +24,9 @@ class VCIOUserAgentMiddleware:
             ("/api/docs/", "/api/schema/")
         ):
             user_agent = request.headers.get("User-Agent", "")
+            x_user_agent = request.headers.get("X-User-Agent", "")
             docs_url = request.build_absolute_uri("/api/docs/")
-            if user_agent != settings.VCIO_USER_AGENT:
+            if settings.VCIO_USER_AGENT not in [user_agent, x_user_agent]:
                 return JsonResponse(
                     {
                         "detail": (

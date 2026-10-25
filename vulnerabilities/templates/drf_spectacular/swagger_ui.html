@@ -33,8 +33,8 @@ VulnerableCode API documentation
         swaggerSettings.dom_id = "#swagger-ui";
 
         swaggerSettings.requestInterceptor = (request) => {
-            const userAgent = swaggerSettings.userAgent || "VCIO_API_AGENT";
-            request.headers['User-Agent'] = userAgent;
+            const xUserAgent = swaggerSettings.xUserAgent || "VCIO_API_AGENT";
+            request.headers['X-User-Agent'] = xUserAgent;
             return request;
         };
         

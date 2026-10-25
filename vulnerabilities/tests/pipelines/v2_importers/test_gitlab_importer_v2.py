@@ -206,3 +206,97 @@ def test_parse_gitlab_advisory_with_no_purl(monkeypatch, gitlab_advisory_yaml):
     assert isinstance(result.date_published, datetime)
     assert result.date_published.year == 2018
     assert result.affected_packages == []  # Because get_purl was mocked to return None
+
+
+def test_parse_gitlab_advisory_v_prefix_fixed_version(tmp_path):
+    """
+    Regression test for https://github.com/aboutcode-org/vulnerablecode/issues/2411
+
+    GitLab advisories sometimes carry fixed_versions with a leading "v" prefix
+    (e.g. "v2.28.2") that certain version classes reject, causing the version
+    to be silently discarded.  The importer must strip the prefix and still
+    produce a valid AdvisoryDataV2 with a non-empty fixed_version_range.
+
+    The advisory intentionally has no affected_range so that the only path to
+    a stored fixed_version_range is through the normalized fixed_version.
+    """
+    content = {
+        "identifier": "CVE-2023-9999",
+        "package_slug": "pypi/requests",
+        "title": "Example v-prefix vulnerability",
+        "description": "A test advisory with a v-prefixed fixed version.",
+        "pubdate": "2023-01-10",
+        # No affected_range -- the only version data is the v-prefixed fixed version.
+        # Without the fix this advisory would be stored with no affected_packages.
+        "fixed_versions": ["v2.28.2"],
+        "urls": ["https://example.com/advisory"],
+        "cwe_ids": [],
+        "identifiers": ["CVE-2023-9999"],
+    }
+    advisory_path = tmp_path / "CVE-2023-9999.yml"
+    advisory_path.write_text(saneyaml.dump(content))
+
+    dummy_logger = lambda *args, **kwargs: None
+
+    result = parse_gitlab_advisory(
+        file=advisory_path,
+        base_path=tmp_path,
+        gitlab_scheme_by_purl_type={"pypi": "pypi"},
+        purl_type_by_gitlab_scheme={"pypi": "pypi"},
+        logger=dummy_logger,
+    )
+
+    assert isinstance(result, AdvisoryDataV2)
+    assert result.affected_packages, "Expected at least one affected_package"
+    fixed_range = result.affected_packages[0].fixed_version_range
+    assert fixed_range is not None, "fixed_version_range must not be None"
+    # "2.28.2" must appear in the range string despite the input being "v2.28.2"
+    assert "2.28.2" in str(fixed_range), f"Unexpected fixed_version_range: {fixed_range}"
+
+
+def test_parse_gitlab_advisory_unparsable_version_still_stored(tmp_path):
+    """
+    Regression test for https://github.com/aboutcode-org/vulnerablecode/issues/2412
+
+    When neither the affected_range nor any fixed_version can be parsed, the
+    advisory must still be returned (without affected_packages) rather than
+    silently dropped.  This allows downstream improvers to enrich the record
+    with version data later.
+    """
+    content = {
+        "identifier": "CVE-2023-8888",
+        "package_slug": "pypi/somelib",
+        "title": "Advisory with unparsable version",
+        "description": "Version string is deliberately invalid.",
+        "pubdate": "2023-05-01",
+        # No affected_range and an unparsable fixed_version.
+        # Before the fix, parse_gitlab_advisory returned None here.
+        "fixed_versions": ["!!!invalid!!!"],
+        "urls": ["https://example.com/advisory2"],
+        "cwe_ids": [],
+        "identifiers": ["CVE-2023-8888"],
+    }
+    advisory_path = tmp_path / "CVE-2023-8888.yml"
+    advisory_path.write_text(saneyaml.dump(content))
+
+    dummy_logger = lambda *args, **kwargs: None
+
+    result = parse_gitlab_advisory(
+        file=advisory_path,
+        base_path=tmp_path,
+        gitlab_scheme_by_purl_type={"pypi": "pypi"},
+        purl_type_by_gitlab_scheme={"pypi": "pypi"},
+        logger=dummy_logger,
+    )
+
+    # Must NOT be None -- advisory should be stored even when version parsing fails
+    assert (
+        result is not None
+    ), "Advisory must not be silently dropped when version parsing fails (issue #2412)"
+    assert isinstance(result, AdvisoryDataV2)
+    assert result.advisory_id == "pypi/somelib/CVE-2023-8888"
+    assert result.summary == (
+        "Advisory with unparsable version\nVersion string is deliberately invalid."
+    )
+    # No affected_packages because no version string could be parsed
+    assert result.affected_packages == []

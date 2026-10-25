@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+from insights import insights_snapshot_pipeline
 from vulnerabilities.pipelines.v2_improvers import archive_urls
 from vulnerabilities.pipelines.v2_improvers import collect_ssvc_trees
 from vulnerabilities.pipelines.v2_improvers import compute_advisory_todo as compute_advisory_todo_v2
@@ -43,5 +44,6 @@ IMPROVERS_REGISTRY = create_registry(
         enhance_with_github_poc.GithubPocsImproverPipeline,
         mark_unfurl_version_range.MarkUnfurlVersionRangePipeline,
         group_advisories_for_packages_v2.GroupAdvisoriesForPackages,
+        insights_snapshot_pipeline.InsightsSnapshotPipeline,
     ]
 )

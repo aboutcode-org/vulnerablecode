@@ -1,0 +1,50 @@
+{
+    "schema_version": "1.9.0",
+    "id": "CLSA-2026-1776213254",
+    "published": "2026-08-04T14:52:25Z",
+    "modified": "2026-10-15T09:47:59.566920710Z",
+    "upstream": [
+        "CVE-2021-21263",
+        "CVE-2021-43808",
+        "CVE-2024-52301",
+        "CVE-2025-27515",
+        "GHSA-4mg9-vhxq-vm7j",
+        "GHSA-jwvj-pwww-3mj5",
+        "GHSA-wq8p-mqvg-2p5h",
+        "GHSA-x7p5-p2c9-phvg"
+    ],
+    "summary": "TuxCare security update for laravel/framework (8 CVEs)",
+    "details": "TuxCare rebuilt laravel/framework to address 8 CVEs. Fixed in 8.12.2-p1+tuxcare.",
+    "affected": [
+        {
+            "package": {
+                "name": "laravel/framework",
+                "ecosystem": "TuxCare:Packagist",
+                "purl": "pkg:composer/laravel/framework"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "8.12.2"
+                        },
+                        {
+                            "fixed": "8.12.2-p1+tuxcare"
+                        }
+                    ]
+                }
+            ],
+            "versions": [
+                "8.12.2"
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_lang/packagist/CLSA-2026-1776213254.json",
+                "tuxcare": {
+                    "base_version": "8.12.2",
+                    "fixed_version": "8.12.2-p1+tuxcare"
+                }
+            }
+        }
+    ]
+}

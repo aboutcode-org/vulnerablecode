@@ -37,3 +37,39 @@ def test_ruby_advisories_per_file(yml_file):
 
     expected_file = yml_file.with_name(yml_file.stem + "-expected.json")
     util_tests.check_results_against_json(result, expected_file)
+
+
+from vulnerabilities.pipelines.v2_importers.ruby_importer import get_aliases
+
+
+def test_get_aliases_drops_osvdb_alias():
+    record = {
+        "cve": "2020-0001",
+        "ghsa": "xxxx-yyyy-zzzz",
+        "osvdb": 12345,
+    }
+    aliases = get_aliases(record)
+    assert aliases == ["CVE-2020-0001", "GHSA-xxxx-yyyy-zzzz"]
+    assert "OSV-12345" not in aliases
+
+
+def test_get_aliases_only_osvdb():
+    record = {
+        "osvdb": 65123,
+    }
+    assert get_aliases(record) == []
+
+
+def test_get_aliases_no_osvdb():
+    record = {
+        "cve": "2021-1234",
+    }
+    assert get_aliases(record) == ["CVE-2021-1234"]
+
+
+def test_get_aliases_osvdb_and_ghsa_only():
+    record = {
+        "ghsa": "xxxx-yyyy-zzzz",
+        "osvdb": 12345,
+    }
+    assert get_aliases(record) == ["GHSA-xxxx-yyyy-zzzz"]

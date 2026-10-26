@@ -80,7 +80,7 @@ Support
 If you have a specific problem, suggestion or bug, please submit a
 `GitHub issue <https://github.com/aboutcode-org/vulnerablecode/issues>`_.
 
-For quick questions or socializing, join the AboutCode community discussions on `Slack <https://join.slack.com/t/aboutcode-org/shared_invite/zt-3li3bfs78-mmtKG0Qhv~G2dSlNCZW2pA>`_.
+For quick questions or socializing, join the AboutCode community discussions on `Slack <https://join.slack.com/t/aboutcode-org/shared_invite/zt-31uzazd7l-tBHcqKUKkX6jUEPRLswiNw>`_.
 
 Interested in commercial suppport? Contact the `AboutCode team <mailto:hello@aboutcode.org>`_.
 

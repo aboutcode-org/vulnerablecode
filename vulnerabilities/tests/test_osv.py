@@ -24,6 +24,7 @@ from vulnerabilities.importers.osv import get_fixed_versions
 from vulnerabilities.importers.osv import get_published_date
 from vulnerabilities.importers.osv import get_references
 from vulnerabilities.importers.osv import get_severities
+from vulnerabilities.importers.osv import parse_advisory_data
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 
 
@@ -397,3 +398,32 @@ class TestOSVImporter(TestCase):
         )
 
         assert results == [SemverVersion("6.5.4")]
+
+    def test_parse_advisory_data_with_crates_io_ecosystem(self):
+        raw_data = {
+            "id": "GHSA-xxxx-yyyy-zzzz",
+            "summary": "test advisory",
+            "affected": [
+                {
+                    "package": {"name": "serde", "ecosystem": "crates.io"},
+                    "ranges": [
+                        {
+                            "type": "ECOSYSTEM",
+                            "events": [{"introduced": "0"}, {"fixed": "1.0.0"}],
+                        }
+                    ],
+                }
+            ],
+        }
+
+        advisory = parse_advisory_data(
+            raw_data=raw_data,
+            supported_ecosystems=["cargo"],
+            advisory_url="https://example.org/advisory",
+        )
+        results = advisory.affected_packages
+
+        assert len(results) == 1
+        assert results[0].package == PackageURL(type="cargo", name="serde")
+        assert str(results[0].package) == "pkg:cargo/serde"
+        assert results[0].fixed_version == SemverVersion("1.0.0")

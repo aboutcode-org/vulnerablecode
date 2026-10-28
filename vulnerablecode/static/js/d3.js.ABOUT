@@ -1,0 +1,14 @@
+about_resource: d3.js
+name: d3.js
+version: 7.9.0
+download_url: https://registry.npmjs.org/d3/-/d3-7.9.0.tgz
+license_expression: isc
+homepage_url: https://github.com/d3/d3
+owner: Mike Bostock
+description: Bring data to life with SVG, Canvas and HTML.
+attribute: yes
+package_url: pkg:npm/d3@7.9.0
+licenses:
+  - key: isc
+    name: ISC License
+    file: d3.js.LICENSE

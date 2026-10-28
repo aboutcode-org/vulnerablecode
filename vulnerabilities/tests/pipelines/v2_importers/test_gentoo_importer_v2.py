@@ -22,6 +22,7 @@ TEST_CVE_FILES = [
     TEST_DATA / "glsa-201709-09.xml",
     TEST_DATA / "glsa-202511-02.xml",
     TEST_DATA / "glsa-202512-01.xml",
+    TEST_DATA / "glsa-202511-03.xml",
 ]
 
 

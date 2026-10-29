@@ -15,7 +15,6 @@ from django.db import transaction
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines import VulnerableCodePipeline
-from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.pipelines.v2_importers.suse_score_importer import (
     SUSESeverityScoreImporterPipeline,
 )
@@ -23,14 +22,13 @@ from vulnerabilities.severity_systems import CVSSV2
 from vulnerabilities.severity_systems import CVSSV3
 from vulnerabilities.severity_systems import CVSSV4
 from vulnerabilities.severity_systems import CVSSV31
-from vulnerabilities.severity_systems import EPSS
 
 logger = logging.getLogger(__name__)
 
 
 class RelateSeveritiesPipeline(VulnerableCodePipeline):
     """
-    Severity Relations Pipeline: Relate EPSS and SUSE CVSS severities to advisories
+    Severity Relations Pipeline: Relate SUSE CVSS severities to advisories
     by matching severity advisory IDs with advisory IDs and aliases.
     """
 
@@ -42,7 +40,6 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
 
     # Severity systems to process
     SUPPORTED_SYSTEMS = {
-        EPSS.identifier,
         CVSSV2.identifier,
         CVSSV3.identifier,
         CVSSV31.identifier,
@@ -50,7 +47,6 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
     }
 
     pipelines = [
-        EPSSImporterPipeline.pipeline_id,
         SUSESeverityScoreImporterPipeline.pipeline_id,
     ]
 
@@ -60,7 +56,7 @@ class RelateSeveritiesPipeline(VulnerableCodePipeline):
 
     def relate_severities(self):
         """
-        Relate EPSS and SUSE severities to advisories by matching advisory IDs.
+        Relate SUSE severities to advisories by matching advisory IDs.
         """
         # Filter severities by supported scoring systems
         severity_score_advisories = (

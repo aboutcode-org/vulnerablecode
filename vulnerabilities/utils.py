@@ -643,54 +643,6 @@ def sha256_digest(normalized_data):
     return hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
 
 
-def compute_content_id(advisory_data):
-    """
-    Compute a unique content_id for an advisory by normalizing its data and hashing it.
-
-    :param advisory_data: An AdvisoryData object
-    :return: SHA-256 hash digest as content_id
-    """
-
-    # Normalize fields
-    from vulnerabilities.importer import AdvisoryData
-    from vulnerabilities.models import Advisory
-
-    if isinstance(advisory_data, Advisory):
-        normalized_data = {
-            "aliases": normalize_list(advisory_data.aliases),
-            "summary": normalize_text(advisory_data.summary),
-            "affected_packages": [
-                pkg for pkg in normalize_list(advisory_data.affected_packages) if pkg
-            ],
-            "references": [ref for ref in normalize_list(advisory_data.references) if ref],
-            "weaknesses": normalize_list(advisory_data.weaknesses),
-        }
-        normalized_data["url"] = advisory_data.url
-
-    elif isinstance(advisory_data, AdvisoryData):
-        normalized_data = {
-            "aliases": normalize_list(advisory_data.aliases),
-            "summary": normalize_text(advisory_data.summary),
-            "affected_packages": [
-                pkg.to_dict() for pkg in normalize_list(advisory_data.affected_packages) if pkg
-            ],
-            "references": [
-                ref.to_dict() for ref in normalize_list(advisory_data.references) if ref
-            ],
-            "weaknesses": normalize_list(advisory_data.weaknesses),
-        }
-
-        normalized_data["url"] = advisory_data.url
-
-    else:
-        raise ValueError("Unsupported advisory data type for content ID computation")
-
-    normalized_json = json.dumps(normalized_data, separators=(",", ":"), sort_keys=True)
-    content_id = hashlib.sha256(normalized_json.encode("utf-8")).hexdigest()
-
-    return content_id
-
-
 def compute_content_id_v2(advisory_data):
     """
     Compute a unique content_id for an advisory by normalizing its data and hashing it.

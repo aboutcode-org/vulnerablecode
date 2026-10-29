@@ -16,35 +16,10 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_email
 
 from vulnerabilities.models import ApiUser
-from vulnerabilities.models import Package
-from vulnerabilities.models import Vulnerability
-from vulnerabilities.models import VulnerabilityReference
-from vulnerabilities.models import VulnerabilitySeverity
 
 admin.site.site_header = "VulnerableCode Administration"
 admin.site.site_title = "VulnerableCode Admin Portal"
 admin.site.index_title = "Welcome to VulnerableCode Management"
-
-
-@admin.register(Vulnerability)
-class VulnerabilityAdmin(admin.ModelAdmin):
-    search_fields = ["vulnerability_id"]
-
-
-@admin.register(VulnerabilityReference)
-class VulnerabilityReferenceAdmin(admin.ModelAdmin):
-    search_fields = ["vulnerabilityrelatedreference__vulnerability__id", "reference_id", "url"]
-
-
-@admin.register(Package)
-class PackageAdmin(admin.ModelAdmin):
-    list_filter = ("type", "namespace")
-    search_fields = ["name"]
-
-
-@admin.register(VulnerabilitySeverity)
-class VulnerabilitySeverityAdmin(admin.ModelAdmin):
-    pass
 
 
 class ApiUserCreationForm(forms.ModelForm):

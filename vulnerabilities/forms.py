@@ -26,24 +26,6 @@ class PackageSearchForm(forms.Form):
     )
 
 
-class VulnerabilitySearchForm(forms.Form):
-
-    search = forms.CharField(
-        required=True,
-        widget=forms.TextInput(
-            attrs={"placeholder": "Vulnerability id or alias such as CVE or GHSA"}
-        ),
-    )
-
-
-class AdvisorySearchForm(forms.Form):
-
-    search = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={"placeholder": "Advisory id or alias such as CVE or GHSA"}),
-    )
-
-
 class ApiUserCreationForm(forms.ModelForm):
     """Support a simplified creation for API-only users directly from the UI."""
 

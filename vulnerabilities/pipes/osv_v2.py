@@ -28,7 +28,6 @@ from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
-from vulnerabilities.importer import Reference
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipes.advisory import classify_patch_source
@@ -66,7 +65,7 @@ def parse_advisory_data_v3(
     advisory_id: Optional[str] = None,
 ) -> Optional[AdvisoryDataV2]:
     """
-    Return an AdvisoryData build from a ``raw_data`` mapping of OSV advisory and
+    Return an AdvisoryDataV2 build from a ``raw_data`` mapping of OSV advisory and
     a ``supported_ecosystem`` string.
     """
     adv_id = raw_data.get("id")
@@ -216,7 +215,7 @@ def parse_advisory_data_v3(
             or json.dumps(raw_data, indent=2, ensure_ascii=False),
         )
     except Exception as e:
-        logger.error(f"Invalid AdvisoryData for {advisory_id}: {e}")
+        logger.error(f"Invalid AdvisoryDataV2 for {advisory_id}: {e}")
 
 
 def extract_events(range_data) -> Iterable[str]:
@@ -303,7 +302,7 @@ def get_severities(raw_data, url) -> Iterable[VulnerabilitySeverity]:
         )
 
 
-def get_references_v2(raw_data) -> List[Reference]:
+def get_references_v2(raw_data) -> List[ReferenceV2]:
     """
     Return a list Reference extracted from a mapping of OSV ``raw_data`` given a
     ``severities`` list of VulnerabilitySeverity.

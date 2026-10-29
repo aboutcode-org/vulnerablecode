@@ -78,10 +78,11 @@ def test_latest_for_avid_tie_breaks_by_id(advisory_factory, django_assert_num_qu
 
 @pytest.mark.django_db
 def test_latest_per_avid_returns_one_row_per_avid(advisory_factory, django_assert_num_queries):
-    advisory_factory(advisory_id="A", summary="old advisory")
-    latest_a = advisory_factory(advisory_id="A", summary="new advisory")
+    advisory_factory(advisory_id="A", summary="old advisory A")
+    latest_a = advisory_factory(advisory_id="A", summary="new advisory A")
 
-    latest_b = advisory_factory(advisory_id="B", summary="new advisory")
+    # Summaries must differ: unique_content_id is global and no longer includes advisory_id.
+    latest_b = advisory_factory(advisory_id="B", summary="new advisory B")
 
     with django_assert_num_queries(1):
         qs = AdvisoryV2.objects.latest_per_avid()
@@ -110,11 +111,11 @@ def test_latest_for_avids_filters_and_collapses_correctly(
     advisory_factory, django_assert_num_queries
 ):
 
-    advisory_factory(advisory_id="A", summary="old advisory")
-    latest_a = advisory_factory(advisory_id="A", summary="new advisory")
+    advisory_factory(advisory_id="A", summary="old advisory A")
+    latest_a = advisory_factory(advisory_id="A", summary="new advisory A")
 
-    advisory_factory(advisory_id="B", summary="old advisory")
-    latest_b = advisory_factory(advisory_id="B", summary="new advisory")
+    advisory_factory(advisory_id="B", summary="old advisory B")
+    latest_b = advisory_factory(advisory_id="B", summary="new advisory B")
 
     with django_assert_num_queries(1):
         qs = AdvisoryV2.objects.latest_for_avids({"source/A", "source/B"})

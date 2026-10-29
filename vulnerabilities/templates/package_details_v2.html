@@ -378,6 +378,9 @@ VulnerableCode Package Details - {{ package.purl }}
         </div>
     </div>
 </section>
-<script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/main.js' %}"></script>
 {% endblock %}

@@ -9,21 +9,11 @@
 
 import pytest
 
-from vulnerabilities.importer import Importer
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import PatchData
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.pipes.advisory import classify_patch_source
-
-
-def test_all_importers_have_unique_name():
-    importers = [importer.importer_name for importer in Importer.__subclasses__()]
-    empty_importers = [
-        importer.__name__ for importer in Importer.__subclasses__() if not importer.importer_name
-    ]
-    assert empty_importers == []
-    assert len(importers) == len(set(importers))
 
 
 @pytest.mark.parametrize(

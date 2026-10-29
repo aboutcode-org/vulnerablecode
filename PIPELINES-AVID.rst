@@ -96,9 +96,6 @@ The following table describes how each pipeline constructs its AVID.
    * - ruby_importer_v2
      - ruby_advisory_db
      - {file_id}
-   * - epss_importer_v2
-     - epss
-     - CVE ID of the record
    * - gentoo_importer_v2
      - gentoo
      - GLSA ID of the record

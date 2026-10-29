@@ -1,0 +1,79 @@
+[
+  {
+    "cve": "CVE-2021-25665",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.61137",
+    "score": "0.00405"
+  },
+  {
+    "cve": "CVE-2021-25666",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.21821",
+    "score": "0.00072"
+  },
+  {
+    "cve": "CVE-2021-25667",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.53835",
+    "score": "0.00305"
+  },
+  {
+    "cve": "CVE-2021-25668",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.79860",
+    "score": "0.01284"
+  },
+  {
+    "cve": "CVE-2021-25669",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.82606",
+    "score": "0.01715"
+  },
+  {
+    "cve": "CVE-2021-25670",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.58798",
+    "score": "0.00367"
+  },
+  {
+    "cve": "CVE-2021-25671",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.27770",
+    "score": "0.00104"
+  },
+  {
+    "cve": "CVE-2021-25672",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.56506",
+    "score": "0.00336"
+  },
+  {
+    "cve": "CVE-2021-25673",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.12359",
+    "score": "0.00040"
+  },
+  {
+    "cve": "CVE-2021-25674",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.13878",
+    "score": "0.00045"
+  },
+  {
+    "cve": "CVE-2021-25675",
+    "date": "2026-10-28",
+    "is_latest": true,
+    "percentile": "0.13878",
+    "score": "0.00045"
+  }
+]

@@ -17,6 +17,7 @@ from vulnerabilities.pipelines.v2_improvers import enhance_with_kev as enhance_w
 from vulnerabilities.pipelines.v2_improvers import (
     enhance_with_metasploit as enhance_with_metasploit_v2,
 )
+from vulnerabilities.pipelines.v2_improvers import epss_pipeline
 from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_ghost_packages_v2
 from vulnerabilities.pipelines.v2_improvers import (
     group_advisories_for_packages as group_advisories_for_packages_v2,
@@ -43,5 +44,6 @@ IMPROVERS_REGISTRY = create_registry(
         enhance_with_github_poc.GithubPocsImproverPipeline,
         mark_unfurl_version_range.MarkUnfurlVersionRangePipeline,
         group_advisories_for_packages_v2.GroupAdvisoriesForPackages,
+        epss_pipeline.EPSSPipeline,
     ]
 )

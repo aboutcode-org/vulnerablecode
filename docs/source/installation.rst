@@ -102,9 +102,10 @@ Install and start Docker Desktop, then open PowerShell and clone the repository:
     git clone https://github.com/aboutcode-org/vulnerablecode.git
     cd vulnerablecode
 
-Create the configuration directory and an environment file using PowerShell.
-Replace the example values below with your own strong, unique secrets. Do not
-use the example values as-is::
+Create the configuration directory and its environment file using PowerShell.
+The repository's existing ``docker.env`` file supplies the database and Redis
+container settings; keep it in the repository root. Replace the example values
+below with your own strong, unique secrets. Do not use the example values as-is::
 
     New-Item -ItemType Directory -Force .\vulnerablecode-config
     @"
@@ -116,8 +117,13 @@ The repository includes ``docker-compose.windows.yml`` to mount this configurati
 directory into the application, scheduler, and RQ worker containers. Start and
 check the services with::
 
-    docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml config --quiet
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d --build
     docker compose -f docker-compose.yml -f docker-compose.windows.yml ps
+
+Check that all services are running and review their logs if startup fails::
+
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml logs --tail=100
 
 VulnerableCode should then be available at::
 

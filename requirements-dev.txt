@@ -43,8 +43,11 @@ drf-spectacular==0.24.2
 drf-spectacular-sidecar==2022.10.1
 executing==2.2.1
 extractcode==31.0.0
-extractcode-7z==16.5.210531
-extractcode-libarchive==3.5.1.210531
+# Platform-specific wheels: .210525 builds arm64/aarch64, .210531 builds x86_64/Windows
+extractcode-7z==16.5.210525; platform_machine == "arm64" or platform_machine == "aarch64"
+extractcode-7z==16.5.210531; platform_machine != "arm64" and platform_machine != "aarch64"
+extractcode-libarchive==3.5.1.210525; platform_machine == "arm64" or platform_machine == "aarch64"
+extractcode-libarchive==3.5.1.210531; platform_machine != "arm64" and platform_machine != "aarch64"
 fetchcode==0.8.2
 flot==0.7.3
 freezegun==1.2.1
@@ -151,7 +154,9 @@ tomli==2.4.0
 traitlets==5.14.3
 twine==6.2.0
 typecode==30.2.0
-typecode-libmagic==5.39.210531
+# Platform-specific wheels: .210223 builds arm64/aarch64, .210531 builds x86_64/Windows
+typecode-libmagic==5.39.210223; platform_machine == "arm64" or platform_machine == "aarch64"
+typecode-libmagic==5.39.210531; platform_machine != "arm64" and platform_machine != "aarch64"
 typing_extensions==4.13.0
 tzlocal==5.3.1
 tzdata==2026.5

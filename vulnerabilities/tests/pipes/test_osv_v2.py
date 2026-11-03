@@ -26,6 +26,105 @@ from vulnerabilities.tests import util_tests
 TEST_DATA = Path(__file__).parent.parent / "test_data" / "osv_test"
 
 
+class TestOSVCommitPatches(TestCase):
+    def parse(self, affected):
+        return parse_advisory_data_v3(
+            raw_data={"id": "x_REPRO-OSV-COMMIT-SCOPE", "affected": affected},
+            supported_ecosystems=["pypi"],
+            advisory_url="https://example.org/advisory",
+            advisory_text="",
+        )
+
+    def git_package(self, name, repo, introduced, fixed):
+        return {
+            "package": {"ecosystem": "PyPI", "name": name},
+            "ranges": [
+                {
+                    "type": "GIT",
+                    "repo": repo,
+                    "events": [{"introduced": introduced}, {"fixed": fixed}],
+                }
+            ],
+        }
+
+    def commits(self, patches):
+        return [(patch.vcs_url, patch.commit_hash) for patch in patches]
+
+    def test_commits_belong_to_their_affected_package(self):
+        repo_a = "https://github.com/example/repo-a"
+        repo_b = "https://github.com/example/repo-b"
+        first, second = self.parse(
+            [
+                self.git_package("demo-a", repo_a, "a" * 40, "b" * 40),
+                self.git_package("demo-b", repo_b, "c" * 40, "d" * 40),
+            ]
+        ).affected_packages
+
+        for package, repo, introduced, fixed in [
+            (first, repo_a, "a" * 40, "b" * 40),
+            (second, repo_b, "c" * 40, "d" * 40),
+        ]:
+            with self.subTest(package=package.package.name):
+                self.assertEqual(
+                    self.commits(package.introduced_by_commit_patches), [(repo, introduced)]
+                )
+                self.assertEqual(self.commits(package.fixed_by_commit_patches), [(repo, fixed)])
+
+    def test_version_only_package_has_no_commit_patches(self):
+        git_package = self.git_package(
+            "demo-git", "https://github.com/example/repo-a", "a" * 40, "b" * 40
+        )
+        version_only = {
+            "package": {"ecosystem": "PyPI", "name": "demo-version-only"},
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [{"introduced": "0"}, {"fixed": "2.0"}],
+                }
+            ],
+        }
+        for affected in ([git_package, version_only], [version_only, git_package]):
+            with self.subTest(order=[block["package"]["name"] for block in affected]):
+                parsed = self.parse(affected)
+                package = next(
+                    p for p in parsed.affected_packages if p.package.name == "demo-version-only"
+                )
+                self.assertEqual(
+                    (package.introduced_by_commit_patches, package.fixed_by_commit_patches),
+                    ([], []),
+                )
+
+    def test_package_without_ranges_does_not_inherit_commits(self):
+        git_package = self.git_package(
+            "demo-git", "https://github.com/example/repo-a", "a" * 40, "b" * 40
+        )
+        empty_package = {"package": {"ecosystem": "PyPI", "name": "demo-empty"}}
+        for affected in ([git_package, empty_package], [empty_package, git_package]):
+            with self.subTest(order=[block["package"]["name"] for block in affected]):
+                parsed = self.parse(affected)
+                self.assertEqual([p.package.name for p in parsed.affected_packages], ["demo-git"])
+
+    def test_multiple_git_ranges_in_one_package_keep_their_commits(self):
+        repo = "https://github.com/example/repo-a"
+        affected = self.git_package("demo-a", repo, "a" * 40, "b" * 40)
+        affected["ranges"].append(
+            {
+                "type": "GIT",
+                "repo": repo,
+                "events": [{"introduced": "c" * 40}, {"fixed": "d" * 40}],
+            }
+        )
+        (package,) = self.parse([affected]).affected_packages
+        self.assertEqual(
+            self.commits(package.introduced_by_commit_patches),
+            [(repo, "a" * 40), (repo, "c" * 40)],
+        )
+        self.assertEqual(
+            self.commits(package.fixed_by_commit_patches),
+            [(repo, "b" * 40), (repo, "d" * 40)],
+        )
+
+
 def test_get_version_ranges_constraints():
     assert get_version_ranges_constraints(
         ranges={"type": "ECOSYSTEM", "events": [{"introduced": "0"}, {"fixed": "0.21.8"}]},

@@ -1,0 +1,30 @@
+<div class="severity-chart-layout">
+    <div class="severity-table-wrapper">
+        <table class="severity-table">
+            <thead>
+                <tr>
+                    <th class="sev-th-left">CVSS Score Range</th>
+                    <th class="sev-th-right">Advisories</th>
+                </tr>
+            </thead>
+            <tbody id="chart-{{ chart.id }}-rows">
+            </tbody>
+            <tfoot>
+                <tr class="sev-tfoot-tr">
+                    <td class="sev-td-total-label">Total</td>
+                    <td class="sev-td-total-value" id="chart-{{ chart.id }}-total"></td>
+                </tr>
+            </tfoot>
+        </table>
+        <template id="chart-{{ chart.id }}-row-template">
+            <tr>
+                <td class="sev-td-bucket">
+                    <span class="sev-bucket-label"></span>
+                    <span class="sev-bucket-bar"></span>
+                </td>
+                <td class="sev-td-count"></td>
+            </tr>
+        </template>
+    </div>
+    <div id="chart-{{ chart.id }}-bb" class="severity-bb-container"></div>
+</div>

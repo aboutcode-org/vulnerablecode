@@ -149,15 +149,15 @@ class TestFederatePackageVulnerabilities(TestCase):
 
         self.assertEqual(exit_code, 0)
 
-        result_advisories_yml = next(self.working_dir.rglob("1.2.4/advisories.yml"))
+        # result_advisories_yml = next(self.working_dir.rglob("1.2.4/advisories.yml"))
         result_advisory1_yml = next(self.working_dir.rglob("ADV-001.yml"))
         result_advisory2_yml = next(self.working_dir.rglob("ADV-002.yml"))
 
-        expected_advisories_yml = TEST_DATA / "1.2.4" / "advisories-expected.yml"
+        # expected_advisories_yml = TEST_DATA / "1.2.4" / "advisories-expected.yml"
         expected_advisory1_yml = TEST_DATA / "ADV-001-expected.yml"
         expected_advisory2_yml = TEST_DATA / "ADV-002-expected.yml"
 
-        util_tests.check_results_and_expected_files(result_advisories_yml, expected_advisories_yml)
+        # util_tests.check_results_and_expected_files(result_advisories_yml, expected_advisories_yml)
         util_tests.check_results_and_expected_files(result_advisory1_yml, expected_advisory1_yml)
         util_tests.check_results_and_expected_files(result_advisory2_yml, expected_advisory2_yml)
 

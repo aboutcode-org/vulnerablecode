@@ -4,9 +4,33 @@
 {% load static %}
 {% load show_cvss %}
 {% load url_filters %}
+{% load utils %}
 
 {% block title %}
 VulnerableCode Advisory Details - {{ advisory.advisory_id }}
+{% endblock %}
+
+{% block extrahead %}
+<style>
+    .summary-text {
+        line-height: 1.4;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    div.summary-text a:link,
+    div.summary-text a {
+        color: #3273dc !important;
+    }
+
+    div.summary-text a:visited {
+        color: #8a4de8 !important;
+    }
+
+    div.summary-text a:hover {
+        color: #0a0a0a !important;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -124,7 +148,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                             </tr>
                             <tr>
                                 <td class="two-col-left">Summary</td>
-                                <td class="two-col-right wrap-strings">{{ advisory.summary }}
+                                <td class="two-col-right summary-text">{{ advisory.summary|normalize_links|urlize }}
                                 </td>
                             </tr>
                             {% if severity_score_range %}

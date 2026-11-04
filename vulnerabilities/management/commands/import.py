@@ -6,14 +6,11 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-import traceback
 
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
 
-from vulnerabilities.import_runner import ImportRunner
 from vulnerabilities.importers import IMPORTERS_REGISTRY
-from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipeline
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 
@@ -58,31 +55,21 @@ class Command(BaseCommand):
         failed_importers = []
 
         for importer in importers:
-            if issubclass(importer, VulnerableCodeBaseImporterPipeline) or issubclass(
-                importer, VulnerableCodeBaseImporterPipelineV2
-            ):
+            if issubclass(importer, VulnerableCodeBaseImporterPipelineV2):
                 self.stdout.write(f"Importing data using {importer.pipeline_id}")
                 status, error = importer().execute()
                 if status != 0:
                     self.stdout.write(error)
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f"Failed to run importer {importer.pipeline_id}. Continuing..."
+                        )
+                    )
                     failed_importers.append(importer.pipeline_id)
-                continue
+                    continue
 
-            self.stdout.write(f"Importing data using {importer.qualified_name}")
-            try:
-                ImportRunner(importer).run()
                 self.stdout.write(
-                    self.style.SUCCESS(
-                        f"Successfully imported data using {importer.qualified_name}"
-                    )
-                )
-            except Exception:
-                failed_importers.append(importer.qualified_name)
-                traceback.print_exc()
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Failed to run importer {importer.qualified_name}. Continuing..."
-                    )
+                    self.style.SUCCESS(f"Successfully imported data using {importer.pipeline_id}")
                 )
 
         if failed_importers:

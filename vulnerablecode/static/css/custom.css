@@ -105,24 +105,16 @@ code {
 
 /* start tabset */
 
-#tab-content div,
-#tab-content div>div {
-    display: none;
-}
-
-#tab-content div.is-active,
-#tab-content div.is-active>div,
-#tab-content div.is-active>div>div,
-#tab-content div.is-active>div>div>div,
-#tab-content div.is-active>div>div>div>div {
-    display: block;
-    visibility: visible;
-}
-
-#tab-content div {
+#tab-content > .tab-div {
+    display: none !important;
     border-bottom: 0;
     margin-bottom: 50px;
     padding-bottom: 50px;
+}
+
+#tab-content > .tab-div.is-active {
+    display: block !important;
+    visibility: visible;
 }
 
 #tab-content .tab-nested-div {
@@ -147,8 +139,12 @@ code {
     margin-right: 0px;
 }
 
-.tabs.is-boxed li a {
+.tabs.is-boxed li a,
+.tabs.is-boxed li a:link,
+.tabs.is-boxed li a:visited {
     border-top-width: 3px;
+    /* Do not use global a:visited blue on tabs after click */
+    color: #4a4a4a;
 }
 
 .tabs:not(:last-child) {
@@ -161,9 +157,12 @@ code {
     background-color: #ffffff;
     border-color: #e8e8e8;
     border-bottom-color: #3298dc;
+    color: #4a4a4a;
 }
 
 .tabs.is-boxed li.is-active a,
+.tabs.is-boxed li.is-active a:link,
+.tabs.is-boxed li.is-active a:visited,
 .tabs.is-boxed li.is-active a:hover {
     background-color: white;
     border-top: solid 3px #3298dc;

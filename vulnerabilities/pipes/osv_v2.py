@@ -88,8 +88,6 @@ def parse_advisory_data_v3(
 
     patches = []
     affected_packages = []
-    fixed_by_commit_patches = []
-    introduced_by_commit_patches = []
     for affected_pkg in raw_data.get("affected") or []:
         purl = get_affected_purl(affected_pkg=affected_pkg, raw_id=advisory_id)
 
@@ -99,6 +97,8 @@ def parse_advisory_data_v3(
 
         affected_constraints = []
         fixed_constraints = []
+        fixed_by_commit_patches = []
+        introduced_by_commit_patches = []
         for r in affected_pkg.get("ranges") or []:
             db_specific_explicit_last_known = get_last_known_affected_version(
                 affected_pkg=affected_pkg,

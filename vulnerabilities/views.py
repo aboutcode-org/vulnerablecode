@@ -56,7 +56,6 @@ from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import ImpactedPackageFixedBy
 from vulnerabilities.models import PipelineRun
 from vulnerabilities.models import PipelineSchedule
-from vulnerabilities.pipelines.v2_importers.epss_importer_v2 import EPSSImporterPipeline
 from vulnerabilities.severity_systems import EPSS
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.tasks import compute_queue_load_factor
@@ -582,6 +581,35 @@ class VulnerabilityDetails(VulnerableCodeDetailView):
         return context
 
 
+def get_epss_data_for_advisory(advisory):
+    """
+    Return the latest EPSS score data mapping for the given ``advisory``,
+    or None if no score is found.
+    """
+    cve_id = advisory.advisory_id if advisory.advisory_id.startswith("CVE-") else None
+
+    # Resolve latest EPSS score via linked AdvisoryAlias records or directly by ``advisory_id`` (when advisory_id is itself a CVE)
+    epss_filter = Q(alias__advisories=advisory)
+    if cve_id:
+        epss_filter |= Q(alias__alias=cve_id)
+
+    latest_epss = (
+        models.EPSSScore.objects.filter(epss_filter, is_latest=True)
+        .select_related("alias")
+        .order_by("-score")  # Surface highest EPSS score if advisory links to multiple CVEs
+        .first()
+    )
+    if not latest_epss:
+        return None
+
+    return {
+        "percentile": f"{latest_epss.percentile:.5f}",
+        "score": f"{latest_epss.score:.5f}",
+        "published_at": latest_epss.date,
+        "source": f"https://api.first.org/data/v1/epss?cve={latest_epss.alias.alias}",
+    }
+
+
 class AdvisoryDetails(VulnerableCodeDetailView):
     model = models.AdvisoryV2
     template_name = "advisory_detail.html"
@@ -672,28 +700,7 @@ class AdvisoryDetails(VulnerableCodeDetailView):
             .exclude(scoring_elements="")
         )
 
-        epss_severity = advisory.severities.filter(scoring_system="epss").first()
-        epss_data = None
-        epss_advisory = None
-        if not epss_severity:
-            epss_advisory = (
-                advisory.related_advisory_severities.filter(
-                    datasource_id=EPSSImporterPipeline.pipeline_id
-                )
-                .latest_per_avid()
-                .first()
-            )
-            if epss_advisory:
-                epss_severity = epss_advisory.severities.filter(scoring_system="epss").first()
-        if epss_severity:
-            # If the advisory itself does not have EPSS severity, but has a related advisory with EPSS severity, we use the related advisory's EPSS severity and URL as the source of EPSS data.
-            epss_data = {
-                "percentile": epss_severity.scoring_elements,
-                "score": epss_severity.value,
-                "published_at": epss_severity.published_at,
-                "source": epss_advisory.url if epss_advisory else advisory.url,
-                "advisory": epss_advisory if epss_advisory else advisory,
-            }
+        epss_data = get_epss_data_for_advisory(advisory)
 
         ssvc_entries = []
         seen = set()

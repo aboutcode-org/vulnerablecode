@@ -2837,6 +2837,43 @@ class AdvisoryAlias(models.Model):
             return f"https://github.com/nodejs/security-wg/blob/main/vuln/npm/{id}.json"
 
 
+class EPSSScore(models.Model):
+    """
+    Tracks daily EPSS (Exploit Prediction Scoring System) scores for CVE aliases.
+    """
+
+    alias = models.ForeignKey(
+        AdvisoryAlias,
+        related_name="epss_scores",
+        on_delete=models.CASCADE,
+        help_text="The CVE alias associated with this EPSS score",
+    )
+
+    date = models.DateField(
+        help_text="Date for which this EPSS score was published",
+    )
+
+    score = models.DecimalField(
+        max_digits=7,
+        decimal_places=6,
+        help_text="EPSS probability score",
+    )
+
+    percentile = models.DecimalField(
+        max_digits=7,
+        decimal_places=6,
+        help_text="EPSS percentile ranking",
+    )
+
+    is_latest = models.BooleanField(
+        default=False,
+        help_text="Indicates whether this is the latest EPSS score",
+    )
+
+    class Meta:
+        unique_together = (("alias", "date"),)
+
+
 class Patch(models.Model):
     """
     A generic patch linked to an advisory.

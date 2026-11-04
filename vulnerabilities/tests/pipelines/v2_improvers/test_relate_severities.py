@@ -12,8 +12,11 @@ from django.db.models import Q
 
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.pipelines.v2_importers.suse_score_importer import (
+    SUSESeverityScoreImporterPipeline,
+)
 from vulnerabilities.pipelines.v2_improvers.relate_severities import RelateSeveritiesPipeline
-from vulnerabilities.severity_systems import EPSS
+from vulnerabilities.severity_systems import CVSSV3
 
 
 @pytest.mark.django_db
@@ -31,17 +34,17 @@ def test_relate_severities_by_advisory_id():
 
     severity_advisory = AdvisoryV2.objects.create(
         advisory_id="CVE-2024-0001",
-        datasource_id="epss",
-        avid="epss/CVE-2024-0001",
+        datasource_id="suse",
+        avid="suse/CVE-2024-0001",
         unique_content_id="ab2",
-        url="https://example.com/epss/CVE-2024-0001",
+        url="https://example.com/suse/CVE-2024-0001",
         date_collected="2024-01-02",
         is_latest=True,
-        pipeline_id="epss_importer_v2",
+        pipeline_id=SUSESeverityScoreImporterPipeline.pipeline_id,
     )
     severity_advisory.severities.create(
-        scoring_system=EPSS.identifier,
-        value="0.5",
+        scoring_system=CVSSV3.identifier,
+        value="5.5",
     )
 
     pipeline = RelateSeveritiesPipeline()
@@ -71,17 +74,17 @@ def test_relate_severities_via_alias():
 
     severity_advisory = AdvisoryV2.objects.create(
         advisory_id="CVE-2024-ALIAS",
-        datasource_id="epss",
-        avid="epss/CVE-2024-ALIAS",
+        datasource_id="suse",
+        avid="suse/CVE-2024-ALIAS",
         unique_content_id="ab4",
-        url="https://example.com/epss/CVE-2024-ALIAS",
+        url="https://example.com/suse/CVE-2024-ALIAS",
         date_collected="2024-01-02",
         is_latest=True,
-        pipeline_id="epss_importer_v2",
+        pipeline_id=SUSESeverityScoreImporterPipeline.pipeline_id,
     )
     severity_advisory.severities.create(
-        scoring_system=EPSS.identifier,
-        value="0.8",
+        scoring_system=CVSSV3.identifier,
+        value="8.8",
     )
 
     pipeline = RelateSeveritiesPipeline()
@@ -94,17 +97,17 @@ def test_relate_severities_via_alias():
 def test_no_self_relation_created():
     advisory = AdvisoryV2.objects.create(
         advisory_id="CVE-2024-0003",
-        datasource_id="epss",
+        datasource_id="suse",
         unique_content_id="ab5",
         url="https://example.com/advisory/CVE-2024-0003",
         date_collected="2024-01-03",
-        avid="epss/CVE-2024-0003",
+        avid="suse/CVE-2024-0003",
         is_latest=True,
-        pipeline_id="epss_importer_v2",
+        pipeline_id=SUSESeverityScoreImporterPipeline.pipeline_id,
     )
     advisory.severities.create(
-        scoring_system=EPSS.identifier,
-        value="0.2",
+        scoring_system=CVSSV3.identifier,
+        value="2.2",
     )
 
     pipeline = RelateSeveritiesPipeline()
@@ -128,13 +131,13 @@ def test_unsupported_severity_system_is_ignored():
 
     severity_advisory = AdvisoryV2.objects.create(
         advisory_id="CVE-2024-0004",
-        datasource_id="epss",
+        datasource_id="suse",
         unique_content_id="ab7",
-        url="https://example.com/epss/CVE-2024-0004",
+        url="https://example.com/suse/CVE-2024-0004",
         date_collected="2024-01-02",
-        avid="epss/CVE-2024-0004",
+        avid="suse/CVE-2024-0004",
         is_latest=True,
-        pipeline_id="epss_importer_v2",
+        pipeline_id=SUSESeverityScoreImporterPipeline.pipeline_id,
     )
     severity_advisory.severities.create(
         scoring_system="UNKNOWN_SYSTEM",
@@ -162,17 +165,17 @@ def test_pipeline_is_idempotent():
 
     severity = AdvisoryV2.objects.create(
         advisory_id="CVE-2024-0005",
-        datasource_id="epss",
+        datasource_id="suse",
         unique_content_id="ab9",
-        url="https://example.com/epss/CVE-2024-0005",
+        url="https://example.com/suse/CVE-2024-0005",
         date_collected="2024-01-02",
         is_latest=True,
-        avid="epss/CVE-2024-0005",
-        pipeline_id="epss_importer_v2",
+        avid="suse/CVE-2024-0005",
+        pipeline_id=SUSESeverityScoreImporterPipeline.pipeline_id,
     )
     severity.severities.create(
-        scoring_system=EPSS.identifier,
-        value="0.9",
+        scoring_system=CVSSV3.identifier,
+        value="9.0",
     )
 
     pipeline = RelateSeveritiesPipeline()

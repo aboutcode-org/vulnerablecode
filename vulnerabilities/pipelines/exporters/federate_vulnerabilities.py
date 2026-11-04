@@ -45,7 +45,7 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
             cls.fetch_federation_config,
             cls.clone_federation_repository,
             cls.load_checkpoint,
-            cls.publish_package_related_advisories,
+            # cls.publish_package_related_advisories,
             cls.publish_advisories,
             cls.save_checkpoint,
             cls.delete_working_dir,
@@ -150,7 +150,7 @@ class FederatePackageVulnerabilities(VulnerableCodePipeline):
         batch_size = 4000
         chunk_size = 1000
         files_to_commit = set()
-        advisory_qs = export.advisory_prefetched_qs(self.checkpoint)
+        advisory_qs = export.advisory_prefetched_qs()
         advisory_count = advisory_qs.count()
 
         self.log(f"Exporting {advisory_count} advisory.")

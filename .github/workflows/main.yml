@@ -50,6 +50,9 @@ jobs:
 #      - name: Validate code format
 #        run: make check
 
+      - name: Check types
+        run: make mypy
+
       - name: Run tests
         run: make test
         env:

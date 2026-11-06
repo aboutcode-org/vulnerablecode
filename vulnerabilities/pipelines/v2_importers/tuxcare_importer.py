@@ -29,7 +29,7 @@ class TuxCareImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     pipeline_id = "tuxcare_importer_v2"
     datasource_id = "tuxcare"
     license_url = "https://tuxcare.com/legal"
-    spdx_license_expression = "Apache-2.0"
+    spdx_license_expression = "CC-BY-4.0"
     url = "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
     precedence = 100
 

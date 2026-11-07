@@ -32,3 +32,14 @@ def test_gentoo_import():
     result = [adv.to_dict() for adv in advisories]
     expected_file = os.path.join(TEST_DIR, "gentoo-expected.json")
     util_tests.check_results_against_json(result, expected_file)
+
+
+def test_gentoo_import_version_with_slot():
+    # See https://github.com/aboutcode-org/vulnerablecode/issues/1921
+    # GLSA data can append the SLOT to a version using a colon, e.g.
+    # "6.9.3:6", which is not valid Gentoo version syntax on its own.
+    file = os.path.join(TEST_DIR, "glsa-202511-03.xml")
+    advisories = GentooImporter().process_file(file)
+    result = [adv.to_dict() for adv in advisories]
+    expected_file = os.path.join(TEST_DIR, "glsa-202511-03-expected.json")
+    util_tests.check_results_against_json(result, expected_file)

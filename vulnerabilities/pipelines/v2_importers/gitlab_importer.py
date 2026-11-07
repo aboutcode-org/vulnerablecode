@@ -275,12 +275,19 @@ def parse_gitlab_advisory(
 
     parsed_fixed_versions = []
     for fixed_version in fixed_versions:
+        # GitLab advisories sometimes use a "v" prefix (e.g., "v2.0.1") that
+        # certain version classes cannot parse.  Strip it before attempting
+        # to instantiate the version object so we preserve as much data as
+        # possible.  See https://github.com/aboutcode-org/vulnerablecode/issues/2411
+        normalized = fixed_version.lstrip("v") if fixed_version else fixed_version
         try:
-            fixed_version = vrc.version_class(fixed_version)
-            parsed_fixed_versions.append(fixed_version.string)
+            parsed = vrc.version_class(normalized)
+            parsed_fixed_versions.append(parsed.string)
         except Exception as e:
             logger(
-                f"parse_yaml_file: fixed_version is not parsable`: {fixed_version!r} error: {e!r}\n {traceback.format_exc()}",
+                f"parse_yaml_file: fixed_version is not parsable: "
+                f"{fixed_version!r} (normalized: {normalized!r}) "
+                f"for: {purl!s} error: {e!r}\n {traceback.format_exc()}",
                 level=logging.ERROR,
             )
 
@@ -290,7 +297,27 @@ def parse_gitlab_advisory(
     if parsed_fixed_versions:
         fixed_version_range = vrc.from_versions(parsed_fixed_versions)
     if not fixed_version_range and not affected_version_range:
-        return
+        # We still store the advisory without affected_packages so that
+        # downstream improvers can enrich it with version data later.
+        # Returning None here silently drops advisories whose version
+        # strings failed to parse.
+        # See https://github.com/aboutcode-org/vulnerablecode/issues/2412
+        logger(
+            f"parse_yaml_file: no parsable version range or fixed versions "
+            f"for: {purl!s} in {file!r} "
+            f"-- storing advisory without affected_packages",
+            level=logging.WARNING,
+        )
+        return AdvisoryDataV2(
+            advisory_id=advisory_id,
+            aliases=aliases,
+            summary=summary,
+            references=references,
+            date_published=date_published,
+            weaknesses=cwe_list,
+            url=advisory_url,
+            original_advisory_text=json.dumps(gitlab_advisory, indent=2, ensure_ascii=False),
+        )
 
     affected_package = AffectedPackageV2(
         package=purl,

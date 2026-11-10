@@ -5,7 +5,6 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-
 import saneyaml
 from django.db.models import Prefetch
 
@@ -13,6 +12,7 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import ImpactedPackageAffecting
 from vulnerabilities.models import ImpactedPackageFixedBy
+from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.models import PackageV2
 
 # Note!
@@ -94,16 +94,48 @@ def get_package_related_advisory(packages):
     return package.package_url, package_vulnerabilities
 
 
-def advisory_prefetched_qs(checkpoint):
-    qs = AdvisoryV2.objects.order_by("date_collected").prefetch_related(
-        "impacted_packages",
-        "aliases",
-        "references",
-        "severities",
-        "weaknesses",
+def advisory_prefetched_qs():
+    return (
+        AdvisoryV2.objects.order_by("date_collected")
+        .filter(is_latest=True)
+        .exclude(datasource_id="epss")
+        .prefetch_related(
+            "aliases",
+            "references",
+            "severities",
+            "weaknesses",
+            "exploits",
+            Prefetch(
+                "impacted_packages",
+                queryset=ImpactedPackage.objects.prefetch_related(
+                    Prefetch(
+                        "affecting_packages",
+                        queryset=PackageV2.objects.only("package_url", "is_ghost"),
+                    ),
+                    Prefetch(
+                        "fixed_by_packages",
+                        queryset=PackageV2.objects.only("package_url", "is_ghost"),
+                    ),
+                    Prefetch(
+                        "introduced_by_package_commit_patches",
+                        queryset=PackageCommitPatch.objects.only(
+                            "commit_hash",
+                            "vcs_url",
+                            "patch_text",
+                        ),
+                    ),
+                    Prefetch(
+                        "fixed_by_package_commit_patches",
+                        queryset=PackageCommitPatch.objects.only(
+                            "commit_hash",
+                            "vcs_url",
+                            "patch_text",
+                        ),
+                    ),
+                ),
+            ),
+        )
     )
-
-    return qs.filter(date_collected__gte=checkpoint) if checkpoint else qs
 
 
 def serialize_severity(sev):
@@ -129,9 +161,37 @@ def serialize_commit_patches(patches):
         {
             "vcs_url": p.vcs_url,
             "commit": p.commit_hash,
+            "patch_text": p.patch_text,
         }
         for p in patches.all()
     ]
+
+
+def serialize_advisory_exploit(exploit):
+    return {
+        "description": exploit.description,
+        "required_action": exploit.required_action,
+        "due_date": exploit.due_date,
+        "notes": exploit.notes,
+        "known_ransomware_campaign_use": exploit.known_ransomware_campaign_use,
+        "source_date_published": exploit.source_date_published,
+        "exploit_type": exploit.exploit_type,
+        "platform": exploit.platform,
+        "source_date_updated": exploit.source_date_updated,
+        "data_source": exploit.data_source,
+        "source_url": exploit.source_url,
+        "record_id": exploit.record_id,
+    }
+
+
+def serialize_advisory_metrics(advisory):
+    return {
+        "precedence": advisory.precedence,
+        "is_curation": advisory.is_curation,
+        "exploitability": str(advisory.exploitability),
+        "weighted_severity": str(advisory.weighted_severity),
+        "risk_score": str(advisory.risk_score),
+    }
 
 
 def serialize_advisory(advisory):
@@ -140,11 +200,16 @@ def serialize_advisory(advisory):
     severities = [serialize_severity(sev) for sev in advisory.severities.all()]
     weaknesses = [wkns.cwe for wkns in advisory.weaknesses.all()]
     references = [serialize_references(ref) for ref in advisory.references.all()]
+    exploits = [serialize_advisory_exploit(e) for e in advisory.exploits.all()]
+    computed_metrics = serialize_advisory_metrics(advisory)
+
     impacts = [
         {
             "purl": impact.base_purl,
             "affected_versions": impact.affecting_vers,
             "fixed_versions": impact.fixed_vers,
+            "affected_packages": [pkg.package_url for pkg in impact.affecting_packages.all()],
+            "fixed_packages": [pkg.package_url for pkg in impact.fixed_by_packages.all()],
             "fixed_in_commits": serialize_commit_patches(
                 impact.fixed_by_package_commit_patches,
             ),
@@ -165,6 +230,10 @@ def serialize_advisory(advisory):
         "severities": severities,
         "weaknesses": weaknesses,
         "references": references,
+        "exploits": exploits,
+        "status": advisory.get_status_display(),
+        "date_published": str(advisory.date_published) if advisory.date_published else None,
+        "computed_metrics": computed_metrics,
     }
 
 

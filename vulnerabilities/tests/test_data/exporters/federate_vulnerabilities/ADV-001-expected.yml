@@ -8,8 +8,21 @@ impacted_packages:
   - purl: pkg:npm/foobar
     affected_versions: vers:npm/<=1.2.3
     fixed_versions: vers:npm/1.2.4
+    affected_packages:
+      - pkg:npm/foobar@1.2.3
+    fixed_packages:
+      - pkg:npm/foobar@1.2.4
     fixed_in_commits: []
     introduced_in_commits: []
 severities: []
 weaknesses: []
 references: []
+exploits: []
+status: Published
+date_published: '2022-07-04 14:30:15+00:00'
+computed_metrics:
+  precedence: '0'
+  is_curation: no
+  exploitability: '0.5'
+  weighted_severity: '0.0'
+  risk_score: None

@@ -184,6 +184,16 @@ def serialize_advisory_exploit(exploit):
     }
 
 
+def serialize_advisory_metrics(advisory):
+    return {
+        "precedence": advisory.precedence,
+        "is_curation": advisory.is_curation,
+        "exploitability": str(advisory.exploitability),
+        "weighted_severity": str(advisory.weighted_severity),
+        "risk_score": str(advisory.risk_score),
+    }
+
+
 def serialize_advisory(advisory):
     """Return a plain data mapping serialized from advisory object."""
     aliases = sorted([a.alias for a in advisory.aliases.all()])
@@ -191,6 +201,7 @@ def serialize_advisory(advisory):
     weaknesses = [wkns.cwe for wkns in advisory.weaknesses.all()]
     references = [serialize_references(ref) for ref in advisory.references.all()]
     exploits = [serialize_advisory_exploit(e) for e in advisory.exploits.all()]
+    computed_metrics = serialize_advisory_metrics(advisory)
 
     impacts = [
         {
@@ -220,6 +231,9 @@ def serialize_advisory(advisory):
         "weaknesses": weaknesses,
         "references": references,
         "exploits": exploits,
+        "status": advisory.get_status_display(),
+        "date_published": str(advisory.date_published) if advisory.date_published else None,
+        "computed_metrics": computed_metrics,
     }
 
 

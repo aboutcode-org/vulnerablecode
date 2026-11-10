@@ -18,3 +18,11 @@ severities: []
 weaknesses: []
 references: []
 exploits: []
+status: Published
+date_published: '2022-07-04 14:30:15+00:00'
+computed_metrics:
+  precedence: '0'
+  is_curation: no
+  exploitability: '0.5'
+  weighted_severity: '0.0'
+  risk_score: None

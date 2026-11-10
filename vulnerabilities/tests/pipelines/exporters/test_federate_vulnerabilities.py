@@ -15,6 +15,7 @@ from datetime import datetime
 from datetime import timedelta
 from pathlib import Path
 from unittest.mock import patch
+from zoneinfo import ZoneInfo
 
 import saneyaml
 from django.test import TestCase
@@ -54,6 +55,10 @@ class TestFederatePackageVulnerabilities(TestCase):
     def setUp(self):
         self.logger = TestLogger()
 
+        date_published = past_date_with_tz = datetime(
+            2022, 7, 4, 14, 30, 15, tzinfo=ZoneInfo("UTC")
+        )
+
         advisory1 = AdvisoryDataV2(
             summary="Test advisory",
             aliases=["CVE-2025-0001"],
@@ -71,7 +76,7 @@ class TestFederatePackageVulnerabilities(TestCase):
             ],
             patches=[],
             advisory_id="ADV-001",
-            date_published=datetime.now() - timedelta(days=10),
+            date_published=date_published,
             url="https://example.com/advisory/1",
         )
         advisory2 = AdvisoryDataV2(
@@ -102,7 +107,7 @@ class TestFederatePackageVulnerabilities(TestCase):
             ],
             patches=[],
             advisory_id="ADV-002",
-            date_published=datetime.now() - timedelta(days=10),
+            date_published=date_published,
             url="https://example.com/advisory/2",
         )
         a1 = insert_advisory_v2(

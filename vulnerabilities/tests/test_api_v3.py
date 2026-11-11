@@ -12,6 +12,8 @@ from unittest.mock import patch
 from django.core.cache import cache
 from django.urls import reverse
 from django.utils import timezone
+from jsonschema import Draft4Validator
+from jsonschema.validators import extend
 from packageurl import PackageURL
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -76,6 +78,31 @@ class APIV3TestCase(APITestCase):
         self.anon_patcher.start()
         self.addCleanup(self.anon_patcher.stop)
 
+    def get_package_response_validator(self):
+        response = self.client.get(
+            reverse("schema"),
+            HTTP_ACCEPT="application/vnd.oai.openapi+json",
+            HTTP_USER_AGENT="VCIO_API_AGENT",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        schema = response.json()
+        path = reverse("package-v3-list").rstrip("/") + "/"
+        responses = schema["paths"][path]["post"]["responses"]
+        self.assertIn("200", responses)
+        self.assertNotIn("201", responses)
+        response_schema = responses["200"]["content"]["application/json"]["schema"]
+
+        def validate_type(validator, expected_type, instance, field_schema):
+            # OpenAPI 3.0 uses nullable instead of JSON Schema's null type.
+            if instance is None and field_schema.get("nullable"):
+                return
+            yield from Draft4Validator.VALIDATORS["type"](
+                validator, expected_type, instance, field_schema
+            )
+
+        validator_class = extend(Draft4Validator, {"type": validate_type})
+        return validator_class({**response_schema, "components": schema["components"]})
+
     def test_packages_post_without_details(self):
         url = reverse("package-v3-list")
 
@@ -95,6 +122,7 @@ class APIV3TestCase(APITestCase):
         results = response.data["results"]
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0], "pkg:pypi/sample@1.0.0")
+        self.get_package_response_validator().validate(response.json())
 
     def test_packages_post_with_details(self):
         url = reverse("package-v3-list")
@@ -114,6 +142,139 @@ class APIV3TestCase(APITestCase):
 
         pkg = response.data["results"][0]
         self.assertEqual(pkg["purl"], "pkg:pypi/sample@1.0.0")
+        self.get_package_response_validator().validate(response.json())
+
+    def test_packages_response_schema_accepts_empty_results(self):
+        validator = self.get_package_response_validator()
+        for details in (False, True):
+            with self.subTest(details=details):
+                response = self.client.post(
+                    reverse("package-v3-list"),
+                    data={"purls": ["pkg:pypi/missing@1.0.0"], "details": details},
+                    format="json",
+                    HTTP_USER_AGENT="VCIO_API_AGENT",
+                )
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertEqual(response.data["results"], [])
+                validator.validate(response.json())
+
+    def test_packages_response_schema_rejects_invalid_responses(self):
+        validator = self.get_package_response_validator()
+        for invalid_response in (
+            ["pkg:pypi/sample@1.0.0"],
+            {"count": 1, "next": None, "previous": None, "results": [123]},
+            {"count": 1, "next": None, "previous": None, "results": [{}]},
+            {"count": 1, "next": None, "previous": None},
+        ):
+            with self.subTest(response=invalid_response):
+                self.assertFalse(validator.is_valid(invalid_response))
+
+    def test_packages_response_schema_accepts_null_versions(self):
+        package = PackageV2.objects.from_purl(purl="pkg:pypi/isolated@1.0.0")
+        response = self.client.post(
+            reverse("package-v3-list"),
+            data={"purls": [package.package_url], "details": True},
+            format="json",
+            HTTP_USER_AGENT="VCIO_API_AGENT",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        package_data = response.data["results"][0]
+        self.assertIsNone(package_data["next_non_vulnerable_version"])
+        self.assertIsNone(package_data["latest_non_vulnerable_version"])
+        self.assertIsNone(package_data["risk_score"])
+        self.get_package_response_validator().validate(response.json())
+
+    def test_packages_response_schema_accepts_all_vulnerable_purls(self):
+        response = self.client.post(
+            reverse("package-v3-list"),
+            data={"purls": []},
+            format="json",
+            HTTP_USER_AGENT="VCIO_API_AGENT",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["results"], ["pkg:pypi/sample@1.0.0"])
+        self.get_package_response_validator().validate(response.json())
+
+    def test_packages_response_schema_accepts_advisory_limit_urls(self):
+        package = PackageV2.objects.from_purl(purl="pkg:generic/sample@1.0.0")
+        for advisory_id in ("ADV-1", "ADV-2"):
+            advisory = insert_advisory_v2(
+                advisory=AdvisoryDataV2(
+                    summary="Sample advisory",
+                    advisory_id=advisory_id,
+                    url=f"https://example.com/{advisory_id}",
+                ),
+                pipeline_id="sample_pipeline_v2",
+                datasource_id="sample",
+                logger=self.logger.write,
+            )
+            advisory._all_impacts_unfurled_at = timezone.now()
+            advisory.save()
+            impact = ImpactedPackage.objects.create(
+                advisory=advisory, base_purl="pkg:generic/sample"
+            )
+            impact.affecting_packages.add(package)
+            impact.fixed_by_packages.add(package)
+
+        response = self.client.post(
+            reverse("package-v3-list"),
+            data={"purls": [package.package_url], "details": True, "max_advisories": 1},
+            format="json",
+            HTTP_USER_AGENT="VCIO_API_AGENT",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        package_data = response.data["results"][0]
+        self.assertNotIn("affected_by_vulnerabilities", package_data)
+        self.assertNotIn("fixing_vulnerabilities", package_data)
+        self.assertIn("affected_by_vulnerabilities_url", package_data)
+        self.assertIn("fixing_vulnerabilities_url", package_data)
+        self.get_package_response_validator().validate(response.json())
+
+    def test_v3_pagination_uses_forwarded_https(self):
+        self.impact.affecting_packages.add(self.package2)
+        advisory = insert_advisory_v2(
+            advisory=AdvisoryDataV2(
+                summary="Another advisory",
+                advisory_id="GHSA-5678",
+                url="https://example.com/another-advisory",
+            ),
+            pipeline_id="ghsa_pipeline_v2",
+            datasource_id="ghsa",
+            logger=self.logger.write,
+        )
+        impact = ImpactedPackage.objects.create(advisory=advisory, base_purl="pkg:pypi/sample")
+        impact.affecting_packages.add(self.package)
+
+        for endpoint in ("package-v3-list", "advisory-v3-list"):
+            with self.subTest(endpoint=endpoint):
+                url = reverse(endpoint)
+                data = {"purls": [self.package.package_url, self.package2.package_url]}
+                headers = {
+                    "HTTP_HOST": "testserver",
+                    "HTTP_USER_AGENT": "VCIO_API_AGENT",
+                    "HTTP_X_FORWARDED_PROTO": "https",
+                }
+                first_page = self.client.post(
+                    f"{url}?page_size=1", data=data, format="json", **headers
+                )
+                self.assertEqual(first_page.status_code, status.HTTP_200_OK)
+                self.assertGreaterEqual(first_page.data["count"], 2)
+                self.assertEqual(
+                    first_page.data["next"], f"https://testserver{url}?page=2&page_size=1"
+                )
+                self.assertIsNone(first_page.data["previous"])
+
+                second_page = self.client.post(
+                    f"{url}?page=2&page_size=1", data=data, format="json", **headers
+                )
+                self.assertEqual(second_page.status_code, status.HTTP_200_OK)
+                self.assertEqual(
+                    second_page.data["previous"], f"https://testserver{url}?page_size=1"
+                )
+                if endpoint == "package-v3-list":
+                    validator = self.get_package_response_validator()
+                    validator.validate(first_page.json())
+                    validator.validate(second_page.json())
 
     def test_packages_post_with_details_fixing_vulnerabilities(self):
         url = reverse("package-v3-list")
@@ -139,6 +300,7 @@ class APIV3TestCase(APITestCase):
         self.assertEqual(fixing_vulnerability["advisory_uid"], "ghsa/GHSA-1234")
         self.assertEqual(fixing_vulnerability["datasource_id"], "ghsa")
         self.assertEqual(pkg["next_non_vulnerable_version"], "2.0.0")
+        self.get_package_response_validator().validate(response.json())
 
     def test_advisories_post(self):
         url = reverse("advisory-v3-list")

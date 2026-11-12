@@ -22,7 +22,7 @@ DATASOURCE_REGISTRY = {
     "github": github.GithubDataSource,
     "safetydb": safetydb.SafetydbDataSource,
     "gitlab": gitlab.GitlabDataSource,
-    "oss_index": oss_index.OSSDataSource,
+    "sonatype_guide": oss_index.SonatypeGuideDataSource,
     "osv": osv.OSVDataSource,
     "snyk": snyk.SnykDataSource,
     "vulnerablecode": vulnerablecode.VulnerableCodeDataSource,

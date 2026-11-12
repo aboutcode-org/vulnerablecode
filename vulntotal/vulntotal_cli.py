@@ -578,7 +578,7 @@ VERSION_RANGE_BY_DATASOURCE = {
     "deps": get_range_from_discrete_version_string,
     "github": build_range_from_github_advisory_constraint,
     "gitlab": from_gitlab_native,
-    "oss_index": None,
+    "sonatype_guide": None,
     "osv": get_range_from_discrete_version_string,
     "snyk": build_range_from_snyk_advisory_string,
     "safetydb": build_range_from_snyk_advisory_string,

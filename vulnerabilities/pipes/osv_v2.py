@@ -49,6 +49,8 @@ PURL_TYPE_BY_OSV_ECOSYSTEM = {
     "go": "golang",
     "hex": "hex",
     "cargo": "cargo",
+    # In OSV specifications, Rust packages use the "crates.io" ecosystem
+    "crates.io": "cargo",
 }
 
 OSV_TO_VCIO_SEVERITY_MAP = {

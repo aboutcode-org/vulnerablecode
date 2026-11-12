@@ -1970,6 +1970,21 @@ class CodeFixV2(CodeChangeV2):
     )
 
 
+class GitImportCheckpoint(models.Model):
+    """The last successfully imported Git snapshot for one pipeline and repository."""
+
+    pipeline_id = models.CharField(max_length=600)
+    repo_url = models.URLField(max_length=1024)
+    commit_hash = models.CharField(max_length=64)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["pipeline_id", "repo_url"], name="unique_git_import_checkpoint"
+            ),
+        ]
+
+
 class PipelineRun(models.Model):
     """The Database representation of a pipeline execution."""
 

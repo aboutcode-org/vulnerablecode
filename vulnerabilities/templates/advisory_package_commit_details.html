@@ -37,8 +37,11 @@ VulnerableCode Advisory Package Commit Patch Details - {{ advisoryv2.advisory_id
                             <tr>
                                 <td>
                                     <a href="{{ pkg_commit_patch.vcs_url }}" target="_self">
-                                        {{ pkg_commit_patch.base_purl }}@{{ pkg_commit_patch.commit_hash }}
+                                        {{ impact.base_purl }}@{{ pkg_commit_patch.commit_hash }}
                                     </a>
+                                    <span class="tag {% if pkg_commit_patch.branch_reachability == 'unreachable' %}is-warning{% endif %}">
+                                        {{ pkg_commit_patch.get_branch_reachability_display }}
+                                    </span>
                                 </td>
                                 <td></td>
                             </tr>
@@ -51,6 +54,9 @@ VulnerableCode Advisory Package Commit Patch Details - {{ advisoryv2.advisory_id
                                     <a href="{{ pkg_commit_patch.vcs_url }}" target="_self">
                                         {{ impact.base_purl }}@{{ pkg_commit_patch.commit_hash }}
                                     </a>
+                                    <span class="tag {% if pkg_commit_patch.branch_reachability == 'unreachable' %}is-warning{% endif %}">
+                                        {{ pkg_commit_patch.get_branch_reachability_display }}
+                                    </span>
                                 </td>
                             </tr>
                         {% endfor %}

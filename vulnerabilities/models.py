@@ -2898,6 +2898,11 @@ class PackageCommitPatch(models.Model):
     A specific patch implementation for structured Package/VCS data
     """
 
+    class BranchReachability(models.TextChoices):
+        UNKNOWN = "unknown", "Branch reachability unknown"
+        REACHABLE = "reachable", "Reachable from a repository branch"
+        UNREACHABLE = "unreachable", "Not reachable from any repository branch"
+
     commit_hash = models.CharField(
         max_length=128,
         help_text="The commit hash of the patch in the VCS.",
@@ -2906,6 +2911,13 @@ class PackageCommitPatch(models.Model):
     vcs_url = models.URLField(
         max_length=1024,
         help_text="The Version Control System URL (e.g., git repo URL).",
+    )
+
+    branch_reachability = models.CharField(
+        max_length=11,
+        choices=BranchReachability.choices,
+        default=BranchReachability.UNKNOWN,
+        help_text="Reachability from repository branches at the last check; unknown if incomplete.",
     )
 
     patch_text = models.TextField(blank=True, null=True)

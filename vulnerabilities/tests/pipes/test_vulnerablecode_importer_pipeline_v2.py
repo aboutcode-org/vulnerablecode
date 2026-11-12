@@ -278,7 +278,7 @@ def test_patch_advisory(dumpy_patch_advisory):
             package_commit_patch.patch_text,
             package_commit_patch.patch_checksum,
         )
-        for package_commit_patch in PackageCommitPatch.objects.all()
+        for package_commit_patch in PackageCommitPatch.objects.order_by("-commit_hash")
     ] == [
         (
             "be891173be2fbdc897116bf5aa4fc9fdc8dc4f3d",
@@ -293,6 +293,10 @@ def test_patch_advisory(dumpy_patch_advisory):
             "a5d6b89c35224d4ed69910a18fb544ca3fb26f62db53bc2769ce8a8d5cf8874c191186d170cb6e8896b0aaa8eaed891e7e819c4c0c7af499397c84761d6fb22d",
         ),
     ]
+
+    assert set(PackageCommitPatch.objects.values_list("branch_reachability", flat=True)) == {
+        "unknown"
+    }
 
     pkg_patches_that_fix = (
         PackageCommitPatch.objects.filter(fixed_in_impacts__isnull=False).distinct().count()

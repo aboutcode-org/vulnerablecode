@@ -1,0 +1,38 @@
+[
+  {
+    "advisory_id": "CLSA-2026-1776213254",
+    "aliases": [
+      "CVE-2021-21263",
+      "CVE-2021-43808",
+      "CVE-2024-52301",
+      "CVE-2025-27515",
+      "GHSA-4mg9-vhxq-vm7j",
+      "GHSA-jwvj-pwww-3mj5",
+      "GHSA-wq8p-mqvg-2p5h",
+      "GHSA-x7p5-p2c9-phvg"
+    ],
+    "summary": "TuxCare security update for laravel/framework (8 CVEs)\nTuxCare rebuilt laravel/framework to address 8 CVEs. Fixed in 8.12.2-p1+tuxcare.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "composer",
+          "namespace": "laravel",
+          "name": "framework",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:composer/8.12.2",
+        "fixed_version_range": "vers:composer/8.12.2-p1+tuxcare",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2026-08-04T14:52:25+00:00",
+    "weaknesses": [],
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
+  }
+]

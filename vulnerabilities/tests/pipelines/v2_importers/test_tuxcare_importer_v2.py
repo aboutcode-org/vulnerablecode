@@ -52,9 +52,13 @@ class TestTuxCareImporterPipeline(TestCase):
         pipeline = TuxCareImporterPipeline()
         pipeline.advisory_zip = self.sample_zip
 
-        advisories = [data.to_dict() for data in pipeline.collect_advisories()]
-        advisories = sorted(advisories, key=lambda a: a["advisory_id"])
+        advisories_by_id = {
+            data.advisory_id: [data.to_dict()] for data in pipeline.collect_advisories()
+        }
+        self.assertEqual(len(advisories_by_id), 6)
 
-        expected_file = TEST_DATA / "expected.json"
-        util_tests.check_results_against_json(advisories, expected_file)
-        self.assertEqual(len(advisories), 6)
+        for json_file in sorted(TEST_DATA.glob("CLSA-*.json")):
+            clsa_id = json_file.stem
+            expected_file = TEST_DATA / f"expected-{clsa_id}.json"
+            self.assertIn(clsa_id, advisories_by_id)
+            util_tests.check_results_against_json(advisories_by_id[clsa_id], expected_file)

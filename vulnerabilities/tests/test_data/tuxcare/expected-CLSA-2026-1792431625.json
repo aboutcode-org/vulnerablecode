@@ -1,0 +1,31 @@
+[
+  {
+    "advisory_id": "CLSA-2026-1792431625",
+    "aliases": [
+      "CVE-2026-89425"
+    ],
+    "summary": "TuxCare security update for com.fasterxml.jackson.core:jackson-core (1 CVE)\nTuxCare rebuilt com.fasterxml.jackson.core:jackson-core to address 1 CVE. Fixed in 2.12.1-tuxcare.2.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "maven",
+          "namespace": "com.fasterxml.jackson.core",
+          "name": "jackson-core",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:maven/2.12.1|2.12.1-tuxcare.1",
+        "fixed_version_range": "vers:maven/2.12.1-tuxcare.2",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2026-10-19T17:40:25+00:00",
+    "weaknesses": [],
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
+  }
+]

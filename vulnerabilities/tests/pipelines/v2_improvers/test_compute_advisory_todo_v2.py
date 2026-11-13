@@ -9,6 +9,8 @@
 
 from collections.abc import Mapping
 from datetime import datetime
+from pathlib import Path
+from unittest.mock import patch
 
 from django.test import TestCase
 from django.utils import timezone
@@ -23,10 +25,13 @@ from vulnerabilities.importer import VulnerabilitySeverity
 from vulnerabilities.models import AdvisoryToDoV2
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import ImpactedPackage
+from vulnerabilities.models import ToDoRelatedAdvisoryV2
 from vulnerabilities.pipelines.v2_improvers.compute_advisory_todo import ComputeToDo
+from vulnerabilities.pipes.advisory import advisories_checksum
 from vulnerabilities.pipes.advisory import insert_advisory_v2
 from vulnerabilities.tests.pipelines import TestLogger
 from vulnerabilities.utils import canonical_value
+from vulnerabilities.utils import load_json
 
 
 class TestComputeToDo(TestCase):
@@ -760,6 +765,185 @@ class TestComputeToDo(TestCase):
         pipeline.execute()
 
         self.assertEqual(0, AdvisoryToDoV2.objects.count())
+
+
+class TestInconsistentPackageVersions(TestCase):
+    def setUp(self):
+        fixture = Path(__file__).parents[2] / "test_data/compute_advisory_todo/npm-92.json"
+        self.advisory_data = AdvisoryDataV2.from_dict(load_json(fixture))
+        self.log = TestLogger()
+
+    def insert_advisory(self):
+        return insert_advisory_v2(
+            advisory=self.advisory_data,
+            pipeline_id="test_pipeline",
+            datasource_id="test_npm",
+            logger=self.log.write,
+        )
+
+    def test_creates_todo_for_affected_and_fixed_version_in_one_advisory(self):
+        advisory = self.insert_advisory()
+        impact = advisory.impacted_packages.get()
+        self.assertTrue(impact.affecting_packages.filter(version="3.0.0").exists())
+        self.assertTrue(impact.fixed_by_packages.filter(version="3.0.0").exists())
+        self.assertFalse(advisory.aliases.exists())
+
+        ComputeToDo().execute()
+
+        todo = AdvisoryToDoV2.objects.get()
+        self.assertEqual("CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES", todo.issue_type)
+        self.assertEqual([advisory], list(todo.advisories.all()))
+        self.assertEqual(1, todo.advisories_count)
+        self.assertEqual("92", todo.alias)
+        self.assertEqual(advisory.date_published, todo.oldest_advisory_date)
+        details = todo.issue_detail["conflict_details"]
+        self.assertEqual(["3.0.0"], details[impact.base_purl]["conflicting_versions"])
+        (item,) = todo.issue_detail["curation_items"]
+        self.assertEqual(impact.base_purl, item["purl"])
+        self.assertIn("both affected and fixed: 3.0.0", item["conflict_reason"])
+        self.assertEqual(1, item["all_versions"].count("3.0.0"))
+        self.assertNotIn("3.0.0", item["partial_curation"]["affected"])
+        self.assertNotIn("3.0.0", item["partial_curation"]["fixing"])
+        self.assertEqual(advisory.avid, item["advisories"][0]["primary"]["advisory_uid"])
+        impact.refresh_from_db()
+        self.assertTrue(impact.affecting_packages.filter(version="3.0.0").exists())
+        self.assertTrue(impact.fixed_by_packages.filter(version="3.0.0").exists())
+
+    def test_distinct_affected_and_fixed_versions_do_not_create_todo(self):
+        self.advisory_data.affected_packages[0].fixed_version_range = VersionRange.from_string(
+            "vers:npm/3.1.0"
+        )
+        self.insert_advisory()
+
+        ComputeToDo().execute()
+
+        self.assertFalse(AdvisoryToDoV2.objects.exists())
+
+    def test_same_version_for_different_packages_does_not_create_todo(self):
+        self.advisory_data.affected_packages = [
+            AffectedPackageV2(
+                package=PackageURL(type="npm", name="express-restify-mongoose"),
+                affected_version_range=VersionRange.from_string("vers:npm/3.0.0"),
+            ),
+            AffectedPackageV2(
+                package=PackageURL(type="npm", name="another-package"),
+                fixed_version_range=VersionRange.from_string("vers:npm/3.0.0"),
+            ),
+        ]
+        self.insert_advisory()
+
+        ComputeToDo().execute()
+
+        self.assertFalse(AdvisoryToDoV2.objects.exists())
+
+    def test_detects_conflict_across_impacts_for_the_same_package(self):
+        package = PackageURL(type="npm", name="express-restify-mongoose")
+        self.advisory_data.affected_packages = [
+            AffectedPackageV2(
+                package=package,
+                affected_version_range=VersionRange.from_string("vers:npm/3.0.0"),
+            ),
+            AffectedPackageV2(
+                package=package,
+                fixed_version_range=VersionRange.from_string("vers:npm/3.0.0"),
+            ),
+        ]
+        self.insert_advisory()
+
+        ComputeToDo().execute()
+
+        todo = AdvisoryToDoV2.objects.get()
+        self.assertEqual(
+            ["3.0.0"],
+            todo.issue_detail["conflict_details"][str(package)]["conflicting_versions"],
+        )
+
+    def test_repeated_pipeline_runs_do_not_duplicate_todo_or_relations(self):
+        self.insert_advisory()
+        ComputeToDo().execute()
+        todo = AdvisoryToDoV2.objects.get()
+        original_detail = todo.issue_detail
+        created_at = todo.created_at
+
+        ComputeToDo().execute()
+        self.assertEqual(1, AdvisoryToDoV2.objects.count())
+        self.assertEqual(1, ToDoRelatedAdvisoryV2.objects.count())
+
+        todo.is_resolved = True
+        todo.save()
+        ComputeToDo().execute()
+
+        self.assertEqual(1, AdvisoryToDoV2.objects.count())
+        self.assertEqual(1, ToDoRelatedAdvisoryV2.objects.count())
+        todo.refresh_from_db()
+        self.assertTrue(todo.is_resolved)
+        self.assertEqual(original_detail, todo.issue_detail)
+        self.assertEqual(created_at, todo.created_at)
+
+    def test_other_todo_does_not_hide_version_conflict(self):
+        self.advisory_data.summary = ""
+        advisory = self.insert_advisory()
+        advisory._all_impacts_unfurled_at = timezone.now()
+        advisory.save()
+
+        ComputeToDo().execute()
+
+        self.assertEqual(
+            {"MISSING_SUMMARY", "CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES"},
+            set(advisory.advisory_todos.values_list("issue_type", flat=True)),
+        )
+
+    def test_non_latest_advisory_does_not_create_todo(self):
+        advisory = self.insert_advisory()
+        advisory.is_latest = False
+        advisory.save()
+
+        ComputeToDo().execute()
+
+        self.assertFalse(AdvisoryToDoV2.objects.exists())
+
+    @patch("vulnerabilities.importers.TODO_EXCLUDED_PIPELINES", ["test_pipeline"])
+    def test_excluded_pipeline_does_not_create_todo(self):
+        self.insert_advisory()
+
+        ComputeToDo().execute()
+
+        self.assertFalse(AdvisoryToDoV2.objects.exists())
+
+    def test_group_todo_does_not_hide_conflicts_within_individual_advisories(self):
+        advisory = self.insert_advisory()
+        self.advisory_data.advisory_id = "93"
+        other_advisory = self.insert_advisory()
+        group_todo = AdvisoryToDoV2.objects.create(
+            related_advisories_id=advisories_checksum([advisory, other_advisory]),
+            issue_type="CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES",
+            advisories_count=2,
+            alias="test_alias",
+        )
+        group_todo.advisories.add(advisory, other_advisory)
+
+        ComputeToDo().execute()
+
+        self.assertEqual(3, AdvisoryToDoV2.objects.count())
+        self.assertEqual(2, AdvisoryToDoV2.objects.filter(advisories_count=1).count())
+        self.assertEqual(2, group_todo.advisories.count())
+
+    def test_package_type_without_range_scheme_still_creates_todo(self):
+        self.advisory_data.affected_packages = [
+            AffectedPackageV2(
+                package=PackageURL(type="docker", name="example"),
+                affected_version_range=VersionRange.from_string("vers:generic/3.0.0"),
+                fixed_version_range=VersionRange.from_string("vers:generic/3.0.0"),
+            )
+        ]
+        self.insert_advisory()
+
+        ComputeToDo().execute()
+
+        todo = AdvisoryToDoV2.objects.get()
+        (item,) = todo.issue_detail["curation_items"]
+        self.assertEqual("pkg:docker/example", item["purl"])
+        self.assertEqual(["3.0.0"], item["all_versions"])
 
 
 def normalize(obj):

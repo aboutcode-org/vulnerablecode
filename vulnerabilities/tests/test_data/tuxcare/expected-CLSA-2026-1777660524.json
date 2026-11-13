@@ -1,0 +1,121 @@
+[
+  {
+    "advisory_id": "CLSA-2026-1777660524",
+    "aliases": [
+      "CVE-2026-6100"
+    ],
+    "summary": "python3.11: Fix of CVE-2026-6100\n- CVE-2026-6100 fix use-after-free in lzma/bz2 decompressor by clearing\n  the dangling next_in pointer after MemoryError so a re-used\n  decompressor cannot read or write through a stale buffer pointer",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-debug",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-devel",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-idle",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-libs",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-test",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      },
+      {
+        "package": {
+          "type": "rpm",
+          "namespace": "tuxcare",
+          "name": "python3.11-tkinter",
+          "version": "",
+          "qualifiers": "distro=almalinux-9.2",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:rpm/<3.11.2-2.el9_2.2.tuxcare.els21",
+        "fixed_version_range": "vers:rpm/3.11.2-2.el9_2.2.tuxcare.els21",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [
+      {
+        "reference_id": "",
+        "reference_type": "",
+        "url": "https://errata.tuxcare.com/els_os/almalinux9.2esu/CLSA-2026-1777660524.html"
+      }
+    ],
+    "patches": [],
+    "severities": [],
+    "date_published": "2026-05-01T18:35:28+00:00",
+    "weaknesses": [],
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
+  }
+]

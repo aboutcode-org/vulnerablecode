@@ -20,6 +20,19 @@ from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.utils import update_purl_version
 
 
+def coerce_version_to_range_class(version, version_range: VersionRange):
+    """Return ``version`` as ``version_range.version_class``, or None."""
+    if not version or not version_range:
+        return version
+    version_class = version_range.version_class
+    if isinstance(version, version_class):
+        return version
+    try:
+        return version_class(str(version))
+    except Exception:
+        return None
+
+
 def get_exact_purl_from_vers(
     version_range: VersionRange, base_purl: PackageURL
 ) -> Tuple[List[PackageURL], List[PackageURL]]:
@@ -27,11 +40,19 @@ def get_exact_purl_from_vers(
     if not version_range:
         return [], []
 
-    all_versions = [c.version for c in version_range.constraints if c]
-    version_not_in_range = [
-        c.version for c in version_range.constraints if c and c.comparator == "!="
+    all_versions = [
+        v
+        for c in version_range.constraints
+        if c and (v := coerce_version_to_range_class(c.version, version_range))
     ]
-    version_in_range = [v for v in all_versions if v and v in version_range]
+    version_not_in_range = [
+        v
+        for c in version_range.constraints
+        if c
+        and c.comparator == "!="
+        and (v := coerce_version_to_range_class(c.version, version_range))
+    ]
+    version_in_range = [v for v in all_versions if v in version_range]
 
     purl_in_range = [
         update_purl_version(purl=base_purl, version=str(version)) for version in version_in_range

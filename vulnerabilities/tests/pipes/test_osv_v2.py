@@ -15,6 +15,7 @@ import saneyaml
 from univers.version_constraint import VersionConstraint
 from univers.version_range import MavenVersionRange
 from univers.version_range import PypiVersionRange
+from univers.versions import GolangVersion
 from univers.versions import MavenVersion
 from univers.versions import PypiVersion
 
@@ -76,6 +77,16 @@ def test_get_version_ranges_constraints():
         [],
         [],
     )
+
+    affected, fixed, intro_commits, fixed_commits = get_version_ranges_constraints(
+        ranges={"type": "SEMVER", "events": [{"introduced": "0"}, {"fixed": "0.3.8"}]},
+        raw_id="GO-2020-0001",
+        supported_ecosystem="golang",
+    )
+    assert affected == [VersionConstraint(comparator="<", version=GolangVersion(string="0.3.8"))]
+    assert fixed == [VersionConstraint(comparator="=", version=GolangVersion(string="0.3.8"))]
+    assert intro_commits == []
+    assert fixed_commits == []
 
 
 def test_get_explicit_affected_constraints():

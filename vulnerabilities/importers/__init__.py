@@ -26,6 +26,9 @@ from vulnerabilities.pipelines.v2_importers import gentoo_importer as gentoo_imp
 from vulnerabilities.pipelines.v2_importers import github_osv_importer as github_osv_importer_v2
 from vulnerabilities.pipelines.v2_importers import gitlab_importer as gitlab_importer_v2
 from vulnerabilities.pipelines.v2_importers import glibc_importer as glibc_importer_v2
+from vulnerabilities.pipelines.v2_importers import (
+    golang_vulndb_importer as golang_vulndb_importer_v2,
+)
 from vulnerabilities.pipelines.v2_importers import istio_importer as istio_importer_v2
 from vulnerabilities.pipelines.v2_importers import linux_kernel_importer as linux_kernel_importer_v2
 from vulnerabilities.pipelines.v2_importers import mattermost_importer as mattermost_importer_v2
@@ -64,6 +67,7 @@ IMPORTERS_REGISTRY = create_registry(
         apache_httpd_v2.ApacheHTTPDImporterPipeline,
         pypa_importer_v2.PyPaImporterPipeline,
         gitlab_importer_v2.GitLabImporterPipeline,
+        golang_vulndb_importer_v2.GolangVulndbImporterPipeline,
         pysec_importer_v2.PyPIImporterPipeline,
         xen_importer_v2.XenImporterPipeline,
         curl_importer_v2.CurlImporterPipeline,

@@ -152,7 +152,11 @@ def parse_advisory_data_v3(
         affected_version_range = None
         if affected_constraints:
             try:
-                valid_affected_constraints = VersionConstraint.simplify(affected_constraints)
+                valid_affected_constraints = VersionConstraint.simplify(
+                    coerce_constraints_to_version_class(
+                        affected_constraints, version_range_class.version_class
+                    )
+                )
                 validate_comparators(valid_affected_constraints)
                 affected_version_range = version_range_class(constraints=valid_affected_constraints)
             except Exception as e:
@@ -161,7 +165,11 @@ def parse_advisory_data_v3(
         fixed_version_range = None
         if fixed_constraints:
             try:
-                valid_fixed_constraints = VersionConstraint.simplify(fixed_constraints)
+                valid_fixed_constraints = VersionConstraint.simplify(
+                    coerce_constraints_to_version_class(
+                        fixed_constraints, version_range_class.version_class
+                    )
+                )
                 validate_comparators(valid_fixed_constraints)
                 fixed_version_range = version_range_class(constraints=valid_fixed_constraints)
             except Exception as e:
@@ -369,6 +377,31 @@ def get_affected_purl(affected_pkg, raw_id):
         return None
 
 
+def coerce_constraints_to_version_class(constraints, version_class):
+    """Return constraints whose versions match ``version_class``."""
+    if not constraints or not version_class:
+        return constraints
+
+    coerced = []
+    for constraint in constraints:
+        version = constraint.version
+        if version is None or isinstance(version, version_class):
+            coerced.append(constraint)
+            continue
+        try:
+            coerced.append(
+                VersionConstraint(
+                    comparator=constraint.comparator,
+                    version=version_class(str(version)),
+                )
+            )
+        except InvalidVersion:
+            logger.error(
+                f"Could not coerce {version!r} to {version_class!r} for constraint {constraint!r}"
+            )
+    return coerced
+
+
 def get_explicit_affected_range(affected_pkg, raw_id, supported_ecosystem):
     """
     Return an explicit affected version range for the affected package data.
@@ -468,10 +501,16 @@ def get_version_ranges_constraints(
                 logger.error(f"Invalid Commit: {event_value!r} for OSV id: {raw_id!r}")
 
         elif range_type in ("ECOSYSTEM", "SEMVER"):
-            if range_type == "ECOSYSTEM":
-                version_class = version_range_class.version_class if version_range_class else None
-            else:
-                version_class = SemverVersion  # range_type = "SEMVER"
+            # OSV SEMVER is still ecosystem versions. Using SemverVersion inside
+            # e.g. GolangVersionRange later fails membership checks during unfurl.
+            version_class = version_range_class.version_class if version_range_class else None
+            if not version_class and range_type == "SEMVER":
+                version_class = SemverVersion
+            if not version_class:
+                logger.error(
+                    f"Unsupported ecosystem {supported_ecosystem!r} for OSV id: {raw_id!r}"
+                )
+                continue
 
             try:
                 v_obj = version_class(event_value)
@@ -488,11 +527,15 @@ def get_version_ranges_constraints(
             elif event_type == "fixed":
                 # If database specific last known version is available then it's assumed that such last known
                 # version is applicable to all ranges of current affected block.
+                last_known = db_specific_explicit_last_known
+                if last_known and not isinstance(last_known, version_class):
+                    try:
+                        last_known = version_class(str(last_known))
+                    except InvalidVersion:
+                        last_known = None
                 affected_constraint = VersionConstraint(comparator="<", version=v_obj)
-                if db_specific_explicit_last_known:
-                    affected_constraint = VersionConstraint(
-                        comparator="<=", version=db_specific_explicit_last_known
-                    )
+                if last_known:
+                    affected_constraint = VersionConstraint(comparator="<=", version=last_known)
 
                 affected_constraints.append(affected_constraint)
 

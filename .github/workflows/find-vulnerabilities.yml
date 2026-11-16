@@ -11,6 +11,7 @@ on:
       - 'requirements*.txt'
       - 'pyproject.toml'
       - '.github/workflows/find-vulnerabilities.yml'
+  push: # add temporarily for testing
 
 jobs:
   scan-dependencies:

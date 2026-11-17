@@ -2139,7 +2139,7 @@ class PipelineRun(models.Model):
     @property
     def pipeline_url(self):
         """Return pipeline URL based on commit and class module path."""
-        if not self.vulnerablecode_commit:
+        if not self.vulnerablecode_commit or not self.pipeline_class:
             return None
 
         base_url = "https://github.com/aboutcode-org/vulnerablecode/blob/"
@@ -2362,7 +2362,11 @@ class PipelineSchedule(models.Model):
 
     @property
     def pipeline_class(self):
-        """Return the pipeline class."""
+        """Return the pipeline class, or None if the pipeline is not registered.
+
+        Schedules persist in the database, so a pipeline that was removed or
+        renamed leaves behind a schedule whose id is no longer registered.
+        """
 
         from vulnerabilities.importers import IMPORTERS_REGISTRY
         from vulnerabilities.improvers import IMPROVERS_REGISTRY
@@ -2373,7 +2377,7 @@ class PipelineSchedule(models.Model):
             IMPORTERS_REGISTRY | IMPROVERS_REGISTRY | EXPORTERS_REGISTRY | MANAGEMENT_REGISTRY
         )
 
-        return pipeline_registry[self.pipeline_id]
+        return pipeline_registry.get(self.pipeline_id)
 
     @property
     def description(self):

@@ -1048,7 +1048,12 @@ class PipelineRunListView(VulnerableCodeListView):
             PipelineSchedule,
             pipeline_id=self.kwargs["pipeline_id"],
         )
-        context["pipeline_name"] = pipeline.pipeline_class.__name__
+        pipeline_class = pipeline.pipeline_class
+        # A schedule can outlive its pipeline (removed or renamed), so the
+        # class may be unknown; fall back to the raw pipeline id as the name.
+        context["pipeline_name"] = (
+            pipeline_class.__name__ if pipeline_class else pipeline.pipeline_id
+        )
         context["pipeline_description"] = pipeline.description
         context["pipeline_run_retention_days"] = VULNERABLECODE_PIPELINE_RUN_RETENTION_DAYS
         context["minimum_pipeline_runs_retain"] = VULNERABLECODE_MINIMUM_PIPELINE_RUNS_TO_RETAIN
@@ -1078,7 +1083,12 @@ class PipelineRunDetailView(VulnerableCodeDetailView):
             pipeline__pipeline_id=pipeline_id,
             run_id=run_id,
         )
-        context["pipeline_name"] = run.pipeline_class.__name__
+        pipeline_class = run.pipeline_class
+        # A schedule can outlive its pipeline (removed or renamed), so the
+        # class may be unknown; fall back to the raw pipeline id as the name.
+        context["pipeline_name"] = (
+            pipeline_class.__name__ if pipeline_class else run.pipeline.pipeline_id
+        )
         return context
 
 

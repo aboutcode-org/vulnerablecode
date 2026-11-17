@@ -23,6 +23,8 @@ from vulnerabilities.models import Alias
 from vulnerabilities.models import FixingPackageRelatedVulnerability
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageV2
+from vulnerabilities.models import PipelineRun
+from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.models import Vulnerability
 from vulnerabilities.models import VulnerabilitySeverity
 from vulnerabilities.templatetags.url_filters import url_quote_filter
@@ -379,3 +381,25 @@ class ThrottleTestCase(TestCase):
             HTTP_USER_AGENT="test-agent",
         )
         assert response.status_code == 429
+
+
+class PipelineRunViewsUnregisteredPipelineTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        session = self.client.session
+        session["altcha_verified_at"] = time.time()
+        session.save()
+        cache.clear()
+        self.schedule = PipelineSchedule.objects.create(pipeline_id="hunt_probe_no_such_pipeline")
+        self.run = PipelineRun.objects.create(pipeline=self.schedule)
+
+    def test_pipeline_run_list_renders_for_unregistered_pipeline(self):
+        response = self.client.get(f"/pipelines/{self.schedule.pipeline_id}/runs/")
+        assert response.status_code == 200
+        assert response.context["pipeline_name"] == self.schedule.pipeline_id
+        assert response.context["pipeline_description"] is None
+
+    def test_pipeline_run_detail_renders_for_unregistered_pipeline(self):
+        response = self.client.get(f"/pipelines/{self.schedule.pipeline_id}/run/{self.run.run_id}/")
+        assert response.status_code == 200
+        assert response.context["pipeline_name"] == self.schedule.pipeline_id

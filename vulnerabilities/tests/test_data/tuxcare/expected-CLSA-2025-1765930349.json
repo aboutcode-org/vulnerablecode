@@ -1,0 +1,31 @@
+[
+  {
+    "advisory_id": "CLSA-2025-1765930349",
+    "aliases": [
+      "AIKIDO-2024-10370"
+    ],
+    "summary": "TuxCare security update for sentence-transformers (1 CVE)\nTuxCare rebuilt sentence-transformers to address 1 CVE. Fixed in 2.7.0.post1+tuxcare.",
+    "affected_packages": [
+      {
+        "package": {
+          "type": "pypi",
+          "namespace": "",
+          "name": "sentence-transformers",
+          "version": "",
+          "qualifiers": "",
+          "subpath": ""
+        },
+        "affected_version_range": "vers:pypi/2.7.0",
+        "fixed_version_range": "vers:pypi/2.7.0.post1+tuxcare",
+        "introduced_by_commit_patches": [],
+        "fixed_by_commit_patches": []
+      }
+    ],
+    "references": [],
+    "patches": [],
+    "severities": [],
+    "date_published": "2026-08-04T14:52:09+00:00",
+    "weaknesses": [],
+    "url": "https://osv-vulnerabilities.storage.googleapis.com/TuxCare/all.zip"
+  }
+]

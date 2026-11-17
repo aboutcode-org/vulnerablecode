@@ -1,0 +1,43 @@
+{
+    "schema_version": "1.9.0",
+    "id": "CLSA-2025-1765930349",
+    "published": "2026-08-04T14:52:09Z",
+    "modified": "2026-10-15T09:47:53.555363298Z",
+    "upstream": [
+        "AIKIDO-2024-10370"
+    ],
+    "summary": "TuxCare security update for sentence-transformers (1 CVE)",
+    "details": "TuxCare rebuilt sentence-transformers to address 1 CVE. Fixed in 2.7.0.post1+tuxcare.",
+    "affected": [
+        {
+            "package": {
+                "name": "sentence-transformers",
+                "ecosystem": "TuxCare:PyPI",
+                "purl": "pkg:pypi/sentence-transformers"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "2.7.0"
+                        },
+                        {
+                            "fixed": "2.7.0.post1+tuxcare"
+                        }
+                    ]
+                }
+            ],
+            "versions": [
+                "2.7.0"
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_lang/pypi/CLSA-2025-1765930349.json",
+                "tuxcare": {
+                    "base_version": "2.7.0",
+                    "fixed_version": "2.7.0.post1+tuxcare"
+                }
+            }
+        }
+    ]
+}

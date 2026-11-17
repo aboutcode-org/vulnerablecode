@@ -1,0 +1,56 @@
+{
+    "schema_version": "1.9.0",
+    "id": "CLSA-2026-1792379983",
+    "published": "2026-10-19T03:19:39Z",
+    "modified": "2026-10-19T07:47:12.647649890Z",
+    "upstream": [
+        "CVE-2026-54264",
+        "CVE-2026-54265",
+        "CVE-2026-54266",
+        "CVE-2026-54267",
+        "CVE-2026-54268"
+    ],
+    "summary": "TuxCare security update for @angular/platform-server (5 CVEs)",
+    "details": "TuxCare rebuilt @angular/platform-server to address 5 CVEs. Fixed in 18.2.14-tuxcare.12.",
+    "affected": [
+        {
+            "package": {
+                "name": "@angular/platform-server",
+                "ecosystem": "TuxCare:npm",
+                "purl": "pkg:npm/%40angular/platform-server"
+            },
+            "ranges": [
+                {
+                    "type": "ECOSYSTEM",
+                    "events": [
+                        {
+                            "introduced": "18.2.14-tuxcare.0"
+                        },
+                        {
+                            "fixed": "18.2.14-tuxcare.12"
+                        }
+                    ]
+                }
+            ],
+            "versions": [
+                "18.2.14",
+                "18.2.14-tuxcare.1",
+                "18.2.14-tuxcare.10",
+                "18.2.14-tuxcare.11",
+                "18.2.14-tuxcare.3",
+                "18.2.14-tuxcare.4",
+                "18.2.14-tuxcare.5",
+                "18.2.14-tuxcare.6",
+                "18.2.14-tuxcare.7",
+                "18.2.14-tuxcare.9"
+            ],
+            "database_specific": {
+                "source": "https://github.com/cloudlinux/tuxcare-osv/tree/main/data/els_lang/npm/CLSA-2026-1792379983.json",
+                "tuxcare": {
+                    "base_version": "18.2.14",
+                    "fixed_version": "18.2.14-tuxcare.12"
+                }
+            }
+        }
+    ]
+}

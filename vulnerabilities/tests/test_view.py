@@ -18,6 +18,8 @@ from django.urls import reverse
 from packageurl import PackageURL
 from univers import versions
 
+from vulnerabilities.models import AdvisoryToDoV2
+from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
 from vulnerabilities.models import FixingPackageRelatedVulnerability
@@ -379,3 +381,96 @@ class ThrottleTestCase(TestCase):
             HTTP_USER_AGENT="test-agent",
         )
         assert response.status_code == 429
+
+
+class AdvisoryCurationViewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        session = self.client.session
+        session["altcha_verified_at"] = time.time()
+        session.save()
+
+    def test_mitigation_curation_view_with_empty_and_whitespace_summary(self):
+        """Verify that AdvisoryMitigationCurationView does not crash with StopIteration
+        or AttributeError when advisories have empty or whitespace-only summaries."""
+        adv1 = AdvisoryV2.objects.create(
+            datasource_id="test_ds",
+            advisory_id="TEST-ADV-1",
+            pipeline_id="test_pipeline",
+            avid="test_ds/TEST-ADV-1",
+            unique_content_id="unique_content_id_1",
+            url="https://example.com/advisory1",
+            date_collected="2026-11-16T00:00:00Z",
+            summary="",
+        )
+        adv2 = AdvisoryV2.objects.create(
+            datasource_id="test_ds",
+            advisory_id="TEST-ADV-2",
+            pipeline_id="test_pipeline",
+            avid="test_ds/TEST-ADV-2",
+            unique_content_id="unique_content_id_2",
+            url="https://example.com/advisory2",
+            date_collected="2026-11-16T00:00:00Z",
+            summary="   ",
+        )
+        todo = AdvisoryToDoV2.objects.create(
+            related_advisories_id="hash_empty_summary",
+            alias="CVE-2026-0001",
+            advisories_count=2,
+            issue_type="MISSING_FIXED_BY_PACKAGE",
+        )
+        todo.advisories.add(adv1, adv2)
+
+        url = reverse("todo-mitigation-detail", kwargs={"todo_id": todo.todo_id})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["advisory_summaries"], {})
+        self.assertEqual(response.context["avid"], adv1.avid)
+        self.assertEqual(response.context["curation_items"], [])
+
+    def test_mitigation_curation_view_with_no_advisories(self):
+        """Verify that AdvisoryMitigationCurationView does not crash when todo has zero advisories."""
+        todo = AdvisoryToDoV2.objects.create(
+            related_advisories_id="hash_no_advisories",
+            alias="CVE-2026-0002",
+            advisories_count=0,
+            issue_type="MISSING_FIXED_BY_PACKAGE",
+        )
+
+        url = reverse("todo-mitigation-detail", kwargs={"todo_id": todo.todo_id})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["advisory_summaries"], {})
+        self.assertIsNone(response.context["avid"])
+        self.assertEqual(response.context["curation_items"], [])
+
+    def test_advisory_todos_template_renders_closed_anchors(self):
+        """Verify that advisory_todos.html properly closes <a> tags for all issue types."""
+        issue_types = [
+            "CONFLICTING_FIXED_BY_PACKAGES",
+            "CONFLICTING_SEVERITY_SCORES",
+            "CONFLICTING_WEAKNESSES",
+            "MISSING_FIXED_BY_PACKAGE",
+        ]
+        for idx, itype in enumerate(issue_types):
+            AdvisoryToDoV2.objects.create(
+                related_advisories_id=f"hash_issue_{idx}",
+                alias=f"TEST-TODO-{idx}",
+                advisories_count=1,
+                issue_type=itype,
+            )
+
+        url = reverse("todo-list")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode("utf-8")
+        open_anchors = content.count('class="has-text-info"')
+        self.assertEqual(open_anchors, 4)
+        # Verify all 4 issue type links are rendered
+        self.assertIn("mitigation/curate/", content)
+        self.assertIn("severity/curate/", content)
+        self.assertIn("weakness/curate/", content)
+        self.assertIn("package/curate/", content)

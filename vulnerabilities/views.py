@@ -1241,14 +1241,26 @@ class AdvisoryMitigationCurationView(DetailView):
         context = super().get_context_data(**kwargs)
         todo = self.object
 
-        context["advisory_summaries"] = {
-            adv.avid: adv.summary for adv in todo.advisories.all() if adv.summary.strip()
+        advisory_summaries = {
+            adv.avid: adv.summary
+            for adv in todo.advisories.all()
+            if adv.summary and adv.summary.strip()
         }
-        context["avid"] = next(iter(context["advisory_summaries"]))
-        context["curation_items"] = [
-            a.base_purl
-            for a in todo.advisories.first().impacted_packages.filter(
-                fixed_by_packages__isnull=True
-            )
-        ]
+        context["advisory_summaries"] = advisory_summaries
+
+        first_advisory = todo.advisories.first()
+        if advisory_summaries:
+            context["avid"] = next(iter(advisory_summaries))
+        elif first_advisory:
+            context["avid"] = first_advisory.avid
+        else:
+            context["avid"] = None
+
+        if first_advisory:
+            context["curation_items"] = [
+                a.base_purl
+                for a in first_advisory.impacted_packages.filter(fixed_by_packages__isnull=True)
+            ]
+        else:
+            context["curation_items"] = []
         return context

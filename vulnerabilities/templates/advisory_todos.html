@@ -177,7 +177,7 @@ Advisory To-Dos
                                     {{ todo.get_issue_type_display }}
                                 </div>
                             </div>
-                    {% if todo.issue_type in supported_curation.split %}
+                    {% if todo.issue_type in supported_curation.split or todo.issue_type == "CONFLICTING_SEVERITY_SCORES" or todo.issue_type == "CONFLICTING_WEAKNESSES" or todo.issue_type == "MISSING_FIXED_BY_PACKAGE" %}
                         </a>
                     {% endif %}
                     {% endwith %}

@@ -21,6 +21,7 @@ from vulnerabilities.pipelines.v2_improvers import flag_ghost_packages as flag_g
 from vulnerabilities.pipelines.v2_improvers import (
     group_advisories_for_packages as group_advisories_for_packages_v2,
 )
+from vulnerabilities.pipelines.v2_improvers import history_diff_backfill
 from vulnerabilities.pipelines.v2_improvers import mark_unfurl_version_range
 from vulnerabilities.pipelines.v2_improvers import reference_collect_commits
 from vulnerabilities.pipelines.v2_improvers import relate_severities
@@ -42,6 +43,7 @@ IMPROVERS_REGISTRY = create_registry(
         reference_collect_commits.CollectReferencesFixCommitsPipeline,
         enhance_with_github_poc.GithubPocsImproverPipeline,
         mark_unfurl_version_range.MarkUnfurlVersionRangePipeline,
+        history_diff_backfill.HistoryDiffImproverPipeline,
         group_advisories_for_packages_v2.GroupAdvisoriesForPackages,
     ]
 )

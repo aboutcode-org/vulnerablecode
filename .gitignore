@@ -68,6 +68,7 @@ bin/
 
 # Environments
 .env
+/vulnerablecode-config/
 .venv
 env/
 venv/

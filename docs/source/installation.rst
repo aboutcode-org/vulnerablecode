@@ -91,6 +91,51 @@ to run on a different port than 8000.
 
     Set ``STAGING=False`` in ``.env`` file to disable the staging environment warning.
 
+.. _run_with_docker_windows:
+
+Windows installation with Docker
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Windows users should run VulnerableCode with Docker Desktop. Native Windows
+installation is not supported.
+
+Install and start Docker Desktop, then open PowerShell and clone the repository::
+
+    git clone https://github.com/aboutcode-org/vulnerablecode.git
+    cd vulnerablecode
+
+``make envfile`` is not available on Windows. Instead, create a
+``vulnerablecode-config`` directory in the repository root containing a ``.env``
+file with the following content::
+
+    SECRET_KEY="<your-secret-key>"
+    ALTCHA_HMAC_KEY="<your-altcha-hmac-key>"
+
+Replace both placeholder values with your own unique secret values.
+
+The repository's existing ``docker.env`` file supplies the database and Redis
+container settings; keep it in the repository root. The ``vulnerablecode-config``
+directory contains secrets and is ignored by git; do not commit it.
+
+The repository includes ``docker-compose.windows.yml`` to mount this configuration
+directory into the application, scheduler, and RQ worker containers. Start and
+check the services with::
+
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml config --quiet
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d --build
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml ps
+
+Check that all services are running and review their logs if startup fails::
+
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml logs --tail=100
+
+VulnerableCode should then be available at::
+
+    http://localhost
+
+To stop the services::
+
+    docker compose -f docker-compose.yml -f docker-compose.windows.yml down
 
 .. _local_development_installation:
 
@@ -107,6 +152,7 @@ Supported Platforms
 
 .. warning::
      On **Windows** VulnerableCode can **only** :ref:`run_with_docker` and is not supported.
+     See :ref:`run_with_docker_windows`.
 
 Pre-installation Checklist
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

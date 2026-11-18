@@ -1,0 +1,17 @@
+services:
+  vulnerablecode:
+    volumes:
+      - ./vulnerablecode-config:/etc/vulnerablecode/
+      - static:/var/vulnerablecode/static/
+
+  vulnerablecode_scheduler:
+    volumes:
+      - ./vulnerablecode-config:/etc/vulnerablecode/
+
+  vulnerablecode_rqworker:
+    volumes:
+      - ./vulnerablecode-config:/etc/vulnerablecode/
+
+  vulnerablecode_rqworker_high:
+    volumes:
+      - ./vulnerablecode-config:/etc/vulnerablecode/

@@ -7,6 +7,7 @@
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
 
+import dataclasses
 import hashlib
 import logging
 from datetime import datetime
@@ -15,6 +16,9 @@ from traceback import format_exc as traceback_format_exc
 from typing import Callable
 from typing import List
 from typing import Union
+from urllib.parse import parse_qs
+from urllib.parse import urlsplit
+from urllib.parse import urlunsplit
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -67,7 +71,42 @@ def get_or_create_advisory_aliases(aliases: List[str]) -> List[AdvisoryAlias]:
     return list(AdvisoryAlias.objects.filter(alias__in=aliases))
 
 
+def split_long_bugzilla_buglist(reference):
+    """
+    Return a list of references for ``reference``. A Bugzilla buglist URL longer
+    than the reference URL field is split into one show_bug.cgi reference per bug,
+    and any other reference is returned unchanged.
+    """
+    max_length = AdvisoryReference._meta.get_field("url").max_length
+    if len(reference.url) <= max_length:
+        return [reference]
+
+    scheme, netloc, path, query, _ = urlsplit(reference.url)
+    if not path.endswith("/buglist.cgi"):
+        return [reference]
+
+    bug_ids = [
+        bug_id.strip()
+        for value in parse_qs(query).get("bug_id", [])
+        for bug_id in value.split(",")
+        if bug_id.strip()
+    ]
+    if not bug_ids:
+        return [reference]
+
+    show_bug_path = path[: -len("buglist.cgi")] + "show_bug.cgi"
+    return [
+        dataclasses.replace(
+            reference,
+            reference_id=bug_id,
+            url=urlunsplit((scheme, netloc, show_bug_path, f"id={bug_id}", "")),
+        )
+        for bug_id in bug_ids
+    ]
+
+
 def get_or_create_advisory_references(references: List) -> List[AdvisoryReference]:
+    references = [ref for reference in references for ref in split_long_bugzilla_buglist(reference)]
     reference_urls = [ref.url for ref in references]
     existing = AdvisoryReference.objects.filter(url__in=reference_urls)
     existing_urls = {r.url for r in existing}

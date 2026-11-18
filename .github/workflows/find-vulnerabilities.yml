@@ -1,0 +1,40 @@
+name: Find dependencies vulnerabilities
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run weekly
+    - cron: '0 0 * * 0'
+  pull_request:
+    paths:
+      - 'setup.cfg'
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - '.github/workflows/find-vulnerabilities.yml'
+
+jobs:
+  scan-dependencies:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
+    name: Inspect packages with ScanCode.io
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          path: scancode-inputs
+          sparse-checkout: |
+            pyproject.toml
+            setup.cfg
+            requirements.txt
+          sparse-checkout-cone-mode: false
+          persist-credentials: false  # do not keep the token around
+
+      - name: Fail on known vulnerabilities
+        uses: aboutcode-org/scancode-action@76777db8400d719de67ba3e465c5881037b45cb9  # v0.1
+        with:
+          pipelines: "inspect_packages:StaticResolver,find_vulnerabilities"
+          check-compliance: true
+          compliance-fail-on-vulnerabilities: true
+        env:
+          VULNERABLECODE_URL: https://public.vulnerablecode.io/

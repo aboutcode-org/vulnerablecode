@@ -23,6 +23,7 @@ from vulnerabilities.importer import AffectedPackage
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import PackageCommitPatchData
 from vulnerabilities.importer import Reference
+from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
@@ -233,6 +234,35 @@ def test_get_or_create_advisory_references(advisory_references):
     for ref in refs:
         assert isinstance(ref, AdvisoryReference)
         assert ref.url in [r.url for r in advisory_references]
+
+
+@pytest.mark.django_db
+def test_get_or_create_advisory_references_splits_long_bugzilla_buglist():
+    bug_ids = [str(1935995 + i) for i in range(120)]
+    buglist_url = "https://bugzilla.mozilla.org/buglist.cgi?bug_id=" + "%2C".join(bug_ids)
+    assert len(buglist_url) > AdvisoryReference._meta.get_field("url").max_length
+    nvd_url = "https://nvd.nist.gov/vuln/detail/CVE-2026-6785"
+    references = [
+        ReferenceV2(url=nvd_url),
+        ReferenceV2(url=buglist_url, reference_type=AdvisoryReference.BUG),
+    ]
+
+    refs = get_or_create_advisory_references(references)
+
+    expected_bug_urls = {
+        "https://bugzilla.mozilla.org/show_bug.cgi?id=" + bug_id for bug_id in bug_ids
+    }
+    assert {ref.url for ref in refs} == expected_bug_urls | {nvd_url}
+    bug_refs = [ref for ref in refs if ref.url != nvd_url]
+    assert all(ref.reference_type == AdvisoryReference.BUG for ref in bug_refs)
+    assert {ref.reference_id for ref in bug_refs} == set(bug_ids)
+
+
+@pytest.mark.django_db
+def test_get_or_create_advisory_references_keeps_short_bugzilla_buglist():
+    buglist_url = "https://bugzilla.mozilla.org/buglist.cgi?bug_id=1935995%2C1999158"
+    refs = get_or_create_advisory_references([ReferenceV2(url=buglist_url)])
+    assert [ref.url for ref in refs] == [buglist_url]
 
 
 @pytest.mark.django_db

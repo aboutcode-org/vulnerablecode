@@ -287,7 +287,7 @@ api_doc_intro = f"""
     <pre>User-Agent: {VCIO_USER_AGENT} </pre>
     Requests without this exact header value will be rejected.
     <p><strong>VulnerableCode</strong> is open data and free software by
-    <a href="https://github.com/nexB/vulnerablecode"> nexB Inc. and others.</a>
+    <a href="https://github.com/aboutcode-org/vulnerablecode"> nexB Inc. and others.</a>
     </p>
     <p>API is throttled for anon users it is 10/minute and 30/minute for user with API key </p>
     <p>Please refer to <a href="https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html" target="_blank">urllib3 documentation</a> and set <code> respect_retry_after_header </code> as True to respect the Retry-After header.</p>
@@ -326,7 +326,7 @@ SPECTACULAR_SETTINGS = {
     },
     "LICENSE": {
         "name": "Source code: Apache-2.0 | Data: CC-BY-SA-4.0",
-        "url": "https://github.com/nexb/vulnerablecode#license",
+        "url": "https://github.com/aboutcode-org/vulnerablecode#license",
     },
     "SERVE_INCLUDE_SCHEMA": False,
     # shorthand to use the sidecar instead

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: postgres:15
+    image: docker.io/library/postgres:15
     command: -c config_file=/etc/postgresql/postgresql.conf
     env_file:
       - docker.env
@@ -12,7 +12,7 @@ services:
     shm_size: 1gb
 
   vulnerablecode_redis:
-    image: redis
+    image: docker.io/library/redis:8.8.0-alpine
     volumes:
       - vulnerablecode_redis_data:/data
     restart: always
@@ -70,7 +70,7 @@ services:
       - vulnerablecode
 
   nginx:
-    image: nginx
+    image: docker.io/library/nginx:1.31.9-alpine
     ports:
       - 80:80
       - 443:443

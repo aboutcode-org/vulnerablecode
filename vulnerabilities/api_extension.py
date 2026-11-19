@@ -339,7 +339,7 @@ class VulnerabilityViewSet(viewsets.ReadOnlyModelViewSet):
     Lookup for vulnerabilities by id.
     """
 
-    queryset = Vulnerability.objects.all()
+    queryset = Vulnerability.objects.all().order_by('-vulnerability_id')
     serializer_class = V2VulnerabilitySerializer
     lookup_field = "vulnerability_id"
     filter_backends = (filters.DjangoFilterBackend,)
@@ -377,7 +377,7 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Vulnerability.objects.filter(
         vulnerabilityreference__reference_id__startswith="cpe"
-    ).distinct()
+    ).distinct().order_by('-vulnerability_id')
     serializer_class = V2VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     throttle_classes = [PermissionBasedUserRateThrottle]
@@ -397,7 +397,7 @@ class CPEViewSet(viewsets.ReadOnlyModelViewSet):
         for cpe in cpes:
             if not cpe.startswith("cpe"):
                 return Response(status=400, data={"Error": f"Invalid CPE: {cpe}"})
-        qs = Vulnerability.objects.filter(vulnerabilityreference__reference_id__in=cpes).distinct()
+        qs = Vulnerability.objects.filter(vulnerabilityreference__reference_id__in=cpes).distinct().order_by('-vulnerability_id')
         return Response(V2VulnerabilitySerializer(qs, many=True, context={"request": request}).data)
 
 
@@ -415,7 +415,7 @@ class AliasViewSet(viewsets.ReadOnlyModelViewSet):
     (https://nvd.nist.gov/general/cve-process).
     """
 
-    queryset = Vulnerability.objects.all()
+    queryset = Vulnerability.objects.all().order_by('-vulnerability_id')
     serializer_class = V2VulnerabilitySerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AliasFilterSet

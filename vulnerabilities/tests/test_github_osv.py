@@ -124,3 +124,36 @@ class GithubOSVImporter(TestCase):
         )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file)
+
+    def test_github_osv_importer_crates_io(self):
+        mock_response = {
+            "id": "GHSA-test-crates-io",
+            "summary": "Sample advisory for crates.io",
+            "modified": "2024-02-03T00:18:06Z",
+            "published": "2024-02-03T00:18:06Z",
+            "affected": [
+                {
+                    "package": {
+                        "ecosystem": "crates.io",
+                        "name": "serde",
+                    },
+                    "ranges": [
+                        {
+                            "type": "ECOSYSTEM",
+                            "events": [
+                                {"introduced": "0"},
+                                {"fixed": "1.0.0"},
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+        imported_data = parse_advisory_data(
+            mock_response,
+            supported_ecosystems=["cargo"],
+            advisory_url="https://github.com/advisories/GHSA-test-crates-io",
+        )
+        self.assertEqual(len(imported_data.affected_packages), 1)
+        self.assertEqual(str(imported_data.affected_packages[0].package), "pkg:cargo/serde")
+

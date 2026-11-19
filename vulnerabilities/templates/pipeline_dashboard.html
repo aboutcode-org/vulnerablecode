@@ -52,8 +52,16 @@ Pipeline Dashboard
         </div>
         <form method="get" class="box px-6 mx-0" action="">
             <div class="field has-addons">
-                <div class="control is-expanded">
+                <div class="control is-expanded has-icons-right">
                     {{ form.search }}
+
+                    {% if form.search.value %}
+                        <a href="{{ request.path }}"
+                        class="icon is-right"
+                        style="pointer-events: auto; cursor: pointer;">
+                            <i class="fa fa-close" style="color:gray"></i>
+                        </a>
+                    {% endif %}
                 </div>
                 <div class="control">
                     <button type="submit" class="button is-info"><i class="fa fa-search mx-1"></i></button>

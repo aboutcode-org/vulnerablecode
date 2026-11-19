@@ -1002,6 +1002,11 @@ class PipelineScheduleListView(VulnerableCodeListView, FormMixin):
     paginate_by = 20
     form_class = PipelineSchedulePackageForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["data"] = self.request.GET
+        return kwargs
+
     def get_queryset(self):
         form = self.form_class(self.request.GET)
         if form.is_valid():

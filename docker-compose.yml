@@ -3,6 +3,7 @@ name: vulnerablecode
 x-app-volume: &app-volume /etc/vulnerablecode/:/etc/vulnerablecode/
 
 x-app-common: &app-common
+  image: vulnerablecode:${VULNERABLECODE_VERSION:-latest}
   build:
     context: .
     dockerfile: Dockerfile
@@ -21,12 +22,23 @@ services:
       - db_data:/var/lib/postgresql/data/
       - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
     shm_size: 1gb
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   vulnerablecode_redis:
     image: docker.io/library/redis:8.10.3-alpine
     volumes:
       - vulnerablecode_redis_data:/data
     restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   vulnerablecode:
     <<: *app-common
@@ -39,32 +51,43 @@ services:
     volumes:
       - *app-volume
       - static:/var/vulnerablecode/static/
+    restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   vulnerablecode_scheduler:
     <<: *app-common
     command: wait-for-it web:8000 -- python ./manage.py run_scheduler
     depends_on:
-      - db
-      - vulnerablecode
-      - vulnerablecode_redis
+      db:
+        condition: service_healthy
+      vulnerablecode:
+        condition: service_started
+      vulnerablecode_redis:
+        condition: service_healthy
 
   vulnerablecode_rqworker:
     <<: *app-common
     command: wait-for-it web:8000 -- python ./manage.py rqworker default
     depends_on:
-      - db
-      - vulnerablecode
-      - vulnerablecode_redis
+      db:
+        condition: service_healthy
+      vulnerablecode:
+        condition: service_started
+      vulnerablecode_redis:
+        condition: service_healthy
 
   vulnerablecode_rqworker_high:
     <<: *app-common
     command: wait-for-it web:8000 -- python ./manage.py rqworker high
     depends_on:
-      - db
-      - vulnerablecode
-      - vulnerablecode_redis
+      db:
+        condition: service_healthy
+      vulnerablecode:
+        condition: service_started
+      vulnerablecode_redis:
+        condition: service_healthy
 
   nginx:
     image: docker.io/library/nginx:1.31.9-alpine
@@ -77,8 +100,10 @@ services:
       - ./etc/nginx/conf.d/:/etc/nginx/conf.d/
       - static:/var/vulnerablecode/static/
       - /var/www/html:/var/www/html
+    restart: always
     depends_on:
-      - vulnerablecode
+      vulnerablecode:
+        condition: service_started
 
 
 volumes:

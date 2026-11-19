@@ -12,9 +12,11 @@ from decimal import Decimal
 import pytest
 from django.utils import timezone
 
+from vulnerabilities.models import AdvisoryAlias
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AdvisoryWeakness
+from vulnerabilities.models import EPSSScore
 from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PackageV2
 from vulnerabilities.pipelines.v2_improvers.compute_package_risk import ComputePackageRiskPipeline
@@ -74,3 +76,51 @@ def test_simple_risk_pipeline():
 
     pkg = PackageV2.objects.get(type="pypi", name="foo", version="2.3.0")
     assert pkg.risk_score == Decimal("3.1")
+
+
+@pytest.mark.django_db
+def test_compute_package_risk_pipeline_with_high_epss():
+    package = PackageV2.objects.create(type="pypi", name="bar", version="1.0.0")
+    now = timezone.now()
+
+    alias = AdvisoryAlias.objects.create(alias="CVE-2024-9999")
+    EPSSScore.objects.create(
+        alias=alias,
+        date=now.date(),
+        score=Decimal("0.85"),
+        percentile=Decimal("0.99"),
+        is_latest=True,
+    )
+
+    advisory = AdvisoryV2.objects.create(
+        advisory_id="VCID-High-EPSS",
+        summary="vulnerability with high epss score",
+        datasource_id="ds",
+        pipeline_id="ds_importer_v2",
+        avid="ds/VCID-High-EPSS",
+        unique_content_id="unique_epss_1",
+        url="https://test.com",
+        date_collected=now,
+        is_latest=True,
+        _all_impacts_unfurled_at=now,
+    )
+    advisory.aliases.add(alias)
+
+    severity = AdvisorySeverity.objects.create(
+        url="https://nvd.nist.gov/vuln/detail/CVE-xxxx-xxx1",
+        scoring_system=CVSSV3.identifier,
+        value="6.5",
+    )
+    advisory.severities.add(severity)
+
+    impact = ImpactedPackage.objects.create(advisory=advisory)
+    impact.affecting_packages.add(package)
+
+    pipeline = ComputePackageRiskPipeline()
+    pipeline.execute()
+
+    advisory.refresh_from_db()
+    package.refresh_from_db()
+    assert advisory.exploitability == Decimal("2.0")
+    assert advisory.risk_score == Decimal("10.0")
+    assert package.risk_score == Decimal("10.0")

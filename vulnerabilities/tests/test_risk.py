@@ -111,6 +111,10 @@ def test_exploitability_level(
 
     assert get_exploitability_level(None, None, low_epss_score) == 0.5
 
+    assert get_exploitability_level(None, None, None, epss_score=0.9) == 2
+
+    assert get_exploitability_level(None, None, None, epss_score=0.3) == 0.5
+
     assert (
         get_exploitability_level(
             exploits=None,
@@ -154,6 +158,11 @@ def test_compute_vulnerability_risk_factors(vulnerability, exploit):
     assert compute_vulnerability_risk_factors(references, None, exploit) == (0, 2)
 
     assert compute_vulnerability_risk_factors(None, None, None) == (0, 0.5)
+
+    assert compute_vulnerability_risk_factors(references, severities, None, epss_score=0.9) == (
+        6.2,
+        2,
+    )
 
 
 @pytest.mark.django_db

@@ -61,7 +61,7 @@ def get_weighted_severity(severities):
     return round(max_score, 1)
 
 
-def get_exploitability_level(exploits, references, severities):
+def get_exploitability_level(exploits, references, severities, epss_score=None):
     """
     Exploitability refers to the potential or
     probability of a software package vulnerability being exploited by
@@ -75,8 +75,12 @@ def get_exploitability_level(exploits, references, severities):
         # Automatable Exploit with PoC script published OR known exploits (KEV) in the wild OR known ransomware
         exploit_level = 2
 
+    # high EPSS.
+    elif epss_score and float(epss_score) > 0.8:
+        exploit_level = 2
+
     elif severities:
-        # high EPSS.
+        # TODO: Remove after EPSS data migration
         for severity in severities:
             if severity.scoring_system == EPSS.identifier and float(severity.value) > 0.8:
                 exploit_level = 2
@@ -92,7 +96,7 @@ def get_exploitability_level(exploits, references, severities):
     return exploit_level
 
 
-def compute_vulnerability_risk_factors(references, severities, exploits):
+def compute_vulnerability_risk_factors(references, severities, exploits, epss_score=None):
     """
     Risk may be expressed as a number ranging from 0 to 10.
     Risk is calculated from weighted severity and exploitability values.
@@ -101,7 +105,7 @@ def compute_vulnerability_risk_factors(references, severities, exploits):
     Risk = min(weighted severity * exploitability, 10)
     """
     weighted_severity = get_weighted_severity(severities)
-    exploitability = get_exploitability_level(exploits, references, severities)
+    exploitability = get_exploitability_level(exploits, references, severities, epss_score)
     return weighted_severity, exploitability
 
 

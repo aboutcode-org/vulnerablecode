@@ -14,6 +14,7 @@ from vulnerabilities.models import AdvisoryExploit
 from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import EPSSScore
 from vulnerabilities.models import PackageV2
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines import VulnerableCodePipeline
@@ -58,6 +59,10 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
                 ),
                 Prefetch("exploits", queryset=AdvisoryExploit.objects.only("id")),
                 Prefetch(
+                    "aliases__epss_scores",
+                    queryset=EPSSScore.objects.filter(is_latest=True),
+                ),
+                Prefetch(
                     "related_advisory_severities",
                     queryset=AdvisoryV2.objects.only("id").prefetch_related(
                         Prefetch(
@@ -96,11 +101,21 @@ class ComputePackageRiskPipeline(VulnerableCodePipeline):
             for rel in advisory.related_advisory_severities.all():
                 severities.extend(rel.severities.all())
 
+            epss_score = max(
+                (
+                    epss.score
+                    for alias in advisory.aliases.all()
+                    for epss in alias.epss_scores.all()
+                ),
+                default=None,
+            )
+
             try:
                 weighted_severity, exploitability = compute_vulnerability_risk_factors(
                     references=references,
                     severities=severities,
                     exploits=exploits,
+                    epss_score=epss_score,
                 )
 
                 advisory.weighted_severity = weighted_severity

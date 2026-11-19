@@ -2,6 +2,13 @@ Release notes
 =============
 
 
+Unreleased
+----------
+
+- Keep OSV introduced and fixed commit patches scoped to their affected package
+  https://github.com/aboutcode-org/vulnerablecode/issues/2489
+
+
 Version v40.2.0
 -----------------
 

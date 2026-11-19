@@ -6,11 +6,13 @@
 # See https://github.com/aboutcode-org/vulnerablecode for support or download.
 # See https://aboutcode.org for more information about nexB OSS projects.
 #
-from collections import defaultdict
+from tempfile import TemporaryDirectory
 
 from aboutcode.federated import get_core_purl
 from aboutcode.pipeline import LoopProgress
 from django.db.models import Prefetch
+from git import Repo
+from git.exc import GitError
 from packageurl.contrib.purl2url import purl2url
 from packageurl.contrib.url2purl import url2purl
 
@@ -20,6 +22,7 @@ from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import PackageCommitPatch
 from vulnerabilities.models import Patch
 from vulnerabilities.pipelines import VulnerableCodePipeline
+from vulnerabilities.pipes.commit_reachability import get_branch_reachability
 from vulnerabilities.utils import is_commit
 
 
@@ -32,14 +35,60 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
 
     @classmethod
     def steps(cls):
-        return (cls.collect_and_store_fix_commits,)
+        return (cls.collect_and_store_fix_commits, cls.check_commit_branch_reachability)
+
+    def check_commit_branch_reachability(self):
+        """Check all collected commits, cloning each repository once per run.
+
+        Collection remains independent of repository availability. A fresh, full
+        bare clone includes all branch heads and their history, so even an object
+        absent from that clone can be reported as unreachable from its branches.
+        """
+        vcs_urls = (
+            PackageCommitPatch.objects.order_by("vcs_url")
+            .values_list("vcs_url", flat=True)
+            .distinct()
+        )
+        for vcs_url in vcs_urls.iterator():
+            commits = list(
+                PackageCommitPatch.objects.filter(vcs_url=vcs_url).only("id", "commit_hash")
+            )
+            results = dict.fromkeys(
+                (commit.commit_hash for commit in commits),
+                PackageCommitPatch.BranchReachability.UNKNOWN,
+            )
+            try:
+                with TemporaryDirectory(prefix="vcio-commit-branches-") as directory:
+                    with Repo.clone_from(
+                        vcs_url,
+                        directory,
+                        bare=True,
+                        single_branch=False,
+                        no_local=True,
+                        no_tags=True,
+                        env={"GIT_TERMINAL_PROMPT": "0"},
+                        kill_after_timeout=300,
+                    ) as repo:
+                        results = get_branch_reachability(repo, results, all_branches_fetched=True)
+            except (GitError, OSError, ValueError) as error:
+                self.log(f"Branch reachability unknown for {vcs_url}: {error}")
+
+            for commit in commits:
+                commit.branch_reachability = results[commit.commit_hash]
+                if commit.branch_reachability == PackageCommitPatch.BranchReachability.UNREACHABLE:
+                    self.log(
+                        "Commit not reachable from repository branches: "
+                        f"{vcs_url}@{commit.commit_hash}"
+                    )
+
+            PackageCommitPatch.objects.bulk_update(
+                commits, fields=["branch_reachability"], batch_size=10000
+            )
 
     def get_vcs_data(self, url):
-        """Extracts a VCS URL and commit hash from URL.
-        >> get_vcs_commit('https://github.com/aboutcode-org/vulnerablecode/commit/98e516011d6e096e25247b82fc5f196bbeecff10')
-        ("pkg:github/aboutcode-org/vulnerablecode", 'https://github.com/aboutcode-org/vulnerablecode', '98e516011d6e096e25247b82fc5f196bbeecff10')
-        >> get_vcs_commit('https://github.com/aboutcode-org/vulnerablecode/pull/1974')
-        None
+        """Extract a core purl, VCS URL, and commit hash from a commit URL.
+
+        Return None for non-commit URLs, including pull requests.
         """
         try:
             purl = url2purl(url)
@@ -54,7 +103,7 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
             if base_purl and vcs_url and version:
                 return base_purl, vcs_url, version
         except Exception as e:
-            self.log(f"Invalid URL: url:{url} error:{e}")
+            self.log(f"Invalid URL: url: {url} error: {e}")
 
     def collect_and_store_fix_commits(self):
         advisories = AdvisoryV2.objects.only("id").prefetch_related(
@@ -85,7 +134,8 @@ class CollectReferencesFixCommitsPipeline(VulnerableCodePipeline):
             updated_pkg_patch_commit_count += self.bulk_commit_batch_update(commit_batch)
             commit_batch.clear()
 
-        self.log(f"Successfully processed pkg patch commit {updated_pkg_patch_commit_count:,d}")
+        processed_count = format(updated_pkg_patch_commit_count, ",d")
+        self.log(f"Successfully processed pkg patch commit {processed_count}")
 
     def bulk_commit_batch_update(self, vcs_data_table):
         impact_data = {(row[0], row[3]) for row in vcs_data_table}  # base_purl, adv_id

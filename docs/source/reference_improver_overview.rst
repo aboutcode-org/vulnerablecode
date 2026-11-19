@@ -32,3 +32,31 @@ like *Time Travel* and *finding fix commits* could be implemented as well.
 
 You can find more in-code documentation about improvers in :file:`vulnerabilites/improver.py` and
 the framework responsible for invoking these improvers in :file:`vulnerabilites/improve_runner.py`.
+
+Advisory commit branch reachability
+-----------------------------------
+
+The ``collect_ref_fix_commits_v2`` pipeline collects commit references and then checks all
+``PackageCommitPatch`` records, including commits collected directly by importers. Commits
+and their advisory links are retained regardless of the check's result.
+
+The ``PackageCommitPatch.branch_reachability`` field records one of three outcomes:
+
+- ``reachable``: the commit is reachable from a branch in the referenced repository.
+- ``unreachable``: a complete snapshot of all branch histories does not contain the commit.
+  A commit reachable only from a tag, a detached HEAD, or a pull request ref does not count
+  as belonging to a repository branch.
+- ``unknown``: the commit has not been checked, the repository could not be cloned, or the
+  clone has incomplete history. Shallow and partial clones cannot establish unreachability.
+
+The check creates one temporary full bare clone per repository per run and removes it after
+use. Clones include all branches and have a five-minute timeout; large repositories may
+therefore remain unknown. A successful walk of all branch histories can establish
+unreachability even when the referenced commit object is absent from the clone.
+
+The advisory's commit details page displays the result and highlights unreachable commits.
+Pipeline logs include the repository URL and hash for these commits, for upstream review.
+These results describe the branches observed during the last check and may change when
+branches are added, deleted, or rewritten. Rerunning the pipeline refreshes existing records;
+a failed check sets their status to unknown. The flag is local enrichment and is not part of
+the source advisory's serialized patch data.

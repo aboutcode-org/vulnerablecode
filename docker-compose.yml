@@ -1,4 +1,4 @@
-version: "3"
+name: vulnerablecode
 
 services:
   db:
@@ -12,7 +12,7 @@ services:
     shm_size: 1gb
 
   vulnerablecode_redis:
-    image: redis
+    image: docker.io/library/redis:8.10.3-alpine
     volumes:
       - vulnerablecode_redis_data:/data
     restart: always
@@ -70,7 +70,7 @@ services:
       - vulnerablecode
 
   nginx:
-    image: nginx
+    image: docker.io/library/nginx:1.31.9-alpine
     ports:
       - 80:80
       - 443:443

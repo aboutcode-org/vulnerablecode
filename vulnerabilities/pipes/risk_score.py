@@ -13,6 +13,7 @@ from decimal import Decimal
 from django.db.models import Max
 
 from vulnerabilities.models import AdvisoryV2
+from vulnerabilities.models import EPSSScore
 from vulnerabilities.models import PackageV2
 
 
@@ -100,12 +101,29 @@ def compute_advisory_risk_score(advisory):
     for rel in advisory.related_advisory_severities.all():
         severities.extend(rel.severities.all())
 
+    epss_score = max(
+        (
+            epss.score
+            for alias in advisory.aliases.all()
+            for epss in alias.epss_scores.filter(is_latest=True)
+        ),
+        default=None,
+    )
+    # Handle advisories where the CVE ID is advisory_id and aliases is empty.
+    if epss_score is None and advisory.advisory_id.startswith("CVE-"):
+        epss_score = (
+            EPSSScore.objects.filter(alias__alias=advisory.advisory_id, is_latest=True)
+            .values_list("score", flat=True)
+            .first()
+        )
+
     try:
         calculated_weighted_severity, calculated_exploitability = (
             compute_vulnerability_risk_factors(
                 references=references,
                 severities=severities,
                 exploits=exploits,
+                epss_score=epss_score,
             )
         )
 

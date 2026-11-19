@@ -2928,6 +2928,24 @@ class PackageCommitPatch(models.Model):
         }
 
 
+class Curator(models.Model):
+    """A person who submits curations for advisories."""
+
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        help_text="Name of the curator.",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Timestamp indicating when this curator was added.",
+    )
+
+    def __str__(self):
+        return self.name
+
+
 class AdvisoryV2QuerySet(BaseQuerySet):
     def latest_for_avid(self, avid: str):
         try:
@@ -3232,6 +3250,15 @@ class AdvisoryV2(models.Model):
         null=False,
         db_index=True,
         help_text="Indicates whether this is a curation advisory.",
+    )
+
+    curator = models.ForeignKey(
+        Curator,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="curations",
+        help_text="The curator who submitted this curation advisory.",
     )
 
     date_published = models.DateTimeField(

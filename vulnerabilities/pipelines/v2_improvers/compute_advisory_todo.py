@@ -43,6 +43,7 @@ class ComputeToDo(VulnerableCodePipeline):
     def steps(cls):
         return (
             cls.compute_individual_advisory_todo,
+            cls.detect_inconsistent_package_versions,
             cls.detect_conflicting_package_versions,
             cls.detect_conflicting_cvss_scores,
             cls.detect_conflicting_weakness,
@@ -111,6 +112,60 @@ class ComputeToDo(VulnerableCodePipeline):
         self.log(
             f"Successfully created {new_todos_count} ToDos for missing summary, affected and fixed packages"
         )
+
+    def detect_inconsistent_package_versions(self):
+        """Create ToDos for versions reported as both affected and fixed in one advisory."""
+        advisories = (
+            AdvisoryV2.objects.todo_excluded()
+            .latest_per_avid()
+            .exclude(
+                advisory_todos__in=AdvisoryToDoV2.objects.filter(
+                    issue_type="CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES",
+                    advisories_count=1,
+                )
+            )
+            .prefetch_related(
+                "impacted_packages",
+                "impacted_packages__affecting_packages",
+                "impacted_packages__fixed_by_packages",
+            )
+        )
+        advisories_count = advisories.count()
+        advisory_relation_to_create = {}
+        todo_to_create = []
+        new_todos_count = 0
+        batch_size = 1000
+
+        self.log(
+            f"Checking inconsistent affected and fixed versions in {advisories_count} Advisories"
+        )
+        progress = LoopProgress(
+            total_iterations=advisories_count,
+            logger=self.log,
+            progress_step=10,
+        )
+        for advisory in progress.iter(advisories.iterator(chunk_size=500)):
+            check_inconsistent_affected_and_fixed_by_packages(
+                advisory=advisory,
+                todo_to_create=todo_to_create,
+                advisory_relation_to_create=advisory_relation_to_create,
+            )
+
+            if len(todo_to_create) >= batch_size:
+                new_todos_count += bulk_create_with_m2m(
+                    todos=todo_to_create,
+                    advisories=advisory_relation_to_create,
+                    logger=self.log,
+                )
+                advisory_relation_to_create.clear()
+                todo_to_create.clear()
+
+        new_todos_count += bulk_create_with_m2m(
+            todos=todo_to_create,
+            advisories=advisory_relation_to_create,
+            logger=self.log,
+        )
+        self.log(f"Successfully created {new_todos_count} ToDos for inconsistent package versions")
 
     def detect_conflicting_package_versions(self):
         """
@@ -908,6 +963,78 @@ def check_missing_affected_and_fixed_by_packages(
         advisory_relation_to_create[todo_id] = [advisory]
 
 
+def check_inconsistent_affected_and_fixed_by_packages(
+    advisory,
+    todo_to_create,
+    advisory_relation_to_create,
+):
+    """
+    Flag overlapping affected and fixed versions, including across impacts for the same PURL.
+
+    Known package relationships can establish a conflict before range unfurling completes.
+    Leave conflicting versions out of partial curation so a human must decide their status.
+    """
+    packages_by_purl = defaultdict(lambda: {"affected": set(), "fixed": set()})
+    for impact in advisory.impacted_packages.all():
+        packages = packages_by_purl[impact.base_purl]
+        packages["affected"].update(p.version for p in impact.affecting_packages.all())
+        packages["fixed"].update(p.version for p in impact.fixed_by_packages.all())
+
+    conflict_details = {}
+    curation_items = []
+    for purl, packages in sorted(packages_by_purl.items()):
+        affected = packages["affected"]
+        fixed = packages["fixed"]
+        conflicting_versions = sorted(affected & fixed)
+        if not conflicting_versions:
+            continue
+
+        detail = {
+            "avids": [advisory.avid],
+            "conflicting_versions": conflicting_versions,
+            "affected_union": sorted(affected),
+            "fixed_union": sorted(fixed),
+            "affected_intersection": sorted(affected - fixed),
+            "fixed_intersection": sorted(fixed - affected),
+            "affected_disagreement": conflicting_versions,
+            "fixed_disagreement": conflicting_versions,
+        }
+        conflict_details[purl] = detail
+        curation_item = get_grouped_curation_advisories_for_dashboard_ui(
+            purl=purl,
+            adv_map={advisory.avid: packages},
+            conflict_detail=detail,
+            advisories={advisory.avid: advisory},
+        )
+        curation_item["conflict_reason"] = (
+            "Advisory reports the following version(s) as both affected and fixed: "
+            f"{', '.join(conflicting_versions)}."
+        )
+        curation_items.append(curation_item)
+
+    if not conflict_details:
+        return
+
+    todo_id = advisories_checksum(advisory)
+    alias = advisory.advisory_id.rsplit("/", 1)[-1]
+    todo_to_create.append(
+        AdvisoryToDoV2(
+            related_advisories_id=todo_id,
+            issue_type="CONFLICTING_AFFECTED_AND_FIXED_BY_PACKAGES",
+            issue_detail={
+                "alias": alias,
+                "conflict_checksum": sha256_digest(canonical_value(conflict_details)),
+                "conflict_details": conflict_details,
+                "curation_items": curation_items,
+            },
+            alias=alias,
+            advisories_count=1,
+            oldest_advisory_date=advisory.date_published or advisory.date_collected,
+        )
+    )
+    advisory_relation_to_create[todo_id] = [advisory]
+
+
 def compute_version_range_disagreement(adv_map):
     """Compute differences in affected and fixed version sets across advisories."""
 
@@ -1092,12 +1219,14 @@ def get_grouped_curation_advisories_for_dashboard_ui(purl, adv_map, conflict_det
         "advisories": [],
     }
 
-    all_versions = conflict_detail["affected_union"] + conflict_detail["fixed_union"]
+    all_versions = set(conflict_detail["affected_union"] + conflict_detail["fixed_union"])
     package_url = PackageURL.from_string(purl)
-    range_class = RANGE_CLASS_BY_SCHEMES[package_url.type]
-    version_class = range_class.version_class
-    sorted_versions = sorted([version_class(v) for v in all_versions])
-    curation_item["all_versions"] = [str(v) for v in sorted_versions]
+    range_class = RANGE_CLASS_BY_SCHEMES.get(package_url.type)
+    if range_class:
+        sorted_versions = sorted(range_class.version_class(v) for v in all_versions)
+        curation_item["all_versions"] = [str(v) for v in sorted_versions]
+    else:
+        curation_item["all_versions"] = sorted(all_versions)
     curation_item["conflict_reason"] = get_disagreement_message(
         fixed_disagreement=conflict_detail["fixed_disagreement"],
         affected_disagreement=conflict_detail["affected_disagreement"],

@@ -1,0 +1,24 @@
+{
+  "advisory_id": "92",
+  "aliases": [],
+  "summary": "Private Data Disclosure in express-restify-mongoose",
+  "affected_packages": [
+    {
+      "package": {
+        "type": "npm",
+        "name": "express-restify-mongoose"
+      },
+      "affected_version_range": "vers:npm/<=2.4.2|>=3.0.0|<=3.0.1",
+      "fixed_version_range": "vers:npm/>=2.5.0|<=3.0.0|>=3.1.0"
+    }
+  ],
+  "references": [
+    {
+      "reference_id": "252",
+      "url": "https://github.com/florianholzapfel/express-restify-mongoose/issues/252"
+    }
+  ],
+  "date_published": "2016-04-19T00:00:00+00:00",
+  "weaknesses": [],
+  "url": "https://github.com/nodejs/security-wg/blob/main/vuln/npm/92.json"
+}

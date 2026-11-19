@@ -279,6 +279,9 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
     ignorable_versions = []
     precedence = 0
 
+    # Incremental importers must retry failed advisories before advancing a checkpoint.
+    raise_on_import_error = False
+
     # Set this to True if computing fixed/affected package ToDo is not fruitful for this source.
     # An example of such advisory would be pipeline dedicated to collecting issues,
     # pull requests, commit messages, EPSS, exploits, etc.
@@ -351,6 +354,8 @@ class VulnerableCodeBaseImporterPipelineV2(VulnerableCodePipeline):
                     f"Failed to import advisory: {advisory!r} with error {e!r}:\n{traceback_format_exc()}",
                     level=logging.ERROR,
                 )
+                if self.raise_on_import_error:
+                    raise
                 continue
 
         self.log(f"Successfully collected {collected_advisory_count:,d} advisories")

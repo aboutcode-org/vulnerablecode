@@ -33,3 +33,33 @@ model. The version ranges are required to be resolved into concrete ranges. Thes
 As of now, the following importers have been implemented in VulnerableCode:
 
 .. include:: ../../SOURCES.rst
+
+Incremental GitHub OSV imports
+-----------------------------------
+
+The ``github_osv_importer_v2`` pipeline uses a database ``GitImportCheckpoint`` keyed by
+pipeline ID and repository URL to remember its last successfully imported Git commit.
+The first run imports all JSON files in ``advisories/github-reviewed``. Later runs compare
+the checkpoint and current clone's HEAD with ``git diff --name-status`` and import only
+added or changed advisory JSON files. Unchanged files are not parsed or written again.
+Renames are treated as deletion plus addition, so the destination file is imported.
+
+If the previous commit is unavailable, including when a shallow clone omits it, or is no
+longer an ancestor of HEAD, the pipeline falls back to a full import. A run with no changed
+advisory files imports nothing. The existing cloning mechanism is retained; this prototype
+reduces parsing and database work rather than clone transfer size.
+
+The proposed deletion policy is to log deleted upstream paths for review and retain their
+stored advisories and history. A deleted file does not by itself establish that an advisory
+should be withdrawn. This also applies to a run containing only deletions.
+
+The checkpoint is saved as the final step, after all selected advisories have been imported
+and the temporary clone has been removed. Clone, parsing, storage, and cleanup failures
+leave the checkpoint unchanged. This importer opts into stopping on an individual storage
+failure; other importers keep their existing behavior. A retry reprocesses the delta, and
+already imported advisory content is deduplicated by the existing import mechanism.
+
+To force a full import, remove this pipeline and repository's ``GitImportCheckpoint`` row
+before the next run. Apply the database migration before running the updated importer.
+This prototype is limited to GitHub OSV. Maintainers should agree on the deletion policy
+and checkpoint timing before applying the approach to other pipelines.

@@ -38,8 +38,7 @@ def mock_gitlab_yaml(tmp_path):
     advisory_dir.mkdir(parents=True)
 
     advisory_file = advisory_dir / "CVE-2022-0001.yml"
-    advisory_file.write_text(
-        """
+    advisory_file.write_text("""
         identifier: "CVE-2022-0001"
         package_slug: "pypi/package_name"
         title: "Example vulnerability"
@@ -54,8 +53,7 @@ def mock_gitlab_yaml(tmp_path):
           - "CWE-79"
         identifiers:
           - "CVE-2022-0001"
-        """
-    )
+        """)
     return tmp_path
 
 
@@ -206,3 +204,71 @@ def test_parse_gitlab_advisory_with_no_purl(monkeypatch, gitlab_advisory_yaml):
     assert isinstance(result.date_published, datetime)
     assert result.date_published.year == 2018
     assert result.affected_packages == []  # Because get_purl was mocked to return None
+
+
+@pytest.fixture
+def gitlab_maven_advisory_yaml(tmp_path):
+    content = {
+        "identifier": "CVE-2025-14813",
+        "package_slug": "maven/org.bouncycastle/bcprov-debug-jdk14",
+        "title": "Example maven vulnerability",
+        "description": "Example description",
+        "pubdate": "2025-01-15",
+        "affected_range": "[1.59.0,1.80.1],[1.82.0,1.84.0),[1.81.0,1.81.0]",
+        "fixed_versions": ["1.84.0"],
+        "urls": ["https://example.com/advisory"],
+        "identifiers": ["CVE-2025-14813"],
+    }
+
+    advisory_path = tmp_path / "CVE-2025-14813.yml"
+    advisory_path.write_text(saneyaml.dump(content))
+    return advisory_path, content
+
+
+def parse_maven_advisory(file_path):
+    from vulnerabilities.pipelines.v2_importers.gitlab_importer import GitLabImporterPipeline
+
+    dummy_logger = lambda *args, **kwargs: None  # Ignore logging in test
+
+    return parse_gitlab_advisory(
+        file=file_path,
+        base_path=file_path.parent,
+        gitlab_scheme_by_purl_type=GitLabImporterPipeline.gitlab_scheme_by_purl_type,
+        purl_type_by_gitlab_scheme=GitLabImporterPipeline.purl_type_by_gitlab_scheme,
+        logger=dummy_logger,
+    )
+
+
+def test_parse_gitlab_advisory_maven_multirange(gitlab_maven_advisory_yaml):
+    file_path, _ = gitlab_maven_advisory_yaml
+
+    result = parse_maven_advisory(file_path)
+
+    assert isinstance(result, AdvisoryDataV2)
+    affected_package = result.affected_packages[0]
+    assert affected_package.package.name == "bcprov-debug-jdk14"
+    assert affected_package.package.namespace == "org.bouncycastle"
+    assert str(affected_package.affected_version_range) == (
+        "vers:maven/>=1.59.0|<=1.80.1|1.81.0|>=1.82.0|<1.84.0"
+    )
+    assert str(affected_package.fixed_version_range) == "vers:maven/1.84.0"
+
+    from univers.versions import MavenVersion
+
+    affected_range = affected_package.affected_version_range
+    for version in ["1.59.0", "1.70.0", "1.81.0", "1.83.0"]:
+        assert MavenVersion(version) in affected_range
+    for version in ["1.80.2", "1.81.5", "1.84.0", "1.90.0"]:
+        assert MavenVersion(version) not in affected_range
+
+
+def test_parse_gitlab_advisory_maven_single_point_range(gitlab_maven_advisory_yaml):
+    file_path, content = gitlab_maven_advisory_yaml
+
+    content["affected_range"] = "[1.81.0,1.81.0]"
+    file_path.write_text(saneyaml.dump(content))
+
+    result = parse_maven_advisory(file_path)
+
+    assert isinstance(result, AdvisoryDataV2)
+    assert str(result.affected_packages[0].affected_version_range) == "vers:maven/1.81.0"

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Insights{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/billboard.css' %}">
+<link rel="stylesheet" href="{% static 'insights/css/insights.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="insights-layout" data-panel="{{ current_panel_id }}">
+
+    <aside class="insights-sidenav" id="insights-sidenav" aria-label="Dashboard navigation">
+        <nav class="menu">
+            <p class="menu-label">Insights Dashboard</p>
+            <ul class="menu-list" id="sidenav-list">
+                {% for panel in panels %}
+                <li>
+                    <a href="{% url 'insights-panel' panel.id %}" id="sidenav-{{ panel.id }}"
+                        data-panel="{{ panel.id }}" class="{% if current_panel_id == panel.id %}is-active{% endif %}">
+                        {{ panel.label }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+        <div class="sidenav-footer">
+            <p class="snapshot-text-medium">Last Snapshot At:<br><strong>{{ last_snapshot_time|date:"Y-m-d H:i" }} UTC</strong>
+            </p>
+        </div>
+    </aside>
+
+    <main class="insights-main">
+        {% for panel in panels %}
+        {% if panel.id == current_panel_id %}
+        <section id="panel-{{ panel.id }}" class="mb-6 details-container panel-section">
+            <article class="panel is-info panel-header-only flat-panel">
+                <div class="panel-heading py-3 is-size-5 flat-panel-heading">
+                    <span>{{ panel.label }}</span>
+                </div>
+            </article>
+
+            <div class="chart-inner p-5 w-full">
+                {% if panel.id == 'overview_panel' %}
+                    {% include 'insights/components/overview_panel_content.html' with panel=panel %}
+                {% elif panel.id == 'data_quality_panel' %}
+                    {% include 'insights/components/data_quality_panel_content.html' with panel=panel %}
+                {% elif panel.layout == 'split_top' %}
+                    {% include 'insights/components/package_panel_donuts.html' with panel=panel %}
+                    {% for chart in panel.charts|slice:"2:" %}
+                        {% include 'insights/components/chart_card.html' with chart=chart current_panel_id=current_panel_id search_query=search_query search_error=search_error %}
+                    {% endfor %}
+                {% else %}
+                    {% for chart in panel.charts %}
+                    {% include 'insights/components/chart_card.html' with chart=chart current_panel_id=current_panel_id search_query=search_query search_error=search_error %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+        {% endfor %}
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/d3.js' %}"></script>
+<script src="{% static 'js/billboard.js' %}"></script>
+{{ snapshot_dict|json_script:"insights-snapshot-data" }}
+{% if search_results_dict %}
+{{ search_results_dict|json_script:"chart-search-data" }}
+{% endif %}
+<script type="module" src="{% static 'insights/js/core.js' %}"></script>
+<script type="module" src="{% static 'insights/js/overview_panel.js' %}"></script>
+<script type="module" src="{% static 'insights/js/package_panel.js' %}"></script>
+<script type="module" src="{% static 'insights/js/severity_panel.js' %}"></script>
+<script type="module" src="{% static 'insights/js/importer_panel.js' %}"></script>
+<script type="module" src="{% static 'insights/js/data_quality_panel.js' %}"></script>
+{% endblock %}

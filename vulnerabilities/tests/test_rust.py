@@ -10,8 +10,10 @@
 import os
 from unittest import TestCase
 
+import pytest
 from packageurl import PackageURL
 from univers.version_range import VersionRange
+from univers.versions import SemverVersion
 
 from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import Reference
@@ -183,3 +185,46 @@ class RustImportTest(TestCase):
         }
 
         assert loaded_data == expected_data
+
+
+@pytest.fixture
+def rust_importer_with_mock(monkeypatch):
+    class DummyVCSResponse:
+        repo_dirs = [os.path.join(TEST_DATA, "..", "test_data", "rust")]
+
+    importer = RustImporter()
+    importer._crates_api = MOCKED_CRATES_API_VERSIONS
+    importer.vcs_response = DummyVCSResponse()
+    return importer
+
+
+def test_rust_importer_package_first_affecting(rust_importer_with_mock):
+    purl = PackageURL(type="cargo", name="byte_struct")
+    importer = rust_importer_with_mock
+    importer.purl = purl
+    advisories = list(importer._load_advisories_for_package("byte_struct"))
+    assert len(advisories) == 1
+    assert any(ap.package.name == "byte_struct" for ap in advisories[0].affected_packages)
+
+
+def test_rust_importer_package_first_version_affecting(rust_importer_with_mock):
+    purl = PackageURL(type="cargo", name="byte_struct", version="0.6.0")
+    importer = rust_importer_with_mock
+    importer.purl = purl
+    advisories = list(importer._load_advisories_for_package("byte_struct"))
+
+    assert len(advisories) == 1
+    found = False
+    for ap in advisories[0].affected_packages:
+        if ap.package.name == "byte_struct":
+            if ap.affected_version_range and SemverVersion("0.6.0") in ap.affected_version_range:
+                found = True
+    assert found
+
+
+def test_rust_importer_package_first_not_found(rust_importer_with_mock):
+    purl = PackageURL(type="cargo", name="nonexistent")
+    importer = rust_importer_with_mock
+    importer.purl = purl
+    advisories = list(importer._load_advisories_for_package(purl.name))
+    assert advisories == []

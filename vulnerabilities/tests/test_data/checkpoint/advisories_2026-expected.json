@@ -1,0 +1,95 @@
+[
+  {
+    "advisory_id": "CPAI-2026-1780",
+    "aliases": [
+      "CVE-2026-20122"
+    ],
+    "summary": "Cisco Catalyst SD-WAN Manager Arbitrary File Write (CVE-2026-20122)",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CPAI-2026-1780",
+        "reference_type": "",
+        "url": "https://advisories.checkpoint.com/defense/advisories/public/2026/cpai-2026-1780.html"
+      },
+      {
+        "reference_id": "CVE-2026-20122",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-20122"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "Medium",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2026-03-17T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://advisories.checkpoint.com/defense/advisories/public/2026/cpai-2026-1780.html"
+  },
+  {
+    "advisory_id": "CPAI-2026-0042",
+    "aliases": [
+      "CVE-2026-1001"
+    ],
+    "summary": "Example Critical Vulnerability Remote Code Execution",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CPAI-2026-0042",
+        "reference_type": "",
+        "url": "https://advisories.checkpoint.com/defense/advisories/public/2026/cpai-2026-0042.html"
+      },
+      {
+        "reference_id": "CVE-2026-1001",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1001"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "Critical",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2026-01-10T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://advisories.checkpoint.com/defense/advisories/public/2026/cpai-2026-0042.html"
+  },
+  {
+    "advisory_id": "CPAI-2026-0210",
+    "aliases": [
+      "CVE-2025-33603"
+    ],
+    "summary": "Example High Severity Stack Overflow",
+    "affected_packages": [],
+    "references": [
+      {
+        "reference_id": "CPAI-2026-0210",
+        "reference_type": "",
+        "url": "https://advisories.checkpoint.com/defense/advisories/public/2026/cpai-2026-0210.html"
+      },
+      {
+        "reference_id": "CVE-2025-33603",
+        "reference_type": "",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-33603"
+      }
+    ],
+    "patches": [],
+    "severities": [
+      {
+        "system": "generic_textual",
+        "value": "High",
+        "scoring_elements": ""
+      }
+    ],
+    "date_published": "2026-02-05T00:00:00+00:00",
+    "weaknesses": [],
+    "url": "https://advisories.checkpoint.com/defense/advisories/public/2026/cpai-2026-0210.html"
+  }
+]

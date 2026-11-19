@@ -99,4 +99,4 @@ def test_to_advisories_missing_fields(pipeline):
 
     assert advisory.advisory_id == "XSA-None"
     assert advisory.aliases == []
-    assert advisory.summary == None
+    assert advisory.summary is None

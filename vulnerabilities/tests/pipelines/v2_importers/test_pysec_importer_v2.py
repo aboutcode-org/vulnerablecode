@@ -78,7 +78,7 @@ def test_collect_advisories(mock_requests_get, mock_zip_data):
     # Fetch the zip data
     pipeline.fetch_zip()
 
-    # Mock the `parse_advisory_data_v2` function to return a dummy AdvisoryData
+    # Mock the `parse_advisory_data_v2` function to return a dummy AdvisoryDataV2
     with patch(
         "vulnerabilities.pipelines.v2_importers.pysec_importer.parse_advisory_data_v3"
     ) as mock_parse:

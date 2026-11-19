@@ -16,7 +16,6 @@ from typing import Mapping
 from packageurl import PackageURL
 from univers.version_range import DebianVersionRange
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2
@@ -106,13 +105,13 @@ class DebianImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
             adv_count += recs
         return adv_count
 
-    def collect_advisories(self) -> Iterable[AdvisoryData]:
+    def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
         if not self.response:
             self.response = self.get_response()
         for pkg_name, records in self.response.items():
             yield from self.parse(pkg_name, records)
 
-    def parse(self, pkg_name: str, records: Mapping[str, Any]) -> Iterable[AdvisoryData]:
+    def parse(self, pkg_name: str, records: Mapping[str, Any]) -> Iterable[AdvisoryDataV2]:
 
         for record_identifier, record in records.items():
             affected_versions = []

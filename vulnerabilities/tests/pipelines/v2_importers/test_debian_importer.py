@@ -14,7 +14,6 @@ import pytest
 from packageurl import PackageURL
 from univers.version_range import DebianVersionRange
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import AffectedPackageV2
 from vulnerabilities.importer import ReferenceV2

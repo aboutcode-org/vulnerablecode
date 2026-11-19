@@ -8,19 +8,17 @@ to the new pipeline_id.
 
 
 def update_created_by(apps, schema_editor):
-    from vulnerabilities.pipelines.alpine_linux_importer import AlpineLinuxImporterPipeline
-
+    # Remove pipeline import path, since we are removing V1/V2 code
     Advisory = apps.get_model("vulnerabilities", "Advisory")
     Advisory.objects.filter(created_by="vulnerabilities.importers.alpine_linux.AlpineImporter").update(
-        created_by=AlpineLinuxImporterPipeline.pipeline_id
+        created_by="alpine_importer"
     )
 
 
 def reverse_update_created_by(apps, schema_editor):
-    from vulnerabilities.pipelines.alpine_linux_importer import AlpineLinuxImporterPipeline
-
+    # Remove pipeline import path, since we are removing V1/V2 code
     Advisory = apps.get_model("vulnerabilities", "Advisory")
-    Advisory.objects.filter(created_by=AlpineLinuxImporterPipeline.pipeline_id).update(
+    Advisory.objects.filter(created_by="alpine_importer").update(
         created_by="vulnerabilities.importers.alpine_linux.AlpineImporter"
     )
 

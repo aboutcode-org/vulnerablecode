@@ -11,7 +11,6 @@ from unittest import mock
 import pytest
 import yaml
 
-from vulnerabilities.importer import AdvisoryData
 from vulnerabilities.pipelines.v2_importers.oss_fuzz import OSSFuzzImporterPipeline
 
 

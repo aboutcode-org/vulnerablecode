@@ -14,14 +14,16 @@ from django.test import RequestFactory
 
 from vulnerabilities.forms import AltchaForm
 
+PROTECTED_SEARCH_URL = "/packages/v2/search/"
+
 
 @pytest.mark.django_db
 class TestAltchaProtectionMiddleware:
     def test_protected_url_redirects_without_session(self, client):
-        response = client.get("/packages/search/")
+        response = client.get(PROTECTED_SEARCH_URL)
 
         assert response.status_code == 302
-        assert response.url == "/altcha/?next=%2Fpackages%2Fsearch%2F"
+        assert response.url == "/altcha/?next=%2Fpackages%2Fv2%2Fsearch%2F"
 
     def test_unprotected_url_is_accessible(self, client):
         response = client.get("/")
@@ -33,7 +35,7 @@ class TestAltchaProtectionMiddleware:
         session["altcha_verified_at"] = time.time()
         session.save()
 
-        response = client.get("/packages/search/")
+        response = client.get(PROTECTED_SEARCH_URL)
 
         assert response.status_code != 302
 
@@ -43,17 +45,17 @@ class TestAltchaProtectionMiddleware:
         session["altcha_verified_at"] = time.time() - 3601
         session.save()
 
-        response = client.get("/packages/search/")
+        response = client.get(PROTECTED_SEARCH_URL)
 
         assert response.status_code == 302
-        assert response.url == "/altcha/?next=%2Fpackages%2Fsearch%2F"
+        assert response.url == "/altcha/?next=%2Fpackages%2Fv2%2Fsearch%2F"
 
     def test_expired_session_is_removed(self, client):
         session = client.session
         session["altcha_verified_at"] = time.time() - 3601
         session.save()
 
-        client.get("/packages/search/")
+        client.get(PROTECTED_SEARCH_URL)
 
         session = client.session
         assert "altcha_verified_at" not in session

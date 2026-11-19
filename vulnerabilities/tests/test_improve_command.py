@@ -15,24 +15,23 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
 
-from vulnerabilities.improver import Improver
-from vulnerabilities.improver import Inference
-from vulnerabilities.models import Advisory
+from vulnerabilities.pipelines import VulnerableCodePipeline
 
 
-class DummyImprover(Improver):
-    @property
-    def interesting_advisories(self):
-        return Advisory.objects.none()
+class DummyImprover(VulnerableCodePipeline):
+    pipeline_id = "dummy_improver"
+    license_expression = None
 
-    def get_inferences(self):
-        return []
+    @classmethod
+    def steps(cls):
+        return (cls.dummy_step,)
+
+    def dummy_step(self):
+        pass
 
 
 MOCK_IMPROVERS_REGISTRY = [DummyImprover]
-MOCK_IMPROVERS_REGISTRY = {
-    improver.qualified_name: improver for improver in MOCK_IMPROVERS_REGISTRY
-}
+MOCK_IMPROVERS_REGISTRY = {improver.pipeline_id: improver for improver in MOCK_IMPROVERS_REGISTRY}
 
 
 @patch("vulnerabilities.improvers.IMPROVERS_REGISTRY", MOCK_IMPROVERS_REGISTRY)
@@ -41,7 +40,7 @@ class TestImproveCommand(TestCase):
         buf = StringIO()
         call_command("improve", "--list", stdout=buf)
         out = buf.getvalue()
-        assert DummyImprover.qualified_name in out
+        assert DummyImprover.pipeline_id in out
 
     def test_missing_sources(self):
         with pytest.raises(CommandError) as cm:
@@ -54,7 +53,7 @@ class TestImproveCommand(TestCase):
         with pytest.raises(CommandError) as cm:
             call_command(
                 "improve",
-                DummyImprover.qualified_name,
+                DummyImprover.pipeline_id,
                 "foo",
                 "bar",
                 stdout=StringIO(),
@@ -63,10 +62,10 @@ class TestImproveCommand(TestCase):
         err = str(cm)
         assert "bar" in err
         assert "foo" in err
-        assert DummyImprover.qualified_name not in err
+        assert DummyImprover.pipeline_id not in err
 
     def test_improve_run(self):
         buf = StringIO()
-        call_command("improve", DummyImprover.qualified_name, stdout=buf)
+        call_command("improve", DummyImprover.pipeline_id, stdout=buf)
         out = buf.getvalue()
         assert "Successfully improved data using" in out

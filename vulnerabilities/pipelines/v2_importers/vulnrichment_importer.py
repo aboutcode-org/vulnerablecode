@@ -10,7 +10,7 @@ from fetchcode.vcs import fetch_via_vcs
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.importer import VulnerabilitySeverity
-from vulnerabilities.models import VulnerabilityReference
+from vulnerabilities.models import AdvisoryReference
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 from vulnerabilities.severity_systems import SCORING_SYSTEMS
 from vulnerabilities.utils import get_advisory_url
@@ -148,14 +148,14 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         for ref in cna_data.get("references", []):
             # https://github.com/CVEProject/cve-schema/blob/main/schema/tags/reference-tags.json
             # We removed all unwanted reference types and set the default reference type to 'OTHER'.
-            ref_type = VulnerabilityReference.OTHER
+            ref_type = AdvisoryReference.OTHER
             vul_ref_types = {
-                "exploit": VulnerabilityReference.EXPLOIT,
-                "issue-tracking": VulnerabilityReference.BUG,
-                "mailing-list": VulnerabilityReference.MAILING_LIST,
-                "third-party-advisory": VulnerabilityReference.ADVISORY,
-                "vendor-advisory": VulnerabilityReference.ADVISORY,
-                "vdb-entry": VulnerabilityReference.ADVISORY,
+                "exploit": AdvisoryReference.EXPLOIT,
+                "issue-tracking": AdvisoryReference.BUG,
+                "mailing-list": AdvisoryReference.MAILING_LIST,
+                "third-party-advisory": AdvisoryReference.ADVISORY,
+                "vendor-advisory": AdvisoryReference.ADVISORY,
+                "vdb-entry": AdvisoryReference.ADVISORY,
             }
 
             for tag_type in ref.get("tags", []):
@@ -174,7 +174,7 @@ class VulnrichImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         cpes_ref = [
             ReferenceV2(
                 reference_id=cpe,
-                reference_type=VulnerabilityReference.OTHER,
+                reference_type=AdvisoryReference.OTHER,
                 url=f"https://nvd.nist.gov/vuln/search/results?adv_search=true&isCpeNameSearch=true&query={cpe}",
             )
             for cpe in sorted(list(cpes))

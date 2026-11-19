@@ -23,40 +23,52 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
             </div>
         </article>
 
+        <script>
+        function goToTab(tabName) {
+            var tabs = document.getElementById('tabs');
+            if (!tabs) return false;
+            var targetLink = tabs.querySelector('[data-tab="' + tabName + '"]');
+            var targetContent = document.querySelector('#tab-content > .tab-div[data-content="' + tabName + '"]');
+            if (!targetLink || !targetContent) return false;
+            tabs.querySelectorAll('li.is-active').forEach(function (el) { el.classList.remove('is-active'); });
+            document.querySelectorAll('#tab-content > .tab-div.is-active').forEach(function (el) { el.classList.remove('is-active'); });
+            targetLink.classList.add('is-active');
+            targetContent.classList.add('is-active');
+            return false;
+        }
+        </script>
         <div class="tabs is-boxed" id="tabs">
             <ul>
                 <li class="is-active" data-tab="essentials">
-                    <a>
+                    <a href="#" onclick="return goToTab('essentials')">
                         <span>Essentials</span>
                     </a>
                 </li>
                 <li data-tab="severities">
-                    <a>
+                    <a href="#" onclick="return goToTab('severities')">
                         <span>
                             Severities ({{ severities|length }})
                         </span>
                     </a>
                 </li>
                 <li data-tab="references">
-                    <a>
+                    <a href="#" onclick="return goToTab('references')">
                         <span>
                             References ({{ references|length }})
                         </span>
                     </a>
                 </li>
 
-                {% if advisory.exploits %}
-                    <li data-tab="exploits">
-                        <a>
-                            <span>
-                                Exploits ({{ advisory.exploits.count }})
-                            </span>
-                        </a>
-                    </li>
-                {% endif %}
+                <li data-tab="exploits">
+                    <a href="#" onclick="return goToTab('exploits')">
+                        <span>
+                            Exploits ({{ advisory.exploits.count }})
+                        </span>
+                    </a>
+                </li>
 
                 <li data-tab="epss">
-                    <a>
+                    <a href="#" onclick="return goToTab('epss')">
                         <span>
                             EPSS
                         </span>
@@ -64,7 +76,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 </li>
 
                 <li data-tab="severities-vectors">
-                    <a>
+                    <a href="#" onclick="return goToTab('severities-vectors')">
                         <span>
                             Severity details ({{ severity_vectors|length }})
                         </span>
@@ -73,7 +85,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
 
                 {% if ssvcs %}
                     <li data-tab="ssvcs">
-                        <a>
+                        <a href="#" onclick="return goToTab('ssvcs')">
                             <span>
                                 Related SSVCS ({{ ssvcs|length }})
                             </span>
@@ -82,7 +94,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                 {% endif %}
             
                 <li data-tab="patch-url">
-                    <a>
+                    <a href="#" onclick="return goToTab('patch-url')">
                         <span>
                             {% with pcp_length=package_commit_patches|length %}
                                Patches: ({{ advisory.patches.count|add:pcp_length }})
@@ -450,11 +462,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                             </tbody>
                     </table>
                 {% empty %}
-                    <tr>
-                        <td colspan="2">
-                            No exploits are available.
-                        </td>
-                    </tr>
+                    <p>No exploits are available.</p>
                 {% endfor %}
             </div>
         
@@ -637,11 +645,7 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
                         <hr/>
                     {% endif %}
                     {% empty %}
-                        <tr>
-                            <td>
-                                There are no known vectors.
-                            </td>
-                        </tr>
+                        <p>There are no known vectors.</p>
                     {% endfor %}
             </div>
 
@@ -733,23 +737,5 @@ VulnerableCode Advisory Details - {{ advisory.advisory_id }}
     </div>
 </section>
 {% endif %}
-
-<script src="{% static 'js/main.js' %}" crossorigin="anonymous"></script>
-
-<script>
-    function goToTab(tabName) {
-        const activeLink = document.querySelector('div.tabs.is-boxed li.is-active');
-        const activeTabContent = document.querySelector('div.tab-div.is-active');
-
-        activeLink.classList.remove('is-active');
-        activeTabContent.classList.remove('is-active');
-
-        const target_id = document.querySelector(`[data-tab='${tabName}']`);
-        const targetTabContent = document.querySelector(`[data-content='${tabName}']`);
-
-        target_id.classList.add('is-active');
-        targetTabContent.classList.add('is-active');
-    }
-</script>
 
 {% endblock %}

@@ -90,7 +90,7 @@ def test_get_weaknesses_with_data_meta_structure():
 
 # Tests for ApacheHTTPDImporterPipeline
 class DummyPipeline(ApacheHTTPDImporterPipeline):
-    datasource_id = "dummy"
+    datasource_id = "dummy_apache_httpd_test"
     pipeline_id = "dummy_pipeline"
     # Expose protected methods for testing
     pass

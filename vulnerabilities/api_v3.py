@@ -23,6 +23,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema_field
 from packageurl import PackageURL
 from rest_framework import mixins
 from rest_framework import serializers
@@ -120,6 +121,13 @@ class AdvisoryWeaknessSerializer(serializers.ModelSerializer):
         fields = ["cwe_id", "name", "description"]
 
 
+class RelatedSSVCTreeSerializer(serializers.Serializer):
+    vector = serializers.CharField()
+    decision = serializers.CharField()
+    options = serializers.JSONField()
+    source_url = serializers.URLField()
+
+
 class AdvisoryV3Serializer(serializers.ModelSerializer):
     aliases = serializers.SlugRelatedField(
         many=True,
@@ -134,6 +142,7 @@ class AdvisoryV3Serializer(serializers.ModelSerializer):
     todo_count = serializers.IntegerField(read_only=True)
     curating_advisories = serializers.SerializerMethodField()
 
+    @extend_schema_field(RelatedSSVCTreeSerializer(many=True))
     def get_related_ssvc_trees(self, obj):
         seen = set()
         result = []
@@ -384,6 +393,7 @@ class AffectedByAdvisoryV3Serializer(AdvisoryV3Serializer):
     fixed_by_packages = serializers.SerializerMethodField()
     advisory_uid = serializers.CharField(source="avid", read_only=True)
 
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_fixed_by_packages(self, obj):
         return list(
             obj.impacted_packages.values_list("fixed_by_packages__package_url", flat=True)

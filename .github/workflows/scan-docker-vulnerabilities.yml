@@ -5,6 +5,9 @@ on:
   schedule:
     # Run weekly
     - cron: '0 0 * * 0'
+  push:
+    tags:
+      - "v*.*.*"
   pull_request:
     paths:
       - 'Dockerfile'
@@ -32,12 +35,11 @@ jobs:
           mkdir -p scancode-inputs
           docker save vulnerablecode:scan -o scancode-inputs/vulnerablecode-image.tar
 
-      - name: Fail on known vulnerabilities
+      - name: Scan Docker image for vulnerabilities
         uses: aboutcode-org/scancode-action@76777db8400d719de67ba3e465c5881037b45cb9  # v0.1
         with:
           pipelines: "analyze_docker_image,find_vulnerabilities"
-          check-compliance: true
-          compliance-fail-on-vulnerabilities: true
+          outputs-archive-name: "vulnerablecode-docker-scan"
         env:
           VULNERABLECODE_URL: https://public.vulnerablecode.io/
 

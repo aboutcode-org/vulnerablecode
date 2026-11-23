@@ -42,4 +42,5 @@ jobs:
           outputs-archive-name: "vulnerablecode-docker-scan"
         env:
           VULNERABLECODE_URL: https://public.vulnerablecode.io/
+          VULNERABLECODE_API_KEY: ${{ secrets.VULNERABLECODE_API_KEY }}
 

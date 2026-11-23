@@ -86,7 +86,18 @@ class GentooImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     child, logger=self.log
                 ):
                     constraints = build_constraints([constraints], logger=self.log)
-                    version_range = EbuildVersionRange(constraints=constraints)
+                    # Do not build a version range with empty constraints:
+                    # its string form (e.g. "vers:ebuild/") is rejected by
+                    # VersionRange.from_string and the affected package is
+                    # then dropped on round-trip. Skip the entry instead,
+                    # mirroring the apache_httpd importer fix for #2387.
+                    version_range = (
+                        EbuildVersionRange(constraints=constraints) if constraints else None
+                    )
+
+                    if version_range is None:
+                        self.log(f"Skipping package {purl} with no usable version range")
+                        continue
 
                     if is_unaffected:
                         affected_package = AffectedPackageV2(
@@ -142,6 +153,9 @@ def build_constraints(constraint_pairs, logger):
     """
     constraints = []
     for comparator, version in constraint_pairs:
+        if not version:
+            logger(f"Missing version for constraint with comparator: {comparator}")
+            continue
         try:
             constraint = VersionConstraint(version=GentooVersion(version), comparator=comparator)
             constraints.append(constraint)

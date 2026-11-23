@@ -39,3 +39,63 @@ def test_gentoo_advisories_per_file(xml_file):
 
     expected_file = xml_file.with_name(xml_file.stem + "-expected.json")
     util_tests.check_results_against_json(results, expected_file)
+
+
+GLSA_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
+<glsa id="209912-99">
+  <synopsis>Probe advisory</synopsis>
+  <references>
+    <uri link="https://example.com/CVE-2099-9999">CVE-2099-9999</uri>
+  </references>
+  <affected>
+    <package name="dev-libs/probe" auto="yes" arch="*">
+      <vulnerable range="lt">{vulnerable}</vulnerable>
+      <unaffected range="ge">9.9.9</unaffected>
+    </package>
+  </affected>
+  <impact type="normal"/>
+</glsa>
+"""
+
+
+def _process_glsa(tmp_path, vulnerable):
+    xml_file = tmp_path / "glsa-probe.xml"
+    xml_file.write_text(GLSA_TEMPLATE.format(vulnerable=vulnerable))
+    pipeline = GentooImporterPipeline()
+    return list(pipeline.process_file(xml_file))
+
+
+@pytest.mark.django_db
+def test_gentoo_invalid_version_does_not_build_empty_range(tmp_path):
+    """An unparsable GLSA version must not produce an empty version range.
+
+    A range built from no constraints serializes as "vers:ebuild/", which
+    VersionRange.from_string rejects, so the affected package is dropped
+    on round-trip. The entry is skipped instead, mirroring the
+    apache_httpd importer fix for #2387.
+    """
+    advisories = _process_glsa(tmp_path, "1.0*")
+    assert len(advisories) == 1
+    affected_packages = advisories[0].affected_packages
+    # Only the unaffected entry survives; the vulnerable entry is skipped.
+    assert len(affected_packages) == 1
+    assert affected_packages[0].affected_version_range is None
+    assert str(affected_packages[0].fixed_version_range) == "vers:ebuild/>=9.9.9"
+
+
+@pytest.mark.django_db
+def test_gentoo_empty_version_element_does_not_crash(tmp_path):
+    """An empty <vulnerable> element has no version text and must not crash
+    the import: the entry is skipped, the unaffected entry is kept."""
+    xml_file = tmp_path / "glsa-probe.xml"
+    xml_file.write_text(
+        GLSA_TEMPLATE.format(vulnerable="").replace(
+            '<vulnerable range="lt"></vulnerable>', '<vulnerable range="lt"/>'
+        )
+    )
+    pipeline = GentooImporterPipeline()
+    advisories = list(pipeline.process_file(xml_file))
+    assert len(advisories) == 1
+    affected_packages = advisories[0].affected_packages
+    assert len(affected_packages) == 1
+    assert str(affected_packages[0].fixed_version_range) == "vers:ebuild/>=9.9.9"

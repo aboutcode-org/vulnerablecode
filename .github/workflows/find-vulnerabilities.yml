@@ -5,6 +5,9 @@ on:
   schedule:
     # Run weekly
     - cron: '0 0 * * 0'
+  push:
+    tags:
+      - "v*.*.*"
   pull_request:
     paths:
       - 'setup.cfg'
@@ -36,5 +39,7 @@ jobs:
           pipelines: "inspect_packages:StaticResolver,find_vulnerabilities"
           check-compliance: true
           compliance-fail-on-vulnerabilities: true
+          outputs-archive-name: "vulnerablecode-scan"
         env:
           VULNERABLECODE_URL: https://public.vulnerablecode.io/
+          VULNERABLECODE_API_KEY: ${{ secrets.VULNERABLECODE_API_KEY }}

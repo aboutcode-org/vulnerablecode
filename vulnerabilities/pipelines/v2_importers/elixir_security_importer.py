@@ -120,12 +120,21 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         affected_packages = []
         if pkg_name:
-            affected_packages.append(
-                AffectedPackageV2(
-                    package=PackageURL(type="hex", name=pkg_name),
-                    affected_version_range=HexVersionRange(constraints=constraints),
+            # Do not build a version range with empty constraints: its
+            # string form ("vers:hex/") is rejected by
+            # VersionRange.from_string and the affected package is then
+            # dropped on round-trip. Skip the entry instead, mirroring
+            # the gentoo/apache_httpd fix for #2387.
+            version_range = HexVersionRange(constraints=constraints) if constraints else None
+            if version_range is None:
+                self.log(f"Skipping package {pkg_name} with no usable version range")
+            else:
+                affected_packages.append(
+                    AffectedPackageV2(
+                        package=PackageURL(type="hex", name=pkg_name),
+                        affected_version_range=version_range,
+                    )
                 )
-            )
 
         date_published = None
         if yaml_file.get("disclosure_date"):

@@ -347,4 +347,7 @@ class ApacheHTTPDImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
                     ).invert()
                 )
 
+        if not constraints:
+            return None
+
         return ApacheVersionRange(constraints=constraints)

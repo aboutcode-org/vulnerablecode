@@ -16,6 +16,7 @@ from typing import Tuple
 
 import pytz
 import saneyaml
+import yaml
 from dateutil import parser as dateparser
 from fetchcode.vcs import fetch_via_vcs
 from packageurl import PackageURL
@@ -204,8 +205,16 @@ def parse_gitlab_advisory(
     identifiers:
     - "GMS-2018-26"
     """
-    with open(file) as f:
-        gitlab_advisory = saneyaml.load(f)
+    try:
+        with open(file) as f:
+            gitlab_advisory = saneyaml.load(f)
+    except yaml.YAMLError as exc:
+        if logger:
+            logger(
+                f"parse_gitlab_advisory: failed to parse YAML in {file!r}: {exc}",
+                level=logging.ERROR,
+            )
+        return
     if not isinstance(gitlab_advisory, dict):
         logger(
             f"parse_gitlab_advisory: unknown gitlab advisory format in {file!r} with data: {gitlab_advisory!r}",

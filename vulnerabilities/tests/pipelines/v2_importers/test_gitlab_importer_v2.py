@@ -206,3 +206,29 @@ def test_parse_gitlab_advisory_with_no_purl(monkeypatch, gitlab_advisory_yaml):
     assert isinstance(result.date_published, datetime)
     assert result.date_published.year == 2018
     assert result.affected_packages == []  # Because get_purl was mocked to return None
+
+
+def test_parse_gitlab_advisory_with_malformed_yaml(tmp_path):
+    malformed_file = tmp_path / "CVE-2026-102437.yml"
+    malformed_file.write_text(
+        "identifier: CVE-2026-102437\n"
+        "package_slug: npm/reasonix/CVE-2026-102437\n"
+        "---\n"
+        "extra_doc: true\n"
+    )
+    logged = []
+
+    def capture_logger(msg, level=None):
+        logged.append((msg, level))
+
+    result = parse_gitlab_advisory(
+        file=malformed_file,
+        base_path=tmp_path,
+        gitlab_scheme_by_purl_type={},
+        purl_type_by_gitlab_scheme={},
+        logger=capture_logger,
+    )
+
+    assert result is None
+    assert len(logged) == 1
+    assert "failed to parse YAML" in logged[0][0]

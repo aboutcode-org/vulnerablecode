@@ -20,9 +20,11 @@ from django.db.models import OuterRef
 from django.db.models import Prefetch
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from drf_spectacular.extensions import OpenApiSerializerExtension
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema_serializer
 from packageurl import PackageURL
 from rest_framework import mixins
 from rest_framework import serializers
@@ -273,6 +275,38 @@ class PackageV3Serializer(serializers.ModelSerializer):
             return latest_non_vulnerable.version
 
 
+@extend_schema_serializer(component_name="PackageV3")
+class PackageV3ResponseSerializer(PackageV3Serializer):
+    """Describe the computed and conditional fields of a detailed package response."""
+
+    affected_by_vulnerabilities = serializers.ListField(
+        child=serializers.DictField(), required=False
+    )
+    affected_by_vulnerabilities_url = serializers.URLField(required=False)
+    fixing_vulnerabilities = serializers.ListField(child=serializers.DictField(), required=False)
+    fixing_vulnerabilities_url = serializers.URLField(required=False)
+    next_non_vulnerable_version = serializers.CharField(allow_null=True)
+    latest_non_vulnerable_version = serializers.CharField(allow_null=True)
+    risk_score = serializers.FloatField(allow_null=True, read_only=True)
+
+
+class PackageV3QueryResultSerializer(serializers.Serializer):
+    """Schema-only representation of a PURL string or a detailed package object."""
+
+
+class PackageV3QueryResultSchema(OpenApiSerializerExtension):
+    target_class = PackageV3QueryResultSerializer
+
+    def map_serializer(self, auto_schema, direction):
+        return {
+            "oneOf": [
+                {"type": "string", "description": "A vulnerable PURL when details is false."},
+                auto_schema.resolve_serializer(PackageV3ResponseSerializer(), direction).ref,
+            ],
+            "description": "Package details when details is true, otherwise a vulnerable PURL.",
+        }
+
+
 class PackageV3ViewSet(viewsets.GenericViewSet):
     queryset = PackageV2.objects.all()
     serializer_class = PackageV3Serializer
@@ -282,7 +316,7 @@ class PackageV3ViewSet(viewsets.GenericViewSet):
     @extend_schema(
         operation_id="v3_packages_retrieve",
         request=PackageQuerySerializer,
-        responses={200: PackageV3Serializer(many=True)},
+        responses={200: PackageV3QueryResultSerializer(many=True)},
     )
     def create(self, request, *args, **kwargs):
         serializer = PackageQuerySerializer(data=request.data)

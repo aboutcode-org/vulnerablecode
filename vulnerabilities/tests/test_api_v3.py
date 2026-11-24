@@ -140,6 +140,38 @@ class APIV3TestCase(APITestCase):
         self.assertEqual(fixing_vulnerability["datasource_id"], "ghsa")
         self.assertEqual(pkg["next_non_vulnerable_version"], "2.0.0")
 
+    def test_packages_post_with_invalid_purl(self):
+        url = reverse("package-v3-list")
+
+        for ignore_qualifiers_subpath in (False, True):
+            with self.subTest(ignore_qualifiers_subpath=ignore_qualifiers_subpath):
+                response = self.client.post(
+                    url,
+                    data={
+                        "purls": ["not-a-purl"],
+                        "details": True,
+                        "ignore_qualifiers_subpath": ignore_qualifiers_subpath,
+                    },
+                    format="json",
+                    HTTP_USER_AGENT="VCIO_API_AGENT",
+                )
+
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                self.assertIn("purls", response.data)
+
+    def test_advisories_post_with_invalid_purl(self):
+        url = reverse("advisory-v3-list")
+
+        response = self.client.post(
+            url,
+            data={"purls": ["invalid-purl-scheme"]},
+            format="json",
+            HTTP_USER_AGENT="VCIO_API_AGENT",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("purls", response.data)
+
     def test_advisories_post(self):
         url = reverse("advisory-v3-list")
 

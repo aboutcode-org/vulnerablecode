@@ -152,7 +152,7 @@ class Command(BaseCommand):
         """Create a pull request in the GitHub repository."""
 
         url_parts = urlparse(repo_url).path
-        path_parts = url_parts.strip("/").rstrip(".git").split("/")
+        path_parts = url_parts.strip("/").removesuffix(".git").split("/")
 
         if len(path_parts) >= 2:
             repo_owner = path_parts[0]

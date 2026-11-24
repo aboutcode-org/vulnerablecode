@@ -1157,10 +1157,12 @@ class AdvisoryPackageCurationView(DetailView):
         todo = self.object
 
         context["advisory_summaries"] = {
-            adv.avid: adv.summary for adv in todo.advisories.all() if adv.summary.strip()
+            adv.avid: adv.summary
+            for adv in todo.advisories.all()
+            if adv.summary and adv.summary.strip()
         }
         context["vulnerability_id"] = todo.alias
-        context["curation_items"] = json.dumps(todo.issue_detail["curation_items"])
+        context["curation_items"] = json.dumps(todo.issue_detail.get("curation_items", []))
         return context
 
 
@@ -1200,10 +1202,12 @@ class AdvisorySeverityCurationView(DetailView):
         todo = self.object
 
         context["advisory_summaries"] = {
-            adv.avid: adv.summary for adv in todo.advisories.all() if adv.summary.strip()
+            adv.avid: adv.summary
+            for adv in todo.advisories.all()
+            if adv.summary and adv.summary.strip()
         }
         context["vulnerability_id"] = todo.alias
-        context["curation_items"] = json.dumps(todo.issue_detail["curation_items"])
+        context["curation_items"] = json.dumps(todo.issue_detail.get("curation_items", []))
         return context
 
 
@@ -1221,10 +1225,12 @@ class AdvisoryWeaknessCurationView(DetailView):
         todo = self.object
 
         context["advisory_summaries"] = {
-            adv.avid: adv.summary for adv in todo.advisories.all() if adv.summary.strip()
+            adv.avid: adv.summary
+            for adv in todo.advisories.all()
+            if adv.summary and adv.summary.strip()
         }
         context["vulnerability_id"] = todo.alias
-        context["curation_items"] = json.dumps(todo.issue_detail["curation_items"])
+        context["curation_items"] = json.dumps(todo.issue_detail.get("curation_items", []))
         return context
 
 
@@ -1241,26 +1247,22 @@ class AdvisoryMitigationCurationView(DetailView):
         context = super().get_context_data(**kwargs)
         todo = self.object
 
-        advisory_summaries = {
-            adv.avid: adv.summary
-            for adv in todo.advisories.all()
-            if adv.summary and adv.summary.strip()
-        }
-        context["advisory_summaries"] = advisory_summaries
+        advisories_with_summary = [
+            adv for adv in todo.advisories.all() if adv.summary and adv.summary.strip()
+        ]
+        context["advisory_summaries"] = {adv.avid: adv.summary for adv in advisories_with_summary}
 
-        first_advisory = todo.advisories.first()
-        if advisory_summaries:
-            context["avid"] = next(iter(advisory_summaries))
-        elif first_advisory:
-            context["avid"] = first_advisory.avid
-        else:
-            context["avid"] = None
+        selected_advisory = (
+            advisories_with_summary[0] if advisories_with_summary else todo.advisories.first()
+        )
 
-        if first_advisory:
+        if selected_advisory:
+            context["avid"] = selected_advisory.avid
             context["curation_items"] = [
                 a.base_purl
-                for a in first_advisory.impacted_packages.filter(fixed_by_packages__isnull=True)
+                for a in selected_advisory.impacted_packages.filter(fixed_by_packages__isnull=True)
             ]
         else:
+            context["avid"] = None
             context["curation_items"] = []
         return context

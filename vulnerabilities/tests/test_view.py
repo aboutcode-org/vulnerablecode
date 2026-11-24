@@ -11,6 +11,7 @@ import os
 import time
 
 import pytest
+from bs4 import BeautifulSoup
 from django.core.cache import cache
 from django.test import Client
 from django.test import TestCase
@@ -23,6 +24,7 @@ from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import AffectedByPackageRelatedVulnerability
 from vulnerabilities.models import Alias
 from vulnerabilities.models import FixingPackageRelatedVulnerability
+from vulnerabilities.models import ImpactedPackage
 from vulnerabilities.models import Package
 from vulnerabilities.models import PackageV2
 from vulnerabilities.models import Vulnerability
@@ -446,6 +448,112 @@ class AdvisoryCurationViewTestCase(TestCase):
         self.assertIsNone(response.context["avid"])
         self.assertEqual(response.context["curation_items"], [])
 
+    def test_mitigation_curation_view_advisory_consistency_when_first_lacks_summary(self):
+        """Verify that when the first advisory lacks a summary and the second has one,
+        both `avid` and `curation_items` consistently derive from the second advisory."""
+        adv1 = AdvisoryV2.objects.create(
+            datasource_id="test_ds",
+            advisory_id="TEST-ADV-CONSIST-1",
+            pipeline_id="test_pipeline",
+            avid="test_ds/TEST-ADV-CONSIST-1",
+            unique_content_id="unique_content_id_c1",
+            url="https://example.com/advisory_c1",
+            date_collected="2026-11-16T00:00:00Z",
+            summary="",
+        )
+        ImpactedPackage.objects.create(
+            advisory=adv1,
+            base_purl="pkg:pypi/adv1-package",
+        )
+
+        adv2 = AdvisoryV2.objects.create(
+            datasource_id="test_ds",
+            advisory_id="TEST-ADV-CONSIST-2",
+            pipeline_id="test_pipeline",
+            avid="test_ds/TEST-ADV-CONSIST-2",
+            unique_content_id="unique_content_id_c2",
+            url="https://example.com/advisory_c2",
+            date_collected="2026-11-16T00:00:00Z",
+            summary="Second advisory has a valid summary",
+        )
+        ImpactedPackage.objects.create(
+            advisory=adv2,
+            base_purl="pkg:pypi/adv2-package",
+        )
+
+        todo = AdvisoryToDoV2.objects.create(
+            related_advisories_id="hash_mixed_summary",
+            alias="CVE-2026-0003",
+            advisories_count=2,
+            issue_type="MISSING_FIXED_BY_PACKAGE",
+        )
+        todo.advisories.add(adv1, adv2)
+
+        url = reverse("todo-mitigation-detail", kwargs={"todo_id": todo.todo_id})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(adv2.avid, response.context["advisory_summaries"])
+        self.assertEqual(response.context["avid"], adv2.avid)
+        self.assertEqual(response.context["curation_items"], ["pkg:pypi/adv2-package"])
+
+    def test_curation_views_missing_curation_items_key_in_issue_detail(self):
+        """Verify that package, severity, and weakness curation views do not raise KeyError
+        when 'curation_items' key is absent from todo.issue_detail."""
+        adv = AdvisoryV2.objects.create(
+            datasource_id="test_ds",
+            advisory_id="TEST-ADV-KEYERROR",
+            pipeline_id="test_pipeline",
+            avid="test_ds/TEST-ADV-KEYERROR",
+            unique_content_id="unique_content_id_keyerror",
+            url="https://example.com/advisory_keyerror",
+            date_collected="2026-11-16T00:00:00Z",
+            summary="A test summary",
+        )
+
+        # 1. Package Curation View
+        todo_pkg = AdvisoryToDoV2.objects.create(
+            related_advisories_id="hash_pkg_no_items",
+            alias="CVE-2026-PKG",
+            advisories_count=1,
+            issue_type="CONFLICTING_FIXED_BY_PACKAGES",
+            issue_detail={},
+        )
+        todo_pkg.advisories.add(adv)
+        resp_pkg = self.client.get(reverse("todo-detail", kwargs={"todo_id": todo_pkg.todo_id}))
+        self.assertEqual(resp_pkg.status_code, 200)
+        self.assertEqual(resp_pkg.context["curation_items"], "[]")
+
+        # 2. Severity Curation View
+        todo_sev = AdvisoryToDoV2.objects.create(
+            related_advisories_id="hash_sev_no_items",
+            alias="CVE-2026-SEV",
+            advisories_count=1,
+            issue_type="CONFLICTING_SEVERITY_SCORES",
+            issue_detail={},
+        )
+        todo_sev.advisories.add(adv)
+        resp_sev = self.client.get(
+            reverse("todo-severity-detail", kwargs={"todo_id": todo_sev.todo_id})
+        )
+        self.assertEqual(resp_sev.status_code, 200)
+        self.assertEqual(resp_sev.context["curation_items"], "[]")
+
+        # 3. Weakness Curation View
+        todo_weak = AdvisoryToDoV2.objects.create(
+            related_advisories_id="hash_weak_no_items",
+            alias="CVE-2026-WEAK",
+            advisories_count=1,
+            issue_type="CONFLICTING_WEAKNESSES",
+            issue_detail={},
+        )
+        todo_weak.advisories.add(adv)
+        resp_weak = self.client.get(
+            reverse("todo-weakness-detail", kwargs={"todo_id": todo_weak.todo_id})
+        )
+        self.assertEqual(resp_weak.status_code, 200)
+        self.assertEqual(resp_weak.context["curation_items"], "[]")
+
     def test_advisory_todos_template_renders_closed_anchors(self):
         """Verify that advisory_todos.html properly closes <a> tags for all issue types."""
         issue_types = [
@@ -467,8 +575,32 @@ class AdvisoryCurationViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         content = response.content.decode("utf-8")
-        open_anchors = content.count('class="has-text-info"')
-        self.assertEqual(open_anchors, 4)
+        soup = BeautifulSoup(content, "html.parser")
+
+        # Find all table cells containing curation link anchors
+        curation_tds = [
+            td for td in soup.find_all("td", colspan="4") if td.find("a", class_="has-text-info")
+        ]
+        self.assertEqual(len(curation_tds), 4)
+
+        for td in curation_tds:
+            td_html = str(td)
+            # Ensure each curation cell has exactly one opening <a and matching closing </a>
+            self.assertEqual(
+                td_html.count("<a "),
+                1,
+                f"Expected exactly 1 opening <a> tag in curation cell: {td_html}",
+            )
+            self.assertEqual(
+                td_html.count("</a>"),
+                1,
+                f"Expected exactly 1 closing </a> tag in curation cell: {td_html}",
+            )
+            # Ensure columns div is inside the anchor
+            anchor = td.find("a", class_="has-text-info")
+            self.assertIsNotNone(anchor)
+            self.assertIsNotNone(anchor.find("div", class_="columns"))
+
         # Verify all 4 issue type links are rendered
         self.assertIn("mitigation/curate/", content)
         self.assertIn("severity/curate/", content)

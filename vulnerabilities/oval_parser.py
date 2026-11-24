@@ -136,11 +136,15 @@ class OvalParser:
             version = var.text or ""
             if not version:
                 continue
+
+            # 0: is the default epoch, so remove it only when it is the
+            # leading epoch of the version. Any other "0:" is part of the
+            # version and must be kept as is.
+            if version.startswith("0:"):
+                version = version[2:]
+
             version_range = operand + version
             version_range = version_range.replace("only", "").strip()
-
-            # 0: is default epoch, remove it
-            version_range = version_range.replace("0:", "").strip()
             x_version_ranges = {
                 "<2.0.x": "2.0.x",
                 "<3.x": "3.x",

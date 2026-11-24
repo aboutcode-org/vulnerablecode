@@ -92,6 +92,51 @@ to run on a different port than 8000.
     Set ``STAGING=False`` in ``.env`` file to disable the staging environment warning.
 
 
+HTTPS behind another proxy
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When HTTPS terminates at an outer proxy, that proxy must overwrite the
+``X-Forwarded-Proto`` request header with the original request scheme. For example,
+an outer Nginx proxy should use::
+
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Host $host;
+
+In ``etc/nginx/conf.d/default.conf``, add the immediate outer proxy's IP address or
+CIDR to ``vcio_trusted_proxy``. Use the address seen by the bundled Nginx, which
+can differ from the proxy's public address. For example::
+
+    geo $vcio_trusted_proxy {
+        default 0;
+        192.0.2.10/32 1;
+    }
+
+Replace the example address with your proxy's address. Only allow proxies you
+control that overwrite client-supplied forwarding headers. Restrict access to
+the inner proxy as appropriate for your deployment. Direct public traffic must
+not reach the inner proxy through the same trusted source address.
+
+The bundled Nginx preserves a single ``http`` or ``https`` scheme from these
+trusted peers. For other clients, missing headers, and invalid values, it uses
+its own connection scheme. No proxy addresses are trusted by default. Django
+already uses ``SECURE_PROXY_SSL_HEADER`` to build absolute URLs from this header,
+including API pagination links.
+
+Validate and reload the configuration after changing the proxy addresses::
+
+    docker compose exec nginx nginx -t
+    docker compose exec nginx nginx -s reload
+
+The proxy regression tests require local ``nginx`` and ``openssl`` executables.
+They start temporary HTTP and TLS proxies and query both v3 pagination endpoints::
+
+    venv/bin/python -m pytest vulnerabilities/tests/test_nginx_proxy.py --reuse-db -q
+
+Set ``NGINX_BINARY`` to the path of an Nginx executable if it is not on ``PATH``.
+The network integration tests are skipped when either executable is unavailable;
+the pagination unit tests still run.
+
+
 .. _local_development_installation:
 
 Local development installation

@@ -46,6 +46,11 @@ jobs:
 
       - name: Install dependencies
         run: make dev envfile
+
+      - name: Install proxy test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends nginx openssl
 # Disable codestyle checks until we have cleaned up the code
 #      - name: Validate code format
 #        run: make check

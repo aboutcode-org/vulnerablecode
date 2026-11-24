@@ -379,3 +379,18 @@ class ThrottleTestCase(TestCase):
             HTTP_USER_AGENT="test-agent",
         )
         assert response.status_code == 429
+
+
+class AffectedByAdvisoriesListViewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        session = self.client.session
+        session["altcha_verified_at"] = time.time()
+        session.save()
+        cache.clear()
+
+    def test_unknown_purl_returns_empty_results(self):
+        response = self.client.get("/affected-by-advisories/v2/pkg:pypi/nonexistent-pkg@9.9.9")
+        assert response.status_code == 200
+        assert response.context["fixed_package_details"] == {}
+        assert list(response.context["page_obj"]) == []

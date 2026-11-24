@@ -438,6 +438,9 @@ class PackageV2Details(VulnerableCodeDetailView):
 
 
 def get_fixed_package_details(package):
+    if package is None:
+        return defaultdict(list)
+
     rows = package.affected_in_impacts.values_list(
         "advisory__avid",
         "fixed_by_packages",

@@ -1429,3 +1429,71 @@ class TestCleanAdvisorySeverityMigration(TestMigrations):
             self.advisory1.unique_content_id,
             "a15d4651cb05e3513c12263a11e34bd9103f68833cac8f7ffdbbd71b9cb4cf16",
         )
+
+
+class TestDropOsvAliasesMigration(TestMigrations):
+    app_name = "vulnerabilities"
+    migrate_from = "0142_advisoryv2_is_curation_advisoryv2_resolves_todos"
+    migrate_to = "0143_drop_osv_aliases"
+
+    def setUpBeforeMigration(self, apps):
+        AdvisoryV2 = apps.get_model("vulnerabilities", "AdvisoryV2")
+        AdvisoryAlias = apps.get_model("vulnerabilities", "AdvisoryAlias")
+        Alias = apps.get_model("vulnerabilities", "Alias")
+
+        self.cve_alias = AdvisoryAlias.objects.create(alias="CVE-2010-1330")
+        self.osvdb_alias = AdvisoryAlias.objects.create(alias="OSV-77297")
+        self.modern_osv_alias = AdvisoryAlias.objects.create(alias="OSV-2020-001")
+
+        self.legacy_osvdb_alias = Alias.objects.create(alias="OSV-77297")
+        self.legacy_cve_alias = Alias.objects.create(alias="CVE-2010-1330")
+        self.legacy_modern_osv = Alias.objects.create(alias="OSV-2020-001")
+
+        self.advisory1 = AdvisoryV2.objects.create(
+            unique_content_id="old_content_id_hash",
+            url="https://github.com/rubysec/ruby-advisory-db/blob/master/gems/jruby/CVE-2010-1330.yml",
+            summary="Test advisory with OSVDB alias",
+            advisory_id="gems/jruby/CVE-2010-1330",
+            avid="ruby_importer_v2/gems/jruby/CVE-2010-1330",
+            datasource_id="ruby_advisory_db",
+            pipeline_id="ruby_importer_v2",
+        )
+        self.advisory1.aliases.add(self.cve_alias, self.osvdb_alias)
+
+        self.advisory2 = AdvisoryV2.objects.create(
+            unique_content_id="modern_osv_content_id_hash",
+            url="https://osv.dev/vulnerability/OSV-2020-001",
+            summary="Modern OSV advisory",
+            advisory_id="OSV-2020-001",
+            avid="github_osv_importer_v2/OSV-2020-001",
+            datasource_id="github_osv",
+            pipeline_id="github_osv_importer_v2",
+        )
+        self.advisory2.aliases.add(self.modern_osv_alias)
+
+    def test_osvdb_aliases_dropped(self):
+        AdvisoryAlias = apps.get_model("vulnerabilities", "AdvisoryAlias")
+        Alias = apps.get_model("vulnerabilities", "Alias")
+
+        self.assertFalse(AdvisoryAlias.objects.filter(alias="OSV-77297").exists())
+        self.assertFalse(Alias.objects.filter(alias="OSV-77297").exists())
+
+    def test_modern_osv_and_cve_aliases_preserved(self):
+        AdvisoryAlias = apps.get_model("vulnerabilities", "AdvisoryAlias")
+        Alias = apps.get_model("vulnerabilities", "Alias")
+
+        self.assertTrue(AdvisoryAlias.objects.filter(alias="CVE-2010-1330").exists())
+        self.assertTrue(AdvisoryAlias.objects.filter(alias="OSV-2020-001").exists())
+
+        self.assertTrue(Alias.objects.filter(alias="CVE-2010-1330").exists())
+        self.assertTrue(Alias.objects.filter(alias="OSV-2020-001").exists())
+
+    def test_advisory_unique_content_id_recomputed(self):
+        self.advisory1.refresh_from_db()
+        self.assertNotEqual(self.advisory1.unique_content_id, "old_content_id_hash")
+        self.assertEqual(
+            list(self.advisory1.aliases.values_list("alias", flat=True)), ["CVE-2010-1330"]
+        )
+
+        self.advisory2.refresh_from_db()
+        self.assertEqual(self.advisory2.unique_content_id, "modern_osv_content_id_hash")

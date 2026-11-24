@@ -4032,6 +4032,7 @@ class AdvisoryExploit(models.Model):
     )
 
     source_url = models.URLField(
+        max_length=500,
         null=True,
         blank=True,
         help_text="The URL to the exploit as provided in the original upstream data source.",

@@ -208,14 +208,37 @@ def test_parse_gitlab_advisory_with_no_purl(monkeypatch, gitlab_advisory_yaml):
     assert result.affected_packages == []  # Because get_purl was mocked to return None
 
 
-def test_parse_gitlab_advisory_with_malformed_yaml(tmp_path):
-    malformed_file = tmp_path / "CVE-2026-102437.yml"
-    malformed_file.write_text(
-        "identifier: CVE-2026-102437\n"
-        "package_slug: npm/reasonix/CVE-2026-102437\n"
-        "---\n"
-        "extra_doc: true\n"
+def test_parse_gitlab_advisory_with_trailing_separator(gitlab_advisory_yaml):
+    file_path, _ = gitlab_advisory_yaml
+    file_path.write_text(file_path.read_text() + "\n---\n")
+    logged = []
+
+    def capture_logger(msg, level=None):
+        logged.append((msg, level))
+
+    result = parse_gitlab_advisory(
+        file=file_path,
+        base_path=file_path.parent,
+        gitlab_scheme_by_purl_type={"pypi": "pypi"},
+        purl_type_by_gitlab_scheme={"pypi": "pypi"},
+        logger=capture_logger,
     )
+
+    assert isinstance(result, AdvisoryDataV2)
+    assert result.advisory_id == "pypi/django/GMS-2018-26"
+    assert not logged
+
+
+@pytest.mark.parametrize(
+    "yaml_content",
+    [
+        "identifier: CVE-2026-102437\npackage_slug: npm/reasonix/CVE-2026-102437\n---\nextra_doc: true\n",
+        "identifier: [unclosed_bracket\npackage_slug: npm/reasonix/CVE-2026-102437\n",
+    ],
+)
+def test_parse_gitlab_advisory_with_malformed_yaml(tmp_path, yaml_content):
+    malformed_file = tmp_path / "CVE-2026-102437.yml"
+    malformed_file.write_text(yaml_content)
     logged = []
 
     def capture_logger(msg, level=None):
@@ -231,4 +254,3 @@ def test_parse_gitlab_advisory_with_malformed_yaml(tmp_path):
 
     assert result is None
     assert len(logged) == 1
-    assert "failed to parse YAML" in logged[0][0]

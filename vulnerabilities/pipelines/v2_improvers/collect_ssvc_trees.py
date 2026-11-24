@@ -9,12 +9,9 @@
 
 import logging
 from collections import defaultdict
-
-from django.db.models import Prefetch
-from django.db.models import Q
+from itertools import batched
 
 from vulnerabilities.models import SSVC
-from vulnerabilities.models import AdvisorySeverity
 from vulnerabilities.models import AdvisoryV2
 from vulnerabilities.models import PipelineSchedule
 from vulnerabilities.pipelines import VulnerableCodePipeline
@@ -27,7 +24,8 @@ class CollectSSVCPipeline(VulnerableCodePipeline):
     """
     Collect SSVC Pipeline
 
-    This pipeline collects SSVC from Vulnrichment project and associates them with existing advisories.
+    This pipeline collects SSVC from the Vulnrichment project and associates them with
+    existing advisories.
     """
 
     pipeline_id = "collect_ssvc_trees"
@@ -36,137 +34,165 @@ class CollectSSVCPipeline(VulnerableCodePipeline):
     run_interval = 30
     run_priority = PipelineSchedule.ExecutionPriority.HIGH
 
+    batch_size = 1000
+    through_batch_size = 5000
+
     @classmethod
     def steps(cls):
         return (cls.collect_ssvc_data,)
 
     def collect_ssvc_data(self):
-        advisories = list(
+        advisory_pairs = list(
             AdvisoryV2.objects.latest_per_avid()
-            .filter(
-                severities__scoring_system=SCORING_SYSTEMS["ssvc"],
-            )
-            .prefetch_related(
-                Prefetch(
-                    "severities",
-                    queryset=AdvisorySeverity.objects.filter(
-                        scoring_system=SCORING_SYSTEMS["ssvc"]
-                    ).only("id", "scoring_elements"),
-                ),
-                "aliases",
-            )
-            .only("id", "advisory_id")
+            .filter(severities__scoring_system=SCORING_SYSTEMS["ssvc"])
+            .values_list("id", "advisory_id")
             .distinct()
+            .order_by("id")
         )
 
-        self.log(f"Found {len(advisories)} advisories from Vulnrichment with SSVC severities.")
-        advisory_ids = {a.advisory_id for a in advisories}
+        self.log(f"Found {len(advisory_pairs)} advisories from Vulnrichment with SSVC severities.")
+        if not advisory_pairs:
+            return
 
-        all_related = (
-            AdvisoryV2.objects.filter(
-                Q(advisory_id__in=advisory_ids) | Q(aliases__alias__in=advisory_ids)
-            )
-            .distinct()
-            .only("id", "advisory_id")
-            .prefetch_related("aliases")
+        created_count = 0
+        updated_count = 0
+
+        for batch in batched(advisory_pairs, self.batch_size):
+            created, updated = self._process_batch(batch)
+            created_count += created
+            updated_count += updated
+
+        self.log(
+            f"Processed {len(advisory_pairs)} advisories: "
+            f"created {created_count}, updated {updated_count} SSVC rows."
         )
+
+    def _process_batch(self, batch):
+        batch_pks = [pk for pk, _ in batch]
+        batch_advisory_ids = {advisory_id for _, advisory_id in batch}
+
+        severities_by_advisory = defaultdict(list)
+        for adv_pk, scoring_elements in AdvisoryV2.severities.through.objects.filter(
+            advisoryv2_id__in=batch_pks,
+            advisoryseverity__scoring_system=SCORING_SYSTEMS["ssvc"],
+        ).values_list("advisoryv2_id", "advisoryseverity__scoring_elements"):
+            severities_by_advisory[adv_pk].append(scoring_elements)
 
         advisory_map = defaultdict(set)
+        for adv_id, pk in AdvisoryV2.objects.filter(advisory_id__in=batch_advisory_ids).values_list(
+            "advisory_id", "id"
+        ):
+            advisory_map[adv_id].add(pk)
 
-        for adv in all_related:
-            advisory_map[adv.advisory_id].add(adv)
-            for alias in adv.aliases.all():
-                if alias.alias in advisory_ids:
-                    advisory_map[alias.alias].add(adv)
+        for alias, pk in AdvisoryV2.aliases.through.objects.filter(
+            advisoryalias__alias__in=batch_advisory_ids
+        ).values_list("advisoryalias__alias", "advisoryv2_id"):
+            advisory_map[alias].add(pk)
 
         existing_ssvc = {
             (s.source_advisory_id, s.vector): s
-            for s in SSVC.objects.filter(source_advisory_id__in=[a.id for a in advisories])
+            for s in SSVC.objects.filter(source_advisory_id__in=batch_pks)
         }
-
-        self.log(f"Existing SSVC rows found: {len(existing_ssvc)}")
-        self.log(f"Advisories to process: {len(advisories)}")
 
         to_create = []
         to_update = []
+        seen_keys = set()
 
-        for advisory in advisories:
-            self.log(f"Processing advisory: {advisory.advisory_id}")
-
-            for severity in advisory.severities.all():
-                ssvc_vector = severity.scoring_elements
-
+        for adv_pk, advisory_id in batch:
+            for ssvc_vector in severities_by_advisory.get(adv_pk, ()):
                 try:
                     ssvc_tree, decision = convert_vector_to_tree_and_decision(ssvc_vector)
 
                     if not (ssvc_tree and decision):
                         continue
 
-                    key = (advisory.id, ssvc_vector)
+                    key = (adv_pk, ssvc_vector)
+                    if key in seen_keys:
+                        continue
+                    seen_keys.add(key)
 
                     existing = existing_ssvc.get(key)
 
                     if existing:
-                        existing.options = ssvc_tree
-                        existing.decision = decision
-                        existing.vector = ssvc_vector
-                        to_update.append(existing)
-                        ssvc_obj = existing
+                        if existing.options != ssvc_tree or existing.decision != decision:
+                            existing.options = ssvc_tree
+                            existing.decision = decision
+                            to_update.append(existing)
                     else:
-                        ssvc_obj = SSVC(
-                            source_advisory=advisory,
-                            options=ssvc_tree,
-                            decision=decision,
-                            vector=ssvc_vector,
+                        to_create.append(
+                            SSVC(
+                                source_advisory_id=adv_pk,
+                                options=ssvc_tree,
+                                decision=decision,
+                                vector=ssvc_vector,
+                            )
                         )
-                        to_create.append(ssvc_obj)
 
                 except Exception as e:
                     logger.error(
                         f"Failed to parse SSVC vector '{ssvc_vector}' "
-                        f"for advisory '{advisory}': {e}"
+                        f"for advisory '{advisory_id}': {e}"
                     )
 
-        SSVC.objects.bulk_create(to_create, batch_size=1000)
+        if to_create:
+            SSVC.objects.bulk_create(to_create, batch_size=self.batch_size)
 
-        SSVC.objects.bulk_update(
-            to_update,
-            ["options", "decision", "vector"],
-            batch_size=1000,
-        )
+        if to_update:
+            SSVC.objects.bulk_update(
+                to_update,
+                ["options", "decision"],
+                batch_size=self.batch_size,
+            )
 
-        # Refresh newly created IDs
-        created_ssvc = defaultdict(list)
-
-        for s in SSVC.objects.filter(source_advisory_id__in=[a.id for a in advisories]):
-            created_ssvc[s.source_advisory_id].append(s)
+        ssvc_ids_by_advisory = defaultdict(list)
+        if to_create:
+            for source_advisory_id, ssvc_id in SSVC.objects.filter(
+                source_advisory_id__in=batch_pks
+            ).values_list("source_advisory_id", "id"):
+                ssvc_ids_by_advisory[source_advisory_id].append(ssvc_id)
+        else:
+            for ssvc_obj in existing_ssvc.values():
+                ssvc_ids_by_advisory[ssvc_obj.source_advisory_id].append(ssvc_obj.id)
 
         through_model = SSVC.related_advisories.through
-
         through_rows = []
 
-        for advisory in advisories:
-            ssvc_objs = created_ssvc.get(advisory.id, [])
+        for adv_pk, advisory_id in batch:
+            ssvc_ids = ssvc_ids_by_advisory.get(adv_pk)
+            if not ssvc_ids:
+                continue
 
-            related = advisory_map.get(advisory.advisory_id, set())
+            related_pks = advisory_map.get(advisory_id)
+            if not related_pks:
+                continue
 
-            for ssvc_obj in ssvc_objs:
-                for related_adv in related:
-                    if related_adv.id == advisory.id:
+            for ssvc_id in ssvc_ids:
+                for related_pk in related_pks:
+                    if related_pk == adv_pk:
                         continue
 
                     through_rows.append(
                         through_model(
-                            ssvc_id=ssvc_obj.id,
-                            advisoryv2_id=related_adv.id,
+                            ssvc_id=ssvc_id,
+                            advisoryv2_id=related_pk,
                         )
                     )
+                    if len(through_rows) >= self.through_batch_size:
+                        through_model.objects.bulk_create(
+                            through_rows,
+                            ignore_conflicts=True,
+                            batch_size=self.through_batch_size,
+                        )
+                        through_rows.clear()
 
-        through_model.objects.bulk_create(
-            through_rows,
-            ignore_conflicts=True,
-            batch_size=5000,
-        )
+        if through_rows:
+            through_model.objects.bulk_create(
+                through_rows,
+                ignore_conflicts=True,
+                batch_size=self.through_batch_size,
+            )
+
+        return len(to_create), len(to_update)
 
 
 REVERSE_POINTS = {

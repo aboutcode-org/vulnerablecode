@@ -124,6 +124,37 @@ def test_exploitability_level(
 
 
 @pytest.mark.django_db
+def test_exploitability_level_with_exploit_reference_and_severities(vulnerability_with_exploit_ref):
+    """
+    A published exploit reference marks the vulnerability as exploitable even
+    when the vulnerability also carries severities that do not indicate a high
+    EPSS score.
+    """
+    severities = vulnerability_with_exploit_ref.severities.all()
+    references = vulnerability_with_exploit_ref.references.all()
+
+    # Severities are present, but none of them is a high EPSS score.
+    assert list(severities) == []
+
+    severity = VulnerabilitySeverity.objects.create(
+        url="https://nvd.nist.gov/vuln/detail/CVE-xxxx-xxxx2",
+        scoring_system=EPSS.identifier,
+        value="0.10",
+        scoring_elements="0.75",
+    )
+    vulnerability_with_exploit_ref.severities.add(severity)
+
+    assert (
+        get_exploitability_level(
+            exploits=None,
+            references=references,
+            severities=vulnerability_with_exploit_ref.severities.all(),
+        )
+        == 1
+    )
+
+
+@pytest.mark.django_db
 def test_get_weighted_severity(vulnerability):
     severities = vulnerability.severities.all()
     assert get_weighted_severity(severities) == 6.2

@@ -82,7 +82,7 @@ def get_exploitability_level(exploits, references, severities):
                 exploit_level = 2
                 break
 
-    elif references:
+    if exploit_level == 0.5 and references:
         # PoC/Exploit script published
         for reference in references:
             if reference.reference_type == VulnerabilityReference.EXPLOIT:

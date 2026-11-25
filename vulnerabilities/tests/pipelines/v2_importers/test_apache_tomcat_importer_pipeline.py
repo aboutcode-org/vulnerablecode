@@ -156,3 +156,16 @@ def test_parse_tomcat_security_keeps_milestone_fixed_version():
     """
     advisories = parse_tomcat_security(html)
     assert advisories[0].fixed_in == "11.0.0-M6"
+
+
+def test_parse_tomcat_security_keeps_dot_style_milestone_fixed_version():
+    html = """
+    <h3 id="Fixed_in_Apache_Tomcat_9.0.0.M22">Fixed in Apache Tomcat 9.0.0.M22</h3>
+    <div class="text">
+    <p><strong>Low: Example</strong>
+    <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-1000001">CVE-2017-1000001</a></p>
+    <p>Affects: 9.0.0.M1 to 9.0.0.M21</p>
+    </div>
+    """
+    advisories = parse_tomcat_security(html)
+    assert advisories[0].fixed_in == "9.0.0.M22"

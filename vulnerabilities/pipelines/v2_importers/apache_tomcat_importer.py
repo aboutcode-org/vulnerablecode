@@ -269,7 +269,7 @@ def parse_tomcat_security(html_content):
     results = []
 
     for header in soup.find_all("h3", id=re.compile(r"Fixed_in_Apache_Tomcat")):
-        m = re.search(r"Tomcat\s+([\d\.]+(?:-[A-Za-z0-9]+)?)", header.get_text())
+        m = re.search(r"Tomcat\s+(\d+(?:\.\d+)*(?:[.-][A-Za-z]+\d*)?)", header.get_text())
         if not m:
             continue
         fixed_in = m.group(1)

@@ -21,6 +21,8 @@ from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import (
 )
 from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import TomcatAdvisoryData
 from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import parse_tomcat_security
+from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import to_version_ranges_apache
+from vulnerabilities.pipelines.v2_importers.apache_tomcat_importer import to_version_ranges_maven
 
 TOMCAT_SECURITY_HTML = """
 <html>
@@ -143,3 +145,28 @@ def test_apache_and_maven_version_ranges_created(mock_get):
 
     for r in maven_ranges:
         assert isinstance(r, MavenVersionRange)
+
+
+def test_to_version_ranges_apache_keeps_real_range():
+    result = to_version_ranges_apache("7.0.0-7.0.53", None)
+    assert str(result) == "vers:apache/>=7.0.0|<=7.0.53"
+
+
+def test_to_version_ranges_apache_single_prerelease():
+    result = to_version_ranges_apache("11.0.0-M5", None)
+    assert str(result) == "vers:apache/11.0.0-M5"
+
+
+def test_to_version_ranges_apache_single_rc():
+    result = to_version_ranges_apache("8.0.0-RC1", None)
+    assert str(result) == "vers:apache/8.0.0-RC1"
+
+
+def test_to_version_ranges_maven_single_prerelease():
+    result = to_version_ranges_maven("11.0.0-M5", None)
+    assert str(result) == "vers:maven/11.0.0-M5"
+
+
+def test_to_version_ranges_apache_trailing_hyphen_does_not_crash():
+    result = to_version_ranges_apache("7.0.0-", None)
+    assert str(result) == "vers:apache/7.0.0"

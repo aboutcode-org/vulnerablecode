@@ -165,3 +165,8 @@ def test_to_version_ranges_apache_single_rc():
 def test_to_version_ranges_maven_single_prerelease():
     result = to_version_ranges_maven("11.0.0-M5", None)
     assert str(result) == "vers:maven/11.0.0-M5"
+
+
+def test_to_version_ranges_apache_trailing_hyphen_does_not_crash():
+    result = to_version_ranges_apache("7.0.0-", None)
+    assert str(result) == "vers:apache/7.0.0"

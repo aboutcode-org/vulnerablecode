@@ -137,7 +137,7 @@ def to_version_ranges_apache(version_item, fixed_version, self=None):
                 VersionConstraintTuple("<=", version_item_split[-1])
             )
 
-        elif "-" in version_item and version_item.split("-")[-1][0].isdigit():
+        elif "-" in version_item and version_item.split("-")[-1][:1].isdigit():
             version_item_split = version_item.split("-")
             affected_constraint_tuple_list.append(
                 VersionConstraintTuple(">=", version_item_split[0])
@@ -207,7 +207,7 @@ def to_version_ranges_maven(version_item, fixed_version):
                 )
             )
 
-        elif "-" in version_item and version_item.split("-")[-1][0].isdigit():
+        elif "-" in version_item and version_item.split("-")[-1][:1].isdigit():
             version_item_split = version_item.split("-")
 
             constraints.append(

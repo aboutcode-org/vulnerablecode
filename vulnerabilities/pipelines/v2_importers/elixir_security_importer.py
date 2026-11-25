@@ -24,6 +24,33 @@ from vulnerabilities.utils import is_cve
 from vulnerabilities.utils import load_yaml
 
 
+def expand_pessimistic_version(version: str, version_class) -> list[VersionConstraint]:
+    """
+    Expand an Elixir pessimistic version requirement (e.g. '~> 1.2.3' or '~> 1.2')
+    into inverted VersionConstraint objects for affected version range calculation.
+    """
+    raw = version[2:].strip()
+    core = raw.split("-", 1)[0].split("+", 1)[0].strip()
+    parts = [int(part) for part in core.split(".")]
+
+    if len(parts) >= 3:
+        lower_str = raw if len(raw.split(".")) >= 3 else f"{raw}.0"
+        upper_str = f"{parts[0]}.{parts[1] + 1}.0"
+    elif len(parts) == 2:
+        lower_str = f"{raw}.0" if "-" not in raw and "+" not in raw else raw
+        upper_str = f"{parts[0] + 1}.0.0"
+    else:
+        raise ValueError(f"Unsupported pessimistic version format: {version!r}")
+
+    lower_constraint = VersionConstraint.from_string(
+        version_class=version_class, string=f">= {lower_str}"
+    ).invert()
+    upper_constraint = VersionConstraint.from_string(
+        version_class=version_class, string=f"< {upper_str}"
+    ).invert()
+    return [lower_constraint, upper_constraint]
+
+
 class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
     Elixir Security Advisories Importer Pipeline
@@ -113,10 +140,13 @@ class ElixirSecurityImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
 
         for version in patched_versions:
             if version.startswith("~>"):
-                version = version[2:]
-            constraints.append(
-                VersionConstraint.from_string(version_class=vrc, string=version).invert()
-            )
+                constraints.extend(
+                    expand_pessimistic_version(version=version, version_class=vrc)
+                )
+            else:
+                constraints.append(
+                    VersionConstraint.from_string(version_class=vrc, string=version).invert()
+                )
 
         affected_packages = []
         if pkg_name:

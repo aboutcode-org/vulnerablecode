@@ -106,3 +106,39 @@ def test_collect_advisories_skips_invalid_cve(mock_fetch_via_vcs, tmp_path):
         importer.clone()
         advisories = list(importer.collect_advisories())
         assert len(advisories) == 0
+
+
+def test_pessimistic_patched_versions_expanded(tmp_path):
+    repo_dir = tmp_path / "pessimistic_repo"
+    packages_dir = repo_dir / "packages" / "plug"
+    packages_dir.mkdir(parents=True)
+
+    advisory_file = packages_dir / "2017-02-28.yml"
+    advisory_file.write_text(
+        """
+        cve: "2017-1000052"
+        package: "plug"
+        description: "Test pessimistic version range"
+        patched_versions:
+          - ">= 1.3.2"
+          - "~> 1.2.3"
+          - "~> 1.1.7"
+          - "~> 1.0.4"
+        """
+    )
+
+    mock_response = MagicMock()
+    mock_response.dest_dir = str(repo_dir)
+    mock_response.delete = MagicMock()
+
+    with patch(
+        "vulnerabilities.pipelines.v2_importers.elixir_security_importer.fetch_via_vcs"
+    ) as mock:
+        mock.return_value = mock_response
+        importer = ElixirSecurityImporterPipeline()
+        importer.clone()
+        advisories = list(importer.collect_advisories())
+
+    assert len(advisories) == 1
+    version_range = advisories[0].affected_packages[0].affected_version_range
+    assert str(version_range) == "vers:hex/<1.0.4|>=1.1.0|<1.1.7|>=1.2.0|<1.2.3|>=1.3.0|<1.3.2"

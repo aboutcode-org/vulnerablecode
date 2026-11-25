@@ -101,10 +101,12 @@
             <div class="column">
                 <h1 class="title is-3">Extra Mitigation Curation</h1>
                 <h2 class="subtitle is-5 has-text-grey">
+                    {% if avid %}
                     <a href={% url 'advisory_details' avid %} target="_blank" rel="noopener noreferrer" class="has-text-link">
                         <span>{{ avid }}</span>
                         <span class="icon is-small"><i class="fa fa-external-link"></i></span>
                     </a>
+                    {% endif %}
                 </h2>
             </div>
 

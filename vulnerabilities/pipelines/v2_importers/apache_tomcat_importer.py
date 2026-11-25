@@ -30,9 +30,9 @@ from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 class ApacheTomcatImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
     """
-    Apache HTTPD Importer Pipeline
+    Apache Tomcat Importer Pipeline
 
-    This pipeline imports security advisories from the Apache HTTPD project.
+    This pipeline imports security advisories from the Apache Tomcat project.
     """
 
     pipeline_id = "apache_tomcat_importer_v2"

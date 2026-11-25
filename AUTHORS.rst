@@ -15,3 +15,4 @@ The following organizations or individuals have contributed to this repo:
 - Hritik Vijay @hritik14
 - Tushar Goel @TG1999
 - Keshav Priyadarshi @keshav-space
+- Yash Kumar Singh @Celestial-0

@@ -8,10 +8,10 @@ and for storing the scraped information in a structured fashion. The structured 
 importer then provides input to an improver (see :ref:`improver-overview`), which is responsible
 for creating a relational model for advisories, affected packages and fixed packages.
 
-All importer implementation-related code is defined in :file:`vulnerabilites/importer.py`.
+All importer implementation-related code is defined in :file:`vulnerabilities/importer.py`.
 
 In addition, the framework-related code for actually invoking and processing the importers is
-located in :file:`vulnerabilites/import_runner.py`.
+located in :file:`vulnerabilities/import_runner.py`.
 
 The importers, after scraping, provide ``AdvisoryData`` objects. These objects are then
 processed and inserted into the ``Advisory`` model.
@@ -23,7 +23,7 @@ modifications.
 
 Given that a lot of advisories publish version ranges of affected
 packages, it is necessary to store those ranges in a structured manner. *Vers* was designed to
-solve this problem. It has been implemented in the `univers <https://github.com/nexB/univers>`_
+solve this problem. It has been implemented in the `univers <https://github.com/aboutcode-org/univers>`_
 library whose development goes hand in hand with VulnerableCode.
 
 The data imported by importers is not useful by itself: it must be processed into a relational

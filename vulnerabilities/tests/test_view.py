@@ -8,6 +8,7 @@
 #
 
 import os
+import re
 import time
 
 import pytest
@@ -575,27 +576,41 @@ class AdvisoryCurationViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         content = response.content.decode("utf-8")
+
+        # Verify opening/closing anchor tags directly on raw HTML <td> cells
+        # because BeautifulSoup's html.parser auto-closes unclosed <a> tags.
+        raw_curation_tds = [
+            raw_td
+            for raw_td in re.findall(r"<td\b[^>]*>.*?</td>", content, re.DOTALL)
+            if "has-text-info" in raw_td
+        ]
+        self.assertEqual(len(raw_curation_tds), len(issue_types))
+        for raw_td in raw_curation_tds:
+            self.assertEqual(
+                raw_td.count("<a "),
+                1,
+                f"Expected exactly 1 opening <a> tag in raw curation cell: {raw_td}",
+            )
+            self.assertEqual(
+                raw_td.count("</a>"),
+                1,
+                f"Expected exactly 1 closing </a> tag in raw curation cell: {raw_td}",
+            )
+            self.assertLess(
+                raw_td.index("<a "),
+                raw_td.index("</a>"),
+                f"Expected <a before </a> in raw curation cell: {raw_td}",
+            )
+
         soup = BeautifulSoup(content, "html.parser")
 
         # Find all table cells containing curation link anchors
         curation_tds = [
             td for td in soup.find_all("td", colspan="4") if td.find("a", class_="has-text-info")
         ]
-        self.assertEqual(len(curation_tds), 4)
+        self.assertEqual(len(curation_tds), len(issue_types))
 
         for td in curation_tds:
-            td_html = str(td)
-            # Ensure each curation cell has exactly one opening <a and matching closing </a>
-            self.assertEqual(
-                td_html.count("<a "),
-                1,
-                f"Expected exactly 1 opening <a> tag in curation cell: {td_html}",
-            )
-            self.assertEqual(
-                td_html.count("</a>"),
-                1,
-                f"Expected exactly 1 closing </a> tag in curation cell: {td_html}",
-            )
             # Ensure columns div is inside the anchor
             anchor = td.find("a", class_="has-text-info")
             self.assertIsNotNone(anchor)

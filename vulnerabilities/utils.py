@@ -1129,3 +1129,85 @@ def safe_altcha_redirect(next_url: str) -> redirect:
         return redirect(next_url)
 
     return redirect("/")
+
+
+def compute_advisory_v2_diff(old_snapshot, new_snapshot):
+    """
+    Compare two advisory snapshots and compute the diff.
+    Args:
+        old_snapshot: The old advisory snapshot.
+        new_snapshot: The new advisory snapshot.
+    """
+    from vulnerabilities.models import AdvisoryHistoryDiff
+
+    diff = AdvisoryHistoryDiff(advisory_after=new_snapshot, advisory_before=old_snapshot)
+
+    if old_snapshot.summary != new_snapshot.summary:
+        diff.summary_removed = old_snapshot.summary
+        diff.summary_added = new_snapshot.summary
+
+    if old_snapshot.url != new_snapshot.url:
+        diff.url_removed = old_snapshot.url
+        diff.url_added = new_snapshot.url
+
+    diff.save()
+
+    def _compute_diff_helper(old_queryset, new_queryset, added_manager, removed_manager):
+        old_ids = set(old_queryset.values_list("pk", flat=True))
+        new_ids = set(new_queryset.values_list("pk", flat=True))
+        if added_ids := new_ids - old_ids:
+            added_manager.set(added_ids)
+        if removed_ids := old_ids - new_ids:
+            removed_manager.set(removed_ids)
+
+    _compute_diff_helper(
+        old_snapshot.severities,
+        new_snapshot.severities,
+        diff.added_severities,
+        diff.removed_severities,
+    )
+    _compute_diff_helper(
+        old_snapshot.references,
+        new_snapshot.references,
+        diff.added_references,
+        diff.removed_references,
+    )
+    _compute_diff_helper(
+        old_snapshot.aliases, new_snapshot.aliases, diff.added_aliases, diff.removed_aliases
+    )
+    _compute_diff_helper(
+        old_snapshot.weaknesses,
+        new_snapshot.weaknesses,
+        diff.added_weaknesses,
+        diff.removed_weaknesses,
+    )
+    _compute_diff_helper(
+        old_snapshot.patches, new_snapshot.patches, diff.added_patches, diff.removed_patches
+    )
+
+    def _get_impacted_package(impacted_package) -> tuple:
+        """
+        Return the tuple representation of an impacted package.
+        For eg: ("pkg:pypi/django", "<1.0", "5.0.1")
+        """
+        return (
+            impacted_package.base_purl,
+            impacted_package.affecting_vers,
+            impacted_package.fixed_vers,
+        )
+
+    old_packages_map = {
+        _get_impacted_package(pkg): pkg.pk for pkg in old_snapshot.impacted_packages.all()
+    }
+    new_packages_map = {
+        _get_impacted_package(pkg): pkg.pk for pkg in new_snapshot.impacted_packages.all()
+    }
+
+    old_tuples = set(old_packages_map.keys())
+    new_tuples = set(new_packages_map.keys())
+
+    if added_tuples := new_tuples - old_tuples:
+        diff.added_impacted_packages.set([new_packages_map[tup] for tup in added_tuples])
+
+    if removed_tuples := old_tuples - new_tuples:
+        diff.removed_impacted_packages.set([old_packages_map[tup] for tup in removed_tuples])

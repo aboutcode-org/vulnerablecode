@@ -40,6 +40,7 @@ jobs:
           check-compliance: true
           compliance-fail-on-vulnerabilities: true
           outputs-archive-name: "vulnerablecode-scan"
+          scancodeio-image: "ghcr.io/aboutcode-org/scancode.io@sha256:496e9715e69ea6074483bb215bb4fb57fb9f3225108f9b56d83ca4e75c74d7f1"
         env:
           VULNERABLECODE_URL: https://public.vulnerablecode.io/
           VULNERABLECODE_API_KEY: ${{ secrets.VULNERABLECODE_API_KEY }}

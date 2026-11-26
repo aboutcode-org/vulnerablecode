@@ -15,7 +15,7 @@ from dateutil import parser
 from vulnerabilities.importer import AdvisoryDataV2
 from vulnerabilities.importer import ReferenceV2
 from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
-from vulnerabilities.references import XsaReference
+from vulnerabilities.references import XsaReferenceV2
 from vulnerabilities.utils import fetch_response
 
 
@@ -87,7 +87,7 @@ class XenImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         references = []
 
         if xsa_id:
-            xsa_reference = XsaReference.from_number(number=xsa_id)
+            xsa_reference = XsaReferenceV2.from_number(number=xsa_id)
             references.append(ReferenceV2(url=xsa_reference.url))
 
         title = xsa.get("title", "")

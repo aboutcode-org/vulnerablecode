@@ -9,28 +9,24 @@ to the new pipeline_id.
 
 
 def update_created_by(apps, schema_editor):
-    from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
-    from vulnerabilities.pipelines.pypa_importer import PyPaImporterPipeline
-
     Advisory = apps.get_model("vulnerabilities", "Advisory")
+    #Remove pipeline import path, since we are removing V1/V2 code
     Advisory.objects.filter(created_by="vulnerabilities.importers.npm.NpmImporter").update(
-        created_by=NpmImporterPipeline.pipeline_id
+        created_by="npm_importer"
     )
     Advisory.objects.filter(created_by="vulnerabilities.importers.pypa.PyPaImporter").update(
-        created_by=PyPaImporterPipeline.pipeline_id
+        created_by="pypa_importer"
     )
 
 
 
 def reverse_update_created_by(apps, schema_editor):
-    from vulnerabilities.pipelines.npm_importer import NpmImporterPipeline
-    from vulnerabilities.pipelines.pypa_importer import PyPaImporterPipeline
-
     Advisory = apps.get_model("vulnerabilities", "Advisory")
-    Advisory.objects.filter(created_by=NpmImporterPipeline.pipeline_id).update(
+    #Remove pipeline import path, since we are removing V1/V2 code
+    Advisory.objects.filter(created_by="npm_importer").update(
         created_by="vulnerabilities.importers.npm.NpmImporter"
     )
-    Advisory.objects.filter(created_by=PyPaImporterPipeline.pipeline_id).update(
+    Advisory.objects.filter(created_by="pypa_importer").update(
         created_by="vulnerabilities.importers.pypa.PyPaImporter"
     )
 

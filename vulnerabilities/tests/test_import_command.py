@@ -15,28 +15,39 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
 
-from vulnerabilities.importer import Importer
+from vulnerabilities.pipelines import VulnerableCodeBaseImporterPipelineV2
 
 
-class DummyImporter(Importer):
-    spdx_license_expression = "dummy license"
-    importer_name = "Dummy Importer 1"
+class DummyImporter(VulnerableCodeBaseImporterPipelineV2):
+    pipeline_id = "dummy_importer"
+    license_url = "https://example.com/license"
+    datasource_id = "dummy_importer"
+    spdx_license_expression = "TEST"
 
-    def advisory_data(self):
-        return []
+    @classmethod
+    def steps(cls):
+        return (cls.dummy_step,)
+
+    def dummy_step(self):
+        pass
 
 
-class UnLicensedImporter(Importer):
-    importer_name = "UnLicensed Importer"
+class FailingImporter(VulnerableCodeBaseImporterPipelineV2):
+    pipeline_id = "dummy_importer_failing"
+    datasource_id = "dummy_importer_failing"
+    license_url = "https://example.com/license"
+    spdx_license_expression = "TEST"
 
-    def advisory_data(self):
-        return []
+    @classmethod
+    def steps(cls):
+        return (cls.dummy_step,)
+
+    def dummy_step(self):
+        raise RuntimeError("importer failed")
 
 
-MOCK_IMPORTERS_REGISTRY = [DummyImporter, UnLicensedImporter]
-MOCK_IMPORTERS_REGISTRY = {
-    importer.qualified_name: importer for importer in MOCK_IMPORTERS_REGISTRY
-}
+MOCK_IMPORTERS_REGISTRY = [DummyImporter, FailingImporter]
+MOCK_IMPORTERS_REGISTRY = {importer.pipeline_id: importer for importer in MOCK_IMPORTERS_REGISTRY}
 
 
 @patch("vulnerabilities.importers.IMPORTERS_REGISTRY", MOCK_IMPORTERS_REGISTRY)
@@ -45,7 +56,7 @@ class TestImportCommand(TestCase):
         buf = StringIO()
         call_command("import", "--list", stdout=buf)
         out = buf.getvalue()
-        assert DummyImporter.qualified_name in out
+        assert DummyImporter.pipeline_id in out
 
     def test_missing_sources(self):
         with pytest.raises(CommandError) as cm:
@@ -58,7 +69,7 @@ class TestImportCommand(TestCase):
         with pytest.raises(CommandError) as cm:
             call_command(
                 "import",
-                DummyImporter.qualified_name,
+                DummyImporter.pipeline_id,
                 "foo",
                 "bar",
                 stdout=StringIO(),
@@ -67,17 +78,18 @@ class TestImportCommand(TestCase):
         err = str(cm)
         assert "bar" in err
         assert "foo" in err
-        assert DummyImporter.qualified_name not in err
+        assert DummyImporter.pipeline_id not in err
 
     def test_import_run(self):
         buf = StringIO()
-        call_command("import", DummyImporter.qualified_name, stdout=buf)
+        call_command("import", DummyImporter.pipeline_id, stdout=buf)
         out = buf.getvalue()
-        assert "Successfully imported data using" in out
+        assert f"Importing data using {DummyImporter.pipeline_id}" in out
+        assert f"Successfully imported data using {DummyImporter.pipeline_id}" in out
 
     def test_bad_importer_fail_error(self):
         buf = StringIO()
         with pytest.raises(CommandError):
-            call_command("import", UnLicensedImporter.qualified_name, stdout=buf)
+            call_command("import", FailingImporter.pipeline_id, stdout=buf)
         out = buf.getvalue()
-        assert "Failed to run importer" in out
+        assert FailingImporter.pipeline_id in out

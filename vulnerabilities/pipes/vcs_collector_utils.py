@@ -99,9 +99,9 @@ class CollectVCSFixCommitPipeline(VulnerableCodeBaseImporterPipelineV2):
 
     def collect_advisories(self):
         """
-        Generate AdvisoryData objects for each vulnerability ID grouped with its related commits.
+        Generate AdvisoryDataV2 objects for each vulnerability ID grouped with its related commits.
         """
-        self.log("Generating AdvisoryData objects from grouped commits.")
+        self.log("Generating AdvisoryDataV2 objects from grouped commits.")
         grouped_commits = self.collect_fix_commits()
         purl = url2purl(self.repo_url)
         for vuln_id, commits_data in grouped_commits.items():

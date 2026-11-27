@@ -78,18 +78,26 @@ class GolangVulndbImporterPipeline(VulnerableCodeBaseImporterPipelineV2):
         return self._repo_root() / "data" / "cve" / "v5"
 
     def advisories_count(self):
+        report_stems = {f.stem for f in self._reports_dir().glob("*.yaml")}
+        osv_only_count = sum(
+            1 for f in self._osv_dir().glob("*.json") if f.stem not in report_stems
+        )
         return (
-            sum(1 for _ in self._osv_dir().glob("*.json"))
-            + sum(1 for _ in self._reports_dir().glob("*.yaml"))
+            len(report_stems)
+            + osv_only_count
             + sum(1 for _ in self._cve_v5_dir().glob("*.json"))
         )
 
     def collect_advisories(self) -> Iterable[AdvisoryDataV2]:
-        for advisory in self._osv_dir().glob("*.json"):
-            yield self.to_advisory_data_from_osv(advisory)
+        report_files = list(self._reports_dir().glob("*.yaml"))
+        report_stems = {f.stem for f in report_files}
 
-        for advisory in self._reports_dir().glob("*.yaml"):
+        for advisory in report_files:
             yield self.to_advisory_data_from_report(advisory)
+
+        for advisory in self._osv_dir().glob("*.json"):
+            if advisory.stem not in report_stems:
+                yield self.to_advisory_data_from_osv(advisory)
 
         for advisory in self._cve_v5_dir().glob("*.json"):
             yield self.to_advisory_data_from_cve5(advisory)

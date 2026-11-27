@@ -324,3 +324,24 @@ class TestOSVImporter(TestCase):
         )
         result = imported_data.to_dict()
         util_tests.check_results_against_json(result, expected_file, regen=True)
+
+    def test_parse_advisory_data_v3_introduced_zero_only(self):
+        raw_data = {
+            "id": "GHSA-wj6h-64fc-37mp",
+            "summary": "ECDSA vulnerability",
+            "affected": [
+                {
+                    "package": {"ecosystem": "PyPI", "name": "ecdsa"},
+                    "ranges": [{"type": "ECOSYSTEM", "events": [{"introduced": "0"}]}],
+                }
+            ],
+        }
+        imported_data = parse_advisory_data_v3(
+            raw_data, ["pypi"], advisory_url="https://test.com", advisory_text=""
+        )
+        assert imported_data is not None
+        assert len(imported_data.affected_packages) == 1
+        affected = imported_data.affected_packages[0]
+        assert str(affected.package) == "pkg:pypi/ecdsa"
+        assert str(affected.affected_version_range) == "vers:pypi/>=0"
+        assert affected.fixed_version_range is None

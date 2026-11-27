@@ -486,6 +486,7 @@ def get_version_ranges_constraints(
 
     affected_constraints = []
     fixed_constraints = []
+    zero_intro_v_obj = None
     version_range_class = RANGE_CLASS_BY_SCHEMES.get(supported_ecosystem)
 
     for event_type, event_value in extract_events(ranges):
@@ -520,6 +521,7 @@ def get_version_ranges_constraints(
 
             if event_type == "introduced":
                 if event_value == "0":
+                    zero_intro_v_obj = v_obj
                     continue
                 constraint = VersionConstraint(comparator=">=", version=v_obj)
                 affected_constraints.append(constraint)
@@ -549,6 +551,9 @@ def get_version_ranges_constraints(
             logger.error(
                 f"Unsupported version constraint type: {event_type}:{event_value!r} for OSV id: {raw_id!r}"
             )
+
+    if not affected_constraints and zero_intro_v_obj is not None:
+        affected_constraints.append(VersionConstraint(comparator=">=", version=zero_intro_v_obj))
 
     return (
         affected_constraints,

@@ -295,3 +295,27 @@ def test_to_advisory_data_from_cve5(tmp_path):
     assert pkg.package == PackageURL(type="golang", namespace="github.com/gin-gonic", name="gin")
     assert "1.6.0" in str(pkg.affected_version_range)
     assert "1.6.0" in str(pkg.fixed_version_range)
+
+
+def test_collect_advisories_deduplicates_osv_and_report(tmp_path):
+    osv_dir = tmp_path / "data" / "osv"
+    reports_dir = tmp_path / "data" / "reports"
+    cve_dir = tmp_path / "data" / "cve" / "v5"
+    osv_dir.mkdir(parents=True)
+    reports_dir.mkdir(parents=True)
+    cve_dir.mkdir(parents=True)
+
+    matching_osv = {**SAMPLE_OSV, "id": "GO-2020-0001"}
+    (osv_dir / "GO-2020-0001.json").write_text(json.dumps(matching_osv))
+    (reports_dir / "GO-2020-0001.yaml").write_text(saneyaml.dump(SAMPLE_REPORT))
+    (osv_dir / "GO-2024-2618.json").write_text(json.dumps(SAMPLE_OSV))
+
+    p = GolangVulndbImporterPipeline()
+    p.vcs_response = SimpleNamespace(dest_dir=str(tmp_path), delete=lambda: None)
+
+    assert p.advisories_count() == 2
+    advisories = [a for a in p.collect_advisories() if isinstance(a, AdvisoryDataV2)]
+    assert len(advisories) == 2
+    by_id = {a.advisory_id: a for a in advisories}
+    assert set(by_id.keys()) == {"GO-2020-0001", "GO-2024-2618"}
+    assert by_id["GO-2020-0001"].weaknesses == [117]

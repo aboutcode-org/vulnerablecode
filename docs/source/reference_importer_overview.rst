@@ -30,6 +30,4 @@ The data imported by importers is not useful by itself: it must be processed int
 model. The version ranges are required to be resolved into concrete ranges. These are achieved by
 ``Improvers`` (see :ref:`improver-overview` for details).
 
-As of now, the following importers have been implemented in VulnerableCode:
-
-.. include:: ../../SOURCES.rst
+See :ref:`importers_link` for the complete list of implemented importers.

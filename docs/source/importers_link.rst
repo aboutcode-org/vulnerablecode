@@ -1,6 +1,6 @@
 .. _importers_link:
 
-Importers
-=========
+List of Importers
+=================
 
 .. include:: ../../SOURCES.rst

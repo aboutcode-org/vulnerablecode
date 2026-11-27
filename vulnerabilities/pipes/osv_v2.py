@@ -49,6 +49,7 @@ PURL_TYPE_BY_OSV_ECOSYSTEM = {
     "go": "golang",
     "hex": "hex",
     "cargo": "cargo",
+    "crates.io": "cargo",
 }
 
 OSV_TO_VCIO_SEVERITY_MAP = {

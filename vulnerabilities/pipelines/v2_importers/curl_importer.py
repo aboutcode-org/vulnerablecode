@@ -74,11 +74,12 @@ def parse_curl_advisory(raw_data) -> AdvisoryDataV2:
     affected = get_item(raw_data, "affected")[0] if len(get_item(raw_data, "affected")) > 0 else []
 
     ranges = get_item(affected, "ranges")[0] if len(get_item(affected, "ranges")) > 0 else []
-    events = get_item(ranges, "events")[1] if len(get_item(ranges, "events")) > 1 else {}
+    events = get_item(ranges, "events") or []
     version_type = get_item(ranges, "type") if get_item(ranges, "type") else ""
-    fixed_version = events.get("fixed")
-    if version_type == "SEMVER" and fixed_version:
-        fixed_version_range = GenericVersionRange.from_versions([fixed_version])
+    # There is one "fixed" event for each release line that received a fix.
+    fixed_versions = [event["fixed"] for event in events if event.get("fixed")]
+    if version_type == "SEMVER" and fixed_versions:
+        fixed_version_range = GenericVersionRange.from_versions(fixed_versions)
 
     purl = PackageURL(type="generic", namespace="curl.se", name="curl")
     versions = affected.get("versions") or []

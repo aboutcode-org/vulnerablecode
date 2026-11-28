@@ -90,6 +90,29 @@ def test_collect_advisories(mock_fetch, pipeline):
     assert severity.system.identifier == "cvssv3.1"
 
 
+def test_parse_curl_advisory_keeps_every_fixed_version():
+    # curl lists one introduced/fixed pair per release line that got a fix.
+    events = [
+        {"introduced": "8.18.0"},
+        {"fixed": "8.20.2"},
+        {"introduced": "8.21.0"},
+        {"fixed": "8.23.0"},
+    ]
+    data = {
+        **SAMPLE_CURL_ADVISORY,
+        "affected": [
+            {
+                "ranges": [{"type": "SEMVER", "events": events}],
+                "versions": ["8.22.0", "8.21.0", "8.20.0", "8.19.0", "8.18.0"],
+            }
+        ],
+    }
+
+    parsed = parse_curl_advisory(data)
+
+    assert str(parsed.affected_packages[0].fixed_version_range) == "vers:generic/8.20.2|8.23.0"
+
+
 def test_parse_curl_advisory_minimal():
     data = dict(SAMPLE_CURL_ADVISORY)
     data.pop("database_specific")

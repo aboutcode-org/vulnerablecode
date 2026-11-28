@@ -12,6 +12,7 @@ import os
 from typing import Iterable
 
 import requests
+from dotenv import load_dotenv
 from packageurl import PackageURL
 
 from vulntotal.validator import DataSource
@@ -20,26 +21,56 @@ from vulntotal.validator import VendorData
 logger = logging.getLogger(__name__)
 
 
-class OSSDataSource(DataSource):
+class SonatypeGuideDataSource(DataSource):
+    """
+    Datasource for Sonatype Guide (formerly OSS Index).
+
+    Authentication:
+        Configure your Sonatype Guide Personal Access Token (PAT) in the
+        environment or ``.env`` file::
+
+            SONATYPE_GUIDE_TOKEN="your-sonatype-guide-pat"
+
+        When authenticating with a PAT, the username is optional and automatically
+        defaults to ``"token"``, so users do not need to invent or provide a username.
+        An explicit username can optionally be configured via ``SONATYPE_GUIDE_USERNAME``::
+
+            SONATYPE_GUIDE_USERNAME="user@example.com"
+            SONATYPE_GUIDE_TOKEN="your-sonatype-guide-pat"
+
+        Legacy ``OSS_TOKEN`` and ``OSS_USERNAME`` environment variables are also
+        supported for backward compatibility.
+    """
+
     spdx_license_expression = "TODO"
     license_url = "TODO"
-    api_unauthenticated = "https://ossindex.sonatype.org/api/v3/component-report"
-    api_authenticated = "https://ossindex.sonatype.org/api/v3/authorized/component-report"
+    api_unauthenticated = "https://api.guide.sonatype.com/api/v3/component-report"
+    api_authenticated = "https://api.guide.sonatype.com/api/v3/authorized/component-report"
 
     def fetch_json_response(self, coordinates):
-        """Fetch JSON response from OSS Index API for a given list of coordinates.
+        """Fetch JSON response from Sonatype Guide API for a given list of coordinates.
+
+        Authentication uses ``SONATYPE_GUIDE_TOKEN`` (or legacy ``OSS_TOKEN``).
+        When only ``SONATYPE_GUIDE_TOKEN`` is set, username defaults to ``"token"``,
+        so users only need to provide their PAT without inventing a username.
 
         Parameters:
             coordinates: A list of strings representing the package coordinates.
 
         Returns:
-            A dictionary containing the JSON response from the OSS Index API, or None if the response is unsuccessful or an error occurs while fetching data.
+            A dictionary containing the JSON response from the Sonatype Guide API,
+            or None if the response is unsuccessful or an error occurs while fetching data.
         """
-        username = os.environ.get("OSS_USERNAME", None)
-        token = os.environ.get("OSS_TOKEN", None)
+        load_dotenv()
+        token = os.environ.get("SONATYPE_GUIDE_TOKEN") or os.environ.get("OSS_TOKEN")
+        username = (
+            os.environ.get("SONATYPE_GUIDE_USERNAME")
+            or os.environ.get("OSS_USERNAME")
+            or ("token" if token else None)
+        )
         auth = None
         url = self.api_unauthenticated
-        if username and token:
+        if token:
             auth = (username, token)
             url = self.api_authenticated
         response = requests.post(url, auth=auth, json={"coordinates": coordinates})
@@ -48,12 +79,17 @@ class OSSDataSource(DataSource):
             return response.json()
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 401:
-                logger.error("Invalid credentials")
+                if auth:
+                    logger.error("Invalid credentials")
+                else:
+                    logger.error(
+                        "Sonatype Guide requires a token: set SONATYPE_GUIDE_TOKEN in your environment or .env"
+                    )
             elif e.response.status_code == 429:
                 msg = (
                     "Too many requests"
                     if auth
-                    else "Too many requests: add OSS_USERNAME and OSS_TOKEN in .env file"
+                    else "Too many requests: add SONATYPE_GUIDE_TOKEN (or legacy OSS_TOKEN) in .env file"
                 )
                 logger.error(msg)
             else:
@@ -87,6 +123,10 @@ class OSSDataSource(DataSource):
             "gem": "gem",
             "swift": "swift",
         }
+
+
+# Maintain backward compatibility for existing imports and usages
+OSSDataSource = SonatypeGuideDataSource
 
 
 def parse_advisory(component, purl) -> Iterable[VendorData]:
